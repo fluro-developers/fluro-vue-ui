@@ -1,11 +1,6 @@
 
 
 console.log('fluro-vue-ui v2.0.1')
-// process.env.VUE_APP_VERSION = require('./package.json').version
-
-// import store from './store'
-import Fluro from 'fluro';
-import FluroVue from 'fluro-vue';
 
 /////////////////////////////////////////////////////
 
