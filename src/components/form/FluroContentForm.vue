@@ -19,7 +19,7 @@
 import FluroContentFormField from './FluroContentFormField.vue';
 import _ from 'lodash';
 import Vue from 'vue';
-import Fluro from 'fluro';
+import FluroUtils from 'fluro';
 
 
 
@@ -234,7 +234,7 @@ export default {
                     return;
                 }
 
-                var blankValue = Fluro.utils.getDefaultValueForField(field);
+                var blankValue = FluroUtils.getDefaultValueForField(field);
 
                 //Check if it's just a display group
                 if (field.type == 'group' && !field.asObject) {

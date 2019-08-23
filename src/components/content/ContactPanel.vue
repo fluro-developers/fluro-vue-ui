@@ -81,7 +81,6 @@ import Layout from '../../mixins/Layout';
 
 /////////////////////////////////
 
-import Fluro from 'fluro';
 import Vue from 'vue';
 
 /////////////////////////////////

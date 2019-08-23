@@ -145,14 +145,6 @@ import FluroSelectionMixin from './mixins/FluroSelectionMixin';
 export { FluroSelectionMixin as FluroSelectionMixin };
 
 /////////////////////////////////////////////////////
-/////////////////////////////////////////////////////
-
-var LOCAL_STORAGE_KEY = 'fluro.user';
-var WebStorageContainer = localStorage;
-
-
-/////////////////////////////////////////////////////
-
 
 const FluroVueUI = {
     install: function(Vue, options) {
