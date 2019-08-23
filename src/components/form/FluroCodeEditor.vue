@@ -1,0 +1,174 @@
+<template>
+    <div class="fluro-code-editor">
+        <!-- <pre>{{model}}</pre> -->
+        <code-editor v-model="model" @init="editorInit" :lang="syntax" theme="tomorrow_night_eighties" :height="100"></code-editor>
+    </div>
+</template>
+<script>
+import CodeEditor from 'vue2-ace-editor';
+import js_beautify from 'js-beautify';
+
+// console.log('BEAUTIFY', js_beautify.html);
+
+export default {
+
+    props: {
+        'value': {
+            type: String,
+            default:'',
+        },
+        'lang': {
+            type: String,
+            default:'html',
+        },
+        'height': {
+            default: 300,
+            type: Number,
+        },
+        'readonly': {
+            type: Boolean,
+        },
+    },
+
+    data() {
+        return {
+            editor: null,
+            model: this.value,
+        }
+    },
+    computed: {
+        syntax() {
+            switch (this.lang) {
+                case 'css':
+                case 'sass':
+                case 'scss':
+                    return 'scss';
+                    break;
+                case 'js':
+                    return 'javascript';
+                    break;
+                case 'html':
+                    return 'html';
+                    break;
+                default:
+                    return `${this.lang}`;
+                    break;
+            }
+        }
+    },
+    methods: {
+        beautify() {
+
+            console.log('Beautify!!!')
+            //Get the current string
+            var input = this.editor.session.getValue() || '';
+
+            //Remove leading spaces
+            var array = input.split(/\n/);
+            array[0] = array[0].trim();
+            input = array.join("\n");
+
+
+            switch (this.syntax) {
+                case 'html':
+                    input = js_beautify.html(input);//, {extra_liners:'p, br'})
+                    break;
+                case 'json':
+                case 'javascript':
+                    input = js_beautify(input);
+                    break;
+                case 'scss':
+                    input = js_beautify.css(input)
+                    break;
+            }
+
+            // console.log('BEAUTIFIED')
+            // console.log('Set code editor with new input', input);
+            //Change current text to formatted text
+            this.editor.session.setValue(input);
+        },
+        editorInit: function(editor) {
+
+            var self = this;
+
+            require('brace/ext/language_tools') //language extension prerequsite...
+            require('brace/mode/html')
+            require('brace/mode/json') //language
+            require('brace/mode/javascript') //language
+            require('brace/mode/scss')
+            require('brace/theme/tomorrow_night_eighties')
+            require('brace/snippets/javascript') //snippet
+            self.editor = editor;
+
+            ////////////////////////////////////////
+
+            if (this.readonly) {
+                editor.setReadOnly(true);
+                editor.renderer.setShowGutter(false);
+            } else {
+                editor.on('blur', self.beautify);
+            }
+
+            ////////////////////////////////////////
+
+            // editor.setOptions({
+
+            //     // autoScrollEditorIntoView: true,
+            //     // copyWithEmptySelection: true,
+            // });
+
+            // editor.setReadOnly(true);
+            // editor.setMode(this.computedSyntax);
+            // console.log('Initialize the editor', editor);
+
+
+        },
+    },
+    beforeDestroy() {
+        this.editor.off('blur', self.beautify);
+    },
+    mounted() {
+
+
+        //Beautify when we first mount
+        this.beautify();
+    },
+    components: {
+        CodeEditor,
+    },
+    watch: {
+        value(value) {
+
+            var self = this;
+            // so cursor doesn't jump to start on typing
+            if (value !== this.model) {
+                this.editor.session.setValue(value);
+            }
+        },
+        model(value) {
+
+            // so cursor doesn't jump to start on typing
+            if (value != this.model) {
+                this.editor.setContent(this.model)
+            }
+
+            // console.log('NEw Code', value)
+            this.$emit('input', this.model)
+        }
+    },
+}
+</script>
+<style scoped lang="scss">
+
+.fluro-code-editor {
+
+    // border: 10px solid #ff0066;
+    min-height:200px;
+    display: flex;
+    flex-direction: column;
+
+    & > div {
+        flex:1
+    }
+}
+</style>
