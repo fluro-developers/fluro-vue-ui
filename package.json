@@ -22,9 +22,9 @@
   "author": "Cade Embery",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/fluro-developers/fluro-vue/issues"
+    "url": "https://github.com/fluro-developers/fluro-vue-ui/issues"
   },
-  "homepage": "https://github.com/fluro-developers/fluro-vue#readme",
+  "homepage": "https://github.com/fluro-developers/fluro-vue-ui#readme",
   "dependencies": {
     "expression-eval": "^2.0.0",
     "fluro": "^1.0.74",
