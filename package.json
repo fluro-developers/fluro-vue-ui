@@ -1,6 +1,6 @@
 {
   "name": "fluro-vue-ui",
-  "version": "2.0.9",
+  "version": "2.0.11",
   "description": "A package that contains helpful Fluro UI components and mixins",
   "main": "src/index.js",
   "scripts": {
@@ -25,9 +25,11 @@
     "url": "https://github.com/fluro-developers/fluro-vue-ui/issues"
   },
   "homepage": "https://github.com/fluro-developers/fluro-vue-ui#readme",
+  "peerDependencies": {
+    "fluro-vue": "^2.0.8"
+  },
   "dependencies": {
     "expression-eval": "^2.0.0",
-    "fluro-vue": "^2.0.8",
     "highlight.js": "^9.15.8",
     "js-beautify": "^1.9.1",
     "signature_pad": "^3.0.0-beta.3",
