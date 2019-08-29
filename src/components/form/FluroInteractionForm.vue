@@ -211,7 +211,7 @@ export default {
                     maximum: 1,
                     title: 'Phone Number',
                     directive: 'input',
-                    type: 'email',
+                    type: 'string',
                     defaultValues: this.defaultUserValue('phoneNumber'),
                 })
             }
