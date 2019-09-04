@@ -1,62 +1,69 @@
 <template>
     <div class="fluro-interaction-form">
-        <template v-if="!allowed">
-            <template v-if="user">
-                <slot name="authenticated">
-                    You do not have permission to submit this form
-                </slot>
+        <template v-if="definition">
+            <template v-if="!allowed">
+                <template v-if="user">
+                    <slot name="authenticated">
+                        You do not have permission to submit this form
+                    </slot>
+                </template>
+                <template v-if="!user">
+                    <slot name="unauthenticated">
+                        You must be signed in to submit this form
+                    </slot>
+                </template>
             </template>
-            <template v-if="!user">
-                <slot name="unauthenticated">
-                    You must be signed in to submit this form
+            <template v-if="allowed">
+                <slot name="success" :reset="reset" :result="result" v-if="state == 'success'">
+                    Success!
+                    <v-btn class="mx-0" @click="reset()">
+                        Back to form
+                    </v-btn>
                 </slot>
-            </template>
-        </template>
-        <template v-if="allowed">
-            <slot name="success" :reset="reset" :result="result" v-if="state == 'success'">
-                Success!
-                <v-btn class="mx-0" @click="reset()">
-                    Back to form
-                </v-btn>
-            </slot>
-            <template v-else>
-                <slot name="info"></slot>
-                <form @submit.prevent="submit" :disabled="state == 'processing'">
-                    <fluro-content-form @errorMessages="validate" ref="form" :options="options" v-model="model" :fields="fields" />
-                    <div class="actions">
-                        <template v-if="state == 'processing'">
-                            <v-btn class="mx-0" :disabled="true">
-                                Processing
-                                <v-progress-circular indeterminate></v-progress-circular>
-                            </v-btn>
-                        </template>
-                        <template v-else-if="state == 'error'">
-                            <v-alert :value="true" type="error" outline>
-                                {{serverErrors}}
-                            </v-alert>
-                            <v-btn class="mx-0" @click.prevent.native="state = 'ready'">
-                                Try Again
-                            </v-btn>
-                            <!-- <v-btn class="mx-0" :disabled="hasErrors" type="submit" color="primary">
+                <template v-else>
+                    <slot name="info"></slot>
+                    <form @submit.prevent="submit" :disabled="state == 'processing'">
+                        <v-container>
+                            <!-- <pre>{{allowAnonymous}}</pre> -->
+                            <!-- <pre>{{fields}}</pre> -->
+                            <!-- <pre>{{options}}</pre> -->
+                            <fluro-content-form @errorMessages="validate" ref="form" :options="options" v-model="model" :fields="fields" />
+                            <div class="actions">
+                                <template v-if="state == 'processing'">
+                                    <v-btn class="mx-0" :disabled="true">
+                                        Processing
+                                        <v-progress-circular indeterminate></v-progress-circular>
+                                    </v-btn>
+                                </template>
+                                <template v-else-if="state == 'error'">
+                                    <v-alert :value="true" type="error" outline>
+                                        {{serverErrors}}
+                                    </v-alert>
+                                    <v-btn class="mx-0" @click.prevent.native="state = 'ready'">
+                                        Try Again
+                                    </v-btn>
+                                    <!-- <v-btn class="mx-0" :disabled="hasErrors" type="submit" color="primary">
                                 Try Again
                             </v-btn> -->
-                        </template>
-                        <template v-else>
-                            <v-alert :value="true" type="error" outline v-if="hasErrors">
-                                Please check the following issues before submitting
-                                <div v-for="error in errorMessages">
-                                    <strong>{{error.title}}</strong>: {{error.messages[0]}}
-                                </div>
-                            </v-alert>
-                            <v-btn class="mx-0" :disabled="hasErrors" type="submit" color="primary">
-                                Submit
-                            </v-btn>
-                        </template>
-                    </div>
-                </form>
+                                </template>
+                                <template v-else>
+                                    <v-alert :value="true" type="error" outline v-if="hasErrors">
+                                        Please check the following issues before submitting
+                                        <div v-for="error in errorMessages">
+                                            <strong>{{error.title}}</strong>: {{error.messages[0]}}
+                                        </div>
+                                    </v-alert>
+                                    <v-btn class="mx-0" :disabled="hasErrors" type="submit" color="primary">
+                                        Submit
+                                    </v-btn>
+                                </template>
+                            </div>
+                        </v-container>
+                    </form>
+                </template>
             </template>
+            <!-- <pre>ERRORS {{errorMessages}}</pre> -->
         </template>
-        <!-- <pre>ERRORS {{errorMessages}}</pre> -->
     </div>
 </template>
 <script>
@@ -90,7 +97,7 @@ export default {
         'options': {
             default: function() {
                 return {
-                    validateSuccess:true,
+                    validateSuccess: true,
                 }
             },
             type: Object,
@@ -114,7 +121,7 @@ export default {
         this.validate();
     },
     computed: {
-        
+
         formErrors() {
 
         },
@@ -127,29 +134,15 @@ export default {
 
         fields() {
 
+            var self = this;
+
             var allFields = [];
 
-            if (this.gender) {
-                allFields.push({
-                    key: '_gender',
-                    minimum: this.requireGender ? 1 : 0,
-                    maximum: 1,
-                    title: 'Gender',
-                    directive: 'select',
-                    type: 'string',
-                    options: [{
-                            name: 'Mr',
-                            value: 'male',
-                        },
-                        {
-                            name: 'Ms / Mrs',
-                            value: 'female',
-                        }
-                    ]
-                })
-            }
+
 
             //////////////////////////////////////////
+
+            
 
             var nameFields = {
                 key: '_name',
@@ -160,67 +153,92 @@ export default {
 
             //////////////////////////////////////////
 
-            if (this.askFirstName) {
+            if (self.askFirstName) {
                 nameFields.fields.push({
                     key: '_firstName',
-                    minimum: this.requireFirstName ? 1 : 0,
+                    minimum: self.requireFirstName ? 1 : 0,
                     maximum: 1,
                     title: 'First Name',
                     directive: 'input',
                     type: 'string',
                     className: 'xs12 sm6',
-                    defaultValues: this.defaultUserValue('firstName'),
+                    defaultValues: self.defaultUserValue('firstName'),
                 })
             }
 
-            if (this.askLastName) {
+            if (self.askLastName) {
                 nameFields.fields.push({
                     key: '_lastName',
-                    minimum: this.requireFirstName ? 1 : 0,
+                    minimum: self.requireFirstName ? 1 : 0,
                     maximum: 1,
                     title: 'Last Name',
                     directive: 'input',
                     type: 'string',
                     className: 'xs12 sm6',
-                    defaultValues: this.defaultUserValue('lastName'),
+                    defaultValues: self.defaultUserValue('lastName'),
                 })
             }
 
-            //Insert the name row
-            allFields.push(nameFields);
+            //If there are actually name fields
+            if(nameFields.fields && nameFields.fields.length) {
+                //Insert the name row
+                allFields.push(nameFields);
+            }
+
+            //////////////////////////////////////////
+
+            if (self.askGender) {
+                allFields.push({
+                    key: '_gender',
+                    minimum: this.requireGender ? 1 : 0,
+                    maximum: 1,
+                    title: 'Gender',
+                    directive: 'select',
+                    type: 'string',
+                    options: [{
+                            name: 'Male',
+                            value: 'male',
+                        },
+                        {
+                            name: 'Female',
+                            value: 'female',
+                        }
+                    ]
+                })
+            }
 
             //////////////////////////////////////////
 
 
-            if (this.askEmail) {
+            if (self.askEmail) {
                 allFields.push({
                     key: '_email',
-                    minimum: this.requireEmail ? 1 : 0,
+                    minimum: self.requireEmail ? 1 : 0,
                     maximum: 1,
                     title: 'Email Address',
                     directive: 'input',
                     type: 'email',
-                    defaultValues: this.defaultUserValue('email'),
+                    defaultValues: self.defaultUserValue('email'),
                 })
             }
 
-            if (this.askPhone) {
+            if (self.askPhone) {
                 allFields.push({
                     key: '_phoneNumber',
-                    minimum: this.requirePhone ? 1 : 0,
+                    minimum: self.requirePhone ? 1 : 0,
                     maximum: 1,
                     title: 'Phone Number',
                     directive: 'input',
                     type: 'string',
-                    defaultValues: this.defaultUserValue('phoneNumber'),
+                    defaultValues: self.defaultUserValue('phoneNumber'),
                 })
             }
 
 
-            if (this.askDOB) {
+            if (self.askDOB) {
                 allFields.push({
                     key: '_dob',
-                    minimum: this.requireDOB ? 1 : 0,
+                    minimum: self.requireDOB ? 1 : 0,
                     maximum: 1,
                     title: 'Date of Birth',
                     directive: 'dob-select',
@@ -229,13 +247,42 @@ export default {
             }
 
             //Get the form fields
-            var formFields = this.definition.fields;
+            var formFields = self.definition.fields;
+
+
 
             //Combine them together
             allFields = allFields.concat(formFields);
 
+            console.log('ALL FIELDS', allFields);
+
             return allFields;
         },
+
+
+        // if (!interactionFormSettings.allowAnonymous && !interactionFormSettings.disableDefaultFields) {
+        //     interactionFormSettings.requireFirstName = true;
+        //     interactionFormSettings.requireLastName = true;
+        //     interactionFormSettings.requireGender = true;
+        //     interactionFormSettings.requireEmail = true;
+
+        //     switch (interactionFormSettings.identifier) {
+        //         case 'both':
+        //             interactionFormSettings.requireEmail =
+        //                 interactionFormSettings.requirePhone = true;
+        //             break;
+        //         case 'email':
+        //             interactionFormSettings.requireEmail = true;
+        //             break;
+        //         case 'phone':
+        //             interactionFormSettings.requirePhone = true;
+        //             break;
+        //         case 'either':
+        //             interactionFormSettings.askPhone = true;
+        //             interactionFormSettings.askEmail = true;
+        //             break;
+        //     }
+        // }
 
         ////////////////////////////////
 
@@ -243,39 +290,55 @@ export default {
             return this.formOptions.identifier;
         },
 
+        ////////////////////////////////
+
+        allowAnonymous() {
+            // console.log('ONE > ANONYMOUS', this.formOptions)
+            return this.formOptions.allowAnonymous || false
+        },
+
+        disableDefaultFields() {
+            // console.log('TWO > DISABLE FIELDS', this.formOptions)
+            return this.formOptions.disableDefaultFields || false
+        },
+
+        requireDefaultContactFields() {
+            // console.log('THREE > CHECK DEFAULT CONTACT FIELDS', this.formOptions)
+            return !this.allowAnonymous && !this.disableDefaultFields;
+        },
 
         ////////////////////////////////
 
         askFirstName() {
-            return this.formOptions.askFirstName;
+            return this.requireDefaultContactFields || this.formOptions.askFirstName || this.formOptions.requireFirstName;
         },
         askLastName() {
-            return this.formOptions.askLastName;
+            return this.requireDefaultContactFields || this.formOptions.askLastName || this.formOptions.requireLastName;
         },
         askGender() {
-            return this.formOptions.askGender;
+            return this.requireDefaultContactFields || this.formOptions.askGender || this.formOptions.requireGender;
         },
         askDOB() {
-            return this.formOptions.askDOB;
+            return this.formOptions.askDOB || this.formOptions.requireDOB;
         },
         askEmail() {
-            return (this.formOptions.askEmail || this.requireEmail || this.identifier == 'either');
+            return this.formOptions.askEmail || this.requireEmail || (this.requireDefaultContactFields);
         },
         askPhone() {
-            return (this.formOptions.askPhone || this.requirePhone || this.identifier == 'either');
+            return this.formOptions.askPhone || this.requirePhone || (this.requireDefaultContactFields); // && this.identifier == 'either');
         },
 
 
         ////////////////////////////////
 
         requireFirstName() {
-            return this.formOptions.requireFirstName;
+            return this.formOptions.requireFirstName || this.requireDefaultContactFields;
         },
         requireLastName() {
-            return this.formOptions.requireLastName;
+            return this.formOptions.requireLastName || this.requireDefaultContactFields;
         },
         requireGender() {
-            return this.formOptions.requireGender;
+            return this.formOptions.requireGender || this.requireDefaultContactFields;
         },
         requireDOB() {
             return this.formOptions.requireDOB;
@@ -292,6 +355,11 @@ export default {
                 case 'email':
                     return true;
                     break;
+                case 'either':
+                default:
+                    //Return if the contact details are required and we haven't already provided a phone number
+                    return  this.requireDefaultContactFields && (!(this.model._phone && this.model._phone.length))
+                    break;
             }
         },
         requirePhone() {
@@ -306,6 +374,13 @@ export default {
                 case 'phone':
                     return true;
                     break;
+                
+                case 'either':
+                default:
+                    //Return if the contact details are required and we haven't already provided an email
+                     return  this.requireDefaultContactFields && (!(this.model._email && this.model._email.length))
+                    break;
+
             }
         },
 
@@ -343,10 +418,10 @@ export default {
     methods: {
         validate() {
             var form = this.$refs.form;
-            if(!form) {
+            if (!form) {
                 return [];
             }
-            this.errorMessages = form.errorMessages || [];        
+            this.errorMessages = form.errorMessages || [];
         },
         validateAllFields() {
             var form = this.$refs.form;
@@ -377,11 +452,11 @@ export default {
             var self = this;
             self.validateAllFields();
 
-            if(self.hasErrors) {
+            if (self.hasErrors) {
                 //Gotta finish the stuff first!
                 return;
             }
-            
+
             self.state = 'processing';
 
 

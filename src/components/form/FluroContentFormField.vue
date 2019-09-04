@@ -1,6 +1,6 @@
 <template>
     <div :data-field-key="key" class="fluro-content-form-field" v-if="isVisible" v-bind="attributes" :class="fieldClass">
-        <!-- <pre>{{renderer}}</pre> -->
+        <!-- <pre>{{minimum}}</pre> -->
         <template v-if="officeUseOnly">
         </template>
         <template v-else-if="renderer == 'custom'">
