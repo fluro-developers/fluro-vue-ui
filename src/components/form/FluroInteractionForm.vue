@@ -27,7 +27,7 @@
                             <!-- <pre>{{allowAnonymous}}</pre> -->
                             <!-- <pre>{{fields}}</pre> -->
                             <!-- <pre>{{options}}</pre> -->
-                            <fluro-content-form @errorMessages="validate" ref="form" :options="options" v-model="model" :fields="fields" />
+                            <fluro-content-form @errorMessages="validate" ref="form" :options="options" v-model="dataModel" :fields="fields" />
                             <div class="actions">
                                 <template v-if="state == 'processing'">
                                     <v-btn class="mx-0" :disabled="true">
@@ -91,8 +91,17 @@ export default {
         'linkedEvent': {
             type: [Object, String],
         },
+
         'debugMode': {
             type: Boolean,
+        },
+        'model': {
+            type: Object,
+            default() {
+                return {
+                    data:{}
+                };
+            }
         },
         'options': {
             default: function() {
@@ -105,9 +114,10 @@ export default {
     },
     data() {
         return {
-            model: {
-                data: {},
-            },
+            dataModel:JSON.parse(JSON.stringify(this.model)),
+            // model: {
+            //     data: {},
+            // },
             serverErrors: '',
             errorMessages: [],
             result: null,
@@ -358,7 +368,7 @@ export default {
                 case 'either':
                 default:
                     //Return if the contact details are required and we haven't already provided a phone number
-                    return  this.requireDefaultContactFields && (!(this.model._phone && this.model._phone.length))
+                    return  this.requireDefaultContactFields && (!(this.dataModel._phone && this.dataModel._phone.length))
                     break;
             }
         },
@@ -378,7 +388,7 @@ export default {
                 case 'either':
                 default:
                     //Return if the contact details are required and we haven't already provided an email
-                     return  this.requireDefaultContactFields && (!(this.model._email && this.model._email.length))
+                     return  this.requireDefaultContactFields && (!(this.dataModel._email && this.dataModel._email.length))
                     break;
 
             }
@@ -464,6 +474,9 @@ export default {
 
             var interactionData = {
                 interaction: self.model,
+                event:self.$fluro.utils.getStringID(self.linkedEvent),
+                process:self.$fluro.utils.getStringID(self.linkedProcess),
+                // transaction:self.$fluro.utils.getStringID(self.linkedProcess),
             }
 
             /////////////////////////////////
@@ -494,10 +507,19 @@ export default {
             /////////////////////////////////
 
             //Create the post
-            self.$fluro.content.submitInteraction(this.definedName, interactionData)
+            self.$fluro.content.submitInteraction(this.definedName, interactionData, {
+                params:{
+                    definition:self.$fluro.utils.getStringID(self.definition),
+                    process:self.$fluro.utils.getStringID(self.linkedProcess),
+
+                }
+            })
                 .then(function(interaction) {
                     self.state = 'success';
-                    self.model = {};
+                    self.dataModel = {
+                        data:{},
+                    }
+
                     self.result = interaction;
                     self.$emit('success', interaction);
 
