@@ -4,7 +4,7 @@
             <template v-for="field in fields">
                 <!-- <pre>{{model[field.key]}}</pre> -->
                 <!-- <fluro-code-editor v-model="model[field.key]" @input="valueChange" :height="200"></fluro-code-editor> -->
-                <v-container class="grid-list-xl" pa-0>
+                <v-container fluid class="grid-list-xl" pa-0>
                     <!-- <pre>{{field}}</pre> -->
                     <!-- :parent="model[key]"  -->
                     <fluro-content-form-field :outline="showOutline" :form-fields="formFields" :options="options" :field="field" @input="update" v-model="model"></fluro-content-form-field>

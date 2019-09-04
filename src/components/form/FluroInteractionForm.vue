@@ -23,11 +23,11 @@
                 <template v-else>
                     <slot name="info"></slot>
                     <form @submit.prevent="submit" :disabled="state == 'processing'">
-                        <v-container>
+                        
                             <!-- <pre>{{allowAnonymous}}</pre> -->
                             <!-- <pre>{{fields}}</pre> -->
                             <!-- <pre>{{options}}</pre> -->
-                            <fluro-content-form @errorMessages="validate" ref="form" :options="options" v-model="dataModel" :fields="fields" />
+                            <fluro-content-form @errorMessages="validate" @input="modelChanged" ref="form" :options="options" v-model="dataModel" :fields="fields" />
                             <div class="actions">
                                 <template v-if="state == 'processing'">
                                     <v-btn class="mx-0" :disabled="true">
@@ -53,12 +53,16 @@
                                             <strong>{{error.title}}</strong>: {{error.messages[0]}}
                                         </div>
                                     </v-alert>
-                                    <v-btn class="mx-0" :disabled="hasErrors" type="submit" color="primary">
-                                        Submit
-                                    </v-btn>
+                                    <!-- <v-layout> -->
+                                        <v-btn class="mx-0" :disabled="hasErrors" type="submit" color="primary">
+                                            Submit
+                                        </v-btn>
+                                        <!-- <v-spacer /> -->
+                                        
+                                    <!-- </v-layout> -->
                                 </template>
                             </div>
-                        </v-container>
+                        
                     </form>
                 </template>
             </template>
@@ -73,6 +77,8 @@ import Vue from 'vue';
 
 import { mapFields } from 'vuex-map-fields';
 
+
+var hasBeenReset;
 
 //////////////////////////////////////////////////
 
@@ -95,11 +101,11 @@ export default {
         'debugMode': {
             type: Boolean,
         },
-        'model': {
+        'value': {
             type: Object,
-            default() {
+            default () {
                 return {
-                    data:{}
+                    data: {}
                 };
             }
         },
@@ -114,7 +120,7 @@ export default {
     },
     data() {
         return {
-            dataModel:JSON.parse(JSON.stringify(this.model)),
+            dataModel: JSON.parse(JSON.stringify(this.value)),
             // model: {
             //     data: {},
             // },
@@ -130,6 +136,9 @@ export default {
     mounted() {
         this.validate();
     },
+    // watch:{
+
+    // },
     computed: {
 
         formErrors() {
@@ -152,7 +161,7 @@ export default {
 
             //////////////////////////////////////////
 
-            
+
 
             var nameFields = {
                 key: '_name',
@@ -190,7 +199,7 @@ export default {
             }
 
             //If there are actually name fields
-            if(nameFields.fields && nameFields.fields.length) {
+            if (nameFields.fields && nameFields.fields.length) {
                 //Insert the name row
                 allFields.push(nameFields);
             }
@@ -368,7 +377,7 @@ export default {
                 case 'either':
                 default:
                     //Return if the contact details are required and we haven't already provided a phone number
-                    return  this.requireDefaultContactFields && (!(this.dataModel._phone && this.dataModel._phone.length))
+                    return this.requireDefaultContactFields && (!(this.dataModel._phone && this.dataModel._phone.length))
                     break;
             }
         },
@@ -384,11 +393,11 @@ export default {
                 case 'phone':
                     return true;
                     break;
-                
+
                 case 'either':
                 default:
                     //Return if the contact details are required and we haven't already provided an email
-                     return  this.requireDefaultContactFields && (!(this.dataModel._email && this.dataModel._email.length))
+                    return this.requireDefaultContactFields && (!(this.dataModel._email && this.dataModel._email.length))
                     break;
 
             }
@@ -426,6 +435,9 @@ export default {
         FluroContentForm,
     },
     methods: {
+        modelChanged() {
+            this.$emit('input', this.dataModel);
+        },
         validate() {
             var form = this.$refs.form;
             if (!form) {
@@ -452,10 +464,20 @@ export default {
             var self = this;
             //Reset the model
             // Vue.set(self.model, 'data', {});
-            self.dataModel = {};
+
+            if (!hasBeenReset) {
+                hasBeenReset = true;
+                //Use the value that was input originally
+                self.dataModel = JSON.parse(JSON.stringify(this.value));
+            } else {
+
+                self.dataModel = {};
+            }
+
             self.result = null;
 
             self.state = 'ready';
+            self.modelChanged();
             self.$emit('reset');
         },
         submit() {
@@ -474,8 +496,8 @@ export default {
 
             var interactionData = {
                 interaction: self.dataModel,
-                event:self.$fluro.utils.getStringID(self.linkedEvent),
-                process:self.$fluro.utils.getStringID(self.linkedProcess),
+                event: self.$fluro.utils.getStringID(self.linkedEvent),
+                process: self.$fluro.utils.getStringID(self.linkedProcess),
                 // transaction:self.$fluro.utils.getStringID(self.linkedProcess),
             }
 
@@ -508,16 +530,16 @@ export default {
 
             //Create the post
             self.$fluro.content.submitInteraction(this.definedName, interactionData, {
-                params:{
-                    definition:self.$fluro.utils.getStringID(self.definition),
-                    process:self.$fluro.utils.getStringID(self.linkedProcess),
+                    params: {
+                        definition: self.$fluro.utils.getStringID(self.definition),
+                        process: self.$fluro.utils.getStringID(self.linkedProcess),
 
-                }
-            })
+                    }
+                })
                 .then(function(interaction) {
                     self.state = 'success';
                     self.dataModel = {
-                        data:{},
+                        data: {},
                     }
 
                     self.result = interaction;
