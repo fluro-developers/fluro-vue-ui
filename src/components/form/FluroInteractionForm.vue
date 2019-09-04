@@ -264,7 +264,7 @@ export default {
             //Combine them together
             allFields = allFields.concat(formFields);
 
-            console.log('ALL FIELDS', allFields);
+            // console.log('ALL FIELDS', allFields);
 
             return allFields;
         },
@@ -407,7 +407,7 @@ export default {
         },
         allowed() {
 
-            console.log('TESTING', this.definition)
+            // console.log('TESTING', this.definition)
             //If it's public
             if (this.definition.privacy == 'public') {
                 return true;
@@ -452,7 +452,7 @@ export default {
             var self = this;
             //Reset the model
             // Vue.set(self.model, 'data', {});
-            self.model = {};
+            self.dataModel = {};
             self.result = null;
 
             self.state = 'ready';
@@ -473,7 +473,7 @@ export default {
             /////////////////////////////////
 
             var interactionData = {
-                interaction: self.model,
+                interaction: self.dataModel,
                 event:self.$fluro.utils.getStringID(self.linkedEvent),
                 process:self.$fluro.utils.getStringID(self.linkedProcess),
                 // transaction:self.$fluro.utils.getStringID(self.linkedProcess),
@@ -491,7 +491,7 @@ export default {
 
             //Set the default contact fields
             function setDefaultContactField(key) {
-                var value = _.get(self.model, `_${key}`);
+                var value = _.get(self.dataModel, `_${key}`);
                 if (value) {
                     _.set(interactionData, `contact.${key}`, value);
                 }

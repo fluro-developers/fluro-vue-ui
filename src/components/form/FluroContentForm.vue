@@ -234,7 +234,7 @@ export default {
                     return;
                 }
 
-                console.log('Create Defaults', self);
+                // console.log('Create Defaults', self);
                 var blankValue = self.$fluro.utils.getDefaultValueForField(field);
 
                 //Check if it's just a display group
