@@ -362,7 +362,7 @@ export default {
     }
 
     &:first-of-type {
-        border-top: 1px solid $border-color;
+        // border-top: 1px solid $border-color;
     }
 
     &:last-of-type {

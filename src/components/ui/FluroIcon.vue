@@ -1,5 +1,8 @@
 <template>
-    <font-awesome-icon :spin="spin" :icon="iconName"></font-awesome-icon>
+    <!-- <div> -->
+        <!-- {{type}} {{iconName}} -->
+    <font-awesome-icon :spin="spin" fixed-width :icon="iconName"></font-awesome-icon>
+<!-- </div> -->
 </template>
 <script>
 

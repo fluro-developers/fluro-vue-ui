@@ -1,6 +1,6 @@
 
 
-console.log('fluro-vue-ui 2.0.19')
+console.log('fluro-vue-ui 2.0.20')
 
 /////////////////////////////////////////////////////
 
@@ -15,6 +15,14 @@ export { FluroAvatarUpdate as FluroAvatarUpdate };
 import FluroImage from './components/FluroImage.vue';
 
 
+import FluroInfiniteScroll from './components/ui/FluroInfiniteScroll.vue';
+export { FluroInfiniteScroll as FluroInfiniteScroll };
+
+
+import FluroPagedContent from './components/ui/FluroPagedContent.vue';
+export { FluroPagedContent as FluroPagedContent };
+
+
 import FluroVideo from './components/FluroVideo.vue';
 import FluroVideoThumbnail from './components/FluroVideoThumbnail.vue';
 
@@ -22,6 +30,12 @@ import FluroVideoThumbnail from './components/FluroVideoThumbnail.vue';
 
 import FluroListItem from './components/FluroListItem.vue';
 export { FluroListItem as FluroListItem };
+
+
+import FluroTimeline from './components/ui/FluroTimeline.vue';
+export { FluroTimeline as FluroTimeline };
+
+
 
 import FluroHTML from './components/FluroHTML.vue';
 export { FluroHTML as FluroHTML };
@@ -53,6 +67,7 @@ export { FluroSearchBar as FluroSearchBar };
 
 import FluroIcon from './components/ui/FluroIcon.vue';
 import FluroRealmDots from './components/ui/FluroRealmDots.vue';
+import FluroRealmTags from './components/ui/FluroRealmTags.vue';
 import FluroStatusLabel from './components/ui/FluroStatusLabel.vue';
 
 import FluroWrapper from './components/ui/FluroWrapper.vue';
@@ -62,7 +77,7 @@ import FluroConstrain from './components/ui/FluroConstrain.vue';
 export { FluroConstrain as Constrain };
 
 import FluroRealmBar from './components/ui/FluroRealmBar.vue';
-export { FluroRealmBar as RealmBar };
+export { FluroRealmBar as FluroRealmBar };
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -121,6 +136,9 @@ export { FluroStatTotal as FluroStatTotal };
 import FlexColumn from './components/ui/FlexColumn.vue';
 export { FlexColumn as FlexColumn };
 
+import FlexRow from './components/ui/FlexRow.vue';
+export { FlexRow as FlexRow };
+
 //Flex Column Header
 import FlexColumnHeader from './components/ui/FlexColumnHeader.vue';
 export { FlexColumnHeader as FlexColumnHeader };
@@ -153,6 +171,8 @@ const FluroVueUI = {
         //Add Fluro Components Globally
         Vue.component('fluro-icon', FluroIcon);
         Vue.component('fluro-realm-dots', FluroRealmDots);
+        Vue.component('fluro-realm-tags', FluroRealmTags);
+        Vue.component('fluro-realm-bar', FluroRealmBar);
         Vue.component('fluro-status-label', FluroStatusLabel);
         Vue.component('fluro-avatar', FluroAvatar);
         Vue.component('fluro-image', FluroImage);
@@ -161,6 +181,7 @@ const FluroVueUI = {
         Vue.component('fluro-video-thumbnail', FluroVideoThumbnail);
         Vue.component('fluro-page-preloader', FluroPagePreloader);
         Vue.component('fluro-html', FluroHTML);
+        Vue.component('flex-row', FlexRow);
         Vue.component('flex-column', FlexColumn);
         Vue.component('flex-column-body', FlexColumnBody);
         Vue.component('flex-column-header', FlexColumnHeader);
