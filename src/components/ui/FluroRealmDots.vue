@@ -19,6 +19,10 @@ export default {
     computed:{
         filtered() {
             var filtered = _.filter(this.realms, function(realm) {
+                if(!realm) {
+                    return;
+                }
+                
                 if(realm._discriminatorType) {
                     return;
                 }

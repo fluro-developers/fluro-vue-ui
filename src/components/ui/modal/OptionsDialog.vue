@@ -1,0 +1,116 @@
+<template>
+    <flex-column class="fluro-options-dialog">
+        <flex-column-header class="border-bottom" v-if="title || description">
+            <v-container>
+                <h3 v-if="title">{{title}}</h3>
+                <div class="muted" v-if="description">{{description}}</div>
+            </v-container>
+        </flex-column-header>
+        <flex-column-body>
+            <!-- <pre>{{actions}}</pre> -->
+            <v-container>
+            <v-btn block color="primary" v-for="action in actions" @click="select(action)">
+                {{action.title}}
+            </v-btn>
+        </v-container>
+            <!-- <v-list>
+                <v-list-tile v-for="action in actions" @click="select(action)">
+                    
+                    <v-list-tile-content>
+                        <v-list-tile-title>{{action.title}}</v-list-tile-title>
+                        <v-list-tile-sub-title v-if="action.description">{{action.description}}</v-list-tile-sub-title>
+                    </v-list-tile-content>
+                    <v-list-tile-action>
+                        <fluro-icon library="far" :icon="action.icon" :type="action.iconType" />
+                    </v-list-tile-action>
+
+
+                </v-list-tile>
+            </v-list> -->
+            <!-- <v-container class="py-1 px-2">
+                
+                <v-btn block v-for="action in actions" @click="select(action)">
+                    {{action.title}}
+                </v-btn>
+                
+            </v-container> -->
+        </flex-column-body>
+        <flex-column-footer class="border-top">
+            <v-container class="py-1 px-2">
+                <v-btn block @click="dismiss()">
+                    Cancel
+                </v-btn>
+            </v-container>
+        </flex-column-footer>
+    </flex-column>
+</template>
+<script>
+import ModalMixin from '../../../mixins/ModalMixin';
+
+export default {
+    props: {
+        options: {
+            type: Object
+        }
+    },
+    mixins: [ModalMixin],
+    data() {
+        return {}
+    },
+    computed: {
+        title() {
+            return this.options.title;
+        },
+        description() {
+            return this.options.description;
+        },
+        actions() {
+            return this.options.options;
+        }
+    },
+    asyncComputed: {
+
+    },
+    methods: {
+        select(option) {
+            console.log('SELECTED OPTION FROM DIALOG', option);
+            var self = this;
+            self.close(option);
+
+            //If there is a callback registered
+            //then fire the callback
+            if(option.action) {
+                option.action();
+            }
+        },
+        // act() {
+        //     var self = this;
+
+        //     //Run a batch
+        //     var promise = self.$batch.run({
+        //         operation: 'remove tag',
+        //         ids: self.ids,
+        //         tags: self.$fluro.utils.arrayIDs(self.selectedTags),
+        //     });
+
+        //     //Close the modal with the promise
+        //     return self.close(promise)
+
+
+        // },
+    }
+}
+</script>
+<style lang="scss">
+.fluro-options-dialog {
+    min-width: 300px;
+    // max-width: 500px;
+    text-align: center;
+
+    .v-list__tile__title {
+        font-size: 0.9em;
+        font-weight: 500;
+    }
+
+}
+</style>

@@ -1,20 +1,25 @@
 <template>
-        <div class="fluro-image" :class="{loaded:loaded}" :style="style">
-            <div :style="spacer"></div>
-            <!-- <transition name="fade"> -->
-            <div class="placeholder" v-if="!loaded" :style="{backgroundImage:placeholderImage}"></div>
-            <!-- </transition> -->
-            <v-progress-circular v-if="!loaded && spinner" indeterminate color="rgba(180,180,180,0.5)"></v-progress-circular>
-            <slot></slot>
-
-        </div>
-        <!-- <pre>{{url}}</pre> -->
+    <div class="fluro-image" :class="{loaded:loaded}" :style="style">
+        <div :style="spacer"></div>
+        <!-- <transition name="fade"> -->
+            <!-- <pre>{{placeholder}} - {{spinner}}</pre> -->
+        <div class="placeholder" v-if="!loaded && placeholder" :style="{backgroundImage:placeholderImage}"></div>
+        <!-- </transition> -->
+        <v-progress-circular v-if="!loaded && spinner" indeterminate color="rgba(180,180,180,0.5)"></v-progress-circular>
+        <slot></slot>
+    </div>
+    <!-- <pre>{{url}}</pre> -->
 </template>
 <script>
 export default {
     props: {
         spinner: {
-            type: Boolean
+            type: Boolean,
+            default: true,
+        },
+        placeholder: {
+            type: Boolean,
+            default: true,
         },
         item: [String, Object],
         width: {
@@ -23,11 +28,11 @@ export default {
         height: {
             type: Number,
         },
-        imageWidth:{
-            type:Number,
+        imageWidth: {
+            type: Number,
         },
-        imageHeight:{
-            type:Number,
+        imageHeight: {
+            type: Number,
         },
     },
     data() {
@@ -79,16 +84,16 @@ export default {
     computed: {
         style() {
             var styles = {
-                backgroundImage:this.backgroundImage,
+                backgroundImage: this.backgroundImage,
             }
 
-            if(this.width) {
+            if (this.width) {
                 styles.width = `${this.width}px`;
             } else {
                 styles.width = '100%';
             }
 
-            if(this.height) {
+            if (this.height) {
                 styles.height = `${this.height}px`;
             } else {
                 styles.height = 'auto';
@@ -126,7 +131,7 @@ export default {
             if (this.imageID) {
                 //Allow the Fluro API to decide the best dimensions based on screensize
                 var requestWidth = this.imageWidth || (this.width ? this.width * 2 : null);
-                 var requestHeight = this.imageHeight || (this.height ? this.height * 2 : null);
+                var requestHeight = this.imageHeight || (this.height ? this.height * 2 : null);
 
                 return this.$fluro.asset.imageUrl(this.imageID, requestWidth, requestHeight, { includePublic: true });
             } else {

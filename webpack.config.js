@@ -1,6 +1,8 @@
 const path = require('path');
 // var JsDocPlugin = require('jsdoc-webpack-plugin-v2');
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
+// const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
+
 
 module.exports = {
     // runtimeCompiler: true,
@@ -42,7 +44,8 @@ module.exports = {
         ]
     },
     plugins: [
-        new VueLoaderPlugin()
+        new VueLoaderPlugin(),
+        // new VuetifyLoaderPlugin(),
     ],
     // plugins: [
     //       new JsDocPlugin(

@@ -6,7 +6,6 @@
             <v-spacer></v-spacer>
             <v-btn color="primary" @click="close()">
                 Done
-                <!-- <v-icon right>check</v-icon> -->
             </v-btn>
         </v-toolbar>
         <v-card>
@@ -22,11 +21,9 @@
                     <v-item-group>
                         <v-btn small v-if="canSelectAll" @click="selectAll()">
                             Select all {{items.length}}
-                            <!-- <v-icon right>check</v-icon> -->
                         </v-btn>
                         <v-btn small @click="deselectAll()">
                             Deselect {{maximum == 1 ? '' : 'all'}}
-                            <!-- <v-icon right>check</v-icon> -->
                         </v-btn>
                     </v-item-group>
                 </v-toolbar>

@@ -119,6 +119,7 @@ export default {
     padding-bottom: 100%;
     overflow: hidden;
     text-align: center;
+    border: 2px solid #eee;
 
     .overlay {
         position: absolute;

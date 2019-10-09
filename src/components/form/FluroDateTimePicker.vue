@@ -1,42 +1,60 @@
 <template>
     <v-dialog v-model="display" lazy full-width :width="width" :disabled="disabled">
-        <v-text-field slot="activator" :label="label" :value="formattedDatetime" :disabled="disabled" :loading="loading" :error-messages="errorMessages" :error-count="errorCount" :error="error" :hide-details="hideDetails" :append-icon="appendIcon" :prepend-icon="prependIcon" readonly>
-        </v-text-field>
-        <v-card>
-            <v-card-text style="padding: 0;">
-                <v-tabs fixed-tabs v-model="activeTab">
+        <!-- ACTIVATOR -->
+        <v-text-field slot="activator" :outline="outline" :label="label" :value="formattedDatetime" :disabled="disabled" :loading="loading" :error-messages="errorMessages" :error-count="errorCount" :error="error" :hide-details="hideDetails" :append-icon="appendIcon" :prepend-icon="prependIcon" readonly />
+        <flex-column>
+            <!-- <v-card> -->
+            <!-- <v-card-text style="padding: 0;"> -->
+            <fluro-tabset :activeTab="activeTab" :justified="true">
+                <fluro-tab heading="Date">
+                    <!-- <pre>{{typeof datetime}}</pre> -->
+                    <!-- <pre>{{datePart}}</pre> -->
+
+                    <!-- :min="min" :max="max" -->
+                    <v-date-picker attach class="elevation-0"  full-width v-model="datePart" scrollable :locale="locale" actions></v-date-picker>
+                </fluro-tab>
+                <fluro-tab heading="Time">
+                    <!-- <pre>{{typeof datetime}}</pre> -->
+                     <!-- <pre>{{timePart}}</pre> -->
+                    <v-time-picker ref="timer" attach full-width class="v-time-picker-custom elevation-0" v-model="timePart" scrollable :format="timePickerFormat" actions></v-time-picker>
+                </fluro-tab>
+            </fluro-tabset>
+            <!-- <v-tabs fixed-tabs v-model="activeTab">
                     <v-tab key="calendar">
                         <slot name="dateIcon">
-                            <v-icon>event</v-icon>
+                            Date
                         </slot>
                     </v-tab>
                     <v-tab key="timer" :disabled="!dateSelected">
                         <slot name="timeIcon">
-                            <v-icon>access_time</v-icon>
+                            Time
                         </slot>
                     </v-tab>
                     <v-tab-item key="calendar">
-                        <v-date-picker class="elevation-0" full-width v-model="datePart" scrollable :locale="locale" actions>
+                        <v-date-picker attach class="elevation-0" full-width v-model="datePart" scrollable :locale="locale" actions>
                         </v-date-picker>
                     </v-tab-item>
                     <v-tab-item key="timer">
-                        <v-time-picker ref="timer" full-width class="v-time-picker-custom elevation-0" v-model="timePart" scrollable :format="timePickerFormat" actions>
+                        <v-time-picker ref="timer" attach full-width class="v-time-picker-custom elevation-0" v-model="timePart" scrollable :format="timePickerFormat" actions>
                         </v-time-picker>
                     </v-tab-item>
-                </v-tabs>
-            </v-card-text>
+                </v-tabs> -->
+            <!-- </v-card-text> -->
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <slot name="actions" :parent="this">
-                    <v-btn color="grey lighten-1" flat @click.native="clearHandler">{{clearText}}</v-btn>
-                    <v-btn color="green darken-1" flat @click="okHandler">{{okText}}</v-btn>
+                    <v-btn color="" flat @click.native="clearHandler">{{clearText}}</v-btn>
+                    <v-btn color="primary" @click="okHandler">{{okText}}</v-btn>
                 </slot>
             </v-card-actions>
-        </v-card>
+            <!-- </v-card> -->
+        </flex-column>
     </v-dialog>
 </template>
 <script>
 import moment from 'moment'
+import FluroTab from '../ui/tabset/FluroTab.vue'
+import FluroTabset from '../ui/tabset/FluroTabset.vue'
 
 const DEFAULT_DATE_FORMAT = 'YYYY-MM-DD'
 const DEFAULT_TIME_FORMAT = 'HH:mm'
@@ -48,6 +66,10 @@ export default {
         prop: 'datetime',
         event: 'input'
     },
+    components: {
+        FluroTab,
+        FluroTabset,
+    },
     props: {
         datetime: {
             type: [Date, String],
@@ -56,6 +78,15 @@ export default {
         label: {
             type: String,
             default: ''
+        },
+        // min: {
+        //     type: String,
+        // },
+        // max: {
+        //     type: String,
+        // },
+        outline: {
+            type: Boolean,
         },
         width: {
             type: Number,
@@ -126,12 +157,13 @@ export default {
             this.selectedDatetime = this.datetime
         } else if (typeof this.datetime === 'string' || this.datetime instanceof String) {
             // see https://stackoverflow.com/a/9436948
-            this.selectedDatetime = moment(this.datetime, this.format)
+            this.selectedDatetime = moment(new Date(this.datetime), this.format)
         }
     },
     computed: {
         datePart: {
             get() {
+
                 let val = this.selectedDatetime ? moment(this.selectedDatetime).format(DEFAULT_DATE_FORMAT) : ''
                 return val
             },
@@ -148,6 +180,7 @@ export default {
         },
         timePart: {
             get() {
+
                 let val = this.selectedDatetime ? moment(this.selectedDatetime).format(DEFAULT_TIME_FORMAT) : DEFAULT_TIME
                 return val
             },

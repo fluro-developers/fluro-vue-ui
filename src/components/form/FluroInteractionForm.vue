@@ -23,46 +23,43 @@
                 <template v-else>
                     <slot name="info"></slot>
                     <form @submit.prevent="submit" :disabled="state == 'processing'">
-                        
-                            <!-- <pre>{{allowAnonymous}}</pre> -->
-                            <!-- <pre>{{fields}}</pre> -->
-                            <!-- <pre>{{options}}</pre> -->
-                            <fluro-content-form @errorMessages="validate" @input="modelChanged" ref="form" :options="options" v-model="dataModel" :fields="fields" />
-                            <div class="actions">
-                                <template v-if="state == 'processing'">
-                                    <v-btn class="mx-0" :disabled="true">
-                                        Processing
-                                        <v-progress-circular indeterminate></v-progress-circular>
-                                    </v-btn>
-                                </template>
-                                <template v-else-if="state == 'error'">
-                                    <v-alert :value="true" type="error" outline>
-                                        {{serverErrors}}
-                                    </v-alert>
-                                    <v-btn class="mx-0" @click.prevent.native="state = 'ready'">
-                                        Try Again
-                                    </v-btn>
-                                    <!-- <v-btn class="mx-0" :disabled="hasErrors" type="submit" color="primary">
+                        <!-- <pre>{{allowAnonymous}}</pre> -->
+                        <!-- <pre>{{fields}}</pre> -->
+                        <!-- <pre>{{options}}</pre> -->
+                        <fluro-content-form @errorMessages="validate" @input="modelChanged" ref="form" :options="options" v-model="dataModel" :fields="fields" />
+                        <div class="actions">
+                            <template v-if="state == 'processing'">
+                                <v-btn class="mx-0" :disabled="true">
+                                    Processing
+                                    <v-progress-circular indeterminate></v-progress-circular>
+                                </v-btn>
+                            </template>
+                            <template v-else-if="state == 'error'">
+                                <v-alert :value="true" type="error" outline>
+                                    {{serverErrors}}
+                                </v-alert>
+                                <v-btn class="mx-0" @click.prevent.native="state = 'ready'">
+                                    Try Again
+                                </v-btn>
+                                <!-- <v-btn class="mx-0" :disabled="hasErrors" type="submit" color="primary">
                                 Try Again
                             </v-btn> -->
-                                </template>
-                                <template v-else>
-                                    <v-alert :value="true" type="error" outline v-if="hasErrors">
-                                        Please check the following issues before submitting
-                                        <div v-for="error in errorMessages">
-                                            <strong>{{error.title}}</strong>: {{error.messages[0]}}
-                                        </div>
-                                    </v-alert>
-                                    <!-- <v-layout> -->
-                                        <v-btn class="mx-0" :disabled="hasErrors" type="submit" color="primary">
-                                            Submit
-                                        </v-btn>
-                                        <!-- <v-spacer /> -->
-                                        
-                                    <!-- </v-layout> -->
-                                </template>
-                            </div>
-                        
+                            </template>
+                            <template v-else>
+                                <v-alert :value="true" type="error" outline v-if="hasErrors">
+                                    Please check the following issues before submitting
+                                    <div v-for="error in errorMessages">
+                                        <strong>{{error.title}}</strong>: {{error.messages[0]}}
+                                    </div>
+                                </v-alert>
+                                <!-- <v-layout> -->
+                                <v-btn class="mx-0" :disabled="hasErrors" type="submit" color="primary">
+                                    Submit
+                                </v-btn>
+                                <!-- <v-spacer /> -->
+                                <!-- </v-layout> -->
+                            </template>
+                        </div>
                     </form>
                 </template>
             </template>
@@ -80,6 +77,35 @@ import { mapFields } from 'vuex-map-fields';
 
 var hasBeenReset;
 
+
+//////////////////////////////////////////////////
+
+
+var injectedScripts = {};
+
+function injectScript(scriptURL, callback) {
+
+    if (injectedScripts[scriptURL]) {
+        return callback();
+    }
+
+    //Keep note so we don't inject twice
+    injectedScripts[scriptURL] = true;
+
+    //////////////////////////////////////
+
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.async = true;
+    script.onload = callback;
+    script.src = scriptURL;
+    document.getElementsByTagName('head')[0].appendChild(script);
+
+    ////////////////////////////////////
+
+    console.log('Appended script dependency', scriptURL);
+}
+
 //////////////////////////////////////////////////
 
 export default {
@@ -90,6 +116,9 @@ export default {
         'definition': {
             type: Object,
             required: true,
+        },
+        'paymentIntegration': {
+            type: Object,
         },
         'linkedProcess': {
             type: [Object, String],
@@ -134,11 +163,34 @@ export default {
         this.reset();
     },
     mounted() {
+
+
         this.validate();
     },
-    // watch:{
+    watch: {
+        paymentIntegration(integration) {
+              console.log('INJECT INTEGRATION?', integration)
+            if (!integration) {
+                return;
+            }
 
-    // },
+
+
+            switch (integration.module) {
+                case 'stripe':
+                    injectScript('https://js.stripe.com/v3/', function() {
+                        console.log('Stripe has been included on page')
+                    });
+                    break;
+                case 'eway':
+                    injectScript('https://secure.ewaypayments.com/scripts/eCrypt.js', function() {
+                        console.log('Eway has been included on page')
+                    });
+                    break;
+            }
+
+        },
+    },
     computed: {
 
         formErrors() {

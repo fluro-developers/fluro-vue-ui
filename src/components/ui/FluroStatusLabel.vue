@@ -1,5 +1,5 @@
 <template>
-    <span :class="value" class="label">{{value}}</span>
+    <span :class="value" class="status-label">{{value}}</span>
 </template>
 <script>
 export default {
@@ -10,8 +10,8 @@ export default {
     },
 }
 </script>
-<style lang="scss" scoped>
-.label {
+<style lang="scss">
+.status-label {
     
     display: inline-block;
     text-transform: uppercase;
@@ -21,6 +21,7 @@ export default {
     padding: 2px 5px;
     line-height: inherit;
     border-radius: 50px;
+    margin:2px;
 
     background: rgba(#000, 0.01);
     color: rgba(#000, 0.1);
@@ -29,6 +30,12 @@ export default {
     &.sandbox {
         background: #fff3b9;
         color: #f0974e;
+    }
+
+    &.active {
+
+        background: rgba(#51d432, 0.2);
+        color: #51d432;
     }
 
     &.archived {

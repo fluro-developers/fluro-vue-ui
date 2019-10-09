@@ -1,6 +1,4 @@
-
-
-console.log('fluro-vue-ui 2.0.20')
+console.log('fluro-vue-ui 2.0.25')
 
 /////////////////////////////////////////////////////
 
@@ -28,6 +26,24 @@ import FluroVideoThumbnail from './components/FluroVideoThumbnail.vue';
 
 ////////////////////////////////////////////////////////////////////
 
+import FluroModal from './components/ui/modal/Modal.vue';
+export { FluroModal as FluroModal };
+////////////////////////////////////////////////////////////////////
+
+import FluroToggleItem from './components/ui/FluroToggleItem.vue';
+export { FluroToggleItem as FluroToggleItem };
+
+
+////////////////////////////////////////////////////////////////////
+
+import FluroOptionsDialog from './components/ui/modal/OptionsDialog.vue';
+export { FluroOptionsDialog as FluroOptionsDialog };
+
+import FluroConfirmDialog from './components/ui/modal/ConfirmDialog.vue';
+export { FluroConfirmDialog as FluroConfirmDialog };
+
+////////////////////////////////////////////////////////////////////
+
 import FluroListItem from './components/FluroListItem.vue';
 export { FluroListItem as FluroListItem };
 
@@ -44,6 +60,19 @@ export { FluroHTML as FluroHTML };
 
 import FluroContentPanel from './components/content/FluroContentPanel.vue';
 export { FluroContentPanel as FluroContentPanel };
+
+
+
+////////////////////////////////////////////////////////////////////
+
+import FilterConditionGroup from './components/form/filters/FilterConditionGroup.vue';
+export { FilterConditionGroup as FilterConditionGroup };
+
+
+
+import FilterConditionRow from './components/form/filters/FilterConditionRow.vue';
+export { FilterConditionRow as FilterConditionRow };
+
 
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
@@ -81,6 +110,14 @@ export { FluroRealmBar as FluroRealmBar };
 
 ////////////////////////////////////////////////////////////////////////////////
 
+import FluroTabset from './components/ui/tabset/FluroTabset.vue';
+export { FluroTabset as Tabset };
+
+import FluroTab from './components/ui/tabset/FluroTab.vue';
+export { FluroTab as Tab };
+
+////////////////////////////////////////////////////////////////////////////////
+
 //Form Components
 import FluroContentBrowser from './components/form/FluroContentBrowser.vue';
 export { FluroContentBrowser as FluroContentBrowser };
@@ -88,8 +125,9 @@ export { FluroContentBrowser as FluroContentBrowser };
 import FluroContentSelect from './components/form/FluroContentSelect.vue';
 export { FluroContentSelect as FluroContentSelect };
 
-import FluroRealmSelect from './components/form/FluroRealmSelect.vue';
+import FluroRealmSelect from './components/form/realmselect/FluroRealmSelect.vue';
 export { FluroRealmSelect as FluroRealmSelect };
+console.log('EXPORT FLURO REALM SELECT', FluroRealmSelect)
 
 import FluroEditor from './components/form/FluroEditor.vue';
 export { FluroEditor as FluroEditor };
@@ -132,6 +170,23 @@ export { FluroStatToggle as FluroStatToggle };
 import FluroStatTotal from './components/FluroStatTotal.vue';
 export { FluroStatTotal as FluroStatTotal };
 
+////////////////////////////////////////////////////////////////////////////////
+
+//Fluro Card
+import FluroCard from './components/ui/card/FluroCard.vue';
+export { FluroCard as FluroCard };
+
+import FluroCardBody from './components/ui/card/FluroCardBody.vue';
+export { FluroCardBody as FluroCardBody };
+
+import FluroCardTitle from './components/ui/card/FluroCardTitle.vue';
+export { FluroCardTitle as FluroCardTitle };
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+
 //Flex Column
 import FlexColumn from './components/ui/FlexColumn.vue';
 export { FlexColumn as FlexColumn };
@@ -154,6 +209,14 @@ export { FlexColumnFooter as FlexColumnFooter };
 
 ////////////////////////////////////////////////////////////////////
 
+//List Group
+import ListGroup from './components/ui/ListGroup.vue';
+export { ListGroup as ListGroup };
+import ListGroupItem from './components/ui/ListGroupItem.vue';
+export { ListGroupItem as ListGroupItem };
+
+////////////////////////////////////////////////////////////////////
+
 //Mixins
 import Layout from './mixins/Layout';
 export { Layout as Layout };
@@ -162,10 +225,152 @@ export { Layout as Layout };
 import FluroSelectionMixin from './mixins/FluroSelectionMixin';
 export { FluroSelectionMixin as FluroSelectionMixin };
 
+
+import FluroModalMixin from './mixins/ModalMixin';
+export { FluroModalMixin as FluroModalMixin };
+
+
+/////////////////////////////////////////////////////
+
+
+
+import {
+    VApp,
+    VToolbar,
+    VContainer,
+    VFlex,
+    VLayout,
+    VBtn,
+    VCard,
+    VCardText,
+    VTab,
+    VTabs,
+    VCardActions,
+    VAlert,
+    VSelect,
+    VAutocomplete,
+    VTextField,
+    
+    VSpacer,
+    VMenu,
+    VList,
+    // VListTitle,
+    VToolbarTitle,
+    VToolbarItems,
+    VCheckbox,
+    VDatePicker,
+    VTextarea,
+    VTimePicker,
+    VInput,
+    VListTileTitle,
+    VListTileContent,
+    VHover,
+    VDialog,
+} from 'vuetify/lib';
+
+
 /////////////////////////////////////////////////////
 
 const FluroVueUI = {
     install: function(Vue, options) {
+
+
+        //Add the default Vuetify Components
+        Vue.component('v-menu', VMenu)
+        Vue.component('v-spacer', VSpacer)
+        Vue.component('v-toolbar', VToolbar)
+        Vue.component('v-toolbar-title', VToolbarTitle)
+        Vue.component('v-toolbar-items', VToolbarItems)
+        Vue.component('v-card', VCard)
+        Vue.component('v-card-text', VCardText)
+        Vue.component('v-app', VApp)
+        Vue.component('v-container', VContainer)
+        Vue.component('v-flex', VFlex)
+        Vue.component('v-layout', VLayout)
+        Vue.component('v-btn', VBtn)
+        Vue.component('v-alert', VAlert)
+        Vue.component('v-autocomplete', VAutocomplete)
+        Vue.component('v-select', VSelect)
+        Vue.component('v-text-field', VTextField)
+        Vue.component('v-list', VList)
+        // Vue.component('v-list-title', VListTitle)
+        Vue.component('v-checkbox', VCheckbox)
+        Vue.component('v-date-picker', VDatePicker)
+        Vue.component('v-textarea', VTextarea)
+        Vue.component('v-time-picker', VTimePicker)
+        Vue.component('v-input', VInput)
+        Vue.component('v-list-tile-title', VListTileTitle)
+        Vue.component('v-list-tile-content', VListTileContent)
+        Vue.component('v-hover', VHover)
+        Vue.component('v-dialog', VDialog)
+        Vue.component('v-card-text', VCardText)
+        Vue.component('v-card-actions', VCardActions)
+        Vue.component('v-tabs', VTabs)
+        Vue.component('v-tab', VTab)
+
+
+
+        /////////////////////////////////////////////////////
+
+        var fluro = Vue.prototype.$fluro;
+
+        //Setup a modals array
+        fluro.global.modals = [];
+
+        /////////////////////////////////////////////
+
+        //Add a function to show modals
+        fluro.modal = function(modal) {
+            return new Promise(function(resolve, reject) {
+                modal.modalID = fluro.global.modals.length;
+                modal.resolve = resolve;
+                modal.reject = reject;
+                //Inject the modal into the stack
+                fluro.global.modals.splice(modal.modalID, 0, modal);
+            });
+
+        }
+
+        /////////////////////////////////////////////
+
+        //Request the user to answer some questions
+        fluro.options = function(options, title, description) {
+            return fluro.modal({
+                component: FluroOptionsDialog,
+                options: {
+                    title,
+                    description,
+                    options,
+                }
+            })
+        }
+
+        /////////////////////////////////////////////
+
+        fluro.confirm = function(title, description, options) {
+
+            if (!options) {
+                options = {};
+            }
+
+            options.title = title;
+            options.description = description;
+
+            return fluro.modal({
+                component: FluroConfirmDialog,
+                options,
+            })
+        }
+
+        /////////////////////////////////////////////
+
+        fluro.closeModal = function(modalID) {
+            console.log('CLOSE Modal', modalID);
+            var modal = _.find(fluro.global.modals, { modalID });
+            var index = _.findIndex(fluro.global.modals, modal);
+            fluro.global.modals.splice(index, 1);
+        }
+
         /////////////////////////////////////////////////////
 
         //Add Fluro Components Globally
@@ -177,6 +382,7 @@ const FluroVueUI = {
         Vue.component('fluro-avatar', FluroAvatar);
         Vue.component('fluro-image', FluroImage);
         Vue.component('fluro-list-item', FluroListItem);
+        Vue.component('fluro-toggle-item', FluroToggleItem);
         Vue.component('fluro-video', FluroVideo);
         Vue.component('fluro-video-thumbnail', FluroVideoThumbnail);
         Vue.component('fluro-page-preloader', FluroPagePreloader);

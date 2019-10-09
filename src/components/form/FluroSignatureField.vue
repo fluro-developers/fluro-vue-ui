@@ -5,8 +5,7 @@
                 <canvas id="signature-pad" class="signature-pad" ref="canvas"></canvas>
                 <!-- <vue-signature-pad class="pad" ref="pad" :options="options" :width="width" :height="height" /> -->
                 <v-btn class="clear" @click="clear()">
-                    Clear
-                    <v-icon right>close</v-icon>
+                    Clear <fluro-icon right icon="times"/>
                 </v-btn>
             </div>
         </v-input>

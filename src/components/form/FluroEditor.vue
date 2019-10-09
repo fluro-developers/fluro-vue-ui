@@ -52,24 +52,9 @@
                 <v-btn icon small flat :class="{ 'active': isActive.underline() }" @click="commands.underline">
                     <fluro-icon icon="underline" />
                 </v-btn>
-                <!-- 
-                <button class="menububble__button" :class="{ 'active': isActive.bold() }" @click="commands.bold">
-                    <v-icon>format_bold</v-icon>
-                </button> -->
-                <!-- <button class="menububble__button" :class="{ 'active': isActive.italic() }" @click="commands.italic"> -->
-                <!-- <v-icon>format_italic</v-icon>
-                    
-                </button> -->
-                <!-- <button class="menububble__button" :class="{ 'active': isActive.code() }" @click="commands.code"> -->
-                <!-- <v-icon>format_italic</v-icon> -->
-                <!-- </button> -->
                 <form class="menububble__form" v-if="linkMenuIsActive" @submit.prevent="setLinkUrl(commands.link, linkUrl)">
                     <input class="link-input" type="text" v-model="linkUrl" placeholder="https://" ref="linkInput" @keydown.esc="hideLinkMenu" />
-                    <!-- <button class="menububble__button" @click="setLinkUrl(commands.link, null)" type="button">
-                        <v-icon>close</v-icon>
-                    </button> -->
                     <v-btn small icon flat @click="setLinkUrl(commands.link, null)">
-                        <!-- <span>{{ isActive.link() ? 'Update Link' : 'Add Link'}}</span> -->
                         <fluro-icon icon="unlink" />
                     </v-btn>
                 </form>
@@ -78,26 +63,24 @@
                         <span>{{ isActive.link() ? 'Update Link' : 'Link'}}</span>
                         <fluro-icon right icon="link" />
                     </v-btn>
-                    <!--  <button class="menububble__button" @click="showLinkMenu(getMarkAttrs('link'))" :class="{ 'active': isActive.link() }">
-                        <span>{{ isActive.link() ? 'Update Link' : 'Add Link'}}</span>
-                        <v-icon>link</v-icon>
-                    </button> -->
                 </template>
             </div>
         </editor-menu-bubble>
         <editor-menu-bar :editor="editor">
             <div class="fluro-editor-toolbar" slot-scope="{ commands, isActive }">
                 <v-btn icon small flat class="hidden-xs-only" :class="{ 'is-active':showSource }" @click="showSource = !showSource">
-                    <v-icon>{{showSource ? 'edit':'code'}}</v-icon>
+                    <fluro-icon v-if="showSource" icon="edit"/>
+                    <fluro-icon v-else icon="code"/>
                 </v-btn>
                 <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.bold() }" @click="commands.bold">
-                    <v-icon>format_bold</v-icon>
+                    <fluro-icon icon="bold"/>
+
                 </v-btn>
                 <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.italic() }" @click="commands.italic">
-                    <v-icon>format_italic</v-icon>
+                    <fluro-icon icon="italic"/>
                 </v-btn>
                 <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.underline() }" @click="commands.underline">
-                    <v-icon>format_underline</v-icon>
+                    <fluro-icon icon="underline"/>
                 </v-btn>
                 <!-- <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.strike() }" @click="commands.strike">
                     <v-icon>format_strikethrough</v-icon>
@@ -129,7 +112,7 @@
                 <v-menu :fixed="true" transition="slide-y-transition" offset-y>
                     <template v-slot:activator="{ on }">
                         <v-btn small icon :disabled="showSource" v-on="on">
-                            <v-icon>image</v-icon>
+                            <fluro-icon icon="image"/>
                         </v-btn>
                     </template>
                     <v-list>
@@ -169,16 +152,16 @@
                 </v-btn> -->
                 <!--  -->
                 <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.bullet_list() }" @click="commands.bullet_list">
-                    <v-icon>format_list_bulleted</v-icon>
+                    <fluro-icon icon="list-ul"/>
                 </v-btn>
                 <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.ordered_list() }" @click="commands.ordered_list">
-                    <v-icon>format_list_numbered</v-icon>
+                    <fluro-icon icon="list-ol"/>
                 </v-btn>
                 <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.blockquote() }" @click="commands.blockquote">
-                    <v-icon>format_quote</v-icon>
+                    <fluro-icon icon="quote-right"/>
                 </v-btn>
                 <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.horizontal_rule() }" @click="commands.horizontal_rule">
-                    <v-icon>minimize</v-icon>
+                    <fluro-icon icon="horizontal-rule"/>
                 </v-btn>
                 <!--  -->
                 <!--  <v-btn icon class="hidden-xs-only" :disabled="showSource" small flat @click="commands.undo">
@@ -188,16 +171,18 @@
                     <v-icon>redo</v-icon>
                 </v-btn> -->
                 <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.code_block() }" @click="commands.code_block">
-                    <v-icon>code</v-icon>
+                    <fluro-icon icon="file-code"/>
                 </v-btn>
                 <v-menu :fixed="true" transition="slide-y-transition" offset-y>
                     <template v-slot:activator="{ on }">
                         <v-btn small class="hidden-xs-only" icon :disabled="showSource" v-on="on">
-                            <v-icon>grid_on</v-icon>
+                            <!-- <v-icon>grid_on</v-icon> -->
+                             <fluro-icon icon="table"/>
                         </v-btn>
                     </template>
                     <v-list dense>
                         <v-list-tile @click="commands.createTable({rowsCount: 3, colsCount: 3, withHeaderRow: false })">
+                             <!-- <fluro-icon icon="table"/> -->
                             <v-list-tile-title>Insert Table</v-list-tile-title>
                         </v-list-tile>
                         <span v-if="isActive.table()">
@@ -272,10 +257,6 @@
                 </div>
             </div>
         </template>
-        <!-- <pre>{{model}}</pre> -->
-        <!-- <v-btn small @click="showSource = !showSource">
-            View Source <v-icon>code</v-icon>
-        </v-btn> -->
     </div>
 </template>
 <script>
@@ -657,7 +638,7 @@ export default {
             // console.log('GOT Languages', window, highlightLanguages)
             //Add Code highlighting to the extension list
             enabledExtensions.push(new CodeBlockHighlight({
-                languages:[json, javascript, scss],
+                languages: [json, javascript, scss],
             }))
         }
 
@@ -845,6 +826,10 @@ $color-white: #fff;
     flex-direction: column;
     min-height: 200px;
     overflow: hidden;
+
+    .selectedCell {
+        background: rgba($primary, 0.1);
+    }
 
     &>div {
         flex: 1;

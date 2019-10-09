@@ -1,8 +1,10 @@
 <template>
     <div class="fluro-content-form">
+
+        <!-- <pre>FORM: {{model}}</pre> -->
         <slot name="form" :form-fields="formFields" :field-hash="fieldHash" :model="model" :update="update" :options="options">
             <template v-for="field in fields">
-                <!-- <pre>{{model[field.key]}}</pre> -->
+                
                 <!-- <fluro-code-editor v-model="model[field.key]" @input="valueChange" :height="200"></fluro-code-editor> -->
                 <v-container fluid class="grid-list-xl" pa-0>
                     <!-- <pre>{{field}}</pre> -->
@@ -16,6 +18,10 @@
     </div>
 </template>
 <script>
+
+
+
+// import {VContainer}
 import FluroContentFormField from './FluroContentFormField.vue';
 import _ from 'lodash';
 import Vue from 'vue';
@@ -125,7 +131,6 @@ import Vue from 'vue';
 //////////////////////////////////////////////////
 
 export default {
-
     props: {
         'fields': {
             type: Array,
@@ -159,6 +164,7 @@ export default {
                     return field.errorMessages.length;
                 })
                 .map(function(field) {
+                    console.log('ERROR MESSAGE', field);
                     return {
                         title: field.errorTitle,
                         messages: field.errorMessages,
@@ -168,6 +174,8 @@ export default {
         },
         fieldHash() {
             return _.reduce(this.fields, function(set, field) {
+
+                
                 set[field.key] = field;
                 return set;
             }, {})
@@ -218,6 +226,7 @@ export default {
             /////////////////////////////////////////////////
 
             //For each field reset the model
+            // console.log('SELF FIELDS', self.fields);
             (self.fields || []).forEach(createDefaults);
 
             /////////////////////////////////////////////////
@@ -226,6 +235,7 @@ export default {
             function createDefaults(field) {
 
                 var existingValue = _.get(self.model, field.key);
+                // console.log('CREATE DEFAULTS', field.key, existingValue)
 
                 //We already have a value in this field
                 if(existingValue) {
@@ -237,6 +247,10 @@ export default {
                 // console.log('Create Defaults', self);
                 var blankValue = self.$fluro.utils.getDefaultValueForField(field);
 
+                if(field.type == 'date' && blankValue == 'now') {
+                    blankValue = new Date();
+                }
+                
                 //Check if it's just a display group
                 if (field.type == 'group' && !field.asObject) {
                     (field.fields || []).forEach(createDefaults);
@@ -251,14 +265,15 @@ export default {
 
 
         },
-        update: function(input) {
+        update: function(input, valueThatWasChanged) {
 
-            // //console.log('Field was updated', input);
-            // this.model = input;
+            //console.log('Field was updated', input);
+            this.model = input;
             // 
             //TODO Figure out how to make this reactive without needing this hack
             // var newModel = _.clone(this.model);
 
+            // console.log('HEARD UPDATE FROM FIELD', valueThatWasChanged, this.model.deceased);
 
             this.$emit('input', this.model);
 

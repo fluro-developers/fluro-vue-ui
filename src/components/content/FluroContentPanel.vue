@@ -1,79 +1,173 @@
 <template>
-    <div class="content-panel">
-        <template v-if="config">
-            <!-- @submit.prevent="submit" -->
-            <form :disabled="state == 'processing'">
-                <component @errorMessages="validate" ref="form" v-bind:is="component" :type="config.type" v-model="model" :definition="config.definition" v-if="component"></component>
-                <h5>Realms</h5>
-                <!-- <v-container class="grid-list-xl" pa-0> -->
-                    <!-- <fluro-realm-select :expanded="true" v-model="realms" :type="typeName" :definition="definitionName" /> -->
-                <!-- </v-container> -->
-                <fluro-realm-select v-model="realms" :type="typeName" :definition="definitionName" />
-                <!-- <h5>Tags</h5> -->
-
-                <!-- <div class="block border-bottom"> -->
-                    <!-- <div class="form-group"> -->
-                        <!-- <label>Tags <span class="text-muted">{{tags | comma}}</span></label> -->
-                         <h5>Tags</h5>
-                        <v-combobox multiple v-model="tags" label="Type here and press enter to add tags" append-icon chips deletable-chips class="tag-input" :search-input.sync="tagSearch"></v-combobox>
-                    <!-- </div> -->
-                <!-- </div> -->
-
-
-
-                <v-container class="grid-list-xl" pa-0>
-                    <fluro-tag-select :expanded="true" v-model="tags" :type="typeName" :definition="definitionName" />
-                </v-container>
-
-
-
-                <div class="actions">
-                    <template v-if="state == 'processing'">
-                        <v-btn class="mx-0" :disabled="true">
-                            Processing
-                            <v-progress-circular indeterminate></v-progress-circular>
-                        </v-btn>
-                    </template>
-                    <template v-else-if="state == 'error'">
-                        <v-alert :value="true" type="error" outline>
+    <flex-column class="content-panel">
+        <fluro-page-preloader v-if="loading" contain />
+        <template v-else>
+            <form class="flex-column" @submit.prevent="" :disabled="state == 'processing'">
+                <flex-column-header v-if="$vuetify.breakpoint.smAndUp">
+                    <template v-if="state == 'error'">
+                        <v-alert :value="true" type="error" style="margin:0;" @click.prevent.native="state = 'ready'">
                             {{serverErrors}}
                         </v-alert>
-                        <v-btn class="mx-0" @click.prevent.native="state = 'ready'">
-                            Try Again
-                        </v-btn>
-                        <!-- <v-btn class="mx-0" :disabled="hasErrors" type="submit" color="primary">
-                                Try Again
-                            </v-btn> -->
+                        <!-- <v-btn class="mx-0" @click.prevent.native="state = 'ready'"> -->
+                        <!-- Ok -->
+                        <!-- </v-btn> -->
                     </template>
-                    <template v-else>
-                        <v-alert :value="true" type="error" outline v-if="hasErrors">
-                            Please check the following issues before submitting
-                            <div v-for="error in errorMessages">
-                                <strong>{{error.title}}</strong>: {{error.messages[0]}}
-                            </div>
-                        </v-alert>
-                        <v-btn class="mx-0" :disabled="hasErrors" @click="submit" type="submit" color="primary">
-                            Save
-                        </v-btn>
-                    </template>
-                </div>
+                </flex-column-header>
+                <flex-column-header class="border-bottom">
+                    <page-header :type="typeName">
+                        <template v-slot:left>
+                            <h3>{{title}} <span class="small text-muted">{{definitionTitle}}</span></h3>
+                        </template>
+                        <!-- <template v-slot:rightmobile> -->
+                        <!-- </template> -->
+                        <template v-slot:right>
+                            <!-- <pre>{{model.realms}}</pre> -->
+                            <fluro-realm-select v-model="model.realms" :type="typeName" :definition="definitionName" />
+                            <v-btn @click="cancel">
+                                Close
+                            </v-btn>
+                            <v-btn class="mr-0" :loading="state == 'processing'" :disabled="hasErrors" @click="submit" color="primary">
+                                Save
+                            </v-btn>
+                        </template>
+                    </page-header>
+                    <!-- <pre>{{model}}</pre> -->
+                    <!-- <v-layout> -->
+                    <!-- <v-flex></v-flex> -->
+                    <!-- <v-spacer /> -->
+                    <!-- <v-flex shrink> -->
+                    <!-- <h5>Realms</h5>
+                        <fluro-realm-select v-model="model.realms" :type="typeName" :definition="definitionName" />
+                        <h5>Tags</h5>
+                        <v-combobox multiple v-model="model.tags" label="Type here and press enter to add tags" append-icon chips deletable-chips class="tag-input" :search-input.sync="tagSearch"></v-combobox>
+                        <div class="actions">
+                            <template v-if="state == 'processing'">
+                                <v-btn class="mx-0" :disabled="true">
+                                    Processing
+                                    <v-progress-circular indeterminate></v-progress-circular>
+                                </v-btn>
+                            </template>
+                            <template v-else-if="state == 'error'">
+                                <v-alert :value="true" type="error" outline>
+                                    {{serverErrors}}
+                                </v-alert>
+                                <v-btn class="mx-0" @click.prevent.native="state = 'ready'">
+                                    Try Again
+                                </v-btn>
+                            </template>
+                            <template v-else>
+                                <v-alert :value="true" type="error" outline v-if="hasErrors">
+                                    Please check the following issues before submitting
+                                    <div v-for="error in errorMessages">
+                                        <strong>{{error.title}}</strong>: {{error.messages[0]}}
+                                    </div>
+                                </v-alert>
+                                <v-btn class="mx-0" :disabled="hasErrors" @click="submit" type="submit" color="primary">
+                                    Save
+                                </v-btn>
+                            </template>
+                        </div> -->
+                    <!-- </v-flex> -->
+                    <!-- </v-layout> -->
+                </flex-column-header>
+                <component @errorMessages="validate" ref="form" :context="context" @input="updateModel" v-bind:is="component" :type="typeConfig" :config="config" v-model="model" :definition="definition" v-if="component"></component>
+                <pre>{{model.state}} {{model.dueDate}}</pre>
+                <template v-if="$vuetify.breakpoint.xsOnly">
+                    <flex-column-footer>
+                        <template v-if="state == 'error'">
+                            <v-alert :value="true" type="error" style="margin:0;" @click.prevent.native="state = 'ready'">
+                                {{serverErrors}}
+                            </v-alert>
+                        </template>
+                    </flex-column-footer>
+                    <flex-column-footer class="border-top">
+                        <v-container py-0 px-1>
+                            <fluro-realm-select block v-model="model.realms" :type="typeName" :definition="definitionName" />
+                        </v-container>
+                    </flex-column-footer>
+                    <flex-column-footer class="border-top">
+                        <v-container py-0 px-1>
+                            <v-layout>
+                                <v-flex>
+                                    <v-btn block @click="cancel">
+                                        Cancel
+                                        <!-- <fluro-icon right icon="times" /> -->
+                                    </v-btn>
+                                </v-flex>
+                                <v-spacer />
+                                <v-flex>
+                                    <v-btn block :disabled="hasErrors" type="submit" color="primary">
+                                        Save
+                                        <fluro-icon right icon="check" />
+                                    </v-btn>
+                                </v-flex>
+                            </v-layout>
+                        </v-container>
+                    </flex-column-footer>
+                </template>
+                <!-- <flex-column-body style="height:300px"> -->
                 <!-- <pre>{{model}}</pre> -->
+                <!-- </flex-column-body> -->
+                <!-- <flex-column-body> -->
+                <!-- @submit.prevent="submit" -->
+                <!-- <component @errorMessages="validate" ref="form" v-bind:is="component" :type="config.type" v-model="model" :definition="config.definition" v-if="component"></component> -->
+                <!-- </div> -->
+                <!-- </div> -->
+                <!-- <v-container class="grid-list-xl" pa-0> -->
+                <!-- WOOOT -->
+                <!-- <fluro-tag-select :expanded="true" v-model="tags" :type="typeName" :definition="definitionName" /> -->
+                <!-- </v-container> -->
+                <!-- <div class="actions">
+                        <template v-if="state == 'processing'">
+                            <v-btn class="mx-0" :disabled="true">
+                                Processing
+                                <v-progress-circular indeterminate></v-progress-circular>
+                            </v-btn>
+                        </template>
+                        <template v-else-if="state == 'error'">
+                            <v-alert :value="true" type="error" outline>
+                                {{serverErrors}}
+                            </v-alert>
+                            <v-btn class="mx-0" @click.prevent.native="state = 'ready'">
+                                Try Again
+                            </v-btn>
+                            <v-btn class="mx-0" :disabled="hasErrors" type="submit" color="primary">
+                                Try Again
+                            </v-btn>
+                        </template>
+                        <template v-else>
+                            <v-alert :value="true" type="error" outline v-if="hasErrors">
+                                Please check the following issues before submitting
+                                <div v-for="error in errorMessages">
+                                    <strong>{{error.title}}</strong>: {{error.messages[0]}}
+                                </div>
+                            </v-alert>
+                            <v-btn class="mx-0" :disabled="hasErrors" @click="submit" type="submit" color="primary">
+                                Save
+                            </v-btn>
+                        </template>
+                    </div> -->
+                <!-- <pre>{{model}}</pre> -->
+                <!-- </flex-column-body> -->
             </form>
         </template>
-        <template v-else>No definition</template>
-    </div>
+    </flex-column>
 </template>
 <script>
 import Vue from 'vue';
-import ContactPanel from './ContactPanel.vue';
-import FluroRealmSelect from '../form/FluroRealmSelect.vue';
 
 
+import FluroRealmSelect from '../form/realmselect/FluroRealmSelect.vue';
 
-
+// import Contact from './panels/Contact.vue';
+// import Event from './panels/Event.vue';
 
 export default {
     props: {
+        context: {
+            type: String,
+            default: 'create',
+        },
         'type': {
             type: String,
         },
@@ -95,20 +189,25 @@ export default {
     },
     data() {
         return {
-            realms: [],
-            tags: [],
-            model: this.value,
+            model: JSON.parse(JSON.stringify(this.value)),
             serverErrors: '',
             errorMessages: [],
             result: null,
             state: 'ready',
-            tagSearch:'',
+            tagSearch: '',
+            loading: true,
         }
     },
     created() {
-        this.reset(true);
+        // this.reset(true);
     },
     methods: {
+        updateModel() {
+            this.$emit('input', this.model);
+        },
+        cancel() {
+            this.$emit('cancel');
+        },
         touch() {
             _.each(this.formFields, function(component) {
                 component.touch();
@@ -127,13 +226,15 @@ export default {
             this.validate();
         },
         reset(suppressEvent) {
+            console.log('RESET')
             var self = this;
 
             /////////////////////////////////
 
-            self.model = {};
-            self.realms = [];
-            self.tags = [];
+            self.model = {
+                realms: [],
+                tags: [],
+            }
 
             /////////////////////////////////
 
@@ -141,9 +242,9 @@ export default {
                 self.$refs.form.reset();
             }
 
-
             self.result = null;
             self.state = 'ready';
+
             if (!suppressEvent) {
                 self.$emit('reset');
             }
@@ -153,6 +254,7 @@ export default {
             self.validateAllFields();
 
             if (self.hasErrors) {
+                console.log('WE HAVE ERRORS', self.errorMessages);
                 //Gotta finish the stuff first!
                 return;
             }
@@ -161,59 +263,108 @@ export default {
 
             /////////////////////////////////
 
-            var requestData = self.model;
-            requestData.realms = self.realms;
-            requestData.tags = self.tags;
+            var requestData = Object.assign({}, self.model);
+
+
+            var definedType = requestData.definition || self.definitionName || self.typeName;
+            // requestData.realms = self.realms;
+            // requestData.tags = self.tags;
 
             /////////////////////////////////
 
-            //Create the post
-            self.$fluro.api.post(`/content/${self.type}`, requestData)
-                .then(function(result) {
-                    self.reset(true);
-                    self.$emit('success', result.data);
+            var context = self.context;
+            if (requestData._id) {
+                context = 'edit';
+            }
 
-                    // console.log('RESULT WAS', result);
-                    //Print a success message to the screen
-                    self.$fluro.dispatch('notification', {
-                        message:`${result.data.title} was saved successfully`,
-                        options:{
-                            type:'success',
-                        }
-                    });
+            console.log('SENDING TO SERVER', context, self.model);
 
+            switch (context) {
+                case 'edit':
 
-                }, function(err) {
-                    //Dispatch an error
-                    var humanMessage = self.$fluro.utils.errorMessage(err);
-                    self.$fluro.error(err);
-                    self.serverErrors = humanMessage;
-                    self.state = 'error';
-                    self.$emit('error', err);
+                    self.$fluro.api.put(`/content/${definedType}/${requestData._id}`, requestData)
+                        .then(function(result) {
+
+                            console.log('UPDATE SUCCESS', result)
+                            self.$fluro.resetCache();
 
 
-                    //Print the error to the screen
-                    self.$fluro.dispatch('notification', {
-                        message:humanMessage,
-                        options:{
-                            type:'error',
-                        }
-                    });
+
+                            // self.reset(true);
+                            self.$emit('success', result.data);
+
+                            // console.log('RESULT WAS', result);
+                            //Print a success message to the screen
+                            self.$fluro.notify(`${result.data.title} was updated successfully`);
 
 
-                    console.log('SWITCH STATE TO', err, self)
+                        })
+                        .catch(function(err) {
+                            console.log('ERROR MESAGE HAPPENED')
+                            //Dispatch an error
+                            var humanMessage = self.$fluro.utils.errorMessage(err);
+                            self.$fluro.error(err);
+                            self.serverErrors = humanMessage;
+                            self.state = 'error';
+                            self.$emit('error', err);
+                        })
 
-                })
+                    break;
+                default:
+                    //Create a new item
+                    self.$fluro.api.post(`/content/${definedType}`, requestData)
+                        .then(function(result) {
+                            console.log('CREATE SUCCESS', result)
+                            self.reset(true);
+                            self.$emit('success', result.data);
+
+                            self.$fluro.resetCache();
+
+                            // console.log('RESULT WAS', result);
+                            //Print a success message to the screen
+                            self.$fluro.notify(`${result.data.title} was created successfully`);
+
+
+                        })
+                        .catch(function(err) {
+                            console.log('ERROR MESAGE HAPPEND')
+                            //Dispatch an error
+                            var humanMessage = self.$fluro.utils.errorMessage(err);
+                            self.$fluro.error(err);
+                            self.serverErrors = humanMessage;
+                            self.state = 'error';
+                            self.$emit('error', err);
+                        })
+                    break;
+            }
+
 
 
         }
     },
     computed: {
+        title() {
+
+            if (this.model.title) {
+                return this.model.title
+            }
+
+            return 'New';
+        },
+        definition() {
+            return this.config.definition;
+        },
+        typeConfig() {
+            return this.config.type;
+        },
+        definitionTitle() {
+            return this.definition ? this.definition.title : this.typeConfig.title;
+        },
         typeName() {
-            return _.get(this.config, 'type.definitionName')
+            return this.typeConfig.definitionName;
         },
         definitionName() {
-            return _.get(this.config, 'definition.definitionName')
+            return this.definition ? this.definition.definitionName : ''; //this.typeConfig.definitionName;
         },
         hasErrors() {
             return this.errorMessages.length ? true : false;
@@ -221,20 +372,28 @@ export default {
         component() {
             var self = this;
 
-            if (!self.type) {
+            if (!self.typeName) {
                 return;
             }
 
-            switch (self.type) {
-                case 'contact':
-                    return 'contact-panel';
-                    break;
-            }
+            return () => import(`./panels/${this.typeName}.vue`)
+
+
+
+            // switch (self.typeName) {
+            //     case 'contact':
+            //     case 'mailout':
+            //         return 'contact';
+            //         break;
+            //     default:
+            //         return self.typeName;
+            //         break;
+            // }
 
         }
     },
     components: {
-        ContactPanel,
+        // Contact,
         FluroRealmSelect,
     },
     asyncComputed: {
@@ -246,56 +405,70 @@ export default {
                 //////////////////////////////////////////////
 
                 if (!self.type || !self.type.length) {
-                    return Promise.resolve(null);
+
+                    Promise.reject();
+                    return self.loading = false;
                 }
+
+                self.loading = true;
 
                 //////////////////////////////////////////////
 
                 return new Promise(function(resolve, reject) {
                     return self.$fluro.api.get(`/defined/type/${self.type}`).then(function(res) {
-                        return resolve(res.data);
+                        resolve(res.data);
+                        return self.loading = false;
                     }, reject);
                 })
             },
         }
     },
     watch: {
-        'model': {
-            handler: function(val, oldVal) {
-                this.$emit('input', val);
-            },
-            deep: true,
-        }
+        value() {
+            // this.model = JSON.parse(JSON.stringify(this.value));
+        },
+        // 'model': {
+        //     handler: function(val, oldVal) {
+
+        //         // console.log('MODEL CHANGED', val);
+        //         this.$emit('input', val);
+        //     },
+        //     deep: true,
+        // }
     },
 }
 </script>
+<style lang="scss">
+.modal-inner {
+    .content-panel {
+        width: 100%;
+        max-width: 1200px;
+        min-width: 80vw;
+    }
+}
+</style>
+
+
 <style scoped lang="scss">
+
+
 .content-panel {
 
-    // & /deep/ .grid-list-xl {
-    //     .layout {
-    //         &>.flex {
-    //             padding-top: 0;
-    //             padding-bottom: 0;
-    //             margin-bottom: 5px;
 
-    //         }
-    //     }
+
+    // @media(max-width: 768px) {
+    //     min-width: 0;
     // }
 
-    & /deep/ .additions {
-        margin-top: -15px;
+    background: #fafafa;
+
+    & /deep/ .tabset-menu {
+        background: #fff;
+
+        a.active {
+            background: #fafafa;
+        }
     }
-
-
-
-    // & /deep/ .grid-list-xl .layout .flex .layout {
-    //     margin-top: 0 !important;
-    // }
-
-
-
-
 
     & /deep/ .v-text-field--outline {
         .v-input__control .v-input__slot {

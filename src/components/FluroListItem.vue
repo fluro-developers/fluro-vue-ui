@@ -1,13 +1,15 @@
 <template>
     <div class="fluro-list-item">
         
-        <div class="realm-bar" :style="realmStyle" />
+        <!-- <div class="realm-bar" :style="realmStyle" /> -->
+        <fluro-realm-bar :realm="item.realms"/>
         <!-- <div class="handle" v-if="draggable">
             <v-btn icon flat v-on="on">
                 <fluro-icon icon="arrows" />
             </v-btn>
         </div> -->
-        <div class="item-icon" :class="item._type" :style="{color:foregroundColor, backgroundColor:backgroundColor}">
+        <!-- :style="{color:foregroundColor, backgroundColor:backgroundColor}" -->
+        <div class="item-icon" :class="item._type" >
             <template v-if="item._type == 'persona'">
                 <fluro-avatar :id="item._id" type="persona" />
             </template>
@@ -33,11 +35,14 @@
         </component>
         
         <!-- <pre>{{actionsEnabled}} {{actions}}</pre> -->
+        <slot name="actions">
         <div class="item-actions" :class="{active:actionsOpen}" v-if="actionsEnabled">
+            
             <v-menu :left="true" v-model="actionsOpen" :fixed="true" transition="slide-y-transition" offset-y>
                 <template v-slot:activator="{ on }">
                     <v-btn icon flat v-on="on">
-                        <v-icon>{{actionsOpen ? 'close' : 'more_horiz'}}</v-icon>
+                        <fluro-icon v-if="actionsOpen" icon="times"/>
+                        <fluro-icon v-else icon="ellipsis-v"/>
                     </v-btn>
                 </template>
                 <v-list dense>
@@ -46,17 +51,20 @@
                     </v-list-tile>
                 </v-list>
             </v-menu>
-            <!-- 
-
-            <v-btn icon flat @click="">
-                <v-icon>more_horiz</v-icon>
-            </v-btn> -->
+        
         </div>
+        </slot>
         <!-- LIST ITEM -->
     </div>
 </template>
 <script>
+
+import FluroRealmBar from './ui/FluroRealmBar.vue';
+
 export default {
+    components:{
+        FluroRealmBar,
+    },
     props: {
         'draggable': {
             default: false,
@@ -302,7 +310,7 @@ export default {
                     break;
             }
 
-            console.log('PIECES', pieces, this);
+            // console.log('PIECES', pieces, this);
             ////////////////////////////////
 
             return _.compact(pieces).join('. ');
@@ -314,8 +322,8 @@ export default {
 <style scoped lang="scss">
 .fluro-list-item {
 
-
-    $border-color: rgba(0, 0, 0, 0.3); //rgba(#000, 0.1);
+// 1px solid rgba(0, 0, 0, 0.1)
+    $border-color: rgba(0, 0, 0, 0.1); //rgba(#000, 0.05);
     display: flex;
     // border-bottom: 1px solid $border-color;
     // border-top: none;
@@ -396,7 +404,7 @@ export default {
         left: 0;
         top: 0;
         bottom: 0;
-        opacity: 0;
+        // opacity: 0;
     }
 
     .handle {
@@ -404,7 +412,7 @@ export default {
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 0 15px;
+        padding: 0 5px;
         text-align: center;
         line-height: 50px;
         opacity: 0.3;
@@ -419,10 +427,10 @@ export default {
     .item-icon {
         flex: none;
         text-align: center;
-        padding: 10px;
-        width: 70px;
-        line-height: 60px;
-        height: 60px;
+        padding: 5px;
+        width: 50px;
+        // line-height: 40px;
+        // height: 33px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -454,7 +462,9 @@ export default {
 
     .item-actions {
         flex: none;
-        padding: 10px;
+        padding: 5px;
+        display: flex;
+        align-items: center;
 
         .v-btn {
             margin: 0;

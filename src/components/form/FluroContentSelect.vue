@@ -38,7 +38,7 @@
                 </v-autocomplete>
             </div>
             <div class="content-select-search-buttons">
-                <v-btn flat block @click="dialog = true">
+                <v-btn block @click="showModal">
                     Browse
                 </v-btn>
             </div>
@@ -73,25 +73,27 @@
                 </v-btn>
             </v-flex>
         </v-layout> -->
-        <v-dialog content-class="fluro-content-select-dialog" v-model="dialog">
+        <!-- <v-dialog content-class="fluro-content-select-dialog" v-model="dialog">
             <template v-if="dialog">
                 <fluro-content-browser :minimum="minimum" :maximum="maximum" :type="type" @close="closeModal()" v-model="model"></fluro-content-browser>
             </template>
-        </v-dialog>
+        </v-dialog> -->
     </div>
 </template>
 <script>
-import FluroContentBrowser from './FluroContentBrowser.vue';
+// import FluroContentBrowser from './FluroContentBrowser.vue';
 import FluroSelectionMixin from '../../mixins/FluroSelectionMixin';
 import draggable from 'vuedraggable'
 // import { mapFields } from 'vuex-map-fields';
+
+import FluroContentSelectModal from './contentselect/FluroContentSelectModal.vue';
 
 
 
 export default {
     components: {
         draggable,
-        FluroContentBrowser,
+        // FluroContentBrowser,
     },
     mixins: [FluroSelectionMixin],
     props: {
@@ -158,7 +160,9 @@ export default {
     // <v-input class="no-flex" :success="success" :label="label" :required="required" :error-messages="errorMessages" :hint="field.description">
     computed: {
         textPlaceholder() {
-            return this.placeholder || `Search for ${this.label || 'items'}`;
+
+            var restrictType = this.$fluro.types.readable(this.type, true);
+            return this.placeholder || `Search for ${restrictType}`;//Search for ${this.label || 'items'}`;
         },
         showOutline() {
             return this.outline || this.options.outline;
@@ -210,6 +214,28 @@ export default {
         // ]),
     },
     methods: {
+        showModal() {
+            // console.log('SHOW MODAL', this.$fluro.modal)
+            var self = this;
+
+            //////////////////////////////////////
+
+            var promise = self.$fluro.modal({
+                component:FluroContentSelectModal,
+                options: {
+                    selector:self,
+                    type:self.type,
+                    minimum:self.minimum,
+                    maximum:self.maximum,
+                }
+            });
+
+            //////////////////////////////////////
+
+            // promise.then(function(res) {}, function(err) {})
+        },
+
+
         closeModal() {
             this.dialog = false;
         },
@@ -368,9 +394,9 @@ export default {
             display: flex;
             align-items: center;
 
-            .v-btn {
-                background: #fff;
-            }
+            // .v-btn {
+                // background: #fff;
+            // }
         }
     }
 
