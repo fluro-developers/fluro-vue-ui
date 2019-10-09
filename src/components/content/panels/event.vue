@@ -201,7 +201,7 @@ import Layout from '../../../mixins/Layout';
 import FluroContentPanelMixin from '../FluroContentPanelMixin';
 import { FluroAvatarUpdate } from 'fluro-vue-ui';
 
-import { JSONView } from "vue-json-component";
+// import { JSONView } from "vue-json-component";
 
 /////////////////////////////////
 

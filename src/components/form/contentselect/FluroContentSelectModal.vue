@@ -105,7 +105,7 @@ import FluroTab from '../../ui/tabset/FluroTab.vue';
 
 /////////////////////////////////////////
 
-import FluroDynamicTable from '@/components/table/DynamicTable.vue';
+import FluroDynamicTable from '../../table/DynamicTable.vue';
 
 //Filter Stuff
 import FilterConditionGroup from '../filters/FilterConditionGroup.vue';
@@ -113,12 +113,12 @@ import FilterConditionGroup from '../filters/FilterConditionGroup.vue';
 
 /////////////////////////////////////////
 
-import RealmDotCell from '@/components/table/cells/RealmDotCell.vue';
-import DateCell from '@/components/table/cells/DateCell.vue';
-import TitleCell from '@/components/table/cells/TitleCell.vue';
-import StatusCell from '@/components/table/cells/StatusCell.vue';
-import DefinitionCell from '@/components/table/cells/DefinitionCell.vue';
-import ThumbnailCell from '@/components/table/cells/ThumbnailCell.vue';
+import RealmDotCell from '../../table/cells/RealmDotCell.vue';
+import DateCell from '../../table/cells/DateCell.vue';
+import TitleCell from '../../table/cells/TitleCell.vue';
+import StatusCell from '../../table/cells/StatusCell.vue';
+import DefinitionCell from '../../table/cells/DefinitionCell.vue';
+import ThumbnailCell from '../../table/cells/ThumbnailCell.vue';
 
 /////////////////////////////////////////
 

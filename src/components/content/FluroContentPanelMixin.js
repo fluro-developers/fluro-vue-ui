@@ -1,6 +1,6 @@
 
 import FluroContentForm from '../form/FluroContentForm';
-import { JSONView } from "vue-json-component";
+// import { JSONView } from "vue-json-component";
 
 
 export default {
@@ -20,9 +20,9 @@ export default {
         }
     },
     extends: FluroContentForm,
-    components:{
-        "json-view": JSONView,
-    },
+    // components:{
+        // "json-view": JSONView,
+    // },
     computed:{
 
         itemID() {
