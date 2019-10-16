@@ -2,14 +2,14 @@
     <div class="fluro-content-form">
 
         <!-- <pre>FORM: {{model}}</pre> -->
-        <slot name="form" :form-fields="formFields" :field-hash="fieldHash" :model="model" :update="update" :options="options">
+        <slot name="form" :parent="formModel" :context="context" :form-fields="formFields" :field-hash="fieldHash" :model="model" :update="update" :options="options">
             <template v-for="field in fields">
                 
                 <!-- <fluro-code-editor v-model="model[field.key]" @input="valueChange" :height="200"></fluro-code-editor> -->
                 <v-container fluid class="grid-list-xl" pa-0>
                     <!-- <pre>{{field}}</pre> -->
                     <!-- :parent="model[key]"  -->
-                    <fluro-content-form-field :outline="showOutline" :form-fields="formFields" :options="options" :field="field" @input="update" v-model="model"></fluro-content-form-field>
+                    <fluro-content-form-field :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="field" @input="update" v-model="model"></fluro-content-form-field>
                 </v-container>
             </template>
         </slot>
@@ -132,6 +132,19 @@ import Vue from 'vue';
 
 export default {
     props: {
+        'dynamic':{
+            type:Boolean,
+        },
+        'context': {
+            type: String,
+            default () {
+                //By default 
+                return this.$fluro.global.defaultFormContext;
+            },
+        },
+        'parent':{
+            type:Object,
+        },
         'fields': {
             type: Array,
         },
@@ -155,6 +168,9 @@ export default {
         }
     },
     computed: {
+        formModel() {
+            return this.parent || this.model;
+        },
         showOutline() {
             return this.outline || this.options.outline;
         },
@@ -183,7 +199,7 @@ export default {
     },
     data() {
         return {
-            model: JSON.parse(JSON.stringify(this.value)),
+            model: this.value,//JSON.parse(JSON.stringify(this.value)),
         }
     },
     components: {
@@ -191,7 +207,6 @@ export default {
     },
     watch: {
         value(val) {
-            // console.log('The value has now changed', val)
             this.$set(this, 'model', val);
             return this.reset();
         },
@@ -266,8 +281,6 @@ export default {
 
         },
         update: function(input, valueThatWasChanged) {
-
-            //console.log('Field was updated', input);
             this.model = input;
             // 
             //TODO Figure out how to make this reactive without needing this hack

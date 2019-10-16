@@ -10,56 +10,56 @@
                         </v-btn>
                     </template>
                     <v-list>
-                        <v-list-tile :class="{ 'active': isActive.heading({ level: 1 }) }" @click="commands.heading({ level: 1 })">
+                        <v-list-tile :class="{ 'active': isActive.heading({ level: 1 }) }" @click.stop.prevent="commands.heading({ level: 1 })">
                             <v-list-tile-content><span class="h1">Heading 1</span></v-list-tile-content>
                         </v-list-tile>
-                        <v-list-tile :class="{ 'active': isActive.heading({ level: 2 }) }" @click="commands.heading({ level: 2 })">
+                        <v-list-tile :class="{ 'active': isActive.heading({ level: 2 }) }" @click.stop.prevent="commands.heading({ level: 2 })">
                             <v-list-tile-content><span class="h2">Heading 2</span></v-list-tile-content>
                         </v-list-tile>
-                        <v-list-tile :class="{ 'active': isActive.heading({ level: 3 }) }" @click="commands.heading({ level: 3 })">
+                        <v-list-tile :class="{ 'active': isActive.heading({ level: 3 }) }" @click.stop.prevent="commands.heading({ level: 3 })">
                             <v-list-tile-content><span class="h3">Heading 3</span></v-list-tile-content>
                         </v-list-tile>
-                        <v-list-tile :class="{ 'active': isActive.heading({ level: 4 }) }" @click="commands.heading({ level: 4 })">
+                        <v-list-tile :class="{ 'active': isActive.heading({ level: 4 }) }" @click.stop.prevent="commands.heading({ level: 4 })">
                             <v-list-tile-content><span class="h4">Heading 4</span></v-list-tile-content>
                         </v-list-tile>
-                        <v-list-tile :class="{ 'active': isActive.heading({ level: 5 }) }" @click="commands.heading({ level: 5 })">
+                        <v-list-tile :class="{ 'active': isActive.heading({ level: 5 }) }" @click.stop.prevent="commands.heading({ level: 5 })">
                             <v-list-tile-content><span class="h5">Heading 5</span></v-list-tile-content>
                         </v-list-tile>
                     </v-list>
                 </v-menu>
-                <button class="menubar__button" :class="{ 'is-active': isActive.bullet_list() }" @click="commands.bullet_list">
+                <button class="menubar__button" :class="{ 'is-active': isActive.bullet_list() }" @click.stop.prevent="commands.bullet_list">
                     <icon name="ul" />
                 </button>
-                <button class="menubar__button" :class="{ 'is-active': isActive.ordered_list() }" @click="commands.ordered_list">
+                <button class="menubar__button" :class="{ 'is-active': isActive.ordered_list() }" @click.stop.prevent="commands.ordered_list">
                     <icon name="ol" />
                 </button>
-                <button class="menubar__button" :class="{ 'is-active': isActive.blockquote() }" @click="commands.blockquote">
+                <button class="menubar__button" :class="{ 'is-active': isActive.blockquote() }" @click.stop.prevent="commands.blockquote">
                     <icon name="quote" />
                 </button>
-                <button class="menubar__button" :class="{ 'is-active': isActive.code_block() }" @click="commands.code_block">
+                <button class="menubar__button" :class="{ 'is-active': isActive.code_block() }" @click.stop.prevent="commands.code_block">
                     <icon name="code" />
                 </button>
             </div>
         </editor-floating-menu> -->
         <editor-menu-bubble :editor="editor" @hide="hideBubble" :keep-in-bounds="keepInBounds" v-slot="{ commands, isActive, getMarkAttrs, menu }">
             <div class="menububble" :class="{ 'active': menu.isActive }" :style="`left: ${menu.left}px; bottom: ${menu.bottom}px;`">
-                <v-btn icon small flat :class="{ 'active': isActive.bold() }" @click="commands.bold">
+                <v-btn icon small flat :class="{ 'active': isActive.bold() }" @click.stop.prevent="commands.bold">
                     <fluro-icon icon="bold" />
                 </v-btn>
-                <v-btn icon small flat :class="{ 'active': isActive.italic() }" @click="commands.italic">
+                <v-btn icon small flat :class="{ 'active': isActive.italic() }" @click.stop.prevent="commands.italic">
                     <fluro-icon icon="italic" />
                 </v-btn>
-                <v-btn icon small flat :class="{ 'active': isActive.underline() }" @click="commands.underline">
+                <v-btn icon small flat :class="{ 'active': isActive.underline() }" @click.stop.prevent="commands.underline">
                     <fluro-icon icon="underline" />
                 </v-btn>
                 <form class="menububble__form" v-if="linkMenuIsActive" @submit.prevent="setLinkUrl(commands.link, linkUrl)">
                     <input class="link-input" type="text" v-model="linkUrl" placeholder="https://" ref="linkInput" @keydown.esc="hideLinkMenu" />
-                    <v-btn small icon flat @click="setLinkUrl(commands.link, null)">
+                    <v-btn small icon flat @click.stop.prevent="setLinkUrl(commands.link, null)">
                         <fluro-icon icon="unlink" />
                     </v-btn>
                 </form>
                 <template v-else>
-                    <v-btn small flat :class="{ 'active': isActive.link() }" @click="showLinkMenu(getMarkAttrs('link'))">
+                    <v-btn small flat :class="{ 'active': isActive.link() }" @click.stop.prevent="showLinkMenu(getMarkAttrs('link'))">
                         <span>{{ isActive.link() ? 'Update Link' : 'Link'}}</span>
                         <fluro-icon right icon="link" />
                     </v-btn>
@@ -68,21 +68,21 @@
         </editor-menu-bubble>
         <editor-menu-bar :editor="editor">
             <div class="fluro-editor-toolbar" slot-scope="{ commands, isActive }">
-                <v-btn icon small flat class="hidden-xs-only" :class="{ 'is-active':showSource }" @click="showSource = !showSource">
+                <v-btn icon small flat class="hidden-xs-only" :class="{ 'is-active':showSource }" @click.stop.prevent="showSource = !showSource">
                     <fluro-icon v-if="showSource" icon="edit"/>
                     <fluro-icon v-else icon="code"/>
                 </v-btn>
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.bold() }" @click="commands.bold">
+                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.bold() }" @click.stop.prevent="commands.bold">
                     <fluro-icon icon="bold"/>
 
                 </v-btn>
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.italic() }" @click="commands.italic">
+                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.italic() }" @click.stop.prevent="commands.italic">
                     <fluro-icon icon="italic"/>
                 </v-btn>
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.underline() }" @click="commands.underline">
+                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.underline() }" @click.stop.prevent="commands.underline">
                     <fluro-icon icon="underline"/>
                 </v-btn>
-                <!-- <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.strike() }" @click="commands.strike">
+                <!-- <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.strike() }" @click.stop.prevent="commands.strike">
                     <v-icon>format_strikethrough</v-icon>
                 </v-btn> -->
                 <v-menu :fixed="true" transition="slide-y-transition" offset-y>
@@ -92,19 +92,19 @@
                         </v-btn>
                     </template>
                     <v-list>
-                        <v-list-tile :class="{ 'active': isActive.heading({ level: 1 }) }" @click="commands.heading({ level: 1 })">
+                        <v-list-tile :class="{ 'active': isActive.heading({ level: 1 }) }" @click.stop.prevent="commands.heading({ level: 1 })">
                             <v-list-tile-content><span style="margin:0 !important" class="h1">Heading 1</span></v-list-tile-content>
                         </v-list-tile>
-                        <v-list-tile :class="{ 'active': isActive.heading({ level: 2 }) }" @click="commands.heading({ level: 2 })">
+                        <v-list-tile :class="{ 'active': isActive.heading({ level: 2 }) }" @click.stop.prevent="commands.heading({ level: 2 })">
                             <v-list-tile-content><span style="margin:0 !important" class="h2">Heading 2</span></v-list-tile-content>
                         </v-list-tile>
-                        <v-list-tile :class="{ 'active': isActive.heading({ level: 3 }) }" @click="commands.heading({ level: 3 })">
+                        <v-list-tile :class="{ 'active': isActive.heading({ level: 3 }) }" @click.stop.prevent="commands.heading({ level: 3 })">
                             <v-list-tile-content><span style="margin:0 !important" class="h3">Heading 3</span></v-list-tile-content>
                         </v-list-tile>
-                        <v-list-tile :class="{ 'active': isActive.heading({ level: 4 }) }" @click="commands.heading({ level: 4 })">
+                        <v-list-tile :class="{ 'active': isActive.heading({ level: 4 }) }" @click.stop.prevent="commands.heading({ level: 4 })">
                             <v-list-tile-content><span style="margin:0 !important" class="h4">Heading 4</span></v-list-tile-content>
                         </v-list-tile>
-                        <v-list-tile :class="{ 'active': isActive.heading({ level: 5 }) }" @click="commands.heading({ level: 5 })">
+                        <v-list-tile :class="{ 'active': isActive.heading({ level: 5 }) }" @click.stop.prevent="commands.heading({ level: 5 })">
                             <v-list-tile-content><span style="margin:0 !important" class="h5">Heading 5</span></v-list-tile-content>
                         </v-list-tile>
                     </v-list>
@@ -116,61 +116,61 @@
                         </v-btn>
                     </template>
                     <v-list>
-                        <v-list-tile @click="showImagePrompt(commands.image)">
+                        <v-list-tile @click.stop.prevent="showImagePrompt(commands.image)">
                             <v-list-tile-content>Add Image</v-list-tile-content>
                         </v-list-tile>
                     </v-list>
                 </v-menu>
                 <!-- 
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.heading({ level: 1 }) }" @click="commands.heading({ level: 1 })">
+                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.heading({ level: 1 }) }" @click.stop.prevent="commands.heading({ level: 1 })">
                     H1
                 </v-btn>
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.heading({ level: 2 }) }" @click="commands.heading({ level: 2 })">
+                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.heading({ level: 2 }) }" @click.stop.prevent="commands.heading({ level: 2 })">
                     H2
                 </v-btn>
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.heading({ level: 3 }) }" @click="commands.heading({ level: 3 })">
+                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.heading({ level: 3 }) }" @click.stop.prevent="commands.heading({ level: 3 })">
                     H3
                 </v-btn>
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.heading({ level: 4 }) }" @click="commands.heading({ level: 4 })">
+                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.heading({ level: 4 }) }" @click.stop.prevent="commands.heading({ level: 4 })">
                     H4
                 </v-btn>
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.heading({ level: 5 }) }" @click="commands.heading({ level: 5 })">
+                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.heading({ level: 5 }) }" @click.stop.prevent="commands.heading({ level: 5 })">
                     H5
                 </v-btn> -->
-                <!-- <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.code_block() }" @click="commands.code_block">
+                <!-- <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.code_block() }" @click.stop.prevent="commands.code_block">
                         <v-icon>code</v-icon>
                     </v-btn> -->
                 <!--  -->
-                <!-- <v-btn class="menubar__button" :class="{ 'active': isActive.alignment({ textAlign: 'left' }) }" @click="commands.alignment({ textAlign: 'left' })">
+                <!-- <v-btn class="menubar__button" :class="{ 'active': isActive.alignment({ textAlign: 'left' }) }" @click.stop.prevent="commands.alignment({ textAlign: 'left' })">
                     <v-icon>format_align_left</v-icon>
                 </v-btn>
-                <v-btn class="menubar__button" :class="{ 'active': isActive.alignment({ textAlign: 'center' }) }" @click="commands.alignment({ textAlign: 'center' })">
+                <v-btn class="menubar__button" :class="{ 'active': isActive.alignment({ textAlign: 'center' }) }" @click.stop.prevent="commands.alignment({ textAlign: 'center' })">
                     <v-icon>format_align_center</v-icon>
                 </v-btn>
-                <v-btn class="menubar__button" :class="{ 'active': isActive.alignment({ textAlign: 'center' }) }" @click="commands.alignment({ textAlign: 'right' })">
+                <v-btn class="menubar__button" :class="{ 'active': isActive.alignment({ textAlign: 'center' }) }" @click.stop.prevent="commands.alignment({ textAlign: 'right' })">
                     <v-icon>format_align_right</v-icon>
                 </v-btn> -->
                 <!--  -->
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.bullet_list() }" @click="commands.bullet_list">
+                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.bullet_list() }" @click.stop.prevent="commands.bullet_list">
                     <fluro-icon icon="list-ul"/>
                 </v-btn>
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.ordered_list() }" @click="commands.ordered_list">
+                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.ordered_list() }" @click.stop.prevent="commands.ordered_list">
                     <fluro-icon icon="list-ol"/>
                 </v-btn>
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.blockquote() }" @click="commands.blockquote">
+                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.blockquote() }" @click.stop.prevent="commands.blockquote">
                     <fluro-icon icon="quote-right"/>
                 </v-btn>
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.horizontal_rule() }" @click="commands.horizontal_rule">
+                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.horizontal_rule() }" @click.stop.prevent="commands.horizontal_rule">
                     <fluro-icon icon="horizontal-rule"/>
                 </v-btn>
                 <!--  -->
-                <!--  <v-btn icon class="hidden-xs-only" :disabled="showSource" small flat @click="commands.undo">
+                <!--  <v-btn icon class="hidden-xs-only" :disabled="showSource" small flat @click.stop.prevent="commands.undo">
                     <v-icon>undo</v-icon>
                 </v-btn>
-                <v-btn icon class="hidden-xs-only" :disabled="showSource" small flat @click="commands.redo">
+                <v-btn icon class="hidden-xs-only" :disabled="showSource" small flat @click.stop.prevent="commands.redo">
                     <v-icon>redo</v-icon>
                 </v-btn> -->
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.code_block() }" @click="commands.code_block">
+                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.code_block() }" @click.stop.prevent="commands.code_block">
                     <fluro-icon icon="file-code"/>
                 </v-btn>
                 <v-menu :fixed="true" transition="slide-y-transition" offset-y>
@@ -181,39 +181,39 @@
                         </v-btn>
                     </template>
                     <v-list dense>
-                        <v-list-tile @click="commands.createTable({rowsCount: 3, colsCount: 3, withHeaderRow: false })">
+                        <v-list-tile @click.stop.prevent="commands.createTable({rowsCount: 3, colsCount: 3, withHeaderRow: false })">
                              <!-- <fluro-icon icon="table"/> -->
                             <v-list-tile-title>Insert Table</v-list-tile-title>
                         </v-list-tile>
                         <span v-if="isActive.table()">
                             <!-- <v-subheader>Row</v-subheader> -->
-                            <v-list-tile @click="commands.addRowBefore">
+                            <v-list-tile @click.stop.prevent="commands.addRowBefore">
                                 <v-list-tile-content>
                                     Insert Row Before
                                 </v-list-tile-content>
                             </v-list-tile>
-                            <v-list-tile @click="commands.addRowAfter">
+                            <v-list-tile @click.stop.prevent="commands.addRowAfter">
                                 <v-list-tile-content>
                                     Insert Row After
                                 </v-list-tile-content>
                             </v-list-tile>
-                            <v-list-tile @click="commands.deleteRow">
+                            <v-list-tile @click.stop.prevent="commands.deleteRow">
                                 <v-list-tile-content>
                                     Delete Row
                                 </v-list-tile-content>
                             </v-list-tile>
                             <!-- <v-subheader>Column</v-subheader> -->
-                            <v-list-tile @click="commands.addColumnBefore">
+                            <v-list-tile @click.stop.prevent="commands.addColumnBefore">
                                 <v-list-tile-content>
                                     Insert Column Before
                                 </v-list-tile-content>
                             </v-list-tile>
-                            <v-list-tile @click="commands.addColumnAfter">
+                            <v-list-tile @click.stop.prevent="commands.addColumnAfter">
                                 <v-list-tile-content>
                                     Insert Column After
                                 </v-list-tile-content>
                             </v-list-tile>
-                            <v-list-tile @click="commands.deleteColumn">
+                            <v-list-tile @click.stop.prevent="commands.deleteColumn">
                                 <v-list-tile-content>
                                     Delete Column
                                 </v-list-tile-content>
@@ -221,13 +221,13 @@
                             <v-divider></v-divider>
                             <v-divider></v-divider>
                             <!-- <v-subheader>Actions</v-subheader> -->
-                            <v-list-tile @click="commands.toggleCellMerge">
+                            <v-list-tile @click.stop.prevent="commands.toggleCellMerge">
                                 <v-list-tile-content>
                                     Combine Cells
                                 </v-list-tile-content>
                             </v-list-tile>
                             <v-divider></v-divider>
-                            <v-list-tile @click="commands.deleteTable">
+                            <v-list-tile @click.stop.prevent="commands.deleteTable">
                                 <v-list-tile-content>
                                     Delete table
                                 </v-list-tile-content>
@@ -248,7 +248,7 @@
             <div class="suggestion-list" v-show="showSuggestions" ref="suggestions">
                 <template v-if="filteredUsers.length">
                     <!-- <pre>{{filteredUsers}}</pre> -->
-                    <div v-for="(persona, index) in filteredUsers" :key="persona._id" class="suggestion-list__item" :class="{ 'is-selected': navigatedUserIndex === index }" @click="selectUser(persona)">
+                    <div v-for="(persona, index) in filteredUsers" :key="persona._id" class="suggestion-list__item" :class="{ 'is-selected': navigatedUserIndex === index }" @click.stop.prevent="selectUser(persona)">
                         <fluro-avatar left :id="persona" type="persona" />{{ persona.title }}
                     </div>
                 </template>

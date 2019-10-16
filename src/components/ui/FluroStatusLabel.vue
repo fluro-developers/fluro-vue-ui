@@ -21,7 +21,7 @@ export default {
     padding: 2px 5px;
     line-height: inherit;
     border-radius: 50px;
-    margin:2px;
+    margin:0 2px 2px 2px;
 
     background: rgba(#000, 0.01);
     color: rgba(#000, 0.1);

@@ -2,7 +2,7 @@
     <div class="realm-select">
         <v-btn :small="small" :block="block" class="pill mx-0" @click.native="showModal">
             <fluro-realm-dots :realms="selection" />
-            <span>{{selectionSummary}}</span>
+            <span class="label">{{selectionSummary}}</span>
         </v-btn>
         <!-- <pre>{{type}} {{definition}}</pre> -->
     </div>
@@ -179,8 +179,14 @@ export default {
     }
 }
 </script>
-<style lang="scss">
+<style scoped lang="scss">
 
 
+.label{
+    max-width: 150px;
+    text-overflow: ellipsis;
+    overflow: hidden;;
+    white-space: nowrap;
+}
 
 </style>

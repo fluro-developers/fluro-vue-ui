@@ -2,7 +2,7 @@
     <div class="fluro-content-render">
         
         <template v-for="field in fields">
-            <fluro-content-render-field :field="field" v-model="model"></fluro-content-render-field>
+            <fluro-content-render-field :raw="raw" :field="field" v-model="model"></fluro-content-render-field>
         </template>
 
     </div>
@@ -21,6 +21,9 @@ export default {
         'value': {
             type: Object,
         },
+        'raw':{
+            type:Boolean,
+        }
     },
     data() {
         return {

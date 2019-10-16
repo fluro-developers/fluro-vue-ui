@@ -1,7 +1,17 @@
 <template>
     <v-dialog v-model="display" lazy full-width :width="width" :disabled="disabled">
         <!-- ACTIVATOR -->
-        <v-text-field slot="activator" :outline="outline" :label="label" :value="formattedDatetime" :disabled="disabled" :loading="loading" :error-messages="errorMessages" :error-count="errorCount" :error="error" :hide-details="hideDetails" :append-icon="appendIcon" :prepend-icon="prependIcon" readonly />
+        <!-- <v-text-field slot="activator" :outline="outline" :label="label" :value="formattedDatetime" :disabled="disabled" :loading="loading" :error-messages="errorMessages" :error-count="errorCount" :error="error" :hide-details="hideDetails" :append-icon="appendIcon" :prepend-icon="prependIcon" readonly /> -->
+        <!-- <template > -->
+            <!-- :value="formattedDatetime" -->
+        <v-input slot="activator" class="no-flex" :label="label"  :disabled="disabled" :loading="loading" :error-messages="errorMessages" :error-count="errorCount" :error="error" :hide-details="hideDetails">
+            <div>
+                <v-btn block color="#e0e0e0" class="ma-0">
+                    <fluro-icon left icon="calendar-alt"/>{{readable}}
+                </v-btn>
+            </div>
+        </v-input>
+        <!-- </template> -->
         <flex-column>
             <!-- <v-card> -->
             <!-- <v-card-text style="padding: 0;"> -->
@@ -9,13 +19,12 @@
                 <fluro-tab heading="Date">
                     <!-- <pre>{{typeof datetime}}</pre> -->
                     <!-- <pre>{{datePart}}</pre> -->
-
                     <!-- :min="min" :max="max" -->
-                    <v-date-picker attach class="elevation-0"  full-width v-model="datePart" scrollable :locale="locale" actions></v-date-picker>
+                    <v-date-picker attach class="elevation-0" full-width v-model="datePart" scrollable :locale="locale" actions></v-date-picker>
                 </fluro-tab>
                 <fluro-tab heading="Time">
                     <!-- <pre>{{typeof datetime}}</pre> -->
-                     <!-- <pre>{{timePart}}</pre> -->
+                    <!-- <pre>{{timePart}}</pre> -->
                     <v-time-picker ref="timer" attach full-width class="v-time-picker-custom elevation-0" v-model="timePart" scrollable :format="timePickerFormat" actions></v-time-picker>
                 </fluro-tab>
             </fluro-tabset>
@@ -161,6 +170,9 @@ export default {
         }
     },
     computed: {
+        readable() {
+            return this.datetime ? this.formattedDatetime : 'Select a date'
+        },
         datePart: {
             get() {
 

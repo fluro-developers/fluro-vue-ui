@@ -3,11 +3,10 @@
         <!-- <pre>{{dataType}}</pre> -->
         <!-- <pre>{{renderColumns}}</pre> -->
         <!-- <pre>{{totalPages}}</pre> -->
-
         <fluro-page-preloader v-if="showLoading" contain />
         <v-container class="flex-center" v-if="!showLoading && !page.length">
             <slot name="emptytext">
-                No results were found matching your criteria
+                No {{dataType | definitionTitle(true)}} were found matching your criteria
             </slot>
         </v-container>
         <template v-else>
@@ -70,7 +69,7 @@
                                 </template>
                             </th>
                             <th class="shrink" v-if="actionsEnabled">
-                               <!--  <v-menu @click.native.stop offset-y>
+                                <!--  <v-menu @click.native.stop offset-y>
                                     <template v-slot:activator="{ on }">
                                         <v-btn class="ma-0" small icon>
                                             <fluro-icon icon="cog" />
@@ -78,7 +77,7 @@
                                     </template>
                                     <v-card tile>
                                         Select Fields -->
-                                        <!-- <v-list dense>
+                                <!-- <v-list dense>
                                             <v-list-tile v-if="!allSelected" @click="selectPage()">
                                                 <v-list-tile-content>
                                                     <v-list-tile-title>
@@ -108,7 +107,7 @@
                                                 </v-list-tile-content>
                                             </v-list-tile>
                                         </v-list> -->
-                                    <!-- </v-card> -->
+                                <!-- </v-card> -->
                                 <!-- </v-menu> -->
                             </th>
                         </tr>
@@ -193,12 +192,90 @@
                     </template>
                     <template v-else>
                         <v-flex xs6 align-center d-flex class="text-muted">
-                            {{startOffset + 1 | numberWithCommas}} to {{endOffset | numberWithCommas}} of {{filteredTotal | numberWithCommas}} {{plural}}
-                            <!-- </div> -->
+                            <v-menu @click.native.stop offset-y>
+                                <template v-slot:activator="{ on }">
+                                    <div v-on="on">
+                                        {{startOffset + 1 | numberWithCommas}} to {{endOffset | numberWithCommas}} of {{filteredTotal | numberWithCommas}} {{plural}}
+                                    </div>
+                                </template>
+                                <v-card tile>
+                                    <v-list dense>
+                                        <v-list-tile @click="perPage = 50">
+                                            <v-list-tile-content>
+                                                <v-list-tile-title>
+                                                    Show 50 per page
+                                                </v-list-tile-title>
+                                            </v-list-tile-content>
+                                        </v-list-tile>
+                                        <v-list-tile @click="perPage = 100">
+                                            <v-list-tile-content>
+                                                <v-list-tile-title>
+                                                    Show 100 per page
+                                                </v-list-tile-title>
+                                            </v-list-tile-content>
+                                        </v-list-tile>
+                                        <v-list-tile @click="perPage = 200">
+                                            <v-list-tile-content>
+                                                <v-list-tile-title>
+                                                    Show 250 per page
+                                                </v-list-tile-title>
+                                            </v-list-tile-content>
+                                        </v-list-tile>
+                                        <v-list-tile @click="perPage = 500">
+                                            <v-list-tile-content>
+                                                <v-list-tile-title>
+                                                    Show 500 per page
+                                                </v-list-tile-title>
+                                            </v-list-tile-content>
+                                        </v-list-tile>
+                                    </v-list>
+                                </v-card>
+                            </v-menu>
                         </v-flex>
                         <v-flex xs6 align-center d-flex class="text-xs-right" style="white-space: nowrap">
                             <div>
-                                <span v-if="$vuetify.breakpoint.smAndUp" class="text-muted">Page {{currentPage}} of {{totalPages}}</span>
+                                <div class="pagenumber-select">
+                                    <span v-if="$vuetify.breakpoint.smAndUp" class="text-muted">Page {{currentPage}} of {{totalPages}}</span>
+                                    <select v-model="currentPage">
+                                        <option :value="index+1" v-for="(page, index) in availablePages">{{index+1}}</option>
+                                    </select>
+                                </div>
+                                <!-- <v-menu style="display:inline-block;" @click.native.stop offset-y>
+                                    <template v-slot:activator="{ on }">
+                                        <span v-on="on"  v-if="$vuetify.breakpoint.smAndUp" class="text-muted">Page {{currentPage}} of {{totalPages}}</span>
+                                    </template>
+                                    <v-card tile>
+                                        <v-text-field></v-text-field>
+                                        <v-list dense>
+                                            <v-list-tile @click="currentPage = index" v-for="(page, index) in availablePages">
+                                                <v-list-tile-content>
+                                                    <v-list-tile-title>
+                                                        {{index+1}}
+                                                    </v-list-tile-title>
+                                                </v-list-tile-content>
+                                            </v-list-tile>
+                                        </v-list>
+                                    </v-card>
+                                </v-menu> -->
+                                <!-- <v-menu style="display:inline-block;" @click.native.stop offset-y>
+                                    <template v-slot:activator="{ on }">
+                                        <span v-on="on"  v-if="$vuetify.breakpoint.smAndUp" class="text-muted">Page {{currentPage}} of {{totalPages}}</span>
+                                    </template>
+                                    <v-card tile>
+                                        <v-text-field autofocus small type="number" v-model="currentPage" />
+                                        <v-text-field></v-text-field>
+                                        <v-list dense>
+                                            <v-list-tile @click="currentPage = index" v-for="(page, index) in availablePages">
+                                                <v-list-tile-content>
+                                                    <v-list-tile-title>
+                                                        {{index+1}}
+                                                    </v-list-tile-title>
+                                                </v-list-tile-content>
+                                            </v-list-tile>
+                                        </v-list>
+                                    </v-card>
+                                </v-menu> -->
+
                                 <span class="ml-3">
                                     <template>
                                         <v-btn class="ma-0" :disabled="previousPageDisabled" icon @click="firstPage()">
@@ -241,13 +318,17 @@ import axios from 'axios';
 const CancelToken = axios.CancelToken;
 
 
-import {FilterService} from 'fluro';
+import { FilterService } from 'fluro';
 
 /////////////////////////////////
 
 export default {
     props: {
         fixedColumns: {
+            type: Boolean,
+            default: false,
+        },
+        allDefinitions: {
             type: Boolean,
             default: false,
         },
@@ -277,9 +358,9 @@ export default {
             type: String,
             default: 'asc',
         },
-        selectionController:{
-            type:Object,
-            default() {
+        selectionController: {
+            type: Object,
+            default () {
                 return this.$selection;
             }
         },
@@ -767,7 +848,25 @@ export default {
         // }, 500),
     },
     methods: {
-        populatePage: _.debounce(function() {
+        populatePage() {
+
+            var self = this;
+
+            //////////////////////////////////////
+
+            if (self.dataType == 'node') {
+                console.log('Node > Show raw page')
+                self.page = self.rawPage.slice();
+                self.loading = false;
+                return;
+            }
+
+            //Add a bit of a delay so they can't spam the server
+            //by clicking 'nextPage()' over and over
+            self.populatePageDebounced();
+
+        },
+        populatePageDebounced: _.debounce(function() {
 
             var self = this;
 
@@ -780,7 +879,6 @@ export default {
                 self.loading = false;
                 return self.page = [];
             }
-
             //////////////////////////////////////
 
             var fields = ['title', '_type', 'definition']
@@ -882,12 +980,13 @@ export default {
             //Load just the IDS from the server and required fields
             return self.$fluro.api.post(`/content/${self.dataType}/filter`, {
                     // return self.$fluro.api.get(`/system/test`, {
-                    sort:self.sort,
+                    sort: self.sort,
                     filter: self.filterConfig,
                     startDate: self.startDate,
                     endDate: self.endDate,
                     search: self.debouncedSearch,
                     includeArchived: self.includeArchivedByDefault,
+                    allDefinitions: self.allDefinitions,
                     includeUnmatched: true,
                 })
                 .then(function(res) {
@@ -1425,6 +1524,23 @@ export default {
         @extend .border-top;
         padding: 5px 10px;
         font-size: 0.9em;
+    }
+
+    .pagenumber-select {
+        display: inline-block;
+        position: relative;
+        select {
+            opacity: 0;
+            width:100%;
+            height:100%;
+            position: absolute;
+            appearance:none;
+            display: block;
+            left:0;
+            right:0;
+            bottom:0;
+            top:0;
+        }
     }
 
 

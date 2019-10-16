@@ -1,11 +1,10 @@
 <template>
     <div>
-       <div>
-        <strong>{{row.title}}</strong>
-        <div class="small muted" v-if="row.firstLine">{{row.firstLine}}</div>
-</div>
-         <fluro-status-label v-if="row.status != 'active'" :value="row.status"/>
-       
+        <div>
+            <strong>{{row.title}}</strong>
+            <div class="small muted" v-if="row.firstLine">{{row.firstLine}}</div>
+        </div>
+        <fluro-status-label v-if="row.status && row.status != 'active'" :value="row.status" />
     </div>
 </template>
 <script>
@@ -23,4 +22,3 @@ export default {
     }
 }
 </script>
-

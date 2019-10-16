@@ -240,7 +240,7 @@ export default {
         display: flex;
         flex-direction: row;
 
-        .tabset-header {
+        & > .tabset-header {
             min-width: 200px;
             max-width: 300px;
             width: 25%;

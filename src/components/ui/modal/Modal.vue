@@ -4,12 +4,18 @@
         <div class="blanket" @click="dismiss"/>
         <div class="modal-inner">
             <component :options="modal.options" @close="close" @dismiss="dismiss" :is="modal.component" />
+            <!-- <action-cart></action-cart> -->
             <!-- <component :is="dialogView" :options="options" @close="close"></component> -->
         </div>
     </div>
 </template>
 <script>
+
+// import ActionCart from '@/components/layout/ActionCart.vue';
 export default {
+    components:{
+        // ActionCart,
+    },
     props: {
         modal: {
             type: Object,
@@ -35,13 +41,11 @@ export default {
     methods: {
         dismiss(err) {
             var self = this;
-            console.log('Dismiss', self.modal)
             self.$fluro.closeModal(self.modal.modalID);
             self.modal.reject(err);
         },
         close(value) {
             var self = this;
-            console.log('CLOSE', self.modal)
             self.$fluro.closeModal(self.modal.modalID);
             self.modal.resolve(value);
         }

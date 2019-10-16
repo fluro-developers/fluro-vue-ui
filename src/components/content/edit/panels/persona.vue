@@ -92,13 +92,9 @@
                     <flex-column-body style="background: #fafafa;">
                         <v-container grid-list-xl>
                             <constrain sm>
-
                                 <h3 margin>{{contextName}} Individual Permissions</h3>
-
                                 <!-- <pre>{{model.permissionSets}}</pre> -->
-                                <fluro-permission-select @input="modelUpdated" v-model="model.permissionSets"/>
-                                
-                                
+                                <fluro-permission-select @input="modelUpdated" v-model="model.permissionSets" />
                             </constrain>
                         </v-container>
                     </flex-column-body>
@@ -110,14 +106,11 @@
 <script>
 /////////////////////////////////
 
-import FluroContentForm from '../../form/FluroContentForm';
-import FluroContentFormField from '../../form/FluroContentFormField';
-import Layout from '../../../mixins/Layout';
-import FluroRealmSelect from '../../form/realmselect/FluroRealmSelect.vue';
-import FluroContentPanelMixin from '../FluroContentPanelMixin';
-import FluroAccessPassSelect from '../../form/FluroAccessPassSelect.vue';
-import FluroPermissionSelect from '../../form/FluroPermissionSelect.vue';
-import { FluroAvatarUpdate } from 'fluro-vue-ui';
+import FluroRealmSelect from '../../../form/realmselect/FluroRealmSelect.vue';
+import FluroContentEditMixin from '../FluroContentEditMixin';
+import FluroAccessPassSelect from '../../../form/FluroAccessPassSelect.vue';
+import FluroPermissionSelect from '../../../form/FluroPermissionSelect.vue';
+import FluroAvatarUpdate from '../../../FluroAvatarUpdate.vue';
 
 
 /////////////////////////////////
@@ -127,6 +120,7 @@ import Vue from 'vue';
 /////////////////////////////////
 
 export default {
+    
     props: {
         'fields': {
             type: Array,
@@ -174,14 +168,14 @@ export default {
             }
         }
     },
-    mixins: [Layout, FluroContentPanelMixin],
+    mixins: [FluroContentEditMixin],
     components: {
         FluroAccessPassSelect,
         FluroPermissionSelect,
         FluroAvatarUpdate,
-        FluroContentForm,
+
         FluroRealmSelect,
-        FluroContentFormField,
+
     },
     methods: {
         modelUpdated() {
@@ -221,7 +215,7 @@ export default {
     created() {
         var self = this;
 
-        if(!self.model.policies) {
+        if (!self.model.policies) {
             self.model.policies = [];
         }
     },

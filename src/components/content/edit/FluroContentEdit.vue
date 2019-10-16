@@ -1,6 +1,6 @@
 <template>
-    <flex-column class="content-panel">
-        <fluro-page-preloader v-if="loading" contain />
+    <flex-column class="content-edit">
+        <fluro-page-preloader v-if="showLoading" contain />
         <template v-else>
             <form class="flex-column" @submit.prevent="" :disabled="state == 'processing'">
                 <flex-column-header v-if="$vuetify.breakpoint.smAndUp">
@@ -23,10 +23,13 @@
                         <template v-slot:right>
                             <!-- <pre>{{model.realms}}</pre> -->
                             <fluro-realm-select v-model="model.realms" :type="typeName" :definition="definitionName" />
+                            <v-btn v-if="model._id" icon class="mr-0" small @click="$actions.open([model])">
+                            <fluro-icon icon="ellipsis-h" />
+                        </v-btn>
                             <v-btn @click="cancel">
                                 Close
                             </v-btn>
-                            <v-btn class="mr-0" :loading="state == 'processing'" :disabled="hasErrors" @click="submit" color="primary">
+                            <v-btn class="mx-0" :loading="state == 'processing'" :disabled="hasErrors" @click="submit" color="primary">
                                 Save
                             </v-btn>
                         </template>
@@ -71,7 +74,7 @@
                     <!-- </v-layout> -->
                 </flex-column-header>
                 <component @errorMessages="validate" ref="form" :context="context" @input="updateModel" v-bind:is="component" :type="typeConfig" :config="config" v-model="model" :definition="definition" v-if="component"></component>
-                <pre>{{model.state}} {{model.dueDate}}</pre>
+                <!-- <pre>{{model.state}} {{model.dueDate}}</pre> -->
                 <template v-if="$vuetify.breakpoint.xsOnly">
                     <flex-column-footer>
                         <template v-if="state == 'error'">
@@ -96,10 +99,13 @@
                                 </v-flex>
                                 <v-spacer />
                                 <v-flex>
-                                    <v-btn block :disabled="hasErrors" type="submit" color="primary">
+                                    <v-btn class="mr-0" block :loading="state == 'processing'" :disabled="hasErrors" @click="submit" color="primary">
+                                        Save
+                                    </v-btn>
+                                    <!-- <v-btn block :disabled="hasErrors" type="submit" color="primary">
                                         Save
                                         <fluro-icon right icon="check" />
-                                    </v-btn>
+                                    </v-btn> -->
                                 </v-flex>
                             </v-layout>
                         </v-container>
@@ -147,7 +153,7 @@
                             </v-btn>
                         </template>
                     </div> -->
-                <!-- <pre>{{model}}</pre> -->
+                <!-- <pre>{{model.details}}</pre> -->
                 <!-- </flex-column-body> -->
             </form>
         </template>
@@ -157,7 +163,7 @@
 import Vue from 'vue';
 
 
-import FluroRealmSelect from '../form/realmselect/FluroRealmSelect.vue';
+import FluroRealmSelect from '../../form/realmselect/FluroRealmSelect.vue';
 
 // import Contact from './panels/Contact.vue';
 // import Event from './panels/Event.vue';
@@ -249,6 +255,31 @@ export default {
                 self.$emit('reset');
             }
         },
+        preprocessCreateData(data) {
+
+            var self = this;
+
+            //////////////////////////////////
+
+            switch (self.typeName) {
+                case 'process':
+
+                    //If it's a card and the card has no title
+                    if (!data.title || !data.title.length) {
+
+                        //But the card refers to an item
+                        if (data.item && data.item.title && data.item.title.length) {
+                            //Use the items title for the card title
+                            data.title = data.item.title;
+                        }
+                    }
+                    break;
+            }
+
+            //////////////////////////////////
+
+            return data;
+        },
         submit() {
             var self = this;
             self.validateAllFields();
@@ -311,6 +342,10 @@ export default {
 
                     break;
                 default:
+
+                    //Preprocess our create request
+                    requestData = self.preprocessCreateData(requestData);
+
                     //Create a new item
                     self.$fluro.api.post(`/content/${definedType}`, requestData)
                         .then(function(result) {
@@ -343,6 +378,9 @@ export default {
         }
     },
     computed: {
+        showLoading() {
+            return this.loading || !this.component;
+        },
         title() {
 
             if (this.model.title) {
@@ -440,19 +478,15 @@ export default {
 </script>
 <style lang="scss">
 .modal-inner {
-    .content-panel {
+    .content-edit {
         width: 100%;
         max-width: 1200px;
         min-width: 80vw;
     }
 }
 </style>
-
-
 <style scoped lang="scss">
-
-
-.content-panel {
+.content-edit {
 
 
 

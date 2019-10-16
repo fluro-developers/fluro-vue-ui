@@ -1,6 +1,8 @@
 export default {
     data() {
         return {
+            selectionMinimum: 0,
+            selectionMaximum: 0,
             selection: [],
         }
     },
@@ -8,15 +10,36 @@ export default {
         select(item) {
             var self = this;
             if (!self.isSelected(item)) {
-                self.$set(self.selection, self.selection.length, item);
-                console.log('Select', self.selection.length, item);
+
+                var currentSize = self.selection.length;
+                var maxLimit = self.selectionMaximum;
+
+                //If there is no limit or we are under the limit
+                if (!maxLimit || (currentSize < maxLimit)) {
+                    //Add to our selection
+                    return self.$set(self.selection, self.selection.length, item);
+                }
+
+                //Replace the last item in our selection with the new item
+                //console.log('Select', self.selection.length, item);
+                return self.$set(self.selection, self.selection.length - 1, item);
+
+
             }
         },
         setSelection(array) {
 
             var self = this;
 
+            if (self.selectionMaximum) {
+                array = array.slice(self.selectionMaximum);
+                console.log('sliced to', array.length, self.selectionMaximum)
+            }
+
             self.selection = array;
+
+
+
 
             // self.selection.length = 0;
             // _.each(array, function(item) {
@@ -26,13 +49,13 @@ export default {
         deselect(item) {
             var self = this;
 
-            if(!item) {
+            if (!item) {
                 return;
             }
 
             //Get the item ID
 
-            
+
             var itemID = self.$fluro.utils.getStringID(item);
 
             //Find the index of the matching item

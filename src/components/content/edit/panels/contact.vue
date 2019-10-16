@@ -41,20 +41,20 @@
                                 <wrapper xs>
                                     <v-layout row wrap>
                                         <v-flex :class="{'xs12':$vuetify.breakpoint.xsOnly}">
-                                            <fluro-content-form-field :autofocus="$vuetify.breakpoint.smAndUp" class="right-messages" :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.firstName" v-model="model"></fluro-content-form-field>
-                                            <fluro-content-form-field class="right-messages" :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.preferredName" v-model="model" v-if="showPreferredName"></fluro-content-form-field>
-                                            <fluro-content-form-field class="right-messages" :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.ethnicName" v-model="model" v-if="showEthnicName"></fluro-content-form-field>
+                                            <fluro-content-form-field :autofocus="$vuetify.breakpoint.smAndUp" class="right-messages" :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.firstName" v-model="model"></fluro-content-form-field>
+                                            <fluro-content-form-field class="right-messages" :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.preferredName" v-model="model" v-if="showPreferredName"></fluro-content-form-field>
+                                            <fluro-content-form-field class="right-messages" :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.ethnicName" v-model="model" v-if="showEthnicName"></fluro-content-form-field>
                                             <div class="additions">
                                                 <a class="hint" v-if="!showPreferredName" @click="show.preferredName = true">Add Nick/Preferred Name</a>
                                                 <a class="hint" v-if="!showEthnicName" @click="show.ethnicName = true">Add Ethnic Name</a>
                                             </div>
                                         </v-flex>
                                         <v-flex :class="{'xs12':$vuetify.breakpoint.xsOnly}" v-if="showMiddleName">
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.middleName" v-model="model"></fluro-content-form-field>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.middleName" v-model="model"></fluro-content-form-field>
                                         </v-flex>
                                         <v-flex :class="{'xs12':$vuetify.breakpoint.xsOnly}">
-                                            <fluro-content-form-field class="right-messages" :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.lastName" v-model="model"></fluro-content-form-field>
-                                            <fluro-content-form-field class="right-messages" :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.maidenName" v-model="model" v-if="showMaidenName"></fluro-content-form-field>
+                                            <fluro-content-form-field class="right-messages" :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.lastName" v-model="model"></fluro-content-form-field>
+                                            <fluro-content-form-field class="right-messages" :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.maidenName" v-model="model" v-if="showMaidenName"></fluro-content-form-field>
                                             <div class="additions">
                                                 <a class="hint" v-if="!showMiddleName" @click="show.middleName = true">Add Middle Name</a>
                                                 <a class="hint" v-if="!showMaidenName" @click="show.maidenName = true">Add Maiden Name</a>
@@ -62,51 +62,51 @@
                                         </v-flex>
                                     </v-layout>
                                     <template v-if="contactDefinitions.length">
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="definitionField" v-model="model"></fluro-content-form-field>
+                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="definitionField" v-model="model"></fluro-content-form-field>
                                     </template>
                                 </wrapper>
                                 <v-layout row wrap>
                                     <v-flex xs12 sm6>
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.gender" v-model="model"></fluro-content-form-field>
+                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.gender" v-model="model"></fluro-content-form-field>
                                     </v-flex>
                                     <v-flex xs12 sm6>
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.maritalStatus" v-model="model"></fluro-content-form-field>
+                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.maritalStatus" v-model="model"></fluro-content-form-field>
                                     </v-flex>
                                 </v-layout>
                                 <v-layout row wrap>
                                     <v-flex xs12 sm6>
-                                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.emails" v-model="model"></fluro-content-form-field>
+                                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="formOptions" :field="fieldHash.emails" v-model="model"></fluro-content-form-field>
                                     </v-flex>
                                     <v-flex xs12 sm6>
-                                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.phoneNumbers" v-model="model"></fluro-content-form-field>
+                                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="formOptions" :field="fieldHash.phoneNumbers" v-model="model"></fluro-content-form-field>
                                     </v-flex>
                                 </v-layout>
                                 <v-layout row wrap>
                                     <v-flex xs12 sm6>
                                         <v-layout row wrap>
                                             <v-flex xs6>
-                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.dob" v-model="model"></fluro-content-form-field>
+                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.dob" v-model="model"></fluro-content-form-field>
                                             </v-flex>
                                             <v-flex xs6>
-                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.dobVerified" v-model="model"></fluro-content-form-field>
+                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.dobVerified" v-model="model"></fluro-content-form-field>
                                             </v-flex>
                                         </v-layout>
                                     </v-flex>
                                     <v-flex xs12 sm6>
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.timezone" v-model="model"></fluro-content-form-field>
+                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.timezone" v-model="model"></fluro-content-form-field>
                                     </v-flex>
                                 </v-layout>
                                 <wrapper xs>
                                     <v-input class="no-flex">
                                         <v-label>School / Academic Details</v-label>
                                         <!-- <h5>School / Academic Details</h5> -->
-                                        <fluro-academic-select :form-fields="formFields" :outline="showOutline" :options="options" @calendar="updateAcademicCalendar" @grade="updateAcademicGrade" v-model="model" />
+                                        <fluro-academic-select :form-fields="formFields" :outline="showOutline" :options="formOptions" @calendar="updateAcademicCalendar" @grade="updateAcademicGrade" v-model="model" />
                                         </fluro-academic-select>
                                     </v-input>
                                     <v-input class="no-flex">
                                         <v-label>Checkin Nametag Notes</v-label>
                                         <p class="help-block">Publicly displayed notes to be printed on {{contextName}} nametag</p>
-                                        <fluro-content-form-field :form-fields="formFields" :showLabel="false" :outline="showOutline" @input="update" :options="options" :field="fieldHash.nametagNotes" v-model="model"></fluro-content-form-field>
+                                        <fluro-content-form-field :form-fields="formFields" :showLabel="false" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.nametagNotes" v-model="model"></fluro-content-form-field>
                                     </v-input>
                                 </wrapper>
                             </constrain>
@@ -121,8 +121,8 @@
                         <!-- <v-container> -->
                         <!-- <pre>{{details[sheet.definitionName].realms}}</pre> -->
                         <!-- <fluro-realm-select v-model="details[sheet.definitionName].realms" type="contactdetail" :definition="sheet.definitionName" /> -->
-                        <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="updateSheet" :options="options" :field="sheet.field" v-model="details"></fluro-content-form-field> -->
-                        <!-- <fluro-content-form @input="updateSheet" :options="options" v-model="details[sheet.definitionName].data" :fields="sheet.fields" /> -->
+                        <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="updateSheet" :options="formOptions" :field="sheet.field" v-model="details"></fluro-content-form-field> -->
+                        <!-- <fluro-content-form @input="updateSheet" :options="formOptions" v-model="details[sheet.definitionName].data" :fields="sheet.fields" /> -->
                         <!-- </v-container> -->
                         <!-- </slot> -->
                         <!-- </tab> -->
@@ -146,14 +146,14 @@
                                     <h3 margin>Household &amp; Relationships</h3>
                                     <v-layout row wrap>
                                         <v-flex xs12 sm6>
-                                            <fluro-content-form-field :override-label="`${contextName} Household Role`" :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.householdRole" v-model="model"></fluro-content-form-field>
+                                            <fluro-content-form-field :override-label="`${contextName} Household Role`" :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.householdRole" v-model="model"></fluro-content-form-field>
                                         </v-flex>
                                     </v-layout>
                                     <!-- <v-flex xs12 sm6> -->
                                     <v-input class="no-flex">
                                         <v-label>Family Household</v-label>
                                         <p class="help-block">Select {{contextName}} primary residence</p>
-                                        <fluro-content-form-field :form-fields="formFields" :showLabel="false" :outline="showOutline" @input="update" :options="options" :field="fieldHash.family" v-model="model"></fluro-content-form-field>
+                                        <fluro-content-form-field :form-fields="formFields" :showLabel="false" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.family" v-model="model"></fluro-content-form-field>
                                     </v-input>
                                     <!-- </v-flex> -->
                                     <!-- <v-flex> -->
@@ -164,16 +164,16 @@
                                     <h3 margin>Household</h3>
                                     <v-layout row wrap>
                                         <!-- <v-flex xs12 sm6> -->
-                                        <!-- <fluro-content-form-field :form-fields="formFields" :showLabel="false" :outline="showOutline" @input="update" :options="options" :field="fieldHash.family" v-model="model"></fluro-content-form-field> -->
+                                        <!-- <fluro-content-form-field :form-fields="formFields" :showLabel="false" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.family" v-model="model"></fluro-content-form-field> -->
                                         <!-- </v-flex> -->
                                         <v-flex xs12 sm6>
-                                            <fluro-content-form-field :override-label="`${contextName} Household Role`" :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.householdRole" v-model="model"></fluro-content-form-field>
+                                            <fluro-content-form-field :override-label="`${contextName} Household Role`" :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.householdRole" v-model="model"></fluro-content-form-field>
                                         </v-flex>
                                     </v-layout>
                                     <h5>{{contextName}} Household</h5>
                                     <!-- @errorMessages="validate" -->
-                                    <fluro-content-form @input="updateFamily" :options="options" v-model="family" :fields="familyFields" />
-                                    <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="updateFamily" :options="options" :field="fieldHash.dynamicFamily" v-model="family"></fluro-content-form-field> -->
+                                    <fluro-content-form @input="updateFamily" :options="formOptions" v-model="family" :fields="familyFields" />
+                                    <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="updateFamily" :options="formOptions" :field="fieldHash.dynamicFamily" v-model="family"></fluro-content-form-field> -->
                                 </template>
                             </constrain>
                         </v-container>
@@ -189,7 +189,7 @@
                                 <v-input class="no-flex">
                                     <v-label>Capabilities</v-label>
                                     <p class="help-block">Add to {{contextName}} capabilities</p>
-                                    <fluro-content-form-field :form-fields="formFields" :showLabel="false" :outline="showOutline" :options="options" :field="fieldHash.capabilities" v-model="model"></fluro-content-form-field>
+                                    <fluro-content-form-field :form-fields="formFields" :showLabel="false" :outline="showOutline" :options="formOptions" :field="fieldHash.capabilities" v-model="model"></fluro-content-form-field>
                                 </v-input>
                             </constrain>
                         </v-container>
@@ -202,7 +202,7 @@
                         <v-container grid-list-xl>
                             <constrain sm>
                                 <h3 margin>Notifications</h3>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.countryCode" v-model="model"></fluro-content-form-field>
+                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.countryCode" v-model="model"></fluro-content-form-field>
                                 <v-input class="no-flex" v-if="phoneNumbers.length || emails.length">
                                     <v-label>Communication Preferences</v-label>
                                     <p class="help-block">Manage {{contextName}} subscription preferences below</p>
@@ -265,12 +265,12 @@
                 </slot>
             </tab>
             <!-- v-if="context == 'edit'" -->
-            <tab :heading="sheet.title" v-for="sheet in sheetDefinitions">
+            <tab :heading="sheet.title" :key="sheet._id" v-for="sheet in sheetDefinitions">
                 <slot>
                     <flex-column-body style="background: #fafafa;">
                         <v-container>
                             <constrain sm>
-                                <!-- <pre>{{sheet.definitionName}}</pre> -->
+                                <!-- <pre>{{sheet}}</pre> -->
                                 <!-- <pre>{{details[sheet.definitionName]}}</pre> -->
                                 <!-- <pre>{{details[sheet.definitionName]}}</pre> -->
                                 <!-- <pre>{{details[sheet.definitionName]}}</pre> -->
@@ -285,10 +285,11 @@
                                 <!-- @input="updateSheet" -->
                                 <!-- <pre>{{details[sheet.definitionName].data}}</pre> -->
                                 <!-- @input="updateSheet"  -->
-                                <!-- <pre>{{details[sheet.definitionName]}}</pre> -->
-                                <fluro-content-form :options="options" @input="updateSheet" v-model="details[sheet.definitionName].data" :fields="sheet.fields" />
-                                <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="sheet.field" v-model="details"></fluro-content-form-field> -->
-                                <!-- <fluro-content-form @input="updateDetailSheet" :options="options" v-model="details[sheet.definitionName].data" :fields="sheet.fields" /> -->
+                                <!-- <pre>{{details[sheet.definitionName].data}}</pre> -->
+                                <fluro-content-form :options="formOptions" @input="updateSheet" v-model="details[sheet.definitionName].data" :fields="sheet.fields" />
+                               <!-- <pre>{{details[sheet.definitionName].data}}</pre> -->
+                                <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="formOptions" :field="sheet.field" v-model="details"></fluro-content-form-field> -->
+                                <!-- <fluro-content-form @input="updateDetailSheet" :options="formOptions" v-model="details[sheet.definitionName].data" :fields="sheet.fields" /> -->
                             </constrain>
                         </v-container>
                     </flex-column-body>
@@ -300,13 +301,13 @@
                         <v-container>
                             <constrain sm>
                                 <h3 margin>Metadata</h3>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.timezone" v-model="model"></fluro-content-form-field>
+                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.timezone" v-model="model"></fluro-content-form-field>
                                 <v-layout>
                                     <v-flex>
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.deceased" v-model="model"></fluro-content-form-field>
+                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.deceased" v-model="model"></fluro-content-form-field>
                                     </v-flex>
                                     <v-flex v-show="model.deceased">
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.deceasedDate" v-model="model"></fluro-content-form-field>
+                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.deceasedDate" v-model="model"></fluro-content-form-field>
                                     </v-flex>
                                 </v-layout>
                                 <div v-if="model.data">
@@ -328,7 +329,7 @@
                     <flex-column-body style="background: #fafafa;">
                         <v-container>
                             <wrapper xs>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="sheet.field" v-model="details"></fluro-content-form-field>
+                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="sheet.field" v-model="details"></fluro-content-form-field>
                             </wrapper>
                         </v-container>
                     </flex-column-body>
@@ -340,7 +341,7 @@
                         <v-container>
                             <wrapper xs>
                                 <template v-if="contactDefinitions.length">
-                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="definitionField" v-model="model"></fluro-content-form-field>
+                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="definitionField" v-model="model"></fluro-content-form-field>
                                 </template>
                                 <fluro-realm-select :expanded="true" v-model="model.realms" type="contact" />
                             </wrapper>
@@ -357,13 +358,10 @@
 <script>
 /////////////////////////////////
 
-import FluroContentForm from '../../form/FluroContentForm';
-import FluroContentFormField from '../../form/FluroContentFormField';
-import FluroAcademicSelect from '../../form/FluroAcademicSelect';
-import Layout from '../../../mixins/Layout';
-import FluroRealmSelect from '../../form/realmselect/FluroRealmSelect.vue';
-import FluroContentPanelMixin from '../FluroContentPanelMixin';
-import { FluroAvatarUpdate } from 'fluro-vue-ui';
+import FluroAcademicSelect from '../../../form/FluroAcademicSelect';
+import FluroRealmSelect from '../../../form/realmselect/FluroRealmSelect.vue';
+import FluroContentEditMixin from '../FluroContentEditMixin';
+import FluroAvatarUpdate from '../../../FluroAvatarUpdate.vue';
 
 
 /////////////////////////////////
@@ -373,6 +371,7 @@ import Vue from 'vue';
 /////////////////////////////////
 
 export default {
+    
     props: {
         'fields': {
             type: Array,
@@ -674,12 +673,10 @@ export default {
             }
         }
     },
-    mixins: [Layout, FluroContentPanelMixin],
+    mixins: [FluroContentEditMixin],
     components: {
         FluroAvatarUpdate,
-        FluroContentForm,
         FluroRealmSelect,
-        FluroContentFormField,
         FluroAcademicSelect,
     },
     methods: {
@@ -842,6 +839,8 @@ export default {
             }, {});
 
 
+
+
             // console.log('Details', mappedDetails)
             // if (self.context == 'edit') {
             //If we are in edit mode we don't want to edit the details
@@ -849,6 +848,8 @@ export default {
             //Add the details onto our model so they are saved when we hit submit
             self.$set(self.model, 'details', mappedDetails);
             // }
+
+            self.update(self.model);
             // console.log('Sheet Updated', self.model);
         }
     },
@@ -975,13 +976,19 @@ export default {
 
 
 
-                            var definitions = _.map(definitions, function(definition, key) {
+                            var definitions = _.chain(definitions)
+                            .filter(function(definition) {
+                                console.log('Contact Definition!', definition)
+                                return definition.status == 'active';
+                            })
+                            .map(function(definition, key) {
                                 return {
                                     _id: definition._id,
                                     name: definition.title,
                                     value: definition.definitionName,
                                 }
-                            });
+                            })
+                            .value();
 
                             // if(definitions.length) {
                             //     definitions.unshift({
@@ -1079,6 +1086,11 @@ export default {
         }
     },
     computed: {
+        formOptions() {
+            return {
+               
+            }
+        },
         title() {
 
             if (!this.model) {

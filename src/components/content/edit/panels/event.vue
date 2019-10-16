@@ -195,11 +195,7 @@
 <script>
 /////////////////////////////////
 
-import FluroContentForm from '../../form/FluroContentForm';
-import FluroContentFormField from '../../form/FluroContentFormField';
-import Layout from '../../../mixins/Layout';
-import FluroContentPanelMixin from '../FluroContentPanelMixin';
-import { FluroAvatarUpdate } from 'fluro-vue-ui';
+import FluroContentEditMixin from '../FluroContentEditMixin';
 
 // import { JSONView } from "vue-json-component";
 
@@ -211,6 +207,7 @@ import Vue from 'vue';
 /////////////////////////////////
 
 export default {
+    
     props: {
         'fields': {
             type: Array,
@@ -458,165 +455,6 @@ export default {
                     },
                 })
 
-
-
-
-
-
-
-
-
-
-
-                addField('deceased', {
-                    title: 'Mark as deceased',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'boolean',
-                    directive: 'checkbox',
-                })
-
-                addField('deceasedDate', {
-                    title: 'Deceased Date',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'date',
-                    directive: 'date-select',
-                })
-
-
-
-
-
-
-
-
-
-                addField('gender', {
-                    title: 'Gender',
-                    minimum: 1,
-                    maximum: 1,
-                    type: 'string',
-                    directive: 'select',
-                    placeholder: '',
-                    // defaultValues: ['unknown'],
-                    options: [{
-                            name: 'Male',
-                            value: 'male',
-                        },
-                        {
-                            name: 'Female',
-                            value: 'female',
-                        },
-                        {
-                            name: 'Unknown',
-                            value: 'unknown',
-                        },
-                    ]
-                })
-
-                addField('maritalStatus', {
-                    title: 'Marital Status',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'string',
-                    directive: 'select',
-                    placeholder: '',
-                    options: [{
-                            name: 'None',
-                            value: '',
-                        },
-                        {
-                            name: 'Single',
-                            value: 'single',
-                        },
-                        {
-                            name: 'In a relationship',
-                            value: 'relationship',
-                        },
-                        {
-                            name: 'Married',
-                            value: 'married',
-                        },
-                        {
-                            name: 'Widowed',
-                            value: 'widowed',
-                        },
-                        {
-                            name: 'Seperated',
-                            value: 'seperated',
-                        },
-                        {
-                            name: 'Divorced',
-                            value: 'divorced',
-                        },
-                    ]
-                })
-
-
-                ///////////////////////////////////
-
-                addField('emails', {
-                    title: 'Email Address',
-                    minimum: 0,
-                    maximum: 0,
-                    type: 'email',
-                    // directive:'select',
-                    placeholder: '',
-                })
-
-
-                addField('phoneNumbers', {
-                    title: 'Phone Number',
-                    minimum: 0,
-                    maximum: 0,
-                    type: 'string',
-                    // directive:'select',
-                    placeholder: '+61 400 123 456',
-                })
-
-                ///////////////////////////////////
-
-                // var timezones = _.map(self.$fluro.date.timezones(), function(timezone) {
-                //     return { name: timezone, value: timezone };
-                // });
-
-                // timezones.unshift({
-                //     name: 'Use Account Default',
-                //     value: '',
-                // })
-
-
-
-                addField('countryCode', {
-                    title: 'Default Country Code',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'string',
-                    directive: 'countrycodeselect',
-                })
-                ///////////////////////////////////
-
-                addField('nametagNotes', {
-                    title: 'Checkin Nametag Notes',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'string',
-                })
-
-                ///////////////////////////////////
-
-                addField('capabilities', {
-                    title: 'Capabilities',
-                    minimum: 0,
-                    maximum: 0,
-                    type: 'reference',
-                    description: 'Add capabilities for this contact',
-                    params: {
-                        restrictType: 'capability',
-                    }
-                })
-
                 ///////////////////////////////////
 
                 function addField(key, details) {
@@ -639,11 +477,7 @@ export default {
             }
         }
     },
-    mixins: [Layout, FluroContentPanelMixin],
-    components: {
-        FluroContentForm,
-        FluroContentFormField,
-    },
+    mixins: [FluroContentEditMixin],
     methods: {
 
     },

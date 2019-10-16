@@ -1,4 +1,4 @@
-console.log('fluro-vue-ui 2.0.27')
+console.log('fluro-vue-ui 2.0.28')
 
 /////////////////////////////////////////////////////
 
@@ -28,6 +28,17 @@ import FluroVideoThumbnail from './components/FluroVideoThumbnail.vue';
 
 import FluroModal from './components/ui/modal/Modal.vue';
 export { FluroModal as FluroModal };
+
+
+
+import FluroInlineEdit from './components/form/FluroInlineEdit.vue';
+export { FluroInlineEdit as FluroInlineEdit };
+
+
+
+import FluroDynamicTable from './components/table/FluroDynamicTable.vue';
+export { FluroDynamicTable as FluroDynamicTable };
+
 ////////////////////////////////////////////////////////////////////
 
 import FluroToggleItem from './components/ui/FluroToggleItem.vue';
@@ -58,8 +69,12 @@ export { FluroHTML as FluroHTML };
 
 ////////////////////////////////////////////////////////////////////
 
-import FluroContentPanel from './components/content/FluroContentPanel.vue';
-export { FluroContentPanel as FluroContentPanel };
+import FluroContentEdit from './components/content/edit/FluroContentEdit.vue';
+export { FluroContentEdit as FluroContentEdit };
+
+
+import FluroContentView from './components/content/view/FluroContentView.vue';
+export { FluroContentView as FluroContentView };
 
 
 
@@ -84,6 +99,11 @@ export { FluroContentRender as FluroContentRender };
 
 import FluroContentRenderField from './components/FluroContentRenderField.vue';
 export { FluroContentRenderField as FluroContentRenderField };
+
+////////////////////////////////////////////////////////////////////////////////
+
+import FluroTaskList from './components/form/tasklist/FluroTaskList.vue';
+export { FluroTaskList as FluroTaskList };
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -112,9 +132,22 @@ export { FluroRealmBar as FluroRealmBar };
 
 import FluroTabset from './components/ui/tabset/FluroTabset.vue';
 export { FluroTabset as Tabset };
+export { FluroTabset as FluroTabset };
 
 import FluroTab from './components/ui/tabset/FluroTab.vue';
 export { FluroTab as Tab };
+export { FluroTab as FluroTab };
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+import FluroAccordion from './components/ui/accordion/FluroAccordion.vue';
+export { FluroAccordion as Accordion };
+export { FluroAccordion as FluroAccordion };
+
+import FluroAccordionPanel from './components/ui/accordion/FluroAccordionPanel.vue';
+export { FluroAccordionPanel as AccordionPanel };
+export { FluroAccordionPanel as FluroAccordionPanel };
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -124,6 +157,20 @@ export { FluroContentBrowser as FluroContentBrowser };
 
 import FluroContentSelect from './components/form/FluroContentSelect.vue';
 export { FluroContentSelect as FluroContentSelect };
+
+
+import FluroSelector from './components/form/contentselect/FluroSelector.vue';
+export { FluroSelector as FluroSelector };
+
+
+import FluroContentSelectModal from './components/form/contentselect/FluroContentSelectModal.vue';
+export { FluroContentSelectModal as FluroContentSelectModal };
+
+
+import FluroContentSelectButton from './components/form/contentselect/FluroContentSelectButton.vue';
+export { FluroContentSelectButton as FluroContentSelectButton };
+
+
 
 import FluroRealmSelect from './components/form/realmselect/FluroRealmSelect.vue';
 export { FluroRealmSelect as FluroRealmSelect };
@@ -181,6 +228,17 @@ export { FluroCardBody as FluroCardBody };
 
 import FluroCardTitle from './components/ui/card/FluroCardTitle.vue';
 export { FluroCardTitle as FluroCardTitle };
+
+
+//Fluro Panel
+import FluroPanel from './components/ui/panel/FluroPanel.vue';
+export { FluroPanel as FluroPanel };
+
+import FluroPanelBody from './components/ui/panel/FluroPanelBody.vue';
+export { FluroPanelBody as FluroPanelBody };
+
+import FluroPanelTitle from './components/ui/panel/FluroPanelTitle.vue';
+export { FluroPanelTitle as FluroPanelTitle };
 
 
 
@@ -241,6 +299,7 @@ import {
     VFlex,
     VLayout,
     VBtn,
+    VBtnToggle,
     VCard,
     VCardText,
     VTab,
@@ -288,6 +347,7 @@ const FluroVueUI = {
         Vue.component('v-flex', VFlex)
         Vue.component('v-layout', VLayout)
         Vue.component('v-btn', VBtn)
+        Vue.component('v-btn-toggle', VBtnToggle)
         Vue.component('v-alert', VAlert)
         Vue.component('v-autocomplete', VAutocomplete)
         Vue.component('v-select', VSelect)
@@ -365,7 +425,6 @@ const FluroVueUI = {
         /////////////////////////////////////////////
 
         fluro.closeModal = function(modalID) {
-            console.log('CLOSE Modal', modalID);
             var modal = _.find(fluro.global.modals, { modalID });
             var index = _.findIndex(fluro.global.modals, modal);
             fluro.global.modals.splice(index, 1);

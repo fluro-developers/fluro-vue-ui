@@ -3,13 +3,42 @@
         <!-- <pre>{{model}}</pre> -->
         <div class="fluro-content-list" v-if="model.length">
             <draggable v-model="model" v-bind="dragOptions" @start="drag=true" @end="drag=false">
-                <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-                    <!-- <div v-for="element in myArray" :key="element.id">{{element.name}}</div> -->
-                    <!-- <div > -->
-                    <fluro-list-item bordered :item="item" v-for="item in model" :key="item._id"  :actions="getActions(item)" />
-                    <!-- <pre>{{getActions(item)}}</pre> -->
+                <!-- <transition-group type="transition" :name="!drag ? 'flip-list' : null"> -->
+                <!-- <div v-for="element in myArray" :key="element.id">{{element.name}}</div> -->
+                <!-- <div > -->
+                <list-group>
+                    <list-group-item :item="item" v-for="(item, index) in model">
+                        <template v-slot:right>
+
+
+                            <v-menu :left="true" v-model="actionIndexes[index]" :fixed="true" transition="slide-y-transition" offset-y>
+                                <template v-slot:activator="{ on }">
+                                    <v-btn class="ma-0" icon small flat v-on="on">
+                                        <fluro-icon v-if="actionIndexes[index]" icon="times" />
+                                        <fluro-icon v-else icon="ellipsis-h" />
+                                    </v-btn>
+                                </template>
+                                <v-list dense>
+                                    <v-list-tile @click="$actions.open([item])">
+                                        <v-list-tile-content>Actions</v-list-tile-content>
+                                    </v-list-tile>
+                                    <v-list-tile @click="deselect(item)">
+                                        <v-list-tile-content>Deselect</v-list-tile-content>
+                                    </v-list-tile>
+                                </v-list>
+                            </v-menu>
+
+
+                            <!-- <v-btn class="ma-0" small icon @click.stop.prevent="$actions.open([item])">
+                                <fluro-icon icon="ellipsis-h" />
+                            </v-btn> -->
+                        </template>
+                    </list-group-item>
+                </list-group>
+                <!-- <fluro-list-item bordered :item="item" v-for="item in model" :key="item._id"  :actions="getActions(item)" /> -->
+                <!-- <pre>{{getActions(item)}}</pre> -->
                 <!-- </div> -->
-                </transition-group>
+                <!-- </transition-group> -->
             </draggable>
         </div>
         <div class="content-select-search-bar" v-if="canAddValue">
@@ -38,7 +67,10 @@
                 </v-autocomplete>
             </div>
             <div class="content-select-search-buttons">
-                <v-btn block @click="showModal">
+                <v-btn color="primary" block  class="mr-1" v-if="canCreate" @click="create()">
+                    Create
+                </v-btn>
+                <v-btn block  class="" @click="showModal">
                     Browse
                 </v-btn>
             </div>
@@ -125,6 +157,9 @@ export default {
         'type': {
             type: String,
         },
+        'types': {
+            type: Array,
+        },
         'minimum': {
             type: Number,
             default: 0,
@@ -149,20 +184,37 @@ export default {
 
 
         // if(this.multiple) {
-        if(_.isArray(initialValue)) {
-             this.setSelection(initialValue);
-         } else {
+        if (_.isArray(initialValue)) {
+            this.setSelection(initialValue);
+        } else {
             // console.log('WHAT IS IS IT IT SHOULD BE AN IBJECT', initialValue.length)
             this.setSelection([initialValue]);
-        } 
+        }
     },
 
     // <v-input class="no-flex" :success="success" :label="label" :required="required" :error-messages="errorMessages" :hint="field.description">
     computed: {
+        canCreate() {
+            var self = this;
+            var type = self.type;
+
+            if(!type) {
+                return;
+            }
+
+            switch(type) {
+                case 'node':
+                break;
+                default:
+                    return this.$fluro.access.can('create', type, self.$fluro.types.parentType(type));
+                break;
+            }
+        },
+
         textPlaceholder() {
 
-            var restrictType = this.$fluro.types.readable(this.type, true);
-            return this.placeholder || `Search for ${restrictType}`;//Search for ${this.label || 'items'}`;
+            var restrictType = this.type ? this.$fluro.types.readable(this.type || true) : 'items';
+            return this.placeholder || `Search for ${restrictType}`; //Search for ${this.label || 'items'}`;
         },
         showOutline() {
             return this.outline || this.options.outline;
@@ -214,6 +266,17 @@ export default {
         // ]),
     },
     methods: {
+        create() {
+            // console.log('SHOW MODAL', this.$fluro.modal)
+            var self = this;
+
+            //////////////////////////////////////
+
+            self.$fluro.global.create(self.type, null, true)
+            .then(function(res) {
+                self.select(res);
+            });
+        },
         showModal() {
             // console.log('SHOW MODAL', this.$fluro.modal)
             var self = this;
@@ -221,12 +284,13 @@ export default {
             //////////////////////////////////////
 
             var promise = self.$fluro.modal({
-                component:FluroContentSelectModal,
+                component: FluroContentSelectModal,
                 options: {
-                    selector:self,
-                    type:self.type,
-                    minimum:self.minimum,
-                    maximum:self.maximum,
+                    selector: self,
+                    type: self.type,
+                    minimum: self.minimum,
+                    maximum: self.maximum,
+                    allDefinitions:true,
                 }
             });
 
@@ -297,10 +361,13 @@ export default {
             if (searchTerms && searchTerms.length) {
 
                 self.loading = true;
-                var params = {};
+                var params = {
+                    allDefinitions:true,
+                };
 
                 if (self.type) {
                     params.types = self.type;
+
 
                 }
 
@@ -324,12 +391,12 @@ export default {
         'model': function() {
             var self = this;
 
-            if(!this.multiple) {
+            if (!this.multiple) {
                 this.$emit('input', _.first(self.model)); //[self.key])
             } else {
                 this.$emit('input', self.model);
             }
-            
+
         }
     },
     data() {
@@ -338,8 +405,9 @@ export default {
 
 
         return {
-            selection:[],
-            candidates:[],
+            actionIndexes:{},
+            selection: [],
+            candidates: [],
             results: [],
             terms: '',
             loading: false,
@@ -395,7 +463,7 @@ export default {
             align-items: center;
 
             // .v-btn {
-                // background: #fff;
+            // background: #fff;
             // }
         }
     }

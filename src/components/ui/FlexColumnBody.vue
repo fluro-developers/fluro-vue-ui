@@ -16,7 +16,7 @@ export default {}
     flex: 1;
 
     overscroll-behavior-x: none !important;
-    overscroll-behavior-y: none !important;
-    overscroll-behavior: none !important;
+    // overscroll-behavior-y: none !important;
+    // overscroll-behavior: none !important;
 }
 </style>

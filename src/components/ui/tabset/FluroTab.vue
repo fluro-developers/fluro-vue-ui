@@ -1,6 +1,6 @@
 <template>
     <transition name="slide">
-        <flex-column v-show="active">
+        <flex-column v-if="active">
             <slot />
         </flex-column>
     </transition>

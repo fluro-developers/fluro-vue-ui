@@ -22,7 +22,7 @@
                             <!--   -->
                             <template v-if="!showFilters">
                                 <div class="search" :class="{active:searchFocussed || search.length}">
-                                    <input v-model="search" @focus="searchFocussed = true" @blur="searchFocussed = false" placeholder="Search by keyword" />
+                                    <input v-model="search" :autofocus="true" @focus="searchFocussed = true" @blur="searchFocussed = false" placeholder="Search by keyword" />
                                     <div class="search-icon" @click="search = ''">
                                         <fluro-icon icon="times" v-if="search.length" />
                                         <fluro-icon icon="search" v-else />
@@ -38,7 +38,7 @@
                             </v-btn>
                         </v-flex>
                         <v-flex shrink>
-                            <v-btn color="primary" small class="my-0 mr-0" @click="close()">
+                            <v-btn color="primary" small class="my-0 mr-0" @click="close(selector.selection)">
                                 Done
                             </v-btn>
                         </v-flex>
@@ -50,7 +50,7 @@
                 <v-layout fill-height>
                     <flex-column style="min-height:50vh;">
                         <!-- :init-page="$route.query.page"  :init-sort="{sortKey:$route.query.sortKey, sortDirection:$route.query.sortDirection, sortType:$route.query.sortType}" @raw="rowsChanged" @filtered="filteredChanged" @page="pageChanged" @sort="sortChanged"  -->
-                        <fluro-dynamic-table :enable-actions="false" :filter-config="filterConfig" :selection-controller="selector" :clicked="rowClicked" :search="search" :data-type="type" :columns="columns" @raw="rowsChanged" @filtered="filteredChanged" @page="pageChanged" @sort="sortChanged" />
+                        <fluro-dynamic-table  :enable-actions="false" :allDefinitions="options.allDefinitions" :filter-config="filterConfig" :selection-controller="selector" :clicked="rowClicked" :search="search" :data-type="type" :columns="columns" @raw="rowsChanged" @filtered="filteredChanged" @page="pageChanged" @sort="sortChanged" />
                     </flex-column>
                     <div class="filter-sidebar scroll-y" v-show="showFilters">
                         <v-container pa-2>
@@ -105,7 +105,7 @@ import FluroTab from '../../ui/tabset/FluroTab.vue';
 
 /////////////////////////////////////////
 
-import FluroDynamicTable from '../../table/DynamicTable.vue';
+import FluroDynamicTable from '../../table/FluroDynamicTable.vue';
 
 //Filter Stuff
 import FilterConditionGroup from '../filters/FilterConditionGroup.vue';
@@ -119,6 +119,7 @@ import TitleCell from '../../table/cells/TitleCell.vue';
 import StatusCell from '../../table/cells/StatusCell.vue';
 import DefinitionCell from '../../table/cells/DefinitionCell.vue';
 import ThumbnailCell from '../../table/cells/ThumbnailCell.vue';
+import TypeImageCell from '../../table/cells/TypeImageCell.vue';
 
 /////////////////////////////////////////
 
@@ -144,6 +145,7 @@ export default {
         StatusCell,
         DefinitionCell,
         ThumbnailCell,
+        TypeImageCell,
     },
     mixins: [ModalMixin, Layout],
     data() {
@@ -174,13 +176,15 @@ export default {
     },
     methods: {
         rowClicked(item) {
-            this.selector.toggle(item);
+            this.selectionManager.toggle(item);
         },
         isSelected(item) {
-            return this.selector.isSelected(item);
+            return this.selectionManager.isSelected(item);
         },
+
+        //I dont think this is ever used. should probably get rid of it
         toggleRealm(item) {
-            return this.selector.toggleRealm(item);
+            return this.selectionManager.toggleRealm(item);
         },
         resetFilter() {
             this.filterConfig = {}
@@ -199,6 +203,9 @@ export default {
         },
     },
     computed: {
+        selectionManager() {
+            return this.selector;
+        },
         filterChangeString() {
             return FilterService.getFilterChangeString(this.filterConfig);
         },
@@ -210,7 +217,7 @@ export default {
             }
         },
         modalTitle() {
-            var count = this.selector.selection.length;
+            var count = this.selectionManager.selection.length;
 
             if (!count) {
                 return `Select ${this.plural}`
@@ -225,7 +232,7 @@ export default {
 
         },
         type() {
-            return this.options.type;
+            return this.options.type || 'node';
         },
         parentType() {
             var parentType = this.$fluro.types.parentType(this.type);
@@ -238,13 +245,13 @@ export default {
             return this.$fluro.types.readable(this.type, true);
         },
         selection() {
-            return this.selector.selection;
+            return this.selectionManager.selection;
         },
         tree() {
-            return this.selector.tree;
+            return this.selectionManager.tree;
         },
         loading() {
-            return this.selector.loading;
+            return this.selectionManager.loading;
         },
         ids() {
             return this.$fluro.utils.arrayIDs(this.options.items);
@@ -257,6 +264,12 @@ export default {
             ];
 
             switch (this.parentType) {
+                case 'node' :
+                    array = array.concat([
+                        { title: '', key: '_id', renderer: TypeImageCell, shrink:true },
+                        { title: 'Title', key: 'title', renderer: TitleCell },
+                    ]);
+                break;
                 case 'image':
                     array = array.concat([
                         { title: 'Thumbnail', key: '_id', renderer: ThumbnailCell },
@@ -297,172 +310,10 @@ export default {
 }
 </script>
 <style lang="scss">
-$bg-color: #eaedf2;
-$line-color: darken($bg-color, 10%);
-
-.realm-select-modal {
-
-    max-height: 80vh;
-
-    .tabset {
-        .tabset-menu {
-            background: #333;
-            color: #fff;
-
-            a {
-                border: none !important;
-                padding: 20px 15px;
-
-                &.active {
-                    background: none;
-                    opacity: 1;
-                    border: none;
-                }
-            }
-        }
-    }
-
-    .flex-tabs {
-        background: #eaedf2;
-    }
-
-
-
-
-    .realm-select-item-outer {
-        background: $bg-color;
-        padding: 0 5px 0 15px;
-
-        &.has-children+.realm-select-item-outer {
-            &>.realm-select-item:first-child {
-                border-top: 1px solid $line-color !important;
-            }
-        }
-
-        .realm-select-item {
-            border: 1px solid $line-color;
-            display: block;
-            padding: 10px;
-
-            color: #888;
-            position: relative;
-            background: #fff;
-            font-weight: 400;
-            cursor: pointer;
-
-            &:hover {
-                background: #fafafa;
-            }
-
-
-            .type {
-                font-weight: 1 !important;
-                font-style: italic !important;
-                font-size: 0.9em !important;
-                opacity: 0.5;
-            }
-
-            .check-icon {
-                width: 35px;
-                text-align: right;
-            }
-
-
-
-            &:first-child {
-                border-top: none;
-            }
-
-            &:before {
-                content: '';
-                border-top: 1px solid $line-color;
-                position: absolute;
-                left: -16px;
-                top: 19px;
-                width: 15px;
-                height: 2px;
-                display: block;
-            }
-
-            .v-list__tile__action {
-                opacity: 0;
-            }
-
-
-            .dot {
-                border-radius: 100%;
-                display: inline-block;
-                width: 10px;
-                height: 10px;
-                margin-right: 10px;
-                background-color: rgba(#444, 0.3);
-            }
-        }
-
-        .children {
-            padding: 0px 0 15px;
-            margin-left: 21px;
-            border-left: 1px solid $line-color;
-            position: relative;
-
-            @media(max-width: 768px) {
-                margin-left: 5px;
-            }
-
-            &:before {
-                content: '';
-                position: absolute;
-                width: 1px;
-                height: 20px;
-                display: block;
-                left: -1px;
-                border-left: 1px solid $line-color;
-                top: 0;
-            }
-
-            &:after {
-                content: '';
-                position: absolute;
-                width: 1px;
-                height: 36px;
-                display: block;
-                left: -1px;
-                border-left: 1px solid $bg-color;
-                bottom: 0;
-            }
-        }
-    }
-
-
-    .has-selection {
-        .realm-select-item {
-            background: lighten($bg-color, 1%);
-
-
-
-
-            &.selected {
-
-                background: #fff;
-                border-color: $line-color;
-                color: #333;
-
-
-
-                font-weight: 600;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-
-
-
-            }
-        }
-    }
-
-
-
-
-
+.content-select-modal {
+    width:80vw;
+    min-width:300px;
+    max-width: 1200px;
 }
+
 </style>

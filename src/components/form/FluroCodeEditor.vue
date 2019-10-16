@@ -95,6 +95,7 @@ export default {
             require('brace/mode/html')
             require('brace/mode/json') //language
             require('brace/mode/javascript') //language
+            require('brace/mode/ejs') //language
             require('brace/mode/scss')
             require('brace/theme/tomorrow_night_eighties')
             require('brace/snippets/javascript') //snippet

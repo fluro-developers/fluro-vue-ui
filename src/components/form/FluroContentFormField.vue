@@ -1,14 +1,45 @@
 <template>
     <div :data-field-key="key" class="fluro-content-form-field" v-if="isVisible" v-bind="attributes" :class="fieldClass">
-        <!-- <pre>{{model}}</pre> -->
+        <!-- <pre>{{field.title}} MODEL {{model}}</pre> -->
+        <!-- <pre>{{field.title}} DATA {{formModel}}</pre> -->
         <template v-if="officeUseOnly">
+        </template>
+        <template v-else-if="renderer == 'dynamicdate'">
+            <v-input :label="displayLabel" :persistent-hint="true" :hint="dynamicDateHint" class="no-flex">
+                <!-- <pre>{{fieldModel}}</pre> -->
+                <!-- <v-label>{{displayLabel}}</v-label> -->
+                <!-- <v-select :outline="showOutline" :label="displayLabel"  v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" /> -->
+                <div style="margin: 10px 0 ;">
+                    <v-btn-toggle v-model="fieldModel">
+                        <v-btn flat :value="null">
+                            None
+                        </v-btn>
+                        <v-btn flat value="DATE_NOW">
+                            Dynamic Date
+                        </v-btn>
+                        <v-menu :fixed="true" v-model="modal" min-width="290px" :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
+                            <template v-slot:activator="{ on }">
+                                <v-btn flat :value="currentDateOrToday" v-on="on">
+                                    Specific Date
+                                </v-btn>
+                            </template>
+                            <v-card>
+                                <v-date-picker attach @change="modal = false" v-model="fieldModel" no-title scrollable>
+                                    <v-spacer></v-spacer>
+                                    <v-btn flat color="primary" @click="modal = false">Done</v-btn>
+                                </v-date-picker>
+                            </v-card>
+                        </v-menu>
+                    </v-btn-toggle>
+                </div>
+            </v-input>
         </template>
         <template v-else-if="renderer == 'custom'">
             <fluro-compile-html :template="customTemplate" :context="customContext" />
         </template>
         <template v-else-if="renderer == 'embedded'">
             <template v-if="field.maximum == 1">
-                <fluro-content-form :form-fields="formFields" :options="options" v-model="fieldModel" @input="valueChange" :fields="fields"></fluro-content-form>
+                <fluro-content-form :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel" @input="valueChange" :fields="fields"></fluro-content-form>
             </template>
             <template v-if="field.maximum != 1">
                 <template v-for="(object, index) in fieldModel">
@@ -24,7 +55,7 @@
                         </v-toolbar>
                         </v-toolbar>
                         <v-card-text>
-                            <fluro-content-form :form-fields="formFields" :options="options" v-model="fieldModel[index]" @input="valueChange" :fields="fields"></fluro-content-form>
+                            <fluro-content-form :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel[index]" @input="valueChange" :fields="fields"></fluro-content-form>
                         </v-card-text>
                     </v-card>
                 </template>
@@ -44,7 +75,7 @@
             <template v-if="asObject">
                 <template v-if="field.maximum == 1">
                     <!-- FIELDS 1 -->
-                    <fluro-content-form :form-fields="formFields" :options="options" v-model="fieldModel" @input="valueChange" :fields="fields"></fluro-content-form>
+                    <fluro-content-form :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel" @input="valueChange" :fields="fields"></fluro-content-form>
                 </template>
                 <template v-if="field.maximum != 1">
                     <template v-for="(object, index) in fieldModel">
@@ -60,7 +91,7 @@
                             </v-toolbar>
                             </v-toolbar>
                             <v-card-text>
-                                <fluro-content-form :form-fields="formFields" :options="options" v-model="fieldModel[index]" @input="valueChange" :fields="fields"></fluro-content-form>
+                                <fluro-content-form :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel[index]" @input="valueChange" :fields="fields"></fluro-content-form>
                             </v-card-text>
                         </v-card>
                     </template>
@@ -79,12 +110,12 @@
             <template v-else>
                 <template v-if="field.sameLine">
                     <v-layout row wrap>
-                        <!-- <fluro-content-form :options="options" v-model="fieldModel[index]" @input="valueChange" :fields="fields"></fluro-content-form> -->
+                        <!-- <fluro-content-form :dynamic="dynamic" :options="options" v-model="fieldModel[index]" @input="valueChange" :fields="fields"></fluro-content-form> -->
                         <template v-for="subfield in fields">
                             <!-- FIELDS 2 -->
                             <!-- <v-layout row wrap> -->
                             <!-- <pre>{{fields.length}}</pre> -->
-                            <fluro-content-form-field :form-fields="formFields" :options="options" class="flex" :field="subfield" @input="valueChange" v-model="model"></fluro-content-form-field>
+                            <fluro-content-form-field :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" class="flex" :field="subfield" @input="valueChange" v-model="model"></fluro-content-form-field>
                             <!-- </v-layout> -->
                         </template>
                     </v-layout>
@@ -95,7 +126,7 @@
                         <!-- FIELDS 2 -->
                         <!-- <v-layout row wrap> -->
                         <!-- <pre>{{fields.length}}</pre> -->
-                        <fluro-content-form-field :form-fields="formFields" :options="options" class="flex" :field="subfield" @input="valueChange" v-model="model"></fluro-content-form-field>
+                        <fluro-content-form-field :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" class="flex" :field="subfield" @input="valueChange" v-model="model"></fluro-content-form-field>
                         <!-- </v-layout> -->
                     </template>
                 </template>
@@ -115,6 +146,11 @@
         <template v-else-if="renderer == 'number'">
             <v-text-field :suffix="suffix" :prefix="prefix" :outline="showOutline" :success="success" :required="required" type="number" :label="displayLabel" v-model="fieldModel" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
         </template>
+        <template v-else-if="renderer == 'realmselect'">
+            <v-input class="no-flex" :persistent-hint="true" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
+                <fluro-realm-select v-model="fieldModel" />
+            </v-input>
+        </template>
         <template v-else-if="renderer == 'datepicker'">
             <!--      <template v-slot:activator="{ on }">
                             <v-btn small v-on="on">
@@ -133,7 +169,8 @@
                     <!-- :value="computedDateFormattedMomentjs"  -->
                     <!-- @focus="modal = true" -->
                     <!-- v-model="fieldModel" -->
-                    <v-text-field :outline="showOutline" :success="success"  :value="formattedDate"  :persistent-hint="true" :hint="formattedDate" :label="displayLabel" prepend-inner-icon="event" readonly v-on="on"></v-text-field>
+                    <!--   -->
+                    <v-text-field :outline="showOutline" :success="success" :value="formattedDate" :persistent-hint="true" :hint="formattedDate" :label="displayLabel" prepend-inner-icon="event" readonly v-on="on"></v-text-field>
                 </template>
                 <v-card>
                     <v-date-picker attach @change="modal = false" v-model="fieldModel" no-title scrollable>
@@ -182,7 +219,7 @@
             <v-autocomplete :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
         </template>
         <template v-else-if="renderer == 'textarea'">
-            <v-textarea :outline="showOutline" :success="success" :required="required" :label="displayLabel" v-model="fieldModel" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+            <v-textarea :outline="showOutline" :success="success" :required="required" :label="displayLabel" v-model="fieldModel" @blur="touch()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" />
         </template>
         <template v-else-if="renderer == 'select'">
             <!-- <pre>{{selectOptions}}</pre> -->
@@ -190,7 +227,7 @@
         </template>
         <template v-else-if="renderer == 'content-select'">
             <v-input class="no-flex" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
-                <fluro-content-select :success="success" :required="required" :error-messages="errorMessages" :label="displayLabel" :outline="showOutline" :hint="field.description" :placeholder="field.placeholder" :minimum="minimum" @input="touch" :type="restrictType" :maximum="maximum" v-model="model[field.key]" />
+                <fluro-content-select :success="success" :required="required" :error-messages="errorMessages" :label="displayLabel" :outline="showOutline" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" :minimum="minimum" @input="touch" :type="restrictType" :maximum="maximum" v-model="model[field.key]" />
             </v-input>
         </template>
         <template v-else-if="renderer == 'search-select'">
@@ -210,18 +247,21 @@
             </v-autocomplete>
         </template>
         <template v-else-if="renderer == 'signature'">
-            <fluro-signature-field :outline="showOutline" :success="success" :label="displayLabel" v-model="fieldModel" :required="required" :error-messages="errorMessages" :hint="field.description" />
+            <fluro-signature-field :outline="showOutline" :success="success" :label="displayLabel" v-model="fieldModel" :required="required" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" />
         </template>
         <template v-else-if="renderer == 'code'">
-            <v-card class="no-flex">
-                <v-toolbar dark>
-                    <v-toolbar-title>{{label}}</v-toolbar-title>
-                </v-toolbar>
-                <fluro-code-editor :outline="showOutline" :success="success" v-model="fieldModel" :lang="syntax" :height="200"></fluro-code-editor>
-            </v-card>
+            <v-input class="no-flex" :hint="field.description" :persistent-hint="true">
+                <v-label>{{displayLabel}}</v-label>
+                <v-card class="no-flex">
+                    <!-- <v-toolbar dark> -->
+                    <!-- <v-toolbar-title>{{displayLabel}}</v-toolbar-title> -->
+                    <!-- </v-toolbar> -->
+                    <fluro-code-editor :outline="showOutline" :success="success" v-model="fieldModel" :lang="syntax" :height="200"></fluro-code-editor>
+                </v-card>
+            </v-input>
         </template>
         <template v-else-if="renderer == 'wysiwyg'">
-            <v-input class="no-flex" :outline="showOutline" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
+            <v-input class="no-flex" :outline="showOutline" :success="success" :required="required" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description">
                 <template v-if="multipleInput">
                     <template v-if="fieldModel.length">
                         <template v-for="(entry, index) in fieldModel">
@@ -325,12 +365,12 @@
                         <!-- <pre>{{proposedValue}}</pre> -->
                         <!-- <pre>{{fieldModel}}</pre> -->
                         <!--   -->
-                        <v-text-field :autofocus="autofocus" class="faint" @input="valueChange" append-inner-icon="plus" :outline="showOutline" :success="success" browser-autocomplete="off" append-icon="plus" :required="required" :label="multiLabel" v-model="proposedValue" @keyup.enter.native.stop="addProposedValue()" @blur="addProposedValue()" :error-messages="errorMessages" :hint="hint" :placeholder="field.placeholder" />
+                        <v-text-field :autofocus="autofocus" class="faint" @input="valueChange" append-inner-icon="plus" :outline="showOutline" :success="success" browser-autocomplete="off" append-icon="plus" :required="required" :label="multiLabel" v-model="proposedValue" @keyup.enter.native.stop="addProposedValue()" @blur="addProposedValue()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="hint" :placeholder="field.placeholder" />
                     </template>
                 </v-input>
             </template>
             <template v-if="!multipleInput">
-                <v-text-field :autofocus="autofocus" :outline="showOutline" :success="success" browser-autocomplete="off" :required="required" :label="displayLabel" v-model="fieldModel" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+                <v-text-field :autofocus="autofocus" :outline="showOutline" :success="success" browser-autocomplete="off" :required="required" :label="displayLabel" v-model="fieldModel" @blur="touch()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" />
             </template>
         </template>
         <!-- <pre><label>{{field.title}}</label><br/>{{model}}</pre> -->
@@ -376,7 +416,7 @@ export default {
             drag: false,
             test: null,
             modal: false,
-            model: JSON.parse(JSON.stringify(this.value)),
+            model: this.value, //JSON.parse(JSON.stringify(this.value)),
             // model: this.value,
             proposedValue: null,
             sudoModel: null,
@@ -485,18 +525,79 @@ export default {
             // this.model[this.key] = v[this.key];
         },
         value(val) {
-            // console.log('The value has now changed', val)
             this.$set(this, 'model', val);
             return this.reset();
         }
     },
     computed: {
+        dynamicDateHint() {
+
+            var self = this;
+
+            if (!self.fieldModel) {
+                return;
+            }
+
+            if (self.fieldModel == 'DATE_NOW') {
+                return 'The date will be stored at the time of action.';
+            }
+
+
+            return `Date will be set to ${self.$fluro.date.formatDate(self.fieldModel, 'dddd D MMM YYYY')}`;
+
+        },
+        currentDateOrToday() {
+
+            function isDate(s) {
+                if (isNaN(s) && !isNaN(Date.parse(s))) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            ////////////////////////////////
+
+            if (isDate(this.fieldModel)) {
+                return new Date(this.fieldModel);
+            } else {
+                return new Date();
+            }
+        },
+        params() {
+            return this.field.params || {};
+        },
+        persistentDescription() {
+            var self = this;
+
+            if (self.params.persistentDescription) {
+                return true;
+            }
+
+
+            // switch(this.params) {
+
+            // }
+        },
+        formModel() {
+            return this.parent || this.model;
+        },
         dateFormat() {
             return 'D MMM YYYY';
         },
         formattedDate() {
+            if (this.fieldModel === undefined || this.fieldModel === null || this.fieldModel === '') {
+                // console.log('UNDEFINED DATE', this.fieldModel)
+                return;
+            }
+
+            // console.log('We have a model!!!', this.fieldModel)
+
             return this.fieldModel ? moment(this.fieldModel).format(this.dateFormat) : ''
         },
+        // formattedDate() {
+        //     return this.$fluro.date.formatDate(this.fieldModel, 'dddd D MMM YYYY');
+        // },
         asyncOptionsURL() {
 
             var self = this;
@@ -519,9 +620,7 @@ export default {
         showOutline() {
             return this.outline || this.options.outline;
         },
-        formattedDate() {
-            return this.$fluro.date.formatDate(this.fieldModel, 'dddd D MMM YYYY');
-        },
+
         restrictType() {
 
             if (this.field.params && this.field.params.restrictType) {
@@ -717,14 +816,21 @@ export default {
 
         fieldModel: {
             get() {
+                var self = this;
+                var value = self.model[self.key];
 
-                var value = this.model[this.key];
-                // /this.model[this.key] = value;
-                // if(this.type == 'boolean') {
-                //     if(!value) {
-                //         return false;
-                //     }
-                // }
+                if (self.dynamic && self.renderer == 'dynamicdate') {
+                    if (value == 'DATE_NOW') {
+                        return value;
+                    }
+
+                    if (!value) {
+                        return;
+                    }
+
+                    return new Date(value).toISOString();
+                }
+
 
                 //////////////////////////////////
 
@@ -733,6 +839,25 @@ export default {
             set(value) {
 
                 var self = this;
+
+
+                //////////////////////////////////
+
+                if (self.dynamic && self.renderer == 'dynamicdate') {
+                    if (value == 'DATE_NOW') {
+                        self.$set(self.model, self.key, value);
+                        return self.valueChange();
+                    }
+
+                    if (!value) {
+                        self.$set(self.model, self.key, null);
+                        return self.valueChange();
+                    }
+
+
+                    self.$set(self.model, self.key, new Date(value).toISOString());
+                    return self.valueChange();
+                }
 
                 //////////////////////////////////
 
@@ -857,6 +982,7 @@ export default {
                 .value()
         },
         countryOptions() {
+
             return _.map(this.asyncOptions, function(country) {
                 return {
                     title: country.name,
@@ -1065,21 +1191,38 @@ export default {
         },
         renderer() {
 
-            //Get the widget defined on the data object
-            var dataType = this.type;
-            var directive = this.field.directive;
+            var self = this;
 
+            //Get the widget defined on the data object
+            var dataType = self.type;
+            var directive = self.field.directive;
+
+            /////////////////////////////////
+
+            if (self.dynamic) {
+                if (dataType == 'date') {
+                    return 'dynamicdate';
+                }
+            }
+
+            /////////////////////////////////
 
             switch (directive) {
+                case 'realm-select':
+                    directive = 'realmselect';
+                    break;
                 case 'dob-select':
                 case 'date-select':
+                case 'datepicker':
                     directive = 'datepicker';
                     break;
 
                 case 'time-select':
+                case 'timepicker':
                     directive = 'timepicker';
                     break;
                 case 'datetime-select':
+                case 'datetimepicker':
                     directive = 'datetimepicker';
                     break;
                 case 'timezone-select':
@@ -1094,8 +1237,13 @@ export default {
                 case 'textarea':
                 case 'wysiwyg':
                 case 'select':
-                case 'upload':
+
                 case 'embedded':
+                    break;
+                case 'upload':
+                    if(self.context =='admin') {
+                        directive = 'content-select';
+                    }
                     break;
                 case 'button-select':
 
@@ -1409,7 +1557,7 @@ export default {
             var context = {
                 data: self.model,
                 interaction: self.model,
-                model: self.parent,
+                model: self.model,
                 Math: Math,
                 String: String,
                 Array: Array,
@@ -1544,9 +1692,16 @@ export default {
             self.$emit('input', self.model, self.fieldModel); //JSON.parse(JSON.stringify(self.model))); //[self.key])
         }
     },
+    beforeCreate() {
+        if (!this.field) {
+            console.log('NO FIELD ISSUE', this)
+        }
+    },
     created() {
 
         var self = this;
+
+
 
         if (self.multipleInput) {
             switch (self.type) {
@@ -1605,9 +1760,19 @@ export default {
         }
     },
     props: {
-        // 'parent':{
-        //     type:Object,
-        // },
+        'context': {
+            type: String,
+            default () {
+                //By default 
+                return this.$fluro.global.defaultFormContext;
+            },
+        },
+        'dynamic': {
+            type: Boolean,
+        },
+        'parent': {
+            type: Object,
+        },
         'autofocus': {
             type: Boolean,
         },
@@ -1645,7 +1810,7 @@ export default {
 
                 var self = this;
 
-                
+
 
                 if (!self.asyncOptionsURL || !self.asyncOptionsURL.length) {
                     Promise.resolve([]);
