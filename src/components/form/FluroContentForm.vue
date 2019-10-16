@@ -168,6 +168,9 @@ export default {
         }
     },
     computed: {
+        fieldsOutput() {
+            return this.fields;
+        },
         formModel() {
             return this.parent || this.model;
         },
@@ -189,7 +192,7 @@ export default {
                 .value();
         },
         fieldHash() {
-            return _.reduce(this.fields, function(set, field) {
+            return _.reduce(this.fieldsOutput, function(set, field) {
 
                 
                 set[field.key] = field;
@@ -241,8 +244,8 @@ export default {
             /////////////////////////////////////////////////
 
             //For each field reset the model
-            // console.log('SELF FIELDS', self.fields);
-            (self.fields || []).forEach(createDefaults);
+            // console.log('SELF FIELDS', self.fieldsOutput);
+            (self.fieldsOutput || []).forEach(createDefaults);
 
             /////////////////////////////////////////////////
 
@@ -268,7 +271,7 @@ export default {
                 
                 //Check if it's just a display group
                 if (field.type == 'group' && !field.asObject) {
-                    (field.fields || []).forEach(createDefaults);
+                    (field.fieldsOutput || []).forEach(createDefaults);
                 }
 
                 // console.log('SET DEFAULT', field.key, blankValue);

@@ -1,4 +1,4 @@
-console.log('fluro-vue-ui 2.0.28')
+console.log('fluro-vue-ui 2.0.29')
 
 /////////////////////////////////////////////////////
 
@@ -43,6 +43,12 @@ export { FluroDynamicTable as FluroDynamicTable };
 
 import FluroToggleItem from './components/ui/FluroToggleItem.vue';
 export { FluroToggleItem as FluroToggleItem };
+
+
+////////////////////////////////////////////////////////////////////
+
+import FluroItemImage from './components/ui/FluroItemImage.vue';
+export { FluroItemImage as FluroItemImage };
 
 
 ////////////////////////////////////////////////////////////////////
