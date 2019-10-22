@@ -3,9 +3,30 @@
         <!-- {{loadingModel}} -- {{loadingConfig}} -->
         <fluro-page-preloader v-if="loading" contain />
         <template v-else>
+            <flex-column-header class="border-bottom">
+                <page-header :type="type">
+                    <template v-slot:left>
+                        <h3>{{title}} <span class="small text-muted">{{definitionTitle}}</span></h3>
+                    </template>
+
+                    <template v-slot:right>
+                        <v-btn v-if="model._id" icon class="mr-0" small @click="$actions.open([model])">
+                            <fluro-icon icon="ellipsis-h" />
+                        </v-btn>
+                        <v-btn @click="cancel">
+                            Close
+                        </v-btn>
+                        <v-btn class="mx-0" v-if="canEdit" @click="edit" color="primary">
+                            Edit
+                        </v-btn>
+                    </template>
+                </page-header>
+            </flex-column-header>
             <!-- BOOM TEST {{model}}  -->
             <!-- <pre>TESTING NOW? {{model}}</pre> -->
-            <component :item="model" v-bind:is="component" :config="config" v-if="component" />
+            <flex-column-body>
+                <component :item="model" v-bind:is="component" :config="config" v-if="component" />
+            </flex-column-body>
         </template>
     </flex-column>
 </template>
@@ -39,9 +60,37 @@ export default {
         }
     },
     methods: {
+        cancel() {
+            this.$emit('cancel');
+        },
+        edit() {
+            this.$fluro.global.edit(this.model);
+        },
+    },
 
+    created() {
+        // this.reset(true);
+        if (this.model && !this.model.data) {
+            this.$set(this.model, 'data', {});
+        }
     },
     computed: {
+        typeName() {
+            var self = this;
+            return self.definition || self.type;
+        },
+        title() {
+            return this.model.title;
+        },
+        definitionTitle() {
+            return this.config.definition ? this.config.definition.title : this.config.type.title;
+        },
+        // definition() {
+        //     return this.config.definition;
+        // },
+        canEdit() {
+            return this.$fluro.access.canEditItem(this.model);
+        },
         itemID() {
             return this.$fluro.utils.getStringID(this.id);
         },
@@ -64,7 +113,7 @@ export default {
             get() {
 
                 var self = this;
-                var typeName = self.definition || self.type;
+                
 
                 //////////////////////////////////////////////
 
@@ -73,7 +122,7 @@ export default {
                 //////////////////////////////////////////////
 
                 return new Promise(function(resolve, reject) {
-                    return self.$fluro.api.get(`/defined/type/${typeName}`).then(function(res) {
+                    return self.$fluro.api.get(`/defined/type/${self.typeName}`).then(function(res) {
                         resolve(res.data);
                         self.loadingConfig = false;
                     }, reject);
@@ -88,6 +137,11 @@ export default {
                 return new Promise(function(resolve, reject) {
                     self.$fluro.content.get(self.itemID)
                         .then(function(res) {
+
+                            if(!res.data) {
+                                res.data = {};
+                            }
+
                             resolve(res);
                             self.loadingModel = false;
                         })
@@ -102,8 +156,6 @@ export default {
 }
 </script>
 <style lang="scss">
-
 </style>
 <style scoped lang="scss">
-
 </style>

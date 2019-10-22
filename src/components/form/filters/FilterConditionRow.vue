@@ -1,17 +1,18 @@
 <template>
     <!-- grid-list-lg -->
     <v-container class="filter-condition-row" :class="{mini:mini}" pa-0>
-        <!-- <pre>{{selectedKey}} - {{dataType}} {{inputType}}</pre> -->
         <v-layout row wrap>
             <v-flex xs12 sm4>
-                <!-- <pre>{{valid}}</pre> -->
                 <template v-if="fields.length">
                     <template v-if="$vuetify.breakpoint.xsOnly">
                         <!-- <v-select single-line dense :loading="loadingKeys" v-model="model.key" item-text="title" item-value="key" :items="fields" /> -->
                         <v-select single-line dense :loading="loadingKeys" :return-object="true" v-model="selectedKey" item-text="title" item-value="key" :items="fields" />
                     </template>
                     <template v-else>
+                        <!-- <pre>{{fields}}</pre> -->
+                        <!-- TESTING -->
                         <!-- <v-autocomplete single-line dense :loading="loadingKeys" v-model="model.key" item-text="title" item-value="key" :items="fields" /> -->
+                        <!-- <v-autocomplete single-line dense :loading="loadingKeys" :return-object="true" v-model="model.test" item-text="title" item-value="key" :items="fields" /> -->
                         <v-autocomplete single-line dense :loading="loadingKeys" :return-object="true" v-model="selectedKey" item-text="title" item-value="key" :items="fields" />
                     </template>
                 </template>
@@ -95,10 +96,8 @@
                     </v-layout>
                 </v-flex>
                 <v-flex xs12 sm4 v-else-if="inputType == 'array' && dataType != 'date'">
-
-                    <!-- <pre>{{selectedKey}}</pre> -->
                     <template v-if="simpleKey == 'realms'">
-                        <fluro-realm-select small v-model="model.values" />
+                        <fluro-realm-select :filterDiscriminator="discriminator" block small v-model="model.values" />
                     </template>
                     <template v-else>
                         <template v-if="$vuetify.breakpoint.xsOnly">
@@ -120,9 +119,16 @@
                             <div>
                                 <v-menu ref="date1" v-model="date1" :close-on-content-click="false" :nudge-right="40" lazy transition="scale-transition" offset-y full-width min-width="290px">
                                     <template v-slot:activator="{ on }">
-                                        <v-text-field v-model="model.value" class="small-input" single-line label="Date" v-on="on" />
+                                        <template v-if="model.computedValue && model.computedValue.length">
+                                            <v-text-field v-model="model.computedValue" class="small-input" single-line label="Relative Date"/>
+                                        </template>
+                                        <template v-else>
+                                            <v-text-field v-model="model.value" class="small-input" single-line label="Date" :placeholder="model.computedValue" v-on="on" />
+                                        </template>
                                     </template>
                                     <v-date-picker v-model="model.value" no-title scrollable>
+                                        <v-spacer></v-spacer>
+                                        <v-text-field v-model="model.computedValue" class="small-input" single-line label="Relative Date" />
                                         <v-spacer></v-spacer>
                                         <v-btn flat color="primary" @click="date1 = false">Cancel</v-btn>
                                         <v-btn flat color="primary" @click="$refs.date1.save(model.value)">OK</v-btn>
@@ -171,12 +177,21 @@ export default {
         FluroRealmSelect,
     },
     props: {
+        type: {
+            type: String,
+        },
+        useSample: {
+            type: Boolean,
+        },
         loadingKeys: {
             type: Boolean,
         },
         'value': {
             type: Object,
             required: true,
+            // default() {
+            //     return {}
+            // },
         },
         fields: {
             type: Array,
@@ -205,6 +220,20 @@ export default {
         this.$options.components.FilterConditionGroup = require('./FilterConditionGroup.vue').default;
     },
     created() {
+
+        var self = this;
+
+
+        // if(!self.model.values) {
+        //     self.model.values = [];
+        // }
+
+        self.debounced = _.debounce(function() {
+            // self.model = self.words;
+            console.log('FILTER ROW CHANGED', self.model)
+            self.$emit('input', self.model);
+        }, self.debounce);
+
 
         this.retrieveValues();
     },
@@ -240,14 +269,18 @@ export default {
         });
 
 
+        // var parsedModel = this.value;
         var parsedModel = JSON.parse(JSON.stringify(this.value));
 
+        // console.log('MODEL START IS', parsedModel)
 
         return {
-
+            sampleRefreshKey: this.$fluro.utils.guid(),
             //Date Select Stuff
             datePeriodOptions,
             // datePeriod: datePeriodOptions[1],
+            debounced: null,
+            debounce: 0, //500,
             possibleValues: [],
             date1: false,
             date2: false,
@@ -259,6 +292,9 @@ export default {
     computed: {
         simpleKey() {
             return String(this.model.key).split('|')[0];
+        },
+        discriminator() {
+            return String(this.model.key).split('|')[1];
         },
         weeks() {
 
@@ -403,10 +439,17 @@ export default {
         },
         rowChangeString() {
 
-            // //console.log('CHANGE STRING!', this.model.key, this.rows.length)
-            return `${this.discriminatorDefinition}-${this.discriminatorType}${this.discriminator}-${this.model.key}-${_.orderBy(this.$fluro.utils.arrayIDs(this.rows), function(r) {
-                return r;
-            }).toString()}`;
+            var self = this;
+
+            if (self.useSample) {
+                return `${self.sampleRefreshKey}-${self.type}-${self.model.key}`;
+            } else {
+                // //console.log('CHANGE STRING!', this.model.key, this.rows.length)
+                return `${this.discriminatorDefinition}-${this.discriminatorType}${this.discriminator}-${this.model.key}-${_.orderBy(this.$fluro.utils.arrayIDs(this.rows), function(r) {
+                    return r;
+                }).toString()}`;
+            }
+
         },
         selector() {
             var key = this.model.key;
@@ -489,7 +532,7 @@ export default {
             ///////////////////////////////////////////
         },
         selectedKey(val) {
-            // console.log('Select', val)
+            console.log('Select', val)
             var self = this;
 
             if (val) {
@@ -519,7 +562,7 @@ export default {
         },
         'model': {
             handler: function() {
-                this.$emit('input', this.model);
+                this.debounced();
             },
             deep: true,
         },
@@ -552,12 +595,14 @@ export default {
 
             ////////////////////////////////////
 
-            //There are no rows
-            if (!self.rows || !self.rows.length) {
-                //console.log('Values > No rows')
-                self.possibleValues = [];
-                this.loadingValues = false;
-                return;
+            if (!self.useSample) {
+                //There are no rows
+                if (!self.rows || !self.rows.length) {
+                    //console.log('Values > No rows')
+                    self.possibleValues = [];
+                    this.loadingValues = false;
+                    return;
+                }
             }
 
             ////////////////////////////////
@@ -683,6 +728,8 @@ export default {
 
                     //Save and cache the values
                     valueCache = valueStorageCache[self.rowChangeString] = Promise.resolve(self.possibleValues);
+
+
                     console.log('We Already have the key of', key);
                 } else {
 
@@ -745,11 +792,12 @@ export default {
 
                     ///////////////////////////////////////////////////////
 
+
                     //Make the request and cache it
                     valueCache = valueStorageCache[self.rowChangeString] = self.$fluro.content.values(subSetIDs, key, options);
                 }
             } else {
-                console.log('Values Cache exists', valueCache)
+                // console.log('Values Cache exists', valueCache)
             }
 
             /////////////////////////////////////////////////////////////////
@@ -764,8 +812,9 @@ export default {
                 self.possibleValues = [];
                 self.loadingValues = false;
 
-                //Clear the cache request for next time
+
                 valueStorageCache[self.rowChangeString] = null;
+
             });
 
 

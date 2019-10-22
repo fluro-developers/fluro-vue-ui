@@ -30,8 +30,7 @@
                 <div class="operator-column offset " :class="model.operator" v-if="model.filters.length > 1" d-flex align-center>
                     <span class="operator" :class="[{additional:g}, model.operator]">{{operatingWord(model, g)}}</span>
                 </div>
-                <v-flex>
-                    <!-- {additional:model.filters.length > 1} -->
+                <v-flex style="overflow: hidden;">
                     <v-container :class="[{'pa-2': mini}, {'py-2 px-0':!mini}, group.operator]" class="additional filter-group">
                         <template v-if="group.filters">
                             <v-layout row>
@@ -60,7 +59,6 @@
                                                     <option value="or">Any</option>
                                                     <option value="nor">None</option>
                                                 </select> of these conditions
-                                                <!-- <v-select dense v-model="group.operator" :items="operatorOptions" /> -->
                                             </div>
                                         </div>
                                     </template>
@@ -83,39 +81,37 @@
                                             <fluro-icon right icon="copy" />
                                         </v-btn>
                                         <v-btn small color="red" outline @click="removeEntry(model, g)">
-                                            <span class="btn-label">Duplicate</span>
-                                            <fluro-icon right icon="copy" />
+                                            <span class="btn-label">Remove</span>
+                                            <fluro-icon right icon="trash-alt" />
                                         </v-btn>
                                     </div>
                                 </template>
                             </v-layout>
-                            <!-- :key="i" -->
                             <div v-for="(filter, index) in group.filters" :key="filter.guid">
                                 <v-layout>
                                     <div class="operator-column" :class="[group.operator]" v-if="group.filters.length > 1" d-flex align-center>
                                         <span class="operator" :class="[{additional:index}, group.operator]">{{operatingWord(group, index)}}</span>
                                     </div>
-                                    <v-flex>
-                                        <!-- <h3 v-if="!limit && group.filters.length > 1">Rule 1</h3> -->
-                                        <!-- :columns="columns" -->
-                                        <filter-condition-row :rows="rows" :loadingKeys="loadingKeys" :definition="definition" :fields="availableKeys" :mini="mini" v-model="group.filters[index]"></filter-condition-row>
+                                    <v-flex style="overflow: hidden;">
+                                        <template v-if="availableKeys.length">
+                                            <filter-condition-row :type="type" :useSample="useSample" :rows="rows" :loadingKeys="loadingKeys" :definition="definition" :fields="availableKeys" :mini="mini" v-model="group.filters[index]" />
+                                        </template>
                                     </v-flex>
                                     <div v-if="group.filters.length > 1">
                                         <template v-if="mini">
-                                            <v-btn small class="ma-0" icon @click="removeEntry(group, index)">
-                                                <fluro-icon icon="times" />
+                                            <v-btn small flat color="error" class="ma-0" icon @click="removeEntry(group, index)">
+                                                <fluro-icon icon="trash-alt" />
                                             </v-btn>
                                         </template>
                                         <template v-else>
-                                            <v-btn icon @click="removeEntry(group, index)">
-                                                <fluro-icon icon="times" />
+                                            <v-btn icon small flat color="error" @click="removeEntry(group, index)">
+                                                <fluro-icon icon="trash-alt" />
                                             </v-btn>
                                         </template>
                                     </div>
                                 </v-layout>
                             </div>
                         </template>
-                        <!-- <pre>{{group}}</pre> -->
                         <v-btn class="mx-0" small @click="addCondition(group)">
                             Add Condition
                             <fluro-icon right icon="plus" />
@@ -132,20 +128,20 @@
 </template>
 <script>
 import Vue from 'vue';
-import {FilterService} from 'fluro';
+import { FilterService } from 'fluro';
 
 // import FilterConditionRow from './FilterConditionRow.vue';
 
 
 var indexIterator = 0;
-var DEFAULT_COMPARATOR = 'in';//'in'; //'=='
+var DEFAULT_COMPARATOR = 'in'; //'in'; //'=='
 
 function getFlattenedFields(array, trail, titles) {
 
 
     return _.chain(array)
         .map(function(field, key) {
-
+            
             var returnValue = [];
 
 
@@ -227,6 +223,9 @@ function getFlattenedFields(array, trail, titles) {
 
 export default {
     props: {
+        useSample: {
+            type: Boolean,
+        },
         type: {
             type: String,
         },
@@ -258,10 +257,36 @@ export default {
         },
         'debounce': {
             type: Number,
-            default: 0,
+            default: 500,
         },
         limit: {
             type: Boolean,
+        }
+    },
+    data() {
+
+        var self = this;
+
+        // var clone = this.value; 
+        var clone = JSON.parse(JSON.stringify(this.value));
+
+        if (!clone.filters) {
+            clone.filters = [];
+        }
+        _.each(clone.filters, function(filter) {
+            filter.guid = self.$fluro.utils.guid();
+        })
+
+        return {
+            model: clone,
+            debounced: null,
+            operatorOptions: [
+                { text: 'All', value: 'and' },
+                { text: 'Any', value: 'or' },
+                { text: 'All', value: 'and' },
+            ],
+            asyncKeys: [],
+            loadingKeys: false,
         }
     },
     beforeCreate: function() {
@@ -279,8 +304,8 @@ export default {
 
         self.debounced = _.debounce(function() {
             // self.model = self.words;
-            // console.log('DEBOUNCED', self.model, self.debounce)
-            self.$emit('input', JSON.parse(JSON.stringify(self.model)));
+            // console.log('FILTER GROUP CHANGED')
+            self.$emit('input', self.model);
         }, self.debounce);
 
 
@@ -313,6 +338,7 @@ export default {
                 guid: this.$fluro.utils.guid(),
                 filters: [{
                     comparator: DEFAULT_COMPARATOR,
+
                 }]
             })
         },
@@ -361,7 +387,7 @@ export default {
             //There are no rows
             if (!self.rows || !self.rows.length) {
                 //console.log('Values > No rows')
-                self.availableKeys = [];
+                self.asyncKeys = [];
                 this.loadingKeys = false;
                 return;
             }
@@ -401,7 +427,7 @@ export default {
 
                 ///////////////////////////////////////////////////////
 
-                if(self.definition && self.definition.type) {
+                if (self.definition && self.definition.type) {
                     options.type = self.definition.type.definitionName;
                 }
 
@@ -418,13 +444,13 @@ export default {
 
                 console.log('Keys!!', res);
 
-                self.availableKeys = res;
+                self.asyncKeys = res;
                 self.loadingKeys = false;
             }, function(err) {
 
                 console.log('Error', err);
 
-                self.availableKeys = [];
+                self.asyncKeys = [];
                 self.loadingKeys = false;
 
                 //Clear the cache request for next time
@@ -434,31 +460,7 @@ export default {
 
         }
     },
-    data() {
 
-        var self = this;
-
-        var clone = JSON.parse(JSON.stringify(this.value));
-
-        if(!clone.filters) {
-            clone.filters  = [];
-        }
-        _.each(clone.filters, function(filter) {
-            filter.guid = self.$fluro.utils.guid();
-        })
-
-        return {
-            model: clone,
-            debounced: null,
-            operatorOptions: [
-                { text: 'All', value: 'and' },
-                { text: 'Any', value: 'or' },
-                { text: 'All', value: 'and' },
-            ],
-            // availableKeys:[],
-            loadingKeys: false,
-        }
-    },
     asyncComputed: {
         definition: {
             get() {
@@ -488,97 +490,144 @@ export default {
         //         return r;
         //     }).toString()}`;
         // },
+        // 
+        /**/
+
+        definitionFields() {
+
+            var self = this;
+
+            return _.chain(self.definition)
+                .get('definition.fields')
+                .map(function(field) {
+                    return Object.assign({}, field, {
+                        key: 'data.' + field.key,
+                    })
+                })
+                .value();
+        },
+        typeFields() {
+            var self = this;
+            return _.get(self, 'definition.type.fields') || [];
+        },
+        detailSheetFields() {
+
+            var self = this;
+
+            if (!self.definition || !self.definition.details || !self.definition.details.length) {
+                return [];
+            }
+
+            return _.reduce(self.definition.details, function(set, detailSheet) {
+
+                // //Get all the flattened fields
+                var flattened = getFlattenedFields(detailSheet.fields, [], []);
+
+                //////////////////////////////////
+
+                var mapped = _.chain(flattened)
+                    .map(function(field) {
+
+                        if (field.type == 'group') {
+                            return;
+                        }
+
+                        return {
+                            title: detailSheet.title + ' - ' + field.titles.join(' > '),
+                            key: `details.${detailSheet.definitionName}.items[0].data.${field.trail.join('.')}`,
+                            minimum: field.minimum,
+                            maximum: field.maximum,
+                            detail: detailSheet.definitionName,
+                            type: field.type,
+                        }
+                    })
+                    .compact()
+                    .value();
+
+                //////////////////////////////////
+
+                return set.concat(mapped);
+
+            }, [])
+
+
+        },
         availableKeys() {
 
             var self = this;
 
-            var fields = self.fields || [];
-
-
-
-
-
-            if (self.definition) {
-
-                var definitionFields = _.chain(self.definition)
-                .get('definition.fields')
-                .map(function(field) {
-
-                    field.key = 'data.'+ field.key;
-                    return field;
-                })
-                .value();
-
-
-
-                fields = fields.concat((_.get(self, 'definition.type.fields') || []), definitionFields);
-
-                if (self.definition.details && self.definition.details.length) {
-
-                    // console.log('DETAIL SHEETS FIELDS', self.definition.details)
-                    _.each(self.definition.details, function(detailSheet) {
-
-                        // //Get all the flattened fields
-                        var flattened = getFlattenedFields(detailSheet.fields, [], []);
-
-                        var mapped = _.chain(flattened)
-                            .map(function(field) {
-
-                                if(field.type =='group') {
-                                    return;
-                                }
-
-                                return {
-                                    title: detailSheet.title + ' - ' + field.titles.join(' > '),
-                                    key: `details.${detailSheet.definitionName}.items[0].data.${field.trail.join('.')}`,
-                                    minimum: field.minimum,
-                                    maximum: field.maximum,
-                                    detail: detailSheet.definitionName,
-                                    type: field.type,
-                                }
-                            })
-                            .compact()
-                            .value();
-
-
-
-                        // _.map(detailSheet.fields, function(field) {
-
-                        //     return {
-                        //         title:detailSheet.title + ' - ' + field.title,
-                        //         key:`details.${detailSheet.definitionName}.${field.key}`,
-                        //         // key:field.key,
-                        //         // `details.${detailSheet.definitionName}.items[0].data[${field.key}]`,
-                        //         type:field.type,
-                        //         minimum:field.minimum,
-                        //         maximum:field.maximum,
-                        //         detail:detailSheet.definitionName,
-
-                        //     }
-
-                        // })
-
-                        fields = fields.concat(mapped);
-                    })
-                }
-            }
+            var fields = FilterService.allKeys(self.asyncKeys, self.definition);
 
             return _.orderBy(fields, 'title')
 
+
+
+            // // var fields = [].concat(self.fields, self.asyncKeys, self.typeFields, self.definitionFields, self.detailSheetFields);
+
+            //    // console.log('FIELDS', fields)
+            // //////////////////////////////////////////////////////////////
+
+
+
+            // // // console.log('DETAIL SHEETS FIELDS', self.definition.details)
+            // // _.each(self.definition.details, function(detailSheet) {
+
+            // //     // //Get all the flattened fields
+            // //     var flattened = getFlattenedFields(detailSheet.fields, [], []);
+
+            // //     var mapped = _.chain(flattened)
+            // //         .map(function(field) {
+
+            // //             if (field.type == 'group') {
+            // //                 return;
+            // //             }
+
+            // //             return {
+            // //                 title: detailSheet.title + ' - ' + field.titles.join(' > '),
+            // //                 key: `details.${detailSheet.definitionName}.items[0].data.${field.trail.join('.')}`,
+            // //                 minimum: field.minimum,
+            // //                 maximum: field.maximum,
+            // //                 detail: detailSheet.definitionName,
+            // //                 type: field.type,
+            // //             }
+            // //         })
+            // //         .compact()
+            // //         .value();
+
+
+
+            // //     // _.map(detailSheet.fields, function(field) {
+
+            // //     //     return {
+            // //     //         title:detailSheet.title + ' - ' + field.title,
+            // //     //         key:`details.${detailSheet.definitionName}.${field.key}`,
+            // //     //         // key:field.key,
+            // //     //         // `details.${detailSheet.definitionName}.items[0].data[${field.key}]`,
+            // //     //         type:field.type,
+            // //     //         minimum:field.minimum,
+            // //     //         maximum:field.maximum,
+            // //     //         detail:detailSheet.definitionName,
+
+            // //     //     }
+
+            // //     // })
+
+            // //     fields = fields.concat(mapped);
+            // // })
+
+
+            // return _.orderBy(fields, 'title')
+
         },
+
+        /**/
     },
     watch: {
         // rowChangeString() {
         //     this.retrieveKeys();
         // },
         value(v) {
-
-            // console.log('Value changed')
-            var clone = JSON.parse(JSON.stringify(v || {}));
-            if(!clone.filters) {
-            clone.filters  = [];
-        }
-            this.model = clone;
+            this.model = JSON.parse(JSON.stringify(v));
         },
         'model': {
             handler: function() {
@@ -597,7 +646,6 @@ $color-and: $success;
 
 
 .filter-group-outer {
-
 
     .description {
         font-size: 13px;
@@ -695,6 +743,8 @@ $color-and: $success;
         }
 
         .filter-group {
+
+            overflow: hidden;
 
             &.additional {
                 border: 1px solid #ccc;
@@ -814,6 +864,7 @@ $color-and: $success;
 
         .operator-column {
             flex: none !important;
+
 
             padding-top: 20px;
 

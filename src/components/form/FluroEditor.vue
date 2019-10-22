@@ -238,8 +238,8 @@
             </div>
         </editor-menu-bar>
         <template v-if="showSource">
-            <div>
-                <fluro-code-editor @blur="blur" @focus="focus" class="fluro-editor-textarea" @input="sourceChange" v-model="model" lang="html" :height="300"></fluro-code-editor>
+            <div class="editor-code-wrapper">
+                <fluro-code-editor @blur="blur" @focus="focus" class="fluro-editor-textarea" @input="sourceChange" v-model="model" lang="html" :height="codeEditorHeight"></fluro-code-editor>
             </div>
         </template>
         <template v-if="!showSource">
@@ -436,6 +436,10 @@ export default {
         },
     },
     props: {
+        'codeEditorHeight':{
+            default:600,
+            type:Number,
+        },
         'value': {
             default: '',
             type: String,

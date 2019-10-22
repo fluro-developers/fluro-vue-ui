@@ -1,7 +1,8 @@
 <template>
     <div class="fluro-table-wrapper">
         <!-- <pre>{{dataType}}</pre> -->
-        <!-- <pre>{{renderColumns}}</pre> -->
+        <!--         <pre>{{structureColumns}}</pre>
+ -->
         <!-- <pre>{{totalPages}}</pre> -->
         <fluro-page-preloader v-if="showLoading" contain />
         <v-container class="flex-center" v-if="!showLoading && !page.length">
@@ -56,7 +57,7 @@
                                     </v-card>
                                 </v-menu>
                             </th>
-                            <th @click="toggleSort(column)" :class="{'shrink':column.shrink, sortable:isSortable(column), 'sorting':sort.sortKey == column.key, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}" v-for="column in renderColumns">
+                            <th @contextmenu.prevent="showOptionsForColumn(column)" @click="toggleSort(column)" :class="{'shrink':column.shrink, sortable:isSortable(column), 'sorting':sort.sortKey == column.key, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}" v-for="column in renderColumns">
                                 <template v-if="column.icon">
                                     <fluro-icon v-tippy :content="column.title" library="fas" :icon="column.icon" />
                                 </template>
@@ -67,17 +68,42 @@
                                     </div>
                                     {{column.title}}
                                 </template>
+                                <!-- <div class="options-icon" @click.stop.prevent> -->
+                                    <!-- <fluro-icon library="far" icon="ellipsis-v" /> -->
+                                <!-- </div> -->
                             </th>
-                            <th class="shrink" v-if="actionsEnabled">
-                                <!--  <v-menu @click.native.stop offset-y>
+                            <th class="shrink">
+                                <v-menu :close-on-content-click="false" @click.native.stop offset-y>
                                     <template v-slot:activator="{ on }">
-                                        <v-btn class="ma-0" small icon>
-                                            <fluro-icon icon="cog" />
-                                        </v-btn>
+                                        <div v-on="on">
+                                            <v-btn v-tippy content="Table Settings" class="ma-0" small icon>
+                                                <fluro-icon icon="cog" />
+                                            </v-btn>
+                                        </div>
                                     </template>
                                     <v-card tile>
-                                        Select Fields -->
-                                <!-- <v-list dense>
+                                        <slot name="optionsabove"></slot>
+                                        <!-- <div v-for="(column, i) in columns"> -->
+                                        <!-- <v-checkbox v-model="columnState[column.key]" :label="column.title"></v-checkbox> -->
+                                        <!-- </div> -->
+                                        <!-- <div v-for="(column, i) in availableKeys"> -->
+                                        <!-- <v-checkbox v-model="customColumns[column.key]" :label="column.title"></v-checkbox> -->
+                                        <!-- </div> -->
+                                        <!-- <pre>{{availableKeys}}</pre> -->
+                                        <v-list style="max-height: 50vh;" class="scroll-y" dense>
+                                            <v-list-tile @click="addColumn(field)" v-for="field in availableKeys">
+                                                <v-list-tile-content>
+                                                    <v-list-tile-title>
+                                                        {{field.title}}
+                                                    </v-list-tile-title>
+                                                </v-list-tile-content>
+                                            </v-list-tile>
+                                        </v-list>
+
+                                         <slot name="optionsbelow"></slot>
+                                        <!-- <div v-for="field in availableKeys">{{field.title}}</div> -->
+                                        <!-- <pre>{{availableKeys}}</pre> -->
+                                        <!-- <v-list dense>
                                             <v-list-tile v-if="!allSelected" @click="selectPage()">
                                                 <v-list-tile-content>
                                                     <v-list-tile-title>
@@ -107,8 +133,8 @@
                                                 </v-list-tile-content>
                                             </v-list-tile>
                                         </v-list> -->
-                                <!-- </v-card> -->
-                                <!-- </v-menu> -->
+                                    </v-card>
+                                </v-menu>
                             </th>
                         </tr>
                     </thead>
@@ -125,7 +151,7 @@
                                     <template v-if="item._populating">
                                         <!-- <th>TEST {{selection.isSelected(item)}}</th> -->
                                         <th is="table-row-checkbox" />
-                                        <td @click.native="clicked(item, column, key)" :colspan="columns.length">-</td>
+                                        <td @click.native="clicked(item, column, key)" :colspan="renderColumns.length">-</td>
                                         <th class="shrink">
                                         </th>
                                     </template>
@@ -275,7 +301,6 @@
                                         </v-list>
                                     </v-card>
                                 </v-menu> -->
-
                                 <span class="ml-3">
                                     <template>
                                         <v-btn class="ma-0" :disabled="previousPageDisabled" icon @click="firstPage()">
@@ -379,6 +404,12 @@ export default {
                 return [];
             }
         },
+        availableKeys: {
+            type: Array,
+            default () {
+                return [];
+            }
+        },
         filterConfig: {
             type: Object,
             default () {
@@ -421,6 +452,8 @@ export default {
     },
     data() {
         return {
+            columnState: {},
+            structureColumns: this.columns,
             all: [],
             rows: [],
             page: [],
@@ -439,12 +472,16 @@ export default {
             return this.$fluro.types.readable(this.dataType, true);
         },
         pagePopulationString() {
-            return [this.currentPage, this.rawPage];
+            return [this.currentPage, this.rawPage, this.structureColumns];
         },
         renderColumns() {
 
             var self = this;
-            var array = self.columns ? self.columns.slice() : [];
+            var array = self.structureColumns ? self.structureColumns.slice() : [];
+
+            // array = _.filter(array, function(column) {
+            //     return !self.columnState[column.key];
+            // })
 
             /////////////////////////////////////
 
@@ -669,157 +706,84 @@ export default {
 
     },
     asyncComputed: {
-        // all: {
-        //     default: [],
-        //     get() {
 
-        //         var self = this;
-
-        //         // var cacheString = self.globalCacheKey;
-        //         // var valueStorageCache = self.$fluro.cache.get('dynamic-table-cache');
-        //         // var cachedValue = valueStorageCache.get(cacheString);
+        availableColumns: {
+            default: [],
+            get() {
+                var self = this;
 
 
+                ////////////////////////////////////
 
-        //         return new Promise(function(resolve, reject) {
+                //There are no rows
+                if (!self.rows || !self.rows.length) {
+                    self.loadingKeys = false;
+                    return Promise.resolve([]);
+                }
 
-        //             return self.$fluro.api.post(`/content/${self.dataType}/filter`, {
-        //             // return self.$fluro.api.get(`/system/test`, {
-        //                     includeArchived: self.includeArchivedByDefault,
-        //                 })
-        //                 .then(function(res) {
+                ////////////////////////////////////
 
-        //                     //All rows loaded
-        //                     resolve(res.data);
-        //                     self.$emit('raw', res.data);
-        //                 })
-        //                 .catch(reject);
-        //         })
-        //     },
-        // },
-        // 
+                //Show feedback to the user that we are loading
+                //the values for them
+                self.loadingKeys = true;
 
-        /**
-                page: {
-                    default: [],
-                    get() {
+                return new Promise(function(resolve, reject) {
 
-                        var self = this;
 
-                        //////////////////////////////////////
+                    //This is the key for our cached request
+                    var cacheKey = `${self.dataType}-columns`;
 
-                        // var ids = _.keys(lookup);
-                        var ids = self.$fluro.utils.arrayIDs(self.rawPage);
+                    ////////////////////////////////////
 
-                        if (!ids || !ids.length) {
-                            self.loading = false;
-                            return Promise.resolve([]);
+                    //Get the storage cache
+                    var valueStorageCache = self.$fluro.cache.get('filter-distinct-keys');
+
+                    ////////////////////////////////////
+
+                    //Check to see if there is already a cached set of values
+                    //for this query
+                    var valueCache = valueStorageCache[cacheKey];
+
+                    ////////////////////////////////////
+
+                    //If we haven't already got the values for this request
+                    if (!valueCache) {
+
+                        //Get all the ids
+                        var subSetIDs = self.$fluro.utils.arrayIDs(self.rows);
+
+                        //We need to make an asynchronous request to the server
+                        //to find out what values we can filter by
+                        var options = {
+                            type: self.dataType
                         }
 
-                        
+                        ///////////////////////////////////////////////////////
 
-                        //////////////////////////////////////
-
-                        var fields = ['title', '_type', 'definition']
-                        
-                        //Include the extra fields that make sense
-                        fields = fields.concat(_.chain(self.renderColumns)
-                            .map(function(column) {
-                                switch (column.key) {
-                                    case 'firstName':
-                                        return ['firstName', 'preferredName', 'ethnicName']
-                                        break;
-                                    case 'lastName':
-                                        return ['lastName', 'maidenName']
-                                        break;
-                                }
-
-                                //////////////////////////////////////
-
-                                if (column.additionalFields && column.additionalFields.length) {
-                                    return [column.additionalFields, column.key]
-                                }
-
-                                //////////////////////////////////////
-
-                                return column.key;
-                            })
-                            .flattenDeep()
-                            .compact()
-                            .map(function(key) {
-                                return key.split('|')[0];
-                            })
-                            .value()
-                            );
-
-                        
-
-
-                        //////////////////////////////////////
-
-                        self.loading = true;
-
-                        //////////////////////////////////////
-
-                        return new Promise(function(resolve, reject) {
-
-                            // //Create a cancel token
-                            // currentPageItemsRequest = CancelToken.source();
-
-                            /////////////////////////////////////////////////
-
-                            self.$fluro.api.post('/content/multiple', {
-                                    ids: ids,
-                                    select: _.uniq(fields),
-                                    populateAll: true,
-                                    limit: ids.length,
-
-                                    // cancelToken: currentPageItemsRequest.token,
-                                })
-                                .then(function(res) {
-
-                                    var lookup = _.reduce(res.data, function(set, entry, i) {
-
-                                        set[entry._id] = entry;
-                                        return set;
-                                    }, {})
-
-                                    //// console.log('Look for ids', ids);
-                                    var pageItems = _.chain(ids)
-                                        .map(function(id, i) {
-                                            var entry = lookup[id];
-                                            if (!entry) {
-                                                console.log('No entry for', id)
-                                                return;
-                                            }
-                                            entry._pageIndex = i;
-                                            return entry
-
-                                        })
-                                        .compact()
-                                        .value();
-
-                                    /////////////////////////////////////
-
-                                    resolve(pageItems);
-                                    self.loading = false;
-
-                                }, function(err) {
-                                    self.loading = false;
-                                    if (axios.isCancel(err)) {
-                                        // return reject(err)
-                                    } else {
-                                        return reject(err);
-                                    }
-                                });
-                        });
-
-
-                        // return Promise.resolve(self.rawPage);
+                        //Make the request and cache it
+                        valueCache = valueStorageCache[cacheKey] = self.$fluro.content.keys(subSetIDs, options);
                     }
-                },
-        /**/
 
+                    /////////////////////////////////////////////////////////////////
+
+                    //When the request is complete
+                    valueCache.then(function(res) {
+                        resolve(res);
+
+                        self.loadingKeys = false;
+                    }, function(err) {
+                        console.log('Error', err);
+                        resolve([]);
+                        self.loadingKeys = false;
+
+                        //Clear the cache request for next time
+                        valueStorageCache[cacheKey] = null;
+                    });
+                })
+
+
+            }
+        },
     },
     filters: {
         numberWithCommas(x) {
@@ -834,7 +798,7 @@ export default {
         reloadRequired: {
             immediate: true,
             handler: _.debounce(function(string) {
-                console.log('Reload Required!', string)
+                // console.log('Reload Required!', string)
                 this.reload();
             }, 500)
         },
@@ -848,6 +812,30 @@ export default {
         // }, 500),
     },
     methods: {
+        showOptionsForColumn(column) {
+
+        },
+        addColumn(column) {
+            var self = this;
+            self.$set(self.structureColumns, self.structureColumns.length, column);
+        },
+        // toggleColumn(column) {
+
+        //     var self = this;
+
+        //     var currentValue = self.columnState[column.key];
+
+        //     self.$set(self.columnState, column.key, !currentValue)
+        //     // var isDisabled = column.disabled;
+        //     // if (isDisabled) {
+        //     //     this.$set(column, 'disabled', true);
+        //     // } else {
+        //     //     this.$set(column, 'disabled', false);
+        //     // }
+
+
+
+        // },
         populatePage() {
 
             var self = this;
@@ -867,7 +855,6 @@ export default {
 
         },
         populatePageDebounced: _.debounce(function() {
-
             var self = this;
 
             //////////////////////////////////////
@@ -882,6 +869,12 @@ export default {
             //////////////////////////////////////
 
             var fields = ['title', '_type', 'definition']
+
+            //////////////////////////////////////
+
+            var appendContactDetails = [];
+
+            //////////////////////////////////////
 
             //Include the extra fields that make sense
             fields = fields.concat(_.chain(self.renderColumns)
@@ -910,6 +903,19 @@ export default {
                 .map(function(key) {
                     return key.split('|')[0];
                 })
+                .map(function(key) {
+                    if (_.startsWith(key, 'details.')) {
+                        var definitionName = key.split('.')[1];
+                        appendContactDetails.push(definitionName);
+                    }
+
+                    if (_.startsWith(key, 'family.')) {
+                        return 'family';
+                        // appendContactDetails.push(definitionName);
+                    }
+
+                    return key;
+                })
                 .value()
             );
 
@@ -924,6 +930,7 @@ export default {
                     select: _.uniq(fields),
                     populateAll: true,
                     limit: ids.length,
+                    appendContactDetails,
 
                     // cancelToken: currentPageItemsRequest.token,
                 })
@@ -968,7 +975,6 @@ export default {
         }, 500),
         reload() {
 
-            console.log('Reload')
             var self = this;
 
             //////////////////////////////////////////
@@ -1172,7 +1178,7 @@ export default {
         setPage(pageNumber) {
 
             if (this.currentPage == pageNumber) {
-                console.log('already at page', pageNumber)
+                // console.log('already at page', pageNumber)
                 return;
             }
             this.currentPage = pageNumber;
@@ -1180,7 +1186,7 @@ export default {
 
             var topElement = this.$refs.top;
             if (topElement) {
-                console.log('SCROLL INTO VIEW')
+                // console.log('SCROLL INTO VIEW')
                 topElement.scrollIntoView({
                     // block:'center',
                     // behavior:'smooth',
@@ -1248,7 +1254,7 @@ export default {
 .fluro-table-wrapper {
     position: relative;
 
-    $padding-h: 5px;
+    $padding-h: 7px;
 
 
     // border: 10px solid;
@@ -1447,6 +1453,27 @@ export default {
 
             th {
                 white-space: nowrap;
+                border-left: 1px solid rgba(#000, 0.05);
+
+                &:first-child {
+                    border-left:none;
+                }
+                // padding-right: 20px;
+
+
+                .options-icon {
+                    opacity: 0;
+                    position: absolute;
+                    right: 20px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+
+                &:hover {
+                    .options-icon {
+                        opacity: 1;
+                    }
+                }
 
                 &.sorting {
                     padding-right: 20px;
@@ -1529,17 +1556,18 @@ export default {
     .pagenumber-select {
         display: inline-block;
         position: relative;
+
         select {
             opacity: 0;
-            width:100%;
-            height:100%;
+            width: 100%;
+            height: 100%;
             position: absolute;
-            appearance:none;
+            appearance: none;
             display: block;
-            left:0;
-            right:0;
-            bottom:0;
-            top:0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: 0;
         }
     }
 
@@ -1565,11 +1593,11 @@ export default {
     th,
     td {
         &:first-child {
-            padding-left: $padding-h * 2 !important;
+            // padding-left: $padding-h * 2 !important;
         }
 
         &:last-child {
-            padding-right: $padding-h * 2 !important;
+            // padding-right: $padding-h * 2 !important;
         }
     }
 

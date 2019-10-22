@@ -1,6 +1,6 @@
 <template>
     <div class="content-select">
-        <v-btn :small="small" :block="block" class="pill mx-0" @click.native="showModal">
+        <v-btn :small="small" :color="color" :block="block" class="pill mx-0" @click.native="showModal">
             <span>{{selectionSummary}}</span>
         </v-btn>
         <!-- <pre>{{type}} {{definition}}</pre> -->
@@ -23,6 +23,9 @@ export default {
         },
         block:{
             type:Boolean,
+        },
+        color:{
+            type:String,
         },
         'value': {
             type: Array,

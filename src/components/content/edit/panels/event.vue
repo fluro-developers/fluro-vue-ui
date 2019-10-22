@@ -231,7 +231,7 @@ export default {
 
                 addField('firstLine', {
                     title: 'Subtitle',
-                    minimum: 1,
+                    minimum: 0,
                     maximum: 1,
                     type: 'string',
                     placeholder: 'Eg. A great event for the whole family. Featuring Special Guest...',

@@ -57,11 +57,11 @@ export default {
     },
     mixins: [Layout, FluroSelectionMixin],
     props: {
-        small:{
-            type:Boolean,
+        small: {
+            type: Boolean,
         },
-        block:{
-            type:Boolean,
+        block: {
+            type: Boolean,
         },
         'expanded': {
             type: Boolean,
@@ -79,11 +79,14 @@ export default {
         'definition': {
             //The definition of the thing we are selecting realms for
             type: String,
+        },
+        'filterDiscriminator': {
+            type: String,
         }
     },
     data() {
         return {
-            loading:true,
+            loading: true,
         }
     },
     asyncComputed: {
@@ -93,14 +96,11 @@ export default {
                 var self = this;
                 self.loading = true;
 
-                // console.log('Retrieve the selectable realms',this.definition, this.type)
-                var promise = self.$fluro.access.retrieveSelectableRealms('create', this.definition, this.type)
-
                 //////////////////////////////////////
 
                 function mapFlat(realm, memo) {
                     memo[realm._id] = realm;
-                    if(realm.children && realm.children.length) {
+                    if (realm.children && realm.children.length) {
                         _.each(realm.children, function(realm) {
                             mapFlat(realm, memo);
                         })
@@ -108,34 +108,51 @@ export default {
                 }
 
                 //////////////////////////////////////
-                
-                promise.then(function(res) {
 
-                    // console.log('Got the types we can create', self.definition, self.type, res);
-                    //////////////////////////////////////
+                return new Promise(function(resolve, reject) {
 
-                    var flattened = _.reduce(res, function(set, realmType) {
 
-                        _.each(realmType.realms, function(realm) {
-                            mapFlat(realm, set);
+                    self.$fluro.access
+                    .retrieveSelectableRealms('create', self.definition, self.type)
+                    .then(function(allRealms) {
+
+
+                        var filtered = _.filter(allRealms, function(realmType) {
+                            if (!self.filterDiscriminator || !self.filterDiscriminator.length) {
+                                return true;
+                            }
+                            
+                            return (realmType.definition == self.filterDiscriminator)
+                        })
+
+
+                        // console.log('Got the types we can create', self.definition, self.type, res);
+                        //////////////////////////////////////
+
+                        var flattened = _.reduce(allRealms, function(set, realmType) {
+                            _.each(realmType.realms, function(realm) {
+                                mapFlat(realm, set);
+                            });
+                            return set;
+                        }, {});
+
+                        //////////////////////////////////////
+
+                        var initialIDs = _.map(self.$fluro.utils.arrayIDs(self.value), function(id) {
+                            return flattened[id];
                         });
-                        return set;
-                    }, {});
 
-                    //////////////////////////////////////
+                        resolve(filtered);
 
-                    var initialIDs = _.map(self.$fluro.utils.arrayIDs(self.value), function(id) {
-                        return flattened[id];
-                    });
+                        // console.log('Convert', self.value, res);
+                        self.setSelection(initialIDs);
+                        self.loading = false;
+                    }, function(err) {
+                        reject(err);
+                        self.loading = false;
+                    })
 
-
-                    // console.log('Convert', self.value, res);
-                    self.setSelection(initialIDs);
-                    self.loading = false;
-                }, function(err) {
-                    self.loading = false;
                 })
-                return promise;
             }
         }
     },
@@ -145,7 +162,7 @@ export default {
             this.setSelection(this.value);
         },
         'selection': function() {
-            console.log('SELECTION')
+            // console.log('SELECTION')
             var self = this;
             //Emit the change
             this.$emit('input', self.selection);
@@ -161,10 +178,10 @@ export default {
             //////////////////////////////////////
 
             var promise = self.$fluro.modal({
-                component:RealmSelectModal,
+                component: RealmSelectModal,
                 options: {
-                    selector:self,
-                    fixed:true,
+                    selector: self,
+                    fixed: true,
                 }
             });
 
@@ -180,13 +197,11 @@ export default {
 }
 </script>
 <style scoped lang="scss">
-
-
-.label{
+.label {
     max-width: 150px;
     text-overflow: ellipsis;
-    overflow: hidden;;
+    overflow: hidden;
+    ;
     white-space: nowrap;
 }
-
 </style>

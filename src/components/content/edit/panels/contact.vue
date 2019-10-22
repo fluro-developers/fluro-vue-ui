@@ -10,9 +10,31 @@
                         <div style="padding: 10px;max-width:200px;margin: auto;">
                             <fluro-avatar-update :id="model._id" type="contact" />
                         </div>
+                        <v-container class="border-bottom text-xs-center" fluid>
+                            <v-btn class="ma-0 mx-1 ml-0" :disabled="!canEmail" @click="communicate('email')" icon color="primary" content="Send Email" v-tippy>
+                                <fluro-icon library="fas" icon="envelope" />
+                            </v-btn>
+                            <v-btn class="ma-0 mx-1" :disabled="!canSMS" @click="communicate('sms')" icon color="primary" content="Send SMS" v-tippy>
+                                <fluro-icon library="fas"  icon="comment" />
+                            </v-btn>
+                            <v-btn class="ma-0 mx-1" :disabled="!canCall" @click="communicate('phone')" icon color="primary" content="Call" v-tippy>
+                                <fluro-icon library="fas" icon="phone" />
+                            </v-btn>
+                            <v-btn class="ma-0 mx-1 mr-0" icon color="primary" content="Save" v-tippy>
+                                <!-- <fluro-icon library="fas" icon="id-card" /> -->
+                                <fluro-icon library="fas" icon="download" />
+                            </v-btn>
+                        </v-container>
                     </flex-column-header>
                 </template>
             </template>
+            <tab heading="Timeline" v-if="itemID && false">
+                <slot>
+                    <flex-column-body style="background: #fafafa;">
+                    </flex-column-body>
+                </slot>
+            </tab>
+
             <tab heading="Basic Details">
                 <slot>
                     <flex-column-body style="background: #fafafa;">
@@ -180,6 +202,18 @@
                     </flex-column-body>
                 </slot>
             </tab>
+            <tab heading="Groups & Teams">
+                <slot>
+                    <flex-column-body style="background: #fafafa;">
+                    </flex-column-body>
+                </slot>
+            </tab>
+            <tab heading="Processes">
+                <slot>
+                    <flex-column-body style="background: #fafafa;">
+                    </flex-column-body>
+                </slot>
+            </tab>
             <tab heading="Rostering / Availability" v-if="context == 'edit'">
                 <slot>
                     <flex-column-body style="background: #fafafa;">
@@ -287,7 +321,7 @@
                                 <!-- @input="updateSheet"  -->
                                 <!-- <pre>{{details[sheet.definitionName].data}}</pre> -->
                                 <fluro-content-form :options="formOptions" @input="updateSheet" v-model="details[sheet.definitionName].data" :fields="sheet.fields" />
-                               <!-- <pre>{{details[sheet.definitionName].data}}</pre> -->
+                                <!-- <pre>{{details[sheet.definitionName].data}}</pre> -->
                                 <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="formOptions" :field="sheet.field" v-model="details"></fluro-content-form-field> -->
                                 <!-- <fluro-content-form @input="updateDetailSheet" :options="formOptions" v-model="details[sheet.definitionName].data" :fields="sheet.fields" /> -->
                             </constrain>
@@ -314,7 +348,7 @@
                                     <v-card>
                                         <v-card-text>
                                             <h5>Explore Metadata</h5>
-                                            <json-view :data="model.data" />
+                                            <json-view :deep="3" :data="model.data" />
                                         </v-card-text>
                                     </v-card>
                                 </div>
@@ -371,7 +405,7 @@ import Vue from 'vue';
 /////////////////////////////////
 
 export default {
-    
+
     props: {
         'fields': {
             type: Array,
@@ -680,6 +714,42 @@ export default {
         FluroAcademicSelect,
     },
     methods: {
+        communicate(channel) {
+
+            var self = this;
+
+
+            switch (channel) {
+                case 'vcard':
+
+
+                    var token = self.$fluro.access.getCurrentToken();
+
+                    window.open(`${self.$fluro.apiURL}/contact/${self.itemID}/vcard.vcf?access_token=${token}`, '_blank');
+                    break;
+                case 'phone':
+                    // console.log('CALL NOW?', self.model.phoneNumbers)
+
+                    var phoneNumbers = self.model.international || self.model.phoneNumbers;
+
+                    self.$communications.call(phoneNumbers);
+                    break;
+
+                case 'email':
+                    // console.log('EMAIL NOW?', self.model.emails)
+
+
+                    self.$communications.email([self.model]);
+                    break;
+                case 'sms':
+                    // console.log('SMS NOW?', self.model.emails)
+
+
+                    self.$communications.sms([self.model]);
+                    break;
+            }
+
+        },
         ping(device) {
             var self = this;
 
@@ -960,7 +1030,7 @@ export default {
     },
     asyncComputed: {
         contactDefinitions: {
-            default:[],
+            default: [],
             get() {
                 var self = this;
 
@@ -977,18 +1047,18 @@ export default {
 
 
                             var definitions = _.chain(definitions)
-                            .filter(function(definition) {
-                                console.log('Contact Definition!', definition)
-                                return definition.status == 'active';
-                            })
-                            .map(function(definition, key) {
-                                return {
-                                    _id: definition._id,
-                                    name: definition.title,
-                                    value: definition.definitionName,
-                                }
-                            })
-                            .value();
+                                .filter(function(definition) {
+                                    console.log('Contact Definition!', definition)
+                                    return definition.status == 'active';
+                                })
+                                .map(function(definition, key) {
+                                    return {
+                                        _id: definition._id,
+                                        name: definition.title,
+                                        value: definition.definitionName,
+                                    }
+                                })
+                                .value();
 
                             // if(definitions.length) {
                             //     definitions.unshift({
@@ -1086,9 +1156,19 @@ export default {
         }
     },
     computed: {
+        canEmail() {
+            return this.model.emails && this.model.emails.length;
+        },
+        canCall() {
+            return this.model.phoneNumbers && this.model.phoneNumbers.length;
+        },
+        canSMS() {
+            return this.model.phoneNumbers && this.model.phoneNumbers.length;
+        },
+
         formOptions() {
             return {
-               
+
             }
         },
         title() {

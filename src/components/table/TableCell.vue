@@ -1,12 +1,19 @@
 <template>
     <td :class="{wrap:column.wrap, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}">
         
-        <!-- <pre>{{column.type}}</pre> -->
+        <!-- <pre>{{complexObject}}</pre> -->
         <component v-if="column.renderer" :data="rawValue" :is="column.renderer" :row="row" :column="column" />
+        <div v-else-if="simpleArray">
+            <!-- {{value}} -->
+            <span class="inline-tag" v-for="string in rawValue">
+                  {{string}} 
+            </span>
+        </div>
         <div v-else-if="complexObject">
+
             <template v-if="preValue._type == 'event'">
-                <a @click.stop.prevent="clicked(preValue)">
-                    {{preValue.title}} <span class="text-muted">// {{preValue | readableEventDate}}</span>
+                <a class="inline-tag" @click.stop.prevent="clicked(preValue)">
+                   <fluro-icon type="event" /> {{preValue.title}} <span class="text-muted">// {{preValue | readableEventDate}}</span>
                 </a>
             </template>
             <template v-else>
@@ -34,6 +41,7 @@
         </div>
         <slot v-else :value="value" :row="row" :column="column">
             {{value}}
+            <!-- <pre>HELLO</pre> -->
         </slot>
     </td>
 </template>
@@ -57,8 +65,11 @@ export default {
         }
     },
     computed: {
+        simpleArray() {
+            return this.preValue && _.isArray(this.preValue) && this.preValue[0] && (!this.preValue[0].title && !this.preValue[0].name);
+        },
         complexArray() {
-            return this.preValue && _.isArray(this.preValue) && this.preValue[0] && this.preValue[0].title;
+            return this.preValue && _.isArray(this.preValue) && this.preValue[0] && (this.preValue[0].title || this.preValue[0].name);
         },
         complexObject() {
             return !this.complexArray && _.isObject(this.preValue);
@@ -74,7 +85,9 @@ export default {
             }
 
             if (val.join) {
-                return _.map(val, 'title').join(', ');
+                return _.map(val,function(entry) {
+                    return entry.title || entry.name  || entry;
+                }).join(', ');
             }
 
             if(self.column.sortType == 'date' || self.column.type =='date') {
@@ -86,6 +99,8 @@ export default {
                 }
             }
 
+
+            // console.log('COMPLEX', val)
             return val.title || val.name || val;
         },
         key() {

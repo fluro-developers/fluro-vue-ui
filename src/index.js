@@ -1,4 +1,4 @@
-console.log('fluro-vue-ui 2.0.29')
+console.log('fluro-vue-ui 2.0.30')
 
 /////////////////////////////////////////////////////
 
@@ -34,11 +34,70 @@ export { FluroModal as FluroModal };
 import FluroInlineEdit from './components/form/FluroInlineEdit.vue';
 export { FluroInlineEdit as FluroInlineEdit };
 
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
 
 
 import FluroDynamicTable from './components/table/FluroDynamicTable.vue';
 export { FluroDynamicTable as FluroDynamicTable };
 
+
+import DefinitionCell from './components/table/cells/DefinitionCell.vue';
+export { DefinitionCell as DefinitionCell };
+import TitleCell from './components/table/cells/TitleCell.vue';
+export { TitleCell as TitleCell };
+
+
+
+import StatusCell from './components/table/cells/StatusCell.vue';
+export { StatusCell as StatusCell };
+
+
+import TimeCell from './components/table/cells/TimeCell.vue';
+export { TimeCell as TimeCell };
+
+
+import ThumbnailCell from './components/table/cells/ThumbnailCell.vue';
+export { ThumbnailCell as ThumbnailCell };
+import EventThumbnailCell from './components/table/cells/EventThumbnailCell.vue';
+export { EventThumbnailCell as EventThumbnailCell };
+
+
+
+
+import NumberCell from './components/table/cells/NumberCell.vue';
+export { NumberCell as NumberCell };
+
+
+import TimeagoCell from './components/table/cells/TimeagoCell.vue';
+export { TimeagoCell as TimeagoCell };
+
+
+import PhoneNumberCell from './components/table/cells/PhoneNumberCell.vue';
+export { PhoneNumberCell as PhoneNumberCell };
+
+
+import EmailAddressCell from './components/table/cells/EmailAddressCell.vue';
+export { EmailAddressCell as EmailAddressCell };
+
+import FilesizeCell from './components/table/cells/FilesizeCell.vue';
+export { FilesizeCell as FilesizeCell };
+import PrivacyCell from './components/table/cells/PrivacyCell.vue';
+export { PrivacyCell as PrivacyCell };
+
+
+import JSONCell from './components/table/cells/JSONCell.vue';
+export { JSONCell as JSONCell };
+import TicketCollectCell from './components/table/cells/TicketCollectCell.vue';
+export { TicketCollectCell as TicketCollectCell };
+
+
+
+
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
 
 import FluroToggleItem from './components/ui/FluroToggleItem.vue';
@@ -124,6 +183,8 @@ import FluroIcon from './components/ui/FluroIcon.vue';
 import FluroRealmDots from './components/ui/FluroRealmDots.vue';
 import FluroRealmTags from './components/ui/FluroRealmTags.vue';
 import FluroStatusLabel from './components/ui/FluroStatusLabel.vue';
+import FluroStatusSelect from './components/form/FluroStatusSelect.vue';
+export { FluroStatusSelect as FluroStatusSelect };
 
 import FluroWrapper from './components/ui/FluroWrapper.vue';
 export { FluroWrapper as Wrapper };
@@ -180,7 +241,10 @@ export { FluroContentSelectButton as FluroContentSelectButton };
 
 import FluroRealmSelect from './components/form/realmselect/FluroRealmSelect.vue';
 export { FluroRealmSelect as FluroRealmSelect };
-console.log('EXPORT FLURO REALM SELECT', FluroRealmSelect)
+
+
+import FluroTagSelect from './components/form/tagselect/FluroTagSelect.vue';
+export { FluroTagSelect as FluroTagSelect };
 
 import FluroEditor from './components/form/FluroEditor.vue';
 export { FluroEditor as FluroEditor };

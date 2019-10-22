@@ -11,7 +11,7 @@
                 <v-container py-2>
                     <v-layout row align-center>
                         <v-flex>
-                            <h3>Select Realms</h3>
+                            <h3>{{title}}</h3>
                         </v-flex>
                         <div>
                             <v-btn color="primary" class="ma-0" @click="dismiss()">
@@ -85,6 +85,15 @@ export default {
         },
     },
     computed: {
+        title() {
+            var self = this;
+            var plural = 'Realms';
+
+            if(self.tree.length == 1) {
+                plural  = self.tree[0].plural;
+            } 
+            return `Select ${plural}`;
+        },
         selection() {
             return this.selector.selection;
         },

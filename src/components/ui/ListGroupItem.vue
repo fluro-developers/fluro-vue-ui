@@ -1,6 +1,7 @@
 <template>
     <div class="list-group-item">
         <div>
+            <fluro-realm-bar v-if="item" :realm="item.realms"/>
             <slot name="left">
                 <fluro-item-image v-if="item" :item="item" />
             </slot>
@@ -8,7 +9,7 @@
         <div class="list-group-item-content">
             <slot>
                 <strong>{{title}}</strong>
-                <div class="muted small" v-if="firstLine">{{firstLine}}</div>
+                <div class="muted sm" v-if="firstLine">{{firstLine}}</div>
             </slot>
         </div>
         <div>
@@ -20,6 +21,7 @@
 <script>
 
 import FluroItemImage from './FluroItemImage.vue';
+import FluroRealmBar from './FluroRealmBar.vue';
 
 export default {
     components:{
@@ -64,11 +66,15 @@ export default {
 <style lang="scss">
 .list-group-item {
     position: relative;
-    padding: 10px;
+    padding: 7px 10px;
     background: #fff;
     border-bottom: 1px solid rgba(#000, 0.1);
     display: flex;
     align-items: center;
+
+    &:hover {
+        background: #fafafa;
+    }
 
     .fluro-item-image {
         margin-right:10px;

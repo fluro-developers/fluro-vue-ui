@@ -210,20 +210,42 @@
             <fluro-date-time-picker :outline="showOutline" :success="success" format="ddd D MMM - h:mma " timePickerFormat="ampm" :label="displayLabel" v-model="fieldModel" @focus="modal = true" />
         </template>
         <template v-else-if="renderer == 'timezoneselect'">
-            <v-autocomplete :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="timezoneOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+            <template v-if="mobile">
+                <v-select :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="timezoneOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+            </template>
+            <template v-else>
+                <v-autocomplete :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="timezoneOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+            </template>
         </template>
         <template v-else-if="renderer == 'countrycodeselect'">
-            <v-autocomplete :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryCodeOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+            <template v-if="mobile">
+                <v-select :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryCodeOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+            </template>
+            <template v-else>
+                <v-autocomplete :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryCodeOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+            </template>
         </template>
         <template v-else-if="renderer == 'countryselect'">
-            <v-autocomplete :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+            <template v-if="mobile">
+                <v-autocomplete :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+            </template>
+            <template v-else>
+                <v-select :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+            </template>
         </template>
         <template v-else-if="renderer == 'textarea'">
             <v-textarea :outline="showOutline" :success="success" :required="required" :label="displayLabel" v-model="fieldModel" @blur="touch()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" />
         </template>
-        <template v-else-if="renderer == 'select'">
-            <!-- <pre>{{selectOptions}}</pre> -->
+        <!--  <template v-else-if="renderer == 'select'">
             <v-select :outline="showOutline" :success="success" :required="required" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+        </template> -->
+        <template v-else-if="renderer == 'select'">
+            <template v-if="mobile">
+                <v-select :outline="showOutline" :success="success" :required="required" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+            </template>
+            <template v-else>
+                <v-autocomplete :outline="showOutline" :success="success" :required="required" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+            </template>
         </template>
         <template v-else-if="renderer == 'content-select'">
             <v-input class="no-flex" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
@@ -530,6 +552,9 @@ export default {
         }
     },
     computed: {
+        mobile() {
+            return this.$vuetify.breakpoint.xsOnly;
+        },
         dynamicDateHint() {
 
             var self = this;
@@ -1015,7 +1040,7 @@ export default {
 
             if (self.field.options && self.field.options.length) {
                 return _.map(self.field.options, function(option) {
-                    option.title = option.name;
+                    option.title = option.title ? option.title : option.name;
                     return option;
                 });
             }
@@ -1241,7 +1266,7 @@ export default {
                 case 'embedded':
                     break;
                 case 'upload':
-                    if(self.context =='admin') {
+                    if (self.context == 'admin') {
                         directive = 'content-select';
                     }
                     break;

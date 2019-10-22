@@ -15,7 +15,7 @@
         <flex-column>
             <!-- <v-card> -->
             <!-- <v-card-text style="padding: 0;"> -->
-            <fluro-tabset :activeTab="activeTab" :justified="true">
+            <fluro-tabset v-model="activeTab" :justified="true">
                 <fluro-tab heading="Date">
                     <!-- <pre>{{typeof datetime}}</pre> -->
                     <!-- <pre>{{datePart}}</pre> -->

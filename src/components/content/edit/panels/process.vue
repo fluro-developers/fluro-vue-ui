@@ -191,7 +191,7 @@
                                     <v-card>
                                         <v-card-text>
                                             <h5>Explore Metadata</h5>
-                                            <json-view :data="model.data" />
+                                            <json-view :deep="3"  :data="model.data" />
                                         </v-card-text>
                                     </v-card>
                                 </div>

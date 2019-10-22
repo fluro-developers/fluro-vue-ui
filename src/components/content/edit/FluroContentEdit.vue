@@ -2,30 +2,33 @@
     <flex-column class="content-edit">
         <fluro-page-preloader v-if="showLoading" contain />
         <template v-else>
+            <!-- <pre>{{config}}</pre> -->
             <form class="flex-column" @submit.prevent="" :disabled="state == 'processing'">
                 <flex-column-header v-if="$vuetify.breakpoint.smAndUp">
                     <template v-if="state == 'error'">
                         <v-alert :value="true" type="error" style="margin:0;" @click.prevent.native="state = 'ready'">
                             {{serverErrors}}
                         </v-alert>
-                        <!-- <v-btn class="mx-0" @click.prevent.native="state = 'ready'"> -->
-                        <!-- Ok -->
-                        <!-- </v-btn> -->
                     </template>
                 </flex-column-header>
                 <flex-column-header class="border-bottom">
                     <page-header :type="typeName">
                         <template v-slot:left>
-                            <h3>{{title}} <span class="small text-muted">{{definitionTitle}}</span></h3>
+                            <fluro-inline-edit>
+                                <template v-slot:default>
+                                    <h3>{{title}} <span class="small text-muted">{{definitionTitle}}</span></h3>
+                                </template>
+                                <template v-slot:edit="{props, blur, focus}">
+                                    <input block @focus="focus($event)" v-model="model.title" @keyup.enter="blur" @blur="blur" />
+                                </template>
+                            </fluro-inline-edit>
                         </template>
-                        <!-- <template v-slot:rightmobile> -->
-                        <!-- </template> -->
                         <template v-slot:right>
-                            <!-- <pre>{{model.realms}}</pre> -->
                             <fluro-realm-select v-model="model.realms" :type="typeName" :definition="definitionName" />
+                            <fluro-tag-select v-model="model.tags"/>
                             <v-btn v-if="model._id" icon class="mr-0" small @click="$actions.open([model])">
-                            <fluro-icon icon="ellipsis-h" />
-                        </v-btn>
+                                <fluro-icon icon="ellipsis-h" />
+                            </v-btn>
                             <v-btn @click="cancel">
                                 Close
                             </v-btn>
@@ -34,47 +37,8 @@
                             </v-btn>
                         </template>
                     </page-header>
-                    <!-- <pre>{{model}}</pre> -->
-                    <!-- <v-layout> -->
-                    <!-- <v-flex></v-flex> -->
-                    <!-- <v-spacer /> -->
-                    <!-- <v-flex shrink> -->
-                    <!-- <h5>Realms</h5>
-                        <fluro-realm-select v-model="model.realms" :type="typeName" :definition="definitionName" />
-                        <h5>Tags</h5>
-                        <v-combobox multiple v-model="model.tags" label="Type here and press enter to add tags" append-icon chips deletable-chips class="tag-input" :search-input.sync="tagSearch"></v-combobox>
-                        <div class="actions">
-                            <template v-if="state == 'processing'">
-                                <v-btn class="mx-0" :disabled="true">
-                                    Processing
-                                    <v-progress-circular indeterminate></v-progress-circular>
-                                </v-btn>
-                            </template>
-                            <template v-else-if="state == 'error'">
-                                <v-alert :value="true" type="error" outline>
-                                    {{serverErrors}}
-                                </v-alert>
-                                <v-btn class="mx-0" @click.prevent.native="state = 'ready'">
-                                    Try Again
-                                </v-btn>
-                            </template>
-                            <template v-else>
-                                <v-alert :value="true" type="error" outline v-if="hasErrors">
-                                    Please check the following issues before submitting
-                                    <div v-for="error in errorMessages">
-                                        <strong>{{error.title}}</strong>: {{error.messages[0]}}
-                                    </div>
-                                </v-alert>
-                                <v-btn class="mx-0" :disabled="hasErrors" @click="submit" type="submit" color="primary">
-                                    Save
-                                </v-btn>
-                            </template>
-                        </div> -->
-                    <!-- </v-flex> -->
-                    <!-- </v-layout> -->
                 </flex-column-header>
                 <component @errorMessages="validate" ref="form" :context="context" @input="updateModel" v-bind:is="component" :type="typeConfig" :config="config" v-model="model" :definition="definition" v-if="component"></component>
-                <!-- <pre>{{model.state}} {{model.dueDate}}</pre> -->
                 <template v-if="$vuetify.breakpoint.xsOnly">
                     <flex-column-footer>
                         <template v-if="state == 'error'">
@@ -94,7 +58,6 @@
                                 <v-flex>
                                     <v-btn block @click="cancel">
                                         Cancel
-                                        <!-- <fluro-icon right icon="times" /> -->
                                     </v-btn>
                                 </v-flex>
                                 <v-spacer />
@@ -102,59 +65,34 @@
                                     <v-btn class="mr-0" block :loading="state == 'processing'" :disabled="hasErrors" @click="submit" color="primary">
                                         Save
                                     </v-btn>
-                                    <!-- <v-btn block :disabled="hasErrors" type="submit" color="primary">
-                                        Save
-                                        <fluro-icon right icon="check" />
-                                    </v-btn> -->
                                 </v-flex>
                             </v-layout>
                         </v-container>
                     </flex-column-footer>
                 </template>
-                <!-- <flex-column-body style="height:300px"> -->
-                <!-- <pre>{{model}}</pre> -->
-                <!-- </flex-column-body> -->
-                <!-- <flex-column-body> -->
-                <!-- @submit.prevent="submit" -->
-                <!-- <component @errorMessages="validate" ref="form" v-bind:is="component" :type="config.type" v-model="model" :definition="config.definition" v-if="component"></component> -->
-                <!-- </div> -->
-                <!-- </div> -->
-                <!-- <v-container class="grid-list-xl" pa-0> -->
-                <!-- WOOOT -->
-                <!-- <fluro-tag-select :expanded="true" v-model="tags" :type="typeName" :definition="definitionName" /> -->
-                <!-- </v-container> -->
-                <!-- <div class="actions">
-                        <template v-if="state == 'processing'">
-                            <v-btn class="mx-0" :disabled="true">
-                                Processing
-                                <v-progress-circular indeterminate></v-progress-circular>
-                            </v-btn>
-                        </template>
-                        <template v-else-if="state == 'error'">
-                            <v-alert :value="true" type="error" outline>
-                                {{serverErrors}}
-                            </v-alert>
-                            <v-btn class="mx-0" @click.prevent.native="state = 'ready'">
-                                Try Again
-                            </v-btn>
-                            <v-btn class="mx-0" :disabled="hasErrors" type="submit" color="primary">
-                                Try Again
-                            </v-btn>
-                        </template>
-                        <template v-else>
-                            <v-alert :value="true" type="error" outline v-if="hasErrors">
-                                Please check the following issues before submitting
-                                <div v-for="error in errorMessages">
-                                    <strong>{{error.title}}</strong>: {{error.messages[0]}}
-                                </div>
-                            </v-alert>
-                            <v-btn class="mx-0" :disabled="hasErrors" @click="submit" type="submit" color="primary">
-                                Save
-                            </v-btn>
-                        </template>
-                    </div> -->
-                <!-- <pre>{{model.details}}</pre> -->
-                <!-- </flex-column-body> -->
+                <template v-else>
+                    <flex-column-footer class="border-top">
+                        <v-container fluid py-0 px-1>
+                            <v-layout row align-center>
+                                <v-flex shrink>
+                                    <template v-if="model._id">
+                                        <v-btn small icon flat>
+                                            <fluro-icon icon="cog" />
+                                        </v-btn>
+                                    </template>
+                                    <v-btn small icon flat>
+                                        <fluro-icon icon="clock" />
+                                    </v-btn>
+                                </v-flex>
+                                <v-spacer />
+                                <v-flex shrink>
+                                    <template v-if="model._id"><em class="muted sm">Last updated {{model.updated | timeago}}</em></template>
+                                    <fluro-status-select v-model="model.status" :type="model._type" />
+                                </v-flex>
+                            </v-layout>
+                        </v-container>
+                    </flex-column-footer>
+                </template>
             </form>
         </template>
     </flex-column>
@@ -164,6 +102,8 @@ import Vue from 'vue';
 
 
 import FluroRealmSelect from '../../form/realmselect/FluroRealmSelect.vue';
+import FluroStatusSelect from '../../form/FluroStatusSelect.vue';
+import FluroInlineEdit from '../../form/FluroInlineEdit.vue';
 
 // import Contact from './panels/Contact.vue';
 // import Event from './panels/Event.vue';
@@ -176,6 +116,7 @@ export default {
         },
         'type': {
             type: String,
+            required: true,
         },
         'value': {
             type: Object,
@@ -206,6 +147,9 @@ export default {
     },
     created() {
         // this.reset(true);
+        if (this.model && !this.model.data) {
+            this.$set(this.model, 'data', {});
+        }
     },
     methods: {
         updateModel() {
@@ -393,6 +337,7 @@ export default {
             return this.config.definition;
         },
         typeConfig() {
+            console.log('GOT A CONFIGGG???', this.config)
             return this.config.type;
         },
         definitionTitle() {
@@ -433,19 +378,24 @@ export default {
     components: {
         // Contact,
         FluroRealmSelect,
+        FluroStatusSelect,
+        FluroInlineEdit,
     },
     asyncComputed: {
         config: {
             get() {
 
                 var self = this;
+                // console.log('TYPE IS', self.type);
 
                 //////////////////////////////////////////////
 
                 if (!self.type || !self.type.length) {
+                    Promise.reject({});
+                    // console.log('NO CONFIG LOADED');
+                    // self.loading = false;
+                    return;
 
-                    Promise.reject();
-                    return self.loading = false;
                 }
 
                 self.loading = true;
@@ -453,9 +403,11 @@ export default {
                 //////////////////////////////////////////////
 
                 return new Promise(function(resolve, reject) {
+
                     return self.$fluro.api.get(`/defined/type/${self.type}`).then(function(res) {
                         resolve(res.data);
-                        return self.loading = false;
+                        console.log('CONFIG LOADED', res.data);
+                        self.loading = false;
                     }, reject);
                 })
             },

@@ -4,43 +4,75 @@
             <fluro-page-preloader contain />
         </template>
         <tabset v-else :justified="true" :vertical="true">
-            <tab heading="Event details">
+            <tab heading="Query Details">
                 <slot>
                     <flex-column-body style="background: #fafafa;">
-                        <v-container class="grid-list-xl">
+                        <v-container>
                             <constrain sm>
                                 <h3 margin>Query Details</h3>
                                 <!-- <pre>{{model}}</pre> -->
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.firstLine" v-model="model"></fluro-content-form-field>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.filterType" v-model="model"></fluro-content-form-field>
-                                <filter-condition-group :rows="rows" :mini="true" v-model="model.filterConfiguration" :type="model.filterType" :debounce="filterDebounce" />
-                                <!-- <p class="lead" v-if="dateModel.startDate">{{dateModel | readableEventDate}}</p> -->
-                                <!-- <v-layout>
-                                    <v-flex xs12 sm4>
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="fieldHash.startDate" v-model="dateModel"></fluro-content-form-field>
-                                    </v-flex>
-                                    <v-flex xs12 sm4>
-
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="fieldHash.endDate" v-model="dateModel"></fluro-content-form-field>
-                                    </v-flex>
-                                    <v-flex xs12 sm4>
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.timezone" v-model="model"></fluro-content-form-field>
-                                    </v-flex>
-                                </v-layout> -->
-                                <!-- <v-input class="no-flex"> -->
-                                <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.mainImage" v-model="model"></fluro-content-form-field> -->
-                                <!-- </v-input> -->
-                                <!-- <v-input class="no-flex"> -->
-                                <!-- <v-label>Body</v-label> -->
-                                <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.body" v-model="model"></fluro-content-form-field> -->
-                                <!-- </v-input> -->
-                                <!-- <fluro-content-form-field :override-label="definition && definition.definitionName && definition.definitionName == 'service' ? 'Service Time / Event Track' : 'Event Track' " :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.track" v-model="model"></fluro-content-form-field> -->
+                                <div class="grid-list-xl">
+                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
+                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.firstLine" v-model="model"></fluro-content-form-field>
+                                </div>
+                                <fluro-panel>
+                                    <fluro-panel-title>
+                                        <template v-if="model.disableDataTypeSelect || model._id">
+                                            <h4>{{model.filterType | definitionTitle(true)}} </h4>
+                                        </template>
+                                        <template v-else>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.filterType" v-model="model"></fluro-content-form-field>
+                                        </template>
+                                    </fluro-panel-title>
+                                    <fluro-panel-body>
+                                        <filter-condition-group :rows="rows" :useSample="true" :mini="true" v-model="model.filterConfiguration" :type="model.filterType" :debounce="filterDebounce" />
+                                    </fluro-panel-body>
+                                </fluro-panel>
+                                <template v-if="!sample.length">
+                                    <!-- Loading Sample Data -->
+                                </template>
+                                <template v-else>
+                                    <h4 margin>Sample Output</h4>
+                                    <fluro-panel>
+                                        <tabset>
+                                            <tab heading="Explorer">
+                                                <fluro-panel-body>
+                                                    <json-view :highlightMouseoverNode="true" :deep="3" :data="sample" />
+                                                </fluro-panel-body>
+                                            </tab>
+                                            <tab heading="Raw JSON">
+                                                <pre>{{sample}}</pre>
+                                            </tab>
+                                        </tabset>
+                                    </fluro-panel>
+                                </template>
                             </constrain>
                         </v-container>
                     </flex-column-body>
                 </slot>
             </tab>
+            <!-- <tab heading="Columns and Rendering">
+                <slot>
+                    <flex-column-body style="background: #fafafa;">
+                        <v-container>
+                            <constrain sm>
+                                <h3 margin>Columns and Rendering</h3>
+                            </constrain>
+                        </v-container>
+                    </flex-column-body>
+                </slot>
+            </tab>
+            <tab heading="Export Frequency">
+                <slot>
+                    <flex-column-body style="background: #fafafa;">
+                        <v-container>
+                            <constrain sm>
+                               
+                            </constrain>
+                        </v-container>
+                    </flex-column-body>
+                </slot>
+            </tab> -->
             <!-- <tab :heading="`Access Passes`">
                 <slot>
                     <flex-column-body style="background: #fafafa;">
@@ -66,6 +98,9 @@
                 </slot>
             </tab> -->
         </tabset>
+        <!-- <flex-column-body style="height:500px;"> -->
+        <!-- <pre>{{model}}</pre> -->
+        <!-- </flex-column-body> -->
     </flex-column>
 </template>
 <script>
@@ -74,11 +109,11 @@
 import FluroContentEditMixin from '../FluroContentEditMixin';
 import FilterConditionGroup from '../../../form/filters/FilterConditionGroup.vue';
 
-console.log()
 
 /////////////////////////////////
 
 import Vue from 'vue';
+import { FilterService } from 'fluro';
 
 /////////////////////////////////
 
@@ -93,12 +128,81 @@ export default {
         modelUpdated() {
             this.update(this.model);
         },
+        reloadSample() {
+            var self = this;
+
+            return;
+
+            //////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////
+
+            if (!self.model.filterType) {
+                return;
+            }
+
+            //////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////
+
+            self.loadingSample = true;
+
+            // return new Promise(function(resolve, reject) {
+
+            // if (self.model._id) {
+
+            //     return self.$fluro.api.get(`/content/_query/${self.model._id}`)
+            //         .then(sampleLoaded)
+            //         .catch(sampleFailed);
+
+            // } else {
+
+                //Run a dynamic query and get the sample data
+                return self.$fluro.api.post(`/content/${self.model.filterType}/filter`, {
+                        // sort: self.sort,
+                        filter: self.model.filterConfiguration,
+                        startDate: self.model.filterStartDate,
+                        endDate: self.model.filterEndDate,
+                        search: self.model.filterSearch,
+                        // includeArchived: self.includeArchivedByDefault,
+                        allDefinitions: true, //self.allDefinitions,
+                        // includeUnmatched: true,
+                        sample: 5,
+                    })
+                    .then(sampleLoaded)
+                    .catch(sampleFailed);
+            // }
+
+
+            //////////////////////////////////////////////////////////////////////////////
+
+            function sampleLoaded(res) {
+                self.sample = res.data;
+                self.loadingSample = false;
+            }
+
+            //////////////////////////////////////////////////////////////////////////////
+
+            function sampleFailed(res) {
+                self.sample = [];
+                self.loadingSample = false;
+            }
+            // })
+        },
     },
     created() {
         var self = this;
 
         if (!this.model.filterConfiguration) {
             this.model.filterConfiguration = {}
+        }
+
+        self.reloadSample();
+    },
+    watch: {
+        changeString() {
+            var self = this;
+            self.reloadSample();
         }
     },
     asyncComputed: {
@@ -109,42 +213,33 @@ export default {
 
                 return new Promise(function(resolve, reject) {
 
-
-                   
-
                     self.$fluro.types.terms()
                         .then(function(res) {
 
-                             console.log('Load the types!!!', res);
-
+                            //Map the types
                             var mappedTypeOptions = _.chain(res)
-                            .reduce(function(set, entry, key) {
+                                .map(function(entry, key) {
 
-                                if(entry.parentType) {
-                                    key = entry.parentType;
-                                }
 
-                                var existingEntry = set[key];
+                                    var label = entry.parentType ? `${self.$fluro.types.readable(entry.parentType)} - ${self.$fluro.types.readable(key)}` : `${self.$fluro.types.readable(key)}`;
 
-                                if(!existingEntry)  {
-                                    existingEntry = 
-                                    set[key] = {
-                                        title:self.$fluro.types.readable(key),
-                                        items:[],
+                                    return {
+                                        name: label,
+                                        value: key,
+                                        parentType: entry.parentType,
                                     }
-                                }
+                                })
+                                .orderBy('name')
+                                .values()
+                                .value();
 
-                                existingEntry.push(entry);
-                                console.log(entry, type)
+                            mappedTypeOptions.unshift({
+                                name: 'Anything',
+                                key: 'node',
+                                value: 'node',
+                            })
 
-                                return set;
-
-
-                            }, {})
-                            .values()
-                            .value();
-
-                            console.log('MAPPED TYPES', mappedTypeOptions)
+                            // console.log('MAPPED TYPES', mappedTypeOptions)
                             //Resolve the array
                             resolve(mappedTypeOptions);
 
@@ -192,7 +287,7 @@ export default {
             })
 
 
-            console.log('TYPE OPTIONS', self.typeOptions);
+            // console.log('TYPE OPTIONS', self.typeOptions);
 
 
 
@@ -216,9 +311,18 @@ export default {
             return array;
 
         },
+        changeString() {
+            var self = this;
+            var filterString = FilterService.getFilterChangeString(self.model.filterConfiguration);
+
+            console.log('Filter configuration changed', filterString)
+            return `${filterString}`;
+        },
     },
     data() {
         return {
+            sample: {},
+            loadingSample: false,
             filterDebounce: 500,
         }
     },

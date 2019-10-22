@@ -37,4 +37,8 @@ export default {
 </script>
 <style scoped lang="scss">
 .fluro-content-form {}
+
+.fluro-content-render {
+    flex:1;
+}
 </style>

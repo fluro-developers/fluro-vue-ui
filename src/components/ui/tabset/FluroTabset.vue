@@ -18,6 +18,9 @@
 <script>
 export default {
     props: {
+        value: {
+            type: Number,
+        },
         options: {
             type: Object
         },
@@ -27,9 +30,6 @@ export default {
         vertical: {
             type: Boolean,
         },
-        activeTab: {
-            type: Number,
-        }
     },
     provide() {
         return {
@@ -40,15 +40,21 @@ export default {
     data() {
         return {
             tabs: [],
-            activeTabIndex: this.activeTab || 0,
+            activeTabIndex: this.value || 0,
         }
     },
     watch: {
-        activeTab: 'selectTab',
+        value: 'selectTab',
+        activeTabIndex(val) {
+            this.$emit('input', val);
+        },
     },
     methods: {
         selectTab(index) {
+
+
             var self = this;
+
 
             index = Math.max(index, 0);
             index = Math.min(index, self.tabs.length - 1);
@@ -147,6 +153,8 @@ export default {
             _.each(self.tabs, function(tab) {
                 tab.active = tab.index == self.activeTabIndex;
             })
+
+
         }
     },
     //     act() {
@@ -179,6 +187,7 @@ export default {
         white-space: nowrap;
         overflow-x: auto;
         overflow-y: hidden;
+        @extend .no-select;
         // display: flex;
         -webkit-overflow-scrolling: touch;
 
@@ -202,7 +211,7 @@ export default {
             border-right: 1px solid transparent;
             border-bottom: 1px solid rgba(#000, 0.05);
             position: relative;
-            transition: opacity 0.2s, background 0.2s ;
+            transition: opacity 0.2s, background 0.2s;
 
             &.active {
                 opacity: 1;
@@ -237,55 +246,55 @@ export default {
     &.vertical {
 
         @media(min-width: 768px) {
-        display: flex;
-        flex-direction: row;
-
-        & > .tabset-header {
-            min-width: 200px;
-            max-width: 300px;
-            width: 25%;
             display: flex;
-            flex-direction: column;
-            background: rgba(#000, 0.05);
+            flex-direction: row;
 
-            .tabset-menu {
-                background: none;
-                flex:1;
-                white-space: normal;
-                overflow-x: hidden;
-                overflow-y: auto;
+            &>.tabset-header {
+                min-width: 200px;
+                max-width: 300px;
+                width: 25%;
+                display: flex;
+                flex-direction: column;
+                background: rgba(#000, 0.05);
 
-                .tabset-menu-inner {
-                    display: block;
+                .tabset-menu {
+                    background: none;
+                    flex: 1;
+                    white-space: normal;
+                    overflow-x: hidden;
+                    overflow-y: auto;
 
-                    a {
-                        background: none;
-                        border:none;
+                    .tabset-menu-inner {
                         display: block;
-                        border-left: 3px solid transprent;
-                        text-align: left;
-                        text-transform: none;
-                        letter-spacing: 0;
-                        font-size: 1.1em;
-                        padding: 10px 5px 10px 15px;
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                        flex: none;
 
-                        &.active {
-                            background: #fafafa;
-                            border-left: 3px solid $primary;
+                        a {
+                            background: none;
+                            border: none;
+                            display: block;
+                            border-left: 3px solid transprent;
+                            text-align: left;
+                            text-transform: none;
+                            letter-spacing: 0;
+                            font-size: 1.1em;
+                            padding: 10px 5px 10px 15px;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            flex: none;
+
+                            &.active {
+                                background: #fafafa;
+                                border-left: 3px solid $primary;
+                            }
                         }
+
                     }
 
+
                 }
-
-
             }
         }
-    }
 
-}
+    }
 }
 </style>

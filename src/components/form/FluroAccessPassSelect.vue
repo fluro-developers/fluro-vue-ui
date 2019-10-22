@@ -26,6 +26,11 @@
             </list-group>
         </v-input>
         <p></p>
+
+        <!-- <fluro-content-select-button color="primary" type="policy" v-model="selection" /> -->
+
+
+
         <!-- <h5 margin>Available Passes</h5> -->
         <v-input class="no-flex">
             <h5>Available passes</h5>
@@ -57,6 +62,7 @@
 import Vue from 'vue';
 import FluroRealmDots from '../ui/FluroRealmDots.vue';
 import FluroSelectionMixin from '../../mixins/FluroSelectionMixin';
+import FluroContentSelectButton from './contentselect/FluroContentSelectButton.vue';
 
 ///////////////////////////////////////////////
 
@@ -102,6 +108,7 @@ export default {
     },
     components: {
         FluroRealmDots,
+        FluroContentSelectButton,
     },
     mixins: [FluroSelectionMixin],
     props: {
@@ -148,7 +155,7 @@ export default {
     watch: {
         'value': function() {
             //Set the value so update the selection
-            console.log('SET SELECTION NOW', this.value)
+            // console.log('SET SELECTION NOW', this.value)
             this.setSelection(this.value);
         },
         'selection': function() {
