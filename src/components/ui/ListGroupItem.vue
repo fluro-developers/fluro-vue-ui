@@ -9,13 +9,16 @@
         <div class="list-group-item-content">
             <slot>
                 <strong>{{title}}</strong>
-                <div class="muted sm" v-if="firstLine">{{firstLine}}</div>
+                <div class="muted sm" v-if="renderFirstLine">{{renderFirstLine}}</div>
             </slot>
         </div>
         <div>
             <slot name="right">
             </slot>
         </div>
+
+    <!-- WOOOOTT -->
+        <!-- <pre>{{item}}</pre> -->
     </div>
 </template>
 <script>
@@ -31,6 +34,9 @@ export default {
         item: {
             type: Object
         },
+        firstLine:{
+            type:String,
+        },
     },
     computed: {
         title() {
@@ -43,9 +49,16 @@ export default {
             return self.item.title;
             
         },
-        firstLine() {
+        renderFirstLine() {
 
             var self = this;
+
+
+
+            if(self.firstLine && self.firstLine.length) {
+                return self.firstLine;
+            }
+            
             if (!self.item) {
                 return;
             }
@@ -53,6 +66,15 @@ export default {
             ////////////////////////
 
             switch (self.item._type) {
+                case 'event':
+                    if (self.item.firstLine && self.item.firstLine.length) {
+                        return `${self.$fluro.date.readableEventDate(self.item)} - ${self.item.firstLine}`;
+                    } else {
+
+                        return self.$fluro.date.readableEventDate(self.item);
+                    
+                    }
+                break;
                 default:
                     if (self.item.firstLine && self.item.firstLine.length) {
                         return self.item.firstLine;

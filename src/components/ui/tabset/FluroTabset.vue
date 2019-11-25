@@ -1,10 +1,10 @@
 <template>
     <flex-column class="tabset" :class="{justified, vertical}">
-        <flex-column-header class="tabset-header" v-if="tabs.length > 1">
+        <flex-column-header class="tabset-header" v-if="enabledTabs.length > 1">
             <slot name="menuprefix"></slot>
             <div class="tabset-menu" ref="outer">
                 <div class="tabset-menu-inner" ref="inner">
-                    <a flat v-for="(tab, index) in tabs" :class="{active:index == activeTabIndex}" @click="selectTab(index)">
+                    <a flat v-for="(tab, index) in enabledTabs" :class="{active:index == activeTabIndex}" @click="selectTab(index)">
                         {{tab.heading}}
                     </a>
                 </div>
@@ -47,6 +47,12 @@ export default {
         value: 'selectTab',
         activeTabIndex(val) {
             this.$emit('input', val);
+        },
+    },
+    computed:{
+        enabledTabs() {
+            var self = this;
+            return _.filter(self.tabs, {enabled:true});
         },
     },
     methods: {

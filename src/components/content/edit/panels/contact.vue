@@ -10,12 +10,12 @@
                         <div style="padding: 10px;max-width:200px;margin: auto;">
                             <fluro-avatar-update :id="model._id" type="contact" />
                         </div>
-                        <v-container class="border-bottom text-xs-center" fluid>
+                        <v-container px-0 class="border-bottom text-xs-center" fluid>
                             <v-btn class="ma-0 mx-1 ml-0" :disabled="!canEmail" @click="communicate('email')" icon color="primary" content="Send Email" v-tippy>
                                 <fluro-icon library="fas" icon="envelope" />
                             </v-btn>
                             <v-btn class="ma-0 mx-1" :disabled="!canSMS" @click="communicate('sms')" icon color="primary" content="Send SMS" v-tippy>
-                                <fluro-icon library="fas"  icon="comment" />
+                                <fluro-icon library="fas" icon="comment" />
                             </v-btn>
                             <v-btn class="ma-0 mx-1" :disabled="!canCall" @click="communicate('phone')" icon color="primary" content="Call" v-tippy>
                                 <fluro-icon library="fas" icon="phone" />
@@ -28,13 +28,6 @@
                     </flex-column-header>
                 </template>
             </template>
-            <tab heading="Timeline" v-if="itemID && false">
-                <slot>
-                    <flex-column-body style="background: #fafafa;">
-                    </flex-column-body>
-                </slot>
-            </tab>
-
             <tab heading="Basic Details">
                 <slot>
                     <flex-column-body style="background: #fafafa;">
@@ -159,13 +152,41 @@
                     </flex-column-body>
                 </slot>
             </tab>
+            <tab heading="Activity Timeline" v-if="itemID">
+
+
+               <!--  -->
+
+
+
+                <tabset :justified="true">
+                    <!-- <tab heading="Engagement"> -->
+                       <!-- <contact-engagement-chart v-model="model"/> -->
+                    <!-- </tab> -->
+                    <tab heading="Timeline">
+                        <contact-timeline v-model="model" />
+                    </tab>
+
+                    <!-- <tab heading="Attendance">
+                        <contact-timeline v-model="model" />
+                    </tab>
+                    <tab heading="Correspondence">
+                        <contact-timeline v-model="model" />
+                    </tab>
+                    <tab heading="Posts and Notes">
+                        <contact-timeline v-model="model" />
+                    </tab> -->
+                </tabset>
+                </flex-column-body>
+                <!-- </flex-column-body> -->
+            </tab>
             <tab heading="Household & Relationships">
                 <slot>
                     <flex-column-body style="background: #fafafa;">
                         <v-container grid-list-xl>
                             <constrain sm>
                                 <template v-if="context == 'edit'">
-                                    <h3 margin>Household &amp; Relationships</h3>
+                                    <h3 margin>Household / Residence</h3>
                                     <v-layout row wrap>
                                         <v-flex xs12 sm6>
                                             <fluro-content-form-field :override-label="`${contextName} Household Role`" :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.householdRole" v-model="model"></fluro-content-form-field>
@@ -192,25 +213,75 @@
                                             <fluro-content-form-field :override-label="`${contextName} Household Role`" :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.householdRole" v-model="model"></fluro-content-form-field>
                                         </v-flex>
                                     </v-layout>
-                                    <h5>{{contextName}} Household</h5>
+                                    <!--  <h5>{{contextName}} Household</h5> -->
+                                    <fluro-panel v-if="!model._id">
+                                        <tabset>
+                                            <tab heading="Create new Household">
+                                                <v-container>
+                                                    <fluro-content-form @input="updateFamily" :options="formOptions" v-model="family" :fields="familyFields" />
+                                                </v-container>
+                                            </tab>
+                                            <tab heading="Add to existing Household">
+                                                <v-container>
+                                                    <v-input class="no-flex">
+                                                        <v-label>Family Household</v-label>
+                                                        <p class="help-block">Select {{contextName}} primary residence</p>
+                                                        <fluro-content-form-field :form-fields="formFields" :showLabel="false" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.family" v-model="model"></fluro-content-form-field>
+                                                    </v-input>
+                                                </v-container>
+                                            </tab>
+                                        </tabset>
+                                    </fluro-panel>
+                                    <template v-else>
+                                        <v-input class="no-flex">
+                                            <v-label>Family Household</v-label>
+                                            <p class="help-block">Select {{contextName}} primary residence</p>
+                                            <fluro-content-form-field :form-fields="formFields" :showLabel="false" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.family" v-model="model"></fluro-content-form-field>
+                                        </v-input>
+                                    </template>
                                     <!-- @errorMessages="validate" -->
-                                    <fluro-content-form @input="updateFamily" :options="formOptions" v-model="family" :fields="familyFields" />
                                     <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="updateFamily" :options="formOptions" :field="fieldHash.dynamicFamily" v-model="family"></fluro-content-form-field> -->
                                 </template>
+                                <h3 margin>Relationships</h3>
+                                <contact-relationship-manager v-model="model" />
                             </constrain>
                         </v-container>
                     </flex-column-body>
                 </slot>
             </tab>
-            <tab heading="Groups & Teams">
+            <tab heading="Groups & Teams" v-if="model._id">
                 <slot>
                     <flex-column-body style="background: #fafafa;">
+                        <v-container>
+                            <constrain sm>
+                                <h3 margin>{{contextName}} Groups &amp; Teams</h3>
+                                <contact-group-manager v-model="model" />
+                            </constrain>
+                        </v-container>
                     </flex-column-body>
                 </slot>
             </tab>
-            <tab heading="Processes">
+            <tab heading="Processes" v-if="model._id">
                 <slot>
                     <flex-column-body style="background: #fafafa;">
+                        <v-container>
+                            <constrain sm>
+                                <h3 margin>{{contextName}} Progress</h3>
+                                <contact-process-manager v-model="model" />
+                            </constrain>
+                        </v-container>
+                    </flex-column-body>
+                </slot>
+            </tab>
+            <tab heading="Capabilities">
+                <slot>
+                    <flex-column-body style="background: #fafafa;">
+                        <v-container grid-list-xl>
+                            <constrain sm>
+                                <h3 margin>{{contextName}} Capabilities</h3>
+                                <contact-capability-manager v-model="model.capabilities" />
+                            </constrain>
+                        </v-container>
                     </flex-column-body>
                 </slot>
             </tab>
@@ -219,12 +290,18 @@
                     <flex-column-body style="background: #fafafa;">
                         <v-container grid-list-xl>
                             <constrain sm>
-                                <h3 margin>Rostering / Availability</h3>
-                                <v-input class="no-flex">
-                                    <v-label>Capabilities</v-label>
-                                    <p class="help-block">Add to {{contextName}} capabilities</p>
-                                    <fluro-content-form-field :form-fields="formFields" :showLabel="false" :outline="showOutline" :options="formOptions" :field="fieldHash.capabilities" v-model="model"></fluro-content-form-field>
-                                </v-input>
+                                <!-- <fluro-panel> -->
+                                <!-- <fluro-panel-body> -->
+                                <!-- <h3 margin>{{contextName}} Capabilities</h3> -->
+                                <!-- <contact-capability-manager v-model="model.capabilities" /> -->
+                                <!-- </fluro-panel-body> -->
+                                <!-- </fluro-panel> -->
+                                <h3 margin>{{contextName}} Availability</h3>
+                                <!-- <v-input class="no-flex"> -->
+                                <!-- <v-label>Capabilities</v-label> -->
+                                <!-- <p class="help-block">Add to {{contextName}} capabilities</p> -->
+                                <!-- <fluro-content-form-field :form-fields="formFields" :showLabel="false" :outline="showOutline" :options="formOptions" :field="fieldHash.capabilities" v-model="model"></fluro-content-form-field> -->
+                                <!-- </v-input> -->
                             </constrain>
                         </v-container>
                     </flex-column-body>
@@ -396,7 +473,12 @@ import FluroAcademicSelect from '../../../form/FluroAcademicSelect';
 import FluroRealmSelect from '../../../form/realmselect/FluroRealmSelect.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
 import FluroAvatarUpdate from '../../../FluroAvatarUpdate.vue';
-
+import ContactTimeline from '../../contact/timeline/ContactTimeline.vue';
+import ContactGroupManager from '../components/ContactGroupManager.vue';
+import ContactProcessManager from '../components/ContactProcessManager.vue';
+import ContactCapabilityManager from '../components/ContactCapabilityManager.vue';
+import ContactRelationshipManager from '../components/ContactRelationshipManager.vue';
+// import ContactEngagementChart from '../components/ContactEngagementChart.vue';
 
 /////////////////////////////////
 
@@ -709,6 +791,12 @@ export default {
     },
     mixins: [FluroContentEditMixin],
     components: {
+        ContactTimeline,
+        ContactGroupManager,
+        ContactProcessManager,
+        ContactCapabilityManager,
+        ContactRelationshipManager,
+        // ContactEngagementChart,
         FluroAvatarUpdate,
         FluroRealmSelect,
         FluroAcademicSelect,
@@ -862,12 +950,14 @@ export default {
                 })
         },
         updateAcademicCalendar(calendar) {
+            console.log('ACADEMIC THING', calendar);
             var self = this;
             self.$set(self.model, 'academicCalendar', calendar);
             self.update(self.model);
 
         },
         updateAcademicGrade(grade) {
+            console.log('ACADEMIC GRADE', grade);
             var self = this;
             self.$set(self.model, 'academicGrade', grade);
             self.update(self.model);
@@ -941,6 +1031,8 @@ export default {
     created() {
 
         var self = this;
+        // console.log('INITIAL ACADEMIC CALENDAR', self.model.academicCalendar);
+        // console.log('INITIAL ACADEMIC GRADE', self.model.academicGrade);
 
         if (!self.model.academicCalendar) {
             self.$set(self.model, 'academicCalendar', '');
@@ -1025,7 +1117,7 @@ export default {
             }, [])
 
 
-            console.log('dETAILS', self.details)
+            // console.log('dETAILS', self.details)
         }
     },
     asyncComputed: {
@@ -1048,7 +1140,7 @@ export default {
 
                             var definitions = _.chain(definitions)
                                 .filter(function(definition) {
-                                    console.log('Contact Definition!', definition)
+                                    // console.log('Contact Definition!', definition)
                                     return definition.status == 'active';
                                 })
                                 .map(function(definition, key) {

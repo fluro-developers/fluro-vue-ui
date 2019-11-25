@@ -1,9 +1,12 @@
 <template>
     <div class="fluro-table-wrapper">
+        <!-- <pre>{{selectionController.selectionMaximum}}</pre> -->
+        <!-- <pre>{{fluro}}</pre> -->
         <!-- <pre>{{dataType}}</pre> -->
         <!--         <pre>{{structureColumns}}</pre>
  -->
-        <!-- <pre>{{totalPages}}</pre> -->
+        <!-- <pre>{{sort}}</pre> -->
+        <!-- <pre>{{filterCheckString}}</pre> -->
         <fluro-page-preloader v-if="showLoading" contain />
         <v-container class="flex-center" v-if="!showLoading && !page.length">
             <slot name="emptytext">
@@ -17,13 +20,13 @@
                     <thead>
                         <tr>
                             <th class="shrink checkbox-cell" v-if="selectionEnabled">
-                                <v-menu @click.native.stop offset-y>
+                                <v-menu attach @click.native.stop offset-y>
                                     <template v-slot:activator="{ on }">
                                         <div v-on="on">
                                             <div is="table-header-checkbox" :all="allSelected" :some="someSelected" />
                                         </div>
                                     </template>
-                                    <v-card tile>
+                                    <v-card class="select-options" tile>
                                         <v-list dense>
                                             <v-list-tile v-if="!allSelected" @click="selectPage()">
                                                 <v-list-tile-content>
@@ -69,7 +72,7 @@
                                     {{column.title}}
                                 </template>
                                 <!-- <div class="options-icon" @click.stop.prevent> -->
-                                    <!-- <fluro-icon library="far" icon="ellipsis-v" /> -->
+                                <!-- <fluro-icon library="far" icon="ellipsis-v" /> -->
                                 <!-- </div> -->
                             </th>
                             <th class="shrink">
@@ -99,8 +102,7 @@
                                                 </v-list-tile-content>
                                             </v-list-tile>
                                         </v-list>
-
-                                         <slot name="optionsbelow"></slot>
+                                        <slot name="optionsbelow"></slot>
                                         <!-- <div v-for="field in availableKeys">{{field.title}}</div> -->
                                         <!-- <pre>{{availableKeys}}</pre> -->
                                         <!-- <v-list dense>
@@ -373,15 +375,21 @@ export default {
         },
         defaultSort: {
             type: String,
-            default: 'title',
+            default() {
+               return 'updated';
+            },
         },
         defaultSortType: {
             type: String,
-            default: 'string',
+            default() {
+               return 'date'
+            },
         },
         defaultSortDirection: {
             type: String,
-            default: 'asc',
+            default() {
+                return 'desc';
+            },
         },
         selectionController: {
             type: Object,
@@ -426,11 +434,12 @@ export default {
         initSort: {
             type: Object,
             default () {
-                return {
-                    key: this.defaultSort || 'title',
-                    direction: this.defaultSortDirection || 'asc',
-                    type: this.defaultSortType || 'string',
+                var defaultSort = {
+                    key: this.defaultSort,
+                    direction: this.defaultSortDirection,
+                    type: this.defaultSortType,
                 }
+                return defaultSort;
             },
         },
         pageSize: {
@@ -452,6 +461,7 @@ export default {
     },
     data() {
         return {
+            cacheKey:null,
             columnState: {},
             structureColumns: this.columns,
             all: [],
@@ -488,6 +498,10 @@ export default {
             if (!self.fixedColumns) {
                 var filterFields = _.chain(self.activeFilters || [])
                     .map(function(filter) {
+
+                        if (filter.criteria && filter.criteria.length) {
+                            return;
+                        }
                         // console.log('FILTER', filter);
                         if (filter.comparator) {
                             var column = {
@@ -500,6 +514,17 @@ export default {
                                 column.sortType =
                                     column.type = 'date';
                             }
+
+                            switch (filter.dataType) {
+                                case 'number':
+                                case 'integer':
+                                case 'decimal':
+                                case 'float':
+                                    column.sortType =
+                                        column.type = filter.dataType
+                                    break;
+                            }
+                            // console.log('FILTER COMPARATOR', filter);
                             // switch(filter.comparator) {
                             //     case 'datesameday':
                             //     case 'datenotyear':
@@ -564,10 +589,10 @@ export default {
         },
 
         reloadRequired() {
-            return `${this.dataType}-${this.filterCheckString} ${this.dateWatchString} ${this.sort.sortKey} ${this.sort.sortDirection} ${this.sort.sortType}  ${this.debouncedSearch}`;
+            return `${this.cacheKey}-${this.dataType}-${this.filterCheckString} ${this.dateWatchString} ${this.sort.sortKey} ${this.sort.sortDirection} ${this.sort.sortType}  ${this.debouncedSearch}`;
         },
         selectionEnabled() {
-            return !(this.enableSelection === false) && this.selectionController;
+            return (!(this.enableSelection === false) && this.selectionController) ? true : false;
         },
         actionsEnabled() {
             return !(this.enableActions === false);
@@ -785,6 +810,14 @@ export default {
             }
         },
     },
+    created() {
+        this.$fluro.addEventListener('cache.reset', this.updateCacheKey);
+    },
+    beforeDestroy() {
+        this.$fluro.removeEventListener('cache.reset', this.updateCacheKey);
+    },
+
+
     filters: {
         numberWithCommas(x) {
             return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -798,7 +831,7 @@ export default {
         reloadRequired: {
             immediate: true,
             handler: _.debounce(function(string) {
-                // console.log('Reload Required!', string)
+                console.log('Reload Required!', string)
                 this.reload();
             }, 500)
         },
@@ -812,6 +845,10 @@ export default {
         // }, 500),
     },
     methods: {
+        updateCacheKey() {
+            this.cacheKey = this.$fluro.global.CACHE_KEY;
+            console.log('Cache key reset!')
+        },
         showOptionsForColumn(column) {
 
         },
@@ -860,10 +897,20 @@ export default {
             //////////////////////////////////////
 
             // var ids = _.keys(lookup);
-            var ids = self.$fluro.utils.arrayIDs(self.rawPage);
+
+            var rawPageLookup = _.reduce(self.rawPage, function(set, item) {
+
+                set[item._id] = JSON.parse(JSON.stringify(item));
+
+                return set;
+            }, {});
+
+            var ids = _.keys(rawPageLookup);
+            // var ids = self.$fluro.utils.arrayIDs(self.rawPage);
 
             if (!ids || !ids.length) {
                 self.loading = false;
+                console.log('No page ids');
                 return self.page = [];
             }
             //////////////////////////////////////
@@ -874,12 +921,22 @@ export default {
 
             var appendContactDetails = [];
 
+
             //////////////////////////////////////
 
             //Include the extra fields that make sense
             fields = fields.concat(_.chain(self.renderColumns)
                 .map(function(column) {
+
+                    if(column.actualField) {
+                        return column.actualField;
+                    }
+
                     switch (column.key) {
+                         case 'width':
+                         case 'height':
+                            return ['width', 'height']
+                         break;
                         case 'firstName':
                             return ['firstName', 'preferredName', 'ethnicName']
                             break;
@@ -923,6 +980,10 @@ export default {
 
             self.loading = true;
 
+
+
+            var appendAssignments = true;
+
             //////////////////////////////////////
 
             self.$fluro.api.post(`/content/${self.dataType}/multiple`, {
@@ -931,13 +992,13 @@ export default {
                     populateAll: true,
                     limit: ids.length,
                     appendContactDetails,
+                    appendAssignments,
 
                     // cancelToken: currentPageItemsRequest.token,
                 })
                 .then(function(res) {
 
                     var lookup = _.reduce(res.data, function(set, entry, i) {
-
                         set[entry._id] = entry;
                         return set;
                     }, {})
@@ -945,12 +1006,16 @@ export default {
                     //// console.log('Look for ids', ids);
                     var pageItems = _.chain(ids)
                         .map(function(id, i) {
-                            var entry = lookup[id];
+                            var entry = lookup[id]
+
                             if (!entry) {
                                 console.log('No entry for', id)
                                 return;
                             }
                             entry._pageIndex = i;
+
+                            entry = _.merge(rawPageLookup[id], entry);
+                            // console.log('ENTRY', entry, rawPageLookup[id]);
                             return entry
 
                         })
@@ -959,10 +1024,12 @@ export default {
 
                     /////////////////////////////////////
 
-                    self.page = pageItems;
+                    self.page = pageItems.slice();
                     self.loading = false;
 
+
                 }, function(err) {
+                    // console.log('ERROR', err);
                     self.page = [];
                     self.loading = false;
                     if (axios.isCancel(err)) {
@@ -980,6 +1047,7 @@ export default {
             //////////////////////////////////////////
 
             self.loadingItems = true;
+            // console.log('Load the items!!');
 
             ///////////////////////////////////////
 
@@ -999,13 +1067,12 @@ export default {
                     self.all = res.data;
                     self.$emit('raw', self.all);
 
-
                     self.rows = _.filter(res.data, { _matched: true });
                     self.$emit('filtered', self.rows);
 
                     self.setPage(1);
-
                     self.loadingItems = false;
+
                 })
                 .catch(function(err) {
                     self.loadingItems = false;
@@ -1149,6 +1216,8 @@ export default {
             var currentDirection = self.sort.sortDirection;
             var sortDirection = alreadyActive ? (currentDirection == 'asc' ? 'desc' : 'asc') : 'asc';
 
+            console.log('SORT SET', self.sort)
+
             self.setSort({
                 sortKey,
                 sortType,
@@ -1178,9 +1247,10 @@ export default {
         setPage(pageNumber) {
 
             if (this.currentPage == pageNumber) {
-                // console.log('already at page', pageNumber)
+                //console.log('Already at page', pageNumber)
                 return;
             }
+
             this.currentPage = pageNumber;
             // this.pageChange();
 
@@ -1193,6 +1263,7 @@ export default {
                 });
             }
 
+            // console.log('Recreate page!')
             this.$emit('page', pageNumber);
         },
         firstPage() {
@@ -1252,6 +1323,15 @@ export default {
 </script>
 <style lang="scss">
 .fluro-table-wrapper {
+
+    .select-options {
+        font-size: normal;
+        font-weight: normal;
+        ;
+        letter-spacing: 0;
+        text-transform: none;
+    }
+
     position: relative;
 
     $padding-h: 7px;
@@ -1456,8 +1536,9 @@ export default {
                 border-left: 1px solid rgba(#000, 0.05);
 
                 &:first-child {
-                    border-left:none;
+                    border-left: none;
                 }
+
                 // padding-right: 20px;
 
 

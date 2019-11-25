@@ -1,46 +1,117 @@
 <template>
     <div class="tag-select">
-        <v-btn :small="small" :block="block" class="pill mx-0" @click.native="showModal">
-            {{selectionSummary}}
-            <fluro-icon type="tag"/>
-        </v-btn>
+        <v-menu :close-on-content-click="false" @click.native.stop offset-y>
+            <template v-slot:activator="{ on }">
+                <!-- @click.native="showModal" -->
+                <v-btn v-on="on" :small="small" :block="block" class="pill mx-0">
+                    {{model.length}}
+                    <fluro-icon right type="tag" />
+                </v-btn>
+            </template>
+            <v-card tile>
+                <v-container style="max-width:320px;">
+
+                    <!-- <pre>{{tagGroups}}</pre> -->
+                    <v-input class="no-flex" v-for="group in tagGroups">
+                        <v-label>{{group.title}}</v-label>
+                        <div class="inline-tags">
+                            <span class="inline-tag" @click="removeTag(tag)" v-for="tag in group.tags">
+                                {{tag.title}}
+                                <fluro-icon right class="off" icon="tag"/>
+                                <fluro-icon right class="on" icon="times"/>
+                            </span></div>
+
+                    <fluro-content-select-button  block :type="group.key" v-model="model" />
+                    </v-input>
+
+                    <!-- <fluro-content-select-button :allDefinitions="true" block type="tag" v-model="model" /> -->
+
+                    <!-- <pre> {{model}}</pre> -->
+                </v-container>
+            </v-card>
+        </v-menu>
         <!-- <pre>{{type}} {{definition}}</pre> -->
     </div>
 </template>
 <script>
-
 import Vue from 'vue';
-import FluroSelectionMixin from '../../../mixins/FluroSelectionMixin';
 
 ///////////////////////////////////////////////
 
 import TagSelectModal from './TagSelectModal.vue';
+import FluroContentSelectButton from '../contentselect/FluroContentSelectButton.vue';
 
 ///////////////////////////////////////////////
 
 export default {
+    asyncComputed:{
+        tagDefinitions:{
+            default:[],
+            get() {
+                var self = this;
+                return self.$fluro.types.subTypes('tag')
+            }
+        },
+    },
     computed: {
-        selectionSummary() {
+        tagGroups() {
+
             var self = this;
 
-            return self.selection.length;
+            ////////////////////////////////////////////////////
 
-            // if (!self.selection.length) {
-            //     return `Select ${self.plural}`
-            // }
+            var allSets = _.reduce(self.tagDefinitions, function(set, definition) {
+                set[definition.definitionName] = {
+                    title:definition.title,
+                    tags:[],
+                    key:definition.definitionName,
+                }
 
-            // if (self.selection.length > 3) {
-            //     return `${self.selection.length} ${self.plural} selected`;
-            // }
+                return set;
+            }, {
+                tag:{
+                    title:'Tags',
+                    tags:[],
+                    key:'tag',
+                }
+            })
 
-            // return _.map(self.selection, 'title').join(', ');
-        }
+            ////////////////////////////////////////////////////
+
+            return _.chain(this.model)
+                .reduce(function(set, tag) {
+
+                    var tagType = tag.definition || 'tag';
+                    var existingGroup = set[tagType];
+                    if (!existingGroup) {
+                        existingGroup = set[tagType] = {
+                            title: self.$fluro.types.readable(tagType, true),
+                            tags: [],
+                        }
+                    }
+
+                    existingGroup.tags.push(tag);
+
+                    return set;
+                }, allSets)
+                .values()
+                .value();
+        },
+    },
+    methods:{
+        removeTag(tag) {
+            var self = this;
+            var index = self.model.indexOf(tag);
+            self.model.splice(index,1);
+
+            console.log('Remove', index);
+        },
     },
     components: {
+        FluroContentSelectButton,
         // FluroRealmSelectItem,
         // FluroRealmDots,
     },
-    mixins: [FluroSelectionMixin],
     props: {
         small: {
             type: Boolean,
@@ -58,41 +129,35 @@ export default {
     data() {
         return {
             loading: true,
+            model: this.value,
         }
     },
     watch: {
-        'value': function() {
-            //Set the value so update the selection
-            this.setSelection(this.value);
-        },
-        'selection': function() {
-            // console.log('SELECTION')
-            var self = this;
-            //Emit the change
-            this.$emit('input', self.selection);
-
+        'model': function(val) {
+            this.$emit('input', val);
         }
     },
-    methods: {
-        showModal() {
-
-            // console.log('SHOW MODAL', this.$fluro.modal)
-            var self = this;
-
-            //////////////////////////////////////
-
-            var promise = self.$fluro.modal({
-                component: TagSelectModal,
-                options: {
-                    selector: self,
-                    fixed: true,
-                }
-            });
-
-        },
-    }
 }
 </script>
 <style scoped lang="scss">
 
+.inline-tag {
+    cursor: pointer;
+
+    .on {
+        display: none;
+    }
+    .off {
+        display: inline-block;
+    }
+
+    &:hover {
+        .off {
+            display: none;
+        }
+        .on {
+            display: inline-block;
+        }
+    }
+}
 </style>

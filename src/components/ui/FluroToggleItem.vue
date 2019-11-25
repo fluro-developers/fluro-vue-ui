@@ -1,12 +1,9 @@
 <template>
     <div class="toggle-item" :class="{inactive:inactive}">
         <div class="toggle-item-content">
-            
-                <slot />
-            
-           </div>
-            <div class="toggle-switch" />
-        
+            <slot />
+        </div>
+        <div class="toggle-switch" />
     </div>
 </template>
 <script>
@@ -57,7 +54,7 @@ export default {
     display: flex;
 
     .toggle-item-content {
-        flex:1;
+        flex: 1;
     }
 
     &:hover {
@@ -76,7 +73,7 @@ export default {
     }
 
     .toggle-switch {
-    flex:none;
+        flex: none;
         background: #E2E7EE;
         border-radius: 50px;
         height: 23px;
@@ -135,7 +132,10 @@ export default {
 
 
     &.inactive {
-        opacity: 0.2;
+        // opacity: 0.2;
+        font-style:italic;
+        color: rgba(#000, 0.3);
+        background: none;
 
         .toggle-switch {
             &:before {

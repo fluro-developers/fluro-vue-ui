@@ -1,6 +1,8 @@
 <template>
     <!-- <flex-column> -->
+
     <flex-column class="content-select-modal">
+        <!-- <pre>{{selector.selectionMinimum}} {{selector.selectionMaximum}}</pre> -->
         <flex-column v-if="loading">
             <v-container fluid class="text-xs-center">
                 <v-progress-circular indeterminate />
@@ -22,7 +24,7 @@
                             <!--   -->
                             <template v-if="!showFilters">
                                 <div class="search" :class="{active:searchFocussed || search.length}">
-                                    <input v-model="search" :autofocus="true" @focus="searchFocussed = true" @blur="searchFocussed = false" placeholder="Search by keyword" />
+                                    <input v-model="search" :autofocus="$vuetify.breakpoint.smAndUp" @focus="searchFocussed = true" @blur="searchFocussed = false" placeholder="Search by keyword" />
                                     <div class="search-icon" @click="search = ''">
                                         <fluro-icon icon="times" v-if="search.length" />
                                         <fluro-icon icon="search" v-else />
@@ -53,6 +55,7 @@
                         <fluro-dynamic-table  :enable-actions="false" :allDefinitions="options.allDefinitions" :filter-config="filterConfig" :selection-controller="selector" :clicked="rowClicked" :search="search" :data-type="type" :columns="columns" @raw="rowsChanged" @filtered="filteredChanged" @page="pageChanged" @sort="sortChanged" />
                     </flex-column>
                     <div class="filter-sidebar scroll-y" v-show="showFilters">
+                        <div>
                         <v-container pa-2>
                             <div class="search" :class="{active:searchFocussed || search.length}">
                                 <input v-model="search" @focus="searchFocussed = true" @blur="searchFocussed = false" placeholder="Keyword search" />
@@ -63,6 +66,7 @@
                             </div>
                         </v-container>
                         <filter-condition-group :rows="rows" :mini="true" v-model="filterConfig" :type="type" :debounce="filterDebounce" />
+                        </div>
                     </div>
                 </v-layout>
                 <!-- <fluro-tabset>

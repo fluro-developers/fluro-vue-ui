@@ -11,7 +11,7 @@
                 <v-container py-2>
                     <v-layout row align-center>
                         <v-flex>
-                            <h3>{{title}}</h3>
+                            <h3 style="margin:0;">{{title}}</h3>
                         </v-flex>
                         <div>
                             <v-btn color="primary" class="ma-0" @click="dismiss()">

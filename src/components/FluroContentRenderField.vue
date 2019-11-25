@@ -1,5 +1,5 @@
 <template>
-    <div class="fluro-content-render-field" :class="className">
+    <div class="fluro-content-render-field">
         <!-- <pre>{{field}}</pre> -->
         <!-- <pre>{{field.title}} {{field.key}} {{renderer}} {{fieldModel}}</pre> -->
         <template v-if="renderer == 'embedded' && raw">
@@ -100,7 +100,7 @@
                         <list-group>
                             <list-group-item :item="object" v-for="(object, index) in fieldModel">
                                 <template v-slot:right>
-                                    <v-btn class="ma-0" small icon @click="$actions.open([object])">
+                                    <v-btn class="ma-0" small icon @click.stop.prevent="$actions.open([object])">
                                         <fluro-icon icon="ellipsis-h" />
                                     </v-btn>
                                 </template>
@@ -223,18 +223,30 @@ export default {
                 return target.split(search).join(replacement);
             }
 
+            // if (this.compact) {
+            // if (!this.field.className || !this.field.className.length) {
+            // return 'xs6';
+            // }
+            // } else {
             if (!this.field.className || !this.field.className.length) {
                 return 'xs12';
             }
+            // }
+
             ////////////////////////////////
 
-            return _.chain(this.field.className)
+            var classes = _.chain(this.field.className)
                 .split(' ')
                 .compact()
                 .map(function(className) {
                     return replaceAll(replaceAll(className, 'col', ''), '-', '').toLowerCase();
                 })
                 .value();
+
+
+
+
+            return classes;
 
         },
         sameLine() {
@@ -444,6 +456,9 @@ export default {
         // }
     },
     props: {
+        // 'compact': {
+        //     type: Boolean,
+        // },
         'raw': {
             type: Boolean,
         },

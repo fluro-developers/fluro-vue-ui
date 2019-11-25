@@ -1,8 +1,27 @@
 <template>
     <!-- <flex-column> -->
-        <flex-column-body scroll-parent>
-            <div class="timeline-wrapper">
-                <fluro-infinite-scroll :perPage="1" :startPage="1" :items="years">
+    <flex-column-body scroll-parent>
+        <div class="timeline-wrapper">
+            <template v-if="massive">
+                <!-- MASSIVE -->
+                <fluro-infinite-scroll :perPage="1" :startPage="1" :buffer="2" :items="months">
+                    <template slot-scope="props">
+                        <div class="year">
+                            <div class="month" v-for="month in props.page">
+                                <div class="month-label">{{month.title}} {{month.year}}</div>
+                                <div class="day" v-for="day in month.days">
+                                    <div class="day-label">{{day.title}}</div>
+                                    <div class="entries">
+                                        <slot name="card" v-for="entry in day.entries" :entry="entry"></slot>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </fluro-infinite-scroll>
+            </template>
+            <template v-else>
+                <fluro-infinite-scroll :perPage="1" :startPage="1" :buffer="2" :items="years">
                     <template slot-scope="props">
                         <div class="year" v-for="year in props.page">
                             <div class="year-label">{{year.title}}</div>
@@ -18,8 +37,9 @@
                         </div>
                     </template>
                 </fluro-infinite-scroll>
-            </div>
-        </flex-column-body>
+            </template>
+        </div>
+    </flex-column-body>
     <!-- </flex-column> -->
 </template>
 <script>
@@ -30,25 +50,25 @@ export default {
     props: {
         value: {
             type: Array,
-            default () {
-                return [];
-            }
+            required: true,
         }
     },
     data() {
         return {
-            array:JSON.parse(JSON.stringify(this.value)),
+            array: this.value,
         }
     },
     // mounted() {
-        // console.log('THIS', this)
+    // console.log('THIS', this)
     // },
     computed: {
-        years() {
-
+        massive() {
+            return this.array.length > 400;
+        },
+        entries() {
             var self = this;
 
-            return _.chain(this.array)
+            var sorted = _.chain(this.array)
                 .map(function(entry) {
                     entry.date = new Date(entry.date);
                     return entry;
@@ -56,7 +76,57 @@ export default {
                 .orderBy(function(entry) {
                     return entry.date * -1;
                 })
+                .value();
+
+            //////////////////////////////////    
+
+            if(!self.massive) {
+                return sorted;
+            }
+
+
+            //////////////////////////////////    
+
+            return _.chain(sorted)
                 .reduce(function(set, entry) {
+                    var groupingKey = `${entry.type || entry._type}-${entry.date}`;
+
+                    var existing = set[groupingKey];
+                    if(!existing) {
+                        existing = set[groupingKey] = {
+                            type:entry._type,
+                            grouped:true,
+                            entries:[],
+                            date:entry.date,
+                        }
+                    }
+
+                    existing.entries.push(entry);
+
+
+                    return set;
+                }, {})
+                .values()
+                .map(function(group) {
+                    if(group.entries.length < 3) {
+                        return group.entries
+                    }
+
+                    return group;
+                })
+                .flatten()
+                .value();
+
+        },
+        months() {
+            var self = this;
+
+            return _.chain(this.entries)
+                .reduce(function(set, entry) {
+
+                    // if(entry.grouped && entry.entries.length == 1) {
+                    //     entry = entry.entries[0];
+                    // }
 
                     var date = entry.date;
                     var key = self.$fluro.date.formatDate(entry.date, 'D MMM YYYY');
@@ -87,6 +157,7 @@ export default {
                     var date = day.date;
                     var key = self.$fluro.date.formatDate(day.date, 'MMM YYYY');
                     var title = self.$fluro.date.formatDate(day.date, 'MMM')
+                    var year = self.$fluro.date.formatDate(day.date, 'YYYY');
 
                     var existing = set[key];
                     if (!existing) {
@@ -94,6 +165,7 @@ export default {
                             title,
                             key,
                             date,
+                            year,
                             days: [],
                         }
                     }
@@ -106,6 +178,12 @@ export default {
                 .orderBy(function(entry) {
                     return -entry.date
                 })
+                .value();
+        },
+        years() {
+
+            var self = this;
+            return _.chain(self.months)
                 .reduce(function(set, month) {
 
 
@@ -132,6 +210,7 @@ export default {
                     return -entry.date
                 })
                 .value();
+
         }
     }
 }
@@ -159,8 +238,9 @@ export default {
     text-transform: uppercase;
     display: block;
     padding: 5px 10px;
-    font-size: 1.3em;
+    font-size: 1.2em;
     margin: 10px 0;
+    color: rgba(#000, 0.8);
 }
 
 
@@ -173,10 +253,11 @@ export default {
     font-weight: 600;
     font-size: 10px;
     text-transform: uppercase;
-    padding: 10px;
+    padding: 5px 10px;
     border-top: 1px solid rgba(#000, 0.1);
     width: 80px;
     white-space: nowrap;
+    color: rgba(#000, 0.3);
 }
 
 .entries {

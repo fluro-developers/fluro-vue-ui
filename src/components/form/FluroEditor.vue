@@ -271,9 +271,11 @@ import Image from './tiptap/image';
 
 
 // import hljs from 'highlight.js/lib/highlight';
+// import html from 'highlight.js/lib/languages/html';
 import scss from 'highlight.js/lib/languages/scss';
 import javascript from 'highlight.js/lib/languages/javascript';
 import json from 'highlight.js/lib/languages/json';
+// require('brace/theme/tomorrow_night_eighties')
 
 
 import { Editor, EditorContent, EditorMenuBubble, EditorMenuBar, EditorFloatingMenu, Mark } from 'tiptap'
@@ -946,7 +948,9 @@ $color-white: #fff;
 
 
 
-    pre {
+   pre {
+        box-shadow: none;
+        border:none;
         margin: 15px 0;
 
         &::before {
@@ -959,6 +963,8 @@ $color-white: #fff;
         }
 
         code {
+            // box-shadow: none !important;
+            // background: #333 !important;
             display: block;
 
 

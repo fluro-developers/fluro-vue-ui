@@ -8,6 +8,10 @@
 <script>
 export default {
     props: {
+        enabled:{
+            type:Boolean,
+            default:true,
+        },
         heading: {
             type: String
         },

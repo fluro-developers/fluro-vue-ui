@@ -244,12 +244,15 @@ export default {
                 ///////////////////////////////////
                 ///////////////////////////////////
 
+
+                var now = new Date();
                 addField('startDate', {
                     title: 'Start Date',
                     minimum: 1,
                     maximum: 1,
                     type: 'date',
                     directive: 'datetimepicker',
+                    defaultValues:[now],
 
                 })
 
@@ -259,6 +262,7 @@ export default {
                     maximum: 1,
                     type: 'date',
                     directive: 'datetimepicker',
+                    defaultValues:[now],
 
                 })
 

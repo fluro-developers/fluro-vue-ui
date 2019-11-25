@@ -115,8 +115,9 @@ export default {
             this.$emit('value', this.model);
         },
         reset() {
-            this.model.academicGrade = null;
-            this.model.academicCalendar = null;
+            // console.log('RESET')
+            // this.model.academicGrade = null;
+            // this.model.academicCalendar = null;
         },
     },
     asyncComputed:{

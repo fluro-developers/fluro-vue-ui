@@ -1,0 +1,34 @@
+
+<template>
+    <div>
+    <template v-if="multiple">
+        <template v-for="entry in data">
+            <fluro-avatar v-tippy :content="entry.firstName || entry.title" md :id="entry" type="contact" />
+        </template>
+    </template>
+    <template v-else>
+        <fluro-avatar md v-tippy :content="entry.firstName || entry.title" :id="data" type="contact" />
+    </template>
+</div>
+    <!-- <span class="inline-tag" :content="data | timeago" v-tippy>{{data | formatDate('MMM D, YYYY')}}</span> -->
+</template>
+<script>
+export default {
+    props: {
+        'row': {
+            type: Object,
+        },
+        'column': {
+            type: Object,
+        },
+        'data': {
+            // type: Object,
+        },
+    },
+    computed:{
+        multiple() {
+            return _.isArray(this.data);
+        }
+    }
+}
+</script>

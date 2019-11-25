@@ -1,5 +1,5 @@
 <template>
-    <div>{{(row.definition || row._type) | definitionTitle}}</div>
+    <div>{{(data || row.definition || row._type) | definitionTitle}}</div>
 </template>
 <script>
 export default {

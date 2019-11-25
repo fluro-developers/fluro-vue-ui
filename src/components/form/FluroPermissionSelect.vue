@@ -43,6 +43,7 @@
                 </p>
             </fluro-card-title>
             <fluro-card-body>
+                <v-container pa-0 class="grid-list-md">
                 <!-- <v-input class="no-flex"> -->
                 <v-layout row wrap>
                     <v-flex xs12 md4>
@@ -73,6 +74,7 @@
                         </v-input>
                     </v-flex>
                 </v-layout>
+            </v-container>
                 <!-- </v-input> -->
             </fluro-card-body>
         </fluro-card>

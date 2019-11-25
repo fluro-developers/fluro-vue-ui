@@ -1,4 +1,4 @@
-console.log('fluro-vue-ui 2.0.30')
+console.log('fluro-vue-ui 2.0.31')
 
 /////////////////////////////////////////////////////
 
@@ -39,6 +39,16 @@ export { FluroInlineEdit as FluroInlineEdit };
 ////////////////////////////////////////////////////////////////////
 
 
+import FluroTrendChart from './components/reporting/FluroTrendChart.vue';
+export { FluroTrendChart as FluroTrendChart };
+
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+
+
+
+
 import FluroDynamicTable from './components/table/FluroDynamicTable.vue';
 export { FluroDynamicTable as FluroDynamicTable };
 
@@ -48,10 +58,25 @@ export { DefinitionCell as DefinitionCell };
 import TitleCell from './components/table/cells/TitleCell.vue';
 export { TitleCell as TitleCell };
 
+import FirstNameCell from './components/table/cells/FirstNameCell.vue';
+export { FirstNameCell as FirstNameCell };
+
+
+import BooleanCell from './components/table/cells/BooleanCell.vue';
+export { BooleanCell as BooleanCell };
+
+
+
+import LastNameCell from './components/table/cells/LastNameCell.vue';
+export { LastNameCell as LastNameCell };
+
 
 
 import StatusCell from './components/table/cells/StatusCell.vue';
 export { StatusCell as StatusCell };
+
+import DateCell from './components/table/cells/DateCell.vue';
+export { DateCell as DateCell };
 
 
 import TimeCell from './components/table/cells/TimeCell.vue';
@@ -83,6 +108,25 @@ export { EmailAddressCell as EmailAddressCell };
 
 import FilesizeCell from './components/table/cells/FilesizeCell.vue';
 export { FilesizeCell as FilesizeCell };
+
+
+import DurationCell from './components/table/cells/DurationCell.vue';
+export { DurationCell as DurationCell };
+
+
+import DimensionsCell from './components/table/cells/DimensionsCell.vue';
+export { DimensionsCell as DimensionsCell };
+
+import AvatarCell from './components/table/cells/AvatarCell.vue';
+export { AvatarCell as AvatarCell };
+
+import PersonaAvatarCell from './components/table/cells/PersonaAvatarCell.vue';
+export { PersonaAvatarCell as PersonaAvatarCell };
+
+import ContactAvatarCell from './components/table/cells/ContactAvatarCell.vue';
+export { ContactAvatarCell as ContactAvatarCell };
+
+
 import PrivacyCell from './components/table/cells/PrivacyCell.vue';
 export { PrivacyCell as PrivacyCell };
 

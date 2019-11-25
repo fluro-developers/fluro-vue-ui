@@ -212,14 +212,20 @@ export default {
         okHandler() {
             this.display = false
             this.activeTab = 0
-            this.$refs.timer.selectingHour = true
+            if(this.$refs.timer) {
+                this.$refs.timer.selectingHour = true
+            }
+            
 
             this.$emit('input', this.selectedDatetime)
         },
         clearHandler() {
             this.display = false
             this.activeTab = 0
-            this.$refs.timer.selectingHour = true
+            if(this.$refs.timer) {
+                this.$refs.timer.selectingHour = true
+            }
+            
 
             this.$emit('input', null)
         }

@@ -16,6 +16,7 @@
     border-radius:4px;
     overflow:hidden;
     border: 1px solid rgba(#000,0.1);
+    box-shadow: 0 1px 1px rgba(#000, 0.1);
 
     &[margin] {
         margin-bottom: 15px;

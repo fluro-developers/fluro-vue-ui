@@ -1,5 +1,6 @@
 <template>
     <div class="fluro-image" :class="{loaded:loaded}" :style="style">
+        <img v-if="longpress" class="holder" :src="url"/>
         <div :style="spacer"></div>
         <!-- <transition name="fade"> -->
             <!-- <pre>{{placeholder}} - {{spinner}}</pre> -->
@@ -13,6 +14,9 @@
 <script>
 export default {
     props: {
+        longpress:{
+            type:Boolean,
+        },
         spinner: {
             type: Boolean,
             default: true,
@@ -34,6 +38,8 @@ export default {
         imageHeight: {
             type: Number,
         },
+        cacheKey:[String, Number],
+        
     },
     data() {
         return {
@@ -60,6 +66,8 @@ export default {
             }
 
             var url = self.url;
+
+
 
             //Create a new image
             var img = new Image;
@@ -133,14 +141,29 @@ export default {
                 var requestWidth = this.imageWidth || (this.width ? this.width * 2 : null);
                 var requestHeight = this.imageHeight || (this.height ? this.height * 2 : null);
 
-                return this.$fluro.asset.imageUrl(this.imageID, requestWidth, requestHeight, { includePublic: true });
+
+                var params = { includePublic: true };
+
+                if(this.cacheKey && String(this.cacheKey.length)) {
+                    params.cacheKey = this.cacheKey;
+                }
+
+                return this.$fluro.asset.imageUrl(this.imageID, requestWidth, requestHeight, params);
             } else {
                 return;
             }
         },
         placeholderImage() {
             if (this.imageID) {
-                var placeholderUrl = this.$fluro.asset.imageUrl(this.imageID, 50, null, { includePublic: true });
+
+                var params = { includePublic: true };
+
+                if(this.cacheKey && String(this.cacheKey.length)) {
+                    params.cacheKey = this.cacheKey;
+                }
+
+
+                var placeholderUrl = this.$fluro.asset.imageUrl(this.imageID, 50, null, params);
                 return `url(${placeholderUrl})`;
             } else {
                 return;
@@ -181,7 +204,17 @@ export default {
     color: #fff;
     flex: 1 0 auto;
 
-
+    .holder {
+        // background: #ff0066;
+        // border:2px solid green;
+        display: block;
+        position: absolute;
+        left:0;
+        top:0;
+        right:0;
+        bottom:0;
+        opacity: 0;
+    }
 
     .v-progress-circular {
         position: absolute;

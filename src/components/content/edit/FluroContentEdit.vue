@@ -25,7 +25,8 @@
                         </template>
                         <template v-slot:right>
                             <fluro-realm-select v-model="model.realms" :type="typeName" :definition="definitionName" />
-                            <fluro-tag-select v-model="model.tags"/>
+                            <fluro-tag-select class="ml-2" v-model="model.tags" />
+                            <!-- <pre>{{model.tags}}</pre> -->
                             <v-btn v-if="model._id" icon class="mr-0" small @click="$actions.open([model])">
                                 <fluro-icon icon="ellipsis-h" />
                             </v-btn>
@@ -33,12 +34,12 @@
                                 Close
                             </v-btn>
                             <v-btn class="mx-0" :loading="state == 'processing'" :disabled="hasErrors" @click="submit" color="primary">
-                                Save
+                                {{saveText}}
                             </v-btn>
                         </template>
                     </page-header>
                 </flex-column-header>
-                <component @errorMessages="validate" ref="form" :context="context" @input="updateModel" v-bind:is="component" :type="typeConfig" :config="config" v-model="model" :definition="definition" v-if="component"></component>
+                <component @errorMessages="validate" ref="form" :context="context" @input="updateModel" v-bind:is="component" :type="typeConfig" :config="config" v-model="model" @file="fileChanged" :definition="definition" v-if="component"></component>
                 <template v-if="$vuetify.breakpoint.xsOnly">
                     <flex-column-footer>
                         <template v-if="state == 'error'">
@@ -63,7 +64,7 @@
                                 <v-spacer />
                                 <v-flex>
                                     <v-btn class="mr-0" block :loading="state == 'processing'" :disabled="hasErrors" @click="submit" color="primary">
-                                        Save
+                                        {{saveText}}
                                     </v-btn>
                                 </v-flex>
                             </v-layout>
@@ -72,18 +73,73 @@
                 </template>
                 <template v-else>
                     <flex-column-footer class="border-top">
-                        <v-container fluid py-0 px-1>
+                        <v-container fluid pa-1>
                             <v-layout row align-center>
-                                <v-flex shrink>
-                                    <template v-if="model._id">
+                                <template v-if="model._id">
+                                    <v-flex shrink>
+                                        <!-- <template v-if="model._id">
                                         <v-btn small icon flat>
                                             <fluro-icon icon="cog" />
                                         </v-btn>
-                                    </template>
-                                    <v-btn small icon flat>
-                                        <fluro-icon icon="clock" />
-                                    </v-btn>
-                                </v-flex>
+                                    </template> -->
+                                        <v-menu :close-on-content-click="false" @click.native.stop offset-y>
+                                            <template v-slot:activator="{ on }">
+                                                <v-btn class="my-0" small icon flat v-on="on">
+                                                    <fluro-icon icon="cog" />
+                                                </v-btn>
+                                            </template>
+                                            <v-container pa-2 style="background:#fff;" grid-list-xl>
+                                                <fluro-content-form-field :field="extraFields.inheritable" v-model="model"></fluro-content-form-field>
+                                                <fluro-content-form-field :field="extraFields.slug" v-model="model"></fluro-content-form-field>
+                                            </v-container>
+                                            <v-container  pa-2 v-if="model._id">
+                                                <label>Fluro ID</label>
+                                                <pre>{{model._id}}</pre>
+                                            </v-container>
+
+                                            <v-container  pa-2 v-if="model._external">
+                                                <label>External ID</label>
+                                                <pre>{{model._external}}</pre>
+                                            </v-container>
+                                            <v-container pa-2>
+            
+                                                <v-btn block small @click="$fluro.global.json(model)">
+                                                    View Raw JSON
+                                                    <fluro-icon right icon="brackets-curly" />
+                                                </v-btn>
+                                                <!-- <fluro-content-form-field :field="extraFields.slug" v-model="model"></fluro-content-form-field> -->
+                                            </v-container>
+                                        </v-menu>
+                                    </v-flex>
+                                </template>
+                                <template v-if="enableAutomationDates">
+                                    <v-flex shrink>
+                                        <v-menu :close-on-content-click="false" @click.native.stop offset-y>
+                                            <template v-slot:activator="{ on }">
+                                                <v-btn class="my-0" small icon flat v-on="on">
+                                                    <fluro-icon icon="clock" />
+                                                </v-btn>
+                                            </template>
+                                            <v-container style="background:#fff;" grid-list-xl>
+                                                <v-layout>
+                                                    <v-flex>
+                                                        <v-input class="no-flex" label="Publish Date" :persistent-hint="true" :hint="publishDateHint">
+                                                            <fluro-content-form-field :field="extraFields.publishDate" v-model="model"></fluro-content-form-field>
+                                                        </v-input>
+                                                    </v-flex>
+                                                    <v-flex>
+                                                        <v-input class="no-flex" label="Archive Date" :persistent-hint="true" :hint="archiveDateHint">
+                                                            <fluro-content-form-field :field="extraFields.archiveDate" v-model="model"></fluro-content-form-field>
+                                                        </v-input>
+                                                    </v-flex>
+                                                    <v-flex>
+                                                        <fluro-content-form-field :field="extraFields.createdDate" v-model="model"></fluro-content-form-field>
+                                                    </v-flex>
+                                                </v-layout>
+                                            </v-container>
+                                        </v-menu>
+                                    </v-flex>
+                                </template>
                                 <v-spacer />
                                 <v-flex shrink>
                                     <template v-if="model._id"><em class="muted sm">Last updated {{model.updated | timeago}}</em></template>
@@ -101,10 +157,13 @@
 import Vue from 'vue';
 
 
+import FluroTagSelect from '../../form/tagselect/FluroTagSelect.vue';
 import FluroRealmSelect from '../../form/realmselect/FluroRealmSelect.vue';
 import FluroStatusSelect from '../../form/FluroStatusSelect.vue';
 import FluroInlineEdit from '../../form/FluroInlineEdit.vue';
+import FluroContentFormField from '../../form/FluroContentFormField.vue';
 
+// console.log('PRIBACY', FluroPrivacySelect)
 // import Contact from './panels/Contact.vue';
 // import Event from './panels/Event.vue';
 
@@ -125,6 +184,7 @@ export default {
                     realms: [],
                     tags: [],
                 };
+
             }
         },
         'options': {
@@ -135,7 +195,10 @@ export default {
         },
     },
     data() {
+
+
         return {
+            file: null,
             model: JSON.parse(JSON.stringify(this.value)),
             serverErrors: '',
             errorMessages: [],
@@ -152,6 +215,57 @@ export default {
         }
     },
     methods: {
+
+        editSuccess(result) {
+            var self = this;
+            console.log('UPDATE SUCCESS', result)
+            self.$fluro.resetCache();
+            // self.reset(true);
+            self.$emit('success', result.data);
+
+            // console.log('RESULT WAS', result);
+            //Print a success message to the screen
+            self.$fluro.notify(`${result.data.title} was updated successfully`);
+        },
+        editFailed(err) {
+            var self = this;
+
+            console.log('ERROR MESSAGE HAPPENED')
+            //Dispatch an error
+            var humanMessage = self.$fluro.utils.errorMessage(err);
+            self.$fluro.error(err);
+            self.serverErrors = humanMessage;
+            self.state = 'error';
+            self.$emit('error', err);
+        },
+        createSuccess(result) {
+            var self = this;
+            console.log('CREATE SUCCESS', result)
+            self.reset(true);
+            self.$emit('success', result.data);
+
+            self.$fluro.resetCache();
+
+            // console.log('RESULT WAS', result);
+            //Print a success message to the screen
+            self.$fluro.notify(`${result.data.title} was created successfully`);
+
+
+        },
+        createFailed(err) {
+            var self = this;
+            console.log('ERROR MESAGE HAPPEND')
+            //Dispatch an error
+            var humanMessage = self.$fluro.utils.errorMessage(err);
+            self.$fluro.error(err);
+            self.serverErrors = humanMessage;
+            self.state = 'error';
+            self.$emit('error', err);
+        },
+        fileChanged(file) {
+            console.log('FILE CHANGE HEARD', file);
+            this.file = file;
+        },
         updateModel() {
             this.$emit('input', this.model);
         },
@@ -224,6 +338,9 @@ export default {
 
             return data;
         },
+        isValidDate(d) {
+            return d instanceof Date && !isNaN(d);
+        },
         submit() {
             var self = this;
             self.validateAllFields();
@@ -258,31 +375,10 @@ export default {
                 case 'edit':
 
                     self.$fluro.api.put(`/content/${definedType}/${requestData._id}`, requestData)
-                        .then(function(result) {
-
-                            console.log('UPDATE SUCCESS', result)
-                            self.$fluro.resetCache();
+                        .then(self.editSuccess)
+                        .catch(self.editFailed)
 
 
-
-                            // self.reset(true);
-                            self.$emit('success', result.data);
-
-                            // console.log('RESULT WAS', result);
-                            //Print a success message to the screen
-                            self.$fluro.notify(`${result.data.title} was updated successfully`);
-
-
-                        })
-                        .catch(function(err) {
-                            console.log('ERROR MESAGE HAPPENED')
-                            //Dispatch an error
-                            var humanMessage = self.$fluro.utils.errorMessage(err);
-                            self.$fluro.error(err);
-                            self.serverErrors = humanMessage;
-                            self.state = 'error';
-                            self.$emit('error', err);
-                        })
 
                     break;
                 default:
@@ -290,30 +386,96 @@ export default {
                     //Preprocess our create request
                     requestData = self.preprocessCreateData(requestData);
 
+
+                    if (self.uploadForSave) {
+
+                        var file = self.file;
+
+                        if (!file) {
+                            // console.log('SELF UPDATE CREATE', requestData);
+                            self.$fluro.notify(`Please select a file to upload`);
+                            self.state = 'ready';
+                            return;
+                        }
+
+
+                        var REPLACEMENT_UPLOAD_URL = '/file/upload';
+
+                        //If the file is uploaded with an external integration
+                        if (requestData.externalIntegration) {
+
+                            var externalIntegrationID = requestData.externalIntegration;
+                            if (externalIntegrationID._id) {
+                                externalIntegrationID = externalIntegrationID._id;
+                            }
+
+                            REPLACEMENT_UPLOAD_URL = `/file/integration/upload/${externalIntegrationID}`;
+
+
+                        }
+
+                        /////////////////////////////////////////////
+
+
+                        //Change the state to uploading
+                        file.state = 'uploading';
+
+                        //Create a new form object
+                        var formData = new FormData();
+                        formData.append('json', JSON.stringify(requestData));
+                        formData.append('file', file.file, file.name)
+
+                        var body = formData;
+                        var requestConfig = {
+                            headers: {
+                                'Content-Type': 'multipart/form-data'
+                            },
+                            // onUploadProgress: progressEvent => {
+
+                            //     let percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
+                            //     // do whatever you like with the percentage complete
+                            //     // maybe dispatch an action that will update a progress bar or something
+                            //     file.progress = percentCompleted;
+                            //     file.bytesLoaded = progressEvent.loaded;
+                            //     file.bytesTotal = progressEvent.total;
+
+                            //     ///////////////////////////////////////////////////
+
+                            //     //Update the bytes loaded from all the files in the array
+                            //     self.bytesLoaded = _.reduce(self.files, function(set, file) {
+                            //         if (file.state == 'complete') {
+                            //             set += file.size || file.bytesTotal || 0;
+                            //         } else {
+                            //             set += file.bytesLoaded || 0;
+                            //         }
+                            //         return set;
+                            //     }, 0)
+
+                            //     ///////////////////////////////////////////////////
+
+                            //     self.$forceUpdate();
+                            // }
+                        };
+
+
+
+
+                        //////////////////////////////////////////////////////////////
+
+                        //Create a new item
+                        return self.$fluro.api.post(REPLACEMENT_UPLOAD_URL, body, requestConfig)
+                            .then(self.createSuccess)
+                            .catch(self.createFailed)
+
+
+                    }
+
+                    //////////////////////////////////////////////////////////////
+
                     //Create a new item
                     self.$fluro.api.post(`/content/${definedType}`, requestData)
-                        .then(function(result) {
-                            console.log('CREATE SUCCESS', result)
-                            self.reset(true);
-                            self.$emit('success', result.data);
-
-                            self.$fluro.resetCache();
-
-                            // console.log('RESULT WAS', result);
-                            //Print a success message to the screen
-                            self.$fluro.notify(`${result.data.title} was created successfully`);
-
-
-                        })
-                        .catch(function(err) {
-                            console.log('ERROR MESAGE HAPPEND')
-                            //Dispatch an error
-                            var humanMessage = self.$fluro.utils.errorMessage(err);
-                            self.$fluro.error(err);
-                            self.serverErrors = humanMessage;
-                            self.state = 'error';
-                            self.$emit('error', err);
-                        })
+                        .then(self.createSuccess)
+                        .catch(self.createFailed)
                     break;
             }
 
@@ -322,6 +484,100 @@ export default {
         }
     },
     computed: {
+        uploadForSave() {
+            var self = this;
+            return !self.model._id && self.model.assetType == 'upload';
+        },
+        saveText() {
+
+            var self = this;
+
+            if (self.uploadForSave) {
+                return 'Upload';
+            } else {
+                return 'Save';
+            }
+        },
+        enableAutomationDates() {
+            switch (this.config.type.definitionName) {
+                case 'article':
+                case 'asset':
+                case 'audio':
+                case 'video':
+                case 'image':
+                case 'code':
+                case 'collection':
+                case 'team':
+                case 'post':
+                case 'product':
+                case 'event':
+                    return true;
+                    break;
+            }
+        },
+        publishDateHint() {
+            if (this.model.publishDate && this.isValidDate(this.model.publishDate)) {
+                return `Change status to 'active' ${this.$filters.timeago(this.model.publishDate)}`;
+            }
+        },
+        archiveDateHint() {
+            if (this.model.archiveDate && this.isValidDate(this.model.archiveDate)) {
+                return `Change status to 'archived' ${this.$filters.timeago(this.model.archiveDate)}`;
+            }
+        },
+        extraFields() {
+
+            var fields = {};
+
+            fields.inheritable = {
+                title: 'Inheritable',
+                description: 'Allow child accounts to reference and use this content',
+                minimum: 0,
+                maximum: 1,
+                type: 'boolean',
+                key: 'inheritable',
+                // directive: 'datetimepicker',
+            }
+
+            fields.slug = {
+                title: 'Slug / Readable ID',
+                description: 'Allow child accounts to reference and use this content',
+                minimum: 0,
+                maximum: 1,
+                type: 'string',
+                key: 'slug',
+                // directive: 'datetimepicker',
+            }
+
+            fields.archiveDate = {
+                // title: `Archive Date`,
+                minimum: 0,
+                maximum: 1,
+                type: 'date',
+                key: 'archiveDate',
+                directive: 'datetimepicker',
+            }
+
+            fields.publishDate = {
+                // title: `Publish Date`,
+                minimum: 0,
+                maximum: 1,
+                type: 'date',
+                key: 'publishDate',
+                directive: 'datetimepicker',
+            }
+
+            fields.createdDate = {
+                title: `Creation Date`,
+                minimum: 0,
+                maximum: 1,
+                type: 'date',
+                key: 'created',
+                directive: 'datetimepicker',
+            }
+
+            return fields;
+        },
         showLoading() {
             return this.loading || !this.component;
         },
@@ -337,7 +593,6 @@ export default {
             return this.config.definition;
         },
         typeConfig() {
-            console.log('GOT A CONFIGGG???', this.config)
             return this.config.type;
         },
         definitionTitle() {
@@ -377,9 +632,11 @@ export default {
     },
     components: {
         // Contact,
+        FluroTagSelect,
         FluroRealmSelect,
         FluroStatusSelect,
         FluroInlineEdit,
+        FluroContentFormField,
     },
     asyncComputed: {
         config: {
@@ -406,7 +663,7 @@ export default {
 
                     return self.$fluro.api.get(`/defined/type/${self.type}`).then(function(res) {
                         resolve(res.data);
-                        console.log('CONFIG LOADED', res.data);
+                        // console.log('CONFIG LOADED', res.data);
                         self.loading = false;
                     }, reject);
                 })

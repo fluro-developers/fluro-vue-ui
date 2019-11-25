@@ -27,6 +27,9 @@ export default {
         color:{
             type:String,
         },
+        allDefinitions:{
+            type:Boolean,
+        },
         'value': {
             type: Array,
             default: function() {
@@ -48,16 +51,24 @@ export default {
         selectionSummary() {
             var self = this;
 
-            if (!self.selection.length) {
+
+            var matchingSelection = _.filter(self.selection, function(entry) {
+                return entry.definition ? entry.definition == self.type : (entry._type == self.type)
+            })
+
+            if (!matchingSelection.length) {
                 return `Select ${self.plural}`
             }
 
-            if (self.selection.length > 3) {
-                return `${self.selection.length} ${self.plural} selected`;
+            if (matchingSelection.length > 3) {
+                return `${matchingSelection.length} ${self.plural} selected`;
             }
 
-            return _.map(self.selection, 'title').join(', ');
+            return _.map(matchingSelection, 'title').join(', ');
         }
+    },
+    created() {
+         this.setSelection(this.value);
     },
     components: {
     },
@@ -84,6 +95,7 @@ export default {
                 options: {
                     selector:self,
                     type:self.type,
+                    allDefinitions:self.allDefinitions,
                 }
             });
 

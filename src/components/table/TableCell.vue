@@ -1,27 +1,26 @@
 <template>
     <td :class="{wrap:column.wrap, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}">
-        
-        <!-- <pre>{{complexObject}}</pre> -->
+        <!-- <pre>{{key}} {{simpleArray}} {{subField}}</pre> -->
+        <!-- <pre>{{subField}}</pre> -->
+        <!-- <pre>{{rawValue}}</pre> -->
+        <!-- <pre>{{rawValue}}</pre> -->
         <component v-if="column.renderer" :data="rawValue" :is="column.renderer" :row="row" :column="column" />
         <div v-else-if="simpleArray">
             <!-- {{value}} -->
             <span class="inline-tag" v-for="string in rawValue">
-                  {{string}} 
+                {{string}}
             </span>
         </div>
         <div v-else-if="complexObject">
-
             <template v-if="preValue._type == 'event'">
                 <a class="inline-tag" @click.stop.prevent="clicked(preValue)">
-                   <fluro-icon type="event" /> {{preValue.title}} <span class="text-muted">// {{preValue | readableEventDate}}</span>
+                    <fluro-icon type="event" /> {{preValue.title}} <span class="text-muted">// {{preValue | readableEventDate}}</span>
                 </a>
             </template>
             <template v-else>
-                
                 <a @click.stop.prevent="clicked(preValue)" class="inline-tag" :style="{color:preValue.color, backgroundColor:preValue.bgColor}">
-                    <fluro-icon v-if="preValue._type" :type="preValue._type" /> {{preValue.title}}
+                    <fluro-icon v-if="preValue._type" :type="preValue._type" /> {{preValue.title || preValue.name}} <template v-if="preValue[subField]"> - {{preValue[subField]}}</template>
                 </a>
-            
             </template>
             <!-- if (_.isObject(val)) {
             return val
@@ -33,11 +32,25 @@
             return val; -->
         </div>
         <div v-else-if="complexArray">
-            <div style="max-width: 300px; white-space: normal;">
-            <a @click.stop.prevent="clicked(entry)" class="inline-tag" v-for="entry in preValue" :style="{color:entry.color, backgroundColor:entry.bgColor}">
-                <fluro-icon v-if="entry._type && entry._type != 'realm'" :type="entry._type" /> {{entry.title}}
-            </a>
-        </div>
+            <!--   -->
+            <div style="max-width: 600px; white-space: normal;">
+                <template v-for="entry in preValue.slice(0, 8)">
+                    <template v-if="entry._type == 'event'">
+                        <a class="inline-tag" @click.stop.prevent="clicked(entry)">
+                            <fluro-icon type="event" /> {{entry.title}} <span class="text-muted">// {{entry | readableEventDate}}</span>
+                        </a>
+                    </template>
+                    <template v-else>
+                        <a @click.stop.prevent="clicked(entry)" class="inline-tag" :style="{color:entry.color, backgroundColor:entry.bgColor}">
+                            <fluro-icon v-if="entry._type && entry._type != 'realm'" :type="entry._type" /> {{entry.title}} <template v-if="entry[subField]"> - {{entry[subField]}}</template>
+                        </a>
+                    </template>
+                </template>
+                <template v-if="preValue.length>8">
+                    <br/>
+                <div class="inline-tag">+{{preValue.length - 8}} more...</div>
+                 </template>
+            </div>
         </div>
         <slot v-else :value="value" :row="row" :column="column">
             {{value}}
@@ -85,14 +98,22 @@ export default {
             }
 
             if (val.join) {
-                return _.map(val,function(entry) {
-                    return entry.title || entry.name  || entry;
-                }).join(', ');
+
+                if (self.subField) {
+                    return _.map(val, function(entry) {
+                        return entry[self.subField];
+                    }).join(', ');
+                } else {
+                    return _.map(val, function(entry) {
+                        return entry.title || entry.name || entry;
+                    }).join(', ');
+                }
+
             }
 
-            if(self.column.sortType == 'date' || self.column.type =='date') {
+            if (self.column.sortType == 'date' || self.column.type == 'date') {
 
-                if(self.column.format) {
+                if (self.column.format) {
                     return self.$fluro.date.formatDate(val, self.column.format);
                 } else {
                     return self.$fluro.date.formatDate(val, 'D MMM YYYY')
@@ -104,10 +125,27 @@ export default {
             return val.title || val.name || val;
         },
         key() {
-            return (this.column.key || '').split('|')[0];
+
+            return ((this.column.key || '').split('|')[0]).split('[]')[0];
+        },
+        subField() {
+            var key = this.column.key;
+            var pieces = key.split('[]');
+
+            if (pieces.length > 1) {
+                pieces.shift()
+                return pieces.join(''); //.split('|')[0];
+            }
         },
         rawValue() {
-            return _.get(this.row, this.key);
+
+            var rawValue = _.get(this.row, this.key);
+            // if(this.row.firstName == 'Cade' && this.key == 'family._children') {
+            //     console.log('RAW VALUE', this.key, this.row);
+            // }
+
+
+            return rawValue;
         },
         preValue() {
             // console.log('THIS', this.key, this.rawValue)
@@ -136,7 +174,11 @@ export default {
                     })
                     .map(function(object) {
                         if (object.title || object.name) {
-                            object.title = object.title || object.name;
+                            object.title = (object.title || object.name);
+
+                            // if(self.subField) {
+                            //     object.title = `${object.title} (${_.get(object, self.subField)})`
+                            // }
                             return object;
                         }
 
@@ -165,7 +207,6 @@ export default {
 }
 </script>
 <style scoped lang="scss">
-
 .wrap {
     white-space: normal !important;
 }

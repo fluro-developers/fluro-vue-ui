@@ -123,6 +123,8 @@
                 Add {{model.filters.length ? 'Another' : ''}} Rule
                 <fluro-icon right icon="plus" />
             </v-btn>
+
+            <!-- <pre>{{model}}</pre> -->
         </v-container>
     </div>
 </template>
@@ -141,7 +143,7 @@ function getFlattenedFields(array, trail, titles) {
 
     return _.chain(array)
         .map(function(field, key) {
-            
+
             var returnValue = [];
 
 
@@ -462,6 +464,159 @@ export default {
     },
 
     asyncComputed: {
+        eventRealms: {
+            default: [],
+            get() {
+
+                var self = this;
+
+                if (!self.isContactType) {
+                    return Promise.resolve([]);
+                }
+
+                return new Promise(function(resolve, reject) {
+                    return self.$fluro.access.retrieveSelectableRealms('view', 'event', 'event', { flat: true })
+                        .then(function(realmTypes) {
+
+                            var flattened = _.reduce(realmTypes, function(set, realmType) {
+
+
+                                set = set.concat(realmType.realms);
+                                return set;
+                            }, []);
+
+
+                            // console.log('FLATTENED', flattened)
+                            resolve(flattened);
+                        })
+                        .catch(reject);
+                })
+            },
+        },
+        eventTracks: {
+            get() {
+                var self = this;
+
+                if (!self.isContactType) {
+                    return Promise.resolve([]);
+                }
+
+                return new Promise(function(resolve, reject) {
+
+                    self.$fluro.api.get('/content/eventtrack', {
+                            params: {
+                                fields: ['title', 'definition', 'status'],
+                                allDefinitions: true,
+                            },
+                        })
+                        .then(function(res) {
+
+                            var tracks = _.chain(res.data)
+                                .map(function(track) {
+
+                                    if (track.status != 'active') {
+                                        return;
+                                    }
+                                    track.definitionTitle = self.$fluro.types.readable(track.definition);
+
+                                    return track;
+                                })
+                                .compact()
+                                .value();
+
+
+
+                            resolve(tracks);
+                        })
+                        .catch(reject);
+                })
+            },
+        },
+        interactionTypes: {
+            get() {
+                var self = this;
+
+                if (!self.isContactType) {
+                    return Promise.resolve([]);
+                }
+                // return new Promise(function(resolve, reject) {
+
+                return self.$fluro.types.subTypes('interaction')
+                // .then(resolve)
+                // .catch(reject);
+                // })
+            },
+        },
+
+        eventTypes: {
+            get() {
+                var self = this;
+
+                if (!self.isContactType) {
+                    return Promise.resolve([]);
+                }
+                // return new Promise(function(resolve, reject) {
+
+                return self.$fluro.types.subTypes('event')
+                // .then(resolve)
+                // .catch(reject);
+                // })
+            },
+        },
+        processTypes: {
+            get() {
+                var self = this;
+
+
+
+                // return new Promise(function(resolve, reject) {
+
+                return self.$fluro.types.subTypes('process')
+                // .then(resolve)
+                // .catch(reject);
+                // })
+            },
+        },
+        postTypes: {
+            get() {
+                var self = this;
+
+
+
+                // return new Promise(function(resolve, reject) {
+
+                return self.$fluro.types.subTypes('post')
+                // .then(resolve)
+                // .catch(reject);
+                // })
+            },
+        },
+        tagTypes: {
+            get() {
+                var self = this;
+
+                // return new Promise(function(resolve, reject) {
+
+                return self.$fluro.types.subTypes('tag')
+                // .then(resolve)
+                // .catch(reject);
+                // })
+            },
+        },
+        teamTypes: {
+            get() {
+                var self = this;
+
+
+
+                // return new Promise(function(resolve, reject) {
+
+                return self.$fluro.types.subTypes('team')
+                // .then(resolve)
+                // .catch(reject);
+                // })
+            },
+        },
         definition: {
             get() {
 
@@ -552,75 +707,813 @@ export default {
 
 
         },
+        isContactType() {
+            var self = this;
+
+            if (self.type == 'contact') {
+                return true;
+            }
+
+            if (self.definition && self.definition.parentType == 'contact') {
+                return true;
+            }
+        },
         availableKeys() {
 
             var self = this;
 
-            var fields = FilterService.allKeys(self.asyncKeys, self.definition);
+
+
+
+            var injectFields = [];
+
+            if (self.isContactType) {
+
+
+                console.log('IS A CONTACT TYPE!!!!', self.definition, self.type)
+                /////////////////////////////////////////////
+
+                // key: 'family._parents[]definition',
+
+                var eventDefinitionOptions = [];
+                var eventTrackOptions = [];
+                var interactionDefinitionOptions = [];
+
+                interactionDefinitionOptions = interactionDefinitionOptions.concat(_.map(self.interactionTypes, function(definition) {
+                    return {
+                        text: definition.title,
+                        value: definition.definitionName,
+                    }
+                }))
+
+
+                eventTrackOptions = eventTrackOptions.concat(_.map(self.eventTracks, function(track) {
+                    return {
+                        title: track.title,
+                        _id: track._id,
+                    }
+                }))
+
+                // console.log('EVENT DEFINITIONS', self.eventTypes);
+
+                eventDefinitionOptions = eventDefinitionOptions.concat(_.map(self.eventTypes, function(definition) {
+                    return {
+                        text: definition.title,
+                        value: definition.definitionName,
+                    }
+                }))
+
+
+                /////////////////////////////////////////////
+
+                // injectFields.push({
+                //     title: 'Attendance > Checked in to',
+                //     // key: '_checkins[]',
+                //     key: '_checkins',
+                //     maximum: 0,
+                //     minimum: 0,
+                //     type: 'reference',
+                // })
+
+
+                injectFields.push({
+                    title: 'Attendance > Total times checked in',
+                    // key: '_checkins[]',
+                    key: '_checkins._raw.length',
+                    maximum: 1,
+                    minimum: 0,
+                    type: 'integer',
+                    subfieldTitle: 'Where event matches...',
+                    subfields: [{
+                            title: 'Date',
+                            key: 'startDate',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'date',
+                        },
+                        {
+                            title: 'Realms',
+                            key: 'realms',
+                            maximum: 0,
+                            minimum: 0,
+                            type: 'reference',
+                            directive: 'select',
+                            _discriminatorDefinition: 'realm',
+                        },
+
+
+                        {
+                            title: 'Event Track',
+                            key: 'track',
+                            maximum: 0,
+                            minimum: 0,
+                            type: 'reference',
+                            directive: 'select',
+                            options: eventTrackOptions,
+                        },
+                        {
+                            title: 'Definition',
+                            key: 'definition',
+                            maximum: 0,
+                            minimum: 0,
+                            type: 'string',
+                            directive: 'select',
+                            options: eventDefinitionOptions,
+                        },
+                    ],
+                });
+
+
+
+
+                injectFields.push({
+                    title: 'Rostered Assignments > Total times rostered',
+                    // key: '_checkins[]',
+                    key: '_assignments.length',
+                    maximum: 1,
+                    minimum: 0,
+                    type: 'integer',
+                    subfieldTitle: 'Where assignment matches...',
+                    subfields: [{
+                            title: 'Position',
+                            key: 'title',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'string',
+                            directive: 'select',
+                        },
+                        {
+                            title: 'Confirmation Status',
+                            key: 'confirmationStatus',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'string',
+                            directive: 'select',
+                        },
+                        {
+                            title: 'Roster Type',
+                            key: 'rosterDefinition',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'string',
+                            directive: 'select',
+                        },
+                        {
+                            title: 'Roster Type',
+                            key: 'rosterDefinition',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'string',
+                            directive: 'select',
+                        },
+                        {
+                            title: 'Date',
+                            key: 'startDate',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'date',
+                        },
+                        {
+                            title: 'Realms',
+                            key: 'realms',
+                            maximum: 0,
+                            minimum: 0,
+                            type: 'reference',
+                            directive: 'select',
+                            _discriminatorDefinition: 'realm',
+                        },
+                        {
+                            title: 'Event Track',
+                            key: 'track',
+                            maximum: 0,
+                            minimum: 0,
+                            type: 'reference',
+                            directive: 'select',
+                            options: eventTrackOptions,
+                        },
+
+                    ],
+                });
+
+                injectFields.push({
+                    title: 'Forms > Total submissions',
+                    key: '_interactions.all.length',
+                    maximum: 1,
+                    minimum: 0,
+                    type: 'integer',
+                    subfieldTitle: 'Where submission matches...',
+                    subfields: [{
+                            title: 'Submission Date',
+                            key: 'created',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'date',
+                        },
+                        {
+                            title: 'Realms',
+                            key: 'realms',
+                            maximum: 0,
+                            minimum: 0,
+                            type: 'reference',
+                            directive: 'select',
+                            _discriminatorDefinition: 'realm',
+                        },
+                        {
+                            title: 'Definition',
+                            key: 'definition',
+                            maximum: 0,
+                            minimum: 0,
+                            type: 'string',
+                            directive: 'select',
+                            options: interactionDefinitionOptions,
+                        },
+                    ],
+                });
+
+                injectFields.push({
+                    title: 'Posts / Notes > Total linked posts',
+                    key: '_posts.length',
+                    maximum: 1,
+                    minimum: 0,
+                    type: 'integer',
+                    subfieldTitle: 'Where post matches...',
+                    subfields: [    
+                        {
+                            title: 'Date',
+                            key: 'created',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'date',
+                        },
+                        {
+                            title: 'Realms',
+                            key: 'realms',
+                            maximum: 0,
+                            minimum: 0,
+                            type: 'reference',
+                            directive: 'select',
+                            _discriminatorDefinition: 'realm',
+                        },
+                        {
+                            title: 'Definition',
+                            key: 'definition',
+                            maximum: 0,
+                            minimum: 0,
+                            type: 'string',
+                            directive: 'select',
+                            // options: interactionDefinitionOptions,
+                        },
+                    ],
+                });
+
+
+                // postTypes
+
+
+                /**
+
+                injectFields.push({
+                    title: 'Attendance > Any Event > Date',
+                    key: '_checkins.all[]startDate',
+                    maximum: 1,
+                    minimum: 0,
+                    type: 'date',
+                });
+
+                injectFields.push({
+                    title: 'Attendance > Any Event > Total',
+                    key: '_checkins.all.length',
+                    maximum: 1,
+                    minimum: 0,
+                    type: 'integer',
+                    
+                });
+                /**/
+
+                ////////////////////////////////////////////////
+
+                /**
+                _.each(self.eventTypes, function(definition) {
+
+                    injectFields.push({
+                        title: `Attendance > Definition > ${definition.plural} > Date`,
+                        key: `_checkins.definition.${definition.definitionName}[]startDate`,
+                        maximum: 1,
+                        minimum: 0,
+                        type: 'date',
+                    });
+
+
+                    injectFields.push({
+                        title: `Attendance > Definition > ${definition.plural} > Total`,
+                        key: `_checkins.definition.${definition.definitionName}.length`,
+                        maximum: 1,
+                        minimum: 0,
+                        type: 'integer',
+                    });
+
+                })
+
+
+                ////////////////////////////////////////////////
+
+                _.each(self.eventTracks, function(track) {
+
+
+                    var titleString = `Attendance > Event Track > ${track.title}`;
+                    if (track.definitionTitle) {
+                        titleString = `Attendance > ${track.definitionTitle} (Track) > ${track.title}`;
+                    }
+
+                    injectFields.push({
+                        title: `${titleString} > Date`,
+                        key: `_checkins.track.${track._id}[]startDate`,
+                        maximum: 1,
+                        minimum: 0,
+                        type: 'date',
+                    });
+
+
+                    injectFields.push({
+                        title: `${titleString} > Total`,
+                        key: `_checkins.track.${track._id}.length`,
+                        maximum: 1,
+                        minimum: 0,
+                        type: 'integer',
+                    });
+
+                })
+    
+                ////////////////////////////////////////////////
+
+                _.each(self.eventRealms, function(realm) {
+                    // console.log('EVENT REALMS!!!', realm);
+
+                    // console.log('REALMS', realm)
+                    var titleString = `Attendance > Realm > ${realm.title}`;
+                    if (realm.fullDefinition) {
+                        titleString = `Attendance > ${realm.fullDefinition.title} (Realm) > ${realm.title}`;
+                    }
+
+                    injectFields.push({
+                        title: `${titleString} > Date`,
+                        key: `_checkins.realm.${realm._id}[]startDate`,
+                        maximum: 1,
+                        minimum: 0,
+                        type: 'date',
+                    });
+
+
+                    injectFields.push({
+                        title: `${titleString} > Total`,
+                        key: `_checkins.realm.${realm._id}.length`,
+                        maximum: 1,
+                        minimum: 0,
+                        type: 'integer',
+                    });
+
+                })
+
+/**/
+                ////////////////////////////////////////////////
+
+                // _.each(self.realmTypes, function(realmType) {
+
+                //     injectFields.push({
+                //         title: `Attendance > Realm > ${realm.title} > Date`,
+                //         key: `_checkins.realm.${realm._id}[]startDate`,
+                //         maximum: 1,
+                //         minimum: 0,
+                //         type: 'date',
+                //     });
+
+
+                //     injectFields.push({
+                //         title: `Attendance > Realm > ${realm.title} > Total`,
+                //         key: `_checkins.realm.${realm._id}.length`,
+                //         maximum: 1,
+                //         minimum: 0,
+                //         type: 'integer',
+                //     });
+
+                // })
+
+
+
+
+                /////////////////////////////////////////////////////
+
+
+                injectFields.push({
+                    title: 'Family Members > Number of Family Members',
+                    key: 'family.items.length',
+                    maximum: 1,
+                    minimum: 0,
+                    type: 'integer',
+                });
+
+                injectFields.push({
+                    title: 'Family Parents > Number of Parents',
+                    key: 'family._parents.length',
+                    maximum: 1,
+                    minimum: 0,
+                    type: 'integer',
+                });
+
+                injectFields.push({
+                    title: 'Family Children > Number of Children',
+                    key: 'family._children.length',
+                    maximum: 1,
+                    minimum: 0,
+                    type: 'integer',
+                });
+
+
+
+                injectFields.push({
+                    title: 'Family Parents > Definition',
+                    key: 'family._parents[]definition',
+                    maximum: 1,
+                    minimum: 0,
+                    type: 'string',
+                });
+
+
+                injectFields.push({
+                    title: 'Family Children > Definition',
+                    key: 'family._children[]definition',
+                    maximum: 1,
+                    minimum: 0,
+                    type: 'string',
+                });
+
+                injectFields.push({
+                    title: 'Family Members > Definition',
+                    key: 'family.items[]definition',
+                    maximum: 1,
+                    minimum: 0,
+                    type: 'string',
+                });
+
+
+
+                injectFields.push({
+                    title: 'Family Parents > Of Gender',
+                    key: 'family._parents[]gender',
+                    maximum: 1,
+                    minimum: 0,
+                    type: 'string',
+                    directive: 'select',
+                    options: [{
+                            name: 'Male',
+                            value: 'male',
+                        },
+                        {
+                            name: 'Female',
+                            value: 'female',
+                        },
+                        {
+                            name: 'Unknown',
+                            value: 'unknown',
+                        },
+                    ]
+                });
+
+                injectFields.push({
+                    title: 'Family Members > Of Gender',
+                    key: 'family.items[]gender',
+                    maximum: 1,
+                    minimum: 0,
+                    type: 'string',
+                    directive: 'select',
+                    options: [{
+                            name: 'Male',
+                            value: 'male',
+                        },
+                        {
+                            name: 'Female',
+                            value: 'female',
+                        },
+                        {
+                            name: 'Unknown',
+                            value: 'unknown',
+                        },
+                    ]
+                });
+
+
+
+
+
+                injectFields.push({
+                    title: 'Family Members > Of Household Role',
+                    key: 'family.items[]householdRole',
+                    maximum: 1,
+                    minimum: 0,
+                    type: 'string',
+                    // directive: 'select',
+                    // options: [{
+                    //         name: 'Male',
+                    //         value: 'male',
+                    //     },
+                    //     {
+                    //         name: 'Female',
+                    //         value: 'female',
+                    //     },
+                    //     {
+                    //         name: 'Unknown',
+                    //         value: 'unknown',
+                    //     },
+                    // ]
+                });
+
+
+                injectFields.push({
+                    title: 'Family Children > Of Gender',
+                    key: 'family._children[]gender',
+                    maximum: 1,
+                    minimum: 0,
+                    type: 'string',
+                    directive: 'select',
+                    options: [{
+                            name: 'Male',
+                            value: 'male',
+                        },
+                        {
+                            name: 'Female',
+                            value: 'female',
+                        },
+                        {
+                            name: 'Unknown',
+                            value: 'unknown',
+                        },
+                    ]
+                });
+
+                injectFields.push({
+                    title: 'Family Children > Of Age',
+                    key: 'family._children[]age',
+                    maximum: 1,
+                    minimum: 0,
+                    type: 'integer',
+                });
+
+                injectFields.push({
+                    title: 'Family Parents > Of Age',
+                    key: 'family._parents[]age',
+                    maximum: 1,
+                    minimum: 0,
+                    type: 'integer',
+                });
+
+                injectFields.push({
+                    title: 'Family Members > Of Age',
+                    key: 'family.items[]age',
+                    maximum: 1,
+                    minimum: 0,
+                    type: 'integer',
+                });
+
+                injectFields.push({
+                    title: `Family Children > Realms`,
+                    key: `family._children[]realms`,
+                    maximum: 0,
+                    minimum: 0,
+                    type: 'reference',
+                    directive: 'select',
+                    _discriminatorDefinition: 'realm',
+                });
+
+                injectFields.push({
+                    title: `Family Members > Realms`,
+                    key: `family.items[]realms`,
+                    maximum: 0,
+                    minimum: 0,
+                    type: 'reference',
+                    directive: 'select',
+                    _discriminatorDefinition: 'realm',
+                });
+
+                injectFields.push({
+                    title: `Family Parents > Realms`,
+                    key: `family._parents[]realms`,
+                    maximum: 0,
+                    minimum: 0,
+                    type: 'reference',
+                    directive: 'select',
+                    _discriminatorDefinition: 'realm',
+                });
+
+                //////////////////////////////////////////////////////////////
+
+                injectFields.push({
+                    title: `Assigned position in any active Group/Team`,
+                    key: '_positions.active',
+                    maximum: 0,
+                    minimum: 0,
+                    type: 'string',
+                    directive: 'select',
+                });
+
+
+                ///////////////////////////////////////////////
+
+                _.each(self.teamTypes, function(teamType) {
+
+                    injectFields.push({
+                        title: `Family Members > ${teamType.plural}`,
+                        key: `family.items[]realms|${teamType.definitionName}`,
+                        maximum: 0,
+                        minimum: 0,
+                        type: 'reference',
+                        directive: 'select',
+                        _discriminator: teamType.definitionName,
+                        _discriminatorType: 'team',
+                    });
+
+
+                    injectFields.push({
+                        title: `Family Children > ${teamType.plural}`,
+                        key: `family._children[]realms|${teamType.definitionName}`,
+                        maximum: 0,
+                        minimum: 0,
+                        type: 'reference',
+                        directive: 'select',
+                        _discriminator: teamType.definitionName,
+                        _discriminatorType: 'team',
+                    });
+
+                    injectFields.push({
+                        title: `Family Parents > ${teamType.plural}`,
+                        key: `family._parents[]realms|${teamType.definitionName}`,
+                        maximum: 0,
+                        minimum: 0,
+                        type: 'reference',
+                        directive: 'select',
+                        _discriminator: teamType.definitionName,
+                        _discriminatorType: 'team',
+                    });
+
+                    injectFields.push({
+                        title: `Assigned position in ${teamType.plural}`,
+                        key: `_positions.${teamType.definitionName}`,
+                        maximum: 0,
+                        minimum: 0,
+                        type: 'string',
+                        directive: 'select',
+                    });
+                })
+
+                ///////////////////////////////////////////////
+
+                injectFields.push({
+                    title: `Family Children > Tags`,
+                    key: `family._children[]tags`,
+                    maximum: 0,
+                    minimum: 0,
+                    type: 'reference',
+                    directive: 'select',
+                    _discriminatorDefinition: 'tag',
+                });
+
+                injectFields.push({
+                    title: `Family Members > Tags`,
+                    key: `family.items[]tags`,
+                    maximum: 0,
+                    minimum: 0,
+                    type: 'reference',
+                    directive: 'select',
+                    _discriminatorDefinition: 'tag',
+                });
+
+                injectFields.push({
+                    title: `Family Parents > Tags`,
+                    key: `family._parents[]tags`,
+                    maximum: 0,
+                    minimum: 0,
+                    type: 'reference',
+                    directive: 'select',
+                    _discriminatorDefinition: 'tag',
+                });
+
+                _.each(self.tagTypes, function(tagType) {
+
+                    injectFields.push({
+                        title: `Family Children > ${tagType.plural} (Tag)`,
+                        key: `family._children[]tags|${tagType.definitionName}`,
+                        maximum: 0,
+                        minimum: 0,
+                        type: 'reference',
+                        directive: 'select',
+                        _discriminatorDefinition: tagType.definitionName,
+                    });
+
+                    injectFields.push({
+                        title: `Family Members > ${tagType.plural} (Tag)`,
+                        key: `family.items[]tags|${tagType.definitionName}`,
+                        maximum: 0,
+                        minimum: 0,
+                        type: 'reference',
+                        directive: 'select',
+                        _discriminatorDefinition: tagType.definitionName,
+                    });
+
+                    injectFields.push({
+                        title: `Family Parents > ${tagType.plural} (Tag)`,
+                        key: `family._parents[]tags|${tagType.definitionName}`,
+                        maximum: 0,
+                        minimum: 0,
+                        type: 'reference',
+                        directive: 'select',
+                        _discriminatorDefinition: tagType.definitionName,
+                    });
+                })
+
+
+                injectFields.push({
+                    title: 'Family Children > Academic Calendar',
+                    key: 'family._children[]academicCalendar',
+                    maximum: 0,
+                    minimum: 0,
+                    type: 'reference',
+                    directive: 'select',
+                });
+
+                injectFields.push({
+                    title: 'Family Children > Academic Grade',
+                    key: 'family._children[]academicGrade',
+                    maximum: 0,
+                    minimum: 0,
+                    type: 'string',
+                    directive: 'select',
+                });
+
+
+                //////////////////////////////////////////////////////////////
+
+                _.each(self.processTypes, function(type) {
+
+                    injectFields.push({
+                        title: `Process > ${type.plural} > In Process`,
+                        key: `_processes.${type.definitionName}.in`,
+                        maximum: 0,
+                        minimum: 0,
+                        type: 'boolean',
+                    });
+
+                    injectFields.push({
+                        title: `Process > ${type.plural} > Due Date`,
+                        key: `_processes.${type.definitionName}.dueDate`,
+                        maximum: 0,
+                        minimum: 0,
+                        type: 'date',
+                    });
+
+                    injectFields.push({
+                        title: `Process > ${type.plural} > Entered Process`,
+                        key: `_processes.${type.definitionName}.created`,
+                        maximum: 0,
+                        minimum: 0,
+                        type: 'date',
+                    });
+
+                    injectFields.push({
+                        title: `Process > ${type.plural} > Last Update`,
+                        key: `_processes.${type.definitionName}.updated`,
+                        maximum: 0,
+                        minimum: 0,
+                        type: 'date',
+                    });
+
+                    injectFields.push({
+                        title: `Process > ${type.plural} > Current State`,
+                        key: `_processes.${type.definitionName}.state`,
+                        maximum: 0,
+                        minimum: 0,
+                        type: 'string',
+                    });
+
+                    injectFields.push({
+                        title: `Process > ${type.plural} > Status`,
+                        key: `_processes.${type.definitionName}.processStatus`,
+                        maximum: 0,
+                        minimum: 0,
+                        type: 'string',
+                    });
+                })
+            }
+
+
+            //////////////////////////////////////////////////////////////
+
+
+            injectFields = injectFields.concat(self.asyncKeys);
+
+            var fields = FilterService.allKeys(injectFields, self.definition);
 
             return _.orderBy(fields, 'title')
 
-
-
-            // // var fields = [].concat(self.fields, self.asyncKeys, self.typeFields, self.definitionFields, self.detailSheetFields);
-
-            //    // console.log('FIELDS', fields)
-            // //////////////////////////////////////////////////////////////
-
-
-
-            // // // console.log('DETAIL SHEETS FIELDS', self.definition.details)
-            // // _.each(self.definition.details, function(detailSheet) {
-
-            // //     // //Get all the flattened fields
-            // //     var flattened = getFlattenedFields(detailSheet.fields, [], []);
-
-            // //     var mapped = _.chain(flattened)
-            // //         .map(function(field) {
-
-            // //             if (field.type == 'group') {
-            // //                 return;
-            // //             }
-
-            // //             return {
-            // //                 title: detailSheet.title + ' - ' + field.titles.join(' > '),
-            // //                 key: `details.${detailSheet.definitionName}.items[0].data.${field.trail.join('.')}`,
-            // //                 minimum: field.minimum,
-            // //                 maximum: field.maximum,
-            // //                 detail: detailSheet.definitionName,
-            // //                 type: field.type,
-            // //             }
-            // //         })
-            // //         .compact()
-            // //         .value();
-
-
-
-            // //     // _.map(detailSheet.fields, function(field) {
-
-            // //     //     return {
-            // //     //         title:detailSheet.title + ' - ' + field.title,
-            // //     //         key:`details.${detailSheet.definitionName}.${field.key}`,
-            // //     //         // key:field.key,
-            // //     //         // `details.${detailSheet.definitionName}.items[0].data[${field.key}]`,
-            // //     //         type:field.type,
-            // //     //         minimum:field.minimum,
-            // //     //         maximum:field.maximum,
-            // //     //         detail:detailSheet.definitionName,
-
-            // //     //     }
-
-            // //     // })
-
-            // //     fields = fields.concat(mapped);
-            // // })
-
-
-            // return _.orderBy(fields, 'title')
-
         },
-
-        /**/
     },
     watch: {
         // rowChangeString() {

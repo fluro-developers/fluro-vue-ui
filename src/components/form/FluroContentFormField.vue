@@ -170,7 +170,7 @@
                     <!-- @focus="modal = true" -->
                     <!-- v-model="fieldModel" -->
                     <!--   -->
-                    <v-text-field :outline="showOutline" :success="success" :value="formattedDate" :persistent-hint="true" :hint="formattedDate" :label="displayLabel" prepend-inner-icon="event" readonly v-on="on"></v-text-field>
+                    <v-text-field :outline="showOutline" :success="success" :value="formattedDate" :persistent-hint="true" :hint="dateHint" :label="displayLabel" prepend-inner-icon="event" readonly v-on="on"></v-text-field>
                 </template>
                 <v-card>
                     <v-date-picker attach @change="modal = false" v-model="fieldModel" no-title scrollable>
@@ -219,10 +219,10 @@
         </template>
         <template v-else-if="renderer == 'countrycodeselect'">
             <template v-if="mobile">
-                <v-select :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryCodeOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+                <v-select dense :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryCodeOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
             </template>
             <template v-else>
-                <v-autocomplete :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryCodeOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+                <v-autocomplete dense :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryCodeOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
             </template>
         </template>
         <template v-else-if="renderer == 'countryselect'">
@@ -248,6 +248,7 @@
             </template>
         </template>
         <template v-else-if="renderer == 'content-select'">
+            <!-- <pre>{{fieldModel}}</pre> -->
             <v-input class="no-flex" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
                 <fluro-content-select :success="success" :required="required" :error-messages="errorMessages" :label="displayLabel" :outline="showOutline" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" :minimum="minimum" @input="touch" :type="restrictType" :maximum="maximum" v-model="model[field.key]" />
             </v-input>
@@ -610,15 +611,39 @@ export default {
         dateFormat() {
             return 'D MMM YYYY';
         },
+        dateHint() {
+
+
+            if(this.fieldModel) {
+                switch (this.field.key) {
+                    case 'dob':
+                    case '_dob':
+                        var years = parseInt(moment().format('YYYY')) - parseInt(moment(this.fieldModel).format('YYYY'))
+                        
+                        if(this.model.dobVerified) {
+                            return `${years} Years old`;
+                        } else {
+                            return `${years} Years old (estimated)`;
+                        }
+                        
+                        break;
+                }
+            }
+
+
+            return this.dateFormat;
+
+
+        },
         formattedDate() {
             if (this.fieldModel === undefined || this.fieldModel === null || this.fieldModel === '') {
                 // console.log('UNDEFINED DATE', this.fieldModel)
                 return;
             }
 
-            // console.log('We have a model!!!', this.fieldModel)
-
             return this.fieldModel ? moment(this.fieldModel).format(this.dateFormat) : ''
+
+
         },
         // formattedDate() {
         //     return this.$fluro.date.formatDate(this.fieldModel, 'dddd D MMM YYYY');
@@ -994,7 +1019,7 @@ export default {
             return this.maximum === 0 || this.maximum > 1;
         },
         countryCodeOptions() {
-            return _.chain(this.asyncOptions)
+            var options =  _.chain(this.asyncOptions)
                 .map(function(country) {
                     return {
                         title: `${country.name} - ${country.alpha2} (${country.countryCallingCodes.join(', ')})`,
@@ -1005,6 +1030,28 @@ export default {
                     return entry.title;
                 })
                 .value()
+
+                
+
+                options.unshift({
+                    title:`United Kingdom - GB (+44)`,
+                    value:'GB',
+                })
+
+                options.unshift({
+                    title:`United States - USA (+1)`,
+                    value:'US',
+                })
+
+                options.unshift({
+                    title:`Australia - AU (+61)`,
+                    value:'AU',
+                })
+                
+
+                
+
+            return options;
         },
         countryOptions() {
 

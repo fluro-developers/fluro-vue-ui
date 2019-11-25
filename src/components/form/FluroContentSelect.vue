@@ -1,17 +1,12 @@
 <template>
     <div class="fluro-content-select" :class="{outlined:showOutline}">
+        <!-- <pre>TESTING WOWOWOW {{selectionMinimum}} {{selectionMaximum}}</pre> -->
         <!-- <pre>{{model}}</pre> -->
         <div class="fluro-content-list" v-if="model.length">
-            
-                <!-- <transition-group type="transition" :name="!drag ? 'flip-list' : null"> -->
-                <!-- <div v-for="element in myArray" :key="element.id">{{element.name}}</div> -->
-                <!-- <div > -->
-                <list-group>
-                    <draggable v-model="model" v-bind="dragOptions" @start="drag=true" @end="drag=false">
+            <list-group>
+                <draggable v-model="model" v-bind="dragOptions" @start="drag=true" @end="drag=false">
                     <list-group-item :item="item" v-for="(item, index) in model">
                         <template v-slot:right>
-
-
                             <v-menu :left="true" v-model="actionIndexes[index]" :fixed="true" transition="slide-y-transition" offset-y>
                                 <template v-slot:activator="{ on }">
                                     <v-btn class="ma-0" icon small flat v-on="on">
@@ -28,20 +23,10 @@
                                     </v-list-tile>
                                 </v-list>
                             </v-menu>
-
-
-                            <!-- <v-btn class="ma-0" small icon @click.stop.prevent="$actions.open([item])">
-                                <fluro-icon icon="ellipsis-h" />
-                            </v-btn> -->
                         </template>
                     </list-group-item>
-                    </draggable>
-                </list-group>
-                <!-- <fluro-list-item bordered :item="item" v-for="item in model" :key="item._id"  :actions="getActions(item)" /> -->
-                <!-- <pre>{{getActions(item)}}</pre> -->
-                <!-- </div> -->
-                <!-- </transition-group> -->
-            
+                </draggable>
+            </list-group>
         </div>
         <div class="content-select-search-bar" v-if="canAddValue">
             <div class="content-select-search">
@@ -63,16 +48,24 @@
                             </template>
                         </v-list-tile-avatar>
                         <v-list-tile-content>
-                            <v-list-tile-title v-text="item.title"></v-list-tile-title>
+                            <template v-if="item._type == 'event'">
+                                <v-list-tile-title v-text="item.title"></v-list-tile-title>
+
+                                <div class="muted">{{item | readableEventDate}}</div>
+                            </template>
+                            <template v-else>
+                                <v-list-tile-title v-text="item.title"></v-list-tile-title>
+                            </template>
+                            
                         </v-list-tile-content>
                     </template>
                 </v-autocomplete>
             </div>
             <div class="content-select-search-buttons">
-                <v-btn color="primary" block  class="mr-1" v-if="canCreate" @click="create()">
+                <v-btn color="primary" block class="mr-1" v-if="canCreate" @click="create()">
                     Create
                 </v-btn>
-                <v-btn block  class="" @click="showModal">
+                <v-btn block class="" @click="showModal">
                     Browse
                 </v-btn>
             </div>
@@ -183,7 +176,10 @@ export default {
     created() {
 
         var initialValue = this.value || [];
+        this.selectionMinimum = this.minimum;
+        this.selectionMaximum = this.maximum;
 
+        ////////////////////////
 
         // if(this.multiple) {
         if (_.isArray(initialValue)) {
@@ -192,6 +188,9 @@ export default {
             // console.log('WHAT IS IS IT IT SHOULD BE AN IBJECT', initialValue.length)
             this.setSelection([initialValue]);
         }
+
+
+
     },
 
     // <v-input class="no-flex" :success="success" :label="label" :required="required" :error-messages="errorMessages" :hint="field.description">
@@ -200,22 +199,22 @@ export default {
             var self = this;
             var type = self.type;
 
-            if(!type) {
+            if (!type) {
                 return;
             }
 
-            switch(type) {
+            switch (type) {
                 case 'node':
-                break;
+                    break;
                 default:
                     return this.$fluro.access.can('create', type, self.$fluro.types.parentType(type));
-                break;
+                    break;
             }
         },
 
         textPlaceholder() {
 
-            var restrictType = this.type ? this.$fluro.types.readable(this.type || true) : 'items';
+            var restrictType = this.type ? this.$fluro.types.readable(this.type, true) : 'items';
             return this.placeholder || `Search for ${restrictType}`; //Search for ${this.label || 'items'}`;
         },
         showOutline() {
@@ -275,14 +274,13 @@ export default {
             //////////////////////////////////////
 
             self.$fluro.global.create(self.type, null, true)
-            .then(function(res) {
-                self.select(res);
-            });
+                .then(function(res) {
+                    self.select(res);
+                });
         },
         showModal() {
             // console.log('SHOW MODAL', this.$fluro.modal)
             var self = this;
-
             //////////////////////////////////////
 
             var promise = self.$fluro.modal({
@@ -292,7 +290,7 @@ export default {
                     type: self.type,
                     minimum: self.minimum,
                     maximum: self.maximum,
-                    allDefinitions:true,
+                    allDefinitions: true,
                 }
             });
 
@@ -364,7 +362,7 @@ export default {
 
                 self.loading = true;
                 var params = {
-                    allDefinitions:true,
+                    allDefinitions: true,
                 };
 
                 if (self.type) {
@@ -399,7 +397,17 @@ export default {
                 this.$emit('input', self.model);
             }
 
-        }
+        },
+        minimum(min) {
+            console.log('CHANGESSS', min)
+            var self = this;
+            self.selectionMinimum = min;
+        },
+        maximum(max) {
+            console.log('CHANGESSS', max)
+            var self = this;
+            self.selectionMaximum = max;
+        },
     },
     data() {
 
@@ -407,7 +415,7 @@ export default {
 
 
         return {
-            actionIndexes:{},
+            actionIndexes: {},
             selection: [],
             candidates: [],
             results: [],

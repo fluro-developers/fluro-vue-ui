@@ -1,0 +1,204 @@
+<template>
+    <flex-column>
+        <template v-if="loading">
+            <fluro-page-preloader contain />
+        </template>
+        <template v-else>
+            <tabset :justified="true" :vertical="true">
+                <tab heading="Pass Settings">
+                    <flex-column-body style="background: #fafafa;">
+                        <v-container>
+                            <constrain sm>
+                               
+                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
+                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.description" v-model="model"></fluro-content-form-field>
+                                
+                                
+
+                                <fluro-panel>
+                                    <fluro-panel-title>
+                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.inviteCodeEnabled" v-model="model"></fluro-content-form-field>
+                                
+                                    </fluro-panel-title>
+                                    <fluro-panel-body v-if="model.inviteCodeEnabled">
+                                        <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.fromEmail" v-model="model"></fluro-content-form-field> -->
+                                        <!-- <v-layout> -->
+                                            <!-- <v-flex xs12 sm6> -->
+                                                <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.fromFirstName" v-model="model"></fluro-content-form-field> -->
+                                            <!-- </v-flex> -->
+                                            <!-- <v-flex xs12 sm6> -->
+                                                <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.fromLastName" v-model="model"></fluro-content-form-field> -->
+                                            <!-- </v-flex> -->
+                                        <!-- </v-layout> -->
+                                    </fluro-panel-body>
+                                </fluro-panel>
+
+
+                                <fluro-permission-select v-model="model.sets" />
+                                <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.mailoutType" v-model="model"></fluro-content-form-field>
+                                <fluro-card v-if="mailoutType == 'promotional'">
+                                    <fluro-card-body>
+                                        <h6>
+                                            Promotional Mode
+                                        </h6>
+                                        Default mailout type. Useful for promoting / letting people know of an event, service or product. Promotional emails will not send to selected contacts if they have unsubscribed.
+                                    </fluro-card-body>
+                                </fluro-card>
+                                <fluro-card v-if="mailoutType == 'transactional'">
+                                    <fluro-card-body>
+                                        <h6>
+                                            Transactional Mode
+                                        </h6>
+                                        It is entirely up to you to adhere to international email spam laws and to only send transactional mail as appropriate.
+                                        Transactional emails will send to selected contacts even if they have previously unsubscribed from your emails.
+                                    </fluro-card-body>
+                                </fluro-card> -->
+                            </constrain>
+                        </v-container>
+                    </flex-column-body>
+                </tab>
+                <tab :heading="`${definition.title} Fields`" v-if="definition">
+                    <flex-column-body style="background: #fafafa;">
+                        <v-container>
+                            <constrain sm>
+                                <h3 margin>{{definition.title}} Fields</h3>
+                                <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
+                            </constrain>
+                        </v-container>
+                    </flex-column-body>
+                </tab>
+            </tabset>
+        </template>
+    </flex-column>
+</template>
+<script>
+/////////////////////////////////
+
+// import FluroEditor from '../../../form/FluroEditor.vue';
+import FluroContentEditMixin from '../FluroContentEditMixin';
+import FluroPermissionSelect from '../../../form/FluroPermissionSelect.vue';
+
+/////////////////////////////////
+
+import Vue from 'vue';
+
+/////////////////////////////////
+
+export default {
+
+
+    components: {
+        // FluroEditor,
+        FluroPermissionSelect,
+    },
+    mixins: [FluroContentEditMixin],
+    methods: {
+        toggleExpand(key) {
+            var self = this;
+            self.$set(self.expandedSettings, `_${key}`, !self.expandedSettings[`_${key}`]);
+
+
+            console.log('TOGGLE', key, self.expandedSettings);
+        },
+    },
+    computed: {
+        expanded() {
+            var self = this;
+
+            return {
+                contacts: self.expandedSettings._contacts || (self.model.contacts && self.model.contacts.length),
+                teams: self.expandedSettings._teams || (self.model.teams && self.model.teams.length),
+                tickets: self.expandedSettings._tickets || (self.model.tickets && self.model.tickets.length),
+                events: self.expandedSettings._events || (self.model.events && self.model.events.length),
+                interactions: self.expandedSettings._interactions || (self.model.interactions && self.model.interactions.length),
+                cards: self.expandedSettings._cards || (self.model.cards && self.model.cards.length),
+                checkins: self.expandedSettings._checkins || (self.model.checkins && self.model.checkins.length),
+                details: self.expandedSettings._details || (self.model.details && self.model.details.length),
+                families: self.expandedSettings._families || (self.model.families && self.model.families.length),
+                personas: self.expandedSettings._personas || (self.model.personas && self.model.personas.length),
+                collections: self.expandedSettings._collections || (self.model.collections && self.model.collections.length),
+                tags: self.expandedSettings._tags || (self.model.tags && self.model.tags.length),
+                realms: self.expandedSettings._realms || (self.model.realms && self.model.realms.length),
+                definitions: self.expandedSettings._definitions || (self.model.definitions && self.model.definitions.length),
+                query: self.expandedSettings._query || (self.model.query),
+            }
+        },
+        mailoutType() {
+            return this.model.mailoutType;
+        },
+        user() {
+            return this.$fluro.auth.getCurrentUser();
+        },
+        fieldsOutput() {
+
+
+            var self = this;
+            var array = [];
+
+            ///////////////////////////////////
+
+            addField('title', {
+                title: 'Title',
+                minimum: 1,
+                maximum: 1,
+                type: 'string',
+                placeholder: `Eg. 'Standard Access'`,
+            })
+
+            addField('description', {
+                title: 'Description',
+                description: 'Enter a one line description summarizing what permissions this access pass will grant',
+                minimum: 0,
+                maximum: 1,
+                type: 'string',
+                placeholder: `Eg. 'This pass allows a user to access all contacts and teams in the X Realm'`,
+               
+            })
+
+            addField('inviteCodeEnabled', {
+                title: 'Enable Invite Code',
+                description: 'Enable an invitation code that you can share with people so they can quickly acquire this access pass.',
+                minimum: 0,
+                maximum: 1,
+                type: 'boolean',               
+            })
+
+
+            
+
+
+            // // console.log('TYPE OPTIONS', self.typeOptions);
+
+
+
+            // addField('filterType', {
+            //     title: 'Type',
+            //     minimum: 0,
+            //     maximum: 1,
+            //     type: 'string',
+            //     directive: 'select',
+            //     description: 'The type of item you want to return from this query',
+            //     options: self.typeOptions,
+            // })
+
+            ///////////////////////////////////
+
+            function addField(key, details) {
+                details.key = key;
+                array.push(details)
+            }
+
+            return array;
+
+        },
+    },
+    data() {
+        return {
+            editorOptions: {},
+        }
+    },
+}
+</script>
+<style lang="scss">
+
+</style>

@@ -27,16 +27,41 @@ export default {
 
             }
         },
+
+
+        selectMultiple(items) {
+
+            var self = this;
+
+            // console.time('select multiple')
+            // console.log('Select multiple items', self.selection, items);
+            var newSelection = [...self.selection, ...items];
+            newSelection = _.uniqBy(newSelection, function(item) {
+                return item._id || item;
+            });
+
+            console.log('SELECT NEW ITEMS', self.selectionMaximum, newSelection.length);
+            self.setSelection(newSelection)
+            // console.timeEnd('select multiple')
+            // rehash()
+            // service.previousIntent = 'select';
+            
+
+        },
+
+
+
         setSelection(array) {
 
             var self = this;
 
             if (self.selectionMaximum) {
-                array = array.slice(self.selectionMaximum);
-                console.log('sliced to', array.length, self.selectionMaximum)
+                array = array.slice(0, self.selectionMaximum);
+                // console.log('sliced to', array.length, self.selectionMaximum)
             }
 
             self.selection = array;
+
 
 
 

@@ -25,6 +25,10 @@ export default {
             type: Number,
             default: 24,
         },
+        buffer: {
+            type: Number,
+            default: 4,
+        },
         scrollParent: {
             default () {
                 return {}
@@ -115,7 +119,7 @@ export default {
             return _.chunk(this.items, this.perPage)
         },
         renderPages() {
-            return this.availablePages.slice(0, (this.currentPage + 4))
+            return this.availablePages.slice(0, (this.currentPage + this.buffer))
         }
     },
     methods: {

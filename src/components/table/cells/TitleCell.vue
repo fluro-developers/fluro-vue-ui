@@ -1,8 +1,11 @@
 <template>
     <div class="title-cell">
         <div class="grow">
+
             <strong>{{row.title}}</strong>
-            <div class="small muted" v-if="row.firstLine">{{row.firstLine}}</div>
+            <div class="small muted" v-if="firstLine">{{firstLine}}</div>
+            <!-- <pre>{{firstLine}}</pre> -->
+            <!-- <pre>{{row}}</pre> -->
         </div>
         <div class="shrink" v-if="status">
         <fluro-status-label v-if="row.status && row.status != 'active'" :value="row.status" />
@@ -27,6 +30,36 @@ export default {
                 return false;
             }
         }
+    },
+    computed:{
+        firstLine() {
+
+            var self = this;
+            var row = this.row;
+
+            if(row.deployment) {
+                return row.deployment
+            }
+
+            if(row.event) {
+
+                if(row.event.startDate) {
+                    return `${self.$fluro.date.formatDate(row.event.startDate, 'ddd D MMM YYYY - h:mma')} - ${row.event.title}`
+                }
+
+                if(row.event.title) {
+                    return `${row.event.title}`
+                }
+            }
+
+            if(row.firstLine) {
+                return row.firstLine
+            }
+
+            if(row.description) {
+                return row.description;
+            }
+        }
     }
 }
 </script>
@@ -42,6 +75,10 @@ export default {
 
         .status-label {
             flex: none;
+        }
+
+        .small {
+            font-size: 0.9em;
         }
     }
 

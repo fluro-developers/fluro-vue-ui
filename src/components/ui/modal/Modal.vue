@@ -1,8 +1,11 @@
 <template>
-    <div class="modal-outer" :class="{center:!fixed, top, fixed, full}">
+    <div class="modal-outer" :class="[{center:!fixed}, {top:top}, {fixed:fixed}, {full:full}, size]">
         <!-- @click.stop="dismiss()"  -->
+
+
         <div class="blanket" @click="dismiss"/>
         <div class="modal-inner">
+            <!-- <pre>{{size}}</pre> -->
             <component :options="modal.options" @close="close" @dismiss="dismiss" :is="modal.component" />
             <!-- <action-cart></action-cart> -->
             <!-- <component :is="dialogView" :options="options" @close="close"></component> -->
@@ -22,12 +25,20 @@ export default {
             required: true,
         },
     },
+    created() {
+        if(!this.modal.options) {
+            this.modal.options = {};
+        }
+    },
     data() {
         return {
             // active:true,
         }
     },
     computed: {
+        size() {
+            return `modal-size-${this.modal.options.size || 'md'}`;
+        },
         top() {
             return this.modal.options.fixed || this.modal.options.top;
         },
@@ -134,6 +145,30 @@ export default {
         // border:10px solid #ff0066;
     }
 
+
+    @media(min-width: 769px) {
+        &.modal-size-lg {
+            .modal-inner {
+                width:95%;
+            }
+        }
+
+        // &.modal-size-md {
+        //     .modal-inner {
+        //         width:50%;
+        //     }
+        // }
+
+        &.modal-size-sm {
+            .modal-inner {
+                width:25%;
+            }
+        }
+    }
+
+
+
+
     &.full {
         background: #ff0066;
         padding:0;
@@ -150,6 +185,8 @@ export default {
     }
 
 
+
+
     @media(max-width: 768px) {
         display: flex !important;
         padding: 10px 10px 60px 10px !important;
@@ -161,5 +198,8 @@ export default {
             max-height: 100% !important;
         }
     }
+
+
+
 }
 </style>
