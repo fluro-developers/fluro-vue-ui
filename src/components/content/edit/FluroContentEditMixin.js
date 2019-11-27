@@ -42,6 +42,9 @@ export default {
         definition() {
             return this.config.definition;
         },
+        readableContentType() {
+            return this.$fluro.types.readable(this.config.definition ? this.config.definition.definitionName : this.config.type.definitionName)
+        }
     },
     methods: {
 

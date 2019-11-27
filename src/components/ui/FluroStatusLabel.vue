@@ -1,5 +1,5 @@
 <template>
-    <span :class="value" class="status-label">{{value}}</span>
+    <span :class="value" class="status-label">{{text || value}}</span>
 </template>
 <script>
 export default {
@@ -7,6 +7,9 @@ export default {
         'value': {
             type: String,
         },
+        'text':{
+            type:String,
+        }
     },
 }
 </script>
@@ -32,6 +35,7 @@ export default {
         color: #f0974e;
     }
 
+    &.live,
     &.active {
 
         background: rgba(#51d432, 0.2);

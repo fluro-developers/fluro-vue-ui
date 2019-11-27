@@ -1,4 +1,4 @@
-console.log('fluro-vue-ui 2.0.31')
+console.log('fluro-vue-ui 2.0.32')
 
 /////////////////////////////////////////////////////
 
@@ -34,6 +34,9 @@ export { FluroModal as FluroModal };
 import FluroInlineEdit from './components/form/FluroInlineEdit.vue';
 export { FluroInlineEdit as FluroInlineEdit };
 
+import FluroConfirmButton from './components/ui/FluroConfirmButton.vue';
+export { FluroConfirmButton as FluroConfirmButton };
+
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
@@ -57,6 +60,10 @@ import DefinitionCell from './components/table/cells/DefinitionCell.vue';
 export { DefinitionCell as DefinitionCell };
 import TitleCell from './components/table/cells/TitleCell.vue';
 export { TitleCell as TitleCell };
+import TypeImageCell from './components/table/cells/TypeImageCell.vue';
+export { TypeImageCell as TypeImageCell };
+
+
 
 import FirstNameCell from './components/table/cells/FirstNameCell.vue';
 export { FirstNameCell as FirstNameCell };
@@ -93,6 +100,12 @@ export { EventThumbnailCell as EventThumbnailCell };
 
 import NumberCell from './components/table/cells/NumberCell.vue';
 export { NumberCell as NumberCell };
+
+import PaymentStatusCell from './components/table/cells/PaymentStatusCell.vue';
+export { PaymentStatusCell as PaymentStatusCell };
+
+import CurrencyCell from './components/table/cells/CurrencyCell.vue';
+export { CurrencyCell as CurrencyCell };
 
 
 import TimeagoCell from './components/table/cells/TimeagoCell.vue';
@@ -295,6 +308,8 @@ export { FluroEditor as FluroEditor };
 
 import FluroCodeEditor from './components/form/FluroCodeEditor.vue';
 export { FluroCodeEditor as FluroCodeEditor };
+import FluroExpressionEditor from './components/form/FluroExpressionEditor.vue';
+export { FluroExpressionEditor as FluroExpressionEditor };
 
 import FluroCodeHighlight from './components/FluroCodeHighlight.vue';
 export { FluroCodeHighlight as FluroCodeHighlight };

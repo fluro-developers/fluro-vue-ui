@@ -1,0 +1,87 @@
+<template>
+    <div class="payment-modifier-editor">
+        <list-group>
+            <draggable v-model="model" v-bind="dragOptions" @start="drag=true" @end="drag=false">
+                <payment-modifier-item :form="form" @remove="remove" @duplicate="duplicate" @edit="edit" v-model="model[index]" v-for="(modifier, index) in model"/>
+            </draggable>
+        </list-group>
+        <v-btn class="ma-0" color="primary" @click="add()">
+            Add Payment Modifier
+            <fluro-icon icon="plus" right />
+        </v-btn>
+    </div>
+</template>
+<script>
+import draggable from 'vuedraggable'
+import PaymentModifierItem from './PaymentModifierItem.vue';
+import PaymentModifierModal from './PaymentModifierModal.vue';
+
+export default {
+    components: {
+        draggable,
+        PaymentModifierItem,
+    },
+    props: {
+        value: {
+            type: Array,
+            required: true,
+        },
+        form: {
+            type: Object,
+            required: true,
+        },
+    },
+    created() {
+
+    },
+    data() {
+        return {
+            model: this.value,
+            drag: false,
+            dragOptions: {
+
+            }
+        }
+    },
+    methods: {
+        duplicate(modifier) {
+
+        	var self = this;
+
+        	var copy = JSON.parse(JSON.stringify(modifier));
+        	var getCurrentIndex = _.indexOf(self.model, modifier);
+        	var insertIndex = getCurrentIndex;
+        	self.model.splice(insertIndex, 0, copy);
+        	self.edit(copy, true);
+
+        	console.log('Push copy!')
+        },
+        remove(modifier) {
+            console.log('REMOVE', modifier);
+            var index = this.model.indexOf(modifier);
+            this.model.splice(index, 1)
+        },
+        edit(item, cancelEnabled) {
+        	var self = this;
+            var promise = self.$fluro.modal({
+                component: PaymentModifierModal,
+                options: {
+                    item,
+                    cancelEnabled,
+                }
+            })
+            .catch(function(err) {
+            	self.remove(item);
+            });
+        },
+        add() {
+        	var self = this;
+        	var insert = {};
+        	self.model.push(insert);
+        	self.edit(insert, true);
+        },
+    },
+}
+</script>
+<style lang="scss">
+</style>

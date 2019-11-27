@@ -218,7 +218,7 @@ export default {
 
         editSuccess(result) {
             var self = this;
-            console.log('UPDATE SUCCESS', result)
+            // console.log('UPDATE SUCCESS', result)
             self.$fluro.resetCache();
             // self.reset(true);
             self.$emit('success', result.data);
@@ -230,7 +230,7 @@ export default {
         editFailed(err) {
             var self = this;
 
-            console.log('ERROR MESSAGE HAPPENED')
+            // console.log('ERROR MESSAGE HAPPENED')
             //Dispatch an error
             var humanMessage = self.$fluro.utils.errorMessage(err);
             self.$fluro.error(err);
@@ -240,7 +240,7 @@ export default {
         },
         createSuccess(result) {
             var self = this;
-            console.log('CREATE SUCCESS', result)
+            // console.log('CREATE SUCCESS', result)
             self.reset(true);
             self.$emit('success', result.data);
 

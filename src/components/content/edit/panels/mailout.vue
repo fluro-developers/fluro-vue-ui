@@ -694,7 +694,7 @@ export default {
                 array.push(details)
             }
 
-            console.log('DO THE OUTPUT!!!');
+            // console.log('DO THE OUTPUT!!!');
             return array;
 
         },

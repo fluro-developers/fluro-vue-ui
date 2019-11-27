@@ -17,18 +17,34 @@ import FluroContentSelectModal from './FluroContentSelectModal.vue';
 ///////////////////////////////////////////////
 
 export default {
-     props: {
-        small:{
-            type:Boolean,
+    props: {
+        filter: {
+            type: Object,
+            default () {
+                return {
+                    operator: 'and',
+                    filters: [{
+                        operator: 'and',
+                        filters: [{
+                            key: 'status',
+                            comparator: 'in',
+                            values: ['active', 'draft'],
+                        }, ]
+                    }]
+                }
+            },
         },
-        block:{
-            type:Boolean,
+        small: {
+            type: Boolean,
         },
-        color:{
-            type:String,
+        block: {
+            type: Boolean,
         },
-        allDefinitions:{
-            type:Boolean,
+        color: {
+            type: String,
+        },
+        allDefinitions: {
+            type: Boolean,
         },
         'value': {
             type: Array,
@@ -68,10 +84,9 @@ export default {
         }
     },
     created() {
-         this.setSelection(this.value);
+        this.setSelection(this.value);
     },
-    components: {
-    },
+    components: {},
     mixins: [FluroSelectionMixin],
     watch: {
         'value': function() {
@@ -91,11 +106,12 @@ export default {
             //////////////////////////////////////
 
             var promise = self.$fluro.modal({
-                component:FluroContentSelectModal,
+                component: FluroContentSelectModal,
                 options: {
-                    selector:self,
-                    type:self.type,
-                    allDefinitions:self.allDefinitions,
+                    selector: self,
+                    type: self.type,
+                    allDefinitions: self.allDefinitions,
+                    filter:self.filter,
                 }
             });
 
@@ -107,7 +123,4 @@ export default {
 }
 </script>
 <style lang="scss">
-
-
-
 </style>

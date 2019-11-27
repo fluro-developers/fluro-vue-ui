@@ -7,6 +7,7 @@
  -->
         <!-- <pre>{{sort}}</pre> -->
         <!-- <pre>{{filterCheckString}}</pre> -->
+        <!-- {{startDate}} -->
         <fluro-page-preloader v-if="showLoading" contain />
         <v-container class="flex-center" v-if="!showLoading && !page.length">
             <slot name="emptytext">
@@ -375,19 +376,19 @@ export default {
         },
         defaultSort: {
             type: String,
-            default() {
-               return 'updated';
+            default () {
+                return 'updated';
             },
         },
         defaultSortType: {
             type: String,
-            default() {
-               return 'date'
+            default () {
+                return 'date'
             },
         },
         defaultSortDirection: {
             type: String,
-            default() {
+            default () {
                 return 'desc';
             },
         },
@@ -461,7 +462,7 @@ export default {
     },
     data() {
         return {
-            cacheKey:null,
+            cacheKey: null,
             columnState: {},
             structureColumns: this.columns,
             all: [],
@@ -928,15 +929,15 @@ export default {
             fields = fields.concat(_.chain(self.renderColumns)
                 .map(function(column) {
 
-                    if(column.actualField) {
+                    if (column.actualField) {
                         return column.actualField;
                     }
 
                     switch (column.key) {
-                         case 'width':
-                         case 'height':
+                        case 'width':
+                        case 'height':
                             return ['width', 'height']
-                         break;
+                            break;
                         case 'firstName':
                             return ['firstName', 'preferredName', 'ethnicName']
                             break;
@@ -1051,18 +1052,28 @@ export default {
 
             ///////////////////////////////////////
 
+
+            var filterCriteria = {
+                // return self.$fluro.api.get(`/system/test`, {
+                sort: self.sort,
+                filter: self.filterConfig,
+                search: self.debouncedSearch,
+                includeArchived: self.includeArchivedByDefault,
+                allDefinitions: self.allDefinitions,
+                includeUnmatched: true,
+            }
+
+
+            if (self.startDate) {
+                filterCriteria.startDate = self.startDate;
+            }
+
+            if (self.endDate) {
+                filterCriteria.endDate = self.endDate;
+            }
+
             //Load just the IDS from the server and required fields
-            return self.$fluro.api.post(`/content/${self.dataType}/filter`, {
-                    // return self.$fluro.api.get(`/system/test`, {
-                    sort: self.sort,
-                    filter: self.filterConfig,
-                    startDate: self.startDate,
-                    endDate: self.endDate,
-                    search: self.debouncedSearch,
-                    includeArchived: self.includeArchivedByDefault,
-                    allDefinitions: self.allDefinitions,
-                    includeUnmatched: true,
-                })
+            return self.$fluro.api.post(`/content/${self.dataType}/filter`, filterCriteria)
                 .then(function(res) {
                     self.all = res.data;
                     self.$emit('raw', self.all);
@@ -1239,8 +1250,14 @@ export default {
                 classes.push('selected');
             }
 
+
+
             //// console.log('iTEM ISSUE', item)
             classes.push('status-' + item.status);
+
+            if (item.paymentStatus) {
+                classes.push('payment-status-' + item.paymentStatus);
+            }
             return classes;
 
         },
@@ -1440,6 +1457,8 @@ export default {
             }
 
             &.status-archived,
+            &.payment-status-refund,
+            // &.payment-status-partial_refund,
             &.status-deceased {
 
                 th:first-child,
@@ -1450,6 +1469,21 @@ export default {
                     background: #f4f4f4;
                 }
             }
+
+
+            &.payment-status-pending {
+
+                th:first-child,
+                th:last-child,
+                td,
+                th {
+                    color: darken($primary, 20%);
+                    background: rgba($primary, 0.1);
+                    // color: #82664e; //rgba(#000, 0.5);
+                    // background: #fffceb;
+                }
+            }
+
 
             &.selected {
 

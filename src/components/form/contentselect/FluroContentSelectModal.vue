@@ -154,7 +154,8 @@ export default {
     mixins: [ModalMixin, Layout],
     data() {
 
-        var defaultFilter = JSON.parse(JSON.stringify({
+
+        var initialFilter = this.options.filter || {
             operator: 'and',
             filters: [{
                 operator: 'and',
@@ -164,7 +165,11 @@ export default {
                     values: ['active', 'draft'],
                 }]
             }]
-        }));
+        }
+
+        /////////////////////////////////////////////
+
+        var defaultFilter = JSON.parse(JSON.stringify(initialFilter));
 
         ///////////////////////////////////////
 

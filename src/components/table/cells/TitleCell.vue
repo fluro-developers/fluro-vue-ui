@@ -5,7 +5,7 @@
             <strong>{{row.title}}</strong>
             <div class="small muted" v-if="firstLine">{{firstLine}}</div>
             <!-- <pre>{{firstLine}}</pre> -->
-            <!-- <pre>{{row}}</pre> -->
+           
         </div>
         <div class="shrink" v-if="status">
         <fluro-status-label v-if="row.status && row.status != 'active'" :value="row.status" />

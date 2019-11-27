@@ -23,6 +23,10 @@ export default {
         this.active = this.index == 0;
         this.tabs.push(this);
     },
+    destroyed() {
+        console.log('Destroyed')
+        this.tabs.splice(this.index, 1);
+    },
     data() {
         return {
             index: 0,

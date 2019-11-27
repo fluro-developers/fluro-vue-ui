@@ -8,7 +8,7 @@
             <v-input :label="displayLabel" :persistent-hint="true" :hint="dynamicDateHint" class="no-flex">
                 <!-- <pre>{{fieldModel}}</pre> -->
                 <!-- <v-label>{{displayLabel}}</v-label> -->
-                <!-- <v-select :outline="showOutline" :label="displayLabel"  v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" /> -->
+                <!-- <v-select  :persistent-hint="true" :outline="showOutline" :label="displayLabel"  v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" /> -->
                 <div style="margin: 10px 0 ;">
                     <v-btn-toggle v-model="fieldModel">
                         <v-btn flat :value="null">
@@ -144,7 +144,7 @@
             </template>
         </template>
         <template v-else-if="renderer == 'number'">
-            <v-text-field :suffix="suffix" :prefix="prefix" :outline="showOutline" :success="success" :required="required" type="number" :label="displayLabel" v-model="fieldModel" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+            <v-text-field :persistent-hint="persistentDescription" :suffix="suffix" :prefix="prefix" :outline="showOutline" :success="success" :required="required" type="number" :label="displayLabel" v-model="fieldModel" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
         </template>
         <template v-else-if="renderer == 'realmselect'">
             <v-input class="no-flex" :persistent-hint="true" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
@@ -211,40 +211,40 @@
         </template>
         <template v-else-if="renderer == 'timezoneselect'">
             <template v-if="mobile">
-                <v-select :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="timezoneOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+                <v-select  :persistent-hint="true" :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="timezoneOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
             </template>
             <template v-else>
-                <v-autocomplete :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="timezoneOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+                <v-autocomplete :persistent-hint="true" :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="timezoneOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
             </template>
         </template>
         <template v-else-if="renderer == 'countrycodeselect'">
             <template v-if="mobile">
-                <v-select dense :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryCodeOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+                <v-select  :persistent-hint="true" dense :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryCodeOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
             </template>
             <template v-else>
-                <v-autocomplete dense :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryCodeOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+                <v-autocomplete :persistent-hint="true" dense :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryCodeOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
             </template>
         </template>
         <template v-else-if="renderer == 'countryselect'">
             <template v-if="mobile">
-                <v-autocomplete :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+                <v-autocomplete :persistent-hint="true" :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
             </template>
             <template v-else>
-                <v-select :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+                <v-select  :persistent-hint="true" :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
             </template>
         </template>
         <template v-else-if="renderer == 'textarea'">
             <v-textarea :outline="showOutline" :success="success" :required="required" :label="displayLabel" v-model="fieldModel" @blur="touch()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" />
         </template>
         <!--  <template v-else-if="renderer == 'select'">
-            <v-select :outline="showOutline" :success="success" :required="required" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+            <v-select  :persistent-hint="true" :outline="showOutline" :success="success" :required="required" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
         </template> -->
         <template v-else-if="renderer == 'select'">
             <template v-if="mobile">
-                <v-select :outline="showOutline" :success="success" :required="required" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+                <v-select  :persistent-hint="true" :outline="showOutline" :success="success" :required="required" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
             </template>
             <template v-else>
-                <v-autocomplete :outline="showOutline" :success="success" :required="required" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+                <v-autocomplete :persistent-hint="true" :outline="showOutline" :success="success" :required="required" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
             </template>
         </template>
         <template v-else-if="renderer == 'content-select'">
@@ -254,7 +254,7 @@
             </v-input>
         </template>
         <template v-else-if="renderer == 'search-select'">
-            <v-autocomplete :outline="showOutline" :success="success" :deletable-chips="true" :hide-selected="true" prepend-inner-icon="search" :error-messages="errorMessages" :cache-items="!defaultReferences.length" :chips="multipleInput" :clearable="!required" :return-object="true" item-text="title" v-model="fieldModel" @blur="touch()" @change="valueChange" :multiple="multipleInput" :loading="loading" :items="searchResults" :search-input.sync="keywords" flat hide-no-data :label="displayLabel">
+            <v-autocomplete :persistent-hint="true" :outline="showOutline" :success="success" :deletable-chips="true" :hide-selected="true" prepend-inner-icon="search" :error-messages="errorMessages" :cache-items="!defaultReferences.length" :chips="multipleInput" :clearable="!required" :return-object="true" item-text="title" v-model="fieldModel" @blur="touch()" @change="valueChange" :multiple="multipleInput" :loading="loading" :items="searchResults" :search-input.sync="keywords" flat hide-no-data :label="displayLabel">
                 <!-- <template v-slot:selection="{ item, selected }">
                     <v-chip close @input="removeValue(index)" :selected="selected" color="blue-grey" class="white--text">
                        
@@ -308,6 +308,7 @@
                     </template>
                 </template>
                 <template v-if="!multipleInput">
+                    <v-label>{{displayLabel}}</v-label>
                     <fluro-editor v-model="fieldModel" :options="editorOptions" @blur="touch()" :placeholder="field.placeholder"></fluro-editor>
                 </template>
             </v-input>
@@ -525,14 +526,14 @@ export default {
             //If the user has entered data into here
             //Don't make any change
             if (this.$v.model.$dirty) {
-                console.log('Field is dirty')
+                // console.log('Field is dirty')
                 return;
             }
 
             //If there is a default value expression
             if (this.expressions && this.expressions.defaultValue) {
                 this.fieldModel = v;
-                console.log('Updated default value according to expression!', this.expressions.defaultValue, v);
+                // console.log('Updated default value according to expression!', this.expressions.defaultValue, v);
             }
         },
         expressionValue(v) {
@@ -540,7 +541,7 @@ export default {
 
             if (this.expressions && this.expressions.value) {
                 this.fieldModel = v;
-                console.log('Expression Updated value', v)
+                // console.log('Expression Updated value', v)
             }
 
 
@@ -614,18 +615,18 @@ export default {
         dateHint() {
 
 
-            if(this.fieldModel) {
+            if (this.fieldModel) {
                 switch (this.field.key) {
                     case 'dob':
                     case '_dob':
                         var years = parseInt(moment().format('YYYY')) - parseInt(moment(this.fieldModel).format('YYYY'))
-                        
-                        if(this.model.dobVerified) {
+
+                        if (this.model.dobVerified) {
                             return `${years} Years old`;
                         } else {
                             return `${years} Years old (estimated)`;
                         }
-                        
+
                         break;
                 }
             }
@@ -884,6 +885,13 @@ export default {
 
                 //////////////////////////////////
 
+                if (self.field.type == 'boolean') {
+                    if (self.field.inverse) {
+                        return !value;
+                    }
+                }
+                //////////////////////////////////
+
                 return value;
             },
             set(value) {
@@ -891,6 +899,18 @@ export default {
                 var self = this;
 
 
+                //////////////////////////////////
+                //////////////////////////////////
+                //////////////////////////////////
+
+                if (self.expressions && self.expressions.transform && typeof self.expressions.transform == 'function') {
+                    value = self.expressions.transform(value);
+                }
+
+                //////////////////////////////////
+                //////////////////////////////////
+                //////////////////////////////////
+                //////////////////////////////////
                 //////////////////////////////////
 
                 if (self.dynamic && self.renderer == 'dynamicdate') {
@@ -943,6 +963,16 @@ export default {
                         }
                         break;
                     case 'boolean':
+
+
+
+
+                        if (self.field.inverse) {
+                            value = !value;
+                        }
+
+
+
                         if (!value) {
                             value = false;
                             return self.$nextTick(function() {
@@ -1019,7 +1049,7 @@ export default {
             return this.maximum === 0 || this.maximum > 1;
         },
         countryCodeOptions() {
-            var options =  _.chain(this.asyncOptions)
+            var options = _.chain(this.asyncOptions)
                 .map(function(country) {
                     return {
                         title: `${country.name} - ${country.alpha2} (${country.countryCallingCodes.join(', ')})`,
@@ -1031,25 +1061,25 @@ export default {
                 })
                 .value()
 
-                
 
-                options.unshift({
-                    title:`United Kingdom - GB (+44)`,
-                    value:'GB',
-                })
 
-                options.unshift({
-                    title:`United States - USA (+1)`,
-                    value:'US',
-                })
+            options.unshift({
+                title: `United Kingdom - GB (+44)`,
+                value: 'GB',
+            })
 
-                options.unshift({
-                    title:`Australia - AU (+61)`,
-                    value:'AU',
-                })
-                
+            options.unshift({
+                title: `United States - USA (+1)`,
+                value: 'US',
+            })
 
-                
+            options.unshift({
+                title: `Australia - AU (+61)`,
+                value: 'AU',
+            })
+
+
+
 
             return options;
         },
@@ -1957,9 +1987,18 @@ export default {
             get() {
                 var self = this;
                 //There is no hidden expression
-                if (!self.expressions || !self.expressions.defaultValue || !self.expressions.defaultValue.length) {
+                if (!self.expressions || !self.expressions.defaultValue) {
                     return Promise.resolve();
                 }
+
+                if (typeof self.expressions.defaultValue == 'function') {
+                    return self.expressions.defaultValue();
+                } else {
+                    if (!String(self.expressions.defaultValue).length) {
+                        return Promise.resolve();
+                    }
+                }
+
 
                 var value = this.resolveExpression(self.expressions.defaultValue);
                 return Promise.resolve(value);
@@ -1987,10 +2026,24 @@ export default {
                 var self = this;
                 var value = false;
 
+
                 //There is no hidden expression
-                if (!self.expressions || !self.expressions.hide || !self.expressions.hide.length) {
+                if (!self.expressions || !self.expressions.hide) {
                     return Promise.resolve(false);
                 }
+
+                if (typeof self.expressions.hide == 'function') {
+                    return self.expressions.hide();
+                } else {
+                    if (!String(self.expressions.hide).length) {
+                        return Promise.resolve(false);
+                    }
+                }
+
+                // //There is no hidden expression
+                // if (!self.expressions || !self.expressions.hide || !self.expressions.hide.length) {
+                //     return Promise.resolve(false);
+                // }
                 value = this.resolveExpression(self.expressions.hide);
                 return Promise.resolve(value);
             }

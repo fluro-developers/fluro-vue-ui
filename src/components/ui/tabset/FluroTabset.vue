@@ -9,6 +9,7 @@
                     </a>
                 </div>
             </div>
+            <slot name="menusuffix"></slot>
         </flex-column-header>
         <flex-column class="tabset-content">
             <slot />

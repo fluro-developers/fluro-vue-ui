@@ -183,7 +183,7 @@ export default {
                     return field.errorMessages.length;
                 })
                 .map(function(field) {
-                    console.log('ERROR MESSAGE', field);
+                    // console.log('ERROR MESSAGE', field);
                     return {
                         title: field.errorTitle,
                         messages: field.errorMessages,
