@@ -75,7 +75,7 @@
                     <flex-column-footer class="border-top">
                         <v-container fluid pa-1>
                             <v-layout row align-center>
-                                <template v-if="model._id">
+                                <template v-if="model._id" class="settings-popup">
                                     <v-flex shrink>
                                         <!-- <template v-if="model._id">
                                         <v-btn small icon flat>
@@ -695,6 +695,11 @@ export default {
 }
 </style>
 <style scoped lang="scss">
+.settings-popup {
+    z-index:100;
+}
+
+
 .content-edit {
 
 
