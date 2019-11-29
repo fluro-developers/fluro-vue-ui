@@ -1,5 +1,6 @@
 <template>
-    <div class="realm-select">
+    <!-- v-hide="onlyOneOption" -->
+    <div class="realm-select" v-show="!singleOption">
         <v-btn :small="small" :block="block" class="pill mx-0" @click.native="showModal">
             <fluro-realm-dots :realms="selection" />
             <span class="label">{{selectionSummary}}</span>
@@ -86,6 +87,7 @@ export default {
     },
     data() {
         return {
+            singleOption:true,
             loading: true,
         }
     },
@@ -126,26 +128,45 @@ export default {
                         })
 
 
-                        // console.log('Got the types we can create', self.definition, self.type, res);
                         //////////////////////////////////////
 
-                        var flattened = _.reduce(allRealms, function(set, realmType) {
+                        var flattenedLookup = _.reduce(allRealms, function(set, realmType) {
                             _.each(realmType.realms, function(realm) {
                                 mapFlat(realm, set);
                             });
                             return set;
                         }, {});
 
+                        var flattenedIDs = _.map(flattenedLookup, function(realm) {
+                            return realm;
+                        });
+
+                        // console.log('FLATTENED', flattened)
+
                         //////////////////////////////////////
 
                         var initialIDs = _.map(self.$fluro.utils.arrayIDs(self.value), function(id) {
-                            return flattened[id];
+                            return flattenedLookup[id];
                         });
+
+                        //////////////////////////////////////
 
                         resolve(filtered);
 
-                        // console.log('Convert', self.value, res);
-                        self.setSelection(initialIDs);
+                        //////////////////////////////////////
+
+                        var singleOption = false;
+                        if(initialIDs && initialIDs.length) {
+                            // console.log('Convert', self.value, res);
+                            self.setSelection(initialIDs);
+                        } else {
+                            if(flattenedIDs.length == 1) {
+                                singleOption = true;
+                                self.setSelection(flattenedIDs);
+                            }
+                        }
+
+                        self.singleOption = singleOption;
                         self.loading = false;
                     }, function(err) {
                         reject(err);

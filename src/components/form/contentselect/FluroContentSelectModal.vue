@@ -52,7 +52,7 @@
                 <v-layout fill-height>
                     <flex-column style="min-height:50vh;">
                         <!-- :init-page="$route.query.page"  :init-sort="{sortKey:$route.query.sortKey, sortDirection:$route.query.sortDirection, sortType:$route.query.sortType}" @raw="rowsChanged" @filtered="filteredChanged" @page="pageChanged" @sort="sortChanged"  -->
-                        <fluro-dynamic-table  :enable-actions="false" :allDefinitions="options.allDefinitions" :filter-config="filterConfig" :selection-controller="selector" :clicked="rowClicked" :search="search" :data-type="type" :columns="columns" @raw="rowsChanged" @filtered="filteredChanged" @page="pageChanged" @sort="sortChanged" />
+                        <fluro-dynamic-table  :enable-actions="false" :allDefinitions="options.allDefinitions" :searchInheritable="options.searchInheritable" :filter-config="filterConfig" :selection-controller="selector" :clicked="rowClicked" :search="search" :data-type="type" :columns="columns" @raw="rowsChanged" @filtered="filteredChanged" @page="pageChanged" @sort="sortChanged" />
                     </flex-column>
                     <div class="filter-sidebar scroll-y" v-show="showFilters">
                         <div>

@@ -11,7 +11,15 @@
         <fluro-page-preloader v-if="showLoading" contain />
         <v-container class="flex-center" v-if="!showLoading && !page.length">
             <slot name="emptytext">
-                No {{dataType | definitionTitle(true)}} were found matching your criteria
+                <div>
+                    <p>No {{dataType | definitionTitle(true)}} were found matching your criteria</p>
+                    <div>
+                        <v-btn large class="mx-0" color="primary" @click="$fluro.global.create(dataType, {options:true}, true);" v-if="$fluro.access.can('create', dataType, parentType)">
+                            <span>Create new {{dataType | definitionTitle}}</span>
+                            <fluro-icon right icon="plus" />
+                        </v-btn>
+                    </div>
+                </div>
             </slot>
         </v-container>
         <template v-else>
@@ -360,6 +368,10 @@ export default {
             type: Boolean,
             default: false,
         },
+        searchInheritable: {
+            type: Boolean,
+            default: false,
+        },
         grouping: {
             type: Function,
         },
@@ -479,6 +491,9 @@ export default {
     },
 
     computed: {
+        parentType() {
+            return this.$fluro.types.parentType(this.dataType);
+        },
         plural() {
             return this.$fluro.types.readable(this.dataType, true);
         },
@@ -994,7 +1009,7 @@ export default {
                     limit: ids.length,
                     appendContactDetails,
                     appendAssignments,
-
+                    searchInheritable: self.searchInheritable,
                     // cancelToken: currentPageItemsRequest.token,
                 })
                 .then(function(res) {
@@ -1060,6 +1075,7 @@ export default {
                 search: self.debouncedSearch,
                 includeArchived: self.includeArchivedByDefault,
                 allDefinitions: self.allDefinitions,
+                searchInheritable: self.searchInheritable,
                 includeUnmatched: true,
             }
 
