@@ -23,9 +23,19 @@ export default {
         this.active = this.index == 0;
         this.tabs.push(this);
     },
+    watch: {
+        active: 'emitActive',
+    },
     destroyed() {
         console.log('Destroyed')
         this.tabs.splice(this.index, 1);
+    },
+    methods: {
+        emitActive(val) {
+            if(this.active) {
+                this.$emit('activeTab');
+            }
+        },
     },
     data() {
         return {

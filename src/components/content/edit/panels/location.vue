@@ -23,6 +23,7 @@
                         <v-container fluid grid-list-lg>
                             <constrain sm>
                                 <v-layout row wrap>
+                                    <pre>{{fieldHash}}</pre>
                                     <!--  -->
                                     <v-flex xs12 sm12>
                                         <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
@@ -71,6 +72,24 @@
                         </constrain>
                     </v-container>
                 </tab>
+                <tab heading="Location/Map" @activeTab="getLatLong">
+                    <map-component name="test" />
+<!--                     <v-container fluid grid-list-lg>
+                        <constrain sm>
+                            <v-layout row wrap> -->
+                                <!--  -->
+                                Hello
+                                <v-flex xs12 sm12>
+                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.longitude" v-model="model"></fluro-content-form-field>
+                                </v-flex>
+                                <!--  -->
+                                <v-flex xs12 sm6>
+                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.latitude" v-model="model"></fluro-content-form-field>
+                                </v-flex>
+<!--                             </v-layout>
+                        </constrain>
+                    </v-container> -->
+                </tab>
                 <tab :heading="`${definition.title} Information`" v-if="definition && definition.fields && definition.fields.length">
                     <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
                 </tab>
@@ -81,9 +100,11 @@
 <script>
 /////////////////////////////////
 import RoomManager from '../components/RoomManager.vue';
+import MapComponent from '../components/MapComponent.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
 import AddressManager from '../components/AddressManager.vue';
 import KeyContactLocationManager from '../components/KeyContactLocationManager.vue';
+import axios from 'axios';
 import { FluroIcon, Layout } from 'fluro-vue-ui'
 
 /////////////////////////////////
@@ -97,6 +118,7 @@ export default {
         AddressManager,
         RoomManager,
         KeyContactLocationManager,
+        MapComponent,
     },
     created() {},
     mixins: [FluroContentEditMixin, Layout],
@@ -133,6 +155,23 @@ export default {
                 type: 'string',
             });
 
+            ///////////////////////////////////
+
+            addField('longitude', {
+                title: 'Longitude',
+                minimum: 0,
+                maximum: 1,
+                type: 'string',
+            });
+
+            addField('latitude', {
+                title: 'Latitude',
+                minimum: 0,
+                maximum: 1,
+                type: 'string',
+            });
+
+            ///////////////////////////////////
 
 
             function addField(key, details) {
@@ -143,11 +182,42 @@ export default {
             return array;
         },
     },
-    methods: {},
-    data() {
-        return {}
+    methods: {
+        getLatLong() {
+            var self = this;
+            console.log('hereeeee');
+            if (!self.model.longitude && !self.model.latitude) {
+                axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
+                    params: {
+                        key: self.$fluro.global.googleMapsAPIKey,
+                        address: self.geocodeAddress,
+                    }
+                }).then(function(res) {
+                    console.log('SENT REQUEST')
+                    self.geocodeRequest = res;
+                });
+            }
+        }
     },
-    asyncComputed: {}
+    computed: {
+        geocodeAddress() {
+            var self = this;
+            var model = self.model;
+            return model.addressLine1 + ', ' + model.suburb + ', ' + model.state + ' ' + model.postalCode + ' ' + model.country;
+        },
+        showMap() {
+            var self = this;
+            if (self.geocodeRequest.status == 'ok') {
+                return true;
+            }
+            return false;
+        },
+    },
+    data() {
+        return {
+            geocodeRequest: {},
+        }
+    },
 }
 </script>
 <style lang="scss">
