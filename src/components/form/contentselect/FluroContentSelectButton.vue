@@ -46,15 +46,6 @@ export default {
         allDefinitions: {
             type: Boolean,
         },
-        searchInheritable: {
-            type: Boolean,
-        },
-        options:{
-            type:Object,
-            default() {
-                return {}
-            }
-        },
         'value': {
             type: Array,
             default: function() {
@@ -109,11 +100,8 @@ export default {
     },
     methods: {
         showModal() {
-
-             var self = this;
-             
-            // console.log('SHOW MODAL', self.searchInheritable)
-           
+            // console.log('SHOW MODAL', this.$fluro.modal)
+            var self = this;
 
             //////////////////////////////////////
 
@@ -123,7 +111,6 @@ export default {
                     selector: self,
                     type: self.type,
                     allDefinitions: self.allDefinitions,
-                    searchInheritable: self.searchInheritable,
                     filter:self.filter,
                 }
             });

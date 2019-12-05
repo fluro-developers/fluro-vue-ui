@@ -16,12 +16,6 @@ export default {
     overflow: hidden;
     flex: 1;
     flex-direction: column;
-    max-height: 100%;
-
-    &[center] {
-    	align-items: center;
-    	justify-content: center;
-    }
 }
 
 </style>

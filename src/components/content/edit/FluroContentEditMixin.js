@@ -11,7 +11,7 @@ export default {
     props: {
         config: {
             type: Object,
-            require: true,
+            required: true,
         },
         context: {
             type: String,
