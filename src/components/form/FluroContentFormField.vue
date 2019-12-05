@@ -253,7 +253,7 @@
         <template v-else-if="renderer == 'content-select'">
             <!-- <pre>{{fieldModel}}</pre> -->
             <v-input class="no-flex" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
-                <fluro-content-select :success="success" :required="required" :error-messages="errorMessages" :label="displayLabel" :outline="showOutline" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" :minimum="minimum" @input="touch" :type="restrictType" :maximum="maximum" v-model="model[field.key]" />
+                <fluro-content-select :success="success" :required="required" :error-messages="errorMessages" :label="displayLabel" :outline="showOutline" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" :minimum="minimum" @input="touch" :type="restrictType" :lockFilter="referenceFilter" :searchInheritable="searchInheritable" :maximum="maximum" v-model="model[field.key]" />
             </v-input>
         </template>
         <template v-else-if="renderer == 'search-select'">
@@ -678,6 +678,16 @@ export default {
             return this.outline || this.options.outline;
         },
 
+        searchInheritable() {
+            if (this.field.params && this.field.params.searchInheritable) {
+                return this.field.params.searchInheritable;
+            }
+        },
+        referenceFilter() {
+            if (this.field.params && this.field.params.referenceFilter) {
+                return this.field.params.referenceFilter;
+            }
+        },
         restrictType() {
 
             if (this.field.params && this.field.params.restrictType) {
@@ -911,6 +921,7 @@ export default {
 
                 if (self.expressions && self.expressions.transform && typeof self.expressions.transform == 'function') {
                     value = self.expressions.transform(value);
+                    console.log('Transformed to', value)
                 }
 
                 //////////////////////////////////
@@ -969,10 +980,6 @@ export default {
                         }
                         break;
                     case 'boolean':
-
-
-
-
                         if (self.field.inverse) {
                             value = !value;
                         }
@@ -988,6 +995,7 @@ export default {
                         }
                         break;
                 }
+
 
                 self.$set(self.model, self.key, value);
                 self.valueChange();
@@ -2296,7 +2304,7 @@ function checkValidInput(self, input) {
             var numberised = Number(input);
             var isActualNumber = (_.isFinite(numberised) && !_.isNaN(numberised));
             if (!isActualNumber) {
-                errors.push(`${input} is not a valid number!`)
+                errors.push(`${input ? input : ''} is not a valid number!`)
             }
 
             var numberError = checkNumericInputError(input, minimumValue, maximumValue, dataType);

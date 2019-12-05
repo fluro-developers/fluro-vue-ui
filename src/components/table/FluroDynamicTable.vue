@@ -375,6 +375,7 @@ export default {
         grouping: {
             type: Function,
         },
+
         includeArchivedByDefault: {
             type: Boolean,
         },
@@ -1079,14 +1080,25 @@ export default {
                 includeUnmatched: true,
             }
 
+            /////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////
 
             if (self.startDate) {
-                filterCriteria.startDate = self.startDate;
+                filterCriteria.startDate = new Date(self.startDate);
             }
 
             if (self.endDate) {
-                filterCriteria.endDate = self.endDate;
+                filterCriteria.endDate = new Date(self.endDate);
             }
+
+            //Include the timezone of the current requesting user
+            filterCriteria.timezone = self.$fluro.date.defaultTimezone;
+
+            /////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////
 
             //Load just the IDS from the server and required fields
             return self.$fluro.api.post(`/content/${self.dataType}/filter`, filterCriteria)

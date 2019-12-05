@@ -1,6 +1,5 @@
 <template>
     <!-- <flex-column> -->
-
     <flex-column class="content-select-modal">
         <!-- <pre>{{selector.selectionMinimum}} {{selector.selectionMaximum}}</pre> -->
         <flex-column v-if="loading">
@@ -15,8 +14,8 @@
                     <v-layout row align-center>
                         <template v-if="$vuetify.breakpoint.smAndUp">
                             <v-flex shrink>
-
-                                <h5><fluro-icon left :type="type"/> {{modalTitle}}</h5>
+                                <h5>
+                                    <fluro-icon left :type="type" /> {{modalTitle}}</h5>
                             </v-flex>
                             <v-spacer />
                         </template>
@@ -32,7 +31,6 @@
                                 </div>
                             </template>
                         </v-flex>
-                        
                         <v-spacer />
                         <v-flex shrink v-if="$vuetify.breakpoint.smAndUp">
                             <v-btn icon small class="my-0" @click="showFilters = !showFilters">
@@ -52,20 +50,20 @@
                 <v-layout fill-height>
                     <flex-column style="min-height:50vh;">
                         <!-- :init-page="$route.query.page"  :init-sort="{sortKey:$route.query.sortKey, sortDirection:$route.query.sortDirection, sortType:$route.query.sortType}" @raw="rowsChanged" @filtered="filteredChanged" @page="pageChanged" @sort="sortChanged"  -->
-                        <fluro-dynamic-table  :enable-actions="false" :allDefinitions="options.allDefinitions" :searchInheritable="options.searchInheritable" :filter-config="filterConfig" :selection-controller="selector" :clicked="rowClicked" :search="search" :data-type="type" :columns="columns" @raw="rowsChanged" @filtered="filteredChanged" @page="pageChanged" @sort="sortChanged" />
+                        <fluro-dynamic-table :enable-actions="false" :allDefinitions="options.allDefinitions" :searchInheritable="options.searchInheritable" :filter-config="computedFilterConfig" :selection-controller="selector" :clicked="rowClicked" :search="search" :data-type="type" :columns="columns" @raw="rowsChanged" @filtered="filteredChanged" @page="pageChanged" @sort="sortChanged" />
                     </flex-column>
                     <div class="filter-sidebar scroll-y" v-show="showFilters">
                         <div>
-                        <v-container pa-2>
-                            <div class="search" :class="{active:searchFocussed || search.length}">
-                                <input v-model="search" @focus="searchFocussed = true" @blur="searchFocussed = false" placeholder="Keyword search" />
-                                <div class="search-icon" @click="search = ''">
-                                    <fluro-icon icon="times" v-if="search.length" />
-                                    <fluro-icon icon="search" v-else />
+                            <v-container pa-2>
+                                <div class="search" :class="{active:searchFocussed || search.length}">
+                                    <input v-model="search" @focus="searchFocussed = true" @blur="searchFocussed = false" placeholder="Keyword search" />
+                                    <div class="search-icon" @click="search = ''">
+                                        <fluro-icon icon="times" v-if="search.length" />
+                                        <fluro-icon icon="search" v-else />
+                                    </div>
                                 </div>
-                            </div>
-                        </v-container>
-                        <filter-condition-group :rows="rows" :mini="true" v-model="filterConfig" :type="type" :debounce="filterDebounce" />
+                            </v-container>
+                            <filter-condition-group :rows="rows" :mini="true" v-model="filterConfig" :type="type" :debounce="filterDebounce" />
                         </div>
                     </div>
                 </v-layout>
@@ -127,7 +125,7 @@ import TypeImageCell from '../../table/cells/TypeImageCell.vue';
 
 /////////////////////////////////////////
 
-import {FilterService} from 'fluro';
+import { FilterService } from 'fluro';
 
 
 /////////////////////////////////////////
@@ -212,6 +210,22 @@ export default {
         },
     },
     computed: {
+        computedFilterConfig() {
+
+            var basicFilterConfig = this.filterConfig;
+            var lockedFilter = this.options.lockFilter;
+
+            if (lockedFilter) {
+                return {
+                    operator:'and',
+                    filters:[basicFilterConfig, lockedFilter],
+                }
+            }
+
+            return basicFilterConfig;
+
+
+        },
         selectionManager() {
             return this.selector;
         },
@@ -273,12 +287,12 @@ export default {
             ];
 
             switch (this.parentType) {
-                case 'node' :
+                case 'node':
                     array = array.concat([
-                        { title: '', key: '_id', renderer: TypeImageCell, shrink:true },
+                        { title: '', key: '_id', renderer: TypeImageCell, shrink: true },
                         { title: 'Title', key: 'title', renderer: TitleCell },
                     ]);
-                break;
+                    break;
                 case 'image':
                     array = array.concat([
                         { title: 'Thumbnail', key: '_id', renderer: ThumbnailCell },
@@ -320,9 +334,8 @@ export default {
 </script>
 <style lang="scss">
 .content-select-modal {
-    width:80vw;
-    min-width:300px;
+    width: 80vw;
+    min-width: 300px;
     max-width: 1200px;
 }
-
 </style>

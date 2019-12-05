@@ -1,5 +1,6 @@
 <template>
     <div class="fluro-content-select" :class="{outlined:showOutline}">
+        <!-- <pre>{{lockFilter}}</pre> -->
         <!-- <pre>TESTING WOWOWOW {{selectionMinimum}} {{selectionMaximum}}</pre> -->
         <!-- <pre>{{model}}</pre> -->
         <div class="fluro-content-list" v-if="model.length">
@@ -172,6 +173,17 @@ export default {
             },
             type: Object,
         },
+        'searchInheritable':{
+            type:Boolean,
+            default:true,
+        },
+        'allDefinitions':{
+            type:Boolean,
+            default:true,
+        },
+        'lockFilter':{
+            type:Object,
+        }
     },
     created() {
 
@@ -279,7 +291,7 @@ export default {
                 });
         },
         showModal() {
-            // console.log('SHOW MODAL', this.$fluro.modal)
+            console.log('SHOW MODAL', self)
             var self = this;
             //////////////////////////////////////
 
@@ -290,7 +302,9 @@ export default {
                     type: self.type,
                     minimum: self.minimum,
                     maximum: self.maximum,
-                    allDefinitions: true,
+                    allDefinitions: self.allDefinitions,
+                    searchInheritable: self.searchInheritable,
+                    lockFilter:self.lockFilter,
                 }
             });
 

@@ -46,6 +46,8 @@ $title-fraction-xl: $title-fraction / 3;
 
 .wrapper {
 
+   
+
     &[bottom] {
         padding-top:0 !important;
     }

@@ -119,15 +119,15 @@ export default {
 
     &.fixed {
         padding: 25px;
-        display: block;
-        text-align: center;
+        display: flex;
+        justify-content: center;
 
         .modal-inner {
             // flex:none;
-            flex:none;
-            display: inline-block;
-            text-align: left;
-            position: relative;
+            // flex:none;
+            // display: inline-block;
+            // text-align: left;
+            // position: relative;
         }
         // // display: inline-block;
         //     text-align: left;

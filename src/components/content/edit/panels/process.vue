@@ -23,7 +23,7 @@
                                     <constrain sm>
                                         <template v-if="reference">
                                             <fluro-panel>
-                                                <fluro-panel-title class="border-bottom">
+                                               <!--  <fluro-panel-title class="border-bottom">
                                                     <v-layout align-center>
                                                         <v-flex>
                                                             <h5>{{title}}</h5>
@@ -35,12 +35,10 @@
                                                             <v-btn small v-tippy content="Edit" class="ma-0" icon v-if="$fluro.access.canEditItem(reference)" @click="$fluro.global.edit(reference, true)">
                                                                 <fluro-icon icon="pencil" />
                                                             </v-btn>
-                                                            <!-- <v-btn class="ma-0" small icon @click="$actions.open([reference])">
-                                                                <fluro-icon icon="ellipsis-h"/>
-                                                            </v-btn> -->
+                                                            
                                                         </v-flex>
                                                     </v-layout>
-                                                </fluro-panel-title>
+                                                </fluro-panel-title> -->
                                                 <fluro-panel-body style="padding:0;">
                                                     <!-- <template v-if="reference._type == 'contact'"> -->
                                                     <!-- </template> -->

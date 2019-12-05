@@ -1,10 +1,8 @@
 <template>
     <div class="infinite-scroll-container" ref="container">
-        <div id="top" class="top-spacer" ref="top"></div>
-        <fluro-infinite-page :page="page" :index="key" v-for="(page,key) in renderPages">
+        <div :index="key" v-for="(page,key) in availablePages" v-if="key <= limit">
             <slot v-bind:page="page" />
-        </fluro-infinite-page>
-        <div id="bottom" class="bottom-spacer" ref="bottom"></div>
+        </div>
     </div>
 </template>
 <script>
@@ -23,86 +21,43 @@ export default {
         },
         perPage: {
             type: Number,
-            default: 24,
+            default: 4,
         },
         buffer: {
             type: Number,
-            default: 4,
+            default: 3,
         },
         scrollParent: {
             default () {
                 return {}
             }
         },
-        click: {
-            type: Function,
-        },
-    },
-    provide() {
-        return {
-            observeElement: this.observeElement,
-            stopObservingElement: this.stopObservingElement,
-            pages: this.pages,
-            currentPage: this.currentPage,
-        }
     },
     data() {
         return {
-            observer: null,
             currentIndex: 0,
             parentElement: null,
-            topElement: null,
-            bottomElement: null,
-            pages: {},
         }
     },
     destroyed() {
-        this.observer.disconnect();
+        var self = this;
+        self.parentElement.removeEventListener('scroll', self.updateScroll);
     },
     mounted() {
-
         var self = this;
-
-
         var parentElement = self.parentElement = this.$el.closest("[scroll-parent]") || this.$el.closest("body");
-        var topElement = self.topElement = this.$refs.top;
-        var bottomElement = self.bottomElement = this.$refs.bottom;
-
-
-
-         // console.log('INFINITE PARENT', parentElement)
-        ///////////////////////////////////////////////////////
-
-        if (!self.observer) {
-            const options = {
-                root: self.parentElement,
-                // threshold: 0.9,
-            }
-
-            var observer = new IntersectionObserver(self.intersectionCallback, options);
-            observer.observe(topElement);
-            observer.observe(bottomElement);
-
-            self.observer = observer;
-        }
-
-
-        // console.log('PARENT', 
-        //  self.parentElement.onscroll = function(w) {
-        //  console.log('WOOOT', w)
-        // }
-        // })
-        // setTimeout(function() {
-
-
-        // window.addEventListener('resize', self.resize);
-        // this.parentElement.addEventListener("scroll", self.checkScroll);
-        // })
+        self.parentElement.addEventListener('scroll', self.updateScroll);
     },
-
     computed: {
+        availablePages() {
+            var self = this;
+            return _.chunk(this.items, this.perPage)
+        },
         total() {
             return this.availablePages.length;
+        },
+        limit() {
+            return (this.currentIndex+this.buffer);
         },
         currentPage: {
             get() {
@@ -112,130 +67,75 @@ export default {
                 integer = Math.max(integer, 0);
                 integer = Math.min(integer, this.total - 1);
                 this.currentIndex = integer;
+                console.log('PAGE', integer)
             }
         },
-        availablePages() {
-            var self = this;
-            return _.chunk(this.items, this.perPage)
-        },
-        renderPages() {
-            return this.availablePages.slice(0, (this.currentPage + this.buffer))
-        }
     },
     methods: {
-        observeElement(element) {
-            if (this.observer) {
-                // console.log('Observe element', element)
-                this.observer.observe(element.$el);
-            }
+        hitBuffer(value1, value2, buffer) {
+            
+            var match = Math.abs(value1 - value2)
+            return match < buffer;
+            
         },
-        stopObservingElement(element) {
-            if (this.observer) {
-                // console.log('Unobserve element', element)
-                this.observer.unobserve(element.$el);
-            }
-        },
-
-        nextPage() {
-            this.currentPage++;
-        },
-        previousPage() {
-            this.currentPage--;
-        },
-        // resize: _.debounce(function() {
-
-        //     var self = this;
-        //     _.each(self.pageRecords, function(record, key) {
-        //         record.divElement.style.height = '';
-        //         record.hide = false;
-
-        //     });
-        //     self.$nextTick(function() {
-        //         self.pageRecords = {};
-        //         console.log('RESET CHECK SCROLL');
-        //         self.checkScroll();
-        //     })
-        // }, 100),
-        intersectionCallback(entries) {
-            // : _.debounce(function(entries) {
-
+        updateScroll() {
             var self = this;
-            var topElement = this.topElement
-            var bottomElement = this.bottomElement;
-            var hit;
 
-            entries.forEach(entry => {
+            var maxScrollHeight = self.parentElement.scrollHeight;
+            var currentScroll = self.parentElement.scrollTop;
+            var parentHeight = self.parentElement.clientHeight;
+            var limit = maxScrollHeight - parentHeight;
 
-                if (entry.target == bottomElement) {
-                    if (!hit) {
-                        hit = true;
-                        // console.log('Bottom HIT')
-                        self.botSentCallback(entry);
-                    }
-                }
 
-                //////////////////////////////////////////
+            // var bottom = self.parentElement.scrollTop + self.parentElement.scrollHeight;
 
-                // if (entry.target == topElement) {
-                //     if (!hit) {
-                //         hit = true;
-                //         // console.log('Top HIT')
-                //         self.topSentCallback(entry);
-                //     }
-                // }
 
-                //////////////////////////////////////////
+            if(self.hitBuffer(currentScroll,limit, parentHeight/2)) {
+                return self.hitBottom();
+            }
 
-                if(entry.target.id[0] == 'p') {
-
-                    var target = self.pages[entry.target.id]
-                    if(target) {
-                        // target.active = entry.isIntersecting;
-                        //THIS IS IF YOU WANT TO HIDE PAGES NOT ON THE SCREEN FOR PERFORMANCE}
-                    }
-                }
-                
-            })
-
-            // self.pages = pageMatches;
-
-            // console.log('ACTIVE PAGES', pageMatches);
-            // }, 100),
+            if(self.hitBuffer(currentScroll,0, parentHeight/2)) {
+                return self.hitTop();
+            }
+            // console.log('LIMITS', currentScroll, , maxScrollHeight, parentHeight);
+            // self.parentElement.scrollTop,  self.parentElement.scrollHeight, self.parentElement.offsetHeight, self.parentElement.clientHeight)
         },
-        topSentCallback() {
-            // console.log('HIT TOP!')
-            this.previousPage();
+        // let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
+        hitTop() {
+            this.currentPage--;  
         },
-        botSentCallback() {
-            console.log('HIT BOTTOM!')
-            this.nextPage();
+        hitBottom() {
+            this.currentPage++;
         },
     }
 }
 </script>
 <style scoped lang="scss">
-
 .infinite-scroll-container {
     position: relative;
 
+
 }
+
 .bottom-spacer {
     pointer-events: none;
-height:20px;
-// background: #ff0066;
-position: absolute;
-bottom:0;
-left:0;
-right:0;
+    height: 1px;
+    background: #ff0066;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0.1;
 }
 
 .top-spacer {
     pointer-events: none;
-    height:500px;
-    // background: #ff0066;
+    height:1px;
+    background: #ff0066;
     position: absolute;
-    top:0;
-    left:0;
-    right:0;
+    top: 0;
+    left: 0;
+    right: 0;
+    opacity: 0.1;
 }
 </style>

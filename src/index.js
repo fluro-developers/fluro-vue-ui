@@ -334,6 +334,9 @@ export { FluroAcademicSelect as FluroAcademicSelect };
 import FluroPostForm from './components/form/FluroPostForm.vue';
 export { FluroPostForm as FluroPostForm };
 
+import FluroBasicForm from './components/form/FluroBasicForm.vue';
+export { FluroBasicForm as FluroBasicForm };
+
 import FluroInteractionForm from './components/form/FluroInteractionForm.vue';
 export { FluroInteractionForm as FluroInteractionForm };
 

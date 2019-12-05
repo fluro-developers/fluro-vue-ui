@@ -1,6 +1,6 @@
 <template>
     <!-- v-hide="onlyOneOption" -->
-    <div class="realm-select" v-show="!singleOption">
+    <div class="realm-select" v-show="!singleOptionAvailable">
         <v-btn :small="small" :block="block" class="pill mx-0" @click.native="showModal">
             <fluro-realm-dots :realms="selection" />
             <span class="label">{{selectionSummary}}</span>
@@ -23,6 +23,15 @@ import RealmSelectModal from './RealmSelectModal.vue';
 
 export default {
     computed: {
+        singleOption:{
+            get() {
+                return this.singleOptionAvailable;
+            },
+            set(payload) {
+                this.singleOptionAvailable = payload;
+                this.$emit('single', payload);
+            },
+        },
         mainType() {
             var tree = this.tree;
             if (tree.length == 1) {
@@ -87,7 +96,7 @@ export default {
     },
     data() {
         return {
-            singleOption:true,
+            singleOptionAvailable: true,
             loading: true,
         }
     },
@@ -115,63 +124,73 @@ export default {
 
 
                     self.$fluro.access
-                    .retrieveSelectableRealms('create', self.definition, self.type)
-                    .then(function(allRealms) {
+                        .retrieveSelectableRealms('create', self.definition, self.type)
+                        .then(function(allRealms) {
 
 
-                        var filtered = _.filter(allRealms, function(realmType) {
-                            if (!self.filterDiscriminator || !self.filterDiscriminator.length) {
-                                return true;
-                            }
-                            
-                            return (realmType.definition == self.filterDiscriminator)
-                        })
+                            var filtered = _.filter(allRealms, function(realmType) {
+                                if (!self.filterDiscriminator || !self.filterDiscriminator.length) {
+                                    return true;
+                                }
+
+                                return (realmType.definition == self.filterDiscriminator)
+                            })
 
 
-                        //////////////////////////////////////
+                            //////////////////////////////////////
 
-                        var flattenedLookup = _.reduce(allRealms, function(set, realmType) {
-                            _.each(realmType.realms, function(realm) {
-                                mapFlat(realm, set);
+                            var flattenedLookup = _.reduce(allRealms, function(set, realmType) {
+                                _.each(realmType.realms, function(realm) {
+                                    mapFlat(realm, set);
+                                });
+                                return set;
+                            }, {});
+
+                            var flattenedIDs = _.map(flattenedLookup, function(realm) {
+                                return realm;
                             });
-                            return set;
-                        }, {});
 
-                        var flattenedIDs = _.map(flattenedLookup, function(realm) {
-                            return realm;
-                        });
+                            // console.log('FLATTENED', flattened)
 
-                        // console.log('FLATTENED', flattened)
+                            //////////////////////////////////////
 
-                        //////////////////////////////////////
+                            var initialIDs = _.chain(self.$fluro.utils.arrayIDs(self.value))
+                            .map(function(id) {
+                                return flattenedLookup[id];
+                            })
+                            .compact()
+                            .value();
 
-                        var initialIDs = _.map(self.$fluro.utils.arrayIDs(self.value), function(id) {
-                            return flattenedLookup[id];
-                        });
+                            //////////////////////////////////////
 
-                        //////////////////////////////////////
+                            resolve(filtered);
 
-                        resolve(filtered);
+                            //////////////////////////////////////
 
-                        //////////////////////////////////////
+                            var singleOption = false;
+                            if (initialIDs && initialIDs.length) {
+                                // console.log('Convert', self.value, res);
 
-                        var singleOption = false;
-                        if(initialIDs && initialIDs.length) {
-                            // console.log('Convert', self.value, res);
-                            self.setSelection(initialIDs);
-                        } else {
-                            if(flattenedIDs.length == 1) {
-                                singleOption = true;
-                                self.setSelection(flattenedIDs);
+                                console.log('SET INITIAL', initialIDs)
+                                self.setSelection(initialIDs);
+                            } else {
+                                if (flattenedIDs.length == 1) {
+                                    console.log('SET FLATTENED', flattenedIDs);
+                                    self.setSelection(flattenedIDs);
+                                }
                             }
-                        }
 
-                        self.singleOption = singleOption;
-                        self.loading = false;
-                    }, function(err) {
-                        reject(err);
-                        self.loading = false;
-                    })
+                            if (flattenedIDs.length == 1) {
+                                singleOption = true;
+                            }
+
+
+                            self.singleOption = singleOption;
+                            self.loading = false;
+                        }, function(err) {
+                            reject(err);
+                            self.loading = false;
+                        })
 
                 })
             }
@@ -187,7 +206,6 @@ export default {
             var self = this;
             //Emit the change
             this.$emit('input', self.selection);
-
         }
     },
     methods: {

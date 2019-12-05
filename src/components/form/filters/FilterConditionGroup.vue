@@ -718,6 +718,7 @@ export default {
                 return true;
             }
         },
+
         availableKeys() {
 
             var self = this;
@@ -762,19 +763,7 @@ export default {
                         value: definition.definitionName,
                     }
                 }))
-
-
-                /////////////////////////////////////////////
-
-                // injectFields.push({
-                //     title: 'Attendance > Checked in to',
-                //     // key: '_checkins[]',
-                //     key: '_checkins',
-                //     maximum: 0,
-                //     minimum: 0,
-                //     type: 'reference',
-                // })
-
+              
 
                 injectFields.push({
                     title: 'Attendance > Total times checked in',
@@ -1501,6 +1490,38 @@ export default {
                         type: 'string',
                     });
                 })
+            } else {
+
+                // var definitionName = _.get(self.definition, 'definitionName');
+                switch(self.type) {
+                    case 'photo':
+
+                        injectFields.push({
+                            title: `EXIF > Copyright`,
+                            key: `data.exif.tags.Copyright`,
+                            maximum: 0,
+                            minimum: 0,
+                            type: 'string',
+                        });
+
+                        injectFields.push({
+                            title: `EXIF > Camera Make`,
+                            key: `data.exif.tags.Make`,
+                            maximum: 0,
+                            minimum: 0,
+                            type: 'string',
+                        });
+
+                        injectFields.push({
+                            title: `EXIF > Camera Model`,
+                            key: `data.exif.tags.Model`,
+                            maximum: 0,
+                            minimum: 0,
+                            type: 'string',
+                        });
+                    break;
+                }
+                
             }
 
 

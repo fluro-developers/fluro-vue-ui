@@ -1009,9 +1009,8 @@ export default {
                         if (!value) {
                             return value;
                         }
-
                         var regexp = /[^a-zA-Z0-9-_]+/g;
-                        var cleaned = _.startCase(value).replace(regexp, '');
+                        var cleaned = _.camelCase(value).replace(regexp, '');
                         return cleaned;
                     },
                     defaultValue() {
@@ -1064,12 +1063,26 @@ export default {
 
             addField('privacy', {
                 title: 'Security / Privacy',
-                minimum: 1,
+                minimum: 0,
                 maximum: 1,
                 type: 'string',
                 description: self.privacyDescription,
                 directive: 'select',
-                options: [{
+                expressions:{
+                    hide() {
+
+                        switch(self.model.parentType) {
+                            case 'interaction':
+                            case 'post':
+                            break;
+                            default:
+                                return true;
+                            break;
+                        }
+                    },
+                },
+                options: [
+                    {
                         name: `Secure - Only those with permissions can submit ${self.model.plural}`,
                         value: 'secure',
                     },

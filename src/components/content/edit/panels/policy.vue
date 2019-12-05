@@ -9,31 +9,29 @@
                     <flex-column-body style="background: #fafafa;">
                         <v-container>
                             <constrain sm>
-                               
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.description" v-model="model"></fluro-content-form-field>
-                                
-                                
-
                                 <fluro-panel>
                                     <fluro-panel-title>
                                         <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.inviteCodeEnabled" v-model="model"></fluro-content-form-field>
-                                
                                     </fluro-panel-title>
-                                    <fluro-panel-body v-if="model.inviteCodeEnabled">
+                                    <template v-if="model.inviteCodeEnabled">
+                                        <div class="invite-code" v-tippy content="Click to copy to clipboard" @click="copyCodeToClipboard">
+                                            <span>{{inviteCode}}</span>
+                                            <!-- <fluro-icon icon="copy" right /> -->
+                                        </div>
+                                         <input type="hidden" ref="input" :value="inviteCode">
                                         <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.fromEmail" v-model="model"></fluro-content-form-field> -->
                                         <!-- <v-layout> -->
-                                            <!-- <v-flex xs12 sm6> -->
-                                                <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.fromFirstName" v-model="model"></fluro-content-form-field> -->
-                                            <!-- </v-flex> -->
-                                            <!-- <v-flex xs12 sm6> -->
-                                                <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.fromLastName" v-model="model"></fluro-content-form-field> -->
-                                            <!-- </v-flex> -->
+                                        <!-- <v-flex xs12 sm6> -->
+                                        <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.fromFirstName" v-model="model"></fluro-content-form-field> -->
+                                        <!-- </v-flex> -->
+                                        <!-- <v-flex xs12 sm6> -->
+                                        <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.fromLastName" v-model="model"></fluro-content-form-field> -->
+                                        <!-- </v-flex> -->
                                         <!-- </v-layout> -->
-                                    </fluro-panel-body>
+                                    </template>
                                 </fluro-panel>
-
-
                                 <fluro-permission-select v-model="model.sets" />
                                 <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.mailoutType" v-model="model"></fluro-content-form-field>
                                 <fluro-card v-if="mailoutType == 'promotional'">
@@ -93,6 +91,32 @@ export default {
     },
     mixins: [FluroContentEditMixin],
     methods: {
+        copyCodeToClipboard() {
+
+
+
+            var self = this;
+
+            let testingCodeToCopy = this.$refs.input;
+            testingCodeToCopy.setAttribute('type', 'text') // 不是 hidden 才能複製
+            testingCodeToCopy.select()
+
+            try {
+                var successful = document.execCommand('copy');
+                var msg = successful ? 'successful' : 'unsuccessful';
+                // alert('Testing code was copied ' + msg);
+                self.$fluro.notify('Invite Code Copied to clipboard');
+            } catch (err) {
+                // alert('Oops, unable to copy');
+                // self.$fluro.error({message:'Unable to copy to clipboard'});
+            }
+
+            /* unselect the range */
+            testingCodeToCopy.setAttribute('type', 'hidden')
+            window.getSelection().removeAllRanges()
+
+
+        },
         toggleExpand(key) {
             var self = this;
             self.$set(self.expandedSettings, `_${key}`, !self.expandedSettings[`_${key}`]);
@@ -102,6 +126,14 @@ export default {
         },
     },
     computed: {
+        policyCode() {
+            var self = this;
+            return _.get(this.model, 'privateDetails.inviteCode');
+        },
+        inviteCode() {
+            var self = this;
+            return `${self.user.account.prefix}-${self.policyCode}`.toUpperCase();
+        },
         expanded() {
             var self = this;
 
@@ -152,7 +184,7 @@ export default {
                 maximum: 1,
                 type: 'string',
                 placeholder: `Eg. 'This pass allows a user to access all contacts and teams in the X Realm'`,
-               
+
             })
 
             addField('inviteCodeEnabled', {
@@ -160,11 +192,11 @@ export default {
                 description: 'Enable an invitation code that you can share with people so they can quickly acquire this access pass.',
                 minimum: 0,
                 maximum: 1,
-                type: 'boolean',               
+                type: 'boolean',
             })
 
 
-            
+
 
 
             // // console.log('TYPE OPTIONS', self.typeOptions);
@@ -201,4 +233,15 @@ export default {
 </script>
 <style lang="scss">
 
+.invite-code {
+    line-height: 60px;
+    height: 60px;
+    padding: 0 5px;
+    border: 1px solid rgba($primary, 0.5);
+    background: rgba($primary, 0.1);
+    text-align: center;
+    font-weight: 100;
+    font-size: 40px;
+    // border-radius: 3px;
+}
 </style>

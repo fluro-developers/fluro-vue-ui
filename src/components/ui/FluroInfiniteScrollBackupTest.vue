@@ -1,25 +1,19 @@
 <template>
-    <div ref="container">
-        <div id="top" style="background:#ff0066;padding:4px;" ref="top" class="top"></div>
-        <div class="slider" ref="slider">
-            <!-- <pre>{{renderPages.length}} {{currentPage}} {{total}}</pre> -->
-            <!-- <template> -->
-            <!-- <div :ref="`page${key}`" v-for="(page,key) in renderPages"> -->
-            <!-- <div v-if="showPage(key)"> -->
-            <!-- <keep-alive> -->
-            <div :id="`page-${key}`" v-for="(page,key) in renderPages">
-                <slot v-bind:page="page"></slot>
-            </div>
-        </div>
-        <!-- </keep-alive> -->
-        <!-- </div> -->
-        <!-- </div>/ -->
-        <!-- </template> -->
-        <div id="bottom" style="background:#ff0066; padding:5px;" ref="bottom" class="bottom"></div>
+    <div class="infinite-scroll-container" ref="container">
+        <div id="top" class="top-spacer" ref="top"></div>
+        <fluro-infinite-page :page="page" :index="key" v-for="(page,key) in renderPages">
+            <slot v-bind:page="page" />
+        </fluro-infinite-page>
+        <div id="bottom" class="bottom-spacer" ref="bottom"></div>
     </div>
 </template>
 <script>
+import FluroInfinitePage from './FluroInfiniteScrollPage.vue';
+
 export default {
+    components: {
+        FluroInfinitePage,
+    },
     props: {
         items: {
             type: Array,
@@ -29,11 +23,11 @@ export default {
         },
         perPage: {
             type: Number,
-            default: 24,
+            default: 4,
         },
-        startPage: {
+        buffer: {
             type: Number,
-            default: 3,
+            default: 4,
         },
         scrollParent: {
             default () {
@@ -44,61 +38,50 @@ export default {
             type: Function,
         },
     },
-
-
-    // watch: {
-    //     items() {
-    //         var topElement = this.$refs.top;
-    //         if (topElement) {
-    //             topElement.scrollIntoView({
-    //                 block: 'center',
-    //                 behavior: 'smooth',
-    //             });
-    //         }
-    //     },
-    // },
-
-
-
-    // computed:{
-    //  pages() {
-    //      var currentPage = this.currentPage;
-    //      var perPage = this.perPage;
-    //      return this.items.slice(currentPage, currentPage+perPage);
-    //  }
-    // },
-    beforeMount() {
-        // this.currentPage = this.startPage;
-
+    provide() {
+        return {
+            observeElement: this.observeElement,
+            stopObservingElement: this.stopObservingElement,
+            pages: this.pages,
+            currentPage: this.currentPage,
+        }
     },
     data() {
         return {
             observer: null,
             currentIndex: 0,
             parentElement: null,
-            sliderElement: null,
             topElement: null,
             bottomElement: null,
+            pages: {},
+            atBottom: false,
+            atTop: false,
+            busy: false,
         }
     },
     destroyed() {
-        this.observer.disconnect();
+        var self = this;
+        self.observer.disconnect();
+        self.parentElement.removeEventListener('scroll', self.updateScroll);
     },
     mounted() {
-
         var self = this;
-
-        var parentElement = self.parentElement = this.$el.closest("[scroll-parent]") || window;
+        var parentElement = self.parentElement = this.$el.closest("[scroll-parent]") || this.$el.closest("body");
         var topElement = self.topElement = this.$refs.top;
         var bottomElement = self.bottomElement = this.$refs.bottom;
-        var sliderElement = self.sliderElement = this.$refs.slider;
 
+
+
+
+
+
+        // console.log('INFINITE PARENT', parentElement)
         ///////////////////////////////////////////////////////
 
         if (!self.observer) {
             const options = {
                 root: self.parentElement,
-                threshold:0,
+                // threshold: 0.9,
             }
 
             var observer = new IntersectionObserver(self.intersectionCallback, options);
@@ -108,37 +91,13 @@ export default {
             self.observer = observer;
         }
 
-
-        // console.log('PARENT', 
-        //  self.parentElement.onscroll = function(w) {
-        //  console.log('WOOOT', w)
-        // }
-        // })
-        // setTimeout(function() {
-
-
-        // window.addEventListener('resize', self.resize);
-        // this.parentElement.addEventListener("scroll", self.checkScroll);
-        // })
-    },
-    beforeDestroy() {
-        var self = this;
-        // setTimeout(function() {
-
-        // window.removeEventListener('resize', self.resize);
-        // this.parentElement.removeEventListener("scroll", self.checkScroll);
-        // })
+        self.parentElement.addEventListener('scroll', self.updateScroll);
     },
 
     computed: {
+
         total() {
             return this.availablePages.length;
-        },
-        availablePages() {
-            return _.chunk(this.items, this.perPage);
-        },
-        renderPages() {
-            return this.availablePages.slice(this.currentIndex, this.currentIndex + 3);
         },
         currentPage: {
             get() {
@@ -148,60 +107,195 @@ export default {
                 integer = Math.max(integer, 0);
                 integer = Math.min(integer, this.total - 1);
                 this.currentIndex = integer;
-                console.log('CURRENT PAGE SEt', this.currentPage, this.total);
+                console.log('PAGE', integer)
             }
+        },
+        availablePages() {
+            var self = this;
+            return _.chunk(this.items, this.perPage)
+        },
+        renderPages() {
+
+            var start = Math.max(0, (this.currentPage - this.buffer))
+            var end = this.currentPage + this.buffer;
+
+
+
+            // console.log('RENDER ', start, end, this.total)
+            return this.availablePages.slice(start, end)
         }
     },
     methods: {
-        previousPage() {
-            this.currentPage--;
+        updateScroll() {
+            var self = this;
 
+            if (self.busy) {
+                // console.log('Busy!!')
+                return;
+            }
+
+
+            if (self.atBottom) {
+                // console.log('force bottom');
+                return self.botSentCallback();
+
+            }
+
+            if (self.atTop) {
+                // console.log('force top');
+                return self.topSentCallback();
+
+            }
         },
-        nextPage() {
-            this.currentPage++;
+        // }, 100),
+        observeElement(element) {
+            if (this.observer) {
+                // console.log('Observe element', element)
+                this.observer.observe(element.$el);
+            }
         },
-        intersectionCallback:_.debounce(function(entries) {
+        stopObservingElement(element) {
+            if (this.observer) {
+                // console.log('Unobserve element', element)
+                this.observer.unobserve(element.$el);
+            }
+        },
+        // resize: _.debounce(function() {
+
+        //     var self = this;
+        //     _.each(self.pageRecords, function(record, key) {
+        //         record.divElement.style.height = '';
+        //         record.hide = false;
+
+        //     });
+        //     self.$nextTick(function() {
+        //         self.pageRecords = {};
+        //         console.log('RESET CHECK SCROLL');
+        //         self.checkScroll();
+        //     })
+        // }, 100),
+        intersectionCallback(entries) {
+            // : _.debounce(function(entries) {
 
             var self = this;
-            var topElement = this.$refs.top;
-            var bottomElement = this.$refs.bottom;
+            var topElement = this.topElement
+            var bottomElement = this.bottomElement;
 
-            var matched;
+
+            var atBottom;
+            var atTop;
+
 
             entries.forEach(entry => {
 
-                if (entry.target == bottomElement) {
-                    if(!matched) {
-                        matched = true;
-                        self.botSentCallback(entry);
+                if (entry.isIntersecting) {
+                    if (entry.target == bottomElement) {
+                        atBottom = true;
+                        // if (!hit) {
+                        //     hit = true;
+                        //     self.botSentCallback(entry);
+                        // }
+
                     }
-                    
+
+                    //////////////////////////////////////////
+
+                    if (entry.target == topElement) {
+                        atTop = true;
+
+                        // if (!hit) {
+                        //     hit = true;
+                        //     self.topSentCallback(entry);
+                        // }
+                    }
+
+                    //////////////////////////////////////////
+
+                    if (entry.target.id[0] == 'p') {
+                        var target = self.pages[entry.target.id]
+                        if (target) {
+                            // target.active = entry.isIntersecting;
+                            //THIS IS IF YOU WANT TO HIDE PAGES NOT ON THE SCREEN FOR PERFORMANCE}
+                        }
+                    }
                 }
 
-                if (entry.target == topElement) {
-                    if(!matched) {
-                        matched = true;
-                        self.topSentCallback(entry);
-                    }
-                    
-                } 
             })
 
 
+            self.atBottom = atBottom;
+            self.atTop = atTop;
 
+            //Reset
+            // self.hitBottom = false;
+            // self.hitTop = false;
 
-            // console.log('INTERSECTION CALLBACK!!!', entries);
-        },100),
-        topSentCallback() {
-            console.log('HIT TOP!')
-            this.previousPage();
+            // self.pages = pageMatches;
+
+            // console.log('ACTIVE PAGES', pageMatches);
+            // }, 100),
         },
+        topSentCallback() {
+            var self = this;
+
+            // console.log('AT TOP')
+            self.busy = true;
+
+            self.currentPage--;
+            if (self.currentPage > 0) {
+                self.parentElement.scrollTop = self.parentElement.scrollTop + (self.parentElement.clientHeight / 3);
+            }
+            setTimeout(function() {
+                self.busy = false;
+            }, 500)
+
+        },
+
         botSentCallback() {
-            console.log('HIT BOTTOM!')
-            this.nextPage();
+            var self = this;
+
+            // console.log('AT BOTTOM')
+            self.busy = true;
+
+            self.currentPage++;
+            if (self.currentPage < self.total - 1) {
+                self.parentElement.scrollTop = self.parentElement.scrollHeight - (self.parentElement.clientHeight / 3);
+            }
+
+            setTimeout(function() {
+                self.busy = false;
+            }, 500)
+
         },
     }
 }
 </script>
 <style scoped lang="scss">
+.infinite-scroll-container {
+    position: relative;
+
+
+}
+
+.bottom-spacer {
+    pointer-events: none;
+    height: 1px;
+    background: #ff0066;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0.1;
+}
+
+.top-spacer {
+    pointer-events: none;
+    height: 1px;
+    background: #ff0066;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    opacity: 0.1;
+}
 </style>

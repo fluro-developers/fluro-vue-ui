@@ -43,6 +43,7 @@ export default {
     },
     data() {
         return {
+            timer:null,
             loadedImageWidth: 0,
             loadedImageHeight: 0,
             loaded: false,
@@ -52,8 +53,16 @@ export default {
         'url': 'load',
     },
     mounted() {
-        this.load();
+
+        var self = this;
+        // self.timer = setTimeout(function() {
+            self.load();
+        // }, 100)
+        
     },
+    // beforeDestroy() {
+        // clearTimeout(this.timer);
+    // },
     methods: {
         load() {
 

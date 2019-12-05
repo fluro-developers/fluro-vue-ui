@@ -18,7 +18,7 @@
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.firstLine" v-model="model"></fluro-content-form-field>
                                 <!-- <p class="lead" v-if="dateModel.startDate">{{dateModel | readableEventDate}}</p> -->
-                                <v-layout>
+                                <v-layout row wrap>
                                     <v-flex xs12 sm4>
                                         <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="fieldHash.startDate" v-model="dateModel"></fluro-content-form-field>
                                     </v-flex>
