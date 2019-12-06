@@ -1,6 +1,6 @@
 <template>
     <v-container fluid grid-lines-sm class="card" :class="model.status" v-if="model">
-        <fluro-content-form v-model="model" :fields="fields">
+        <fluro-content-form @input="save" v-model="model" :fields="fields">
             <template v-slot:form="{formFields, fieldHash, model, update, options}">
                 <v-layout column>
                     <v-flex class="avatar-flex">
@@ -65,7 +65,28 @@ export default {
     		self.model.householdRole = '';
     	}
     },
+    watch: {
+        contactStatus: function() {
+            this.save();
+        }
+    },
     methods: {
+        save: _.debounce(function() {
+            console.log('TRIGGER UPDATE');
+            var self = this;
+            var data = {
+                'householdRole': self.model.householdRole,
+                'definition': self.model.definition,
+                'status': self.model.status,
+            };
+
+            self.$fluro.api.put(`content/contact/${self.model._id}`, data).then(function(res) {
+                self.$fluro.notify(`${self.model.title} was successfully updated!`);
+            })
+            .catch(function(err) {
+                self.$fluro.error(err);
+            });
+        }, 100),
     },
     computed: {
         contactName() {
@@ -75,6 +96,9 @@ export default {
             if (this.model.gender) {
                 return this.model.gender;
             }
+        },
+        contactStatus() {
+            return this.model.status;
         },
         fields() {
 
@@ -90,7 +114,7 @@ export default {
                 maximum: 1,
                 type: 'string',
                 directive: 'select',
-                default: '',
+                defaultValues: [''],
                 options: [{
                         name: 'None / Other',
                         value: '',
@@ -118,6 +142,7 @@ export default {
                 maximum: 1,
                 type: 'string',
                 directive: 'select',
+                defaultValues: [''],
                 options: self.contactDefinitions,
             });
 
@@ -161,5 +186,13 @@ export default {
 
 .less-padding {
     padding: 4px 8px !important;
+}
+
+.archived {
+    opacity:0.5;
+}
+
+.draft {
+    border: dashed orange 1px;
 }
 </style>

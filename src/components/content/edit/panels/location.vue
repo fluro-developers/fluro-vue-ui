@@ -23,7 +23,6 @@
                         <v-container fluid grid-list-lg>
                             <constrain sm>
                                 <v-layout row wrap>
-                                    <pre>{{fieldHash}}</pre>
                                     <!--  -->
                                     <v-flex xs12 sm12>
                                         <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
@@ -73,22 +72,31 @@
                     </v-container>
                 </tab>
                 <tab heading="Location/Map" @activeTab="getLatLong">
-                    <map-component name="test" />
-<!--                     <v-container fluid grid-list-lg>
-                        <constrain sm>
-                            <v-layout row wrap> -->
-                                <!--  -->
-                                Hello
-                                <v-flex xs12 sm12>
-                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.longitude" v-model="model"></fluro-content-form-field>
-                                </v-flex>
-                                <!--  -->
-                                <v-flex xs12 sm6>
-                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.latitude" v-model="model"></fluro-content-form-field>
-                                </v-flex>
-<!--                             </v-layout>
-                        </constrain>
-                    </v-container> -->
+                    <v-layout column>
+                        <v-flex>
+                            <map-component name="locationMap" v-model="model" />
+                        </v-flex>
+                        <v-flex shrink>
+                            <v-container fluid grid-list-lg>
+                                <constrain sm>
+                                    <v-layout row wrap>
+                                        <!--  -->
+                                        <v-flex xs12 sm12>
+                                            <h3>{{title}}</h3>
+                                            <h5>Enter the longitude and latitude below or drag the marker to refine the position</h5>
+                                        </v-flex>
+                                        <v-flex xs12 sm6 class="mobile-padding">
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.longitude" v-model="model"></fluro-content-form-field>
+                                        </v-flex>
+                                        <!--  -->
+                                        <v-flex xs12 sm6 class="mobile-padding">
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.latitude" v-model="model"></fluro-content-form-field>
+                                        </v-flex>
+                                    </v-layout>
+                                </constrain>
+                            </v-container>
+                        </v-flex>
+                    </v-layout>
                 </tab>
                 <tab :heading="`${definition.title} Information`" v-if="definition && definition.fields && definition.fields.length">
                     <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
@@ -181,11 +189,19 @@ export default {
 
             return array;
         },
+        geocodeAddress() {
+            var self = this;
+            var model = self.model;
+            return model.addressLine1 + ', ' + model.suburb + ', ' + model.state + ' ' + model.postalCode + ' ' + model.country;
+        },
+        title() {
+            var self = this;
+            return _.get(self.model, 'title') || '';
+        },
     },
     methods: {
         getLatLong() {
             var self = this;
-            console.log('hereeeee');
             if (!self.model.longitude && !self.model.latitude) {
                 axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
                     params: {
@@ -193,30 +209,21 @@ export default {
                         address: self.geocodeAddress,
                     }
                 }).then(function(res) {
-                    console.log('SENT REQUEST')
-                    self.geocodeRequest = res;
+                    console.log('GOT REQUEST', res);
+                    if ((res.data.status == 'OK') && res.data.results && res.data.results.length) {
+                        var location = _.get(res.data.results[0], 'geometry.location');
+                        console.log('VALID REQUEST', location);
+                        if (location) {
+                            self.model.latitude = location.lat;
+                            self.model.longitude = location.lng;
+                        }
+                    }
                 });
             }
         }
     },
-    computed: {
-        geocodeAddress() {
-            var self = this;
-            var model = self.model;
-            return model.addressLine1 + ', ' + model.suburb + ', ' + model.state + ' ' + model.postalCode + ' ' + model.country;
-        },
-        showMap() {
-            var self = this;
-            if (self.geocodeRequest.status == 'ok') {
-                return true;
-            }
-            return false;
-        },
-    },
     data() {
-        return {
-            geocodeRequest: {},
-        }
+        return {}
     },
 }
 </script>
@@ -226,5 +233,14 @@ export default {
     background: none !important;
     font-size: 14px;
     padding: 0px;
+}
+
+
+
+@media only screen and (max-width: 600px) {
+    .mobile-padding {
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+    }
 }
 </style>

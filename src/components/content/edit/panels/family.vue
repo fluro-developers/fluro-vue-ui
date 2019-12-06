@@ -79,7 +79,7 @@
                                     <div v-for="(contact, index) in model.items" class="cards border">
                                         <family-member-card :contactDefinitions="contactDefinitionOptions" v-model="model.items[index]" />
                                     </div>
-                                    <div class="ghost-card">
+                                    <div class="ghost-card" @click="create">
                                         <div class="add-contact ghost">
 <!--                                             <div class="avatar-flex"> -->
                                                 <div class="add-circle">
@@ -195,6 +195,24 @@ export default {
             } else {
                 self.model.samePostal = false;
             }
+        },
+        create() {
+            var self = this;
+            //self.$fluro.global.create
+
+            var template = {
+                    family: self.model,
+                    lastName: self.model.title,
+                };
+
+
+                console.log('Create new contact', template)
+            self.$fluro.global.create('contact', {
+                template,
+            }, true)
+                .then(function(res) {
+                    self.model.items.push(res);
+                });
         }
     },
     data() {

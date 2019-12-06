@@ -1,57 +1,153 @@
 <template>
-    <div class="google-map" :id="mapName"></div>
+    <div class="google-map" ref="map"></div>
 </template>
 <script>
 export default {
     name: 'google-map',
-    props: ['name'],
+    props: {
+        value: {
+            type: Object,
+            required: true,
+        },
+    },
     data: function() {
         return {
-            mapName: this.name + "-map",
-            markerCoordinates: [{
-                latitude: 51.501527,
-                longitude: -0.1921837
-            }],
+            model: this.value,
             map: null,
             bounds: null,
-            markers: []
+            loading: true,
+            marker: null,
         }
     },
-    beforeCreate() {
+    mounted() {
         var self = this;
-        self.$fluro.utils.injectScript(`https://maps.googleapis.com/maps/api/js?key=${self.$fluro.global.googleMapsAPIKey}`)
-            .then(function(res) {
-                console.log('google maps is init')
-                self.mapsEnabled = true;
-                self.initMaps();
-            })
+        if (!_.get(self.model, 'longitude')) {
+            self.model.longitude = "144.9616192";
+            self.model.latitude = "-37.8150634";
+        }
+        this.initMaps();
+    },
+    computed: {
+        lng() {
+            return parseFloat(this.model.longitude);
+        },
+        lat() {
+            return parseFloat(this.model.latitude);
+        },
     },
     methods: {
         initMaps() {
-            this.bounds = new google.maps.LatLngBounds();
-            const element = document.getElementById(this.mapName)
-            const mapCentre = this.markerCoordinates[0]
-            const options = {
-                center: new google.maps.LatLng(mapCentre.latitude, mapCentre.longitude)
-            }
-            this.map = new google.maps.Map(element, options);
-            this.markerCoordinates.forEach((coord) => {
-                const position = new google.maps.LatLng(coord.latitude, coord.longitude);
-                const marker = new google.maps.Marker({
-                    position,
-                    map: this.map
+
+            var self = this;
+
+            self.$fluro.utils.injectScript(`https://maps.googleapis.com/maps/api/js?key=${self.$fluro.global.googleMapsAPIKey}`)
+                .then(function(res) {
+
+                    var element = self.$refs.map;
+                    if (!element) {
+                        return;
+                    }
+
+                    ///////////////////////////////////////////
+
+
+                    self.bounds = new google.maps.LatLngBounds();
+                    var options = {
+                        zoom: 15,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP,
+                        disableDefaultUI: !1,
+                        maxZoom: 18,
+                        scrollwheel: !1,
+                        draggable: !0,
+                        center: new google.maps.LatLng(self.lat, self.lng)
+                    }
+                    self.map = new google.maps.Map(element, options);
+                    self.initMarkers();
                 });
-                this.markers.push(marker)
-                this.map.fitBounds(this.bounds.extend(position))
+        },
+        initMarkers() {
+            var self = this;
+            var position = new google.maps.LatLng(self.lat, self.lng);
+            self.marker = new google.maps.Marker({
+                position,
+                map: self.map,
+                draggable: true,
             });
-        }
+
+            self.bounds.extend(position);
+
+            self.marker.setMap(self.map);
+            //self.map.fitBounds(self.bounds);
+            self.map.panToBounds(self.bounds);
+            self.loading = false;
+            google.maps.event.addListener(self.marker, 'dragend', function(event) {
+                console.log('DRAG END');
+                self.model.latitude = event.latLng.lat();
+                self.model.longitude = event.latLng.lng();
+                google.maps.event.clearListeners(self.marker, 'dragend');
+                self.markersUpdated();
+            });
+        },
+        markersUpdated() {
+            var self = this;
+            if (!self.marker) {
+                return;
+            }
+            console.log('Updating Markers');
+            // clear old marker
+            self.marker.setMap(null);
+            self.marker = null;
+
+            // create new marker
+            var position = new google.maps.LatLng(self.lat, self.lng);
+            self.marker = new google.maps.Marker({
+                position,
+                map: self.map,
+                draggable: true,
+            });
+
+            self.marker.setMap(self.map);
+
+            self.bounds = null;
+            self.bounds = new google.maps.LatLngBounds();
+            self.bounds.extend(position);
+
+            self.map.fitBounds(self.bounds);
+            self.map.panToBounds(self.bounds);
+
+            //self.map.setCenter(self.bounds.getCenter());
+
+            google.maps.event.addListener(self.marker, 'dragend', function(event) {
+                console.log('DRAG END');
+                self.model.latitude = event.latLng.lat();
+                self.model.longitude = event.latLng.lng();
+                google.maps.event.clearListeners(self.marker, 'dragend');
+                self.markersUpdated();
+            });
+        },
+        debouncedUpdate() {
+            var self = this;
+            return _.debounce(self.markersUpdated, 1000);
+        },
+    },
+    watch: {
+        lat: function(val) {
+            if (val) {
+                return this.markersUpdated();
+            }
+        },
+        lng: function(val) {
+            if (val) {
+                return this.markersUpdated();
+            }
+        },
     }
 };
 </script>
 <style scoped>
 .google-map {
     width: 100%;
-    height: 60%;
+    height: 100%;
     background: gray;
 }
 </style>
