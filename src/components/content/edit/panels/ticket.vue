@@ -60,17 +60,17 @@ export default {
             var self = this;
             if (!self.model.collected) {
                 console.log('COLLECTED IS FALSY', self.model.collected);
-                return self.model.collected = true;
+                return self.$set(self.model, 'collected', true);
             } else {
                 console.log('COLLECTED IS TRUTHY', self.model.collected);
-                return self.model.collected = false;
+                return self.$set(self.model, 'collected', false);
             }
         },
     },
     created() {
         var self = this;
         if (!self.model._id) {
-            self.model.collected = false;
+            return self.$set(self.model, 'collected', false);
         }
     },
     asyncComputed: {

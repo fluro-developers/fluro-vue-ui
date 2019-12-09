@@ -191,9 +191,9 @@ export default {
         toggleSamePostal() {
             var self = this;
             if (!self.model.samePostal) {
-                self.model.samePostal = true;
+                return self.$set(self.model, 'samePostal', true);
             } else {
-                self.model.samePostal = false;
+                return self.$set(self.model, 'samePostal', false);
             }
         },
         create() {
