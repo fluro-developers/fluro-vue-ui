@@ -950,14 +950,14 @@ export default {
                 })
         },
         updateAcademicCalendar(calendar) {
-            console.log('ACADEMIC THING', calendar);
+            // console.log('ACADEMIC THING', calendar);
             var self = this;
             self.$set(self.model, 'academicCalendar', calendar);
             self.update(self.model);
 
         },
         updateAcademicGrade(grade) {
-            console.log('ACADEMIC GRADE', grade);
+            // console.log('ACADEMIC GRADE', grade);
             var self = this;
             self.$set(self.model, 'academicGrade', grade);
             self.update(self.model);

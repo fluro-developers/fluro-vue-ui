@@ -7,7 +7,7 @@
         </template>
     </template>
     <template v-else>
-        <fluro-avatar md v-tippy :content="entry.firstName || entry.title" :id="data" type="contact" />
+        <fluro-avatar v-if="data" md v-tippy :content="data.firstName || data.title" :id="data" type="contact" />
     </template>
 </div>
     <!-- <span class="inline-tag" :content="data | timeago" v-tippy>{{data | formatDate('MMM D, YYYY')}}</span> -->

@@ -26,6 +26,8 @@
                         <!-- <pre>{{allowAnonymous}}</pre> -->
                         <!-- <pre>{{fields}}</pre> -->
                         <!-- <pre>{{options}}</pre> -->
+<pre>{{errorMessages}}</pre>
+
                         <fluro-content-form @errorMessages="validate" @input="modelChanged" ref="form" :options="options" v-model="dataModel" :fields="fields" />
                         <div class="actions">
                             <template v-if="state == 'processing'">

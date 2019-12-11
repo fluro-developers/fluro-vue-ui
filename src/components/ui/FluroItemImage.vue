@@ -40,14 +40,17 @@ export default {
         height:50px;
         // 
         display: block;
-        background: #000;
+        background-color: rgba(#000,0.1);
+        background-repeat: no-repeat;;
+        background-size: contain;
+        background-position: center center;
         border-radius: 5px;
     }
 
     .icon-avatar {
         width:30px;
         height:30px;
-        background: rgba(#000, 0.05);
+        background-color: rgba(#000,0.1);
         text-align: center;
         line-height: 30px;
         display: inline-block;;

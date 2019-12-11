@@ -1941,7 +1941,7 @@ export default {
 
                 return new Promise(function(resolve, reject) {
                     self.$fluro.api.get(self.asyncOptionsURL).then(function(res) {
-                            console.log('RES', res)
+                            // console.log('RES', res)
                             resolve(res.data);
                             self.asyncOptionsLoading = false;
                         })

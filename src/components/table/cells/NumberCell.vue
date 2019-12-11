@@ -1,5 +1,5 @@
 <template>
-    <div class="text-xs-center" :class="{muted:empty}">
+    <div class="number-cell-text" :class="{muted:empty}">
         {{data}}
         </div>
 </template>
@@ -26,5 +26,9 @@ export default {
 }
 </script>
 <style scoped lang="scss">
-
+.number-cell-text {
+    text-align: center;
+    opacity: 0.8;
+    font-size: 0.9em;
+}
 </style>

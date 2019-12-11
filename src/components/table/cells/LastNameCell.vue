@@ -1,6 +1,6 @@
 <template>
     <div class="last-name-cell">
-       <span><strong>{{row.lastName}}</strong> <span class="muted" v-if="row.maidenName">({{row.maidenName}})</span></span>
+       <span><strong>{{row.lastName}}</strong> <span class="muted" v-if="row.maidenName">&nbsp;({{row.maidenName}})</span></span>
     </div>
 </template>
 <script>

@@ -18,17 +18,39 @@
                                     </v-flex>
                                 </v-layout>
                                 <!-- <v-text-field :outline="showOutline" :success="success" :required="required" label="Definition Name" v-model="definitionName" hint="This is a unique key to store this field's data in the database" :persistent-hint="true" /> -->
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.definitionName" v-model="model" />
-                                <template v-if="lockedSubType">
-                                    <v-input class="no-flex">
-                                        <v-label>Parent Type</v-label>
-                                        <div>
-                                            <em class="small">{{definition.plural}} always extend {{lockedSubType | definitionTitle(true)}}</em>
-                                        </div>
-                                    </v-input>
+                                <template v-if="!model._id">
+                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.definitionName" v-model="model" />
+                                    <template v-if="lockedSubType">
+                                        <v-input class="no-flex">
+                                            <v-label>Extends Type</v-label>
+                                            <div>
+                                                <em class="small">{{definition.plural}} always extend {{lockedSubType | definitionTitle(true)}}</em>
+                                            </div>
+                                        </v-input>
+                                    </template>
+                                    <template v-else>
+                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.parentType" v-model="model" />
+                                    </template>
                                 </template>
-                                <template v-else>
-                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.parentType" v-model="model" />
+                                <template>
+                                    <fluro-panel>
+                                        <fluro-panel-body>
+                                            <v-layout>
+                                                <v-flex xs12 sm6>
+                                                    <div class="form-group">
+                                                        <label>Definition Name</label>
+                                                        <div>{{model.definitionName}}</div>
+                                                    </div>
+                                                </v-flex>
+                                                <v-flex xs12 sm6>
+                                                    <div class="form-group">
+                                                        <label>Extends type</label>
+                                                        <div>{{model.parentType | definitionTitle}}</div>
+                                                    </div>
+                                                </v-flex>
+                                            </v-layout>
+                                        </fluro-panel-body>
+                                    </fluro-panel>
                                 </template>
                                 <!--  <div class="form-group">
                             <label><i class="fa" ng-class="{'fa-unlock':item.privacy == 'public', 'fa-lock':item.privacy == 'secure'}"></i> Security / Privacy</label>
@@ -288,14 +310,12 @@
                                                 </v-input>
                                             </fluro-panel-body>
                                         </fluro-panel>
-
                                         <fluro-panel margin>
                                             <fluro-panel-body>
                                                 <v-input class="no-flex">
                                                     <v-label>Payment Modifiers</v-label>
                                                     <p class="help-block">Add payment modifiers to adjust the required payment amount depending on values entered by the user</p>
-                                                    <payment-modifier-editor :form="model" v-model="model.paymentDetails.modifiers"/>
-
+                                                    <payment-modifier-editor :form="model" v-model="model.paymentDetails.modifiers" />
                                                     <!-- <fluro-panel-body class="border-top"> -->
                                                     <!-- <fluro-content-select-button block type="integration" v-model="model.data.publicData.paymentGateways" /> -->
                                                     <!-- </fluro-panel-body> -->
@@ -464,7 +484,7 @@ export default {
             self.$set(self.model, 'parentType', self.lockedSubType);
         }
 
-        if(self.model.parentType) {
+        if (self.model.parentType) {
             self.setParentType(self.model.parentType);
         }
     },
@@ -528,7 +548,7 @@ export default {
                     minimum: 1,
                     maximum: 1,
                     type: 'string',
-                    directive:'wysiwyg',
+                    directive: 'wysiwyg',
                     description: 'Write a summary of how you want people to pay you if they are using alternative methods',
                     placeholder: 'Eg. Please transfer to Acc # with first name as description etc..'
                 },
@@ -1068,21 +1088,20 @@ export default {
                 type: 'string',
                 description: self.privacyDescription,
                 directive: 'select',
-                expressions:{
+                expressions: {
                     hide() {
 
-                        switch(self.model.parentType) {
+                        switch (self.model.parentType) {
                             case 'interaction':
                             case 'post':
-                            break;
+                                break;
                             default:
                                 return true;
-                            break;
+                                break;
                         }
                     },
                 },
-                options: [
-                    {
+                options: [{
                         name: `Secure - Only those with permissions can submit ${self.model.plural}`,
                         value: 'secure',
                     },

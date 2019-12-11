@@ -1270,6 +1270,23 @@ export default {
             if (item.paymentStatus) {
                 classes.push('payment-status-' + item.paymentStatus);
             }
+
+            //////////////////////////////////
+            //If it's a mailout
+            switch (item.state) {
+                case 'sent':
+                    classes.push('state-sent');
+                    break;
+                 case 'scheduled':
+                    classes.push('state-scheduled');
+                    break;  
+                case 'ready':
+                    classes.push('state-ready');
+                    break;
+            }
+
+            //////////////////////////////////
+
             return classes;
 
         },
@@ -1468,6 +1485,8 @@ export default {
                 }
             }
 
+            &.status-cancelled,
+            &.status-archived,
             &.status-archived,
             &.payment-status-refund,
             // &.payment-status-partial_refund,
@@ -1483,6 +1502,35 @@ export default {
             }
 
 
+
+            &.state-sent {
+
+                th:first-child,
+                th:last-child,
+                td,
+                th {
+                    // color: #888; //rgba(#000, 0.5);
+                    background: #f7f7f7 !important;
+                }
+            }
+
+            &.state-scheduled {
+
+                th:first-child,
+                th:last-child,
+                td,
+                th {
+                    background: lighten(#fff3b9, 5%) !important;
+                    color: desaturate(darken(#f0974e, 20%),30%) !important;
+                    // color: darken($warning, 20%);
+                    // background: rgba($warning, 0.05);
+                }
+            }
+
+           
+
+
+            
             &.payment-status-pending {
 
                 th:first-child,

@@ -23,21 +23,16 @@
                         <v-container fluid grid-list-lg>
                             <constrain sm>
                                 <v-layout row wrap>
-                                    <pre>{{fieldHash}}</pre>
-                                    <!--  -->
+                                    <!-- <pre>{{fieldsOutput}}</pre> -->
                                     <v-flex xs12 sm12>
                                         <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
                                     </v-flex>
-                                    <!--  -->
                                     <v-flex xs12 sm6>
                                         <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.emails" v-model="model"></fluro-content-form-field>
                                     </v-flex>
-                                    <!--  -->
                                     <v-flex xs12 sm6>
                                         <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.phoneNumbers" v-model="model"></fluro-content-form-field>
                                     </v-flex>
-                                    <!-- -->
-                                    <!--  -->
                                     <!-- Household Address -->
                                     <v-flex xs12 sm12>
                                         <fluro-panel>
@@ -74,19 +69,19 @@
                 </tab>
                 <tab heading="Location/Map" @activeTab="getLatLong">
                     <map-component name="test" />
-<!--                     <v-container fluid grid-list-lg>
+                    <!--                     <v-container fluid grid-list-lg>
                         <constrain sm>
                             <v-layout row wrap> -->
-                                <!--  -->
-                                Hello
-                                <v-flex xs12 sm12>
-                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.longitude" v-model="model"></fluro-content-form-field>
-                                </v-flex>
-                                <!--  -->
-                                <v-flex xs12 sm6>
-                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.latitude" v-model="model"></fluro-content-form-field>
-                                </v-flex>
-<!--                             </v-layout>
+                    <!--  -->
+                    Hello
+                    <v-flex xs12 sm12>
+                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.longitude" v-model="model"></fluro-content-form-field>
+                    </v-flex>
+                    <!--  -->
+                    <v-flex xs12 sm6>
+                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.latitude" v-model="model"></fluro-content-form-field>
+                    </v-flex>
+                    <!--                             </v-layout>
                         </constrain>
                     </v-container> -->
                 </tab>
@@ -122,6 +117,23 @@ export default {
     },
     created() {},
     mixins: [FluroContentEditMixin, Layout],
+    methods: {
+        getLatLong() {
+            var self = this;
+            console.log('hereeeee');
+            if (!self.model.longitude && !self.model.latitude) {
+                axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
+                    params: {
+                        key: self.$fluro.global.googleMapsAPIKey,
+                        address: self.geocodeAddress,
+                    }
+                }).then(function(res) {
+                    console.log('SENT REQUEST')
+                    self.geocodeRequest = res;
+                });
+            }
+        }
+    },
     computed: {
         fieldsOutput() {
 
@@ -130,6 +142,7 @@ export default {
             var array = [];
 
             ///////////////////////////////////
+
 
             addField('title', {
                 title: 'Title',
@@ -181,25 +194,6 @@ export default {
 
             return array;
         },
-    },
-    methods: {
-        getLatLong() {
-            var self = this;
-            console.log('hereeeee');
-            if (!self.model.longitude && !self.model.latitude) {
-                axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
-                    params: {
-                        key: self.$fluro.global.googleMapsAPIKey,
-                        address: self.geocodeAddress,
-                    }
-                }).then(function(res) {
-                    console.log('SENT REQUEST')
-                    self.geocodeRequest = res;
-                });
-            }
-        }
-    },
-    computed: {
         geocodeAddress() {
             var self = this;
             var model = self.model;

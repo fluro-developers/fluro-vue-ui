@@ -56,6 +56,10 @@ export default {
                 return row.firstLine
             }
 
+            if(row.subject) {
+                return row.subject
+            }
+
             if(row.description) {
                 return row.description;
             }
