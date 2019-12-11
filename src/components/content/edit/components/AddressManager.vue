@@ -34,8 +34,8 @@ export default {
     props: {
         value: {
             type: Object,
-            default() {
-                return {}
+            default: function() {
+                return {};
             },
         }
     },
