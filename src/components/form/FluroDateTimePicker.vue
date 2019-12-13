@@ -4,12 +4,12 @@
         <!-- <v-text-field slot="activator" :outline="outline" :label="label" :value="formattedDatetime" :disabled="disabled" :loading="loading" :error-messages="errorMessages" :error-count="errorCount" :error="error" :hide-details="hideDetails" :append-icon="appendIcon" :prepend-icon="prependIcon" readonly /> -->
         <!-- <template > -->
             <!-- :value="formattedDatetime" -->
-        <v-input slot="activator" class="no-flex" :label="label"  :disabled="disabled" :loading="loading" :error-messages="errorMessages" :error-count="errorCount" :error="error" :hide-details="hideDetails">
-            <div>
-                <v-btn block color="#e0e0e0" class="ma-0">
+        <v-input slot="activator" class="no-flex" :label="label" :hint="hint" :persistent-hint="true"  :disabled="disabled" :loading="loading" :error-messages="errorMessages" :error-count="errorCount" :error="error" :hide-details="hideDetails">
+            
+                <v-btn block large color="#e0e0e0" class="mx-0">
                     <fluro-icon left icon="calendar-alt"/>{{readable}}
                 </v-btn>
-            </div>
+            
         </v-input>
         <!-- </template> -->
         <flex-column>
@@ -87,6 +87,14 @@ export default {
         label: {
             type: String,
             default: ''
+        },
+        hint: {
+            type: String,
+            default: ''
+        },
+        placeholder: {
+            type: String,
+            default: 'Select a date'
         },
         // min: {
         //     type: String,
@@ -171,7 +179,7 @@ export default {
     },
     computed: {
         readable() {
-            return this.datetime ? this.formattedDatetime : 'Select a date'
+            return this.datetime ? this.formattedDatetime : this.placeholder;//'Select a date'
         },
         datePart: {
             get() {

@@ -16,19 +16,26 @@ export default {
             type: String
         },
     },
-    inject: ['tabs'],
+    inject: ['tabs', 'addTab', 'removeTab'],
     created() {
         // console.log('THISIIIIITY', this.tabs)
+
         this.index = this.tabs.length;
         this.active = this.index == 0;
-        this.tabs.push(this);
+        // this.tabs.push(this);
+
+        this.addTab(this);
+
+
     },
     watch: {
         active: 'emitActive',
     },
-    destroyed() {
+    beforeDestroy() {
         console.log('Destroyed')
-        this.tabs.splice(this.index, 1);
+        this.removeTab(this);
+        // _.pull(this.tabs, this);
+        // .splice(this.index, 1);
     },
     methods: {
         emitActive(val) {

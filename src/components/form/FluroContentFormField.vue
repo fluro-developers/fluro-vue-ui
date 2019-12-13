@@ -210,7 +210,7 @@
             </v-dialog>
         </template>
         <template v-else-if="renderer == 'datetimepicker'">
-            <fluro-date-time-picker :outline="showOutline" :success="success" format="ddd D MMM - h:mma " timePickerFormat="ampm" :label="displayLabel" v-model="fieldModel" @focus="modal = true" />
+            <fluro-date-time-picker :outline="showOutline" :success="success" format="ddd D MMM - h:mma " timePickerFormat="ampm" :label="displayLabel" :placeholder="field.placeholder" :hint="field.description" v-model="fieldModel" @focus="modal = true" />
         </template>
         <template v-else-if="renderer == 'timezoneselect'">
             <template v-if="mobile">
@@ -1183,6 +1183,14 @@ export default {
             // return ['Errors on purpose'];
 
 
+            if(!self.isVisible) {
+                console.log('No errors', this.field.title);
+                return errors;
+            } else {
+                // return ['Errors on purpose'];
+            }
+
+
             //Hasn't been touched yet
             if (!this.$v.model.$dirty) {
                 // console.log('Not dirty', this.title)
@@ -1278,10 +1286,6 @@ export default {
                         }
                     }
                 }
-
-
-
-
             }
 
 

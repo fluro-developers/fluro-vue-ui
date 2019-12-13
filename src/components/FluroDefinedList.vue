@@ -1,5 +1,5 @@
 <template>
-    <div class="fluro-defined-list" v-if="grouped.length">
+    <div class="fluro-defined-list" v-if="grouped && grouped.length">
         <v-input v-for="group in grouped" class="no-flex">
             <v-label>{{group.plural}}</v-label>
             <!-- <pre>{{group}}</pre> -->
@@ -38,13 +38,9 @@ export default {
     computed:{
         grouped() {
             var self = this;
-
-
-
-
             var mapped = self.$fluro.types.mapDefinitionItems(self.items, self.type);
 
-            console.log('bACKU', mapped)
+            
             return mapped;
         }
 

@@ -37,6 +37,8 @@ export default {
         color: #f0974e;
     }
 
+    &.click,
+    &.open,
     &.live,
     &.ready,
     &.active {
@@ -46,6 +48,7 @@ export default {
     }
 
     &.archived,
+    &.unsubscribe,
     &.sent {
         background: rgba(#000, 0.05);
         color: rgba(#000, 0.3);

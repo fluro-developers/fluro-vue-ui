@@ -25,7 +25,11 @@ export default {
         FluroContentRenderField,
         // "json-view": JSONView,
     },
-    // computed: {
+    computed: {
+        definition() {
+            this.config && this.config.definition ? this.config.definition : null
+        }
+    },
 
     //     itemID() {
     //         return this.model._id;

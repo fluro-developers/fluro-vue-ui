@@ -24,9 +24,9 @@
             </flex-column-header>
             <!-- BOOM TEST {{model}}  -->
             <!-- <pre>TESTING NOW? {{model}}</pre> -->
-            <flex-column-body>
+            <!-- <flex-column-body> -->
                 <component :item="model" v-bind:is="component" :config="config" v-if="component" />
-            </flex-column-body>
+            <!-- </flex-column-body> -->
         </template>
     </flex-column>
 </template>
@@ -89,6 +89,17 @@ export default {
         //     return this.config.definition;
         // },
         canEdit() {
+
+            switch(this.type) {
+                case 'mailout':
+                    if(this.model.state =='sent') {
+                        return;
+                    }
+                break;
+            }
+
+            ///////////////////////////////////////
+
             return this.$fluro.access.canEditItem(this.model);
         },
         itemID() {

@@ -1,5 +1,6 @@
 <template>
     <flex-column class="tabset" :class="{justified, vertical}">
+        <!-- {{activeTabIndex}} -->
         <flex-column-header class="tabset-header" v-if="enabledTabs.length > 1">
             <slot name="menuprefix"></slot>
             <div class="tabset-menu" ref="outer">
@@ -34,6 +35,8 @@ export default {
     },
     provide() {
         return {
+            removeTab: this.removeTab,
+            addTab: this.addTab,
             tabs: this.tabs,
             activeTabIndex: this.activeTabIndex,
         }
@@ -50,15 +53,27 @@ export default {
             this.$emit('input', val);
         },
     },
-    computed:{
+    computed: {
         enabledTabs() {
             var self = this;
-            return _.filter(self.tabs, {enabled:true});
+            return self.tabs; //_.filter(self.tabs, {enabled:true});
         },
     },
     methods: {
+        removeTab(tab) {
+            _.pull(this.tabs, tab);
+        },
+        addTab(tab) {
+            if(_.includes(this.tabs, tab)) {
+                return;
+            }
+
+            this.tabs.push(tab);
+        },
         selectTab(index) {
 
+
+            console.log('Select', index)
 
             var self = this;
 

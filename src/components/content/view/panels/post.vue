@@ -1,9 +1,13 @@
 <template>
-    <v-container>
-        <!-- TEST WOOT WOOT -->
-            <fluro-content-render :fields="fields" v-model="item.data" />
-            <!-- <pre>{{fields}}</pre> -->
-    </v-container>
+    <flex-column>
+        <flex-column-body>
+            <v-container>
+                <!-- TEST WOOT WOOT -->
+                <fluro-content-render :fields="fields" v-model="item.data" />
+                <!-- <pre>{{fields}}</pre> -->
+            </v-container>
+        </flex-column-body>
+    </flex-column>
 </template>
 <script>
 /////////////////////////////////

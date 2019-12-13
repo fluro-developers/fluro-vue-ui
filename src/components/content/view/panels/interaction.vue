@@ -1,12 +1,15 @@
 <template>
-    <v-container>
-        <!-- TEST WOOT WOOT -->
-
-            <fluro-content-render :fields="fields" :raw="true" v-model="item" />
-            <fluro-content-render :fields="definedFields" :raw="true" v-model="item.rawData" />
-            <!-- <fluro-content-render :fields="fields" v-model="item.data" /> -->
-            <!-- <pre>{{fields}}</pre> -->
-    </v-container>
+    <flex-column>
+        <flex-column-body>
+            <v-container>
+                <!-- TEST WOOT WOOT -->
+                <fluro-content-render :fields="fields" :raw="true" v-model="item" />
+                <fluro-content-render :fields="definedFields" :raw="true" v-model="item.rawData" />
+                <!-- <fluro-content-render :fields="fields" v-model="item.data" /> -->
+                <!-- <pre>{{fields}}</pre> -->
+            </v-container>
+        </flex-column-body>
+    </flex-column>
 </template>
 <script>
 /////////////////////////////////
@@ -43,11 +46,11 @@ export default {
             var array = [];
 
             array.push({
-                title:'Linked Contacts',
-                key:'contacts',
-                type:'reference',
-                minimum:0,
-                maximum:0,
+                title: 'Linked Contacts',
+                key: 'contacts',
+                type: 'reference',
+                minimum: 0,
+                maximum: 0,
             })
 
             return array;

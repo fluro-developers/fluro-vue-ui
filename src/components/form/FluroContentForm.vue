@@ -180,13 +180,8 @@ export default {
         errorMessages() {
             return _.chain(this.formFields)
                 .filter(function(field) {
-
-                    //If the field is hidden
-                    if(field.expressionHide) {
-                        console.log('Ignore as hidden', field.title);
-                        //Don't require it
-                        return;
-                    }
+                    
+                    
 
                     return field.errorMessages.length;
                 })

@@ -2,6 +2,13 @@ console.log('fluro-vue-ui 2.0.33')
 
 /////////////////////////////////////////////////////
 
+
+
+import FluroModalMixin from './mixins/ModalMixin';
+export { FluroModalMixin as FluroModalMixin };
+
+
+
 //Import Components
 import FluroAvatar from './components/FluroAvatar.vue';
 export { FluroAvatar as FluroAvatar };
@@ -19,6 +26,8 @@ export { FluroInfiniteScroll as FluroInfiniteScroll };
 
 import FluroPagedContent from './components/ui/FluroPagedContent.vue';
 export { FluroPagedContent as FluroPagedContent };
+
+
 
 
 import FluroVideo from './components/FluroVideo.vue';
@@ -48,7 +57,12 @@ export { FluroTrendChart as FluroTrendChart };
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
+import FluroTable from './components/table/FluroTable.vue';
+export { FluroTable as FluroTable };
 
+
+import SearchInput from './components/ui/SearchInput.vue';
+export { SearchInput as SearchInput };
 
 
 
@@ -84,6 +98,8 @@ export { StatusCell as StatusCell };
 
 import DateCell from './components/table/cells/DateCell.vue';
 export { DateCell as DateCell };
+
+
 
 
 import TimeCell from './components/table/cells/TimeCell.vue';
@@ -407,6 +423,23 @@ export { ListGroup as ListGroup };
 import ListGroupItem from './components/ui/ListGroupItem.vue';
 export { ListGroupItem as ListGroupItem };
 
+
+
+
+import MailoutRenderPreview from './components/mailout/MailoutRenderPreview.vue';
+export { MailoutRenderPreview as MailoutRenderPreview };
+
+import MailoutTestPanel from './components/mailout/MailoutTestPanel.vue';
+export { MailoutTestPanel as MailoutTestPanel };
+
+
+import MailoutPreflightPanel from './components/mailout/MailoutPreflightPanel.vue';
+export { MailoutPreflightPanel as MailoutPreflightPanel };
+
+
+import MailoutResultsPanel from './components/mailout/MailoutResultsPanel.vue';
+export { MailoutResultsPanel as MailoutResultsPanel };
+
 ////////////////////////////////////////////////////////////////////
 
 //Mixins
@@ -418,8 +451,8 @@ import FluroSelectionMixin from './mixins/FluroSelectionMixin';
 export { FluroSelectionMixin as FluroSelectionMixin };
 
 
-import FluroModalMixin from './mixins/ModalMixin';
-export { FluroModalMixin as FluroModalMixin };
+
+
 
 
 /////////////////////////////////////////////////////
