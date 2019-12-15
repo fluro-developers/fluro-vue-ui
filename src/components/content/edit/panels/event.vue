@@ -106,8 +106,9 @@
                 <slot>
                     <flex-column-body style="background: #fafafa;">
                         <v-container>
-                            <constrain sm>
-                                <h3 margin>Messaging</h3>
+                            <constrain lg>
+                                <h3 margin>Automated Messages</h3>
+                                <messenging-event-manager v-model="model.messages" />
                             </constrain>
                         </v-container>
                     </flex-column-body>
@@ -195,6 +196,8 @@
 <script>
 /////////////////////////////////
 
+
+import MessengingEventManager from '../components/MessengingEventManager.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
 
 // import { JSONView } from "vue-json-component";
@@ -207,7 +210,7 @@ import Vue from 'vue';
 /////////////////////////////////
 
 export default {
-    
+    components: {MessengingEventManager},
     props: {
         'fields': {
             type: Array,
