@@ -837,7 +837,7 @@ $color-white: #fff;
         background: rgba($primary, 0.1);
     }
 
-    &>div {
+    & > div {
         flex: 1;
         padding: 15px;
         outline: none;
@@ -946,9 +946,7 @@ $color-white: #fff;
         white-space: nowrap;
     }
 
-
-
-   pre {
+    pre {
         box-shadow: none;
         border:none;
         margin: 15px 0;
@@ -963,8 +961,10 @@ $color-white: #fff;
         }
 
         code {
-            // box-shadow: none !important;
-            // background: #333 !important;
+            box-shadow: none !important;
+            background: #333 !important;
+            color: #ccc !important;
+            padding:15px;
             display: block;
 
 
@@ -1044,6 +1044,8 @@ $color-white: #fff;
             }
         }
     }
+
+   
 
 }
 

@@ -5,6 +5,7 @@
         </template>
         <template v-else>
             <tabset :justified="true" :vertical="true">
+                <template v-if="model.state != 'sent'">
                 <tab heading="Basic Details">
                     <flex-column-body style="background: #fafafa;">
                         <v-container>
@@ -311,27 +312,28 @@
                         </v-container>
                     </flex-column-body>
                 </tab>
-                <!-- <tab :heading="`${definition.title} Details`" v-if="definition">
-                    <slot>
-                        <flex-column-body style="background: #fafafa;">
-                            <v-container fluid>
-                                <constrain sm>
-                                    <h3 margin>{{definition.title}} Details</h3>
-                                    <!-- <div class="form-group" v-if="definition.data.titleGeneration != 'force'"> -->
-                <!-- <label>{{titleLabel}}</label> -->
-                <!-- <input class="form-control" placeholder="{{titleLabel}}" ng-model="item.title"> -->
-                <!-- </div> -->
-                <!-- 
-                                    <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
-                                    <template v-if="!hideBody && !fullBody">
-                                        <fluro-editor v-model="model.body" :options="editorOptions" placeholder="Type your text in here"></fluro-editor>
-                                    </template>
-                                </constrain>
-                            </v-container>
-                        </flex-column-body>
-                         -->
-                <!-- </slot> -->
-                <!-- </tab> -->
+            </template>
+                
+                <template v-if="model._id">
+                <tab heading="Preview">
+                    <mailout-render-preview :mailout="model._id" :definition="definition.definitionName" />
+                </tab>
+                <tab heading="Testing" v-if="model.state != 'sent'">
+                    <mailout-test-panel v-model="model" />
+                </tab>
+
+                <tab heading="Send and Publish" v-if="model.state != 'sent'">
+                    <mailout-preflight-panel v-model="model"/>
+                </tab>
+
+                <tab heading="Results" v-if="resultsEnabled">
+                    <mailout-results-panel v-model="model"/>
+                </tab>
+
+
+                
+                
+            </template>
             </tabset>
         </template>
         <!-- <flex-column-body> -->
@@ -353,6 +355,7 @@
 /////////////////////////////////
 
 // import FluroEditor from '../../../form/FluroEditor.vue';
+import {MailoutRenderPreview, MailoutResultsPanel, MailoutPreflightPanel, MailoutTestPanel} from 'fluro-vue-ui'
 import FluroContentEditMixin from '../FluroContentEditMixin';
 
 /////////////////////////////////
@@ -365,7 +368,10 @@ export default {
 
 
     components: {
-        // FluroEditor,
+       MailoutRenderPreview,
+       MailoutTestPanel,
+       MailoutPreflightPanel,
+       MailoutResultsPanel,
     },
     mixins: [FluroContentEditMixin],
     methods: {
@@ -378,6 +384,18 @@ export default {
         },
     },
     computed: {
+        resultsEnabled() {
+
+            var self = this;
+
+            if (self.model.state == 'sent') {
+                return true;
+            }
+
+            if (self.model.stats && self.model.stats.mailoutSent) {
+                return true;
+            }
+        },
         expanded() {
             var self = this;
 

@@ -3,10 +3,36 @@
         <!-- <pre>{{lockFilter}}</pre> -->
         <!-- <pre>TESTING WOWOWOW {{selectionMinimum}} {{selectionMaximum}}</pre> -->
         <!-- <pre>{{model}}</pre> -->
-        <div class="fluro-content-list" v-if="model.length">
-            <list-group>
-                <draggable v-model="model" v-bind="dragOptions" @start="drag=true" @end="drag=false">
-                    <list-group-item :item="item" v-for="(item, index) in model">
+        <template v-if="model.length">
+            <div class="fluro-content-list" v-if="model.length <= listLimit">
+                <list-group>
+                    <draggable v-model="model" v-bind="dragOptions" @start="drag=true" @end="drag=false">
+                        <list-group-item :item="item" v-for="(item, index) in model">
+                            <template v-slot:right>
+                                <v-menu :left="true" v-model="actionIndexes[index]" :fixed="true" transition="slide-y-transition" offset-y>
+                                    <template v-slot:activator="{ on }">
+                                        <v-btn class="ma-0" icon small flat v-on="on">
+                                            <fluro-icon v-if="actionIndexes[index]" icon="times" />
+                                            <fluro-icon v-else icon="ellipsis-h" />
+                                        </v-btn>
+                                    </template>
+                                    <v-list dense>
+                                        <v-list-tile @click="$actions.open([item])">
+                                            <v-list-tile-content>Actions</v-list-tile-content>
+                                        </v-list-tile>
+                                        <v-list-tile @click="deselect(item)">
+                                            <v-list-tile-content>Deselect</v-list-tile-content>
+                                        </v-list-tile>
+                                    </v-list>
+                                </v-menu>
+                            </template>
+                        </list-group-item>
+                    </draggable>
+                </list-group>
+            </div>
+            <div class="fluro-content-list" v-else>
+                <list-group>
+                    <list-group-item :item="item" v-for="(item, index) in limited">
                         <template v-slot:right>
                             <v-menu :left="true" v-model="actionIndexes[index]" :fixed="true" transition="slide-y-transition" offset-y>
                                 <template v-slot:activator="{ on }">
@@ -26,9 +52,9 @@
                             </v-menu>
                         </template>
                     </list-group-item>
-                </draggable>
-            </list-group>
-        </div>
+                </list-group>
+            </div>
+        </template>
         <div class="content-select-search-bar" v-if="canAddValue">
             <div class="content-select-search">
                 <!-- :label="label" -->
@@ -51,13 +77,11 @@
                         <v-list-tile-content>
                             <template v-if="item._type == 'event'">
                                 <v-list-tile-title v-text="item.title"></v-list-tile-title>
-
                                 <div class="muted">{{item | readableEventDate}}</div>
                             </template>
                             <template v-else>
                                 <v-list-tile-title v-text="item.title"></v-list-tile-title>
                             </template>
-                            
                         </v-list-tile-content>
                     </template>
                 </v-autocomplete>
@@ -173,16 +197,16 @@ export default {
             },
             type: Object,
         },
-        'searchInheritable':{
-            type:Boolean,
-            default:true,
+        'searchInheritable': {
+            type: Boolean,
+            default: true,
         },
-        'allDefinitions':{
-            type:Boolean,
-            default:true,
+        'allDefinitions': {
+            type: Boolean,
+            default: true,
         },
-        'lockFilter':{
-            type:Object,
+        'lockFilter': {
+            type: Object,
         }
     },
     created() {
@@ -231,6 +255,9 @@ export default {
         },
         showOutline() {
             return this.outline || this.options.outline;
+        },
+        limited() {
+            return this.model.slice(0, this.listLimit);
         },
         model: {
             get() {
@@ -304,7 +331,7 @@ export default {
                     maximum: self.maximum,
                     allDefinitions: self.allDefinitions,
                     searchInheritable: self.searchInheritable,
-                    lockFilter:self.lockFilter,
+                    lockFilter: self.lockFilter,
                 }
             });
 
@@ -429,6 +456,7 @@ export default {
 
 
         return {
+            listLimit:75,
             actionIndexes: {},
             selection: [],
             candidates: [],

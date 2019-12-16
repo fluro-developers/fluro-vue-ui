@@ -1,5 +1,6 @@
 <template>
     <div class="fluro-table-wrapper">
+        <!-- <pre>{{items}}</pre> -->
         <!-- <pre>{{rawPage}}</pre> -->
         <!-- <pre>{{totalPages}}</pre> -->
         <!-- <pre>{{sort}}</pre> -->
@@ -63,7 +64,7 @@
                                 </div>
                                 {{column.title}}
                             </th>
-                            <th class="shrink">
+                            <th class="shrink" v-if="selectionEnabled">
                                 <!-- <v-btn class="ma-0" small icon @click.stop.prevent="toggleConfiguration()"> -->
                                     <!-- <fluro-icon icon="cog" /> -->
                                 <!-- </v-btn> -->
@@ -79,7 +80,7 @@
                                     <!-- <th is="table-row-checkbox" :checked="$selection.allSelected(group)"/> -->
                                     <td :colspan="1 + columns.length">{{group.title}}</td>
                                 </tr>
-                                <tr :class="classes(item)" :key="item._id" v-for="(item, key) in group.items">
+                                <tr :class="classes(item)" :key="item[trackingKey]" v-for="(item, key) in group.items">
                                     <template v-if="item._populating">
                                         <!-- <th>TEST {{selection.isSelected(item)}}</th> -->
                                         <th is="table-row-checkbox" />
@@ -109,18 +110,18 @@
                             </template>
                         </template>
                         <template v-else>
-                            <tr :class="classes(item)" :key="item._id" v-for="(item, key) in page">
+                            <tr :class="classes(item)" :key="item[trackingKey]" v-for="(item, key) in page">
                                 <template v-if="item._populating">
                                     <!-- <th>TEST {{selection.isSelected(item)}}</th> -->
                                     <th is="table-row-checkbox" v-if="selectionEnabled" />
                                     <td @click.native="clicked(item, column, key)" :colspan="columns.length">-</td>
-                                    <th class="shrink">
+                                    <th class="shrink" v-if="selectionEnabled">
                                     </th>
                                 </template>
                                 <template v-else>
                                     <th is="table-row-checkbox" v-if="selectionEnabled" :checked="$selection.isSelected(item)" @click.native.stop.prevent="checkboxClick(item, $event, key)" :value="item" />
                                     <table-cell @click.native="clicked(item, column, key)" :row="item" v-for="column in columns" :class="{'sorting':sort.sortKey == column.key}" :column="column"></table-cell>
-                                    <th class="shrink">
+                                    <th class="shrink" v-if="selectionEnabled">
                                         <div class="action-buttons">
                                             <!-- <pre>{{item._relevance}}</pre> -->
                                             <!-- <v-btn class="ma-0" v-if="$vuetify.breakpoint.mdAndUp" small icon>
@@ -140,7 +141,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="footer-stats">
+            <div class="footer-stats" v-if="footerEnabled">
                 <v-layout row wrap>
                     <template v-if="!totalPages">
                         <v-flex class="text-muted">
@@ -213,6 +214,10 @@ var INITIAL = true;
 
 export default {
     props: {
+        trackingKey:{
+            type:String,
+            default:'_id',
+        },
         defaultFields: {
             type: Array,
             default () {
@@ -329,7 +334,11 @@ export default {
         }
     },
     computed: {
-
+        footerEnabled() {
+            if(this.totalPages > 1) {
+                return true;
+            }
+        },
         selectionEnabled() {
             return !(this.enableSelection === false) && this.$selection;
         },

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <flex-column-body>
         <!-- :style="{backgroundColor:item.colors[0]}" -->
         <!-- <div class="image-holder"> -->
         <!-- <fluro-image :longpress="true" contain :item="item" :spinner="true" /> -->
@@ -58,7 +58,7 @@
             </template>
             <!-- <pre>{{fields}}</pre> -->
         </v-container>
-    </div>
+    </flex-column-body>
 </template>
 <script>
 /////////////////////////////////

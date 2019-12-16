@@ -1,9 +1,8 @@
 <template>
     <div class="content-select">
-        <v-btn :small="small" :color="color" :block="block" class="pill mx-0" @click.native="showModal">
+        <v-btn :small="small" :large="large" :color="color" :block="block" class="pill mx-0" @click.native="showModal">
             <span>{{selectionSummary}}</span>
         </v-btn>
-        <!-- <pre>{{type}} {{definition}}</pre> -->
     </div>
 </template>
 <script>
@@ -18,6 +17,9 @@ import FluroContentSelectModal from './FluroContentSelectModal.vue';
 
 export default {
     props: {
+        label:{
+            type:String,
+        },
         filter: {
             type: Object,
             default () {
@@ -38,6 +40,9 @@ export default {
             type: Boolean,
         },
         block: {
+            type: Boolean,
+        },
+        large: {
             type: Boolean,
         },
         color: {
@@ -73,7 +78,13 @@ export default {
             })
 
             if (!matchingSelection.length) {
-                return `Select ${self.plural}`
+
+                if(self.label && self.label.length) {
+                    return self.label;
+                } else {
+                    return `Click to select ${self.plural}`
+                }
+                
             }
 
             if (matchingSelection.length > 3) {

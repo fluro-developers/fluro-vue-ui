@@ -171,11 +171,11 @@ export default {
                             if (initialIDs && initialIDs.length) {
                                 // console.log('Convert', self.value, res);
 
-                                console.log('SET INITIAL', initialIDs)
+                                // console.log('SET INITIAL', initialIDs)
                                 self.setSelection(initialIDs);
                             } else {
                                 if (flattenedIDs.length == 1) {
-                                    console.log('SET FLATTENED', flattenedIDs);
+                                    // console.log('SET FLATTENED', flattenedIDs);
                                     self.setSelection(flattenedIDs);
                                 }
                             }

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="sm muted">
         {{data | timeago}}
     </div>
 </template>

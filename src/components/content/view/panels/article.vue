@@ -1,4 +1,5 @@
 <template>
+    <flex-column-body>
     <v-container fluid>
         <constrain sm>
             <h1>{{item.title}}</h1>
@@ -9,6 +10,7 @@
             </template>
         </constrain>
     </v-container>
+</flex-column-body>
 </template>
 <script>
 /////////////////////////////////
@@ -40,7 +42,7 @@ export default {
             return this.item.data || {}
         },
         definedFields() {
-            return this.config.definition.fields;
+            return this.definition ? this.definition.fields : null;
         }
     },
     data() {

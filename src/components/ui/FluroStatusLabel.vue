@@ -30,19 +30,26 @@ export default {
     color: rgba(#000, 0.1);
 
     &.draft,
-    &.sandbox {
+    &.trial,
+    &.sandbox,
+    &.scheduled {
         background: #fff3b9;
         color: #f0974e;
     }
 
+    &.click,
+    &.open,
     &.live,
+    &.ready,
     &.active {
 
         background: rgba(#51d432, 0.2);
         color: #51d432;
     }
 
-    &.archived {
+    &.archived,
+    &.unsubscribe,
+    &.sent {
         background: rgba(#000, 0.05);
         color: rgba(#000, 0.3);
         // background: #e9ebee;

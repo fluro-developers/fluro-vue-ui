@@ -180,9 +180,14 @@ export default {
         errorMessages() {
             return _.chain(this.formFields)
                 .filter(function(field) {
+                    
+                    
+
                     return field.errorMessages.length;
                 })
                 .map(function(field) {
+
+                    console.log('ERROR MESSAGES', field);
                     // console.log('ERROR MESSAGE', field);
                     return {
                         title: field.errorTitle,
