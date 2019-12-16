@@ -108,7 +108,7 @@
                         <v-container>
                             <constrain lg>
                                 <h3 margin>Automated Messages</h3>
-                                <messenging-event-manager v-model="model.messages" />
+                                <messenging-event-manager :config="config" v-model="model.messages" :startDate="model.startDate" :endDate="model.endDate"/>
                             </constrain>
                         </v-container>
                     </flex-column-body>

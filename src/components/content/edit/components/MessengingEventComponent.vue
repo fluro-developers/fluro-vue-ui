@@ -1,50 +1,125 @@
 <template>
-    <div class="grid-list-xl" v-if="model">
-        <fluro-content-form @input="save" v-model="model" :fields="fields">
+    <div v-if="model" py-0>
+        <fluro-content-form :options="options" v-model="model" :fields="customFields" ref="form">
             <template v-slot:form="{formFields, fieldHash, model, update, options}">
-                <div v-if="viewMode">
-                    <p>Like dark mode, only edit mode</p>
-                </div>
-                <div v-else-if="editMode">
-                </div>
-                <v-container fluid grid-list-xl v-else-if="createMode">
-                    <v-layout row wrap grid-list-xl>
-                        <v-flex sm5 xs12>
-                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.segments" v-model="model"></fluro-content-form-field>
-                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.methods" v-model="model"></fluro-content-form-field>
-                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.methodPreference" v-model="model"></fluro-content-form-field>
+                <v-container fluid v-if="viewMode" pa-0>
+                    <v-layout row wrap grid-list-xl py-0>
+                        <v-flex sm1 xs1>
+                            <v-layout row wrap align-center justify-center style="height:100%;margin-left:-10px;">
+                                <fluro-icon v-if="model.methods.includes('email')" icon="envelope" v-tippy content="Sends email" />
+                                <fluro-icon v-if="model.methods.includes('push')" icon="mobile" v-tippy content="Sends push notification" />
+                                <fluro-icon v-if="model.methods.includes('sms')" icon="comment" v-tippy content="Sends SMS" />
+                            </v-layout>
                         </v-flex>
-                        <v-flex sm7 xs12>
+                        <v-flex sm11 xs11>
+                            <p class="muted mb-0">Sending to <span class="capitalize-text">{{sendToFormatted}}</span></p>
+                            <h5>{{model.title}}<span v-if="model.htmlTitle"> ({{model.htmlTitle}})</span></h5>
+                            <i v-if="model.body" class="muted mb-0">"{{model.body}}"</i>
+                            <p class="muted mb-0">{{formattedTotalPeriodWhenPoint}} - {{formattedTime.format("h:mma dddd MMM Do YYYY")}} ({{formattedTime.fromNow()}})</p>
+                        </v-flex>
+                    </v-layout>
+                </v-container>
+                <div v-else-if="editMode">
+                    <v-container fluid pa-0>
+                        <v-layout row wrap grid-list-xl py-0>
+                            <v-flex sm1 xs1>
+                                <v-layout row wrap align-center justify-center style="height:100%;margin-left:-10px;">
+                                    <fluro-icon v-if="model.methods.includes('email')" icon="envelope" v-tippy content="Sends email" />
+                                    <fluro-icon v-if="model.methods.includes('push')" icon="mobile" v-tippy content="Sends push notification" />
+                                    <fluro-icon v-if="model.methods.includes('sms')" icon="comment" v-tippy content="Sends SMS" />
+                                </v-layout>
+                            </v-flex>
+                            <v-flex sm11 xs11>
+                                <p class="muted mb-0">Sending to <span class="capitalize-text">{{sendToFormatted}}</span></p>
+                                <h5>{{model.title}}<span v-if="model.htmlTitle"> ({{model.htmlTitle}})</span></h5>
+                                <i v-if="model.body" class="muted mb-0">"{{model.body}}"</i>
+                                <p class="muted mb-0">{{formattedTotalPeriodWhenPoint}} - {{formattedTime.format("h:mma dddd MMM Do YYYY")}} ({{formattedTime.fromNow()}})</p>
+                            </v-flex>
+                        </v-layout>
+                    </v-container>
+                    <v-container fluid pa-0 grid-list-xl>
+                        <v-layout row wrap grid-list-xl py-0>
+                            <v-flex sm12 xs12>
+                                <fluro-panel>
+                                    <fluro-panel-body>
+                                        <h4>When</h4>
+                                        <v-layout row wrap grid-list-xl>
+                                            <v-flex xs12 sm3>
+                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.total" v-model="model" />
+                                            </v-flex>
+                                            <v-flex xs12 sm3>
+                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.period" v-model="model" />
+                                            </v-flex>
+                                            <v-flex xs12 sm3>
+                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.when" v-model="model" />
+                                            </v-flex>
+                                            <v-flex xs12 sm3>
+                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.point" v-model="model" />
+                                            </v-flex>
+                                        </v-layout>
+                                    </fluro-panel-body>
+                                </fluro-panel>
+                                <fluro-panel>
+                                    <fluro-panel-body>
+                                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
+                                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.body" v-model="model"></fluro-content-form-field>
+                                    </fluro-panel-body>
+                                </fluro-panel>
+                                <fluro-panel v-if="model.methods.includes('email')">
+                                    <fluro-panel-body>
+                                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.htmlTitle" v-model="model"></fluro-content-form-field>
+                                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.htmlBody" v-model="model"></fluro-content-form-field>
+                                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.senderEmail" v-model="model"></fluro-content-form-field>
+                                    </fluro-panel-body>
+                                </fluro-panel>
+                            </v-flex>
+                            <v-flex sm6 xs12>
+                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.methods" v-model="model"></fluro-content-form-field>
+                            </v-flex>
+                            <v-flex sm6 xs12>
+                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.methodPreference" v-model="model"></fluro-content-form-field>
+                            </v-flex>
+                        </v-layout>
+                    </v-container>
+                </div>
+                <v-container fluid v-else-if="createMode" pa-0>
+                    <v-layout row wrap grid-list-xl py-0>
+                        <v-flex sm5 xs12 py-0>
+                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.segments" v-model="model"></fluro-content-form-field>
+                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.methods" v-model="model"></fluro-content-form-field>
+                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.methodPreference" v-model="model"></fluro-content-form-field>
+                        </v-flex>
+                        <v-flex sm7 xs12 py-0>
                             <fluro-panel>
                                 <fluro-panel-body>
                                     <h4>When</h4>
                                     <v-layout row wrap>
                                         <v-flex xs12 sm3>
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.total" v-model="model" />
+                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.total" v-model="model" />
                                         </v-flex>
                                         <v-flex xs12 sm3>
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.period" v-model="model" />
+                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.period" v-model="model" />
                                         </v-flex>
                                         <v-flex xs12 sm3>
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.when" v-model="model" />
+                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.when" v-model="model" />
                                         </v-flex>
                                         <v-flex xs12 sm3>
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.point" v-model="model" />
+                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.point" v-model="model" />
                                         </v-flex>
                                     </v-layout>
                                 </fluro-panel-body>
                             </fluro-panel>
                             <fluro-panel>
                                 <fluro-panel-body>
-                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
-                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.body" v-model="model"></fluro-content-form-field>
+                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
+                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.body" v-model="model"></fluro-content-form-field>
                                 </fluro-panel-body>
                             </fluro-panel>
-                            <fluro-panel>
+                            <fluro-panel v-if="model.methods.includes('email')">
                                 <fluro-panel-body>
-                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.htmlTitle" v-model="model"></fluro-content-form-field>
-                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.htmlBody" v-model="model"></fluro-content-form-field>
-                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.senderEmail" v-model="model"></fluro-content-form-field>
+                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.htmlTitle" v-model="model"></fluro-content-form-field>
+                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.htmlBody" v-model="model"></fluro-content-form-field>
+                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.senderEmail" v-model="model"></fluro-content-form-field>
                                 </fluro-panel-body>
                             </fluro-panel>
                         </v-flex>
@@ -57,8 +132,8 @@
 <script>
 import { FluroContentForm, Layout } from 'fluro-vue-ui';
 import FluroContentEditMixin from '../FluroContentEditMixin';
-import draggable from 'vuedraggable'
 
+import moment from 'moment';
 
 export default {
     mixins: [FluroContentEditMixin, Layout],
@@ -70,21 +145,39 @@ export default {
         context: {
             type: String,
             default: 'create',
+        },
+        startDate: {
+            type: Date,
+        },
+        endDate: {
+            type: Date,
         }
     },
     components: {
         FluroContentForm,
-        draggable,
     },
     data() {
         return {
             model: this.value,
+
         }
     },
     methods: {
+        validate() {
+            var form = this.$refs.form;
+            if (!form) {
+                return [];
+            }
+            this.model.errorMessages = form.errorMessages || [];
+        },
+        validateAllFields() {
+            var form = this.$refs.form;
+            form.touch();
+            this.validate();
+        },
     },
     computed: {
-        fields() {
+        customFields() {
 
 
             var self = this;
@@ -113,8 +206,7 @@ export default {
                         value: 'month',
                     },
                 ]
-            }
-            else {
+            } else {
                 periodOptions = [{
                         name: 'Minute',
                         value: 'minute',
@@ -212,6 +304,8 @@ export default {
                 minimum: 1,
                 maximum: 1,
                 type: 'integer',
+                defaultValues: [1],
+                params: { minValue: 1 }
             })
 
             addField('period', {
@@ -335,8 +429,67 @@ export default {
         editMode() {
             return this.context == 'edit';
         },
+        sendToFormatted() {
+            var self = this;
+            var segments = self.model.segments;
+            return segments.join(', ');
+        },
+        formattedTotalPeriodWhenPoint() {
+            var self = this;
+            var model = self.model;
+            var period = self.model.period;
+            if (model.total != 1) {
+                period = period + 's';
+            }
+            return model.total + ' ' + period + ' ' + model.when + ' event ' + model.point;
+        },
+        formattedTime() {
+            var self = this;
+            var startDate, endDate;
+
+            var total = self.model.total;
+            var period = self.model.period;
+            var when = self.model.when;
+            var point = self.model.point;
+
+            if (!self.startDate || !total || !period || !when || !point) {
+                return;
+            }
+
+            if (!self.endDate) {
+                endDate = self.startDate;
+            } else {
+                endDate = self.endDate;
+            }
+
+            startDate = self.startDate;
+
+
+            //////////////////////////////////
+
+            var eventTime;
+            if (point == 'end') {
+                eventTime = endDate;
+            } else {
+                eventTime = startDate;
+            }
+
+            //////////////////////////////////
+
+            var displayedTime;
+            if (when == 'before') {
+                displayedTime = moment(eventTime).subtract(total, period);
+            } else {
+                displayedTime = moment(eventTime).add(total, period);
+            }
+
+            return displayedTime;
+        }
     }
 }
 </script>
 <style>
+.capitalize-text {
+    text-transform: capitalize;
+}
 </style>
