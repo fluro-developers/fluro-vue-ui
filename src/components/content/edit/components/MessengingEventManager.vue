@@ -6,7 +6,7 @@
             <list-group-item v-for="(message, index) in model">
                 <v-layout align-start>
                     <v-flex sm10 xs12 pa-1>
-                        <messenging-event-component :config="config" v-model="model[index]" :context="editing[index] ? 'edit' : 'view'" :ref="'editform' + index" :startDate="startDate" :endDate="endDate" />
+                        <messenging-event-component :config="config" v-model="clonedModel[index]" :context="editing[index] ? 'edit' : 'view'" :ref="'editform' + index" :startDate="startDate" :endDate="endDate" />
                     </v-flex>
                     <v-flex sm2 xs12 pa-1>
                         <v-btn block @click="toggleEdit(index)">{{editing[index] ? 'Done' : 'Edit'}}</v-btn>
@@ -104,9 +104,10 @@ export default {
             console.log(self.$refs[ref]);
             if (self.editing[index]) {
                 self.$refs[ref][0].validateAllFields();
-                if (self.model[index].errorMessages.length) {
+                if (self.clonedModel[index].errorMessages.length) {
                     return;
                 }
+                self.model[index] = self.clonedModel[index];
                 return self.$set(self.editing, index, false);
             }
             else {
@@ -115,6 +116,9 @@ export default {
         },
     },
     computed: {
+        clonedModel() {
+            return JSON.parse(JSON.stringify(this.model));
+        }
     },
 }
 </script>
