@@ -108,7 +108,7 @@
                         <v-container>
                             <constrain lg>
                                 <h3 margin>Automated Messages</h3>
-                                <messenging-event-manager :config="config" v-model="model.messages" :startDate="model.startDate" :endDate="model.endDate"/>
+                                <messaging-event-manager :config="config" v-model="model.messages" :startDate="model.startDate" :endDate="model.endDate"/>
                             </constrain>
                         </v-container>
                     </flex-column-body>
@@ -197,7 +197,7 @@
 /////////////////////////////////
 
 
-import MessengingEventManager from '../components/MessengingEventManager.vue';
+import MessagingEventManager from '../components/MessagingEventManager.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
 
 // import { JSONView } from "vue-json-component";
@@ -210,7 +210,7 @@ import Vue from 'vue';
 /////////////////////////////////
 
 export default {
-    components: {MessengingEventManager},
+    components: {MessagingEventManager},
     props: {
         'fields': {
             type: Array,
@@ -547,6 +547,10 @@ export default {
                 checkinStartOffset: 90,
                 checkinEndOffset: 90,
             });
+        }
+
+        if (!self.model.messages) {
+            self.$set(self.model, 'messages', []);
         }
     },
     asyncComputed: {

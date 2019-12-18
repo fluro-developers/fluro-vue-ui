@@ -6,7 +6,7 @@
             <list-group-item v-for="(message, index) in model">
                 <v-layout align-start>
                     <v-flex sm10 xs12 pa-1>
-                        <messenging-event-component :config="config" v-model="clonedModel[index]" :context="editing[index] ? 'edit' : 'view'" :ref="'editform' + index" :startDate="startDate" :endDate="endDate" />
+                        <messaging-event-component :config="config" v-model="clonedModel[index]" :context="editing[index] ? 'edit' : 'view'" :ref="'editform' + index" :startDate="startDate" :endDate="endDate" />
                     </v-flex>
                     <v-flex sm2 xs12 pa-1>
                         <v-btn block @click="toggleEdit(index)">{{editing[index] ? 'Done' : 'Edit'}}</v-btn>
@@ -28,7 +28,7 @@
                     <v-container fluid grid-list-xl pa-1>
                         <v-layout row wrap grid-list-xl>
                             <v-flex sm10 xs12>
-                                <messenging-event-component :config="config" v-model="proposed" context="create" ref="createform" />
+                                <messaging-event-component :config="config" v-model="proposed" context="create" ref="createform" />
                             </v-flex>
                             <v-flex sm2 xs12>
                                 <v-btn block color="primary" type="submit" @click="add()">Add</v-btn>
@@ -42,7 +42,7 @@
 </template>
 <script>
 import FluroConfirmButton from '../../../ui/FluroConfirmButton.vue';
-import MessengingEventComponent from './MessengingEventComponent.vue';
+import MessagingEventComponent from './MessagingEventComponent.vue';
 
 
 export default {
@@ -66,7 +66,7 @@ export default {
             this.editing.push(false);
         }
     },
-    components: { MessengingEventComponent, FluroConfirmButton },
+    components: { MessagingEventComponent, FluroConfirmButton },
     data() {
         return {
             model: this.value,
