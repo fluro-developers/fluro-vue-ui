@@ -4,11 +4,11 @@
         <p class="muted">Add relative time messages to be sent before or after the event</p>
         <list-group>
             <list-group-item v-for="(message, index) in model">
-                <v-layout align-start>
-                    <v-flex sm10 xs12 pa-1>
+                <v-layout align-start row wrap>
+                    <v-flex sm10 xs12 pa-1 class="full-width">
                         <messaging-event-component :config="config" v-model="clonedModel[index]" :context="editing[index] ? 'edit' : 'view'" :ref="'editform' + index" :startDate="startDate" :endDate="endDate" />
                     </v-flex>
-                    <v-flex sm2 xs12 pa-1>
+                    <v-flex sm2 xs12 pa-1 class="full-width">
                         <v-btn block @click="toggleEdit(index)">{{editing[index] ? 'Done' : 'Edit'}}</v-btn>
                         <fluro-confirm-button @click="remove(index)" v-tippy content="Remove">
                             <template v-slot:default="{confirming}">
@@ -121,4 +121,7 @@ export default {
 }
 </script>
 <style lang="scss">
+.full-width {
+    width:100%;
+}
 </style>
