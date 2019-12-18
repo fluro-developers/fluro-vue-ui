@@ -71,8 +71,6 @@ export default {
         return {
             model: this.value,
             proposed: {},
-            dragOptions: {},
-            drag: false,
             editing: [],
         }
     },
@@ -99,9 +97,9 @@ export default {
         },
         toggleEdit(index) {
             var self = this;
-            console.log(self.$refs);
+            //console.log(self.$refs);
             var ref = 'editform' + index;
-            console.log(self.$refs[ref]);
+            //console.log(self.$refs[ref]);
             if (self.editing[index]) {
                 self.$refs[ref][0].validateAllFields();
                 if (self.clonedModel[index].errorMessages.length) {
@@ -123,8 +121,4 @@ export default {
 }
 </script>
 <style lang="scss">
-.ghost-dragging-class {
-    opacity: 0.5;
-    background: #c8ebfb;
-}
 </style>

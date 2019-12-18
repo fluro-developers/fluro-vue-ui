@@ -23,7 +23,6 @@
                                         <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="fieldHash.startDate" v-model="dateModel"></fluro-content-form-field>
                                     </v-flex>
                                     <v-flex xs12 sm4>
-
                                         <!-- <template> -->
                                         <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="fieldHash.endDate" v-model="dateModel"></fluro-content-form-field>
                                         <!-- </template> -->
@@ -35,10 +34,7 @@
                                 <!-- <v-input class="no-flex"> -->
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.mainImage" v-model="model"></fluro-content-form-field>
                                 <!-- </v-input> -->
-                                <v-input class="no-flex">
-                                    <v-label>Body</v-label>
-                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.body" v-model="model"></fluro-content-form-field>
-                                </v-input>
+                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.body" v-model="model"></fluro-content-form-field>
                                 <fluro-content-form-field :override-label="definition && definition.definitionName && definition.definitionName == 'service' ? 'Service Time / Event Track' : 'Event Track' " :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.track" v-model="model"></fluro-content-form-field>
                             </constrain>
                         </v-container>
@@ -83,7 +79,7 @@
                     <flex-column-body style="background: #fafafa;">
                         <v-container>
                             <constrain sm>
-                                <h3 margin>Location</h3>
+                                <location-selector v-model="model" :allLocations="locations" locationsPath="locations" roomsPath="rooms"/>
                             </constrain>
                         </v-container>
                     </flex-column-body>
@@ -108,7 +104,7 @@
                         <v-container>
                             <constrain lg>
                                 <h3 margin>Automated Messages</h3>
-                                <messaging-event-manager :config="config" v-model="model.messages" :startDate="model.startDate" :endDate="model.endDate"/>
+                                <messaging-event-manager :config="config" v-model="model.messages" :startDate="model.startDate" :endDate="model.endDate" />
                             </constrain>
                         </v-container>
                     </flex-column-body>
@@ -198,6 +194,7 @@
 
 
 import MessagingEventManager from '../components/MessagingEventManager.vue';
+import LocationSelector from '../components/LocationSelector.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
 
 // import { JSONView } from "vue-json-component";
@@ -210,7 +207,7 @@ import Vue from 'vue';
 /////////////////////////////////
 
 export default {
-    components: {MessagingEventManager},
+    components: { MessagingEventManager, LocationSelector },
     props: {
         'fields': {
             type: Array,
@@ -220,7 +217,7 @@ export default {
                 var self = this;
                 var array = [];
 
-                console.log('SELF', self);
+                //console.log('SELF', self);
 
                 ///////////////////////////////////
 
@@ -255,7 +252,7 @@ export default {
                     maximum: 1,
                     type: 'date',
                     directive: 'datetimepicker',
-                    defaultValues:[now],
+                    defaultValues: [now],
 
                 })
 
@@ -265,7 +262,7 @@ export default {
                     maximum: 1,
                     type: 'date',
                     directive: 'datetimepicker',
-                    defaultValues:[now],
+                    defaultValues: [now],
 
                 })
 
@@ -554,35 +551,24 @@ export default {
         }
     },
     asyncComputed: {
-        // devices: {
-        //     default: [],
-        //     get() {
+        locations: {
+            default: [],
+            get() {
 
-        //         var self = this;
+                var self = this;
 
+                return new Promise(function(resolve, reject) {
+                    self.$fluro.api.get('/content/location?allDefinitions=true')
+                        .then(function(res) {
+                            resolve(res.data);
+                        })
+                        .catch(function(err) {
+                            reject(err);
+                        })
 
-        //         if (self.context != 'edit' || !self.itemID) {
-        //             return Promise.resolve([]);
-        //         }
-
-        //         //////////////////////////////////////
-
-        //         return new Promise(function(resolve, reject) {
-
-        //             self.$fluro.api.get(`/contact/${self.itemID}/devices`)
-        //                 .then(function(res) {
-        //                     resolve(_.map(res.data, function(device) {
-        //                         device.pinging = false;
-        //                         return device;
-        //                     }));
-        //                 })
-        //                 .catch(function(err) {
-        //                     reject(err);
-        //                 })
-
-        //         })
-        //     }
-        // },
+                })
+            }
+        },
     },
     computed: {
         coverImage() {

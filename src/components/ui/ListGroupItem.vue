@@ -1,7 +1,7 @@
 <template>
-    <div class="list-group-item">
+    <div class="list-group-item" @click="clicked" :class="isSelected ? 'active selected' : ''">
         <div>
-            <fluro-realm-bar v-if="item" :realm="item.realms"/>
+            <fluro-realm-bar v-if="item" :realm="item.realms" />
             <slot name="left">
                 <fluro-item-image v-if="item" :item="item" />
             </slot>
@@ -16,38 +16,53 @@
             <slot name="right">
             </slot>
         </div>
-
-    <!-- WOOOOTT -->
+        <div v-if="selectable">
+            <fluro-icon class="tick-icon" icon="check" />
+        </div>
+        <!-- WOOOOTT -->
         <!-- <pre>{{item}}</pre> -->
     </div>
 </template>
 <script>
-
 import FluroItemImage from './FluroItemImage.vue';
 import FluroRealmBar from './FluroRealmBar.vue';
 
 export default {
-    components:{
+    components: {
         FluroItemImage,
     },
     props: {
         item: {
             type: Object
         },
-        firstLine:{
-            type:String,
+        firstLine: {
+            type: String,
         },
+        selectable: {
+            type: Boolean,
+            required: false,
+            default: false,
+        },
+        isSelected: {
+            type: Boolean,
+            default: false,
+        }
+    },
+    methods: {
+        clicked() {
+            this.$emit('click');
+        }
     },
     computed: {
         title() {
             var self = this;
 
-            if(!self.item) {
+            if (!self.item) {
                 return;
             }
-            
+
             return self.item.title;
-            
+
         },
         renderFirstLine() {
 
@@ -55,10 +70,10 @@ export default {
 
 
 
-            if(self.firstLine && self.firstLine.length) {
+            if (self.firstLine && self.firstLine.length) {
                 return self.firstLine;
             }
-            
+
             if (!self.item) {
                 return;
             }
@@ -72,9 +87,9 @@ export default {
                     } else {
 
                         return self.$fluro.date.readableEventDate(self.item);
-                    
+
                     }
-                break;
+                    break;
                 default:
                     if (self.item.firstLine && self.item.firstLine.length) {
                         return self.item.firstLine;
@@ -93,13 +108,25 @@ export default {
     border-bottom: 1px solid rgba(#000, 0.1);
     display: flex;
     align-items: center;
+    transition: background 0.3s;
+    transition: color 0.3s;
+
+
+    .tick-icon {
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
 
     &:hover {
         background: #fafafa;
+
+        .tick-icon {
+            opacity: 1;
+        }
     }
 
     .fluro-item-image {
-        margin-right:10px;
+        margin-right: 10px;
     }
 
     .list-group-item-content {
@@ -120,6 +147,15 @@ export default {
     &.inactive {
         background: #eee;
         color: rgba(#000, 0.5);
+    }
+
+    &.selected {
+        background: $primary;
+        color: #fff;
+
+        .tick-icon {
+            opacity: 1;
+        }
     }
 }
 </style>
