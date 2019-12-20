@@ -2,7 +2,7 @@
     <v-layout row wrap>
         <v-flex sm6 xs12 px-2 class="full-width">
             <h4 class="header-margin">Locations</h4>
-            <list-group >
+            <list-group>
                 <list-group-item v-for="location in locationOptions" :item="location" :selectable="true" :isSelected="isSelectedLocation(location)" @click="toggleLocation(location)">
                 </list-group-item>
             </list-group>
@@ -11,20 +11,22 @@
         <v-flex sm6 xs12 px-2 class="full-width">
             <h4 class="header-margin">Rooms</h4>
             <list-group>
-                <list-group-item v-for="room in roomOptions" :item="room" :selectable="true" :isSelected="isSelectedRoom(room)" @click="toggleRoom(room)">
-                    <template v-slot:left>
-                        <fluro-realm-bar :realm="parentRealm(room)" />
-                        <div class="left-slot">
-                            <div class="left-icon">
-                                <fluro-icon icon="door-closed" />
+                <transition-group name="fade">
+                    <list-group-item v-for="room in roomOptions" :item="room" :selectable="true" :isSelected="isSelectedRoom(room)" @click="toggleRoom(room)" v-bind:key="room._id">
+                        <template v-slot:left>
+                            <fluro-realm-bar :realm="parentRealm(room)" />
+                            <div class="left-slot">
+                                <div class="left-icon">
+                                    <fluro-icon icon="door-closed" />
+                                </div>
                             </div>
-                        </div>
-                    </template>
-                    <template>
-                        <strong>{{room.title}}</strong>
-                        <p class="muted mb-0">{{room.locationName}}</p>
-                    </template>
-                </list-group-item>
+                        </template>
+                        <template>
+                            <strong>{{room.title}}</strong>
+                            <p class="muted mb-0">{{room.locationName}}</p>
+                        </template>
+                    </list-group-item>
+                </transition-group>
             </list-group>
         </v-flex>
     </v-layout>
@@ -182,11 +184,16 @@ export default {
         },
         createLocation() {
             var self = this;
-            self.$fluro.global.create('location', 
-            {}, true)
+            self.$fluro.global.create('location', {}, true)
                 .then(function(res) {
                     self.locations.push(res);
                 });
+        }
+    },
+    watch: {
+        'allLocations': function() {
+            var self = this;
+            self.locations = self.allLocations;
         }
     },
     computed: {
@@ -237,14 +244,25 @@ export default {
 }
 
 .header-margin {
-    margin-bottom:10px;
+    margin-bottom: 10px;
 }
 
 .button-margin {
-    margin-bottom:20px;
+    margin-bottom: 20px;
 }
 
 .full-width {
-    width:100%;
+    width: 100%;
+}
+
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: all .3s;
+}
+
+.fade-enter,
+.fade-leave-to {
+    opacity: 0;
 }
 </style>

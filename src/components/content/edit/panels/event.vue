@@ -77,9 +77,10 @@
             <tab :heading="`Location`">
                 <slot>
                     <flex-column-body style="background: #fafafa;">
-                        <v-container>
-                            <constrain sm>
-                                <location-selector v-model="model" :allLocations="locations" locationsPath="locations" roomsPath="rooms"/>
+                        <v-container fluid pa-0>
+                            <location-view-map-component style="width:100%;min-height:300px;height:50vh;" name="locationMap" :positions="model.locations" />
+                            <constrain sm class="mt-4">
+                                <location-selector v-model="model" :allLocations="locations" locationsPath="locations" roomsPath="rooms" />
                             </constrain>
                         </v-container>
                     </flex-column-body>
@@ -194,6 +195,7 @@
 
 
 import MessagingEventManager from '../components/MessagingEventManager.vue';
+import LocationViewMapComponent from '../components/LocationViewMapComponent.vue';
 import LocationSelector from '../components/LocationSelector.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
 
@@ -207,7 +209,7 @@ import Vue from 'vue';
 /////////////////////////////////
 
 export default {
-    components: { MessagingEventManager, LocationSelector },
+    components: { MessagingEventManager, LocationSelector, LocationViewMapComponent },
     props: {
         'fields': {
             type: Array,
@@ -274,7 +276,7 @@ export default {
                     maximum: 1,
                     type: 'string',
                     directive: 'timezone-select',
-                    description: 'Set a local timezone for this contact',
+                    description: 'Set a local timezone for this event',
                 })
 
 
@@ -548,6 +550,14 @@ export default {
 
         if (!self.model.messages) {
             self.$set(self.model, 'messages', []);
+        }
+
+        if (!self.model.locations) {
+            self.$set(self.model, 'locations', []);
+        }
+
+        if (!self.model.rooms) {
+            self.$set(self.model, 'rooms', []);
         }
     },
     asyncComputed: {

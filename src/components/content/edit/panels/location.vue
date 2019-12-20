@@ -74,7 +74,7 @@
                 <tab heading="Location/Map" @activeTab="getLatLong">
                     <v-layout column>
                         <v-flex>
-                            <map-component name="locationMap" v-model="model" />
+                            <location-edit-map-component name="locationMap" v-model="model" />
                         </v-flex>
                         <v-flex shrink>
                             <v-container fluid grid-list-lg>
@@ -108,7 +108,7 @@
 <script>
 /////////////////////////////////
 import RoomManager from '../components/RoomManager.vue';
-import MapComponent from '../components/MapComponent.vue';
+import LocationEditMapComponent from '../components/LocationEditMapComponent.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
 import AddressManager from '../components/AddressManager.vue';
 import KeyContactLocationManager from '../components/KeyContactLocationManager.vue';
@@ -126,7 +126,7 @@ export default {
         AddressManager,
         RoomManager,
         KeyContactLocationManager,
-        MapComponent,
+        LocationEditMapComponent,
     },
     created() {},
     mixins: [FluroContentEditMixin, Layout],

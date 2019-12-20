@@ -230,7 +230,7 @@ export default {
                 ]
             }
 
-            addField('segments', {
+            addField('assignments', {
                 title: 'Send To',
                 minimum: 1,
                 maximum: 5,
@@ -358,60 +358,13 @@ export default {
             /////////////////////////////////
 
 
-            addField('title', {
-                title: 'Plain Text Title',
-                placeholder: 'The title for this message',
+            addField('message', {
+                title: 'Message',
+                placeholder: 'Write a custom message in here',
                 minimum: 1,
                 maximum: 1,
                 type: 'string',
             })
-
-
-            addField('body', {
-                title: 'Plain Text Message',
-                description: 'For SMS and Push notifications',
-                placeholder: 'Write a plain text message in here',
-                minimum: 0,
-                maximum: 1,
-                directive: 'textarea',
-                type: 'string',
-            })
-
-
-            /////////////////////////////////
-
-
-            addField('htmlTitle', {
-                title: 'HTML Title',
-                placeholder: 'HTML Email Subject (if different from title)',
-                minimum: 0,
-                maximum: 1,
-                type: 'string',
-            })
-
-
-            addField('htmlBody', {
-                title: 'HTML Message',
-                description: 'For email notifications. If blank will default to the plain text message',
-                minimum: 0,
-                maximum: 1,
-                directive: 'wysiwyg',
-                type: 'string',
-            })
-
-
-            addField('senderEmail', {
-                title: 'Sender Email Address',
-                placeholder: 'eg. you@youraccount.com',
-                minimum: 0,
-                maximum: 1,
-                type: 'string',
-            })
-
-            ///////////////////////////////////
-
-
-
 
             function addField(key, details) {
                 details.key = key;
