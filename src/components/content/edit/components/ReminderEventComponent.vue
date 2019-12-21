@@ -56,28 +56,15 @@
                                             <v-flex xs12 sm3>
                                                 <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.point" v-model="model" />
                                             </v-flex>
+                                            <v-flex xs12 sm12>
+                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.message" v-model="model" />
+                                            </v-flex>
                                         </v-layout>
                                     </fluro-panel-body>
                                 </fluro-panel>
-                                <fluro-panel>
-                                    <fluro-panel-body>
-                                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
-                                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.body" v-model="model"></fluro-content-form-field>
-                                    </fluro-panel-body>
-                                </fluro-panel>
-                                <fluro-panel v-if="model.methods.includes('email')">
-                                    <fluro-panel-body>
-                                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.htmlTitle" v-model="model"></fluro-content-form-field>
-                                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.htmlBody" v-model="model"></fluro-content-form-field>
-                                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.senderEmail" v-model="model"></fluro-content-form-field>
-                                    </fluro-panel-body>
-                                </fluro-panel>
                             </v-flex>
-                            <v-flex sm6 xs12>
+                            <v-flex sm12 xs12>
                                 <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.methods" v-model="model"></fluro-content-form-field>
-                            </v-flex>
-                            <v-flex sm6 xs12>
-                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.methodPreference" v-model="model"></fluro-content-form-field>
                             </v-flex>
                         </v-layout>
                     </v-container>
@@ -85,9 +72,8 @@
                 <v-container fluid v-else-if="createMode" pa-0>
                     <v-layout row wrap grid-list-xl py-0>
                         <v-flex sm5 xs12 py-0>
-                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.segments" v-model="model"></fluro-content-form-field>
+                            <fluro-exclusive-selector allLabel="All Assignments" :otherOptions="allAssignmentOptions" v-model="model.assignments" />
                             <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.methods" v-model="model"></fluro-content-form-field>
-                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.methodPreference" v-model="model"></fluro-content-form-field>
                         </v-flex>
                         <v-flex sm7 xs12 py-0>
                             <fluro-panel>
@@ -106,20 +92,10 @@
                                         <v-flex xs12 sm3>
                                             <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.point" v-model="model" />
                                         </v-flex>
+                                        <v-flex xs12 sm12>
+                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.message" v-model="model" />
+                                        </v-flex>
                                     </v-layout>
-                                </fluro-panel-body>
-                            </fluro-panel>
-                            <fluro-panel>
-                                <fluro-panel-body>
-                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
-                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.body" v-model="model"></fluro-content-form-field>
-                                </fluro-panel-body>
-                            </fluro-panel>
-                            <fluro-panel v-if="model.methods.includes('email')">
-                                <fluro-panel-body>
-                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.htmlTitle" v-model="model"></fluro-content-form-field>
-                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.htmlBody" v-model="model"></fluro-content-form-field>
-                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.senderEmail" v-model="model"></fluro-content-form-field>
                                 </fluro-panel-body>
                             </fluro-panel>
                         </v-flex>
@@ -132,6 +108,7 @@
 <script>
 import { FluroContentForm, Layout } from 'fluro-vue-ui';
 import FluroContentEditMixin from '../FluroContentEditMixin';
+import FluroExclusiveSelector from '../components/FluroExclusiveSelector.vue';
 
 import moment from 'moment';
 
@@ -151,10 +128,14 @@ export default {
         },
         endDate: {
             type: Date,
+        },
+        allAssignmentOptions: {
+            type: Array,
         }
     },
     components: {
         FluroContentForm,
+        FluroExclusiveSelector
     },
     data() {
         return {
@@ -406,7 +387,7 @@ export default {
             var point = self.model.point;
 
             if (!self.startDate || !total || !period || !when || !point) {
-                return;
+                return ['', ''];
             }
 
             if (!self.endDate) {

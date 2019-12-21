@@ -36,7 +36,7 @@
                     <v-container>
                         <constrain sm>
                             <h3 margin>Media &amp; Resources</h3>
-                            <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.mainImage" v-model="model"></fluro-content-form-field> -->
+                            <reminder-event-manager :config="config" v-model="model.defaultReminders" :allAssignmentOptions="allPositions" />
                         </constrain>
                     </v-container>
                 </flex-column-body>
@@ -145,6 +145,7 @@
 
 import LocationSelector from '../components/LocationSelector.vue';
 import MessagingEventManager from '../components/MessagingEventManager.vue';
+import ReminderEventManager from '../components/ReminderEventManager.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin.js';
 
 // import { JSONView } from "vue-json-component";
@@ -157,7 +158,7 @@ import Vue from 'vue';
 /////////////////////////////////
 
 export default {
-    components: { MessagingEventManager, LocationSelector },
+    components: { ReminderEventManager, MessagingEventManager, LocationSelector },
     mixins: [FluroContentEditMixin],
     created() {
         var self = this;
@@ -542,6 +543,24 @@ export default {
             var self = this;
             return moment(self.model.nextRecurDate).fromNow();
         },
+        allPositions() {
+            var self = this;
+            var options = [];
+            //////////////////////////
+            //Add add each definition
+
+            _.each(self.rosterDefinitions.definitions, function(def) {
+                if (_.get(def, 'data.slots')) {
+                    return _.each(def.data.slots, function(slot) {
+                        if (!options.includes(slot.title)) {
+                            return options.push(slot.title);
+                        }
+                    })
+                }
+            });
+            //console.log(options);
+            return options;
+        },
     },
     asyncComputed: {
         defOptions: {
@@ -565,8 +584,23 @@ export default {
                                 })
                             });
                             //////////////////////////
-                            console.log(options);
+                            //console.log(options);
                             resolve(options);
+                        })
+                        .catch(function(err) {
+                            reject(err);
+                        })
+                })
+            }
+        },
+        rosterDefinitions: {
+            default: [],
+            get() {
+                var self = this;
+                return new Promise(function(resolve, reject) {
+                    self.$fluro.types.retrieve(['roster'])
+                        .then(function(res) {
+                            return resolve(res[0]);
                         })
                         .catch(function(err) {
                             reject(err);

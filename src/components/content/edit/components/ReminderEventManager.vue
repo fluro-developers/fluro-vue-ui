@@ -6,7 +6,7 @@
             <list-group-item v-for="(message, index) in model">
                 <v-layout align-start row wrap>
                     <v-flex sm10 xs12 pa-1 class="full-width">
-                        <reminder-event-component :config="config" v-model="clonedModel[index]" :context="editing[index] ? 'edit' : 'view'" :ref="'editform' + index" :startDate="startDate" :endDate="endDate" />
+                        <reminder-event-component :config="config" v-model="clonedModel[index]" :context="editing[index] ? 'edit' : 'view'" :ref="'editform' + index" :startDate="startDate" :endDate="endDate" :allAssignmentOptions="allAssignmentOptions" />
                     </v-flex>
                     <v-flex sm2 xs12 pa-1 class="full-width">
                         <v-btn block @click="toggleEdit(index)">{{editing[index] ? 'Done' : 'Edit'}}</v-btn>
@@ -21,14 +21,13 @@
                 </v-layout>
             </list-group-item>
         </list-group>
-
         <fluro-panel>
             <fluro-panel-body>
                 <form @submit.prevent.stop="add()">
                     <v-container fluid grid-list-xl pa-1>
                         <v-layout row wrap grid-list-xl>
                             <v-flex sm10 xs12>
-                                <reminder-event-component :config="config" v-model="proposed" context="create" ref="createform" />
+                                <reminder-event-component :config="config" v-model="proposed" context="create" ref="createform" :allAssignmentOptions="allAssignmentOptions" />
                             </v-flex>
                             <v-flex sm2 xs12>
                                 <v-btn block color="primary" type="submit" @click="add()">Add</v-btn>
@@ -59,6 +58,9 @@ export default {
         },
         endDate: {
             type: Date,
+        },
+        allAssignmentOptions: {
+            type: Array,
         }
     },
     created() {
@@ -107,8 +109,7 @@ export default {
                 }
                 self.model[index] = self.clonedModel[index];
                 return self.$set(self.editing, index, false);
-            }
-            else {
+            } else {
                 return self.$set(self.editing, index, true);
             }
         },
@@ -122,6 +123,6 @@ export default {
 </script>
 <style lang="scss">
 .full-width {
-    width:100%;
+    width: 100%;
 }
 </style>
