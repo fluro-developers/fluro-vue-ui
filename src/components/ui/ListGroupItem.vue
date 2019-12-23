@@ -1,9 +1,5 @@
 <template>
-<<<<<<< HEAD
-    <div class="list-group-item" @click="$emit('click', item)">
-=======
-    <div class="list-group-item" @click="clicked" :class="isSelected ? 'active selected' : ''">
->>>>>>> 7bec0bbf13a251db6c78891837d1d1a3180dca52
+<div class="list-group-item" @click="clicked" :class="isSelected ? 'active selected' : ''">
         <div>
             <fluro-realm-bar v-if="item" :realm="item.realms" />
             <slot name="left">
@@ -54,7 +50,7 @@ export default {
     },
     methods: {
         clicked() {
-            this.$emit('click');
+            this.$emit('click', this.item);
         }
     },
     computed: {
