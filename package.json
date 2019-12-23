@@ -29,6 +29,7 @@
     "vuetify": "^1.5.18"
   },
   "dependencies": {
+    "@google/markerclusterer": "^2.0.5",
     "expression-eval": "^2.0.0",
     "highlight.js": "^9.15.10",
     "js-beautify": "^1.9.1",

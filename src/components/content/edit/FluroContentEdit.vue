@@ -92,16 +92,16 @@
                                                 <fluro-content-form-field :field="extraFields.inheritable" v-model="model"></fluro-content-form-field>
                                                 <fluro-content-form-field :field="extraFields.slug" v-model="model"></fluro-content-form-field>
                                             </v-container>
-                                            <v-container  pa-2 v-if="model._id">
+                                            <v-container  pa-2 v-if="model._id" class="white-background">
                                                 <label>Fluro ID</label>
                                                 <pre>{{model._id}}</pre>
                                             </v-container>
 
-                                            <v-container  pa-2 v-if="model._external">
+                                            <v-container  pa-2 v-if="model._external" class="white-background">
                                                 <label>External ID</label>
                                                 <pre>{{model._external}}</pre>
                                             </v-container>
-                                            <v-container pa-2>
+                                            <v-container pa-2 class="white-background">
             
                                                 <v-btn block small @click="$fluro.global.json(model)">
                                                     View Raw JSON
@@ -699,6 +699,9 @@ export default {
     z-index:100;
 }
 
+.white-background {
+    background:white;
+}
 
 .content-edit {
 

@@ -15,7 +15,7 @@
                             <p class="muted mb-0">Sending to <span class="capitalize-text">{{sendToFormatted}}</span></p>
                             <h5>{{model.title}}<span v-if="model.htmlTitle"> ({{model.htmlTitle}})</span></h5>
                             <i v-if="model.body" class="muted mb-0">"{{model.body}}"</i>
-                            <p class="muted mb-0">{{formattedTotalPeriodWhenPoint}} - {{formattedTime.format("h:mma dddd MMM Do YYYY")}} ({{formattedTime.fromNow()}})</p>
+                            <p class="muted mb-0">{{formattedTotalPeriodWhenPoint}} {{startDate ? '- ' + formattedTime.format("h:mma dddd MMM Do YYYY") : ''}} {{startDate ? '(' + formattedTime.fromNow() + ')' : ''}}</p>
                         </v-flex>
                     </v-layout>
                 </v-container>
@@ -33,7 +33,7 @@
                                 <p class="muted mb-0">Sending to <span class="capitalize-text">{{sendToFormatted}}</span></p>
                                 <h5>{{model.title}}<span v-if="model.htmlTitle"> ({{model.htmlTitle}})</span></h5>
                                 <i v-if="model.body" class="muted mb-0">"{{model.body}}"</i>
-                                <p class="muted mb-0">{{formattedTotalPeriodWhenPoint}} - {{formattedTime.format("h:mma dddd MMM Do YYYY")}} ({{formattedTime.fromNow()}})</p>
+                                <p class="muted mb-0">{{formattedTotalPeriodWhenPoint}} {{startDate ? '- ' + formattedTime.format("h:mma dddd MMM Do YYYY") : ''}} {{startDate ? '(' + formattedTime.fromNow() + ')' : ''}}</p>
                             </v-flex>
                         </v-layout>
                     </v-container>

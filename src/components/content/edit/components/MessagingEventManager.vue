@@ -4,11 +4,11 @@
         <p class="muted">Add relative time messages to be sent before or after the event</p>
         <list-group>
             <list-group-item v-for="(message, index) in model">
-                <v-layout align-start>
-                    <v-flex sm10 xs12 pa-1>
-                        <messenging-event-component :config="config" v-model="model[index]" :context="editing[index] ? 'edit' : 'view'" :ref="'editform' + index" :startDate="startDate" :endDate="endDate" />
+                <v-layout align-start row wrap>
+                    <v-flex sm10 xs12 pa-1 class="full-width">
+                        <messaging-event-component :config="config" v-model="clonedModel[index]" :context="editing[index] ? 'edit' : 'view'" :ref="'editform' + index" :startDate="startDate" :endDate="endDate" />
                     </v-flex>
-                    <v-flex sm2 xs12 pa-1>
+                    <v-flex sm2 xs12 pa-1 class="full-width">
                         <v-btn block @click="toggleEdit(index)">{{editing[index] ? 'Done' : 'Edit'}}</v-btn>
                         <fluro-confirm-button @click="remove(index)" v-tippy content="Remove">
                             <template v-slot:default="{confirming}">
@@ -28,7 +28,7 @@
                     <v-container fluid grid-list-xl pa-1>
                         <v-layout row wrap grid-list-xl>
                             <v-flex sm10 xs12>
-                                <messenging-event-component :config="config" v-model="proposed" context="create" ref="createform" />
+                                <messaging-event-component :config="config" v-model="proposed" context="create" ref="createform" />
                             </v-flex>
                             <v-flex sm2 xs12>
                                 <v-btn block color="primary" type="submit" @click="add()">Add</v-btn>
@@ -42,7 +42,7 @@
 </template>
 <script>
 import FluroConfirmButton from '../../../ui/FluroConfirmButton.vue';
-import MessengingEventComponent from './MessengingEventComponent.vue';
+import MessagingEventComponent from './MessagingEventComponent.vue';
 
 
 export default {
@@ -66,13 +66,11 @@ export default {
             this.editing.push(false);
         }
     },
-    components: { MessengingEventComponent, FluroConfirmButton },
+    components: { MessagingEventComponent, FluroConfirmButton },
     data() {
         return {
             model: this.value,
             proposed: {},
-            dragOptions: {},
-            drag: false,
             editing: [],
         }
     },
@@ -99,14 +97,15 @@ export default {
         },
         toggleEdit(index) {
             var self = this;
-            console.log(self.$refs);
+            //console.log(self.$refs);
             var ref = 'editform' + index;
-            console.log(self.$refs[ref]);
+            //console.log(self.$refs[ref]);
             if (self.editing[index]) {
                 self.$refs[ref][0].validateAllFields();
-                if (self.model[index].errorMessages.length) {
+                if (self.clonedModel[index].errorMessages.length) {
                     return;
                 }
+                self.model[index] = self.clonedModel[index];
                 return self.$set(self.editing, index, false);
             }
             else {
@@ -115,12 +114,14 @@ export default {
         },
     },
     computed: {
+        clonedModel() {
+            return JSON.parse(JSON.stringify(this.model));
+        }
     },
 }
 </script>
 <style lang="scss">
-.ghost-dragging-class {
-    opacity: 0.5;
-    background: #c8ebfb;
+.full-width {
+    width:100%;
 }
 </style>
