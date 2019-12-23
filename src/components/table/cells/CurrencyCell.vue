@@ -24,18 +24,21 @@ export default {
             }
         },
         rendered() {
-            return parseFloat(parseInt(this.data) / 100).toFixed(2)
+            return this.$fluro.utils.formatCurrency(this.data, this.currency);
         },
-        symbol() {
-            switch(String(this.row.currency).toLowerCase()) {
-                case 'gbp':
-                    return '£';
-                break;
-                default:
-                    return '$';
-                break;
-            }
-        }
+        currency() {
+            return String(this.row.currency).toLowerCase();
+        },
+        // symbol() {
+        //     switch(String(this.row.currency).toLowerCase()) {
+        //         case 'gbp':
+        //             return '£';
+        //         break;
+        //         default:
+        //             return '$';
+        //         break;
+        //     }
+        // }
     }
 }
 </script>

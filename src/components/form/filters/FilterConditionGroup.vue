@@ -176,7 +176,8 @@ function getFlattenedFields(array, trail, titles) {
 
 
                     if (field.maximum != 1) {
-                        trail.push(field.key + '[' + indexIterator + ']');
+                        // trail.push(field.key + '[' + indexIterator + ']');
+                        trail.push(field.key + '[]');
                         titles.push(field.title);
                     } else {
                         trail.push(field.key);
@@ -689,7 +690,8 @@ export default {
 
                         return {
                             title: detailSheet.title + ' - ' + field.titles.join(' > '),
-                            key: `details.${detailSheet.definitionName}.items[0].data.${field.trail.join('.')}`,
+                            // key: `details.${detailSheet.definitionName}.items[0].data.${field.trail.join('.')}`,
+                            key: `details.${detailSheet.definitionName}.items[].data.${field.trail.join('.')}`,
                             minimum: field.minimum,
                             maximum: field.maximum,
                             detail: detailSheet.definitionName,
@@ -698,6 +700,8 @@ export default {
                     })
                     .compact()
                     .value();
+
+                    console.log('FLATTENED SHEET FIELDS')
 
                 //////////////////////////////////
 
@@ -731,7 +735,7 @@ export default {
             if (self.isContactType) {
 
 
-                console.log('IS A CONTACT TYPE!!!!', self.definition, self.type)
+                // console.log('IS A CONTACT TYPE!!!!', self.definition, self.type)
                 /////////////////////////////////////////////
 
                 // key: 'family._parents[]definition',

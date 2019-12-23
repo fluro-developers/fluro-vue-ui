@@ -1,6 +1,6 @@
 <template>
     <!-- <flex-column> -->
-    <flex-column class="realm-select-modal" style="max-width: 500px;">
+    <flex-column class="realm-select-modal" >
         <flex-column v-if="loading">
             <v-container class="text-xs-center">
                 <v-progress-circular indeterminate />
@@ -115,6 +115,7 @@ $line-color: darken($bg-color, 10%);
 
 .realm-select-modal {
 
+    max-width: 500px;
      max-height: 80vh;
     .tabset {
         .tabset-menu {
@@ -136,6 +137,10 @@ $line-color: darken($bg-color, 10%);
 
     .flex-tabs {
         background: #eaedf2;
+    }
+
+    @media(max-width: 768px) {
+        max-width: none;
     }
 
 

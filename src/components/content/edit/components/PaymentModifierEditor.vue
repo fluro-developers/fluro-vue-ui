@@ -25,14 +25,14 @@ export default {
         value: {
             type: Array,
             required: true,
+            default() {
+                return [];
+            },
         },
         form: {
             type: Object,
             required: true,
         },
-    },
-    created() {
-
     },
     data() {
         return {
@@ -54,12 +54,14 @@ export default {
         	self.model.splice(insertIndex, 0, copy);
         	self.edit(copy, true);
 
-        	console.log('Push copy!')
+        	// console.log('Push copy!')
+            self.$emit('input', self.model);
         },
         remove(modifier) {
             console.log('REMOVE', modifier);
             var index = this.model.indexOf(modifier);
             this.model.splice(index, 1)
+            self.$emit('input', self.model);
         },
         edit(item, cancelEnabled) {
         	var self = this;
@@ -79,6 +81,7 @@ export default {
         	var insert = {};
         	self.model.push(insert);
         	self.edit(insert, true);
+            self.$emit('input', self.model);
         },
     },
 }

@@ -1,5 +1,5 @@
 <template>
-    <div class="list-group-item">
+    <div class="list-group-item" @click="$emit('click', item)">
         <div>
             <fluro-realm-bar v-if="item" :realm="item.realms"/>
             <slot name="left">

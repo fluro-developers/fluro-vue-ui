@@ -1,7 +1,8 @@
 <template>
     <flex-column>
         <flex-column-body>
-            <v-container>
+            <v-container v-if="item">
+                <!-- <pre>{{item}}</pre> -->
                 <!-- TEST WOOT WOOT -->
                 <fluro-content-render :fields="fields" :raw="true" v-model="item" />
                 <fluro-content-render :fields="definedFields" :raw="true" v-model="item.rawData" />

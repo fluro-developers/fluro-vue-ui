@@ -2,30 +2,37 @@
     <flex-column class="content-view">
         <!-- {{loadingModel}} -- {{loadingConfig}} -->
         <fluro-page-preloader v-if="loading" contain />
-        <template v-else>
+        <template v-else-if="model">
             <flex-column-header class="border-bottom">
                 <page-header :type="type">
                     <template v-slot:left>
                         <h3>{{title}} <span class="small text-muted">{{definitionTitle}}</span></h3>
                     </template>
-
                     <template v-slot:right>
                         <v-btn v-if="model._id" icon class="mr-0" small @click="$actions.open([model])">
                             <fluro-icon icon="ellipsis-h" />
                         </v-btn>
-                        <v-btn @click="cancel">
-                            Close
+                        <template v-if="embedded">
+                            <v-btn icon v-if="canEdit" @click="edit">
+                            <fluro-icon icon="pencil" />
                         </v-btn>
-                        <v-btn class="mx-0" v-if="canEdit" @click="edit" color="primary">
-                            Edit
-                        </v-btn>
+                        </template>
+                        <template v-else>
+                            <v-btn @click="cancel">
+                                Close
+                            </v-btn>
+                            <v-btn class="mx-0" v-if="canEdit" @click="edit" color="primary">
+                                Edit
+                            </v-btn>
+                        </template>
+                        
                     </template>
                 </page-header>
             </flex-column-header>
             <!-- BOOM TEST {{model}}  -->
-            <!-- <pre>TESTING NOW? {{model}}</pre> -->
+            <!-- <pre>TESTING NOW? {{id}} {{model}}</pre> -->
             <!-- <flex-column-body> -->
-                <component :item="model" v-bind:is="component" :config="config" v-if="component" />
+            <component :item="model" v-bind:is="component" :config="config" v-if="component" />
             <!-- </flex-column-body> -->
         </template>
     </flex-column>
@@ -35,6 +42,9 @@ import Vue from 'vue';
 
 export default {
     props: {
+        embedded: {
+            type: Boolean,
+        },
         'id': {
             type: [String, Object],
             required: true,
@@ -90,12 +100,12 @@ export default {
         // },
         canEdit() {
 
-            switch(this.type) {
+            switch (this.type) {
                 case 'mailout':
-                    if(this.model.state =='sent') {
+                    if (this.model.state == 'sent') {
                         return;
                     }
-                break;
+                    break;
             }
 
             ///////////////////////////////////////
@@ -124,7 +134,7 @@ export default {
             get() {
 
                 var self = this;
-                
+
 
                 //////////////////////////////////////////////
 
@@ -149,7 +159,7 @@ export default {
                     self.$fluro.content.get(self.itemID)
                         .then(function(res) {
 
-                            if(!res.data) {
+                            if (!res.data) {
                                 res.data = {};
                             }
 
@@ -157,7 +167,11 @@ export default {
                             self.loadingModel = false;
                         })
                         .catch(function(err) {
-                            reject(err);
+                            // reject(err);
+
+                            console.log('Error', err);
+
+                            resolve(null);
                             self.loadingModel = false;
                         });
                 });

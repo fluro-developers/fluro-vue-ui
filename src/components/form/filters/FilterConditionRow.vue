@@ -425,6 +425,8 @@ export default {
             if (this.selectedKey) {
                 return this.selectedKey.title || this.selectedKey
             }
+
+            return 'Select a field'
         },
         // realmValues:{
         //     get() {
@@ -847,12 +849,12 @@ export default {
 
             //If we are searching in a sub field
             //eg. family._children[].age
-            if (_.includes(key, '[]')) {
-                var splitPieces = key.split('[]');
-                var splitKey = splitPieces.shift();
-                var splitParameters = splitPieces.join('');
-                key = splitParameters;
-            }
+            // if (_.includes(key, '[]')) {
+            //     var splitPieces = key.split('[]');
+            //     var splitKey = splitPieces.shift();
+            //     var splitParameters = splitPieces.join('');
+            //     key = splitParameters;
+            // }
 
 
             ////////////////////////////////////

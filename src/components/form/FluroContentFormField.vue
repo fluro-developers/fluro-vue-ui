@@ -210,7 +210,7 @@
             </v-dialog>
         </template>
         <template v-else-if="renderer == 'datetimepicker'">
-            <fluro-date-time-picker :outline="showOutline" :success="success" format="ddd D MMM - h:mma " timePickerFormat="ampm" :label="displayLabel" :placeholder="field.placeholder" :hint="field.description" v-model="fieldModel" @focus="modal = true" />
+            <fluro-date-time-picker :outline="showOutline" :min="minDate"  :max="maxDate" :success="success" format="ddd D MMM - h:mma " timePickerFormat="ampm" :label="displayLabel" :placeholder="field.placeholder" :hint="field.description" v-model="fieldModel" @focus="modal = true" />
         </template>
         <template v-else-if="renderer == 'timezoneselect'">
             <template v-if="mobile">
@@ -614,6 +614,18 @@ export default {
         },
         formModel() {
             return this.parent || this.model;
+        },
+        minValue() {
+            return _.get(this, 'field.params.minValue');
+        },
+        maxValue() {
+            return _.get(this, 'field.params.maxValue');
+        },
+        minDate() {
+            return _.get(this, 'field.params.minDate');
+        },
+        maxDate() {
+            return _.get(this, 'field.params.maxDate');
         },
         dateFormat() {
             return 'D MMM YYYY';

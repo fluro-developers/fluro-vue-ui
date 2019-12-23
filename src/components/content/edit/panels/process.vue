@@ -45,7 +45,8 @@
                                                     <!-- <template v-else> -->
                                                     <!-- <pre>{{reference}}</pre> -->
                                                     <flex-column-body style="max-height:50vh">
-                                                        <fluro-content-view :id="reference" :definition="reference.definition" :type="reference._type" />
+                                                        <!-- <pre>{{reference}}</pre> -->
+                                                        <fluro-content-view :id="reference" :embedded="true" :definition="reference.definition" :type="reference._type" />
                                                     </flex-column-body>
                                                     <!-- </template> -->
                                                 </fluro-panel-body>

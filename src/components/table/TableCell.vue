@@ -3,7 +3,7 @@
         <!-- <pre>{{key}} {{simpleArray}} {{subField}}</pre> -->
         <!-- <pre>{{subField}}</pre> -->
         <!-- <pre>{{rawValue}}</pre> -->
-        <!-- <pre>{{rawValue}}</pre> -->
+        <!-- <pre>{{key}}</pre> -->
         <component v-if="column.renderer" :data="rawValue" :is="column.renderer" :row="row" :column="column" />
         <div v-else-if="simpleArray">
             <!-- {{value}} -->

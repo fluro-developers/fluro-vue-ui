@@ -340,6 +340,8 @@ import TableHeaderCheckbox from './TableHeaderCheckbox.vue';
 import TableRowCheckbox from './TableRowCheckbox.vue';
 import TableCell from './TableCell.vue';
 
+
+
 /////////////////////////////////
 
 import axios from 'axios';
@@ -471,8 +473,8 @@ export default {
             page: [],
             debouncedSearch: this.search,
             perPage: this.pageSize,
-            loading: false,
-            loadingItems: false,
+            loading: true,
+            loadingItems: true,
             currentPage: parseInt(this.initPage),
             previousSelectionIndex: -1,
             sort: JSON.parse(JSON.stringify(this.initSort)),
@@ -1029,6 +1031,7 @@ export default {
                     self.page = pageItems.slice();
                     self.loading = false;
 
+                  
 
                 }, function(err) {
                     // console.log('ERROR', err);
@@ -1094,7 +1097,10 @@ export default {
                     self.$emit('filtered', self.rows);
 
                     self.setPage(1);
-                    self.loadingItems = false;
+
+                    
+                        self.loadingItems = false;
+                    
 
                 })
                 .catch(function(err) {

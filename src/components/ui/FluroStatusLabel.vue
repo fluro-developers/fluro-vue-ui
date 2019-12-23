@@ -32,26 +32,38 @@ export default {
     &.draft,
     &.trial,
     &.sandbox,
-    &.scheduled {
-        background: #fff3b9;
-        color: #f0974e;
+    &.scheduled,
+    &.yellow,
+    &.warning {
+        background: #fff3b9 !important;
+        color: #f0974e !important;
     }
 
     &.click,
     &.open,
     &.live,
     &.ready,
-    &.active {
+    &.active,
+    &.green,
+    &.success {
 
-        background: rgba(#51d432, 0.2);
-        color: #51d432;
+        background: rgba(#51d432, 0.2) !important;
+        color: #51d432 !important;
+    }
+
+
+    &.red,
+    &.danger {
+
+        background: rgba(#bb0010, 0.2) !important;
+        color: #bb0010 !important;
     }
 
     &.archived,
     &.unsubscribe,
     &.sent {
-        background: rgba(#000, 0.05);
-        color: rgba(#000, 0.3);
+        background: rgba(#000, 0.05) !important;
+        color: rgba(#000, 0.3) !important;
         // background: #e9ebee;
         // color: #b4b7bd;
     }

@@ -19,8 +19,8 @@
                 <fluro-tab heading="Date">
                     <!-- <pre>{{typeof datetime}}</pre> -->
                     <!-- <pre>{{datePart}}</pre> -->
-                    <!-- :min="min" :max="max" -->
-                    <v-date-picker attach class="elevation-0" full-width v-model="datePart" scrollable :locale="locale" actions></v-date-picker>
+                    <!--  -->
+                    <v-date-picker attach class="elevation-0" :min="minDateString" :max="maxDateString" full-width v-model="datePart" scrollable :locale="locale" actions></v-date-picker>
                 </fluro-tab>
                 <fluro-tab heading="Time">
                     <!-- <pre>{{typeof datetime}}</pre> -->
@@ -96,12 +96,12 @@ export default {
             type: String,
             default: 'Select a date'
         },
-        // min: {
-        //     type: String,
-        // },
-        // max: {
-        //     type: String,
-        // },
+        min: {
+            type: Date,
+        },
+        max: {
+            type: Date,
+        },
         outline: {
             type: Boolean,
         },
@@ -178,6 +178,12 @@ export default {
         }
     },
     computed: {
+        minDateString() {
+            return this.min ? moment(this.min).format(DEFAULT_DATE_FORMAT) : null;
+        },
+        maxDateString() {
+            return this.max ? moment(this.max).format(DEFAULT_DATE_FORMAT) : null;
+        },
         readable() {
             return this.datetime ? this.formattedDatetime : this.placeholder;//'Select a date'
         },
