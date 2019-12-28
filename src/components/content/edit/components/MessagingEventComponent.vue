@@ -4,14 +4,14 @@
             <template v-slot:form="{formFields, fieldHash, model, update, options}">
                 <v-container fluid v-if="viewMode" pa-0>
                     <v-layout row wrap grid-list-xl py-0>
-                        <v-flex sm1 xs1>
+                        <v-flex lg1 md2 xs2>
                             <v-layout row wrap align-center justify-center style="height:100%;margin-left:-10px;">
                                 <fluro-icon v-if="model.methods.includes('email')" icon="envelope" v-tippy content="Sends email" />
                                 <fluro-icon v-if="model.methods.includes('push')" icon="mobile" v-tippy content="Sends push notification" />
                                 <fluro-icon v-if="model.methods.includes('sms')" icon="comment" v-tippy content="Sends SMS" />
                             </v-layout>
                         </v-flex>
-                        <v-flex sm11 xs11>
+                        <v-flex lg11 md10 xs10>
                             <p class="muted mb-0">Sending to <span class="capitalize-text">{{sendToFormatted}}</span></p>
                             <h5>{{model.title}}<span v-if="model.htmlTitle"> ({{model.htmlTitle}})</span></h5>
                             <i v-if="model.body" class="muted mb-0">"{{model.body}}"</i>
@@ -22,14 +22,14 @@
                 <div v-else-if="editMode">
                     <v-container fluid pa-0>
                         <v-layout row wrap grid-list-xl py-0>
-                            <v-flex sm1 xs1>
+                            <v-flex lg1 md2 xs2>
                                 <v-layout row wrap align-center justify-center style="height:100%;margin-left:-10px;">
                                     <fluro-icon v-if="model.methods.includes('email')" icon="envelope" v-tippy content="Sends email" />
                                     <fluro-icon v-if="model.methods.includes('push')" icon="mobile" v-tippy content="Sends push notification" />
                                     <fluro-icon v-if="model.methods.includes('sms')" icon="comment" v-tippy content="Sends SMS" />
                                 </v-layout>
                             </v-flex>
-                            <v-flex sm11 xs11>
+                            <v-flex lg11 md10 xs10>
                                 <p class="muted mb-0">Sending to <span class="capitalize-text">{{sendToFormatted}}</span></p>
                                 <h5>{{model.title}}<span v-if="model.htmlTitle"> ({{model.htmlTitle}})</span></h5>
                                 <i v-if="model.body" class="muted mb-0">"{{model.body}}"</i>

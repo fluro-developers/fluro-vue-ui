@@ -34,7 +34,8 @@
             <tab heading="Default Rosters">
                 <flex-column-body style="background: #fafafa;">
                     <v-container>
-                        <constrain sm>
+                        <constrain md>
+                            <default-roster-manager :config="config" v-model="model.defaultRosters" :rosterOptions="rosterDefinitions.definitions"/>
                             <h3 margin>Media &amp; Resources</h3>
                             <reminder-event-manager :config="config" v-model="model.defaultReminders" :allAssignmentOptions="allPositions" />
                         </constrain>
@@ -146,6 +147,7 @@
 import LocationSelector from '../components/LocationSelector.vue';
 import MessagingEventManager from '../components/MessagingEventManager.vue';
 import ReminderEventManager from '../components/ReminderEventManager.vue';
+import DefaultRosterManager from '../components/DefaultRosterManager.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin.js';
 
 // import { JSONView } from "vue-json-component";
@@ -158,7 +160,7 @@ import Vue from 'vue';
 /////////////////////////////////
 
 export default {
-    components: { ReminderEventManager, MessagingEventManager, LocationSelector },
+    components: { DefaultRosterManager, ReminderEventManager, MessagingEventManager, LocationSelector },
     mixins: [FluroContentEditMixin],
     created() {
         var self = this;
