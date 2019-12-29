@@ -48,6 +48,9 @@ export default {
     props: {
         value: {
             type: Array,
+            default: function() {
+                return [];
+            }
         },
         config: {
             type: Object,

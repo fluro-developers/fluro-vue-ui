@@ -6,7 +6,7 @@
             <div class="tabset-menu" ref="outer">
                 <div class="tabset-menu-inner" ref="inner">
                     <a flat v-for="(tab, index) in enabledTabs" :class="{active:index == activeTabIndex}" @click="selectTab(index)">
-                        {{tab.heading}}
+                        {{tab.heading}}  <fluro-icon v-if="tab.icon" :icon="tab.icon.icon" :library="tab.icon.library || ''" :style="{ color: tab.icon.color }"/>
                     </a>
                 </div>
             </div>

@@ -1,7 +1,7 @@
 <template>
     <div>
         <fluro-content-form :options="options" v-model="model" :fields="customFields" ref="form">
-            <template v-slot:form="{formFields, fieldHash, model, update, options}">
+            <template v-slot:form="{formFields, fieldHash, model, options}">
                 <v-layout row wrap grid-list-xl>
                     <v-flex xs12 sm12 pb-4>
                         <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.create" v-model="model" />
@@ -9,10 +9,10 @@
                     <v-flex xs12 sm12 pb-5 v-if="model.create">
                         <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.managedOwner" v-model="model" />
                     </v-flex>
-                    <v-flex xs12 sm12 v-if="model.create">
+                    <v-flex xs12 sm12 v-if="model.create && data.data && data.data.slots">
                         <list-group class="full-width">
                             <list-group-item v-for="(slot, ind) in data.data.slots" class="full-width">
-                                <default-roster-slot :config="config" :slotData="data.data.slots[ind]" v-model="model.slots[ind]"/>
+                                <default-roster-slot @input="update" :config="config" :slotData="data.data.slots[ind]" v-model="model.slots[ind]"/>
                             </list-group-item>
                         </list-group>
                     </v-flex>
@@ -57,14 +57,18 @@ export default {
     },
     created() {
         var self = this;
-        if (!self.model.slots) {
+        if (!self.model.slots && _.get(self.data, 'data.slots')) {
             self.$set(self.model, 'slots', []);
             _.each(self.data.data.slots, function(slot, ind) {
                 self.$set(self.model.slots, ind, {})
             });
         }
     },
-    methods: {},
+    methods: {
+        update() {
+            return this.$emit('input', this.model);
+        }
+    },
     computed: {
         customFields() {
 

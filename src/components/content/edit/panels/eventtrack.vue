@@ -36,7 +36,6 @@
                     <v-container>
                         <constrain md>
                             <default-roster-manager :config="config" v-model="model.defaultRosters" :rosterOptions="rosterDefinitions.definitions"/>
-                            <h3 margin>Media &amp; Resources</h3>
                             <reminder-event-manager :config="config" v-model="model.defaultReminders" :allAssignmentOptions="allPositions" />
                         </constrain>
                     </v-container>
@@ -179,6 +178,10 @@ export default {
 
         if (!self.model.defaultRooms) {
             self.$set(self.model, 'defaultRooms', []);
+        }
+
+        if (!self.model.defaultRosters) {
+            self.$set(self.model, 'defaultRosters', []);
         }
     },
     methods: {

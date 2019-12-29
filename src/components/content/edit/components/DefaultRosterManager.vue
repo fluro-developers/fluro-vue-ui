@@ -2,14 +2,15 @@
     <div v-if="workingModel">
         <fluro-panel>
             <tabset :justified="true" :vertical="false">
-                <tab :heading="getTitle(def)" v-for="(def, ind) in rosterOptions">
+                <tab :heading="getTitle(def)" :icon="iconObject(workingModel[def.definitionName])" v-for="(def, ind) in rosterOptions">
                     <fluro-panel-body>
-                        <default-roster-component :config="config" :data="def" v-model="workingModel[def.definitionName]" />
+                        <default-roster-component @input="updateModel" :config="config" :data="def" v-model="workingModel[def.definitionName]" />
                     </fluro-panel-body>
                 </tab>
             </tabset>
-            {{workingModel}}
         </fluro-panel>
+        <pre>{{workingModel}}</pre>
+        <pre>{{model}}</pre>
     </div>
 </template>
 <script>
@@ -33,12 +34,18 @@ export default {
     created() {
         var self = this;
         var mapped = _.map(self.model, function(m) {
-            return m.definitionName;
+            return m.definition;
         });
+        if (!self.value) {
+            self.model = [];
+        }
+        else {
+            self.model = self.value;
+        }
         _.each(self.rosterOptions, function(val) {
             if (mapped.includes(val.definitionName)) {
                 self.$set(self.workingModel, val.definitionName, _.filter(self.model, function(m) {
-                    return m.definitionName == val.definitionName;
+                    return m.definition == val.definitionName;
                 })[0]);
             } else {
                 self.$set(self.workingModel, val.definitionName, {
@@ -57,9 +64,38 @@ export default {
     methods: {
         getTitle(def) {
             return _.get(def, 'title');
-        }
+        },
+        updateModel(val) {
+            var self = this;
+            //console.log('HELLO');
+            var find = _.find(self.model, function(o) {
+                return val.definition == o.definition;
+            });
+            //console.log('FIND',find, self.model[find])
+            if (!find && val.create) {
+                self.model.push(val);
+            }
+            else if (val.create) {
+                self.model[find] = val;
+            }
+            else {
+                self.model.splice(find, 1);
+            }
+        },
+        iconObject(model) {
+            var self = this;
+            if (model.create) {
+                return {
+                    icon: 'check-circle',
+                    library: 'fas',
+                    color: '#4cc650',
+                }
+            }
+            else return;
+        },
     },
-    watch: {},
+    watch: {
+    },
 }
 </script>
 <style lang="scss">
