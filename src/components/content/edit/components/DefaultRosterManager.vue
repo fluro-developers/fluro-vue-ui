@@ -9,8 +9,6 @@
                 </tab>
             </tabset>
         </fluro-panel>
-        <pre>{{workingModel}}</pre>
-        <pre>{{model}}</pre>
     </div>
 </template>
 <script>
