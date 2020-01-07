@@ -2,7 +2,7 @@
     <div v-if="workingModel">
         <fluro-panel>
             <tabset :justified="true" :vertical="false">
-                <tab :heading="getTitle(def)" :icon="iconObject(workingModel[def.definitionName])" v-for="(def, ind) in rosterOptions">
+                <tab :heading="getTitle(def)" :muted="muted(workingModel[def.definitionName])" :icon="iconObject(workingModel[def.definitionName])" v-for="(def, ind) in rosterOptions">
                     <fluro-panel-body>
                         <default-roster-component @input="updateModel" :config="config" :data="def" v-model="workingModel[def.definitionName]" />
                     </fluro-panel-body>
@@ -90,6 +90,11 @@ export default {
                 }
             }
             else return;
+        },
+        muted(model) {
+           
+            return !model.create
+            
         },
     },
     watch: {

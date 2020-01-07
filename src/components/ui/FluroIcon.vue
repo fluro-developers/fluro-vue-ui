@@ -16,6 +16,9 @@ export default {
         },
         'library':{
             type:String,
+            default() {
+                return this.$fluro.global.defaultIconLibrary || 'fas';
+            }
         },
         'spin':{
             type:Boolean,
