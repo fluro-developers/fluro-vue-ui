@@ -135,7 +135,7 @@ export default {
         // opacity: 0.2;
         font-style:italic;
         color: rgba(#000, 0.3);
-        background: none;
+        background: rgba(#000,0.05);
 
         .toggle-switch {
             &:before {

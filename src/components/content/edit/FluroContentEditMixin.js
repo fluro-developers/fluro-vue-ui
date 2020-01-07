@@ -35,7 +35,12 @@ export default {
     },
     mixins:[Layout],
     computed: {
-
+        type() {
+            return this.config.type;
+        },
+        typeName() {
+            return this.type ? this.type.definitionName : '';
+        },
         itemID() {
             return this.model._id;
         },

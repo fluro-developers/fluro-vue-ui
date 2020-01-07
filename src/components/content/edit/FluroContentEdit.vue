@@ -14,7 +14,8 @@
                 <flex-column-header class="border-bottom">
                     <page-header :type="typeName">
                         <template v-slot:left>
-                            <fluro-inline-edit>
+                            <!-- <pre>{{clickTitleEdit}} -- {{typeName}}</pre> -->
+                            <fluro-inline-edit :enabled="clickTitleEdit">
                                 <template v-slot:default>
                                     <h3>{{title}} <span class="small text-muted">{{definitionTitle}}</span></h3>
                                 </template>
@@ -484,6 +485,20 @@ export default {
         }
     },
     computed: {
+
+        clickTitleEdit() {
+            var self = this;
+
+          
+            switch(self.typeName) {
+                case 'contact':
+                    return false;
+                break;
+                default:
+                    return true;
+                break;
+            }
+        },
         uploadForSave() {
             var self = this;
             return !self.model._id && self.model.assetType == 'upload';

@@ -8,6 +8,9 @@
 <script>
 export default {
     props: {
+        muted:{
+            type:Boolean,
+        },
         enabled:{
             type:Boolean,
             default:true,

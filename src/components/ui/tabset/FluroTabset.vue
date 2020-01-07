@@ -1,13 +1,20 @@
 <template>
     <flex-column class="tabset" :class="{justified, vertical}">
         <!-- {{activeTabIndex}} -->
-        <flex-column-header class="tabset-header" v-if="enabledTabs.length > 1">
+        <flex-column-header class="tabset-header" v-if="enabledTabs.length > 1 || persist">
             <slot name="menuprefix"></slot>
             <div class="tabset-menu" ref="outer">
                 <div class="tabset-menu-inner" ref="inner">
-                    <a flat v-for="(tab, index) in enabledTabs" :class="{active:index == activeTabIndex}" @click="selectTab(index)">
-                        {{tab.heading}}
-                    </a>
+                    <template v-for="(tab, index) in enabledTabs">
+                        <!-- <div v-if="tab.$slots.title" :class="{active:index == activeTabIndex, muted:tab.muted}" @click="selectTab(index)">
+                            Test {{tab.$slots.title}} <slot name="title"/>
+                        </div> -->
+                        <!-- v-else  -->
+                        <a flat  :class="{active:index == activeTabIndex, muted:tab.muted}" @click="selectTab(index)">
+                            {{tab.heading}}
+                        </a>
+                    </template>
+
                 </div>
             </div>
             <slot name="menusuffix"></slot>
@@ -27,6 +34,9 @@ export default {
             type: Object
         },
         justified: {
+            type: Boolean,
+        },
+        persist: {
             type: Boolean,
         },
         vertical: {
@@ -64,7 +74,7 @@ export default {
             _.pull(this.tabs, tab);
         },
         addTab(tab) {
-            if(_.includes(this.tabs, tab)) {
+            if (_.includes(this.tabs, tab)) {
                 return;
             }
 
@@ -218,7 +228,7 @@ export default {
         a {
             display: inline-block;
             color: inherit;
-            opacity: 0.5;
+            opacity: 0.6;
             // display: block;
             padding: 15px 35px;
             font-size: 0.8em;
@@ -303,6 +313,11 @@ export default {
                             overflow: hidden;
                             text-overflow: ellipsis;
                             flex: none;
+
+                            &.muted {
+                                opacity: 0.2;
+                                background: #bbb;
+                            }
 
                             &.active {
                                 background: #fafafa;
