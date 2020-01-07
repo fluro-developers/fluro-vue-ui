@@ -5,6 +5,7 @@
             <slot name="menuprefix"></slot>
             <div class="tabset-menu" ref="outer">
                 <div class="tabset-menu-inner" ref="inner">
+<<<<<<< HEAD
                     <template v-for="(tab, index) in enabledTabs">
                         <!-- <div v-if="tab.$slots.title" :class="{active:index == activeTabIndex, muted:tab.muted}" @click="selectTab(index)">
                             Test {{tab.$slots.title}} <slot name="title"/>
@@ -15,6 +16,11 @@
                         </a>
                     </template>
 
+=======
+                    <a flat v-for="(tab, index) in enabledTabs" :class="{active:index == activeTabIndex}" @click="selectTab(index)">
+                        {{tab.heading}}  <fluro-icon v-if="tab.icon" :icon="tab.icon.icon" :library="tab.icon.library || ''" :style="{ color: tab.icon.color }"/>
+                    </a>
+>>>>>>> 62455fe21a891d3e4fffc1c10e32dbb07b59d22b
                 </div>
             </div>
             <slot name="menusuffix"></slot>

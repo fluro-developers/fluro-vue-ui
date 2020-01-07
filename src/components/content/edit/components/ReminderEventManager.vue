@@ -48,6 +48,9 @@ export default {
     props: {
         value: {
             type: Array,
+            default: function() {
+                return [];
+            }
         },
         config: {
             type: Object,
@@ -74,6 +77,7 @@ export default {
             model: this.value,
             proposed: {},
             editing: [],
+            clonedModel: this.value,
         }
     },
     methods: {
@@ -91,7 +95,7 @@ export default {
 
             this.model.push(clone);
             this.editing.push(false);
-            this.proposed = {};
+            self.$set(self, 'proposed', { 'assignments': [''], 'methods': [''] });
         },
         remove(index) {
             this.model.splice(index, 1);
@@ -100,24 +104,23 @@ export default {
         toggleEdit(index) {
             var self = this;
             //console.log(self.$refs);
-            var ref = 'editform' + index;
-            //console.log(self.$refs[ref]);
+            //console.log('ON TOGGLE', self.model[index], self.clonedModel[index]);
+            console.log('MODEL',this.model[index].methods,'CLONEDMODEL',this.clonedModel[index].methods);
             if (self.editing[index]) {
-                self.$refs[ref][0].validateAllFields();
-                if (self.clonedModel[index].errorMessages.length) {
-                    return;
+                if (self.clonedModel[index].message.length) {
+                    self.model[index] = self.clonedModel[index];
+                    return self.$set(self.editing, index, false);
                 }
-                self.model[index] = self.clonedModel[index];
-                return self.$set(self.editing, index, false);
+                return;
             } else {
                 return self.$set(self.editing, index, true);
             }
         },
     },
-    computed: {
-        clonedModel() {
-            return JSON.parse(JSON.stringify(this.model));
-        }
+    watch: {
+        'model': function() {
+            this.clonedModel = JSON.parse(JSON.stringify(this.model));
+        },
     },
 }
 </script>

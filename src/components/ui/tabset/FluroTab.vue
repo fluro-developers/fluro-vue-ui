@@ -18,6 +18,9 @@ export default {
         heading: {
             type: String
         },
+        icon: {
+            type: Object
+        },
     },
     inject: ['tabs', 'addTab', 'removeTab'],
     created() {

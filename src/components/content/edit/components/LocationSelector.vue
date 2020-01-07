@@ -103,7 +103,11 @@ export default {
                 return itemID == selectedItemID;
             })
 
-            return match;
+            if (match) {
+                return true;
+            } else {
+                return false;
+            }
         },
         selectLocation(item) {
             var self = this;
