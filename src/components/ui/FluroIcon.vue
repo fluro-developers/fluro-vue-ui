@@ -1,7 +1,7 @@
 <template>
     <!-- <div> -->
         <!-- {{type}} {{iconName}} -->
-    <font-awesome-icon :spin="spin" fixed-width :icon="iconName"></font-awesome-icon>
+    <font-awesome-icon :spin="spin" fixed-width :icon="iconName" v-if="iconName"></font-awesome-icon>
 <!-- </div> -->
 </template>
 <script>

@@ -1,4 +1,4 @@
-console.log('fluro-vue-ui 2.0.38')
+console.log('fluro-vue-ui 2.0.43')
 
 /////////////////////////////////////////////////////
 
@@ -495,10 +495,14 @@ import {
 } from 'vuetify/lib';
 
 
+
+
+
 /////////////////////////////////////////////////////
 
 const FluroVueUI = {
     install: function(Vue, options) {
+
 
 
         //Add the default Vuetify Components

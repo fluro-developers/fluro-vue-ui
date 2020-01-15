@@ -9,7 +9,6 @@
                         <v-select single-line dense :loading="loadingKeys" :return-object="true" v-model="selectedKey" item-text="title" item-value="key" :items="fields" />
                     </template>
                     <template v-else>
-
                         <div v-tippy :content="keyCaption">
                             <!-- <pre>{{selectedKey}}</pre> -->
                             <!-- TESTING -->
@@ -50,14 +49,14 @@
                 <!-- <pre>{{selector}}</pre> -->
             </v-flex>
             <!-- v-if="!hasSubFields" -->
-            <v-flex xs12 sm4>
+            <v-flex xs12 sm3>
                 <v-select single-line dense ref="inputComparator" v-model="model.comparator" item-text="title" item-value="operator" :items="comparators" />
                 <!-- <pre>{{model.comparator}}</pre> -->
             </v-flex>
-            <template v-if="comparator">
-                <template v-if="inputType == 'none'">
-                </template>
-                <v-flex xs12 sm4 v-else-if="inputType == 'daterange'">
+            <template v-if="comparator && inputType != 'none'">
+                <!-- <template v-if="inputType == 'none'">
+                </template> -->
+                <v-flex xs12 sm5 v-if="inputType == 'daterange'">
                     <v-menu :fixed="true" :right="true" ref="dateSelection" :close-on-content-click="false" transition="slide-y-transition" offset-y>
                         <template v-slot:activator="{ on }">
                             <v-btn small flat block class="ma-0" v-on="on">
@@ -114,7 +113,7 @@
                         </v-flex>
                     </v-layout> -->
                 </v-flex>
-                <v-flex xs12 sm4 v-else-if="inputType == 'range'">
+                <v-flex xs12 sm5 v-else-if="inputType == 'range'">
                     <v-layout>
                         <v-flex xs6>
                             <v-text-field class="small-input" single-line label="from" v-model="model.value"></v-text-field>
@@ -124,14 +123,17 @@
                         </v-flex>
                     </v-layout>
                 </v-flex>
-                <v-flex xs12 sm4 v-else-if="inputType == 'array' && dataType != 'date'">
+                <v-flex xs12 sm5 v-else-if="inputType == 'array' && dataType != 'date'">
                     <!-- <pre>{{simpleKey}} {{discriminator}}</pre> -->
                     <template v-if="simpleKeyIsRealms">
                         <!-- REALM SELECT -->
                         <fluro-realm-select :filterDiscriminator="discriminator" block small v-model="model.values" />
                     </template>
+                    <template v-else-if="useBasicReferenceSelect">
+                        <fluro-content-select-button small block :allDefinitions="true" :type="useBasicReferenceSelect" v-model="model.values" />
+                    </template>
                     <template v-else>
-                        <template v-if="dataType == 'reference'">
+                        <template v-if="referenceSelectField">
                             <template v-if="$vuetify.breakpoint.xsOnly">
                                 <v-select class="small-input" multiple dense v-model="model.values" item-text="title" item-value="_id" :loading="loadingValues" :items="cleanedValueSelection">
                                     <template v-slot:item="data">
@@ -176,7 +178,7 @@
                         </template>
                     </template>
                 </v-flex>
-                <v-flex xs12 sm4 v-else>
+                <v-flex xs12 sm5 v-else>
                     <template v-if="dataType == 'date'">
                         <template v-if="model.comparator == 'datesameweekday'">
                             <div>
@@ -207,7 +209,11 @@
                     </template>
                     <v-text-field v-else-if="dataType == 'number' || dataType == 'float' || dataType == 'decimal'" class="small-input" single-line v-model="model.value"></v-text-field>
                     <v-text-field v-else-if="dataType == 'integer'" class="small-input" single-line mask="############" v-model="model.value"></v-text-field>
-                    <template v-else-if="dataType == 'reference'">
+                    <template v-else-if="useBasicReferenceSelect">
+                        <!-- <pre>{{referenceID}}</pre> -->
+                        <fluro-content-select-button small block :allDefinitions="true" :maximum="1" :single-value="true" :type="useBasicReferenceSelect" v-model="model.value" />
+                    </template>
+                    <template v-else-if="referenceSelectField">
                         <template v-if="$vuetify.breakpoint.xsOnly">
                             <v-select class="small-input" dense v-model="model.value" item-text="title" item-value="_id" :loading="loadingValues" :items="cleanedValueSelection">
                                 <template v-slot:item="data">
@@ -291,12 +297,14 @@
 <script>
 import { FilterService } from 'fluro';
 import FluroRealmSelect from '../realmselect/FluroRealmSelect.vue';
+import FluroContentSelectButton from '../contentselect/FluroContentSelectButton.vue';
 
 // import moment from 'moment';
 
 export default {
     components: {
         FluroRealmSelect,
+        FluroContentSelectButton,
     },
     props: {
         type: {
@@ -355,6 +363,8 @@ export default {
         self.debounced = _.debounce(function() {
             // self.model = self.words;
             // console.log('FILTER ROW CHANGED', self.model)
+
+
             self.$emit('input', self.model);
         }, self.debounce);
 
@@ -412,16 +422,42 @@ export default {
             loadingValues: false,
             selectedKey: parsedModel.key || '',
             model: parsedModel,
+            referenceIDModel:parsedModel.value,
             realmValues: [],
         }
     },
     computed: {
+        referenceID:{
+            get() {
+                return this.referenceIDModel;
+            },
+            set(reference) {
+                this.model.value = this.$fluro.utils.getStringID(reference);
+                this.referenceIDModel = reference;
+            }
+        },
+        referenceSelectField() {
+            return this.dataType == 'reference' && !this.requiresManualInput;
+        },
+        useBasicReferenceSelect() {
+            var self = this;
+
+            if(!self.referenceSelectField) {
+                return;
+            }
+
+            if(!self.selector) {
+                return;
+            }
+
+            return self.selector.typeSelect || false;
+        },
         keyCaption() {
 
-            if(this.model.title) {
+            if (this.model.title) {
                 return this.model.title;
             }
-            
+
             if (this.selectedKey) {
                 return this.selectedKey.title || this.selectedKey
             }
@@ -654,8 +690,6 @@ export default {
                 case 'like':
                 case 'contains':
                 case 'excludes':
-                case 'startswith':
-                case 'startswith':
                     return true;
                     break;
             }
@@ -830,10 +864,19 @@ export default {
 
 
             var self = this;
-            var key = this.model.key;
+            var key = self.model.key;
 
             ////////////////////////////////////
 
+            if (self.useBasicReferenceSelect) {
+                //Just show a normal reference selector
+                self.possibleValues = [];
+                self.loadingValues = false;
+                return;
+            }
+
+
+            ////////////////////////////////////
 
 
             //If we have no key then there are no possible values
@@ -890,6 +933,10 @@ export default {
             var dataType = self.dataType;
             console.log('Retrieve Values', key, self.dataType)
 
+            ////////////////////////////////
+
+            //Anything goes
+            ////////////////////////////////
 
             //For certain data types we already know
             //the options available
@@ -918,7 +965,7 @@ export default {
                         case 'status':
 
                             switch (_.get(self, 'definition.type.definitionName')) {
-                                
+
                                 case 'contact':
                                     return self.possibleValues = ['active', 'draft', 'archived', 'deceased'];
                                     break;

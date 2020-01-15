@@ -1,11 +1,10 @@
 <template>
     <div :data-field-key="key" class="fluro-content-form-field" v-if="isVisible" v-bind="attributes" :class="fieldClass">
-        <!-- <pre>{{field.title}} MODEL {{model}}</pre> -->
         <!-- <pre>{{field.title}} DATA {{formModel}}</pre> -->
         <template v-if="officeUseOnly">
         </template>
         <template v-else-if="customComponent">
-            <component v-model="fieldModel" v-bind:is="customComponent"/>
+            <component v-model="fieldModel" v-bind:is="customComponent" />
         </template>
         <template v-else-if="renderer == 'dynamicdate'">
             <v-input :label="displayLabel" :persistent-hint="true" :hint="dynamicDateHint" class="no-flex">
@@ -167,6 +166,7 @@
                         </v-list>
                     </v-menu> -->
             <!-- <v-dialog ref="dialog" v-model="modal" persistent :return-value.sync="fieldModel" lazy full-width width="290px"> -->
+           <!-- <pre>{{typeof fieldModel}} {{fieldModel}}</pre> -->
             <v-menu :fixed="true" v-model="modal" min-width="290px" :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
                 <template v-slot:activator="{ on }">
                     <!-- :value="computedDateFormattedMomentjs"  -->
@@ -176,6 +176,7 @@
                     <v-text-field :outline="showOutline" :success="success" :value="formattedDate" :persistent-hint="true" :hint="dateHint" :label="displayLabel" prepend-inner-icon="event" readonly v-on="on"></v-text-field>
                 </template>
                 <v-card>
+
                     <v-date-picker attach @change="modal = false" v-model="fieldModel" no-title scrollable>
                         <v-spacer></v-spacer>
                         <!-- <v-btn flat color="primary" @click="modal = false">Cancel</v-btn> -->
@@ -210,7 +211,7 @@
             </v-dialog>
         </template>
         <template v-else-if="renderer == 'datetimepicker'">
-            <fluro-date-time-picker :outline="showOutline" :min="minDate"  :max="maxDate" :success="success" format="ddd D MMM - h:mma " timePickerFormat="ampm" :label="displayLabel" :placeholder="field.placeholder" :hint="field.description" v-model="fieldModel" @focus="modal = true" />
+            <fluro-date-time-picker :outline="showOutline" :min="minDate" :max="maxDate" :success="success" format="ddd D MMM - h:mma " timePickerFormat="ampm" :label="displayLabel" :placeholder="field.placeholder" :hint="field.description" v-model="fieldModel" @focus="modal = true" />
         </template>
         <template v-else-if="renderer == 'timezoneselect'">
             <template v-if="mobile">
@@ -369,6 +370,11 @@
                 </label>
             </v-input>
         </template>
+        <template v-else-if="renderer == 'currency' && !multipleInput">
+            <!--   CURRENCY
+            <pre>{{fieldModel}}</pre> -->
+            <fluro-currency-input :currency="params.currency" :label="displayLabel" :required="required" v-model="fieldModel" :autofocus="autofocus" :outline="showOutline" :success="success" @blur="touch()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" />
+        </template>
         <template v-else>
             <template v-if="multipleInput">
                 <!--  -->
@@ -412,6 +418,7 @@ import _ from 'lodash';
 import Vue from 'vue';
 import FluroCompileHtml from '../FluroCompileHtml.vue';
 import FluroEditor from './FluroEditor.vue';
+import FluroCurrencyInput from './FluroCurrencyInput.vue';
 import FluroCodeEditor from './FluroCodeEditor.vue';
 import FluroSignatureField from './FluroSignatureField.vue';
 import FluroDateTimePicker from './FluroDateTimePicker.vue';
@@ -425,11 +432,24 @@ import Expressions from 'expression-eval';
 import moment from 'moment';
 import draggable from 'vuedraggable'
 
+
+////////////////////////////////////////////////////////
+
+function mapDefaultDateValue(value) {
+    if (String(value).toLowerCase() == 'now') {
+        console.log('convert to now')
+        return new Date();
+    }
+
+    return new Date(value);
+}
+
 ////////////////////////////////////////////////////////
 
 export default {
     components: {
         draggable,
+        FluroCurrencyInput,
         FluroEditor,
         FluroCompileHtml,
         FluroCodeEditor,
@@ -559,7 +579,7 @@ export default {
     computed: {
         customComponent() {
             return this.field.customComponent;
-        },  
+        },
         mobile() {
             return this.$vuetify.breakpoint.xsOnly;
         },
@@ -686,8 +706,11 @@ export default {
                 ghostClass: "ghost"
             };
         },
+        params() {
+            return this.field.params || {};
+        },
         showOutline() {
-            return this.outline || this.options.outline;
+            return this.outline || this.params.outline || this.options.outline;
         },
 
         searchInheritable() {
@@ -913,11 +936,19 @@ export default {
 
                 //////////////////////////////////
 
-                if (self.field.type == 'boolean') {
-                    if (self.field.inverse) {
-                        return !value;
-                    }
+                switch (self.field.type) {
+                    // case 'date':
+                    // if(String(value).toLowerCase() == 'now') {
+                        // return new Date(value).toISOString();
+                    // }
+                    // break;
+                    case 'boolean':
+                        if (self.field.inverse) {
+                            return !value;
+                        }
+                        break;
                 }
+
                 //////////////////////////////////
 
                 return value;
@@ -931,10 +962,10 @@ export default {
                 //////////////////////////////////
                 //////////////////////////////////
 
-                if (self.expressions && self.expressions.transform && typeof self.expressions.transform == 'function') {
-                    value = self.expressions.transform(value);
-                    console.log('Transformed to', value)
-                }
+                // if (self.expressions && self.expressions.transform && typeof self.expressions.transform == 'function') {
+                //     value = self.expressions.transform(value);
+                //     console.log('Transformed to', value)
+                // }
 
                 //////////////////////////////////
                 //////////////////////////////////
@@ -963,6 +994,11 @@ export default {
 
                 // /this.model[this.key] = value;
                 switch (self.type) {
+                    case 'date':
+                        if (String(value).toLowerCase() == 'now') {
+                            value = new Date();
+                        }
+                        break;
                     case 'integer':
                         if (value != undefined && value != null) {
                             if (String(value).length) {
@@ -1195,7 +1231,7 @@ export default {
             // return ['Errors on purpose'];
 
 
-            if(!self.isVisible) {
+            if (!self.isVisible) {
                 console.log('No errors', this.field.title);
                 return errors;
             } else {
@@ -1340,6 +1376,10 @@ export default {
             /////////////////////////////////
 
             switch (directive) {
+                case 'currency':
+                    directive = 'currency';
+                    break;
+                    break;
                 case 'realm-select':
                     directive = 'realmselect';
                     break;
@@ -1858,6 +1898,7 @@ export default {
         } else {
             if (_.isArray(self.fieldModel)) {
                 switch (self.type) {
+                    
                     case 'string':
                         self.fieldModel = _.first(self.fieldModel);
                         console.log(self.field.title, 'Transformed array to single value')

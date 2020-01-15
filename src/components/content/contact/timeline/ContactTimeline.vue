@@ -13,7 +13,8 @@
                 <template v-slot:card="{entry}">
                     <template v-if="entry.grouped">
 
-                        <grouped-card :item="entry"/>
+                        <!-- <grouped-card :item="entry"/> -->
+                        <log-card :item="log" :key="log._id" v-for="log in entry.entries"/>
                        
                     </template>
                     <template v-else-if="!entry._type">

@@ -25,7 +25,7 @@
                 </v-alert>
                 <slot name="submit" :hasErrors="hasErrors">
                     <v-btn class="mx-0" :disabled="hasErrors" type="submit" color="primary">
-                        {{submitText}}
+                        {{submitButtonText}}
                     </v-btn>
                 </slot>
             </template>
@@ -53,11 +53,17 @@ export default {
         'submitText':{
         	type:String,
         	default:'Submit',
+        },
+        'value':{
+            type:Object,
+            default() {
+                return {};
+            }
         }
     },
     data() {
         return {
-            model: {},
+            model:this.value,//JSON.parse(JSON.stringify(this.value)),
             state: 'ready',
             serverErrors: '',
             errorMessages: [],
@@ -74,6 +80,9 @@ export default {
         self.validate();
     },
     computed: {
+        submitButtonText() {
+            return this.submitText
+        },
         hasErrors() {
             // console.log('Has Errors?', this.errorMessages)
             return this.errorMessages.length ? true : false;

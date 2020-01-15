@@ -41,7 +41,7 @@
                 </button>
             </div>
         </editor-floating-menu> -->
-        <editor-menu-bubble :editor="editor" @hide="hideBubble" :keep-in-bounds="keepInBounds" v-slot="{ commands, isActive, getMarkAttrs, menu }">
+        <editor-menu-bubble v-if="bubbleEnabled" :editor="editor" @hide="hideBubble" :keep-in-bounds="keepInBounds" v-slot="{ commands, isActive, getMarkAttrs, menu }">
             <div class="menububble" :class="{ 'active': menu.isActive }" :style="`left: ${menu.left}px; bottom: ${menu.bottom}px;`">
                 <v-btn icon small flat :class="{ 'active': isActive.bold() }" @click.stop.prevent="commands.bold">
                     <fluro-icon icon="bold" />
@@ -66,7 +66,7 @@
                 </template>
             </div>
         </editor-menu-bubble>
-        <editor-menu-bar :editor="editor">
+        <editor-menu-bar :editor="editor" v-if="barEnabled">
             <div class="fluro-editor-toolbar" slot-scope="{ commands, isActive }">
                 <v-btn icon small flat class="hidden-xs-only" :class="{ 'is-active':showSource }" @click.stop.prevent="showSource = !showSource">
                     <fluro-icon v-if="showSource" icon="edit"/>
@@ -326,6 +326,12 @@ export default {
         }
     },
     computed: {
+        barEnabled() {
+            return !(this.options.disable && this.options.disable.bar);
+        },
+        bubbleEnabled() {
+            return !(this.options.disable && this.options.disable.bubble);
+        },
         showSuggestions() {
             return this.query || this.hasResults
         },
@@ -351,10 +357,10 @@ export default {
             this.editor.focus()
         },
         blur($event) {
-            this.$emit('blur', $event);
+            this.$emit('blur');
         },
         focus($event) {
-            this.$emit('focus', $event);
+            this.$emit('focus');
         },
         sourceChange(input) {
             this.model = input;

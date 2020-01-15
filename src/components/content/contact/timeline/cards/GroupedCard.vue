@@ -1,18 +1,19 @@
 <template>
     <div class="timeline-entry border-top">
         <fluro-realm-bar :realm="realms" />
-        <v-layout>
+        <pre>{{item}}</pre>
+       <!--  <v-layout>
             <v-flex shrink>
                 <v-container pa-2>
                     <div class="timeline-icon">
-                        <fluro-icon library="far" :icon="icon" />
+
+                        <fluro-icon v-if="icon" library="far" :icon="icon" />
                     </div>
                 </v-container>
             </v-flex>
             <v-flex>
                 <v-container pa-2 v-if="type == 'assignment'">
-                    <!-- <pre>{{title}}</pre> -->
-                    <!-- <pre>{{icon}}</pre> -->
+                   
                     <strong>{{title}}</strong>
                     <div class="inline-tags">
                         <span class="inline-tag" @click="$fluro.global.edit(link, true)" v-for="link in links">{{link.startDate | formatDate('h:mma')}} {{link.title}}</span>
@@ -20,7 +21,7 @@
                     <!-- <div class="summary">{{eventTitles}}</div> -->
                 </v-container>
             </v-flex>
-        </v-layout>
+        </v-layout> -->
     </div>
 </template>
 <script>
@@ -90,10 +91,12 @@ export default {
             var self = this;
             switch (self.item.type) {
                 case 'assignment':
+
                     return 'calendar';
                     break;
                 default:
                     return self.$fluro.types.icon(self.item.type);
+                    
                     break;
             }
         }

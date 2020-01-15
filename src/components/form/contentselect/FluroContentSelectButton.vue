@@ -1,5 +1,5 @@
 <template>
-    <div class="content-select">
+    <div class="content-select-button">
         <v-btn :small="small" :large="large" :color="color" :block="block" class="pill mx-0" @click.native="showModal">
             <span>{{selectionSummary}}</span>
         </v-btn>
@@ -7,19 +7,21 @@
 </template>
 <script>
 import Vue from 'vue';
-import FluroSelectionMixin from '../../../mixins/FluroSelectionMixin';
+// import FluroSelectionMixin from '../../../mixins/FluroSelectionMixin';
 
 ///////////////////////////////////////////////
 
 import FluroContentSelectModal from './FluroContentSelectModal.vue';
+import FluroSelector from './FluroSelector.vue';
 
 ///////////////////////////////////////////////
 
 export default {
     props: {
-        label:{
-            type:String,
+        label: {
+            type: String,
         },
+
         filter: {
             type: Object,
             default () {
@@ -51,18 +53,30 @@ export default {
         allDefinitions: {
             type: Boolean,
         },
-        'value': {
-            type: Array,
-            default: function() {
-                return [];
-            },
+        singleValue: {
+            type: Boolean,
         },
         'type': {
             //The type of thing we are selecting realms for
             type: String,
         },
+
+        'minimum': {
+            type: Number,
+            default: 0,
+        },
+        'maximum': {
+            type: Number,
+            default: 0,
+        },
+        'value': {
+            // type: [Array, Object],
+        },
     },
     computed: {
+        selection() {
+            return this.selector.selection;
+        },
         title() {
             return this.$fluro.types.readable(this.type, false);
         },
@@ -72,19 +86,20 @@ export default {
         selectionSummary() {
             var self = this;
 
-
             var matchingSelection = _.filter(self.selection, function(entry) {
+                if(!entry) {
+                    return;
+                }
+
                 return entry.definition ? entry.definition == self.type : (entry._type == self.type)
             })
 
             if (!matchingSelection.length) {
-
-                if(self.label && self.label.length) {
+                if (self.label && self.label.length) {
                     return self.label;
                 } else {
-                    return `Click to select ${self.plural}`
+                    return self.small ?  `Select ${self.plural}` : `Click to select ${self.plural}`
                 }
-                
             }
 
             if (matchingSelection.length > 3) {
@@ -94,24 +109,48 @@ export default {
             return _.map(matchingSelection, 'title').join(', ');
         }
     },
-    created() {
-        this.setSelection(this.value);
+    data() {
+
+        var self = this;
+        var SelectionManager = Vue.extend(FluroSelector);
+
+
+        var defaultValue = self.singleValue ? [self.value] : self.value;
+        var selector = new SelectionManager({
+            propsData: {
+                minimum: self.minimum,
+                maximum: self.maximum,
+                allDefinitions:self.allDefinitions,
+                value: defaultValue,
+            }
+        });
+
+        return {
+            selector,
+        }
     },
-    components: {},
-    mixins: [FluroSelectionMixin],
     watch: {
-        'value': function() {
-            //Set the value so update the selection
-            this.setSelection(this.value);
+        minimum(v) {
+            this.selector.minimum = v;
         },
-        'selection': function() {
-            var self = this;
-            this.$emit('input', self.selection);
+        maximum(v) {
+            this.selector.maximum = v;
+        },
+        'value': function(v) {
+            //Set the value so update the selection
+            this.selector.value = this.singleValue ? [v] : v;
+        },
+        'selection': function(model) {
+            if (this.singleValue) {
+                model = _.first(model)
+            }
+            console.log('EMIT CHANGE', this.singleValue || 'multiple', model);
+            this.$emit('input', model);
         }
     },
     methods: {
         showModal() {
-            // console.log('SHOW MODAL', this.$fluro.modal)
+            console.log('SHOW MODAL', this.selector)
             var self = this;
 
             //////////////////////////////////////
@@ -119,16 +158,15 @@ export default {
             var promise = self.$fluro.modal({
                 component: FluroContentSelectModal,
                 options: {
-                    selector: self,
+                    selector: self.selector,
                     type: self.type,
                     allDefinitions: self.allDefinitions,
-                    filter:self.filter,
+                    filter: self.filter,
                 }
             });
 
             //////////////////////////////////////
 
-            // promise.then(function(res) {}, function(err) {})
         },
     }
 }

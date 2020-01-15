@@ -1,85 +1,83 @@
 <template>
-   
-            <flex-column class="fluro-task-modal">
-                <flex-column-header class="border-bottom">
-                    <v-container class="text-xs-center">
-                        <h3 margin>{{title}}</h3>
-                        <div class="introduction" v-html="description"></div>
-                    </v-container>
-                </flex-column-header>
-                <flex-column-body>
-                    <div class="task-options border-top border-bottom">
-                        <div class="task-option-item complete" :class="{active:task.status == 'complete'}" @click="select('complete')">
-                            <v-layout align-center>
-                                <v-flex>
-                                    <strong>{{completeLabel}}</strong>
-                                    <div class="sm muted" v-if="completeDescription">{{completeDescription}}</div>
-                                </v-flex>
-                                <v-flex shrink>
-                                    <div class="task-icon">
-                                        <fluro-icon icon="thumbs-up" />
-                                    </div>
-                                </v-flex>
-                            </v-layout>
-                        </div>
-                        <div class="task-option-item pending" :class="{active:task.status == 'pending'}" @click="select('pending')" v-if="pendingEnabled">
-                            <v-layout align-center>
-                                <v-flex>
-                                    <strong>{{pendingLabel}}</strong>
-                                    <div class="sm muted" v-if="pendingDescription">{{pendingDescription}}</div>
-                                </v-flex>
-                                <v-flex shrink>
-                                    <div class="task-icon">
-                                        <fluro-icon icon="tasks" />
-                                    </div>
-                                </v-flex>
-                            </v-layout>
-                        </div>
-                        <div class="task-option-item failed" :class="{active:task.status == 'failed'}" @click="select('failed')" v-if="failedEnabled">
-                            <v-layout align-center>
-                                <v-flex>
-                                    <strong>{{failedLabel}}</strong>
-                                    <div class="sm muted" v-if="failedDescription">{{failedDescription}}</div>
-                                </v-flex>
-                                <v-flex shrink>
-                                    <div class="task-icon">
-                                        <fluro-icon icon="thumbs-down" />
-                                    </div>
-                                </v-flex>
-                            </v-layout>
-                        </div>
-
-
-                        <div class="task-option-item"  @click="select('incomplete')" v-if="task.status != 'incomplete'">
-                            <v-layout align-center>
-                                <v-flex>
-                                    <strong>Incomplete</strong>
-                                    <div class="sm muted">Reset this task back to it's untouched state</div>
-                                </v-flex>
-                                <v-flex shrink>
-                                    <div class="task-icon">
-                                        <fluro-icon icon="circle" />
-                                    </div>
-                                </v-flex>
-                            </v-layout>
-                        </div>
-                    </div>
-                    <!-- <pre>{{task.status}}</pre> -->
-                </flex-column-body>
-                <flex-column-footer class="border-top">
-                    <v-container class="py-1 px-2">
-                        <v-btn block @click="dismiss()">
-                            Cancel
-                        </v-btn>
-                    </v-container>
-                </flex-column-footer>
-            </flex-column>
-       
+    <flex-column class="fluro-task-modal">
+        <flex-column-header class="border-bottom">
+            <v-container class="text-xs-center">
+                <h3 margin>{{title}}</h3>
+                <div class="introduction" v-html="description"></div>
+            </v-container>
+        </flex-column-header>
+        <flex-column-body>
+            <div class="task-options border-top border-bottom">
+                <div class="task-option-item complete" :class="{active:task.status == 'complete'}" @click="select('complete')">
+                    <v-layout align-center>
+                        <v-flex>
+                            <strong>{{completeLabel}}</strong>
+                            <div class="sm muted" v-if="completeDescription">{{completeDescription}}</div>
+                        </v-flex>
+                        <v-flex shrink>
+                            <div class="task-icon">
+                                <fluro-icon icon="thumbs-up" />
+                            </div>
+                        </v-flex>
+                    </v-layout>
+                </div>
+                <div class="task-option-item pending" :class="{active:task.status == 'pending'}" @click="select('pending')" v-if="pendingEnabled">
+                    <v-layout align-center>
+                        <v-flex>
+                            <strong>{{pendingLabel}}</strong>
+                            <div class="sm muted" v-if="pendingDescription">{{pendingDescription}}</div>
+                        </v-flex>
+                        <v-flex shrink>
+                            <div class="task-icon">
+                                <fluro-icon icon="tasks" />
+                            </div>
+                        </v-flex>
+                    </v-layout>
+                </div>
+                <div class="task-option-item failed" :class="{active:task.status == 'failed'}" @click="select('failed')" v-if="failedEnabled">
+                    <v-layout align-center>
+                        <v-flex>
+                            <strong>{{failedLabel}}</strong>
+                            <div class="sm muted" v-if="failedDescription">{{failedDescription}}</div>
+                        </v-flex>
+                        <v-flex shrink>
+                            <div class="task-icon">
+                                <fluro-icon icon="thumbs-down" />
+                            </div>
+                        </v-flex>
+                    </v-layout>
+                </div>
+                <div class="task-option-item" @click="select('incomplete')" v-if="task.status != 'incomplete'">
+                    <v-layout align-center>
+                        <v-flex>
+                            <strong>Incomplete</strong>
+                            <div class="sm muted">Reset this task back to it's untouched state</div>
+                        </v-flex>
+                        <v-flex shrink>
+                            <div class="task-icon">
+                                <fluro-icon icon="circle" />
+                            </div>
+                        </v-flex>
+                    </v-layout>
+                </div>
+            </div>
+            <!-- <pre>{{task.status}}</pre> -->
+        </flex-column-body>
+        <flex-column-footer class="border-top">
+            <v-container class="py-1 px-2">
+                <v-btn block @click="dismiss()">
+                    Cancel
+                </v-btn>
+            </v-container>
+        </flex-column-footer>
+    </flex-column>
 </template>
 <script>
 import ModalMixin from '../../../mixins/ModalMixin';
+import AddPostModal from '../../../components/ui/modal/AddPost.vue';
+import FluroOptionsDialog from '../../../components/ui/modal/OptionsDialog.vue';
 
-
+console.log('ADD POST MODAL', AddPostModal)
 
 
 export default {
@@ -127,6 +125,9 @@ export default {
         task() {
             return this.options.task;
         },
+        card() {
+            return this.options.card;
+        },
         title() {
             return this.task.name;
         },
@@ -141,8 +142,72 @@ export default {
         select(option) {
             var self = this;
 
-            this.task.status = option;
-            self.close(option);
+
+            //Mark as the option we selected
+            self.task.status = option;
+
+            /////////////////////////////////////
+
+            var definitionName;
+
+            switch (option) {
+                case 'complete':
+                    definitionName = self.task.postComplete;
+                    break;
+                case 'pending':
+                    definitionName = self.task.postPending;
+                    break;
+                case 'failed':
+                    definitionName = self.task.postFailed;
+                    break;
+            }
+
+            /////////////////////////////////////
+
+            if (!definitionName) {
+                return self.close(option);
+            }
+
+            /////////////////////////////////////
+            /////////////////////////////////////
+            /////////////////////////////////////
+
+            // console.log('GOTTA DO A TASK', definitionName, AddPostModal);
+
+
+            // self.$fluro.content.type(definitionName)
+            //     .then(function(form) {
+
+
+                    var promise = self.$fluro.modal({
+                            // component: FluroOptionsDialog,
+                            component: AddPostModal,
+                            options: {
+                                definitionName,
+                                skip:true,
+                                // definition:{
+                                //     definitionName,
+                                // },
+                                item: self.card,
+                                // title:'something',
+                                // description:'desc',
+                                // options:[]
+                            },
+                        })
+                        .then(function(res) {
+                            // console.log('POST RESULT', res);
+                             return self.close(option);
+                        })
+                        .catch(function(err) {
+                            if(err) {
+                                return self.$fluro.error(err);
+                            }
+
+                            return self.close(option);
+                        });
+                // })
+                // .catch(self.$fluro.error);;
+
 
             // //If there is a callback registered
             // //then fire the callback
@@ -156,6 +221,7 @@ export default {
 <style lang="scss">
 .fluro-task-modal {
     min-width: 300px;
+
     @media(min-width: 768px) {
         max-width: 500px;
     }

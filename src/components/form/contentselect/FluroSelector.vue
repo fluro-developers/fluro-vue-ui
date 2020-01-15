@@ -14,6 +14,9 @@ export default {
             type:Number,
             default:0,
         },
+        'allDefinitions':{
+            type:Boolean,
+        },
         'value': {
             type: Array,
             default: function() {
@@ -21,9 +24,11 @@ export default {
             },
         },
     },
-    created() {
-        this.selectionMinimum = this.minimum;
-        this.selectionMaximum = this.maximum;
+    data() {
+        return {
+            selectionMinimum:this.minimum,
+            selectionMaximum:this.maximum,
+        }
     },
     mixins:[FluroSelectionMixin],
     watch: {
@@ -31,15 +36,28 @@ export default {
             this.selectionMinimum = Math.max(parseInt(v), 0)
         },
         maximum(v) {
-            this.selectionMaximum = Math.max(parseInt(v), 0)
+            var self = this;
+
+            self.selectionMaximum = Math.max(parseInt(v), 0)
+
+            if(self.selectionMaximum) {
+                if(self.value.length > self.selectionMaximum) {
+
+                    var cropped = self.value.slice(0, self.selectionMaximum);
+                    self.setSelection(cropped);
+
+                    // console.log('Crop array', cropped)
+                }
+            }
         },
         'value': function() {
             //Set the value so update the selection
             this.setSelection(this.value);
         },
-        'selection': function() {
+        'selection': function(s) {
             var self = this;
-            this.$emit('input', self.selection);
+            console.log('Selection is now', s);
+            this.$emit('input', s);
         }
     },
 }

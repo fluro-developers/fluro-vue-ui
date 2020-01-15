@@ -74,7 +74,10 @@ export default {
         // },
         definition: {
             type: Object,
-        }
+        },
+        card:{
+            type:Object,
+        },
     },
     mounted() {
         if (this.value.immediateModal) {
@@ -170,6 +173,7 @@ export default {
                     component: FluroTaskModal,
                     options: {
                         task: self.model,
+                        card:self.card,
                     }
                 })
                 .then(function(result) {

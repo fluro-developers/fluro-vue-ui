@@ -229,6 +229,13 @@
                                 </template>
                                 <v-card tile>
                                     <v-list dense>
+                                        <v-list-tile @click="perPage = 25">
+                                            <v-list-tile-content>
+                                                <v-list-tile-title>
+                                                    Show 25 per page
+                                                </v-list-tile-title>
+                                            </v-list-tile-content>
+                                        </v-list-tile>
                                         <v-list-tile @click="perPage = 50">
                                             <v-list-tile-content>
                                                 <v-list-tile-title>
@@ -354,6 +361,13 @@ import { FilterService } from 'fluro';
 
 export default {
     props: {
+        // queryString:{
+        //     type:Boolean,
+        //     default:true,
+        // },
+        changeKey:{
+            type:[String, Number],
+        },
         fixedColumns: {
             type: Boolean,
             default: false,
@@ -832,6 +846,9 @@ export default {
             this.loading = true;
             this.populatePage()
         },
+        changeKey() {
+            this.reload();
+        },
         reloadRequired: {
             immediate: true,
             handler: _.debounce(function(string) {
@@ -962,6 +979,7 @@ export default {
                 .flattenDeep()
                 .compact()
                 .map(function(key) {
+                    // console.log('KEY SPLIT', key);
                     return key.split('|')[0];
                 })
                 .map(function(key) {

@@ -1,0 +1,123 @@
+<template>
+    <div>
+        <!-- <currency-input v-model="model"/> -->
+        <v-currency-field 
+        :prefix="prefix"
+        :suffix="suffix"
+        :label="label"
+        :required="required"
+        :autofocus="autofocus"
+        :outline="outline"
+        :success="success"
+        @blur="blur"
+        :error-messages="errorMessages"
+        :persistent-hint="persistentHint"
+        :hint="hint"
+        :placeholder="placeholder"
+        :min="min"
+        :max="max"
+
+        v-model="model"/>
+
+        <!--      -->
+    </div>
+</template>
+<script>
+
+import Vue from 'vue';
+
+
+ // Vue.component('v-currency-field', VCurrencyField);
+import  {VCurrencyField}  from 'v-currency-field';
+
+console.log('CURRENCY FIELD', VCurrencyField)
+
+export default {
+    methods:{
+        blur(event) {
+            this.$emit('blur', event);
+        }
+    },
+	components:{
+		VCurrencyField,
+	},
+    props: {
+        currency:{
+            type:String,
+            default:'USD',
+        },
+        hint:{
+            type:String,
+        },
+        placeholder:{
+            type:String,
+        },
+        persistentHint:{
+            type:Boolean,
+        },
+        errorMessages:{
+            type:Array,
+        },
+        label:{
+            type:String,
+        },
+        required:{
+            type:Boolean,
+        },
+        success:{
+            type:Boolean,
+        },
+        autofocus:{
+            type:Boolean,
+        },
+        outline:{
+            type:Boolean,
+        },
+        outline:{
+            type:Boolean,
+        },
+        'value': {
+            type: Number,
+            default() {
+                return 0;
+            }
+        },
+        'min': {
+            type: Number,
+            default() {
+                return 5;
+            }
+        },
+        'max': {
+            type: Number,
+        },
+    },
+    computed:{
+        prefix() {
+            return this.$fluro.utils.currencySymbol(this.currency);
+
+        },
+        suffix() {
+            return this.currency.toUpperCase();
+        },
+    },
+    data() {
+    	return {
+    		model:(this.value / 100),
+    	}
+    },
+    watch:{
+        model(v) {
+
+            v = parseInt(v);
+            v = Math.max(v, 0);
+            v = v * 100;
+            console.log('Input changed', v)
+            this.$emit('input', v);
+        }
+    }
+}
+</script>
+<style lang="scss">
+	
+</style>

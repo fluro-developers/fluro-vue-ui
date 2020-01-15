@@ -533,6 +533,7 @@ export default {
                 })
             },
         },
+
         interactionTypes: {
             get() {
                 var self = this;
@@ -744,6 +745,7 @@ export default {
                 var eventTrackOptions = [];
                 var interactionDefinitionOptions = [];
 
+
                 interactionDefinitionOptions = interactionDefinitionOptions.concat(_.map(self.interactionTypes, function(definition) {
                     return {
                         text: definition.title,
@@ -760,7 +762,6 @@ export default {
                 }))
 
                 // console.log('EVENT DEFINITIONS', self.eventTypes);
-
                 eventDefinitionOptions = eventDefinitionOptions.concat(_.map(self.eventTypes, function(definition) {
                     return {
                         text: definition.title,
@@ -922,6 +923,123 @@ export default {
                         },
                     ],
                 });
+
+
+
+                injectFields.push({
+                    title: 'Mailouts > Total Emails',
+                    key: '_mailouts.all.length',
+                    maximum: 1,
+                    minimum: 0,
+                    type: 'integer',
+                    subfieldTitle: 'That matches criteria...',
+                    subfields: [
+                        {
+                            title: 'Send Date',
+                            key: 'date',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'date',
+                        },
+                        {
+                            title: 'State',
+                            key: 'state',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'string',
+                            directive:'select',
+                            options: [
+                            {
+                                text:'Unopened',
+                                value:'sent',
+                            },
+                            {
+                                text:'Opened',
+                                value:'open',
+                            },
+                            {
+                                text:'Clicked',
+                                value:'click',
+                            },
+                            {
+                                text:'Unsubscribed',
+                                value:'unsubscribe',
+                            },
+                            {
+                                text:'Bounced / Failed',
+                                value:'error',
+                            },
+                            ],
+                        },
+                        {
+                            title: 'Mailout Type',
+                            key: 'mailoutType',
+                            maximum: 0,
+                            minimum: 0,
+                            type: 'string',
+                            directive:'select',
+                            options: [
+                            {
+                                text:'Promotional',
+                                value:'promotional',
+                            },
+                            {
+                                text:'Transactional',
+                                value:'transactional',
+                            },
+                            ],
+                        },
+                        {
+                            title: 'Mailout',
+                            key: '_id',
+                            maximum: 0,
+                            minimum: 0,
+                            type: 'reference',
+                            typeSelect:'mailout',
+
+                            
+                        },
+                    ],
+                });
+
+
+
+                injectFields.push({
+                    title: 'Fluro Login > Access Passes',
+                    key: '_persona.policies',
+                    maximum: 1,
+                    minimum: 0,
+                    type: 'reference',
+                    typeSelect:'policy',
+                });
+
+                injectFields.push({
+                    title: 'Fluro Login > Status',
+                    key: '_persona.state',
+                    maximum: 1,
+                    minimum: 0,
+                    type: 'string',
+                    directive:'select',
+                    options:[
+                    {
+                        text:'None / No Access',
+                        value:'none',
+                    },
+                    {
+                        text:'Awaiting Collection',
+                        value:'waiting',
+                    },
+                    {
+                        text:'Connected',
+                        value:'connected',
+                    },
+                    ]
+                });
+
+                
+
+
+
 
                 injectFields.push({
                     title: 'Posts / Notes > Total linked posts',
