@@ -1,26 +1,19 @@
 <template>
     <div class="fluro-content-form">
-
         <!-- <pre>FORM: {{model}}</pre> -->
         <slot name="form" :parent="formModel" :context="context" :form-fields="formFields" :field-hash="fieldHash" :model="model" :update="update" :options="options">
             <template v-for="field in fields">
-                
                 <!-- <fluro-code-editor v-model="model[field.key]" @input="valueChange" :height="200"></fluro-code-editor> -->
                 <v-container fluid class="grid-list-xl" pa-0>
                     <!-- <pre>{{field}}</pre> -->
                     <!-- :parent="model[key]"  -->
-                    <fluro-content-form-field :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="field" @input="update" v-model="model"></fluro-content-form-field>
+                    <fluro-content-form-field :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="field" @input="update" v-model="model"></fluro-content-form-field>
                 </v-container>
             </template>
         </slot>
-
-        
     </div>
 </template>
 <script>
-
-
-
 // import {VContainer}
 import FluroContentFormField from './FluroContentFormField.vue';
 import _ from 'lodash';
@@ -130,10 +123,22 @@ import Vue from 'vue';
 
 //////////////////////////////////////////////////
 
+var debouncer;
+
 export default {
     props: {
-        'dynamic':{
-            type:Boolean,
+        'debounce': {
+            type: Number,
+            default: 0,
+        },
+        //This stops the form from adding the default values
+        //We use this so that we don't accidentally fill in fields
+        //that have been cleared by the user (mainly for website builder)
+        'disableDefaults': {
+            type: Boolean,
+        },
+        'dynamic': {
+            type: Boolean,
         },
         'context': {
             type: String,
@@ -142,8 +147,8 @@ export default {
                 return this.$fluro.global.defaultFormContext;
             },
         },
-        'parent':{
-            type:Object,
+        'parent': {
+            type: Object,
         },
         'fields': {
             type: Array,
@@ -180,8 +185,8 @@ export default {
         errorMessages() {
             return _.chain(this.formFields)
                 .filter(function(field) {
-                    
-                    
+
+
 
                     return field.errorMessages.length;
                 })
@@ -199,7 +204,7 @@ export default {
         fieldHash() {
             return _.reduce(this.fieldsOutput, function(set, field) {
 
-                
+
                 set[field.key] = field;
                 return set;
             }, {})
@@ -207,7 +212,7 @@ export default {
     },
     data() {
         return {
-            model: this.value,//JSON.parse(JSON.stringify(this.value)),
+            model: JSON.parse(JSON.stringify(this.value)),
         }
     },
     components: {
@@ -215,6 +220,8 @@ export default {
     },
     watch: {
         value(val) {
+
+            val = JSON.parse(JSON.stringify(val));
             this.$set(this, 'model', val);
             return this.reset();
         },
@@ -231,7 +238,7 @@ export default {
     methods: {
         touch() {
             _.each(this.formFields, function(component) {
-                if(component.touch) {
+                if (component.touch) {
                     component.touch();
                 }
             })
@@ -242,15 +249,21 @@ export default {
             /////////////////////////////////////////////////
 
             //Reset the components too
-            this.formFields.forEach(function(component) {
+            self.formFields.forEach(function(component) {
                 component.reset();
             });
 
             /////////////////////////////////////////////////
 
             //For each field reset the model
-            // console.log('SELF FIELDS', self.fieldsOutput);
-            (self.fieldsOutput || []).forEach(createDefaults);
+
+            if (!self.disableDefaults) {
+                (self.fieldsOutput || []).forEach(createDefaults);
+            }
+
+            // self.$nextTick(function() {
+                self.$emit('default');
+            // })
 
             /////////////////////////////////////////////////
 
@@ -258,10 +271,9 @@ export default {
             function createDefaults(field) {
 
                 var existingValue = _.get(self.model, field.key);
-                // console.log('CREATE DEFAULTS', field.key, existingValue)
 
                 //We already have a value in this field
-                if(existingValue) {
+                if (existingValue) {
                     // console.log('Has existing value', field.key, existingValue);
                     Vue.set(self.model, field.key, existingValue);
                     return;
@@ -270,38 +282,54 @@ export default {
                 // console.log('Create Defaults', self);
                 var blankValue = self.$fluro.utils.getDefaultValueForField(field);
 
-                if(field.type == 'date' && blankValue == 'now') {
+                if (field.type == 'date' && blankValue == 'now') {
                     blankValue = new Date();
                 }
-                
+
                 //Check if it's just a display group
                 if (field.type == 'group' && !field.asObject) {
                     (field.fieldsOutput || []).forEach(createDefaults);
                 }
 
-                // console.log('SET DEFAULT', field.key, blankValue);
                 Vue.set(self.model, field.key, blankValue);
             }
-
-
-
-
-
         },
+
+        // model() {
+
+        //     var self = this;
+
+        //     if(debouncer) {
+        //         clearTimeout(debouncer);
+        //     }
+
+        //     debouncer = setTimeout(() => self.change(), self.debounce);
+        // },
+
         update: function(input, valueThatWasChanged) {
-            this.model = input;
-            // 
-            //TODO Figure out how to make this reactive without needing this hack
-            // var newModel = _.clone(this.model);
 
-            // console.log('HEARD UPDATE FROM FIELD', valueThatWasChanged, this.model.deceased);
+            var self = this;
+            self.model = input;
+            // console.log('Update -> model')
 
+            //If there is already a debouncer
+            if (debouncer) {
+                //Stop it
+                clearTimeout(debouncer);
+            }
+
+            if (!self.debounce) {
+                console.log('')
+                return self.$emit('input', this.model);
+            }
+
+            //Start a new debouncer
+            debouncer = setTimeout(() => self.dispatch(), self.debounce);
+        },
+        dispatch() {
+
+            // console.log('Update -> dispatch')
             this.$emit('input', this.model);
-
-            // this.$forceUpdate();
-            // _.clone(this.model));//this.model);
-            // this.$forceUpdate();
-
         }
     }
 }

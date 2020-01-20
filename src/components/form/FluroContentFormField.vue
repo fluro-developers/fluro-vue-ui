@@ -41,7 +41,7 @@
         </template>
         <template v-else-if="renderer == 'embedded'">
             <template v-if="field.maximum == 1">
-                <fluro-content-form :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel" @input="valueChange" :fields="fields"></fluro-content-form>
+                <fluro-content-form :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel" @input="valueChange" :fields="fields"/>
             </template>
             <template v-if="field.maximum != 1">
                 <template v-for="(object, index) in fieldModel">
@@ -57,7 +57,7 @@
                         </v-toolbar>
                         </v-toolbar>
                         <v-card-text>
-                            <fluro-content-form :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel[index]" @input="valueChange" :fields="fields"></fluro-content-form>
+                            <fluro-content-form :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel[index]" @input="valueChange" :fields="fields"/>
                         </v-card-text>
                     </v-card>
                 </template>
@@ -77,7 +77,7 @@
             <template v-if="asObject">
                 <template v-if="field.maximum == 1">
                     <!-- FIELDS 1 -->
-                    <fluro-content-form :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel" @input="valueChange" :fields="fields"></fluro-content-form>
+                    <fluro-content-form :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel" @input="valueChange" :fields="fields"/>
                 </template>
                 <template v-if="field.maximum != 1">
                     <template v-for="(object, index) in fieldModel">
@@ -93,7 +93,7 @@
                             </v-toolbar>
                             </v-toolbar>
                             <v-card-text>
-                                <fluro-content-form :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel[index]" @input="valueChange" :fields="fields"></fluro-content-form>
+                                <fluro-content-form :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel[index]" @input="valueChange" :fields="fields"/>
                             </v-card-text>
                         </v-card>
                     </template>
@@ -112,23 +112,23 @@
             <template v-else>
                 <template v-if="field.sameLine">
                     <v-layout row wrap>
-                        <!-- <fluro-content-form :dynamic="dynamic" :options="options" v-model="fieldModel[index]" @input="valueChange" :fields="fields"></fluro-content-form> -->
+                        <!-- <fluro-content-form :dynamic="dynamic" :options="options" v-model="fieldModel[index]" @input="valueChange" :fields="fields"/> -->
                         <template v-for="subfield in fields">
                             <!-- FIELDS 2 -->
                             <!-- <v-layout row wrap> -->
                             <!-- <pre>{{fields.length}}</pre> -->
-                            <fluro-content-form-field :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" class="flex" :field="subfield" @input="valueChange" v-model="model"></fluro-content-form-field>
+                            <fluro-content-form-field :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" class="flex" :field="subfield" @input="valueChange" v-model="model"/>
                             <!-- </v-layout> -->
                         </template>
                     </v-layout>
                 </template>
                 <template v-else>
-                    <!-- <fluro-content-form :options="options" v-model="fieldModel[index]" @input="valueChange" :fields="fields"></fluro-content-form> -->
+                    <!-- <fluro-content-form :options="options" v-model="fieldModel[index]" @input="valueChange" :fields="fields"/> -->
                     <template v-for="subfield in fields">
                         <!-- FIELDS 2 -->
                         <!-- <v-layout row wrap> -->
                         <!-- <pre>{{fields.length}}</pre> -->
-                        <fluro-content-form-field :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" class="flex" :field="subfield" @input="valueChange" v-model="model"></fluro-content-form-field>
+                        <fluro-content-form-field :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" class="flex" :field="subfield" @input="valueChange" v-model="model"/>
                         <!-- </v-layout> -->
                     </template>
                 </template>
@@ -254,7 +254,7 @@
         <template v-else-if="renderer == 'content-select'">
             <!-- <pre>{{fieldModel}}</pre> -->
             <v-input class="no-flex" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
-                <fluro-content-select :success="success" :required="required" :error-messages="errorMessages" :label="displayLabel" :outline="showOutline" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" :minimum="minimum" @input="touch" :type="restrictType" :lockFilter="referenceFilter" :searchInheritable="searchInheritable" :maximum="maximum" v-model="model[field.key]" />
+                <fluro-content-select :success="success" :required="required" :error-messages="errorMessages" :label="displayLabel" :outline="showOutline" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" :minimum="minimum" @input="valueChange" :type="restrictType" :lockFilter="referenceFilter" :searchInheritable="searchInheritable" :maximum="maximum" v-model="model[field.key]" />
             </v-input>
         </template>
         <template v-else-if="renderer == 'search-select'">
@@ -370,11 +370,49 @@
                 </label>
             </v-input>
         </template>
+
         <template v-else-if="renderer == 'currency' && !multipleInput">
             <!--   CURRENCY
             <pre>{{fieldModel}}</pre> -->
             <fluro-currency-input :currency="params.currency" :label="displayLabel" :required="required" v-model="fieldModel" :autofocus="autofocus" :outline="showOutline" :success="success" @blur="touch()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" />
         </template>
+        <template v-else-if="renderer == 'color' && !multipleInput">
+            
+           
+            
+            <v-menu :fixed="true" v-model="modal" min-width="290px" :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
+                <template v-slot:activator="{ on }">
+                    <v-text-field :outline="showOutline" :success="success" :value="colorModel.hex8" :persistent-hint="true" :hint="hint" :label="displayLabel" v-on="on"></v-text-field>
+                </template>
+                <div>
+                    <color-picker v-model="colorModel" />
+                   
+                    
+                    <!-- 
+                    <v-date-picker attach @change="modal = false" v-model="fieldModel" no-title scrollable>
+                        <v-spacer></v-spacer>
+                        <v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
+                        <v-btn flat color="primary" @click="modal = false">Done</v-btn>
+                    </v-date-picker> -->
+                    <!-- <v-toolbar color="primary" dark>
+                        <v-toolbar-title>{{label}}</v-toolbar-title>
+                    </v-toolbar>
+                    <v-date-picker v-model="sudoModel" scrollable>
+                        <v-spacer></v-spacer>
+                        <v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
+                        <v-btn flat color="primary" @click="$refs.dialog.save(sudoModel)">OK</v-btn>
+                    </v-date-picker> -->
+                </div>
+            </v-menu>
+
+
+
+            
+            <!-- <v-text-field :autofocus="autofocus" :outline="showOutline" :success="success" browser-autocomplete="off" :required="required" :label="displayLabel" v-model="fieldModel" @blur="touch()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" /> -->
+            
+        </template>
+
+
         <template v-else>
             <template v-if="multipleInput">
                 <!--  -->
@@ -423,6 +461,12 @@ import FluroCodeEditor from './FluroCodeEditor.vue';
 import FluroSignatureField from './FluroSignatureField.vue';
 import FluroDateTimePicker from './FluroDateTimePicker.vue';
 import FluroContentSelect from './FluroContentSelect.vue';
+
+
+import { Chrome } from 'vue-color'
+
+
+
 //Allow custom html to be injected at runtime
 
 import Expressions from 'expression-eval';
@@ -448,6 +492,7 @@ function mapDefaultDateValue(value) {
 
 export default {
     components: {
+        'color-picker': Chrome,
         draggable,
         FluroCurrencyInput,
         FluroEditor,
@@ -467,6 +512,7 @@ export default {
             // model: this.value,
             proposedValue: null,
             sudoModel: null,
+            color:null,
 
             //Async searching
             keywords: '',
@@ -915,11 +961,31 @@ export default {
                 return `${this.className}`;
             }
         },
+        colorModel: {
+            get() {
 
+                if(!this.color) {
+                    this.color = {};
+                }
+
+                this.color.hex8 = this.fieldModel ? this.fieldModel : null;
+                return this.color;
+            },
+            set(object) {
+                this.color = object;
+                this.fieldModel = object ? object.hex8 : '';
+            }
+        },
         fieldModel: {
             get() {
                 var self = this;
                 var value = self.model[self.key];
+
+                if (self.expressions && self.expressions.transform && typeof self.expressions.transform.set == 'function') {
+                    var transformed = self.expressions.transform.get(value);
+                    console.log('Transforming value from', transformed);
+                    return transformed;
+                }
 
                 if (self.dynamic && self.renderer == 'dynamicdate') {
                     if (value == 'DATE_NOW') {
@@ -962,10 +1028,13 @@ export default {
                 //////////////////////////////////
                 //////////////////////////////////
 
-                // if (self.expressions && self.expressions.transform && typeof self.expressions.transform == 'function') {
-                //     value = self.expressions.transform(value);
-                //     console.log('Transformed to', value)
-                // }
+                if (self.expressions && self.expressions.transform) { 
+                    if(typeof self.expressions.transform.set == 'function') {
+                        var transformed = self.expressions.transform.set(value);
+                        console.log('Transforming value to', transformed);
+                        value = transformed;
+                    }
+                }
 
                 //////////////////////////////////
                 //////////////////////////////////
@@ -1232,7 +1301,7 @@ export default {
 
 
             if (!self.isVisible) {
-                console.log('No errors', this.field.title);
+                // console.log('No errors', this.field.title);
                 return errors;
             } else {
                 // return ['Errors on purpose'];
@@ -1376,9 +1445,11 @@ export default {
             /////////////////////////////////
 
             switch (directive) {
+                case 'color':
+                    directive = 'color';
+                    break;
                 case 'currency':
                     directive = 'currency';
-                    break;
                     break;
                 case 'realm-select':
                     directive = 'realmselect';
@@ -1873,7 +1944,7 @@ export default {
 
         var self = this;
 
-
+        ///////////////////////////////////////////////
 
         if (self.multipleInput) {
             switch (self.type) {
@@ -1933,6 +2004,9 @@ export default {
         }
     },
     props: {
+        'disableDefaults':{
+            type:Boolean,
+        },
         'context': {
             type: String,
             default () {
@@ -2377,7 +2451,14 @@ function checkValidInput(self, input) {
 }
 </script>
 <style lang="scss">
+
+.vc-chrome {
+    width:auto !important;
+}
+
 .fluro-content-form-field {
+
+
 
     .multi-input-row {
         display: flex;

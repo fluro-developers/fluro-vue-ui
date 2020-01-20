@@ -1,5 +1,5 @@
 <template>
-    <div class="fluro-code-editor">
+    <div ref="outer" class="fluro-code-editor">
         <!-- <pre>{{model}}</pre> -->
         <code-editor v-model="model" @init="editorInit" :lang="syntax" theme="tomorrow_night_eighties" :height="100"></code-editor>
     </div>
@@ -15,11 +15,11 @@ export default {
     props: {
         'value': {
             type: String,
-            default:'',
+            default: '',
         },
         'lang': {
             type: String,
-            default:'html',
+            default: 'html',
         },
         'height': {
             default: 300,
@@ -71,7 +71,7 @@ export default {
 
             switch (this.syntax) {
                 case 'html':
-                    input = js_beautify.html(input);//, {extra_liners:'p, br'})
+                    input = js_beautify.html(input); //, {extra_liners:'p, br'})
                     break;
                 case 'json':
                 case 'javascript':
@@ -100,6 +100,23 @@ export default {
             require('brace/theme/tomorrow_night_eighties')
             require('brace/snippets/javascript') //snippet
             self.editor = editor;
+
+            //             editor.setOptions({
+            //     maxLines: Infinity
+            // });
+
+            var editorDiv = this.$refs.outer;
+            var doc = editor.getSession().getDocument();
+            editor.on("change", function() {
+                var lineHeight = editor.renderer.lineHeight;
+                editorDiv.style.height = lineHeight * doc.getLength() + "px";
+                editor.resize();
+            });
+
+            //     var editor = ace.edit("editor");                   // the editor object
+            // var editorDiv = document.getElementById("editor");     // its container
+            // var doc = editor.getSession().getDocument();  // a reference to the doc
+
 
             ////////////////////////////////////////
 
@@ -160,16 +177,15 @@ export default {
 }
 </script>
 <style scoped lang="scss">
-
 .fluro-code-editor {
 
     // border: 10px solid #ff0066;
-    min-height:200px;
+    min-height: 200px;
     display: flex;
     flex-direction: column;
 
-    & > div {
-        flex:1
+    &>div {
+        flex: 1
     }
 }
 </style>

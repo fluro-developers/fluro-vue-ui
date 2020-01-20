@@ -684,7 +684,6 @@ export default {
 
                 var mapped = _.chain(flattened)
                     .map(function(field) {
-
                         if (field.type == 'group') {
                             return;
                         }
@@ -702,7 +701,10 @@ export default {
                     .compact()
                     .value();
 
-                    console.log('FLATTENED SHEET FIELDS')
+
+                    
+
+                   
 
                 //////////////////////////////////
 
@@ -913,7 +915,7 @@ export default {
                             _discriminatorDefinition: 'realm',
                         },
                         {
-                            title: 'Definition',
+                            title: 'Form',
                             key: 'definition',
                             maximum: 0,
                             minimum: 0,
@@ -1612,6 +1614,8 @@ export default {
                         type: 'string',
                     });
                 })
+
+                //Add the ability to simply check if a definition has values
             } else {
 
                 // var definitionName = _.get(self.definition, 'definitionName');
@@ -1651,6 +1655,8 @@ export default {
 
 
             injectFields = injectFields.concat(self.asyncKeys);
+
+
 
             var fields = FilterService.allKeys(injectFields, self.definition);
 

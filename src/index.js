@@ -188,6 +188,10 @@ export { FluroItemImage as FluroItemImage };
 import FluroOptionsDialog from './components/ui/modal/OptionsDialog.vue';
 export { FluroOptionsDialog as FluroOptionsDialog };
 
+
+import FluroPromptDialog from './components/ui/modal/PromptDialog.vue';
+export { FluroPromptDialog as FluroPromptDialog };
+
 import FluroConfirmDialog from './components/ui/modal/ConfirmDialog.vue';
 export { FluroConfirmDialog as FluroConfirmDialog };
 
@@ -575,6 +579,21 @@ const FluroVueUI = {
                 }
             })
         }
+
+        /////////////////////////////////////////////
+
+        //Request the user to answer some questions
+        fluro.prompt = function(fields, title) {
+            return fluro.modal({
+                component: FluroPromptDialog,
+                options: {
+                    title,
+                    fields,
+                }
+            })
+        }
+
+
 
         /////////////////////////////////////////////
 

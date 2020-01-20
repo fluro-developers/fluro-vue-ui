@@ -69,18 +69,17 @@
         <editor-menu-bar :editor="editor" v-if="barEnabled">
             <div class="fluro-editor-toolbar" slot-scope="{ commands, isActive }">
                 <v-btn icon small flat class="hidden-xs-only" :class="{ 'is-active':showSource }" @click.stop.prevent="showSource = !showSource">
-                    <fluro-icon v-if="showSource" icon="edit"/>
-                    <fluro-icon v-else icon="code"/>
+                    <fluro-icon v-if="showSource" icon="edit" />
+                    <fluro-icon v-else icon="code" />
                 </v-btn>
                 <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.bold() }" @click.stop.prevent="commands.bold">
-                    <fluro-icon icon="bold"/>
-
+                    <fluro-icon icon="bold" />
                 </v-btn>
                 <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.italic() }" @click.stop.prevent="commands.italic">
-                    <fluro-icon icon="italic"/>
+                    <fluro-icon icon="italic" />
                 </v-btn>
                 <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.underline() }" @click.stop.prevent="commands.underline">
-                    <fluro-icon icon="underline"/>
+                    <fluro-icon icon="underline" />
                 </v-btn>
                 <!-- <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.strike() }" @click.stop.prevent="commands.strike">
                     <v-icon>format_strikethrough</v-icon>
@@ -112,7 +111,7 @@
                 <v-menu :fixed="true" transition="slide-y-transition" offset-y>
                     <template v-slot:activator="{ on }">
                         <v-btn small icon :disabled="showSource" v-on="on">
-                            <fluro-icon icon="image"/>
+                            <fluro-icon icon="image" />
                         </v-btn>
                     </template>
                     <v-list>
@@ -152,16 +151,16 @@
                 </v-btn> -->
                 <!--  -->
                 <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.bullet_list() }" @click.stop.prevent="commands.bullet_list">
-                    <fluro-icon icon="list-ul"/>
+                    <fluro-icon icon="list-ul" />
                 </v-btn>
                 <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.ordered_list() }" @click.stop.prevent="commands.ordered_list">
-                    <fluro-icon icon="list-ol"/>
+                    <fluro-icon icon="list-ol" />
                 </v-btn>
                 <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.blockquote() }" @click.stop.prevent="commands.blockquote">
-                    <fluro-icon icon="quote-right"/>
+                    <fluro-icon icon="quote-right" />
                 </v-btn>
                 <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.horizontal_rule() }" @click.stop.prevent="commands.horizontal_rule">
-                    <fluro-icon icon="horizontal-rule"/>
+                    <fluro-icon icon="horizontal-rule" />
                 </v-btn>
                 <!--  -->
                 <!--  <v-btn icon class="hidden-xs-only" :disabled="showSource" small flat @click.stop.prevent="commands.undo">
@@ -171,18 +170,18 @@
                     <v-icon>redo</v-icon>
                 </v-btn> -->
                 <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.code_block() }" @click.stop.prevent="commands.code_block">
-                    <fluro-icon icon="file-code"/>
+                    <fluro-icon icon="file-code" />
                 </v-btn>
                 <v-menu :fixed="true" transition="slide-y-transition" offset-y>
                     <template v-slot:activator="{ on }">
                         <v-btn small class="hidden-xs-only" icon :disabled="showSource" v-on="on">
                             <!-- <v-icon>grid_on</v-icon> -->
-                             <fluro-icon icon="table"/>
+                            <fluro-icon icon="table" />
                         </v-btn>
                     </template>
                     <v-list dense>
                         <v-list-tile @click.stop.prevent="commands.createTable({rowsCount: 3, colsCount: 3, withHeaderRow: false })">
-                             <!-- <fluro-icon icon="table"/> -->
+                            <!-- <fluro-icon icon="table"/> -->
                             <v-list-tile-title>Insert Table</v-list-tile-title>
                         </v-list-tile>
                         <span v-if="isActive.table()">
@@ -239,11 +238,11 @@
         </editor-menu-bar>
         <template v-if="showSource">
             <div class="editor-code-wrapper">
-                <fluro-code-editor @blur="blur" @focus="focus" class="fluro-editor-textarea" @input="sourceChange" v-model="model" lang="html" :height="codeEditorHeight"></fluro-code-editor>
+                <fluro-code-editor @blur="blurCode" @focus="focusCode" class="fluro-editor-textarea" @input="sourceChange" v-model="model" lang="html" :height="codeEditorHeight"></fluro-code-editor>
             </div>
         </template>
         <template v-if="!showSource">
-            <editor-content @blur="blur" @focus="focus" class="fluro-editor-textarea" :editor="editor" />
+            <editor-content class="fluro-editor-textarea" :editor="editor" />
             <!-- Suggestions -->
             <div class="suggestion-list" v-show="showSuggestions" ref="suggestions">
                 <template v-if="filteredUsers.length">
@@ -292,6 +291,7 @@ import {
     TodoItem,
     TodoList,
     Bold,
+    Alignment,
     Code,
     Italic,
     Link,
@@ -337,6 +337,9 @@ export default {
         },
     },
     methods: {
+        select() {
+            console.log('SELECT EDITOR')
+        },
         hideBubble() {
             this.hideLinkMenu();
         },
@@ -356,12 +359,29 @@ export default {
             this.hideLinkMenu()
             this.editor.focus()
         },
-        blur($event) {
+        blurEditor($event) {
+            // console.log('BLUR EDITOR')
             this.$emit('blur');
+
         },
-        focus($event) {
+        focusEditor($event) {
+            // console.log('FOCUS EDITOR')
             this.$emit('focus');
+
         },
+
+        blurCode($event) {
+            // console.log('BLUR CODE')
+            this.$emit('blur');
+
+        },
+        focusCode($event) {
+            // console.log('FOCUS CODE')
+            this.$emit('focus');
+
+        },
+
+
         sourceChange(input) {
             this.model = input;
         },
@@ -444,9 +464,9 @@ export default {
         },
     },
     props: {
-        'codeEditorHeight':{
-            default:600,
-            type:Number,
+        'codeEditorHeight': {
+            default: 600,
+            type: Number,
         },
         'value': {
             default: '',
@@ -474,143 +494,159 @@ export default {
         var placeholderText = self.placeholder;
 
 
+        var MentionPlugin = new Mention({
+            // a list of all suggested items
+            items: function() {
+                return [];
+                // return [
+                //     { id: 1, name: 'Philipp Kühn' },
+                //     { id: 2, name: 'Hans Pagel' },
+                //     { id: 3, name: 'Kris Siepert' },
+                //     { id: 4, name: 'Justin Schueler' },
+                // ]
+            },
+            // is called when a suggestion starts
+            onEnter: ({
+                items,
+                query,
+                range,
+                command,
+                virtualNode,
+            }) => {
+                this.query = query
+                this.filteredUsers = items
+                this.suggestionRange = range
+                this.renderPopup(virtualNode)
+                // we save the command for inserting a selected mention
+                // this allows us to call it inside of our custom popup
+                // via keyboard navigation and on click
+                this.insertMention = command
+            },
+            // is called when a suggestion has changed
+            onChange: ({
+                items,
+                query,
+                range,
+                virtualNode,
+            }) => {
+
+                var mentionInstance = this;
+
+                self.$fluro.content.mention(query, self.options.mentions).then(function(personas) {
+                        mentionInstance.query = query
+                        mentionInstance.filteredUsers = personas
+                        mentionInstance.suggestionRange = range
+                        mentionInstance.navigatedUserIndex = 0
+                        mentionInstance.renderPopup(virtualNode)
+                    })
+                    .catch(function(err) {
+                        //console.log('Error', err);
+                        // this.query = query
+                        // this.filteredUsers = items
+                        // this.suggestionRange = range
+                        // this.navigatedUserIndex = 0
+                        // this.renderPopup(virtualNode)
+                    });
+            },
+            // is called when a suggestion is cancelled
+            onExit: () => {
+                // reset all saved values
+                this.query = null
+                this.filteredUsers = []
+                this.suggestionRange = null
+                this.navigatedUserIndex = 0
+                this.destroyPopup()
+            },
+            // is called on every keyDown event while a suggestion is active
+            onKeyDown: ({ event }) => {
+                // pressing up arrow
+                if (event.keyCode === 38) {
+                    this.upHandler()
+                    return true
+                }
+                // pressing down arrow
+                if (event.keyCode === 40) {
+                    this.downHandler()
+                    return true
+                }
+                // pressing enter
+                if (event.keyCode === 13) {
+                    this.enterHandler()
+                    return true
+                }
+                return false
+            },
+            // is called when a suggestion has changed
+            // this function is optional because there is basic filtering built-in
+            // you can overwrite it if you prefer your own filtering
+            // in this example we use fuse.js with support for fuzzy search
+            // onFilter: (items, query) => {
+
+            //     //console.log('SEARCH', items, query);
+
+            //     if (!query) {
+            //         return items
+            //     }
+            //     const fuse = new Fuse(items, {
+            //         threshold: 0.2,
+            //         keys: ['name'],
+            //     })
+            //     return fuse.search(query)
+            // },
+        });
+
+        ///////////////////////////////////
+        ///////////////////////////////////
         ///////////////////////////////////
 
         var enabledExtensions = [
+
+            new Bold(),
+            new Italic(),
+            new Strike(),
+            new Underline(),
+            new Link(),
             // new Alignment(),
-            new Placeholder({
-                emptyClass: 'placeholder-text',
-                emptyNodeText: self.placeholder,
-                showOnlyWhenEditable: true,
-            }),
             new HorizontalRule(),
             new Blockquote(),
             new CodeBlock(),
             new HardBreak(),
-            new Heading({ levels: [1, 2, 3] }),
+            new Heading({ levels: [1, 2, 3, 4] }),
             new BulletList(),
             new OrderedList(),
             new ListItem(),
-            // new TodoItem(),
-            // new TodoList(),
             new Image(),
-            new Bold(),
             new Code(),
-            new Italic(),
-            new Link(),
-            new Strike(),
-            new Underline(),
-            // new AutoLinkMark(), 
             new History(),
             new Table(),
             new TableHeader(),
             new TableCell(),
             new TableRow(),
-            new Mention({
-                // a list of all suggested items
-                items: function() {
-
-
-
-                    // return self.$fluro.content.mention(query);
-
-                    return [];
-                    // return [
-                    //     { id: 1, name: 'Philipp Kühn' },
-                    //     { id: 2, name: 'Hans Pagel' },
-                    //     { id: 3, name: 'Kris Siepert' },
-                    //     { id: 4, name: 'Justin Schueler' },
-                    // ]
-                },
-                // is called when a suggestion starts
-                onEnter: ({
-                    items,
-                    query,
-                    range,
-                    command,
-                    virtualNode,
-                }) => {
-                    this.query = query
-                    this.filteredUsers = items
-                    this.suggestionRange = range
-                    this.renderPopup(virtualNode)
-                    // we save the command for inserting a selected mention
-                    // this allows us to call it inside of our custom popup
-                    // via keyboard navigation and on click
-                    this.insertMention = command
-                },
-                // is called when a suggestion has changed
-                onChange: ({
-                    items,
-                    query,
-                    range,
-                    virtualNode,
-                }) => {
-
-                    var mentionInstance = this;
-
-                    self.$fluro.content.mention(query, self.options.mentions).then(function(personas) {
-                            mentionInstance.query = query
-                            mentionInstance.filteredUsers = personas
-                            mentionInstance.suggestionRange = range
-                            mentionInstance.navigatedUserIndex = 0
-                            mentionInstance.renderPopup(virtualNode)
-                        })
-                        .catch(function(err) {
-                            //console.log('Error', err);
-                            // this.query = query
-                            // this.filteredUsers = items
-                            // this.suggestionRange = range
-                            // this.navigatedUserIndex = 0
-                            // this.renderPopup(virtualNode)
-                        });
-                },
-                // is called when a suggestion is cancelled
-                onExit: () => {
-                    // reset all saved values
-                    this.query = null
-                    this.filteredUsers = []
-                    this.suggestionRange = null
-                    this.navigatedUserIndex = 0
-                    this.destroyPopup()
-                },
-                // is called on every keyDown event while a suggestion is active
-                onKeyDown: ({ event }) => {
-                    // pressing up arrow
-                    if (event.keyCode === 38) {
-                        this.upHandler()
-                        return true
-                    }
-                    // pressing down arrow
-                    if (event.keyCode === 40) {
-                        this.downHandler()
-                        return true
-                    }
-                    // pressing enter
-                    if (event.keyCode === 13) {
-                        this.enterHandler()
-                        return true
-                    }
-                    return false
-                },
-                // is called when a suggestion has changed
-                // this function is optional because there is basic filtering built-in
-                // you can overwrite it if you prefer your own filtering
-                // in this example we use fuse.js with support for fuzzy search
-                // onFilter: (items, query) => {
-
-                //     //console.log('SEARCH', items, query);
-
-                //     if (!query) {
-                //         return items
-                //     }
-                //     const fuse = new Fuse(items, {
-                //         threshold: 0.2,
-                //         keys: ['name'],
-                //     })
-                //     return fuse.search(query)
-                // },
+            MentionPlugin,
+            new Placeholder({
+                emptyClass: 'placeholder-text',
+                emptyNodeText: self.placeholder,
+                showOnlyWhenEditable: true,
             }),
+            // new TodoItem(),
+            // new TodoList()
+            // new AutoLinkMark(),
+            /**
+            
+            
+            
+            
+            
+           
+            ,
+            
+            
+            
+            
+            
+
+            
+            /**/
         ];
         ///////////////////////////////////
 
@@ -667,17 +703,18 @@ export default {
             // }],
             extensions: enabledExtensions,
             onUpdate: ({ getHTML }) => {
-
-
                 var HTML = getHTML();
-
                 self.model = HTML;
-
-
                 // self.$emit('input', HTML);
             },
-            onBlur: self.blur,
-            onFocus: self.focus,
+            onBlur(event) {
+                self.blurEditor();
+            },
+            // : self.blur,
+            onFocus(event) {
+                self.focusEditor();
+            },
+            // : self.focus,
         })
 
 
@@ -792,6 +829,10 @@ $color-white: #fff;
         text-rendering: optimizeLegibility;
     }
 
+    ul, ol {
+        padding-left: 24px;
+    }
+
     user agent stylesheet div {
         display: block;
     }
@@ -843,7 +884,7 @@ $color-white: #fff;
         background: rgba($primary, 0.1);
     }
 
-    & > div {
+    &>div {
         flex: 1;
         padding: 15px;
         outline: none;
@@ -954,7 +995,7 @@ $color-white: #fff;
 
     pre {
         box-shadow: none;
-        border:none;
+        border: none;
         margin: 15px 0;
 
         &::before {
@@ -970,7 +1011,7 @@ $color-white: #fff;
             box-shadow: none !important;
             background: #333 !important;
             color: #ccc !important;
-            padding:15px;
+            padding: 15px;
             display: block;
 
 
@@ -1051,7 +1092,7 @@ $color-white: #fff;
         }
     }
 
-   
+
 
 }
 

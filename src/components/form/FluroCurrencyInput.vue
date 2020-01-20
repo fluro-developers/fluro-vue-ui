@@ -30,7 +30,6 @@ import Vue from 'vue';
  // Vue.component('v-currency-field', VCurrencyField);
 import  {VCurrencyField}  from 'v-currency-field';
 
-console.log('CURRENCY FIELD', VCurrencyField)
 
 export default {
     methods:{

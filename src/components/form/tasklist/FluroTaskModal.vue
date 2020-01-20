@@ -77,7 +77,6 @@ import ModalMixin from '../../../mixins/ModalMixin';
 import AddPostModal from '../../../components/ui/modal/AddPost.vue';
 import FluroOptionsDialog from '../../../components/ui/modal/OptionsDialog.vue';
 
-console.log('ADD POST MODAL', AddPostModal)
 
 
 export default {

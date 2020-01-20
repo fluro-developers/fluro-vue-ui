@@ -38,7 +38,6 @@ export default {
         active: 'emitActive',
     },
     beforeDestroy() {
-        console.log('Destroyed')
         this.removeTab(this);
         // _.pull(this.tabs, this);
         // .splice(this.index, 1);

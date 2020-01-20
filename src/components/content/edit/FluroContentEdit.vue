@@ -18,6 +18,7 @@
                             <fluro-inline-edit :enabled="clickTitleEdit">
                                 <template v-slot:default>
                                     <h3>{{title}} <span class="small text-muted">{{definitionTitle}}</span></h3>
+                                    <v-label v-if="summary">{{summary}}</v-label>
                                 </template>
                                 <template v-slot:edit="{props, blur, focus}">
                                     <input block @focus="focus($event)" v-model="model.title" @keyup.enter="blur" @blur="blur" />
@@ -93,17 +94,15 @@
                                                 <fluro-content-form-field :field="extraFields.inheritable" v-model="model"></fluro-content-form-field>
                                                 <fluro-content-form-field :field="extraFields.slug" v-model="model"></fluro-content-form-field>
                                             </v-container>
-                                            <v-container  pa-2 v-if="model._id" class="white-background">
+                                            <v-container pa-2 v-if="model._id" class="white-background">
                                                 <label>Fluro ID</label>
                                                 <pre>{{model._id}}</pre>
                                             </v-container>
-
-                                            <v-container  pa-2 v-if="model._external" class="white-background">
+                                            <v-container pa-2 v-if="model._external" class="white-background">
                                                 <label>External ID</label>
                                                 <pre>{{model._external}}</pre>
                                             </v-container>
                                             <v-container pa-2 class="white-background">
-            
                                                 <v-btn block small @click="$fluro.global.json(model)">
                                                     View Raw JSON
                                                     <fluro-icon right icon="brackets-curly" />
@@ -485,18 +484,45 @@ export default {
         }
     },
     computed: {
+        summary() {
+            var self = this;
+            switch (self.typeName) {
+                case 'plan':
 
+                    var hasEvent = _.get(self.model, 'event.title');
+                    var planStartDate = _.get(self.model, 'startDate');
+                    
+                    ///////////////////////////////////////
+
+                    var readableStartDate;
+                   
+                    if(planStartDate) {
+                        readableStartDate = self.$fluro.date.formatDate(planStartDate, 'h:mm ddd D MMM')
+                    } else if(hasEvent) {
+                        readableStartDate = self.$fluro.date.readableEventDate(self.model.event);
+                    }
+
+                    ///////////////////////////////////////
+                    
+                    if(hasEvent) {
+                        return readableStartDate ? `${readableStartDate} - ${self.model.event.title}` : undefined;
+                    } else {
+                        return readableStartDate ? readableStartDate : undefined;
+                    }
+                    break;
+            }
+        },
         clickTitleEdit() {
             var self = this;
 
-          
-            switch(self.typeName) {
+
+            switch (self.typeName) {
                 case 'contact':
                     return false;
-                break;
+                    break;
                 default:
                     return true;
-                break;
+                    break;
             }
         },
         uploadForSave() {
@@ -594,6 +620,7 @@ export default {
             return fields;
         },
         showLoading() {
+
             return this.loading || !this.component;
         },
         title() {
@@ -629,7 +656,10 @@ export default {
                 return;
             }
 
-            return () => import(`./panels/${this.typeName}.vue`)
+            var load = () => import(`./panels/${this.typeName}.vue`)
+
+            console.log('GET LOADED', load);
+            return load;
 
 
 
@@ -711,11 +741,11 @@ export default {
 </style>
 <style scoped lang="scss">
 .settings-popup {
-    z-index:100;
+    z-index: 100;
 }
 
 .white-background {
-    background:white;
+    background: white;
 }
 
 .content-edit {

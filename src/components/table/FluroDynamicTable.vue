@@ -852,7 +852,6 @@ export default {
         reloadRequired: {
             immediate: true,
             handler: _.debounce(function(string) {
-                console.log('Reload Required!', string)
                 this.reload();
             }, 500)
         },
@@ -868,7 +867,6 @@ export default {
     methods: {
         updateCacheKey() {
             this.cacheKey = this.$fluro.global.CACHE_KEY;
-            console.log('Cache key reset!')
         },
         showOptionsForColumn(column) {
 

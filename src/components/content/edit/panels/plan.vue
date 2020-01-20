@@ -3,7 +3,7 @@
         <template v-if="loading">
             <fluro-page-preloader contain />
         </template>
-        <tabset v-else :justified="true">
+        <tabset v-else :justified="true" :vertical="true">
             <!-- <template v-slot:menuprefix v-if="model._id"> -->
             <!-- <div class="event-cover-image" :style="{backgroundImage:`url(${coverImage})`}"/> -->
             <!-- <fluro-image cover :spinner="true" :height="150" :item="coverImage"/> -->
@@ -12,79 +12,49 @@
                 <!-- <slot> -->
                 <!-- <flex-column-body style="background: #fafafa;"> -->
                 <!-- <v-container class="grid-list-xl"> -->
-                <div id="table-scroll" class="plan-table table-scroll">
+                <!-- <flex-row> -->
+                <!-- <flex-column> -->
+                <div class="plan-table" ref="container">
                     <table id="main-table" class="main-table">
                         <thead>
                             <tr>
                                 <th></th>
-                                <th class="shrink">
+                                <th class="shrink center">
                                     <fluro-icon icon="clock" />
                                 </th>
                                 <th class="detail">Detail</th>
                                 <th v-for="column in columns">{{column.title}}</th>
-                                <th></th>
+                                <th>
+                                    <!-- <v-menu attach :nudge-left="10" offset-x left bottom v-model="actionsOpen" > -->
+                                    <v-menu attach :nudge-left="10" offset-x left :close-on-content-click="false" transition="slide-x-transition" @click.native.stop>
+                                        <template v-slot:activator="{ on }">
+                                            <div v-on="on">
+                                                <v-btn v-tippy content="Configure Columns" class="ma-0" small icon>
+                                                    <fluro-icon icon="cog" />
+                                                </v-btn>
+                                            </div>
+                                        </template>
+                                        <v-card tile>
+                                            <v-container>
+                                                <!-- <v-list style="max-height: 50vh;" class="scroll-y" dense> -->
+                                                <!-- <v-list-tile> -->
+                                                <!-- <v-list-tile-content> -->
+                                                <fluro-content-form-field @input="updateColumns" :field="columnEditField" v-model="model" />
+                                                <!-- </v-list-tile-content> -->
+                                                <!-- </v-list-tile> -->
+                                                <!-- </v-list> -->
+                                            </v-container>
+                                        </v-card>
+                                    </v-menu>
+                                </th>
                             </tr>
                         </thead>
                         <!-- <tbody> -->
-                        <draggable tag="tbody" v-model="model.schedules" v-bind="dragOptions" @start="drag=true" @end="drag=false">
-                            <tr v-for="(row, index) in model.schedules" :class="" :key="row.id">
-                                <th>
-                                    <!-- <v-btn class="ma-0" small icon> -->
-                                    <fluro-icon icon="arrows" />
-                                    <!-- </v-btn> -->
-                                </th>
-                                <td class="duration">
-                                    <fluro-inline-edit :enabled="row.editDuration">
-                                        <template v-slot:default>
-                                            <div class="sm">{{rowTime(index)}}</div>
-                                            <div class="sm muted"><em>{{row.duration | mins}}</em></div>
-                                        </template>
-                                        <template v-slot:edit="{props, blur, focus}">
-                                            <duration-picker @focus="focus($event)" @keyup.enter="blur" @blur="blur" v-model="row.duration" />
-                                            <!-- <input type="number" min="0" @focus="focus($event)" @keyup.enter="blur" @blur="blur" select-on-focus pattern="[0-9]*" placeholder="Duration (mins)" v-model="row.duration" inputmode="numeric"> -->
-                                        </template>
-                                    </fluro-inline-edit>
-                                </td>
-                                <td>
-                                    <fluro-inline-edit :enabled="row.editTitle">
-                                        <template v-slot:default>
-                                            <strong>{{row.title}}</strong>
-                                        </template>
-                                        <template v-slot:edit="{props, blur, focus}">
-                                            <input @focus="focus($event)" @keyup.enter="blur" @blur="blur" v-model="row.title" />
-                                        </template>
-                                    </fluro-inline-edit>
-                                    <fluro-inline-edit :enabled="row.editDetail">
-                                        <template v-slot:default>
-                                            <div class="sm" v-html="row.detail"></div>
-                                        </template>
-                                        <template v-slot:edit="{props, blur, focus}">
-                                            <fluro-editor @focus="focus($event)" @blur="blur" v-model="row.detail" :options="detailBodyOptions" placeholder="Add extra detail and notes" />
-                                        </template>
-                                    </fluro-inline-edit>
-                                    <!-- <div class="wrap">
-                                        <fluro-inline-edit>
-                                            <template v-slot:default>
-                                                <div class="sm" v-html="row.detail"></div>
-                                            </template>
-                                            <template v-slot:edit="{props, blur, focus}">
-                                                <fluro-editor @focus="focus($event)" @blur="blur" v-model="row.detail" :options="detailBodyOptions" placeholder="Add extra detail and notes" />
-                                                <input block @focus="focus($event)" @blur="blur" placeholder="Extra details and notes" @input="update" v-model="row.detail" @keyup.enter="blur" />
-                                            </template>
-                                        </fluro-inline-edit>
-                                    </div> -->
-                                </td>
-                                <column-cell :column="column" :row="row" v-for="column in columns" />
-                                <!-- <td v-for="column in columns">{{row.notes[column.key]}}</td> -->
-                                <th>
-                                    <!-- <v-btn class="ma-0" small icon> -->
-                                    <fluro-icon icon="ellipsis-v" />
-                                    <!-- </v-btn> -->
-                                </th>
-                            </tr>
+                        <draggable tag="tbody" handle=".handle" v-model="model.schedules" v-bind="dragOptions" @start="drag=true" @end="drag=false">
+                            <!-- :teams="model.teams" -->
+                            <plan-row @delete="remove(index)" @swap="swap(index)" @duplicate="duplicate(index)" @add="addFromRow" v-model="model.schedules[index]" :index="index" :plan="model" v-for="(row, index) in model.schedules" :key="row.guid" />
                         </draggable>
-                        <!-- </tbody> -->
-                        <tfoot>
+                        <!-- <tfoot>
                             <tr>
                                 <th></th>
                                 <td></td>
@@ -92,23 +62,79 @@
                                 <th v-for="column in columns"></th>
                                 <th></th>
                             </tr>
-                        </tfoot>
+                        </tfoot> -->
                     </table>
                 </div>
-                <flex-column-footer style="height:400px; overflow: auto;">
-                    <pre>{{model.schedules}}</pre>
+                <flex-column-footer>
+                    <v-container class="border-top pa-2 text-xs-center" fluid>
+                        <!-- <v-menu attach offset-y top v-model="actionsOpen" transition="slide-y-transition">
+                            <template v-slot:activator="{ on }">
+                              
+                                    <v-btn color="primary" v-on="on">Add
+                                        <fluro-icon right icon="plus" />
+                                    </v-btn>
+                                
+                            </template>
+                           
+                                <div style="background: #fff; width:250px; text-align: left;">
+                                    <v-list dense>
+                                        <v-list-tile disabled>
+                                            <v-label style="overflow:hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                                <fluro-icon left type="plan" />Add Plan Item
+                                            </v-label>
+                                        </v-list-tile>
+                                        <v-divider />
+                                        <v-list-tile @click="add('row')">
+                                            <fluro-icon class="muted" left icon="plus" />Add Row
+                                        </v-list-tile>
+                                        <v-list-tile @click="add('song')">
+                                            <fluro-icon class="muted" left icon="music" />Add Songs
+                                        </v-list-tile>
+                                        <v-list-tile @click="add('breaker')">
+                                            <fluro-icon class="muted" left icon="megaphone" />Add Breaker
+                                        </v-list-tile>
+                                    </v-list>
+                                </div>
+                           
+                        </v-menu> -->
+                        <v-layout>
+                            <v-spacer />
+                            <v-flex>
+                                <v-btn block @click="add('row')">Add Row
+                                    <fluro-icon right icon="plus" />
+                                </v-btn>
+                            </v-flex>
+                            <v-spacer />
+                            <v-flex>
+                                <v-btn block @click="add('song')">Add Songs
+                                    <fluro-icon right icon="music" />
+                                </v-btn>
+                            </v-flex>
+                            <v-spacer />
+                            <v-flex>
+                                <v-btn block @click="add('breaker')">Add Section
+                                    <fluro-icon right icon="megaphone" />
+                                </v-btn>
+                            </v-flex>
+                            <v-spacer />
+                        </v-layout>
+                    </v-container>
+                    <!-- <pre>{{model.schedules}}</pre> -->
                 </flex-column-footer>
+                <!-- </flex-column> -->
+                <!-- <div>Sidebar</div> -->
+                <!-- </flex-row> -->
                 <!-- </v-container> -->
                 <!-- </flex-column-body> -->
                 <!-- </slot> -->
             </tab>
             <tab :heading="`${definition.title} details`" v-if="definition">
+                <!-- <tab heading="Info"> -->
                 <slot>
                     <flex-column-body style="background: #fafafa;">
                         <v-container>
                             <constrain sm>
                                 <h3 margin>{{definition.title}}</h3>
-                                <!-- <pre>{{model.data}}</pre> -->
                                 <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields">
                                 </fluro-content-form>
                             </constrain>
@@ -122,183 +148,233 @@
 <script>
 /////////////////////////////////
 
-import Vue from 'vue';
 import draggable from 'vuedraggable';
-
-import FluroEditor from '../../../form/FluroEditor.vue';
-import FluroInlineEdit from '../../../form/FluroInlineEdit.vue';
+import PlanRow from '../components/PlanRow.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
 
-
-
-
-
-let DurationPicker = Vue.extend({
-    props: {
-        'value': {
-            type: [Number, String],
-        },
-    },
-    data() {
-        return {
-            model: parseInt(this.value || 0),
-        }
-    },
-    computed: {
-
-        number: {
-            get() {
-                return this.$fluro.utils.hhmmss(this.model);
-            },
-            set(input) {
-
-                var matches = input.match(/^(\d{2}):([0-5]\d):([0-5]\d)$/);
-                if (matches) {
-                    input = +matches[1] * (60 * 60) + +matches[2] * 60 + +matches[3];
-                    this.model = input;
-
-                    this.$emit('input', this.model);
-                }
-            }
-        }
-    },
-    template: `<input @focus="$emit('focus')" @blur="$emit('blur')" @keyup.enter="$emit('blur')" pattern="[0-9]*" placeholder="Duration (mins)" inputmode="numeric" v-model="number"/>`,
-});
 
 //////////////////////////////////////////////////////
 
 
-let ColumnCell = Vue.extend({
-    props: {
-        'row': {
-            type: Object,
-        },
-        'column': {
-            type: Object,
-        },
-    },
-    components: {
-        FluroInlineEdit,
-    },
-    created() {
-        if (!this.row.notes) {
-            this.row.notes = {};
-        }
-    },
-    computed: {
-
-        notes() {
-            return this.row.notes;
-        },
-        value() {
-            var self = this;
-            return self.notes[self.column.key];
-        }
-    },
-    template: `
-    <td>
-    <fluro-inline-edit >
-    </fluro-inline-edit>
-    </td>`,
-});
-
 /////////////////////////////////
 
 export default {
-    filters: {
-        mins(sec_num) {
-            if (!sec_num) {
-                return '';
-            }
-            /////////////////////////////////////
 
-            var hours = Math.floor(sec_num / 3600);
-            var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
-            var seconds = sec_num - (hours * 3600) - (minutes * 60);
-
-            /////////////////////////////////////
-
-            //Clear string if 0
-            hours = (hours ? hours : '');
-            minutes = (minutes ? minutes : '');
-            seconds = (seconds ? seconds : '');
-
-            /////////////////////////////////////
-
-            function pad(str) {
-                return ("0" + str).slice(-2);
-            }
-
-
-            /////////////////////////////////////
-            /////////////////////////////////////
-
-            if (hours) {
-                return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-            }
-
-            // if (minutes && seconds) {
-            //     return `${pad(minutes)}:${pad(seconds)}`;
-            // }
-            if (minutes && seconds) {
-                return `${minutes}m ${seconds}s `;
-            }
-
-            if (minutes) {
-                return `${minutes} mins`;
-            }
-
-            return `${seconds}s`;
-
-        },
-    },
     components: {
         draggable,
-        FluroInlineEdit,
-        FluroEditor,
-        DurationPicker,
-        ColumnCell,
+        // FluroEditor,
+        PlanRow,
     },
     props: {
 
     },
     mixins: [FluroContentEditMixin],
+    created() {
+        var self = this;
+        _.each(self.model.schedules, function(row) {
+            row.guid = self.$fluro.utils.guid();
+        })
+    },
     methods: {
-        rowTime(index) {
-            var self = this;
-            var total = 0;
-            var elapsed = _.reduce(self.model.schedules, function(memo, row, key) {
-
-                if (key >= index) {
-                    return memo;
-                }
-
-                if (row.duration) {
-                    memo += (parseInt(row.duration) * 1000);
-                }
-
-                return memo;
-            }, 0)
-
-            // var previousRow = self.model.schedules[index - 1];
-            // if (previousRow && !previousRow.duration) {
-            //     return '';
-            // }
-
-            //When the plan starts
-            var startDate = new Date(); //$scope.defaults.startDate);
-            startDate.setTime(startDate.getTime() + elapsed);
-            return self.$fluro.date.formatDate(startDate, 'h:mma');
+        updateColumns() {
+            this.$set(this.model, 'teams', this.model.teams.slice());
         },
+        selectSongs() {
+            var self = this;
+             return self.$fluro.global.select('song', { minimum: 0, maximum: 0 }, true)
+        },
+        injectSongs(index) {
+
+            var self = this;
+
+            return self.selectSongs()
+                .then(function(songs) {
+                    // console.log('Selection', songs);
+
+                    var rows = _.map(songs, function(song) {
+
+                        var duration = self.getDuration(song);
+                        var key = self.getDefaultKey(song);
+
+                        return {
+                            title: song.title,
+                            type: 'song',
+                            links: [song._id],
+                            _id: song._id,
+                            duration,
+                            key,
+                            notes: {},
+                            isNew: true,
+                            guid: self.$fluro.utils.guid(),
+                        }
+                    })
+
+                    /////////////////////////////////////////
+
+                    _.each(rows, function(row, i) {
+
+                        //Mark that we want to scroll to this row
+                        if (index || index == 0) {
+                            var targetIndex = (index + 1) + i;
+                            self.model.schedules.splice(targetIndex, 0, row)
+                        } else {
+                            self.model.schedules.push(row)
+                        }
+                    })
+
+
+
+                });
+        },
+        createRows(type) {
+
+            var self = this;
+
+            switch (type) {
+                case 'breaker':
+                    return [{
+                        title: 'Section',
+                        type: 'breaker',
+                        duration: 0,
+                        links: [],
+                        notes: {},
+                        isNew: true,
+                        guid: self.$fluro.utils.guid(),
+                    }]
+                    break;
+                default:
+                    return [{
+                        title: 'New item',
+                        duration: 300,
+                        links: [],
+                        notes: {},
+                        isNew: true,
+                        guid: self.$fluro.utils.guid(),
+                    }]
+                    break;
+            }
+        },
+        remove(index) {
+            this.model.schedules.splice(index, 1);
+            console.log('Removed item');
+        },
+        addFromRow(details) {
+            var self = this;
+
+            if (details.type == 'song') {
+                return self.injectSongs(details.index);
+            }
+
+            //Create the rows
+            var rows = self.createRows(details.type);
+
+            _.each(rows, function(row, i) {
+                //Mark that we want to scroll to this row
+
+                self.model.schedules.splice((details.index + 1) + i, 0, row)
+            })
+        },
+        duplicate(index) {
+            var row = JSON.parse(JSON.stringify(this.model.schedules[index]));
+            this.model.schedules.splice(index + 1, 0, row);
+        },
+
+        getDuration(song) {
+            return 300;
+        },
+        getDefaultKey(song) {
+            return '';
+        },
+        swap(index) {
+            
+            var self = this;
+            return self.selectSongs()
+                .then(function(songs) {
+
+                    var rows = _.map(songs, function(song) {
+                        var duration = self.getDuration(song);
+                        var key = self.getDefaultKey(song);
+                        return {
+                            title: song.title,
+                            type: 'song',
+                            links: [song._id],
+                            _id: song._id,
+                            duration,
+                            key,
+                            notes: {},
+                            isNew: true,
+                            guid: self.$fluro.utils.guid(),
+                        }
+                    })
+
+                    /////////////////////////////////////////
+
+                    _.each(rows, function(row, i) {
+
+                        self.model.schedules.splice(index, i === 0 ? 1 :0, row);
+
+                        // //Mark that we want to scroll to this row
+                        // if (index || index == 0) {
+                        //     var targetIndex = (index + 1) + i;
+                        //     self.model.schedules.splice(targetIndex, 0, row)
+                        // } else {
+                        //     self.model.schedules.push(row)
+                        // }
+                    })
+
+
+
+                });
+
+
+
+            var newRow
+            this.model.schedules.splice(index, 1, newRow);
+        },
+        add(type) {
+
+            var self = this;
+
+            if (!self.model.schedules) {
+                self.$set(self.model, 'schedules', []);
+            }
+
+            if (type == 'song') {
+                return self.injectSongs();
+            }
+
+            var rows = self.createRows(type);
+            _.each(rows, function(row) {
+
+                //Mark that we want to scroll to this row
+
+
+                self.model.schedules.push(row)
+            })
+
+
+            var container = self.$refs.container;
+            container.scrollTo({
+                top: container.scrollHeight + container.offsetHeight,
+                left: 0,
+                behavior: 'smooth'
+            });
+
+            ///////////////////////////////////////
+
+
+        }
     },
     computed: {
-        detailBodyOptions() {
+        columnEditField() {
             return {
-                disable: {
-                    bubble: false,
-                    bar: true,
-                }
-            };
+                key: 'teams',
+                minimum: 0,
+                maximum: 0,
+                title: 'Extra Column',
+                type: 'string',
+                placeholder: 'Eg. Lighting, MC, Band',
+            }
         },
         startTime() {
             return
@@ -309,6 +385,7 @@ export default {
         },
         columns() {
             var self = this;
+            console.log('Remap columns')
             return _.map(self.teams, function(team) {
                 return {
                     title: team,
@@ -328,6 +405,7 @@ export default {
 
 
         return {
+            actionsOpen: false,
             drag: false,
             dragOptions: {},
             array,
@@ -338,20 +416,6 @@ export default {
 </script>
 <style lang="scss">
 .plan-table {
-    table td {
-        .fluro-editor-textarea {
-            min-height: 80px;
-
-            &>div {
-                border-radius: 3px;
-                padding: 3px;
-            }
-        }
-    }
-}
-</style>
-<style scoped lang="scss">
-.table-scroll {
     flex: 1;
     position: relative;
     width: 100%;
@@ -359,157 +423,398 @@ export default {
     margin: auto;
     overflow: auto;
 
+    $cell-padding: 4px 8px;
+
+    p {
+        margin-bottom: 5px !important;
+    }
+
+
+    mention {
+        font-size: 0.8em;
+        font-weight: 500;
+        background: rgba(#000, 0.1);
+        border-radius: 100px;
+        padding: 2px 4px;
+        display: inline-block;
+        margin: 0 4px;
+    }
+
+
+
+    .cell {
+        padding: $cell-padding;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+    }
+
+    .placeholder {
+        padding-bottom: 2px;
+        padding-top: 2px;
+        opacity: 0;
+        font-size: 0.8em;
+        font-style: italic;
+        ;
+    }
+
+    .row-song-key {
+        min-width: 30px;
+        display: block;
+        text-align-last: center;
+        appearance: none;
+        border: none;
+        outline: none;
+        font-weight:500;
+
+    }
+
+    .row-song-key,
+    .row-title {
+        font-size: 1.1em;
+
+        .cell {
+            padding-bottom: 0;
+        }
+    }
+
+    .row-detail {
+        .cell {
+            padding-top: 0;
+        }
+    }
+
+
 
     table {
+
         width: 100%;
         min-width: 1280px;
         margin: auto;
         border-collapse: separate;
         border-spacing: 0;
 
-        tr.sortable-ghost {
-            opacity: 0.3;
+        th,
+        td {
+            text-align: left;
+            padding: 5px;
+            // border-bottom: 1px solid #000;
+            border-bottom: 1px solid #e8edf1;
+            border-right: 1px solid #e8edf1;
+            height: inherit;
+        }
+
+        /////////////////////////////////////
+
+        tr {
+            height: 1px;
+            background: #fff;
+
+            .dragger {
+                opacity: 0;
+            }
+
+            &:hover {
+                .placeholder {
+                    opacity: 0.5;
+                }
+
+                .dragger {
+                    opacity: 0.5;
+                }
+            }
+
+
+            th:first-child,
+            th:last-child {
+                background: #f0f2f5;
+            }
+
+            &:nth-child(odd) {
+
+                th:first-child,
+                th:last-child {
+                    background: #fcfcfc;
+                }
+
+                background: #fcfcfc;
+            }
+
+            &.song {
+                background: #fffbdd;
+                color: #6b5f31;
+
+
+                th,
+                td {
+
+                    // border-top: 1px solid #e8edf1;
+                    // border-bottom: 1px solid #e8edf1;
+                }
+
+                th:first-child,
+                th:last-child {
+                    background: #fffbdd;
+                }
+            }
+
+
+
+
+            &.breaker {
+                background: #f0f2f5;
+
+
+                th,
+                td {
+                    border-right: none;
+                    border-top: 1px solid #e8edf1;
+                    border-bottom: 1px solid #e8edf1;
+
+                    .cell {
+                        padding: 15px;
+                    }
+
+                    &.row-title {
+                        .cell {
+                            padding-top: inherit;
+                        }
+                    }
+                }
+
+                th:first-child,
+                th:last-child {
+                    background: #f0f2f5;
+                }
+
+                .row-title-text {
+                    opacity: 0.7;
+                    text-transform: uppercase;
+                    font-weight: 600;
+                    letter-spacing: 0.05em;
+                    font-size: 0.8em;
+                }
+
+
+            }
+        }
+
+
+
+
+
+        td {
+
+            vertical-align: top;
+            padding: 0;
+            position: relative;
+
+            &.duration-cell {
+            text-align: center;  
+            }
+
+
+            &:hover {
+                background: rgba($primary, 0.05);
+            }
+
+            p:last-child,
+            .fluro-editor {
+                margin-bottom: 0 !important;
+            }
+
+            .fluro-inline-edit {
+                min-height: 100%;
+                min-width: 100%;
+                display: block;
+                width: 100%;
+                position: relative;
+                float: left;
+                // position: absolute;
+            }
+
+            
+            // &.duration {
+            //     text-align: center;
+
+            //     input {
+            //         width: 70px;
+            //         font-size: 0.9em;
+            //         padding: 0 5px;
+            //         text-align: center;
+            //         line-height: 30px;
+            //     }
+
+            //     // min-height: 50px;
+            // }
+
+            .fluro-inline-edit {
+                width: 100%;
+                height: 100%;
+                // position: absolute;
+                // left:0;
+                // bottom:0;
+                // right:0;
+                // top:0;
+                // overflow: hidden;
+                // border:10px solid #ff0066;
+                display: block;
+
+                .inline-edit-default {
+                    height: auto !important;
+                    width: auto !important;
+
+
+                }
+
+                // .inline-hide {
+                //     height: 0 !important;
+                //     width: 0 !important;
+                //     overflow: hidden !important;
+                //     display: block !important;
+                //     // visibility: hidden;
+                // }
+
+                .inline-edit-input {
+                    background: #fff;
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    right: 0;
+
+
+                    &.inline-show {
+                        border-radius: 3px;
+                        border: 3px solid $primary;
+                        box-shadow: 0 4px 10px rgba(#000, 0.3);
+                        z-index: 3;
+                        //width:0 !important;
+                    }
+                }
+
+                input,
+                select {
+                    margin: 0;
+                    max-width: 100%;
+                    width: 100%;
+                    display: block;
+                    padding: $cell-padding;
+                    line-height: 1;
+                }
+            }
+
+            // &.duration-cell {
+            //     position: relative;
+
+
+
+            //     left: 0;
+            //     right: 0;
+            //     bottom: 0;
+            //     top: 0;
+            //     width: 100%;
+            //     height: 100%;
+
+            //     
+
+            //     // position: absolute;
+            // }
+
+            // }
+        }
+
+        thead th {
+            background: #fff;
+            font-size: 0.8em;
+            // color: #fff;
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0;
+            z-index: 3;
+
+            &.center {
+                text-align: center;
+            }
+
+            &.shrink {
+                width: 1px;
+            }
+
+            &.detail {
+                width: 40%;
+            }
+            border-bottom: 3px solid rgba(#000,0.1);
+        }
+
+        /* safari and ios need the tfoot itself to be position:sticky also */
+        tfoot {
 
             th,
             td {
-                background: #ccc;
-            }
-        }
-    }
-
-    th,
-    td {
-        text-align: left;
-        padding: 5px;
-        border-bottom: 1px solid #000;
-    }
-
-    td {
-        height: 100%;
-        vertical-align: top;
-        padding: 0;
-        position: relative;
-
-
-        &.duration {
-            padding: 5px;
-
-            input {
-                width: 70px;
-                font-size: 0.9em;
-                padding: 0 5px;
-                text-align: center;
-                line-height: 30px;
-            }
-
-            // min-height: 50px;
-        }
-
-        .fluro-inline-edit {
-            width: 100%;
-            height: 100%;
-            // position: absolute;
-            // left:0;
-            // bottom:0;
-            // right:0;
-            // top:0;
-            // overflow: hidden;
-            // border:10px solid #ff0066;
-            display: block;
-
-            input {
-                margin: 0;
-                max-width: 100%;
-                display: block;
+                position: -webkit-sticky;
+                position: sticky;
+                bottom: 0;
+                background: #666;
+                color: #fff;
+                z-index: 4;
             }
         }
 
-        // &.duration-cell {
-        //     position: relative;
-
-
-
-        //     left: 0;
-        //     right: 0;
-        //     bottom: 0;
-        //     top: 0;
-        //     width: 100%;
-        //     height: 100%;
-
-        //     
-
-        //     // position: absolute;
-        // }
-
-        // }
-    }
-
-    thead th {
-        background: #333;
-        color: #fff;
-        position: -webkit-sticky;
-        position: sticky;
-        top: 0;
-        z-index: 3;
-
-        &.shrink {
-            width: 1px;
-        }
-
-        &.detail {
-            width: 40%;
-        }
-    }
-
-    /* safari and ios need the tfoot itself to be position:sticky also */
-    tfoot {
-
-        th,
-        td {
-            position: -webkit-sticky;
-            position: sticky;
-            bottom: 0;
-            background: #666;
-            color: #fff;
-            z-index: 4;
-        }
-    }
-
-    /* testing links*/
-    th:first-child,
-    th:last-child {
-        position: -webkit-sticky;
-        position: sticky;
-        z-index: 2;
-        background: #ccc;
-        vertical-align: center !important;
-        text-align: center;
-
-        &:first-child {
-            left: 0;
-            width: 1px;
-
-        }
-
-        &:last-child {
-            right: 0;
-            width: 1px;
-        }
-    }
-
-    thead,
-    tfoot {
-
+        /* testing links*/
         th:first-child,
         th:last-child {
-            z-index: 5;
+            position: -webkit-sticky;
+            position: sticky;
+            z-index: 2;
+
+            vertical-align: center !important;
+            text-align: center;
+
+            &:first-child {
+                left: 0;
+                width: 1px;
+                border-right: 1px solid #e8edf1;
+
+            }
+
+            &:last-child {
+                right: 0;
+                width: 1px;
+                border-left: 1px solid #e8edf1;
+            }
+        }
+
+        thead,
+        tfoot {
+
+            th:first-child,
+            th:last-child {
+                z-index: 5;
+            }
+        }
+
+        /////////////////////////////////
+
+        tr.sortable-ghost {
+            opacity: 0.3;
+            // background:darken(#e8edf1, 30%) !important;
+
+            th,
+            td {
+                border-color: greyscale(darken(#e8edf1, 30%), 1%) !important;
+                background: greyscale(darken(#e8edf1, 30%), 1%) !important;
+            }
+        }
+
+        td .fluro-editor-textarea {
+            min-height: 0;
+
+            &>div {
+                // font-size: 11px;
+                border-radius: 0 !important;
+                padding: $cell-padding !important;
+                border: none !important;
+            }
         }
     }
-
-
-}
-
-.table-wrap {
-    position: relative;
 }
 </style>
