@@ -153,6 +153,17 @@ export default {
     data() {
 
 
+        var statuses = ['active', 'draft'];
+
+        var basicType = this.$fluro.types.parentType(this.options.type) || this.options.type;
+        switch(basicType) {
+            case 'plan':
+                statuses.push('template')
+            break;
+        }
+
+        console.log('PLAN STATUSES',basicType, statuses)
+
         var initialFilter = this.options.filter || {
             operator: 'and',
             filters: [{
@@ -160,7 +171,7 @@ export default {
                 filters: [{
                     key: 'status',
                     comparator: 'in',
-                    values: ['active', 'draft'],
+                    values: statuses,
                 }]
             }]
         }
@@ -246,7 +257,7 @@ export default {
             var count = this.selectionManager.selection.length;
 
             if (!count) {
-                return `Select ${this.plural}`
+                return this.options.title ? this.options.title : (this.selector.maximum == 1 ?  `Select ${this.title}` : `Select ${this.plural}`);
             }
 
             if (count == 1) {

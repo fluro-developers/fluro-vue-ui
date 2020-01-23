@@ -127,7 +127,7 @@
                     <!-- <pre>{{simpleKey}} {{discriminator}}</pre> -->
                     <template v-if="simpleKeyIsRealms">
                         <!-- REALM SELECT -->
-                        <fluro-realm-select :filterDiscriminator="discriminator" block small v-model="model.values" />
+                        <fluro-realm-select  action="view any" :filterDiscriminator="discriminator" block small v-model="model.values" />
                     </template>
                     <template v-else-if="useBasicReferenceSelect">
                         <fluro-content-select-button small block :allDefinitions="true" :type="useBasicReferenceSelect" v-model="model.values" />

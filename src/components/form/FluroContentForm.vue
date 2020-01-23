@@ -212,16 +212,21 @@ export default {
     },
     data() {
         return {
-            model: JSON.parse(JSON.stringify(this.value)),
+            model:this.value,
+            // model: JSON.parse(JSON.stringify(this.value)),
         }
     },
     components: {
         FluroContentFormField,
     },
     watch: {
+        // model() {
+        //     var self = this;
+        //     if (self.debounce) {
+        //         return self.$emit('input', self.model);
+        //     }
+        // },
         value(val) {
-
-            val = JSON.parse(JSON.stringify(val));
             this.$set(this, 'model', val);
             return this.reset();
         },
@@ -262,7 +267,7 @@ export default {
             }
 
             // self.$nextTick(function() {
-                self.$emit('default');
+            self.$emit('default');
             // })
 
             /////////////////////////////////////////////////
@@ -295,37 +300,33 @@ export default {
             }
         },
 
-        // model() {
+
+        update(input, valueThatWasChanged) {
+            this.model = input;
+            this.$emit('input', this.model);
+           
+        },
+
+        // update: function(input, valueThatWasChanged) {
 
         //     var self = this;
+        //     self.model = input;
+        //     // console.log('Update -> model')
 
-        //     if(debouncer) {
+        //     //If there is already a debouncer
+        //     if (debouncer) {
+        //         //Stop it
         //         clearTimeout(debouncer);
         //     }
 
-        //     debouncer = setTimeout(() => self.change(), self.debounce);
+        //     if (!self.debounce) {
+        //         console.log('')
+        //         return self.$emit('input', this.model);
+        //     }
+
+        //     //Start a new debouncer
+        //     debouncer = setTimeout(() => self.dispatch(), self.debounce);
         // },
-
-        update: function(input, valueThatWasChanged) {
-
-            var self = this;
-            self.model = input;
-            // console.log('Update -> model')
-
-            //If there is already a debouncer
-            if (debouncer) {
-                //Stop it
-                clearTimeout(debouncer);
-            }
-
-            if (!self.debounce) {
-                console.log('')
-                return self.$emit('input', this.model);
-            }
-
-            //Start a new debouncer
-            debouncer = setTimeout(() => self.dispatch(), self.debounce);
-        },
         dispatch() {
 
             // console.log('Update -> dispatch')

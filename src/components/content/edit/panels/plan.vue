@@ -13,61 +13,89 @@
                 <!-- <flex-column-body style="background: #fafafa;"> -->
                 <!-- <v-container class="grid-list-xl"> -->
                 <!-- <flex-row> -->
-                <!-- <flex-column> -->
-                <div class="plan-table" ref="container">
-                    <table id="main-table" class="main-table">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th class="shrink center">
-                                    <fluro-icon icon="clock" />
-                                </th>
-                                <th class="detail">Detail</th>
-                                <th v-for="column in columns">{{column.title}}</th>
-                                <th>
-                                    <!-- <v-menu attach :nudge-left="10" offset-x left bottom v-model="actionsOpen" > -->
-                                    <v-menu attach :nudge-left="10" offset-x left :close-on-content-click="false" transition="slide-x-transition" @click.native.stop>
-                                        <template v-slot:activator="{ on }">
-                                            <div v-on="on">
-                                                <v-btn v-tippy content="Configure Columns" class="ma-0" small icon>
-                                                    <fluro-icon icon="cog" />
-                                                </v-btn>
-                                            </div>
-                                        </template>
-                                        <v-card tile>
-                                            <v-container>
-                                                <!-- <v-list style="max-height: 50vh;" class="scroll-y" dense> -->
-                                                <!-- <v-list-tile> -->
-                                                <!-- <v-list-tile-content> -->
-                                                <fluro-content-form-field @input="updateColumns" :field="columnEditField" v-model="model" />
-                                                <!-- </v-list-tile-content> -->
-                                                <!-- </v-list-tile> -->
-                                                <!-- </v-list> -->
-                                            </v-container>
-                                        </v-card>
-                                    </v-menu>
-                                </th>
-                            </tr>
-                        </thead>
-                        <!-- <tbody> -->
-                        <draggable tag="tbody" handle=".handle" v-model="model.schedules" v-bind="dragOptions" @start="drag=true" @end="drag=false">
-                            <!-- :teams="model.teams" -->
-                            <plan-row @delete="remove(index)" @swap="swap(index)" @duplicate="duplicate(index)" @add="addFromRow" v-model="model.schedules[index]" :index="index" :plan="model" v-for="(row, index) in model.schedules" :key="row.guid" />
-                        </draggable>
-                        <!-- <tfoot>
-                            <tr>
-                                <th></th>
-                                <td></td>
-                                <td></td>
-                                <th v-for="column in columns"></th>
-                                <th></th>
-                            </tr>
-                        </tfoot> -->
-                    </table>
+                <!-- <flex-column-header>
+                    <v-container pa-2>
+                        <v-layout>
+                            <v-flex xs12 sm3>
+                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.startDate" v-model="model" />
+                            </v-flex>
+                        </v-layout>
+                    </v-container>
+                </flex-column-header> -->
+                <div class="plan-table-wrapper">
+                    <!-- <v-menu attach :nudge-left="10" offset-x left :close-on-content-click="false" transition="slide-x-transition" @click.native.stop> -->
+                    <v-menu style="position:relative" attach offset-x left :close-on-content-click="false" transition="slide-x-transition" @click.native.stop>
+                        <template v-slot:activator="{ on }">
+                            <div v-on="on" class="cog-btn">
+                                <v-btn v-tippy content="Configure Columns" class="ma-0" small icon>
+                                    <fluro-icon icon="cog" />
+                                </v-btn>
+                            </div>
+                        </template>
+                        <v-card tile>
+                            <v-container pa-3 style="background: #f0f2f5;">
+                                <!-- <v-list style="max-height: 50vh;" class="scroll-y" dense> -->
+                                <!-- <v-list-tile> -->
+                                <!-- <v-list-tile-content> -->
+                                <fluro-content-form-field @input="updateColumns" :field="columnEditField" v-model="model" />
+                                <!-- </v-list-tile-content> -->
+                                <!-- </v-list-tile> -->
+                                <!-- </v-list> -->
+                            </v-container>
+                        </v-card>
+                    </v-menu>
+                    <div class="plan-table" ref="container">
+                        <table id="main-table" class="main-table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th class="shrink center">
+                                        <fluro-icon icon="clock" />
+                                    </th>
+                                    <th class="detail">Detail</th>
+                                    <th v-for="(column, key) in columns" :key="key">{{column.title}}</th>
+                                    <th>
+                                        <div style="width:28px; height: 22px;">
+                                        </div>
+                                        <!-- <v-menu attach :nudge-left="10" offset-x left bottom v-model="actionsOpen" > -->
+                                    </th>
+                                </tr>
+                            </thead>
+                            <!-- <tbody> -->
+                            <draggable tag="tbody" handle=".handle" v-model="model.schedules" v-bind="dragOptions" @start="drag=true" @end="drag=false">
+                                <!-- :teams="model.teams" -->
+                                <plan-row @delete="remove(index)" @swap="swap(index)" @duplicate="duplicate(index)" @add="addFromRow" v-model="model.schedules[index]" :index="index" :plan="model" v-for="(row, index) in model.schedules" :key="row.guid" />
+                            </draggable>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="2"></th>
+                                    <td>
+                                        <v-btn v-tippy content="Add Row" style="border: 1px solid #ddd; background: #fff;" class="ma-2" @click="add('row')">
+                                            <fluro-icon icon="plus" />
+                                        </v-btn>
+                                        <v-btn v-tippy content="Add Songs" style="border: 1px solid #ddd; background: #fff;" class="ma-2" @click="add('song')">
+                                            <fluro-icon icon="music" />
+                                        </v-btn>
+                                        <v-btn v-tippy content="Add Section" style="border: 1px solid #ddd; background: #fff;" class="ma-2" @click="add('breaker')">
+                                            <fluro-icon icon="megaphone" />
+                                        </v-btn>
+                                        <!-- <v-btn @click="add('song')" v-tippy content="Add songs">
+                                        <fluro-icon icon="music" />
+                                    </v-btn>
+                                    <v-btn @click="add('breaker')" v-tippy content="Add section">
+                                        <fluro-icon icon="megaphone" />
+                                    </v-btn> -->
+                                    </td>
+                                    <td v-for="column in columns"></td>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
-                <flex-column-footer>
-                    <v-container class="border-top pa-2 text-xs-center" fluid>
-                        <!-- <v-menu attach offset-y top v-model="actionsOpen" transition="slide-y-transition">
+                <!-- <flex-column-footer> -->
+                <!-- <v-container class="border-top pa-2 text-xs-center" fluid> -->
+                <!-- <v-menu attach offset-y top v-model="actionsOpen" transition="slide-y-transition">
                             <template v-slot:activator="{ on }">
                               
                                     <v-btn color="primary" v-on="on">Add
@@ -97,7 +125,7 @@
                                 </div>
                            
                         </v-menu> -->
-                        <v-layout>
+                <!-- <v-layout>
                             <v-spacer />
                             <v-flex>
                                 <v-btn block @click="add('row')">Add Row
@@ -118,9 +146,9 @@
                             </v-flex>
                             <v-spacer />
                         </v-layout>
-                    </v-container>
-                    <!-- <pre>{{model.schedules}}</pre> -->
-                </flex-column-footer>
+                    </v-container> -->
+                <!-- <pre>{{model.schedules}}</pre> -->
+                <!-- </flex-column-footer> -->
                 <!-- </flex-column> -->
                 <!-- <div>Sidebar</div> -->
                 <!-- </flex-row> -->
@@ -181,7 +209,7 @@ export default {
         },
         selectSongs() {
             var self = this;
-             return self.$fluro.global.select('song', { minimum: 0, maximum: 0 }, true)
+            return self.$fluro.global.select('song', { minimum: 0, maximum: 0 }, true)
         },
         injectSongs(index) {
 
@@ -286,7 +314,7 @@ export default {
             return '';
         },
         swap(index) {
-            
+
             var self = this;
             return self.selectSongs()
                 .then(function(songs) {
@@ -311,7 +339,7 @@ export default {
 
                     _.each(rows, function(row, i) {
 
-                        self.model.schedules.splice(index, i === 0 ? 1 :0, row);
+                        self.model.schedules.splice(index, i === 0 ? 1 : 0, row);
 
                         // //Mark that we want to scroll to this row
                         // if (index || index == 0) {
@@ -366,6 +394,31 @@ export default {
         }
     },
     computed: {
+        fieldsOutput() {
+            var self = this;
+            var array = [];
+
+            ///////////////////////////////////
+
+            addField('startDate', {
+                title: 'Plan Starts',
+                minimum: 0,
+                maximum: 1,
+                type: 'date',
+                directive: 'datetimepicker',
+            });
+
+            ///////////////////////////////////
+
+            function addField(key, details) {
+                details.key = key;
+                array.push(details)
+            }
+
+            return array;
+
+
+        },
         columnEditField() {
             return {
                 key: 'teams',
@@ -385,13 +438,15 @@ export default {
         },
         columns() {
             var self = this;
-            console.log('Remap columns')
-            return _.map(self.teams, function(team) {
+            return _.chain(self.teams)
+            .compact()
+            .map(function(team) {
                 return {
                     title: team,
                     key: team,
                 }
-            });
+            })
+            .value();
         },
     },
     data() {
@@ -415,6 +470,33 @@ export default {
 }
 </script>
 <style lang="scss">
+.plan-table-wrapper {
+    position: relative;
+    flex:1;
+    display: flex;
+    overflow: hidden;
+
+
+    .cog-btn {
+        // width: 36px;
+        // height: 36px;
+        // text-align: center;
+        // position: absolute;
+        // top: 0;
+        // right: 0;
+        // z-index: 3;
+
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        width: 38px;
+        z-index: 3;
+        text-align: center;
+
+
+    }
+}
+
 .plan-table {
     flex: 1;
     position: relative;
@@ -422,6 +504,8 @@ export default {
     z-index: 1;
     margin: auto;
     overflow: auto;
+    background: #f0f2f5;
+    height: 100%;
 
     $cell-padding: 4px 8px;
 
@@ -464,7 +548,7 @@ export default {
         appearance: none;
         border: none;
         outline: none;
-        font-weight:500;
+        font-weight: 500;
 
     }
 
@@ -488,7 +572,7 @@ export default {
     table {
 
         width: 100%;
-        min-width: 1280px;
+        min-width: 600px;
         margin: auto;
         border-collapse: separate;
         border-spacing: 0;
@@ -501,6 +585,7 @@ export default {
             border-bottom: 1px solid #e8edf1;
             border-right: 1px solid #e8edf1;
             height: inherit;
+            white-space: nowrap;
         }
 
         /////////////////////////////////////
@@ -526,7 +611,7 @@ export default {
 
             th:first-child,
             th:last-child {
-                background: #f0f2f5;
+                background: #fff;
             }
 
             &:nth-child(odd) {
@@ -609,7 +694,7 @@ export default {
             position: relative;
 
             &.duration-cell {
-            text-align: center;  
+                text-align: center;
             }
 
 
@@ -632,7 +717,7 @@ export default {
                 // position: absolute;
             }
 
-            
+
             // &.duration {
             //     text-align: center;
 
@@ -740,9 +825,11 @@ export default {
             }
 
             &.detail {
-                width: 40%;
+                // width: 40%;
+                max-width: 300px;
             }
-            border-bottom: 3px solid rgba(#000,0.1);
+
+            border-bottom: 3px solid rgba(#000, 0.1);
         }
 
         /* safari and ios need the tfoot itself to be position:sticky also */
@@ -753,9 +840,10 @@ export default {
                 position: -webkit-sticky;
                 position: sticky;
                 bottom: 0;
-                background: #666;
-                color: #fff;
                 z-index: 4;
+                background: #f0f2f5 !important;
+                border: none !important;
+                border-top: 1px solid rgba(#000, 0.1) !important;
             }
         }
 
@@ -791,6 +879,8 @@ export default {
                 z-index: 5;
             }
         }
+
+
 
         /////////////////////////////////
 
