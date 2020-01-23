@@ -234,7 +234,6 @@ export default {
 
         var self = this;
         self.$nextTick(function() {
-            console.log('MOUNTED', self.row.isNew, self.$refs.title)
             if (self.row.isNew) {
                 // delete self.row.isNew;
                 if (self.$refs.title) {

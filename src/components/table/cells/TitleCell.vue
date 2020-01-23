@@ -3,7 +3,7 @@
         <div class="grow">
 
             <strong>{{row.title}}</strong>
-            <div class="small muted" v-if="firstLine">{{firstLine}}</div>
+            <div class="summary" v-if="firstLine">{{firstLine}}</div>
             <!-- <pre>{{firstLine}}</pre> -->
            
         </div>
@@ -81,8 +81,13 @@ export default {
             flex: none;
         }
 
-        .small {
+        .summary {
             font-size: 0.9em;
+            opacity: 0.5;
+            max-width: 500px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;;
         }
     }
 

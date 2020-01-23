@@ -685,6 +685,7 @@ export default {
     },
     asyncComputed: {
         config: {
+            default:{},
             get() {
 
                 var self = this;
@@ -717,7 +718,7 @@ export default {
     },
     watch: {
         value() {
-            // this.model = JSON.parse(JSON.stringify(this.value));
+            this.model = this.value;//JSON.parse(JSON.stringify(this.value));
         },
         // 'model': {
         //     handler: function(val, oldVal) {

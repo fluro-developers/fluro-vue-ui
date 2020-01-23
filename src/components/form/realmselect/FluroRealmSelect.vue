@@ -23,6 +23,7 @@ import RealmSelectModal from './RealmSelectModal.vue';
 
 export default {
     computed: {
+
         singleOption:{
             get() {
                 return this.singleOptionAvailable;
@@ -73,6 +74,10 @@ export default {
         block: {
             type: Boolean,
         },
+        'action':{
+            type:String,
+            default:'create',
+        },
         'expanded': {
             type: Boolean,
         },
@@ -122,10 +127,10 @@ export default {
 
                 return new Promise(function(resolve, reject) {
 
-
                     self.$fluro.access
-                        .retrieveSelectableRealms('create', self.definition, self.type)
+                        .retrieveSelectableRealms(self.action, self.definition, self.type)
                         .then(function(allRealms) {
+
 
 
                             var filtered = _.filter(allRealms, function(realmType) {
@@ -137,6 +142,7 @@ export default {
                             })
 
 
+                            console.log('ALL REALMS', allRealms, self.filterDiscriminator, filtered, self.definition, self.type)
                             //////////////////////////////////////
 
                             var flattenedLookup = _.reduce(allRealms, function(set, realmType) {
