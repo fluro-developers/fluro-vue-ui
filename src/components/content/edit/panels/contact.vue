@@ -153,20 +153,14 @@
                 </slot>
             </tab>
             <tab heading="Activity Timeline" v-if="itemID">
-
-
-               <!--  -->
-
-
-
+                <!--  -->
                 <tabset :justified="true">
                     <!-- <tab heading="Engagement"> -->
-                       <!-- <contact-engagement-chart v-model="model"/> -->
+                    <!-- <contact-engagement-chart v-model="model"/> -->
                     <!-- </tab> -->
                     <tab heading="Timeline">
                         <contact-timeline v-model="model" />
                     </tab>
-
                     <!-- <tab heading="Attendance">
                         <contact-timeline v-model="model" />
                     </tab>
@@ -290,18 +284,10 @@
                     <flex-column-body style="background: #fafafa;">
                         <v-container grid-list-xl>
                             <constrain sm>
-                                <!-- <fluro-panel> -->
-                                <!-- <fluro-panel-body> -->
-                                <!-- <h3 margin>{{contextName}} Capabilities</h3> -->
-                                <!-- <contact-capability-manager v-model="model.capabilities" /> -->
-                                <!-- </fluro-panel-body> -->
-                                <!-- </fluro-panel> -->
-                                <h3 margin>{{contextName}} Availability</h3>
-                                <!-- <v-input class="no-flex"> -->
-                                <!-- <v-label>Capabilities</v-label> -->
-                                <!-- <p class="help-block">Add to {{contextName}} capabilities</p> -->
-                                <!-- <fluro-content-form-field :form-fields="formFields" :showLabel="false" :outline="showOutline" :options="formOptions" :field="fieldHash.capabilities" v-model="model"></fluro-content-form-field> -->
-                                <!-- </v-input> -->
+                                <div v-if="model._id">
+                                    <h3 margin>{{contextName}} Unavailability</h3>
+                                    <contact-unavailability-manager v-model="model" />
+                                </div>
                             </constrain>
                         </v-container>
                     </flex-column-body>
@@ -478,6 +464,7 @@ import ContactGroupManager from '../components/ContactGroupManager.vue';
 import ContactProcessManager from '../components/ContactProcessManager.vue';
 import ContactCapabilityManager from '../components/ContactCapabilityManager.vue';
 import ContactRelationshipManager from '../components/ContactRelationshipManager.vue';
+import ContactUnavailabilityManager from '../components/ContactUnavailabilityManager.vue';
 // import ContactEngagementChart from '../components/ContactEngagementChart.vue';
 
 /////////////////////////////////
@@ -796,7 +783,7 @@ export default {
         ContactProcessManager,
         ContactCapabilityManager,
         ContactRelationshipManager,
-        // ContactEngagementChart,
+        ContactUnavailabilityManager,
         FluroAvatarUpdate,
         FluroRealmSelect,
         FluroAcademicSelect,
