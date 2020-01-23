@@ -26,8 +26,8 @@
                             </fluro-inline-edit>
                         </template>
                         <template v-slot:right>
-                            <fluro-realm-select v-model="model.realms" :type="typeName" :definition="definitionName" />
-                            <fluro-tag-select class="ml-2" v-model="model.tags" />
+                            <fluro-realm-select v-if="typeName != 'realm'" v-model="model.realms" :type="typeName" :definition="definitionName" />
+                            <fluro-tag-select class="ml-2" v-if="typeName != 'tag'" v-model="model.tags" />
                             <!-- <pre>{{model.tags}}</pre> -->
                             <v-btn v-if="model._id" icon class="mr-0" small @click="$actions.open([model])">
                                 <fluro-icon icon="ellipsis-h" />
@@ -210,8 +210,9 @@ export default {
     },
     created() {
         // this.reset(true);
-        if (this.model && !this.model.data) {
-            this.$set(this.model, 'data', {});
+        var self = this;
+        if (self.model && !self.model.data) {
+            self.$set(self.model, 'data', {});
         }
     },
     methods: {
@@ -491,20 +492,20 @@ export default {
 
                     var hasEvent = _.get(self.model, 'event.title');
                     var planStartDate = _.get(self.model, 'startDate');
-                    
+
                     ///////////////////////////////////////
 
                     var readableStartDate;
-                   
-                    if(planStartDate) {
+
+                    if (planStartDate) {
                         readableStartDate = self.$fluro.date.formatDate(planStartDate, 'h:mm ddd D MMM')
-                    } else if(hasEvent) {
+                    } else if (hasEvent) {
                         readableStartDate = self.$fluro.date.readableEventDate(self.model.event);
                     }
 
                     ///////////////////////////////////////
-                    
-                    if(hasEvent) {
+
+                    if (hasEvent) {
                         return readableStartDate ? `${readableStartDate} - ${self.model.event.title}` : undefined;
                     } else {
                         return readableStartDate ? readableStartDate : undefined;
