@@ -374,7 +374,7 @@
         <template v-else-if="renderer == 'currency' && !multipleInput">
             <!--   CURRENCY
             <pre>{{fieldModel}}</pre> -->
-            <fluro-currency-input :currency="params.currency" :label="displayLabel" :required="required" v-model="fieldModel" :autofocus="autofocus" :outline="showOutline" :success="success" @blur="touch()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" />
+            <fluro-currency-input :currency="params.currency" :label="displayLabel" :required="required" v-model="fieldModel" :autofocus="shouldAutofocus" :outline="showOutline" :success="success" @blur="touch()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" />
         </template>
         <template v-else-if="renderer == 'color' && !multipleInput">
             
@@ -408,7 +408,7 @@
 
 
             
-            <!-- <v-text-field :autofocus="autofocus" :outline="showOutline" :success="success" browser-autocomplete="off" :required="required" :label="displayLabel" v-model="fieldModel" @blur="touch()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" /> -->
+            <!-- <v-text-field :autofocus="shouldAutofocus" :outline="showOutline" :success="success" browser-autocomplete="off" :required="required" :label="displayLabel" v-model="fieldModel" @blur="touch()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" /> -->
             
         </template>
 
@@ -436,12 +436,12 @@
                         <!-- <pre>{{proposedValue}}</pre> -->
                         <!-- <pre>{{fieldModel}}</pre> -->
                         <!--   -->
-                        <v-text-field :autofocus="autofocus" class="faint" @input="valueChange" append-inner-icon="plus" :outline="showOutline" :success="success" browser-autocomplete="off" append-icon="plus" :required="required" :label="multiLabel" v-model="proposedValue" @keyup.enter.native.stop="addProposedValue()" @blur="addProposedValue()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="hint" :placeholder="field.placeholder" />
+                        <v-text-field :autofocus="shouldAutofocus" class="faint" @input="valueChange" append-inner-icon="plus" :outline="showOutline" :success="success" browser-autocomplete="off" append-icon="plus" :required="required" :label="multiLabel" v-model="proposedValue" @keyup.enter.native.stop="addProposedValue()" @blur="addProposedValue()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="hint" :placeholder="field.placeholder" />
                     </template>
                 </v-input>
             </template>
             <template v-if="!multipleInput">
-                <v-text-field :autofocus="autofocus" :outline="showOutline" :success="success" browser-autocomplete="off" :required="required" :label="displayLabel" v-model="fieldModel" @blur="touch()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" />
+                <v-text-field :autofocus="shouldAutofocus" :outline="showOutline" :success="success" browser-autocomplete="off" :required="required" :label="displayLabel" v-model="fieldModel" @blur="touch()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" />
             </template>
         </template>
         <!-- <pre><label>{{field.title}}</label><br/>{{model}}</pre> -->
@@ -623,6 +623,9 @@ export default {
         }
     },
     computed: {
+        shouldAutofocus() {
+            return this.autofocus || this.params.autofocus;
+        },
         customComponent() {
             return this.field.customComponent;
         },

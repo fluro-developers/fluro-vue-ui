@@ -939,7 +939,7 @@ export default {
             //////////////////////////////////////
 
             var appendContactDetails = [];
-
+            var appendFullFamily;
 
             //////////////////////////////////////
 
@@ -987,6 +987,8 @@ export default {
                     }
 
                     if (_.startsWith(key, 'family.')) {
+
+                        appendFullFamily = true;
                         return 'family';
                         // appendContactDetails.push(definitionName);
                     }
@@ -1013,6 +1015,7 @@ export default {
                     limit: ids.length,
                     appendContactDetails,
                     appendAssignments,
+                    appendFullFamily,
 
                     // cancelToken: currentPageItemsRequest.token,
                 })

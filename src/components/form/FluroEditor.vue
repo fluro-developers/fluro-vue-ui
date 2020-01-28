@@ -108,6 +108,25 @@
                         </v-list-tile>
                     </v-list>
                 </v-menu>
+
+                
+                <v-menu v-if="tokens.length" :fixed="true" transition="slide-y-transition" offset-y>
+                    <template v-slot:activator="{ on }">
+                        <v-btn small :disabled="showSource" v-on="on">
+                            Tokens
+                        </v-btn>
+                    </template>
+                    <v-list>
+                        <v-list-tile @click.stop.prevent="commands.heading({ level: 1 })" v-for="token in tokens">
+                            <v-list-tile-content><span style="margin:0 !important">{{token.title}}</span></v-list-tile-content>
+                        </v-list-tile>
+                       
+                    </v-list>
+                </v-menu>
+                
+
+
+
                 <v-menu :fixed="true" transition="slide-y-transition" offset-y>
                     <template v-slot:activator="{ on }">
                         <v-btn small icon :disabled="showSource" v-on="on">
@@ -326,6 +345,9 @@ export default {
         }
     },
     computed: {
+        tokens() {
+            return this.options.tokens || [];
+        },
         barEnabled() {
             return !(this.options.disable && this.options.disable.bar);
         },

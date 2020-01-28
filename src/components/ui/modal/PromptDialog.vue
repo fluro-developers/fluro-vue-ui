@@ -1,5 +1,7 @@
 <template>
+
     <flex-column class="fluro-prompt-dialog">
+        <form @submit.prevent.stop="done">
         <flex-column-header class="border-bottom" v-if="title">
             <v-container pa-2>
                 <h3 v-if="title">{{title}}</h3>
@@ -18,13 +20,14 @@
                             Cancel
                         </v-btn>
                         <v-spacer />
-                        <v-btn block color="primary" @click="done()">
+                        <v-btn block type="submit" color="primary">
                             Continue
                         </v-btn>
                     </v-layout>
                 </constrain>
             </v-container>
         </flex-column-footer>
+    </form>
     </flex-column>
 </template>
 <script>
