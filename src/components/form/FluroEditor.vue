@@ -117,7 +117,7 @@
                         </v-btn>
                     </template>
                     <v-list>
-                        <v-list-tile @click.stop.prevent="commands.heading({ level: 1 })" v-for="token in tokens">
+                        <v-list-tile @click="commands.token(token.key)" v-for="token in tokens">
                             <v-list-tile-content><span style="margin:0 !important">{{token.title}}</span></v-list-tile-content>
                         </v-list-tile>
                        
@@ -285,6 +285,7 @@ import tippy from 'tippy.js';
 import FluroCodeEditor from './FluroCodeEditor.vue';
 import Mention from './tiptap/mentions';
 import Image from './tiptap/image';
+import Token from './tiptap/token';
 // import AutoLinkMark from './tiptap/autolink';
 
 
@@ -412,6 +413,10 @@ export default {
             if (src !== null) {
                 command({ src })
             }
+        },
+        addToken(command, key) {
+            command(key)
+
         },
         // navigate to the previous item
         // if it's the first item, navigate to the last one
@@ -644,6 +649,8 @@ export default {
             new TableHeader(),
             new TableCell(),
             new TableRow(),
+            new Token(),
+            // TokenPlugin,
             MentionPlugin,
             new Placeholder({
                 emptyClass: 'placeholder-text',

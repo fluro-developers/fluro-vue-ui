@@ -86,7 +86,15 @@ export default {
     },
     data() {
         return {
-            editorOptions: {},
+            editorOptions: {
+                // tokens: [{
+                //     title: 'First Name',
+                //     key: 'firstName'
+                // },{
+                //     title: 'Last Name',
+                //     key: 'lastName'
+                // }]
+            },
         }
     },
 }

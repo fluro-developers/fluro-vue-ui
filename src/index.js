@@ -117,6 +117,9 @@ export { EventThumbnailCell as EventThumbnailCell };
 import NumberCell from './components/table/cells/NumberCell.vue';
 export { NumberCell as NumberCell };
 
+import RealmDotCell from './components/table/cells/RealmDotCell.vue';
+export { RealmDotCell as RealmDotCell };
+
 import PaymentStatusCell from './components/table/cells/PaymentStatusCell.vue';
 export { PaymentStatusCell as PaymentStatusCell };
 
