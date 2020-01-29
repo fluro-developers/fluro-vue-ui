@@ -1,29 +1,35 @@
 <template>
     <flex-column>
-        <flex-column-body>
-            <!-- TEST TEST TEST -->
-            <v-container v-if="item">
 
-                <pre>{{item}}</pre>
-                <!-- <fluro-dynamic-table :changeKey="changeKey" :availableKeys="availableKeys" :startDate="startDate" :endDate="endDate" :grouping="activeGroupingFunction" :includeArchivedByDefault="includeArchivedByDefault" :allDefinitions="allDefinitions" :searchInheritable="searchInheritable" :clicked="rowClicked" :search="search" :data-type="type" :init-page="$route.query.page" :filter-config="filterConfig" :init-sort="initialSort" @raw="rowsChanged" @filtered="filteredChanged" @page="pageChanged" @sort="sortChanged" :columns="columns">
-                    <template v-slot:optionsabove>
-                        <v-container pa-2 class="border-bottom" v-for="option in groupingOptions">
-                            <v-switch @click.native.stop.prevent="toggleGroupingFunction(option)" :value="option.key == activeGroupingFunctionKey" :label="option.title"></v-switch>
-                        </v-container>
-                    </template>
-                    <template v-slot:emptytext>
-                        <empty-text :type="type">
-                            <p class="lead">
-                                No {{type | definitionTitle(true)}} were found matching your criteria
-                            </p>
-                            <v-btn large color="primary" @click="$fluro.global.create(type)">
-                                Create a new {{type | definitionTitle}}
-                                <fluro-icon icon="arrow-right" right />
-                            </v-btn>
-                        </empty-text>
-                    </template>
-                </fluro-dynamic-table> -->
-            </v-container>
+        <template v-if="loading">
+            <fluro-page-preloader contain />
+        </template>
+        <template v-else>
+            <!-- :vertical="true" -->
+            <tabset :justified="true" :vertical="true">
+                <tab heading="Results" >
+                   <fluro-table trackingKey="_id" :pageSize="100" :items="results" :columns="columns" />
+                </tab>
+                <tab :heading="`${definition.title} Details`" v-if="definition">
+                        <flex-column-body style="background: #fafafa;">
+                            <v-container fluid>
+                                <constrain sm>
+                                    <h3 margin>{{definition.title}} Details</h3>
+                                    <fluro-content-render :fields="definedFields" v-model="item.data" />
+                                    
+                                </constrain>
+                            </v-container>
+                        </flex-column-body>
+                </tab>
+            </tabset>
+        </template>
+        <!-- <flex-column-body> -->
+            <!-- TEST TEST TEST -->
+        <!-- </flex-column-body> -->
+        <flex-column-body>
+<!--             <pre>{{columns}}</pre>
+            <pre>{{results}}</pre>
+ -->            <pre>{{definition}}</pre>
         </flex-column-body>
     </flex-column>
 </template>
@@ -33,6 +39,7 @@
 import Vue from 'vue';
 
 import FluroContentViewMixin from '../FluroContentViewMixin';
+import {  FluroTable, RealmDotCell, TitleCell, DefinitionCell } from 'fluro-vue-ui';
 import FluroContentRender from '../../../FluroContentRender.vue';
 
 /////////////////////////////////
@@ -50,9 +57,29 @@ export default {
     },
     components: {
         FluroContentRender,
+        FluroTable,
+        RealmDotCell,
+        TitleCell,
+        DefinitionCell,
     },
     mixins: [FluroContentViewMixin],
     methods: {},
+    asyncComputed: {
+        results: {
+            default: [],
+            get() {
+                var self = this;
+                self.loading = true
+                return new Promise(function(resolve, reject) {
+                    self.$fluro.content.query(self.item, {}).then(function(result) {
+                        resolve(result)
+                        self.loading = false
+                    }).catch(reject)
+                })
+            }
+        }
+
+    },
     computed: {
         data() {
             return this.item.data || {}
@@ -73,10 +100,38 @@ export default {
         },
         definedFields() {
             return this.config.definition.fields;
+        },
+        columns() {
+            if (!this.item.columns.length){
+                return [                    
+                    { title: '', shrink: true, align: "center", key: 'realms', renderer: RealmDotCell },
+                    { title: 'Title', key: 'title', renderer: TitleCell, additionalFields: ['firstLine'] },{
+                    title: "Type",
+                    
+                    renderer: DefinitionCell,
+                    shrink: true,
+                },
+{
+                    title: "Created",
+                    key: 'created',
+                    type: 'date',
+                    shrink: true,
+                },
+                {
+                    title: "Updated",
+                    key: 'updated',
+                    type: 'date',
+                    shrink: true,
+
+                }]
+            }
+            return this.item.columns
         }
     },
     data() {
-        return {}
+        return {
+            loading: true
+        }
     },
     created() {
         console.log('THIS RENDERER', this)

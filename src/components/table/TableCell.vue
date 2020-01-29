@@ -101,10 +101,17 @@ export default {
             //     return;
             // }
 
-            if (this.column.renderer) {
-                return this.column.renderer;
-            }
+            var renderer = this.column.renderer
+            switch(this.column.renderer) {
+                case 'capitalize':
+                    renderer = null
+                    break
 
+            }
+            if (renderer) {
+                return renderer;
+            }
+            
             switch (this.column.type) {
                 case 'date':
                     return DateCell;
