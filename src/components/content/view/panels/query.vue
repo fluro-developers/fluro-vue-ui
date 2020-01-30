@@ -1,36 +1,27 @@
 <template>
     <flex-column>
-
         <template v-if="loading">
             <fluro-page-preloader contain />
         </template>
         <template v-else>
             <!-- :vertical="true" -->
             <tabset :justified="true" :vertical="true">
-                <tab heading="Results" >
-                   <fluro-table trackingKey="_id" :pageSize="100" :items="results" :columns="columns" />
+                <tab heading="Results">
+                    <fluro-table :showFooter="true" trackingKey="_id" :pageSize="100" :items="results" :columns="columns" />
+                   
                 </tab>
-                <tab :heading="`${definition.title} Details`" v-if="definition">
-                        <flex-column-body style="background: #fafafa;">
-                            <v-container fluid>
-                                <constrain sm>
-                                    <h3 margin>{{definition.title}} Details</h3>
-                                    <fluro-content-render :fields="definedFields" v-model="item.data" />
-                                    
-                                </constrain>
-                            </v-container>
-                        </flex-column-body>
+                <tab :heading="`${definition.title} Details`" v-if="definedFields.length">
+                    <flex-column-body style="background: #fafafa;">
+                        <v-container fluid>
+                            <constrain sm>
+                                <h3 margin>{{definition.title}} Details</h3>
+                                <fluro-content-render :fields="definedFields" v-model="item.data" />
+                            </constrain>
+                        </v-container>
+                    </flex-column-body>
                 </tab>
             </tabset>
         </template>
-        <!-- <flex-column-body> -->
-            <!-- TEST TEST TEST -->
-        <!-- </flex-column-body> -->
-        <flex-column-body>
-<!--             <pre>{{columns}}</pre>
-            <pre>{{results}}</pre>
- -->            <pre>{{definition}}</pre>
-        </flex-column-body>
     </flex-column>
 </template>
 <script>
@@ -39,7 +30,7 @@
 import Vue from 'vue';
 
 import FluroContentViewMixin from '../FluroContentViewMixin';
-import {  FluroTable, RealmDotCell, TitleCell, DefinitionCell } from 'fluro-vue-ui';
+import { FluroTable, RealmDotCell, TitleCell, DefinitionCell } from 'fluro-vue-ui';
 import FluroContentRender from '../../../FluroContentRender.vue';
 
 /////////////////////////////////
@@ -99,31 +90,32 @@ export default {
             return array;
         },
         definedFields() {
-            return this.config.definition.fields;
+            return this.config.definition ? this.config.definition.fields || [] : []
         },
         columns() {
-            if (!this.item.columns.length){
-                return [                    
+            if (!this.item.columns.length) {
+                return [
                     { title: '', shrink: true, align: "center", key: 'realms', renderer: RealmDotCell },
-                    { title: 'Title', key: 'title', renderer: TitleCell, additionalFields: ['firstLine'] },{
-                    title: "Type",
-                    
-                    renderer: DefinitionCell,
-                    shrink: true,
-                },
-{
-                    title: "Created",
-                    key: 'created',
-                    type: 'date',
-                    shrink: true,
-                },
-                {
-                    title: "Updated",
-                    key: 'updated',
-                    type: 'date',
-                    shrink: true,
+                    { title: 'Title', key: 'title', renderer: TitleCell, additionalFields: ['firstLine'] }, {
+                        title: "Type",
 
-                }]
+                        renderer: DefinitionCell,
+                        shrink: true,
+                    },
+                    {
+                        title: "Created",
+                        key: 'created',
+                        type: 'date',
+                        shrink: true,
+                    },
+                    {
+                        title: "Updated",
+                        key: 'updated',
+                        type: 'date',
+                        shrink: true,
+
+                    }
+                ]
             }
             return this.item.columns
         }

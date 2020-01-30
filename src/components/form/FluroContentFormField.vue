@@ -797,7 +797,13 @@ export default {
 
         },
         editorOptions() {
-            return this.options.editor;
+
+            var editorOptions = this.options.editor || this.params.editor || {}
+
+            if(this.params.tokens && this.params.tokens.length) {
+                editorOptions.tokens = this.params.tokens;
+            }
+            return editorOptions;
         },
         multiEditorOptions() {
             return Object.assign({}, this.options.editor, { label: '' })

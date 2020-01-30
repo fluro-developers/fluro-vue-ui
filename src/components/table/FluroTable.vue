@@ -214,6 +214,9 @@ var INITIAL = true;
 
 export default {
     props: {
+        showFooter:{
+            type:Boolean,
+        },
         trackingKey:{
             type:String,
             default:'_id',
@@ -335,6 +338,11 @@ export default {
     },
     computed: {
         footerEnabled() {
+
+            if(this.showFooter) {
+                return true;
+            }
+
             if(this.totalPages > 1) {
                 return true;
             }
