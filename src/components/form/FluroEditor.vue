@@ -68,23 +68,23 @@
         </editor-menu-bubble>
         <editor-menu-bar :editor="editor" v-if="barEnabled">
             <div class="fluro-editor-toolbar" slot-scope="{ commands, isActive }">
-                <v-btn icon small flat class="hidden-xs-only" :class="{ 'is-active':showSource }" @click.stop.prevent="showSource = !showSource">
+                <v-btn v-if="isEnabled('source')" icon small flat class="hidden-xs-only" :class="{ 'is-active':showSource }" @click.stop.prevent="showSource = !showSource">
                     <fluro-icon v-if="showSource" icon="edit" />
                     <fluro-icon v-else icon="code" />
                 </v-btn>
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.bold() }" @click.stop.prevent="commands.bold">
+                <v-btn v-if="isEnabled('bold')" icon :disabled="showSource" small flat :class="{ 'active': isActive.bold() }" @click.stop.prevent="commands.bold">
                     <fluro-icon icon="bold" />
                 </v-btn>
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.italic() }" @click.stop.prevent="commands.italic">
+                <v-btn v-if="isEnabled('italic')" icon :disabled="showSource" small flat :class="{ 'active': isActive.italic() }" @click.stop.prevent="commands.italic">
                     <fluro-icon icon="italic" />
                 </v-btn>
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.underline() }" @click.stop.prevent="commands.underline">
+                <v-btn v-if="isEnabled('underline')" icon :disabled="showSource" small flat :class="{ 'active': isActive.underline() }" @click.stop.prevent="commands.underline">
                     <fluro-icon icon="underline" />
                 </v-btn>
                 <!-- <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.strike() }" @click.stop.prevent="commands.strike">
                     <v-icon>format_strikethrough</v-icon>
                 </v-btn> -->
-                <v-menu :fixed="true" transition="slide-y-transition" offset-y>
+                <v-menu v-if="isEnabled('formats')" :fixed="true" transition="slide-y-transition" offset-y>
                     <template v-slot:activator="{ on }">
                         <v-btn small icon :disabled="showSource" v-on="on">
                             H1
@@ -108,8 +108,6 @@
                         </v-list-tile>
                     </v-list>
                 </v-menu>
-
-                
                 <v-menu v-if="tokens.length" :fixed="true" transition="slide-y-transition" offset-y>
                     <template v-slot:activator="{ on }">
                         <v-btn small :disabled="showSource" v-on="on">
@@ -120,14 +118,9 @@
                         <v-list-tile @click="commands.token(token.key)" v-for="token in tokens">
                             <v-list-tile-content><span style="margin:0 !important">{{token.title}}</span></v-list-tile-content>
                         </v-list-tile>
-                       
                     </v-list>
                 </v-menu>
-                
-
-
-
-                <v-menu :fixed="true" transition="slide-y-transition" offset-y>
+                <v-menu v-if="isEnabled('image')" :fixed="true" transition="slide-y-transition" offset-y>
                     <template v-slot:activator="{ on }">
                         <v-btn small icon :disabled="showSource" v-on="on">
                             <fluro-icon icon="image" />
@@ -169,16 +162,16 @@
                     <v-icon>format_align_right</v-icon>
                 </v-btn> -->
                 <!--  -->
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.bullet_list() }" @click.stop.prevent="commands.bullet_list">
+                <v-btn icon v-if="isEnabled('list')" :disabled="showSource" small flat :class="{ 'active': isActive.bullet_list() }" @click.stop.prevent="commands.bullet_list">
                     <fluro-icon icon="list-ul" />
                 </v-btn>
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.ordered_list() }" @click.stop.prevent="commands.ordered_list">
+                <v-btn icon v-if="isEnabled('list')" :disabled="showSource" small flat :class="{ 'active': isActive.ordered_list() }" @click.stop.prevent="commands.ordered_list">
                     <fluro-icon icon="list-ol" />
                 </v-btn>
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.blockquote() }" @click.stop.prevent="commands.blockquote">
+                <v-btn icon v-if="isEnabled('blockquote')" :disabled="showSource" small flat :class="{ 'active': isActive.blockquote() }" @click.stop.prevent="commands.blockquote">
                     <fluro-icon icon="quote-right" />
                 </v-btn>
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.horizontal_rule() }" @click.stop.prevent="commands.horizontal_rule">
+                <v-btn icon v-if="isEnabled('hr')" :disabled="showSource" small flat :class="{ 'active': isActive.horizontal_rule() }" @click.stop.prevent="commands.horizontal_rule">
                     <fluro-icon icon="horizontal-rule" />
                 </v-btn>
                 <!--  -->
@@ -188,10 +181,10 @@
                 <v-btn icon class="hidden-xs-only" :disabled="showSource" small flat @click.stop.prevent="commands.redo">
                     <v-icon>redo</v-icon>
                 </v-btn> -->
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.code_block() }" @click.stop.prevent="commands.code_block">
+                <v-btn icon v-if="isEnabled('code')" :disabled="showSource" small flat :class="{ 'active': isActive.code_block() }" @click.stop.prevent="commands.code_block">
                     <fluro-icon icon="file-code" />
                 </v-btn>
-                <v-menu :fixed="true" transition="slide-y-transition" offset-y>
+                <v-menu v-if="isEnabled('table')" :fixed="true" transition="slide-y-transition" offset-y>
                     <template v-slot:activator="{ on }">
                         <v-btn small class="hidden-xs-only" icon :disabled="showSource" v-on="on">
                             <!-- <v-icon>grid_on</v-icon> -->
@@ -346,6 +339,7 @@ export default {
         }
     },
     computed: {
+       
         tokens() {
             return this.options.tokens || [];
         },
@@ -360,6 +354,14 @@ export default {
         },
     },
     methods: {
+        isEnabled(tool) {
+            //If we've specified a toolset
+            if (this.options.toolset) {
+                return _.includes(this.options.toolset, tool);
+            } else {
+                return true;
+            }
+        },
         select() {
             console.log('SELECT EDITOR')
         },
@@ -766,7 +768,10 @@ export default {
                 this.editor.setContent(value)
             }
 
-            this.$emit('input', value);
+                this.$emit('input', value);
+            
+
+
         }
     },
 
@@ -858,7 +863,8 @@ $color-white: #fff;
         text-rendering: optimizeLegibility;
     }
 
-    ul, ol {
+    ul,
+    ol {
         padding-left: 24px;
     }
 

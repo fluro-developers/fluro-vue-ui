@@ -1,7 +1,7 @@
 <template>
     <td :class="{wrap:column.wrap, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}">
         <!-- <pre>{{rawValue}}</pre> -->
-        <component v-if="column.renderer" :data="preValue" :is="renderer" :row="row" :column="column" />
+        <component v-if="renderer" :data="preValue" :is="renderer" :row="row" :column="column" />
         <template v-else-if="simpleArray">
             <template v-for="entry in formattedArray">
                 <component v-if="renderer" :data="entry" :is="renderer" :row="row" :column="column" />
@@ -59,6 +59,7 @@ import {
     NumberCell,
     BooleanCell,
     DateCell,
+    RealmDotCell,
 } from 'fluro-vue-ui';
 
 
@@ -103,11 +104,20 @@ export default {
 
             var renderer = this.column.renderer
             switch(this.column.renderer) {
+                case 'date':
+                case 'datetime':
+                    this.column.type = 'date';
+                    return DateCell;
+                    break;
                 case 'capitalize':
                     renderer = null
                     break
+                case 'realmDots':
+                    renderer = RealmDotCell;
+                    break
 
             }
+
             if (renderer) {
                 return renderer;
             }
