@@ -1,9 +1,19 @@
 <template>
-    <fluro-status-label :value="data"/>
+    <div>
+    <div v-if="context == 'print'">
+        {{data}}
+    </div>
+    <div v-else>
+        <fluro-status-label :value="data" />
+    </div>
+</div>
 </template>
 <script>
 export default {
     props: {
+        'context': {
+            type: String,
+        },
         'row': {
             type: Object,
         },
@@ -16,4 +26,3 @@ export default {
     }
 }
 </script>
-

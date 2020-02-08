@@ -1,6 +1,6 @@
 
 <template>
-    <div>
+    <div v-if="context != 'print'">
     <template v-if="multiple">
         <template v-for="entry in data">
             <fluro-avatar v-tippy :content="entry.firstName || entry.title" md :id="entry" type="contact" />
@@ -15,6 +15,9 @@
 <script>
 export default {
     props: {
+        'context': {
+            type: String,
+        },
         'row': {
             type: Object,
         },

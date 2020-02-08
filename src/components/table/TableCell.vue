@@ -1,13 +1,13 @@
 <template>
     <td :class="{wrap:column.wrap, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}">
-        <!-- <pre>{{rawValue}}</pre> -->
+        <!-- <pre>{{subField}}</pre> -->
         <component v-if="renderer" :data="preValue" :is="renderer" :row="row" :column="column" />
         <template v-else-if="simpleArray">
             <template v-for="entry in formattedArray">
                 <component v-if="renderer" :data="entry" :is="renderer" :row="row" :column="column" />
                 <div v-else>
                     <span class="inline-tag">
-                        {{entry}}
+                        {{entry | simple}}
                     </span>
                 </div>
             </template>
@@ -15,15 +15,18 @@
         <div v-else-if="formattedArray" style="max-width: 600px; white-space: normal;">
             <template v-for="entry in formattedArray">
                 <a class="inline-tag" v-if="entry._id" @click.stop.prevent="clicked(entry)" :style="{color:entry.color, backgroundColor:entry.bgColor}">
+                   
                     <template v-if="entry._type == 'event'">
                         <fluro-icon type="event" /> {{entry.title}} <span class="text-muted">// {{entry | readableEventDate}}</span>
                     </template>
                     <template :content="entry.title" v-tippy v-else-if="entry._type == 'team' && entry.position">
+                        
                         <!-- <fluro-icon type="team" />  -->
                         {{entry.position}}
                         <!-- <fluro-icon type="team" /> {{entry.title}} <span class="text-muted" v-if="entry.position">{{entry.position}}</span> -->
                     </template>
                     <template v-else>
+                        
                         <fluro-icon v-if="entry._type" :type="entry._type" /> {{entry.title}} <template v-if="entry.appendage"> - {{entry.appendage}}</template>
                     </template>
                 </a>
@@ -43,6 +46,7 @@
                 {{preValue.position}}
             </template>
             <template v-else>
+   <!--  TESTING WEIRD -->
                 <a @click.stop.prevent="clicked(preValue)" class="inline-tag" :style="{color:preValue.color, backgroundColor:preValue.bgColor}">
                     <fluro-icon v-if="preValue._type" :type="preValue._type" /> {{complexTitle}} <template v-if="complexAppendage"> - {{complexAppendage}}</template>
                 </a>
@@ -130,7 +134,10 @@ export default {
                 case 'integer':
                 case 'decimal':
                 case 'float':
-                    return NumberCell;
+
+                    if(!this.subField) {
+                        return NumberCell;
+                    }
                     break;
                 case 'boolean':
                     return BooleanCell;
@@ -489,6 +496,15 @@ export default {
 
             return val;
         },
+    },
+    filters:{
+        simple(input) {
+            if(_.isArray(input)) {
+                return input.join(', ');
+            }
+
+            return input;
+        }
     }
 }
 </script>

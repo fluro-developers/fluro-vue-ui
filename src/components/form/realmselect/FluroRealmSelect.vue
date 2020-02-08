@@ -142,7 +142,7 @@ export default {
                             })
 
 
-                            console.log('ALL REALMS', allRealms, self.filterDiscriminator, filtered, self.definition, self.type)
+                            // console.log('ALL REALMS', allRealms, self.filterDiscriminator, filtered, self.definition, self.type)
                             //////////////////////////////////////
 
                             var flattenedLookup = _.reduce(allRealms, function(set, realmType) {

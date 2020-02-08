@@ -1,13 +1,5 @@
-<template>
-    <div>
-        <!-- WOOO -->
-        <!-- <pre>{{template}}</pre> -->
-        <!-- <pre>{{context}}</pre> -->
-        <!-- <pre>{{rendered}}</pre> -->
-        <div v-html="rendered">
-            <!-- <v-runtime-template :template="template"/> -->
-        </div>
-    </div>
+<template>   
+        <component :is="component" v-if="component"></component>
 </template>
 <script>
 import _ from 'lodash'
@@ -18,7 +10,7 @@ export default {
     props: ['template', 'context'],
     data() {
         return {
-            rendered: '',
+            component:null,
         }
     },
 
@@ -33,23 +25,38 @@ export default {
     mounted() {
         this.render();
     },
-    render(h) {
-        // render(h) {
-            if (!this.templateRender) {
-                return h('div', 'loading...');
-            } else { // If there is a template, I'll show it
+    // render(h) {
+    //     // render(h) {
+    //         if (!this.templateRender) {
+    //             return h('div', 'loading...');
+    //         } else { // If there is a template, I'll show it
 
-            console.log('RENDERED', this.rendered);
-                return this.rendered;//this.templateRender();
-            }
-        // },
-    },
+    //         console.log('RENDERED', this.rendered);
+    //             return this.rendered;//this.templateRender();
+    //         }
+    //     // },
+    // },
     created() {
         this.render();
     },
     methods: {
         render() {
-            this.templateRender = Vue.compile(`<div>${this.template}</div>`).render;
+
+            var self = this;
+
+            let DynamicComponent = Vue.extend({
+                template:`<div>${self.template}</div>`,
+                data() {
+                    return {};
+                    // self.context;
+                }
+            });
+
+            self.component = DynamicComponent;
+                
+
+
+            // this.templateRender = Vue.compile(`<div>${this.template}</div>`).render;
 
 
             // // console.log('Render NOW')

@@ -95,8 +95,11 @@
                                         <!-- </div> -->
                                         <!-- <pre>{{availableKeys}}</pre> -->
                                         <v-list style="max-height: 50vh;" class="scroll-y" dense>
-                                            <v-list-tile @click="addColumn(field)" v-for="field in availableKeys">
-                                                <v-list-tile-content>
+                                            <v-list-tile :class="{columnselected:columnIsSelected(field)}" @click="toggleColumn(field)" v-for="field in availableKeys">
+                                                <v-list-tile-action>
+                                                    <fluro-icon icon="check" v-if="columnIsSelected(field)"/>
+                                                </v-list-tile-action>
+                                                <v-list-tile-content  >
                                                     <v-list-tile-title>
                                                         {{field.title}}
                                                     </v-list-tile-title>
@@ -348,7 +351,6 @@ import TableRowCheckbox from './TableRowCheckbox.vue';
 import TableCell from './TableCell.vue';
 
 
-
 /////////////////////////////////
 
 import axios from 'axios';
@@ -365,14 +367,18 @@ export default {
         //     type:Boolean,
         //     default:true,
         // },
-        changeKey:{
-            type:[String, Number],
+        changeKey: {
+            type: [String, Number],
         },
         fixedColumns: {
             type: Boolean,
             default: false,
         },
         allDefinitions: {
+            type: Boolean,
+            default: false,
+        },
+        searchInheritable: {
             type: Boolean,
             default: false,
         },
@@ -482,6 +488,7 @@ export default {
             cacheKey: null,
             columnState: {},
             structureColumns: this.columns,
+            additionalColumns:[],
             all: [],
             rows: [],
             page: [],
@@ -506,6 +513,8 @@ export default {
 
             var self = this;
             var array = self.structureColumns ? self.structureColumns.slice() : [];
+
+            array = array.concat(self.additionalColumns);
 
             // array = _.filter(array, function(column) {
             //     return !self.columnState[column.key];
@@ -871,9 +880,20 @@ export default {
         showOptionsForColumn(column) {
 
         },
-        addColumn(column) {
+        columnIsSelected(column) {
             var self = this;
-            self.$set(self.structureColumns, self.structureColumns.length, column);
+            return _.some(self.additionalColumns, { key: column.key })
+        },
+        toggleColumn(column) {
+            var self = this;
+
+            var index = _.findIndex(self.additionalColumns, { key: column.key });
+            if (index == -1) {
+                self.$set(self.additionalColumns, self.additionalColumns.length, column);
+            } else {
+                self.additionalColumns.splice(index, 1);
+
+            }
         },
         // toggleColumn(column) {
 
@@ -910,157 +930,159 @@ export default {
             self.populatePageDebounced();
 
         },
-        populatePageDebounced: _.debounce(function() {
+        populatePageItems(rawPage, dataType, renderColumns) {
+
             var self = this;
 
-            //////////////////////////////////////
-
-            // var ids = _.keys(lookup);
-
-            var rawPageLookup = _.reduce(self.rawPage, function(set, item) {
-
+            var rawPageLookup = _.reduce(rawPage, function(set, item) {
                 set[item._id] = JSON.parse(JSON.stringify(item));
-
                 return set;
             }, {});
 
-            var ids = _.keys(rawPageLookup);
-            // var ids = self.$fluro.utils.arrayIDs(self.rawPage);
-
-            if (!ids || !ids.length) {
-                self.loading = false;
-                console.log('No page ids');
-                return self.page = [];
-            }
-            //////////////////////////////////////
-
-            var fields = ['title', '_type', 'definition']
 
             //////////////////////////////////////
 
-            var appendContactDetails = [];
-            var appendFullFamily;
+            return new Promise(function(resolve, reject) {
 
-            //////////////////////////////////////
+                var ids = _.keys(rawPageLookup);
 
-            //Include the extra fields that make sense
-            fields = fields.concat(_.chain(self.renderColumns)
-                .map(function(column) {
+                if (!ids || !ids.length) {
+                    return resolve([]);
+                }
 
-                    if (column.actualField) {
-                        return column.actualField;
-                    }
+                var fields = ['title', '_type', 'definition']
 
-                    switch (column.key) {
-                        case 'width':
-                        case 'height':
-                            return ['width', 'height']
-                            break;
-                        case 'firstName':
-                            return ['firstName', 'preferredName', 'ethnicName']
-                            break;
-                        case 'lastName':
-                            return ['lastName', 'maidenName']
-                            break;
-                    }
+                //////////////////////////////////////
 
-                    //////////////////////////////////////
+                var appendContactDetails = [];
+                var appendFullFamily;
+                var appendAssignments = true;
 
-                    if (column.additionalFields && column.additionalFields.length) {
-                        return [column.additionalFields, column.key]
-                    }
+                //////////////////////////////////////
 
-                    //////////////////////////////////////
+                //Include the extra fields that make sense
+                fields = fields.concat(_.chain(renderColumns)
+                    .map(function(column) {
 
-                    return column.key;
-                })
-                .flattenDeep()
-                .compact()
-                .map(function(key) {
-                    // console.log('KEY SPLIT', key);
-                    return key.split('|')[0];
-                })
-                .map(function(key) {
-                    if (_.startsWith(key, 'details.')) {
-                        var definitionName = key.split('.')[1];
-                        appendContactDetails.push(definitionName);
-                    }
+                        if (column.actualField) {
+                            return column.actualField;
+                        }
 
-                    if (_.startsWith(key, 'family.')) {
+                        switch (column.key) {
+                            case 'width':
+                            case 'height':
+                                return ['width', 'height']
+                                break;
+                            case 'firstName':
+                                return ['firstName', 'preferredName', 'ethnicName']
+                                break;
+                            case 'lastName':
+                                return ['lastName', 'maidenName']
+                                break;
+                        }
 
-                        appendFullFamily = true;
-                        return 'family';
-                        // appendContactDetails.push(definitionName);
-                    }
+                        //////////////////////////////////////
 
-                    return key;
-                })
-                .value()
-            );
+                        if (column.additionalFields && column.additionalFields.length) {
+                            return [column.additionalFields, column.key]
+                        }
 
-            //////////////////////////////////////
+                        //////////////////////////////////////
+
+                        return column.key;
+                    })
+                    .flattenDeep()
+                    .compact()
+                    .map(function(key) {
+                        // console.log('KEY SPLIT', key);
+                        return key.split('|')[0];
+                    })
+                    .map(function(key) {
+                        if (_.startsWith(key, 'details.')) {
+                            var definitionName = key.split('.')[1];
+                            appendContactDetails.push(definitionName);
+                        }
+
+                        if (_.startsWith(key, 'family.')) {
+                            appendFullFamily = true;
+                            return 'family';
+                            // appendContactDetails.push(definitionName);
+                        }
+
+                        return key;
+                    })
+                    .value()
+                );
+
+
+                self.$fluro.api.post(`/content/${dataType}/multiple`, {
+                        ids: ids,
+                        select: _.uniq(fields),
+                        populateAll: true,
+                        limit: ids.length,
+                        appendContactDetails,
+                        appendAssignments,
+                        appendFullFamily,
+
+                        // cancelToken: currentPageItemsRequest.token,
+                    })
+                    .then(function(res) {
+
+                        var lookup = _.reduce(res.data, function(set, entry, i) {
+                            set[entry._id] = entry;
+                            return set;
+                        }, {})
+
+                        //// console.log('Look for ids', ids);
+                        var pageItems = _.chain(ids)
+                            .map(function(id, i) {
+                                var entry = lookup[id]
+
+                                if (!entry) {
+                                    console.log('No entry for', id)
+                                    return;
+                                }
+                                entry._pageIndex = i;
+
+                                entry = _.merge(rawPageLookup[id], entry);
+                                // console.log('ENTRY', entry, rawPageLookup[id]);
+                                return entry
+
+                            })
+                            .compact()
+                            .value();
+
+                        /////////////////////////////////////
+
+                        resolve(pageItems.slice());
+                    })
+                    .catch(function(err) {
+                        if (axios.isCancel(err)) {
+                            // return reject(err)
+                            // //Not sure if this is correct
+                            resolve([]);
+                        } else {
+                            return reject(err);
+                        }
+                    });
+
+            })
+
+        },
+        populatePageDebounced: _.debounce(function() {
+            var self = this;
 
             self.loading = true;
 
-
-
-            var appendAssignments = true;
-
-            //////////////////////////////////////
-
-            self.$fluro.api.post(`/content/${self.dataType}/multiple`, {
-                    ids: ids,
-                    select: _.uniq(fields),
-                    populateAll: true,
-                    limit: ids.length,
-                    appendContactDetails,
-                    appendAssignments,
-                    appendFullFamily,
-
-                    // cancelToken: currentPageItemsRequest.token,
-                })
+            self.populatePageItems(self.rawPage, self.dataType, self.renderColumns)
                 .then(function(res) {
-
-                    var lookup = _.reduce(res.data, function(set, entry, i) {
-                        set[entry._id] = entry;
-                        return set;
-                    }, {})
-
-                    //// console.log('Look for ids', ids);
-                    var pageItems = _.chain(ids)
-                        .map(function(id, i) {
-                            var entry = lookup[id]
-
-                            if (!entry) {
-                                console.log('No entry for', id)
-                                return;
-                            }
-                            entry._pageIndex = i;
-
-                            entry = _.merge(rawPageLookup[id], entry);
-                            // console.log('ENTRY', entry, rawPageLookup[id]);
-                            return entry
-
-                        })
-                        .compact()
-                        .value();
-
-                    /////////////////////////////////////
-
-                    self.page = pageItems.slice();
+                    self.page = res;
                     self.loading = false;
-
-                  
-
-                }, function(err) {
-                    // console.log('ERROR', err);
+                })
+                .catch(function(err) {
+                    console.log('Error', err);
                     self.page = [];
                     self.loading = false;
-                    if (axios.isCancel(err)) {
-                        // return reject(err)
-                    } else {
-                        return reject(err);
-                    }
                 });
 
         }, 500),
@@ -1083,6 +1105,7 @@ export default {
                 search: self.debouncedSearch,
                 includeArchived: self.includeArchivedByDefault,
                 allDefinitions: self.allDefinitions,
+                searchInheritable: self.searchInheritable,
                 includeUnmatched: true,
             }
 
@@ -1117,9 +1140,9 @@ export default {
 
                     self.setPage(1);
 
-                    
-                        self.loadingItems = false;
-                    
+
+                    self.loadingItems = false;
+
 
                 })
                 .catch(function(err) {
@@ -1302,9 +1325,9 @@ export default {
                 case 'sent':
                     classes.push('state-sent');
                     break;
-                 case 'scheduled':
+                case 'scheduled':
                     classes.push('state-scheduled');
-                    break;  
+                    break;
                 case 'ready':
                     classes.push('state-ready');
                     break;
@@ -1393,6 +1416,14 @@ export default {
 }
 </script>
 <style lang="scss">
+
+
+.columnselected {
+    background: #eee;
+    color: #aaa;
+}
+
+
 .fluro-table-wrapper {
 
     .select-options {
@@ -1546,16 +1577,16 @@ export default {
                 td,
                 th {
                     background: lighten(#fff3b9, 5%) !important;
-                    color: desaturate(darken(#f0974e, 20%),30%) !important;
+                    color: desaturate(darken(#f0974e, 20%), 30%) !important;
                     // color: darken($warning, 20%);
                     // background: rgba($warning, 0.05);
                 }
             }
 
-           
 
 
-            
+
+
             &.payment-status-pending {
 
                 th:first-child,

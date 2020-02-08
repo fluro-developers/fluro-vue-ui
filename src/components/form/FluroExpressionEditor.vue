@@ -122,6 +122,7 @@ export default {
         // margin: 0 !important;
         margin-top: 0 !important;
         overflow: hidden !important;
+        height: 30px !important;
 
         .ace_line,
         .ace_active-line,

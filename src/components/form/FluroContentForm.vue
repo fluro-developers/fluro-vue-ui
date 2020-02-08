@@ -2,10 +2,14 @@
     <div class="fluro-content-form">
         <!-- <pre>FORM: {{model}}</pre> -->
         <slot name="form" :parent="formModel" :context="context" :form-fields="formFields" :field-hash="fieldHash" :model="model" :update="update" :options="options">
+           
+
+
             <template v-for="field in fields">
                 <!-- <fluro-code-editor v-model="model[field.key]" @input="valueChange" :height="200"></fluro-code-editor> -->
                 <v-container fluid class="grid-list-xl" pa-0>
-                    <!-- <pre>{{field}}</pre> -->
+                   
+
                     <!-- :parent="model[key]"  -->
                     <fluro-content-form-field :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="field" @input="update" v-model="model"></fluro-content-form-field>
                 </v-container>
@@ -231,6 +235,7 @@ export default {
             return this.reset();
         },
         fields(val) {
+            // console.log('FIELDS CHANGED')
             return this.reset();
         },
         errorMessages(messages) {

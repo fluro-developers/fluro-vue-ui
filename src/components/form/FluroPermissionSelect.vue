@@ -50,7 +50,7 @@
                         <v-input class="no-flex">
                             <v-label>Select a Role</v-label>
                             <p class="help-block">Select a role</p>
-                            <fluro-content-select-button block type="role" v-model="proposed.roles" />
+                            <fluro-content-select-button block type="role" :allDefinitions="true" :searchInheritable="true" v-model="proposed.roles" />
                         </v-input>
                     </v-flex>
                     <v-flex xs12 md5>
