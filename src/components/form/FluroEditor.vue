@@ -106,9 +106,22 @@
                         <v-list-tile :class="{ 'active': isActive.heading({ level: 5 }) }" @click.stop.prevent="commands.heading({ level: 5 })">
                             <v-list-tile-content><span style="margin:0 !important" class="h5">Heading 5</span></v-list-tile-content>
                         </v-list-tile>
+                        <!-- <template v-if="getFluroNodes().length"> -->
+                        <template v-if="false">
+                            <v-list-tile @click.stop.prevent="commands.fluroNode(option)" v-for="option in getFluroNodes()">
+                                <v-list-tile-content><span style="margin:0 !important" :class="option.className">{{option.title}}</span></v-list-tile-content>
+                            </v-list-tile>
+                        </template>
+                        <!-- <template v-if="getFluroMarks().length"> -->
+                        <template v-if="false">
+                            <v-list-tile @click.stop.prevent="commands.fluroMark(option)" v-for="option in getFluroMarks()">
+                                <v-list-tile-content><span style="margin:0 !important" :class="option.class">{{option.title}}</span></v-list-tile-content>
+                            </v-list-tile>
+                        </template>
                     </v-list>
                 </v-menu>
                 <v-menu v-if="tokens.length" :fixed="true" transition="slide-y-transition" offset-y>
+
                     <template v-slot:activator="{ on }">
                         <v-btn small :disabled="showSource" v-on="on">
                             Tokens
@@ -268,7 +281,9 @@
                 </div>
             </div>
         </template>
+        
     </div>
+
 </template>
 <script>
 // Import the editor
@@ -277,6 +292,8 @@ import tippy from 'tippy.js';
 // import Fuse from 'fuse.js';
 import FluroCodeEditor from './FluroCodeEditor.vue';
 import Mention from './tiptap/mentions';
+import FluroNode from './tiptap/fluroNode';
+import FluroMark from './tiptap/fluroMark';
 import Image from './tiptap/image';
 import Token from './tiptap/token';
 // import AutoLinkMark from './tiptap/autolink';
@@ -336,6 +353,8 @@ export default {
             observer: null,
             linkUrl: null,
             linkMenuIsActive: false,
+            FluroNodePlugin: new FluroNode(),
+            FluroMarkPlugin: new FluroMark(),
         }
     },
     computed: {
@@ -367,6 +386,24 @@ export default {
         },
         hideBubble() {
             this.hideLinkMenu();
+        },
+        addFluroNode(cssClass) {
+            var pluginOptions = this.FluroNodePlugin.options.classes
+            if (pluginOptions.indexOf(cssClass) === -1) {
+                pluginOptions.push(cssClass)
+            }
+        },
+        getFluroNodes() {
+            return this.FluroNodePlugin.options.classes
+        },
+        addFluroMark(cssClass) {
+            var pluginOptions = this.FluroMarkPlugin.options.classes
+            if (pluginOptions.indexOf(cssClass) === -1) {
+                pluginOptions.push(cssClass)
+            }
+        },
+        getFluroMarks() {
+            return this.FluroMarkPlugin.options.classes
         },
         showLinkMenu(attrs) {
             this.linkUrl = attrs.href
@@ -517,11 +554,12 @@ export default {
         FluroCodeEditor,
         EditorFloatingMenu,
         EditorMenuBubble,
+        FluroNode,
+        FluroMark,
     },
     created() {
         var self = this;
         var placeholderText = self.placeholder;
-
 
         var MentionPlugin = new Mention({
             // a list of all suggested items
@@ -627,7 +665,7 @@ export default {
         ///////////////////////////////////
         ///////////////////////////////////
         ///////////////////////////////////
-
+        
         var enabledExtensions = [
 
             new Bold(),
@@ -652,7 +690,8 @@ export default {
             new TableCell(),
             new TableRow(),
             new Token(),
-            // TokenPlugin,
+            this.FluroNodePlugin,
+            this.FluroMarkPlugin,
             MentionPlugin,
             new Placeholder({
                 emptyClass: 'placeholder-text',
