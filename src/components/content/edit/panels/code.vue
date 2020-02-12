@@ -6,9 +6,16 @@
         <template v-else>
             <!-- :vertical="true" -->
             <tabset :justified="true" :vertical="true">
-                <tab :heading="bodyLabel" v-if="!definition || fullBody">
-                    <
-                    <fluro-code-editor style="height:100% !important" v-model="model.body" :lang="model.syntax" height="100%" />
+                <tab heading="Code" >
+                    <v-layout row class="top-bar" px-4 py-2>
+                        <v-flex xs8 sm4 md3 px-2>
+                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />
+                        </v-flex>
+                        <v-flex xs4 sm2 md2 px-2>
+                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.syntax" v-model="model" />
+                        </v-flex>
+                    </v-layout>
+                    <fluro-code-editor style="flex: 1 1 100%" v-model="model.body" :lang="model.syntax" />
                 </tab>
                 <tab :heading="`${definition.title} Details`" v-if="definition">
                     <slot>
@@ -21,6 +28,17 @@
                                     <!-- <input class="form-control" placeholder="{{titleLabel}}" ng-model="item.title"> -->
                                     <!-- </div> -->
                                     <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
+                                </constrain>
+                            </v-container>
+                        </flex-column-body>
+                    </slot>
+                </tab>
+                <tab :heading="`Privacy`">
+                    <slot>
+                        <flex-column-body style="background: #fafafa;">
+                            <v-container fluid>
+                                <constrain sm>
+                                    <fluro-privacy-select v-model="model.privacy"/>
                                 </constrain>
                             </v-container>
                         </flex-column-body>
@@ -61,6 +79,57 @@ export default {
     },
     mixins: [FluroContentEditMixin],
     computed: {
+        fieldsOutput() {
+
+
+            var self = this;
+            var array = [];
+
+            ///////////////////////////////////
+
+            addField('title', {
+                title: 'Title',
+                minimum: 1,
+                maximum: 1,
+                type: 'string',
+            });
+
+            addField('syntax', {
+                title: 'Syntax',
+                minimum: 1,
+                maximum: 1,
+                type: 'string',
+                directive: 'select',
+                options: [{
+                        name: 'HTML',
+                        value: 'html'
+                    },
+                    {
+                        name: 'SCSS',
+                        value: 'scss'
+                    },
+                    {
+                        name: 'CSS',
+                        value: 'css'
+                    },
+                    {
+                        name: 'Javascript',
+                        value: 'js'
+                    }
+                ],
+            });
+
+            ///////////////////////////////////
+
+            function addField(key, details) {
+                details.key = key;
+                array.push(details)
+            }
+
+            return array;
+
+
+        },
         fullBody() {
             return this.definition && this.definition.data && this.definition.data.fullBody;
         },
