@@ -6,11 +6,11 @@
             </v-btn>
         </th>
         <td class=" duration-cell">
-            <!-- <pre>{{teams}}</pre> -->
-            <fluro-inline-edit :enabled="row.editDuration" v-if="type != 'breaker'">
+            
+            <fluro-inline-edit :enabled="row.editDuration" v-if="(type != 'breaker') && (type != 'start')">
                 <template v-slot:default>
                     <div class="cell">
-                        <div>{{rowTime(index)}}</div>
+                        <div>{{row.time}}</div>
                         <div class="sm muted"><em>{{row.duration | mins}}</em></div>
                     </div>
                 </template>
@@ -52,7 +52,7 @@
                     </fluro-inline-edit> -->
                 </div>
             </v-layout>
-            <div class="row-detail" v-if="type != 'breaker'">
+            <div class="row-detail" v-if="(type != 'breaker') && (type != 'start')">
                 <fluro-inline-edit :enabled="row.editDetail">
                     <template v-slot:default>
                         <div class="cell" v-if="row.detail">
@@ -272,35 +272,6 @@ export default {
         remove() {
             this.$emit('delete');
         },
-        rowTime(index) {
-            var self = this;
-            var total = 0;
-            var elapsed = _.reduce(self.plan.schedules, function(memo, row, key) {
-
-                if (key >= index) {
-                    return memo;
-                }
-
-                if (row.duration) {
-                    memo += (parseInt(row.duration) * 1000);
-                }
-
-                return memo;
-            }, 0)
-
-            // var previousRow = self.model.schedules[index - 1];
-            // if (previousRow && !previousRow.duration) {
-            //     return '';
-            // }
-
-            //When the plan starts
-            var eventStartDate = _.get(self.plan, 'event.startDate');
-            var planStartDate = _.get(self.plan, 'startDate');
-            
-            var startDate = (planStartDate ? new Date(planStartDate) : false) || (eventStartDate ? new Date(eventStartDate) : false) || new Date(); 
-            startDate.setTime(startDate.getTime() + elapsed);
-            return self.$fluro.date.formatDate(startDate, 'h:mma');
-        },
     },
     computed: {
         songKeys() {
@@ -323,7 +294,7 @@ export default {
 
             var self = this;
 
-            return [{
+            var actions = [{
                     title: 'Add Row',
                     icon: 'plus',
                     click() {
@@ -344,14 +315,17 @@ export default {
                         self.$emit('add', { index: self.index, type: 'breaker' })
                     }
                 },
-                {
+            ];
+            if (self.type != 'start') {
+                actions.push({
                     title: 'Duplicate this row',
                     icon: 'copy',
                     click() {
                         self.$emit('duplicate')
                     }
-                },
-            ]
+                });
+            }
+            return actions;
         },
         type() {
             return this.row.type;

@@ -24,10 +24,24 @@
                 </flex-column-header> -->
                 <div class="plan-table-wrapper">
                     <!-- <v-menu attach :nudge-left="10" offset-x left :close-on-content-click="false" transition="slide-x-transition" @click.native.stop> -->
-                    <v-menu style="position:relative" attach offset-x left :close-on-content-click="false" transition="slide-x-transition" @click.native.stop>
+                    <v-menu
+                        style="position:relative"
+                        attach
+                        offset-x
+                        left
+                        :close-on-content-click="false"
+                        transition="slide-x-transition"
+                        @click.native.stop
+                    >
                         <template v-slot:activator="{ on }">
                             <div v-on="on" class="cog-btn">
-                                <v-btn v-tippy content="Configure Columns" class="ma-0" small icon>
+                                <v-btn
+                                    v-tippy
+                                    content="Configure Columns"
+                                    class="ma-0"
+                                    small
+                                    icon
+                                >
                                     <fluro-icon icon="cog" />
                                 </v-btn>
                             </div>
@@ -37,7 +51,11 @@
                                 <!-- <v-list style="max-height: 50vh;" class="scroll-y" dense> -->
                                 <!-- <v-list-tile> -->
                                 <!-- <v-list-tile-content> -->
-                                <fluro-content-form-field @input="updateColumns" :field="columnEditField" v-model="model" />
+                                <fluro-content-form-field
+                                    @input="updateColumns"
+                                    :field="columnEditField"
+                                    v-model="model"
+                                />
                                 <!-- </v-list-tile-content> -->
                                 <!-- </v-list-tile> -->
                                 <!-- </v-list> -->
@@ -53,31 +71,83 @@
                                         <fluro-icon icon="clock" />
                                     </th>
                                     <th class="detail">Detail</th>
-                                    <th v-for="(column, key) in columns" :key="key">{{column.title}}</th>
+                                    <th
+                                        v-for="(column, key) in columns"
+                                        :key="key"
+                                    >
+                                        {{ column.title }}
+                                    </th>
                                     <th>
-                                        <div style="width:28px; height: 22px;">
-                                        </div>
+                                        <div
+                                            style="width:28px; height: 22px;"
+                                        ></div>
                                         <!-- <v-menu attach :nudge-left="10" offset-x left bottom v-model="actionsOpen" > -->
                                     </th>
                                 </tr>
                             </thead>
                             <!-- <tbody> -->
-                            <draggable tag="tbody" handle=".handle" v-model="model.schedules" v-bind="dragOptions" @start="drag=true" @end="drag=false">
+                            <draggable
+                                tag="tbody"
+                                handle=".handle"
+                                v-model="model.schedules"
+                                v-bind="dragOptions"
+                                @start="drag = true"
+                                @end="drag = false"
+                                @sort="calculateDurations()"
+                            >
                                 <!-- :teams="model.teams" -->
-                                <plan-row @delete="remove(index)" @swap="swap(index)" @duplicate="duplicate(index)" @add="addFromRow" v-model="model.schedules[index]" :index="index" :plan="model" v-for="(row, index) in model.schedules" :key="row.guid" />
+                                <plan-row
+                                    @delete="remove(index)"
+                                    @swap="swap(index)"
+                                    @duplicate="duplicate(index)"
+                                    @add="addFromRow"
+                                    v-model="model.schedules[index]"
+                                    :index="index"
+                                    :plan="model"
+                                    v-for="(row, index) in model.schedules"
+                                    :key="row.guid"
+                                />
                             </draggable>
                             <tfoot>
                                 <tr>
                                     <th colspan="2"></th>
                                     <td>
-                                        <v-btn v-tippy content="Add Row" style="border: 1px solid #ddd; background: #fff;" class="ma-2" @click="add('row')">
+                                        <v-btn
+                                            v-tippy
+                                            content="Add Row"
+                                            style="border: 1px solid #ddd; background: #fff;"
+                                            class="ma-2"
+                                            @click="add('row')"
+                                        >
                                             <fluro-icon icon="plus" />
                                         </v-btn>
-                                        <v-btn v-tippy content="Add Songs" style="border: 1px solid #ddd; background: #fff;" class="ma-2" @click="add('song')">
+                                        <v-btn
+                                            v-tippy
+                                            content="Add Songs"
+                                            style="border: 1px solid #ddd; background: #fff;"
+                                            class="ma-2"
+                                            @click="add('song')"
+                                        >
                                             <fluro-icon icon="music" />
                                         </v-btn>
-                                        <v-btn v-tippy content="Add Section" style="border: 1px solid #ddd; background: #fff;" class="ma-2" @click="add('breaker')">
+                                        <v-btn
+                                            v-tippy
+                                            content="Add Section"
+                                            style="border: 1px solid #ddd; background: #fff;"
+                                            class="ma-2"
+                                            @click="add('breaker')"
+                                        >
                                             <fluro-icon icon="megaphone" />
+                                        </v-btn>
+                                        <v-btn
+                                            v-tippy
+                                            content="Add Start Time"
+                                            style="border: 1px solid #ddd; background: #fff;"
+                                            class="ma-2"
+                                            @click="add('start')"
+                                            v-if="startRowIndex == -1"
+                                        >
+                                            <fluro-icon icon="clock" />
                                         </v-btn>
                                         <!-- <v-btn @click="add('song')" v-tippy content="Add songs">
                                         <fluro-icon icon="music" />
@@ -162,8 +232,12 @@
                     <flex-column-body style="background: #fafafa;">
                         <v-container>
                             <constrain sm>
-                                <h3 margin>{{definition.title}}</h3>
-                                <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields">
+                                <h3 margin>{{ definition.title }}</h3>
+                                <fluro-content-form
+                                    :options="options"
+                                    v-model="model.data"
+                                    :fields="definition.fields"
+                                >
                                 </fluro-content-form>
                             </constrain>
                         </v-container>
@@ -176,120 +250,189 @@
 <script>
 /////////////////////////////////
 
-import draggable from 'vuedraggable';
-import PlanRow from '../components/PlanRow.vue';
-import FluroContentEditMixin from '../FluroContentEditMixin';
-
+import draggable from "vuedraggable";
+import PlanRow from "../components/PlanRow.vue";
+import FluroContentEditMixin from "../FluroContentEditMixin";
 
 //////////////////////////////////////////////////////
-
 
 /////////////////////////////////
 
 export default {
-
     components: {
         draggable,
         // FluroEditor,
-        PlanRow,
+        PlanRow
     },
-    props: {
-
-    },
+    props: {},
     mixins: [FluroContentEditMixin],
     created() {
         var self = this;
         _.each(self.model.schedules, function(row) {
-            row.guid = self.$fluro.utils.guid();
-        })
+            self.$set(row, 'guid', self.$fluro.utils.guid());
+        });
+
+        self.calculateDurations();
+    },
+    watch:{
+        'times':'calculateDurations',
     },
     methods: {
+
+        calculateDurations() {
+            var self = this;
+            var startIndex = self.startRowIndex;
+
+            if (startIndex == -1) {
+                startIndex = 0;
+            }
+
+            //////////////////////////////////////////////////
+
+            var eventStartDate = _.get(self.model, 'event.startDate');
+            var planStartDate = _.get(self.model, 'startDate');
+            var startDate = (planStartDate ? new Date(planStartDate) : false) || (eventStartDate ? new Date(eventStartDate) : false) || new Date(); 
+
+            //////////////////////////////////////////////////
+
+            function newTime(elapsed) {
+                var clonedDate = new Date(JSON.parse(JSON.stringify(startDate)));
+                if (elapsed < 0) {
+                    clonedDate.setTime(startDate.getTime() - (-1*elapsed));
+                }
+                else {
+                    clonedDate.setTime(startDate.getTime() + elapsed); 
+                }
+                
+                return self.$fluro.date.formatDate(clonedDate, 'h:mma');
+            }
+
+
+            var rows = self.model.schedules;
+            var before = rows.slice(0, startIndex).reverse();
+            var after = rows.slice(startIndex);
+
+            ///////////////////////////////////////
+
+
+            _.reduce(before, function(elapsed, row, index) {
+                if (row.duration) {
+                    elapsed += (parseInt(row.duration) * 1000);
+                }
+                self.$set(row, 'time', newTime(-elapsed));
+                self.$set(row, 'elapsedTime', -elapsed);
+                return elapsed;
+            }, 0)
+
+            _.reduce(after, function(elapsed, row, index) {
+                self.$set(row, 'time', newTime(elapsed));
+                if (row.duration) {
+                    elapsed += (parseInt(row.duration) * 1000);
+                }
+                self.$set(row, 'elapsedTime', elapsed);
+                return elapsed;
+            }, 0)
+           
+        },
         updateColumns() {
-            this.$set(this.model, 'teams', this.model.teams.slice());
+            this.$set(this.model, "teams", this.model.teams.slice());
         },
         selectSongs() {
             var self = this;
-            return self.$fluro.global.select('song', { minimum: 0, maximum: 0 }, true)
+            return self.$fluro.global.select(
+                "song",
+                { minimum: 0, maximum: 0 },
+                true
+            );
         },
         injectSongs(index) {
-
             var self = this;
 
-            return self.selectSongs()
-                .then(function(songs) {
-                    // console.log('Selection', songs);
+            return self.selectSongs().then(function(songs) {
+                // console.log('Selection', songs);
 
-                    var rows = _.map(songs, function(song) {
+                var rows = _.map(songs, function(song) {
+                    var duration = self.getDuration(song);
+                    var key = self.getDefaultKey(song);
 
-                        var duration = self.getDuration(song);
-                        var key = self.getDefaultKey(song);
-
-                        return {
-                            title: song.title,
-                            type: 'song',
-                            links: [song._id],
-                            _id: song._id,
-                            duration,
-                            key,
-                            notes: {},
-                            isNew: true,
-                            guid: self.$fluro.utils.guid(),
-                        }
-                    })
-
-                    /////////////////////////////////////////
-
-                    _.each(rows, function(row, i) {
-
-                        //Mark that we want to scroll to this row
-                        if (index || index == 0) {
-                            var targetIndex = (index + 1) + i;
-                            self.model.schedules.splice(targetIndex, 0, row)
-                        } else {
-                            self.model.schedules.push(row)
-                        }
-                    })
-
-
-
+                    return {
+                        title: song.title,
+                        type: "song",
+                        links: [song._id],
+                        _id: song._id,
+                        duration,
+                        key,
+                        notes: {},
+                        isNew: true,
+                        guid: self.$fluro.utils.guid()
+                    };
                 });
+
+                /////////////////////////////////////////
+
+                _.each(rows, function(row, i) {
+                    //Mark that we want to scroll to this row
+                    if (index || index == 0) {
+                        var targetIndex = index + 1 + i;
+                        self.model.schedules.splice(targetIndex, 0, row);
+                    } else {
+                        self.model.schedules.push(row);
+                    }
+                });
+            });
         },
         createRows(type) {
-
             var self = this;
 
             switch (type) {
-                case 'breaker':
-                    return [{
-                        title: 'Section',
-                        type: 'breaker',
-                        duration: 0,
-                        links: [],
-                        notes: {},
-                        isNew: true,
-                        guid: self.$fluro.utils.guid(),
-                    }]
+                case "breaker":
+                    return [
+                        {
+                            title: "Section",
+                            type: "breaker",
+                            duration: 0,
+                            links: [],
+                            notes: {},
+                            isNew: true,
+                            guid: self.$fluro.utils.guid()
+                        }
+                    ];
                     break;
+                case "start":
+                    return [
+                        {
+                            title: "Event Start",
+                            type: "start",
+                            duration: 0,
+                            links: [],
+                            notes: {},
+                            isNew: true,
+                            guid: self.$fluro.utils.guid()
+                        }
+                    ];
+                    break;                
                 default:
-                    return [{
-                        title: 'New item',
-                        duration: 300,
-                        links: [],
-                        notes: {},
-                        isNew: true,
-                        guid: self.$fluro.utils.guid(),
-                    }]
+                    return [
+                        {
+                            title: "New item",
+                            duration: 300,
+                            links: [],
+                            notes: {},
+                            isNew: true,
+                            guid: self.$fluro.utils.guid()
+                        }
+                    ];
                     break;
             }
         },
         remove(index) {
             this.model.schedules.splice(index, 1);
-            console.log('Removed item');
+            console.log("Removed item");
         },
         addFromRow(details) {
             var self = this;
 
-            if (details.type == 'song') {
+            if (details.type == "song") {
                 return self.injectSongs(details.index);
             }
 
@@ -299,11 +442,12 @@ export default {
             _.each(rows, function(row, i) {
                 //Mark that we want to scroll to this row
 
-                self.model.schedules.splice((details.index + 1) + i, 0, row)
-            })
+                self.model.schedules.splice(details.index + 1 + i, 0, row);
+            });
         },
         duplicate(index) {
             var row = JSON.parse(JSON.stringify(this.model.schedules[index]));
+            row.guid = this.$fluro.utils.guid()
             this.model.schedules.splice(index + 1, 0, row);
         },
 
@@ -311,126 +455,118 @@ export default {
             return 300;
         },
         getDefaultKey(song) {
-            return '';
+            return "";
         },
         swap(index) {
-
             var self = this;
-            return self.selectSongs()
-                .then(function(songs) {
-
-                    var rows = _.map(songs, function(song) {
-                        var duration = self.getDuration(song);
-                        var key = self.getDefaultKey(song);
-                        return {
-                            title: song.title,
-                            type: 'song',
-                            links: [song._id],
-                            _id: song._id,
-                            duration,
-                            key,
-                            notes: {},
-                            isNew: true,
-                            guid: self.$fluro.utils.guid(),
-                        }
-                    })
-
-                    /////////////////////////////////////////
-
-                    _.each(rows, function(row, i) {
-
-                        self.model.schedules.splice(index, i === 0 ? 1 : 0, row);
-
-                        // //Mark that we want to scroll to this row
-                        // if (index || index == 0) {
-                        //     var targetIndex = (index + 1) + i;
-                        //     self.model.schedules.splice(targetIndex, 0, row)
-                        // } else {
-                        //     self.model.schedules.push(row)
-                        // }
-                    })
-
-
-
+            return self.selectSongs().then(function(songs) {
+                var rows = _.map(songs, function(song) {
+                    var duration = self.getDuration(song);
+                    var key = self.getDefaultKey(song);
+                    return {
+                        title: song.title,
+                        type: "song",
+                        links: [song._id],
+                        _id: song._id,
+                        duration,
+                        key,
+                        notes: {},
+                        isNew: true,
+                        guid: self.$fluro.utils.guid()
+                    };
                 });
 
+                /////////////////////////////////////////
 
+                _.each(rows, function(row, i) {
+                    self.model.schedules.splice(index, i === 0 ? 1 : 0, row);
 
-            var newRow
+                    // //Mark that we want to scroll to this row
+                    // if (index || index == 0) {
+                    //     var targetIndex = (index + 1) + i;
+                    //     self.model.schedules.splice(targetIndex, 0, row)
+                    // } else {
+                    //     self.model.schedules.push(row)
+                    // }
+                });
+            });
+
+            var newRow;
             this.model.schedules.splice(index, 1, newRow);
         },
         add(type) {
-
             var self = this;
 
             if (!self.model.schedules) {
-                self.$set(self.model, 'schedules', []);
+                self.$set(self.model, "schedules", []);
             }
 
-            if (type == 'song') {
+            if (type == "song") {
                 return self.injectSongs();
             }
 
             var rows = self.createRows(type);
             _.each(rows, function(row) {
-
                 //Mark that we want to scroll to this row
 
-
-                self.model.schedules.push(row)
-            })
-
+                self.model.schedules.push(row);
+            });
 
             var container = self.$refs.container;
             container.scrollTo({
                 top: container.scrollHeight + container.offsetHeight,
                 left: 0,
-                behavior: 'smooth'
+                behavior: "smooth"
             });
 
             ///////////////////////////////////////
-
-
         }
     },
     computed: {
+        times() {
+            return _.map(this.model.schedules, 'duration').join('-');
+        },
+        startRow() {
+            return this.model.schedules[this.startRowIndex];
+        },
+        startRowIndex() {
+            var  self = this;
+            var index = _.findIndex(self.model.schedules, {type:'start'});
+            return index
+        },
+        
         fieldsOutput() {
             var self = this;
             var array = [];
 
             ///////////////////////////////////
 
-            addField('startDate', {
-                title: 'Plan Starts',
+            addField("startDate", {
+                title: "Plan Starts",
                 minimum: 0,
                 maximum: 1,
-                type: 'date',
-                directive: 'datetimepicker',
+                type: "date",
+                directive: "datetimepicker"
             });
 
             ///////////////////////////////////
 
             function addField(key, details) {
                 details.key = key;
-                array.push(details)
+                array.push(details);
             }
 
             return array;
-
-
         },
         columnEditField() {
             return {
-                key: 'teams',
+                key: "teams",
                 minimum: 0,
                 maximum: 0,
-                title: 'Extra Column',
-                type: 'string',
-                placeholder: 'Eg. Lighting, MC, Band',
-            }
-        },
-        startTime() {
-            return
+                title: "Extra Column",
+                type: "string",
+                placeholder: "Eg. Lighting, MC, Band"
+            };
         },
         teams() {
             var self = this;
@@ -439,43 +575,39 @@ export default {
         columns() {
             var self = this;
             return _.chain(self.teams)
-            .compact()
-            .map(function(team) {
-                return {
-                    title: team,
-                    key: team,
-                }
-            })
-            .value();
-        },
+                .compact()
+                .map(function(team) {
+                    return {
+                        title: team,
+                        key: team
+                    };
+                })
+                .value();
+        }
     },
     data() {
-
-        var array = []
+        var array = [];
         _.times(200, function() {
             array.push({
-                id: array.length,
-            })
-        })
-
+                id: array.length
+            });
+        });
 
         return {
             actionsOpen: false,
             drag: false,
             dragOptions: {},
-            array,
-
-        }
-    },
-}
+            array
+        };
+    }
+};
 </script>
 <style lang="scss">
 .plan-table-wrapper {
     position: relative;
-    flex:1;
+    flex: 1;
     display: flex;
     overflow: hidden;
-
 
     .cog-btn {
         // width: 36px;
@@ -492,8 +624,6 @@ export default {
         width: 38px;
         z-index: 3;
         text-align: center;
-
-
     }
 }
 
@@ -513,7 +643,6 @@ export default {
         margin-bottom: 5px !important;
     }
 
-
     mention {
         font-size: 0.8em;
         font-weight: 500;
@@ -523,8 +652,6 @@ export default {
         display: inline-block;
         margin: 0 4px;
     }
-
-
 
     .cell {
         padding: $cell-padding;
@@ -538,7 +665,6 @@ export default {
         opacity: 0;
         font-size: 0.8em;
         font-style: italic;
-        ;
     }
 
     .row-song-key {
@@ -549,7 +675,6 @@ export default {
         border: none;
         outline: none;
         font-weight: 500;
-
     }
 
     .row-song-key,
@@ -567,10 +692,7 @@ export default {
         }
     }
 
-
-
     table {
-
         width: 100%;
         min-width: 600px;
         margin: auto;
@@ -608,14 +730,12 @@ export default {
                 }
             }
 
-
             th:first-child,
             th:last-child {
                 background: #fff;
             }
 
             &:nth-child(odd) {
-
                 th:first-child,
                 th:last-child {
                     background: #fcfcfc;
@@ -628,10 +748,8 @@ export default {
                 background: #fffbdd;
                 color: #6b5f31;
 
-
                 th,
                 td {
-
                     // border-top: 1px solid #e8edf1;
                     // border-bottom: 1px solid #e8edf1;
                 }
@@ -642,12 +760,8 @@ export default {
                 }
             }
 
-
-
-
             &.breaker {
                 background: #f0f2f5;
-
 
                 th,
                 td {
@@ -678,17 +792,45 @@ export default {
                     letter-spacing: 0.05em;
                     font-size: 0.8em;
                 }
+            }
 
 
+            &.start {
+                background: #93d3c8;
+
+                th,
+                td {
+                    border-right: none;
+                    border-top: 1px solid #e8edf1;
+                    border-bottom: 1px solid #e8edf1;
+
+                    .cell {
+                        padding: 5px;
+                    }
+
+                    &.row-title {
+                        .cell {
+                            padding-top: inherit;
+                        }
+                    }
+                }
+
+                th:first-child,
+                th:last-child {
+                    background: #93d3c8;
+                }
+
+                .row-title-text {
+                    opacity: 0.7;
+                    text-transform: uppercase;
+                    font-weight: 600;
+                    letter-spacing: 0.05em;
+                    font-size: 0.8em;
+                }
             }
         }
 
-
-
-
-
         td {
-
             vertical-align: top;
             padding: 0;
             position: relative;
@@ -696,7 +838,6 @@ export default {
             &.duration-cell {
                 text-align: center;
             }
-
 
             &:hover {
                 background: rgba($primary, 0.05);
@@ -716,7 +857,6 @@ export default {
                 float: left;
                 // position: absolute;
             }
-
 
             // &.duration {
             //     text-align: center;
@@ -747,8 +887,6 @@ export default {
                 .inline-edit-default {
                     height: auto !important;
                     width: auto !important;
-
-
                 }
 
                 // .inline-hide {
@@ -765,7 +903,6 @@ export default {
                     left: 0;
                     top: 0;
                     right: 0;
-
 
                     &.inline-show {
                         border-radius: 3px;
@@ -790,8 +927,6 @@ export default {
             // &.duration-cell {
             //     position: relative;
 
-
-
             //     left: 0;
             //     right: 0;
             //     bottom: 0;
@@ -799,7 +934,7 @@ export default {
             //     width: 100%;
             //     height: 100%;
 
-            //     
+            //
 
             //     // position: absolute;
             // }
@@ -834,7 +969,6 @@ export default {
 
         /* safari and ios need the tfoot itself to be position:sticky also */
         tfoot {
-
             th,
             td {
                 position: -webkit-sticky;
@@ -861,7 +995,6 @@ export default {
                 left: 0;
                 width: 1px;
                 border-right: 1px solid #e8edf1;
-
             }
 
             &:last-child {
@@ -873,14 +1006,11 @@ export default {
 
         thead,
         tfoot {
-
             th:first-child,
             th:last-child {
                 z-index: 5;
             }
         }
-
-
 
         /////////////////////////////////
 
@@ -898,7 +1028,7 @@ export default {
         td .fluro-editor-textarea {
             min-height: 0;
 
-            &>div {
+            & > div {
                 // font-size: 11px;
                 border-radius: 0 !important;
                 padding: $cell-padding !important;
