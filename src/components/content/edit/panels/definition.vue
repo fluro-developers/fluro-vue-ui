@@ -5,6 +5,15 @@
         </template>
         <template v-else>
             <tabset :justified="true">
+                <tab heading="Form Fields">
+                    <!-- <flex-column-header>
+                    <v-container pa-2>
+                        <strong>Form Builder</strong>
+                    </v-container>
+                </flex-column-header> -->
+                    <fluro-field-editor v-model="model.fields" :item="model" />
+                    <!-- <field-editor ng-model="item.data.integrationPublicFields"></field-editor> -->
+                </tab>
                 <tab heading="Configuration">
                     <flex-column-body style="background: #fafafa;">
                         <v-container grid-list-xl>
@@ -68,8 +77,6 @@
                             </constrain>
                         </v-container>
                     </flex-column-body>
-                </tab>
-                <tab heading="Manage Fields">
                 </tab>
                 <tab :heading="`${definition.title} Information`" v-if="definition && definition.definitionName != 'form'">
                     <flex-column-body style="background: #fafafa;">
@@ -230,27 +237,52 @@
                                             </tab>
                                             <tab heading="Processes">
                                                 <fluro-panel-body>
-                                                    Testing
+                                                    <fluro-content-form v-model="model.data" :fields="dataFields">
+                                                        <template v-slot:form="{formFields, fieldHash, model, update, options}">
+                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.interactionProcesses" v-model="model" />
+                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.contactProcesses" v-model="model" />
+                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.contactProcessesAll" v-model="model" />
+                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.processAssignTo" v-model="model" />
+                                                        </template>
+                                                    </fluro-content-form>
                                                 </fluro-panel-body>
                                             </tab>
                                             <tab heading="Groups and Teams">
                                                 <fluro-panel-body>
-                                                    Testing
+                                                    <fluro-content-form v-model="model.data" :fields="dataFields">
+                                                        <template v-slot:form="{formFields, fieldHash, model, update, options}">
+                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.contactTeams" v-model="model" />
+                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.contactTeamsAll" v-model="model" />
+                                                        </template>
+                                                    </fluro-content-form>
                                                 </fluro-panel-body>
                                             </tab>
                                             <tab heading="Capabilities">
                                                 <fluro-panel-body>
-                                                    Testing
+                                                    <fluro-content-form v-model="model.data" :fields="dataFields">
+                                                        <template v-slot:form="{formFields, fieldHash, model, update, options}">
+                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.contactCapabilities" v-model="model" />
+                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.capabilitiesAll" v-model="model" />
+                                                        </template>
+                                                    </fluro-content-form>
                                                 </fluro-panel-body>
                                             </tab>
                                             <tab heading="Reaction Pipelines">
                                                 <fluro-panel-body>
-                                                    Testing
+                                                    <fluro-content-form v-model="model.data" :fields="dataFields">
+                                                        <template v-slot:form="{formFields, fieldHash, model, update, options}">
+                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.reactionPipelines" v-model="model" />
+                                                        </template>
+                                                    </fluro-content-form>
                                                 </fluro-panel-body>
                                             </tab>
                                             <tab heading="Other Options">
                                                 <fluro-panel-body>
-                                                    Testing
+                                                    <fluro-content-form v-model="model.data" :fields="dataFields">
+                                                        <template v-slot:form="{formFields, fieldHash, model, update, options}">
+                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.blc" v-model="model" />
+                                                        </template>
+                                                    </fluro-content-form>
                                                 </fluro-panel-body>
                                             </tab>
                                         </tabset>
@@ -377,7 +409,7 @@
 // import FluroEditor from '../../../form/FluroEditor.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
 import PaymentModifierEditor from '../components/PaymentModifierEditor.vue';
-import { FluroContentSelectButton } from 'fluro-vue-ui';
+import { FluroContentSelectButton, FluroFieldEditor } from 'fluro-vue-ui';
 
 
 /////////////////////////////////
@@ -388,6 +420,7 @@ import Vue from 'vue';
 
 export default {
     components: {
+        FluroFieldEditor,
         FluroContentSelectButton,
         PaymentModifierEditor,
         // FluroEditor,
@@ -405,7 +438,7 @@ export default {
 
                     if (!self.model.paymentDetails) {
                         self.$set(self.model, 'paymentDetails', {});
-                        console.log('SET THE PAYMENT DETAILS NOW!!')
+                        // console.log('SET THE PAYMENT DETAILS NOW!!')
                     }
 
                     if (!self.model.data) {
@@ -475,7 +508,7 @@ export default {
     //         // },
     //     },
     // },
-    // 
+
     created() {
 
         var self = this;
@@ -817,6 +850,140 @@ export default {
             })
 
 
+            addField('interactionProcesses', {
+                title: 'Add submission to processes',
+                minimum: 0,
+                maximum: 0,
+                type: 'reference',
+                params: {
+                    restrictType: 'definition',
+                    parentType:'process',
+                },
+                description: `Select processes that the form submission will be added into`,
+            })
+
+
+            var contactProcessesTitle = self.model.data.contactProcessesAll ? 'Add all connected contacts to processes' :  'Add primary contact to processes';
+
+            // Add {{item.data.contactProcessesAll ? 'All Connected Contacts' : 'Primary Contact'}} to Processes
+            
+            addField('contactProcesses', {
+                title: contactProcessesTitle,
+                minimum: 0,
+                maximum: 0,
+                type: 'reference',
+                params: {
+                    restrictType: 'definition',
+                    parentType:'process',
+                },
+                description: `Select processes to add the primary (or first linked) contact to after form submission`,
+            })
+
+            addField('contactProcessesAll', {
+                title: ' Include all connected contacts',
+                minimum: 0,
+                maximum: 1,
+                type: 'boolean',
+                description: `Include every contact referenced in the submission`,
+            })
+
+            addField('processAssignTo', {
+                title: 'Assign to',
+                minimum: 0,
+                maximum: 0,
+                type: 'reference',
+                params: {
+                    restrictType: 'contact',
+                    allDefinitions:true,
+                },
+                description: `Assign the process card to specific contacts`,
+            })
+
+            /////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////
+
+            var contactTeamsAllTitle = self.model.data.contactTeamsAll ? 'Add all connected contacts to groups/teams' :  'Add primary contact to groups/teams';
+
+            // Add {{item.data.contactTeamsAll ? 'All Connected Contacts' : 'Primary Contact'}} to Processes
+            
+            addField('contactTeams', {
+                title: contactTeamsAllTitle,
+                minimum: 0,
+                maximum: 0,
+                type: 'reference',
+                params: {
+                    restrictType: 'team',
+                    allDefinitions:true,
+                },
+                description: `Select groups/teams to add the primary (or first linked) contact to after form submission`,
+            })
+
+            addField('contactTeamsAll', {
+                title: ' Include all connected contacts',
+                minimum: 0,
+                maximum: 1,
+                type: 'boolean',
+                description: `Include every contact referenced in the submission`,
+            })
+
+
+            /////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////
+
+            var capabilitiesAllTitle = self.model.data.capabilitiesAll ? 'Add capabilities to all connected contacts' :  'Add capabilities to primary contact';
+
+            // Add {{item.data.capabilitiesAll ? 'All Connected Contacts' : 'Primary Contact'}} to Processes
+            
+            addField('contactCapabilities', {
+                title: capabilitiesAllTitle,
+                minimum: 0,
+                maximum: 0,
+                type: 'reference',
+                params: {
+                    restrictType: 'capability',
+                    allDefinitions:true,
+                },
+                description: `Select groups/teams to add the primary (or first linked) contact to after form submission`,
+            })
+
+            addField('capabilitiesAll', {
+                title: ' Include all connected contacts',
+                minimum: 0,
+                maximum: 1,
+                type: 'boolean',
+                description: `Include every contact referenced in the submission`,
+            })
+
+
+
+
+            
+
+            addField('reactionPipelines', {
+                title:'Reaction Pipelines',
+                minimum: 0,
+                maximum: 0,
+                type: 'reference',
+                params: {
+                    restrictType: 'reaction',
+                    allDefinitions:true,
+                },
+                description: `Select reaction pipelines to push submissions into when they are created`,
+            })
+
+
+            addField('blc', {
+                title:'Blacklist Country Codes',
+                minimum: 0,
+                maximum: 0,
+                type: 'string',
+                placeholder:'Country Code eg(AU, BR, US)',
+                description: `Block certain country codes from submitting this form`,
+            })
+
+
 
 
 
@@ -1024,17 +1191,21 @@ export default {
                 type: 'string',
                 description: `This is a unique key to store this field's data in the database. for this ${self.readableContentType}`,
                 expressions: {
-                    transform(value) {
+                    // transform(value) {
 
-                        if (!value) {
-                            return value;
-                        }
-                        var regexp = /[^a-zA-Z0-9-_]+/g;
-                        var cleaned = _.camelCase(value).replace(regexp, '');
-                        return cleaned;
-                    },
+                    //     if (!value) {
+                    //         return value;
+                    //     }
+                    //     var regexp = /[^a-zA-Z0-9-_]+/g;
+                    //     var cleaned = _.camelCase(value).replace(regexp, '');
+                    //     return cleaned;
+                    // },
                     defaultValue() {
-                        return self.model.title;
+
+                        var regexp = /[^a-zA-Z0-9-_]+/g;
+                        var cleaned = _.camelCase(String(self.model.title).replace(regexp, ''));
+
+                        return cleaned;
                     }
                 },
             })

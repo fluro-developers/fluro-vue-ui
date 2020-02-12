@@ -1,9 +1,12 @@
 <template>
-    <div class="toggle-item" :class="{inactive:inactive}">
+    <div class="toggle-item" :class="{inactive:isInactive}">
         <div class="toggle-item-content">
             <slot />
         </div>
-        <div class="toggle-switch" />
+        <div class="toggle-switch">
+            <span class="on">{{on}}</span>
+            <span class="off">{{off}}</span>
+        </div>
     </div>
 </template>
 <script>
@@ -12,6 +15,24 @@ export default {
         inactive: {
             type: Boolean,
         },
+        on:{
+            type:String,
+            default:'On',
+        },
+        off:{
+            type:String,
+            default:'Off',
+        },
+    },
+    data() {
+        return {
+            isInactive:this.inactive,
+        }
+    },
+    watch:{
+        inactive(v) {
+            this.isInactive = v;
+        }
     },
     computed: {
         filtered() {
@@ -92,8 +113,7 @@ export default {
         // border-top:1px solid rgba(#000, 0.05);
         border-bottom: 1px solid rgba(#fff, 0.5);
 
-        &:before {
-            content: 'Off';
+        .off {
             position: absolute;
             top: 0;
             left: 0;
@@ -108,8 +128,7 @@ export default {
             opacity: 0.5;
         }
 
-        &:after {
-            content: 'On';
+        .on {
             position: absolute;
             top: 0;
             left: 0;
@@ -138,11 +157,11 @@ export default {
         background: rgba(#000,0.05);
 
         .toggle-switch {
-            &:before {
+            .off {
                 transform: translateX(0);
             }
 
-            &:after {
+            .on {
                 transform: translateX(100%);
             }
         }

@@ -87,7 +87,7 @@
                                         <v-menu :close-on-content-click="false" @click.native.stop offset-y>
                                             <template v-slot:activator="{ on }">
                                                 <v-btn class="my-0" small icon flat v-on="on">
-                                                    <fluro-icon icon="cog" />
+                                                    <fluro-icon icon="info" />
                                                 </v-btn>
                                             </template>
                                             <v-container pa-2 style="background:#fff;" grid-list-xl>
@@ -195,8 +195,6 @@ export default {
         },
     },
     data() {
-
-
         return {
             file: null,
             model: JSON.parse(JSON.stringify(this.value)),
@@ -214,9 +212,52 @@ export default {
         if (self.model && !self.model.data) {
             self.$set(self.model, 'data', {});
         }
+
+
+
+    },
+    mounted() {
+        console.log('MOUNTED');
+        var self = this;
+        self.addListeners();
+    },
+    activated() {
+        console.log('ACTIVATED')
+        var self = this;
+        self.addListeners();
+    },
+    deactivated() {
+        console.log('DEACTIVATED')
+        var self = this;
+        self.removeListeners();
+    },
+    beforeDestroy() {
+        console.log('DESTROYED')
+        var self = this;
+        self.removeListeners();
     },
     methods: {
-
+        addListeners() {
+            console.log('ADD LISTENERS')
+            var self = this;
+            if (document) {
+                document.addEventListener("keydown", self.keypress, false);
+            }
+        },
+        removeListeners() {
+            console.log('REMOVE LISTENERS')
+            var self = this;
+            if (document) {
+                document.removeEventListener("keydown", self.keypress);
+            }
+        },
+        keypress(e) {
+            var self = this;
+            if (e.keyCode == 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+                e.preventDefault();
+                self.submit();
+            }
+        },
         editSuccess(result) {
             var self = this;
             // console.log('UPDATE SUCCESS', result)
@@ -357,6 +398,7 @@ export default {
             /////////////////////////////////
 
             var requestData = Object.assign({}, self.model);
+            delete requestData.__v;
 
 
             var definedType = requestData.definition || self.definitionName || self.typeName;
@@ -622,7 +664,7 @@ export default {
         },
         showLoading() {
 
-            return this.loading || !this.component;
+            return !this.config || this.loading || !this.component;
         },
         title() {
 
@@ -636,12 +678,20 @@ export default {
             return this.config.definition;
         },
         typeConfig() {
+            if (!this.config) {
+                return;
+            }
+
             return this.config.type;
         },
         definitionTitle() {
             return this.definition ? this.definition.title : this.typeConfig.title;
         },
         typeName() {
+            if (!this.typeConfig) {
+                return;
+            }
+
             return this.typeConfig.definitionName;
         },
         definitionName() {
@@ -659,7 +709,7 @@ export default {
 
             var load = () => import(`./panels/${this.typeName}.vue`)
 
-            console.log('GET LOADED', load);
+            // console.log('GET LOADED', load);
             return load;
 
 
@@ -686,7 +736,7 @@ export default {
     },
     asyncComputed: {
         config: {
-            default:{},
+            default: null,
             get() {
 
                 var self = this;
@@ -695,10 +745,10 @@ export default {
                 //////////////////////////////////////////////
 
                 if (!self.type || !self.type.length) {
-                    Promise.reject({});
+
                     // console.log('NO CONFIG LOADED');
                     // self.loading = false;
-                    return;
+                    return Promise.reject({});;
 
                 }
 
@@ -709,6 +759,8 @@ export default {
                 return new Promise(function(resolve, reject) {
 
                     return self.$fluro.api.get(`/defined/type/${self.type}`).then(function(res) {
+
+
                         resolve(res.data);
                         // console.log('CONFIG LOADED', res.data);
                         self.loading = false;
@@ -719,7 +771,7 @@ export default {
     },
     watch: {
         value() {
-            this.model = this.value;//JSON.parse(JSON.stringify(this.value));
+            this.model = this.value; //JSON.parse(JSON.stringify(this.value));
         },
         // 'model': {
         //     handler: function(val, oldVal) {

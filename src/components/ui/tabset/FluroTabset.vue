@@ -83,7 +83,7 @@ export default {
         selectTab(index) {
 
 
-            console.log('Select', index)
+            // console.log('Select', index)
 
             var self = this;
 
@@ -288,7 +288,7 @@ export default {
 
             &>.tabset-header {
                 min-width: 200px;
-                max-width: 300px;
+                max-width: 260px;
                 width: 25%;
                 display: flex;
                 flex-direction: column;

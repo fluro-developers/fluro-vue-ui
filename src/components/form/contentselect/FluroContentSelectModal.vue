@@ -178,6 +178,8 @@ export default {
 
         /////////////////////////////////////////////
 
+        console.log('INITIAL FILTER', this.options.filter, initialFilter);
+        
         var defaultFilter = JSON.parse(JSON.stringify(initialFilter));
 
         ///////////////////////////////////////

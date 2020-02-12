@@ -68,23 +68,23 @@
         </editor-menu-bubble>
         <editor-menu-bar :editor="editor" v-if="barEnabled">
             <div class="fluro-editor-toolbar" slot-scope="{ commands, isActive }">
-                <v-btn icon small flat class="hidden-xs-only" :class="{ 'is-active':showSource }" @click.stop.prevent="showSource = !showSource">
+                <v-btn v-if="isEnabled('source')" icon small flat class="hidden-xs-only" :class="{ 'is-active':showSource }" @click.stop.prevent="showSource = !showSource">
                     <fluro-icon v-if="showSource" icon="edit" />
                     <fluro-icon v-else icon="code" />
                 </v-btn>
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.bold() }" @click.stop.prevent="commands.bold">
+                <v-btn v-if="isEnabled('bold')" icon :disabled="showSource" small flat :class="{ 'active': isActive.bold() }" @click.stop.prevent="commands.bold">
                     <fluro-icon icon="bold" />
                 </v-btn>
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.italic() }" @click.stop.prevent="commands.italic">
+                <v-btn v-if="isEnabled('italic')" icon :disabled="showSource" small flat :class="{ 'active': isActive.italic() }" @click.stop.prevent="commands.italic">
                     <fluro-icon icon="italic" />
                 </v-btn>
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.underline() }" @click.stop.prevent="commands.underline">
+                <v-btn v-if="isEnabled('underline')" icon :disabled="showSource" small flat :class="{ 'active': isActive.underline() }" @click.stop.prevent="commands.underline">
                     <fluro-icon icon="underline" />
                 </v-btn>
                 <!-- <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.strike() }" @click.stop.prevent="commands.strike">
                     <v-icon>format_strikethrough</v-icon>
                 </v-btn> -->
-                <v-menu :fixed="true" transition="slide-y-transition" offset-y>
+                <v-menu v-if="isEnabled('formats')" :fixed="true" transition="slide-y-transition" offset-y>
                     <template v-slot:activator="{ on }">
                         <v-btn small icon :disabled="showSource" v-on="on">
                             H1
@@ -106,9 +106,34 @@
                         <v-list-tile :class="{ 'active': isActive.heading({ level: 5 }) }" @click.stop.prevent="commands.heading({ level: 5 })">
                             <v-list-tile-content><span style="margin:0 !important" class="h5">Heading 5</span></v-list-tile-content>
                         </v-list-tile>
+                        <!-- <template v-if="getFluroNodes().length"> -->
+                        <template v-if="false">
+                            <v-list-tile @click.stop.prevent="commands.fluroNode(option)" v-for="option in getFluroNodes()">
+                                <v-list-tile-content><span style="margin:0 !important" :class="option.className">{{option.title}}</span></v-list-tile-content>
+                            </v-list-tile>
+                        </template>
+                        <!-- <template v-if="getFluroMarks().length"> -->
+                        <template v-if="false">
+                            <v-list-tile @click.stop.prevent="commands.fluroMark(option)" v-for="option in getFluroMarks()">
+                                <v-list-tile-content><span style="margin:0 !important" :class="option.class">{{option.title}}</span></v-list-tile-content>
+                            </v-list-tile>
+                        </template>
                     </v-list>
                 </v-menu>
-                <v-menu :fixed="true" transition="slide-y-transition" offset-y>
+                <v-menu v-if="tokens.length" :fixed="true" transition="slide-y-transition" offset-y>
+
+                    <template v-slot:activator="{ on }">
+                        <v-btn small :disabled="showSource" v-on="on">
+                            Tokens
+                        </v-btn>
+                    </template>
+                    <v-list>
+                        <v-list-tile @click="commands.token(token.key)" v-for="token in tokens">
+                            <v-list-tile-content><span style="margin:0 !important">{{token.title}}</span></v-list-tile-content>
+                        </v-list-tile>
+                    </v-list>
+                </v-menu>
+                <v-menu v-if="isEnabled('image')" :fixed="true" transition="slide-y-transition" offset-y>
                     <template v-slot:activator="{ on }">
                         <v-btn small icon :disabled="showSource" v-on="on">
                             <fluro-icon icon="image" />
@@ -150,16 +175,16 @@
                     <v-icon>format_align_right</v-icon>
                 </v-btn> -->
                 <!--  -->
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.bullet_list() }" @click.stop.prevent="commands.bullet_list">
+                <v-btn icon v-if="isEnabled('list')" :disabled="showSource" small flat :class="{ 'active': isActive.bullet_list() }" @click.stop.prevent="commands.bullet_list">
                     <fluro-icon icon="list-ul" />
                 </v-btn>
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.ordered_list() }" @click.stop.prevent="commands.ordered_list">
+                <v-btn icon v-if="isEnabled('list')" :disabled="showSource" small flat :class="{ 'active': isActive.ordered_list() }" @click.stop.prevent="commands.ordered_list">
                     <fluro-icon icon="list-ol" />
                 </v-btn>
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.blockquote() }" @click.stop.prevent="commands.blockquote">
+                <v-btn icon v-if="isEnabled('blockquote')" :disabled="showSource" small flat :class="{ 'active': isActive.blockquote() }" @click.stop.prevent="commands.blockquote">
                     <fluro-icon icon="quote-right" />
                 </v-btn>
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.horizontal_rule() }" @click.stop.prevent="commands.horizontal_rule">
+                <v-btn icon v-if="isEnabled('hr')" :disabled="showSource" small flat :class="{ 'active': isActive.horizontal_rule() }" @click.stop.prevent="commands.horizontal_rule">
                     <fluro-icon icon="horizontal-rule" />
                 </v-btn>
                 <!--  -->
@@ -169,10 +194,10 @@
                 <v-btn icon class="hidden-xs-only" :disabled="showSource" small flat @click.stop.prevent="commands.redo">
                     <v-icon>redo</v-icon>
                 </v-btn> -->
-                <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.code_block() }" @click.stop.prevent="commands.code_block">
+                <v-btn icon v-if="isEnabled('code')" :disabled="showSource" small flat :class="{ 'active': isActive.code_block() }" @click.stop.prevent="commands.code_block">
                     <fluro-icon icon="file-code" />
                 </v-btn>
-                <v-menu :fixed="true" transition="slide-y-transition" offset-y>
+                <v-menu v-if="isEnabled('table')" :fixed="true" transition="slide-y-transition" offset-y>
                     <template v-slot:activator="{ on }">
                         <v-btn small class="hidden-xs-only" icon :disabled="showSource" v-on="on">
                             <!-- <v-icon>grid_on</v-icon> -->
@@ -256,7 +281,9 @@
                 </div>
             </div>
         </template>
+        
     </div>
+
 </template>
 <script>
 // Import the editor
@@ -265,7 +292,10 @@ import tippy from 'tippy.js';
 // import Fuse from 'fuse.js';
 import FluroCodeEditor from './FluroCodeEditor.vue';
 import Mention from './tiptap/mentions';
+import FluroNode from './tiptap/fluroNode';
+import FluroMark from './tiptap/fluroMark';
 import Image from './tiptap/image';
+import Token from './tiptap/token';
 // import AutoLinkMark from './tiptap/autolink';
 
 
@@ -323,9 +353,15 @@ export default {
             observer: null,
             linkUrl: null,
             linkMenuIsActive: false,
+            FluroNodePlugin: new FluroNode(),
+            FluroMarkPlugin: new FluroMark(),
         }
     },
     computed: {
+       
+        tokens() {
+            return this.options.tokens || [];
+        },
         barEnabled() {
             return !(this.options.disable && this.options.disable.bar);
         },
@@ -337,11 +373,37 @@ export default {
         },
     },
     methods: {
+        isEnabled(tool) {
+            //If we've specified a toolset
+            if (this.options.toolset) {
+                return _.includes(this.options.toolset, tool);
+            } else {
+                return true;
+            }
+        },
         select() {
             console.log('SELECT EDITOR')
         },
         hideBubble() {
             this.hideLinkMenu();
+        },
+        addFluroNode(cssClass) {
+            var pluginOptions = this.FluroNodePlugin.options.classes
+            if (pluginOptions.indexOf(cssClass) === -1) {
+                pluginOptions.push(cssClass)
+            }
+        },
+        getFluroNodes() {
+            return this.FluroNodePlugin.options.classes
+        },
+        addFluroMark(cssClass) {
+            var pluginOptions = this.FluroMarkPlugin.options.classes
+            if (pluginOptions.indexOf(cssClass) === -1) {
+                pluginOptions.push(cssClass)
+            }
+        },
+        getFluroMarks() {
+            return this.FluroMarkPlugin.options.classes
         },
         showLinkMenu(attrs) {
             this.linkUrl = attrs.href
@@ -390,6 +452,10 @@ export default {
             if (src !== null) {
                 command({ src })
             }
+        },
+        addToken(command, key) {
+            command(key)
+
         },
         // navigate to the previous item
         // if it's the first item, navigate to the last one
@@ -488,11 +554,12 @@ export default {
         FluroCodeEditor,
         EditorFloatingMenu,
         EditorMenuBubble,
+        FluroNode,
+        FluroMark,
     },
     created() {
         var self = this;
         var placeholderText = self.placeholder;
-
 
         var MentionPlugin = new Mention({
             // a list of all suggested items
@@ -598,7 +665,7 @@ export default {
         ///////////////////////////////////
         ///////////////////////////////////
         ///////////////////////////////////
-
+        
         var enabledExtensions = [
 
             new Bold(),
@@ -622,6 +689,9 @@ export default {
             new TableHeader(),
             new TableCell(),
             new TableRow(),
+            new Token(),
+            this.FluroNodePlugin,
+            this.FluroMarkPlugin,
             MentionPlugin,
             new Placeholder({
                 emptyClass: 'placeholder-text',
@@ -737,7 +807,10 @@ export default {
                 this.editor.setContent(value)
             }
 
-            this.$emit('input', value);
+                this.$emit('input', value);
+            
+
+
         }
     },
 
@@ -829,7 +902,8 @@ $color-white: #fff;
         text-rendering: optimizeLegibility;
     }
 
-    ul, ol {
+    ul,
+    ol {
         padding-left: 24px;
     }
 

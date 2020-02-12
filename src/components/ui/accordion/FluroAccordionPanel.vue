@@ -3,7 +3,16 @@
 
     <div class="accordion-panel" :class="{expanded:active}">
         <div class="accordion-panel-title" @click="selectPanel(index)">
-            {{heading}}
+            
+            <v-layout>
+                                <v-flex>
+                                    {{heading}}
+                                </v-flex>
+                                <v-flex shrink>
+                                    <fluro-icon :icon="field.expanded ? `angle-up` : `angle-down`" />
+                                </v-flex>
+                            </v-layout>
+                            
         </div>
         <div class="accordion-panel-body">
             <v-container fluid>

@@ -1,4 +1,4 @@
-console.log('fluro-vue-ui 2.0.45')
+console.log('fluro-vue-ui 2.0.47')
 
 /////////////////////////////////////////////////////
 
@@ -17,7 +17,19 @@ export { FluroAvatar as FluroAvatar };
 import FluroAvatarUpdate from './components/FluroAvatarUpdate.vue';
 export { FluroAvatarUpdate as FluroAvatarUpdate };
 
+
+
+import FluroFieldEditor from './components/fields/FluroFieldEditor.vue';
+export { FluroFieldEditor as FluroFieldEditor };
+
+
+
 import FluroImage from './components/FluroImage.vue';
+
+
+import FluroCompileHtml from './components/FluroCompileHtml.vue';
+export { FluroCompileHtml as FluroCompileHtml };
+
 
 
 import FluroInfiniteScroll from './components/ui/FluroInfiniteScroll.vue';
@@ -59,6 +71,10 @@ export { FluroTrendChart as FluroTrendChart };
 ////////////////////////////////////////////////////////////////////
 import FluroTable from './components/table/FluroTable.vue';
 export { FluroTable as FluroTable };
+
+
+import TableCell from './components/table/TableCell.vue';
+export { TableCell as TableCell };
 
 
 import SearchInput from './components/ui/SearchInput.vue';
@@ -116,6 +132,9 @@ export { EventThumbnailCell as EventThumbnailCell };
 
 import NumberCell from './components/table/cells/NumberCell.vue';
 export { NumberCell as NumberCell };
+
+import RealmDotCell from './components/table/cells/RealmDotCell.vue';
+export { RealmDotCell as RealmDotCell };
 
 import PaymentStatusCell from './components/table/cells/PaymentStatusCell.vue';
 export { PaymentStatusCell as PaymentStatusCell };

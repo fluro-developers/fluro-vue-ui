@@ -1,6 +1,7 @@
 <template>
     <div :data-field-key="key" class="fluro-content-form-field" v-if="isVisible" v-bind="attributes" :class="fieldClass">
-        <!-- <pre>{{field.title}} DATA {{formModel}}</pre> -->
+        <!-- <pre>{{field.title}} DATA {{renderer}}</pre> -->
+        <!-- <pre>{{fieldModel}}</pre> -->
         <template v-if="officeUseOnly">
         </template>
         <template v-else-if="customComponent">
@@ -57,6 +58,7 @@
                         </v-toolbar>
                         </v-toolbar>
                         <v-card-text>
+
                             <fluro-content-form :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel[index]" @input="valueChange" :fields="fields"/>
                         </v-card-text>
                     </v-card>
@@ -79,7 +81,8 @@
                     <!-- FIELDS 1 -->
                     <fluro-content-form :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel" @input="valueChange" :fields="fields"/>
                 </template>
-                <template v-if="field.maximum != 1">
+                <template v-else>
+
                     <template v-for="(object, index) in fieldModel">
                         <v-card>
                             <v-toolbar class="elevation-0">
@@ -93,6 +96,7 @@
                             </v-toolbar>
                             </v-toolbar>
                             <v-card-text>
+                                 <!-- <pre>{{fields}}</pre> -->
                                 <fluro-content-form :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel[index]" @input="valueChange" :fields="fields"/>
                             </v-card-text>
                         </v-card>
@@ -374,7 +378,7 @@
         <template v-else-if="renderer == 'currency' && !multipleInput">
             <!--   CURRENCY
             <pre>{{fieldModel}}</pre> -->
-            <fluro-currency-input :currency="params.currency" :label="displayLabel" :required="required" v-model="fieldModel" :autofocus="autofocus" :outline="showOutline" :success="success" @blur="touch()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" />
+            <fluro-currency-input :currency="params.currency" :label="displayLabel" :required="required" v-model="fieldModel" :autofocus="shouldAutofocus" :outline="showOutline" :success="success" @blur="touch()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" />
         </template>
         <template v-else-if="renderer == 'color' && !multipleInput">
             
@@ -408,7 +412,7 @@
 
 
             
-            <!-- <v-text-field :autofocus="autofocus" :outline="showOutline" :success="success" browser-autocomplete="off" :required="required" :label="displayLabel" v-model="fieldModel" @blur="touch()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" /> -->
+            <!-- <v-text-field :autofocus="shouldAutofocus" :outline="showOutline" :success="success" browser-autocomplete="off" :required="required" :label="displayLabel" v-model="fieldModel" @blur="touch()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" /> -->
             
         </template>
 
@@ -436,12 +440,12 @@
                         <!-- <pre>{{proposedValue}}</pre> -->
                         <!-- <pre>{{fieldModel}}</pre> -->
                         <!--   -->
-                        <v-text-field :autofocus="autofocus" class="faint" @input="valueChange" append-inner-icon="plus" :outline="showOutline" :success="success" browser-autocomplete="off" append-icon="plus" :required="required" :label="multiLabel" v-model="proposedValue" @keyup.enter.native.stop="addProposedValue()" @blur="addProposedValue()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="hint" :placeholder="field.placeholder" />
+                        <v-text-field :autofocus="shouldAutofocus" class="faint" @input="valueChange" append-inner-icon="plus" :outline="showOutline" :success="success" browser-autocomplete="off" append-icon="plus" :required="required" :label="multiLabel" v-model="proposedValue" @keyup.enter.native.stop="addProposedValue()" @blur="addProposedValue()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="hint" :placeholder="field.placeholder" />
                     </template>
                 </v-input>
             </template>
             <template v-if="!multipleInput">
-                <v-text-field :autofocus="autofocus" :outline="showOutline" :success="success" browser-autocomplete="off" :required="required" :label="displayLabel" v-model="fieldModel" @blur="touch()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" />
+                <v-text-field :autofocus="shouldAutofocus" :outline="showOutline" :success="success" browser-autocomplete="off" :required="required" :label="displayLabel" v-model="fieldModel" @blur="touch()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" />
             </template>
         </template>
         <!-- <pre><label>{{field.title}}</label><br/>{{model}}</pre> -->
@@ -504,6 +508,7 @@ export default {
     },
     data() {
         return {
+            hasInitialValue:false,
             asyncOptionsLoading: false,
             drag: false,
             test: null,
@@ -529,6 +534,10 @@ export default {
         }
     },
     watch: {
+        model:'checkInitialValue',
+        // field:'checkInitialValue',
+        // value:'checkInitialValue',
+        
         'keywords': _.debounce(function() {
 
             var self = this;
@@ -594,7 +603,7 @@ export default {
 
             //If the user has entered data into here
             //Don't make any change
-            if (this.$v.model.$dirty) {
+            if (this.$v.model.$dirty || this.hasInitialValue) {
                 // console.log('Field is dirty')
                 return;
             }
@@ -623,6 +632,9 @@ export default {
         }
     },
     computed: {
+        shouldAutofocus() {
+            return this.autofocus || this.params.autofocus;
+        },
         customComponent() {
             return this.field.customComponent;
         },
@@ -794,7 +806,13 @@ export default {
 
         },
         editorOptions() {
-            return this.options.editor;
+
+            var editorOptions = this.options.editor || this.params.editor || {}
+
+            if(this.params.tokens && this.params.tokens.length) {
+                editorOptions.tokens = this.params.tokens;
+            }
+            return editorOptions;
         },
         multiEditorOptions() {
             return Object.assign({}, this.options.editor, { label: '' })
@@ -979,6 +997,7 @@ export default {
         fieldModel: {
             get() {
                 var self = this;
+                // console.log('THERE IS NO MODEL', self.key, self.model);
                 var value = self.model[self.key];
 
                 if (self.expressions && self.expressions.transform && typeof self.expressions.transform.set == 'function') {
@@ -1244,6 +1263,8 @@ export default {
                 return [];
             }
 
+
+
             ////////////////////////////////////////
 
             if (self.field.options && self.field.options.length) {
@@ -1251,6 +1272,19 @@ export default {
                     option.title = option.title ? option.title : option.name;
                     return option;
                 });
+            } else {
+                if (self.allowedValues && self.allowedValues.length) {
+                    return _.chain(self.allowedValues)
+                    .compact()
+                    .map(function(option) {
+                        return {
+                            name:option,
+                            value:option,
+                            title:option,
+                        }
+                    })
+                    .value();
+                }
             }
 
             ////////////////////////////////////////
@@ -1259,11 +1293,7 @@ export default {
                 return self.allowedReferences;
             }
 
-            ////////////////////////////////////////
-
-            if (self.allowedValues) {
-                return self.allowedValues;
-            }
+            
 
             ////////////////////////////////////////
 
@@ -1527,6 +1557,16 @@ export default {
         }
     },
     methods: {
+        checkInitialValue() {
+
+            
+            var self = this;
+            if(self.fieldModel == undefined || self.fieldModel === null || self.fieldModel == '') {
+                self.hasInitialValue = false;
+            } else {
+                self.hasInitialValue = true;
+            }
+        },
         clear() {
             this.fieldModel = null;
             this.reset()
@@ -1796,17 +1836,19 @@ export default {
 
             var self = this;
 
+            
             //Create a context model
             var context = {
-                data: self.model,
-                interaction: self.model,
+                data: self.parent,//self.model,
+                interaction: self.parent,//self.model,
                 model: self.model,
                 Math: Math,
                 String: String,
                 Array: Array,
+                Date:Date,
+                moment:moment,
                 //Include helper function
-                matchInArray: this.$fluro.matchInArray,
-
+                matchInArray: this.$fluro.utils.matchInArray,
             }
 
             var ast;
@@ -1816,8 +1858,10 @@ export default {
                 ast = Expressions.parse(expression);
                 result = Expressions.eval(ast, context);
             } catch (err) {
-                // console.log(expression, result);
+                // console.log('EXPRESSION', expression, err);
             } finally {
+
+                // console.log('EXPRESSION RESULT', result, ast, expression, context)
                 return result;
             }
 
@@ -1944,6 +1988,9 @@ export default {
 
         var self = this;
 
+
+
+
         ///////////////////////////////////////////////
 
         if (self.multipleInput) {
@@ -1976,6 +2023,43 @@ export default {
 
                         break;
                 }
+            } else {
+
+                //If there is nothing in the field model
+                if(!self.fieldModel) {
+                    //If there is default values set
+                    if(self.defaultValues && self.defaultValues.length) {
+                        var defaultValue = _.first(self.defaultValues);
+
+                        if(defaultValue) {
+
+                            switch(self.type) {
+                                case 'date':
+                                    if(String(defaultValue).toLowerCase() == 'now') {
+                                        defaultValue = new Date();
+                                    }
+                                break;
+                                case 'number':
+                                    defaultValue = Number(defaultValue);
+                                break;
+                                case 'integer':
+                                    defaultValue = parseInt(defaultValue);
+                                break;
+                                case 'decimal':
+                                case 'float':
+                                    defaultValue = parseFloat(defaultValue);
+                                break;
+                                default:
+                                    //Nothing
+                                break;
+                            }
+
+                            self.fieldModel = defaultValue;
+                        }
+                        
+                    }
+                }
+                // console.log('SHOULD SET DEFAULT VALUE HERE', self.title, self.type, self.defaultValues);
             }
         }
 
@@ -1989,10 +2073,10 @@ export default {
             }
         }
 
-
         ////////////////////////////////////////////
 
         //Emit itself being created
+        self.checkInitialValue();
         self.$emit('created', self);
 
 
@@ -2095,12 +2179,11 @@ export default {
                 var value = false;
 
                 //If there is a minimum
-                if (self.minimum) {
+                if (self.minimum == 1) {
                     return Promise.resolve(true);
                 }
 
                 if (this.expressionRequired) {
-
                     return Promise.resolve(true);
                 }
 
@@ -2171,6 +2254,22 @@ export default {
                 var self = this;
                 var value = false;
 
+                //There is a show expression
+                if (self.expressions && self.expressions.show) {
+                    
+                    //If its a function
+                    if (typeof self.expressions.show == 'function') {
+                        //Return the opposite of the show function
+                        return !self.expressions.show();
+                    } else {
+                        var shouldShow = self.resolveExpression(self.expressions.show);
+                        return Promise.resolve(!shouldShow);
+                    }
+                }
+
+                ///////////////////////////////////////////////////
+                ///////////////////////////////////////////////////
+                ///////////////////////////////////////////////////
 
                 //There is no hidden expression
                 if (!self.expressions || !self.expressions.hide) {
@@ -2190,6 +2289,8 @@ export default {
                 //     return Promise.resolve(false);
                 // }
                 value = this.resolveExpression(self.expressions.hide);
+
+                console.log('RESOLVE', value, self.expressions.hide)
                 return Promise.resolve(value);
             }
 

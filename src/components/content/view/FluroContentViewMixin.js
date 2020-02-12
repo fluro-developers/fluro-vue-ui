@@ -12,6 +12,7 @@ export default {
             type: Object,
             required: true,
         },
+
     },
     data() {
         return {
@@ -27,13 +28,13 @@ export default {
     },
     computed: {
         definition() {
-            this.config && this.config.definition ? this.config.definition : null
-        }
+            return this.config && this.config.definition ? this.config.definition : null
+        },
+        // itemID() {
+        //     return this.model._id;
+        // },
     },
 
-    //     itemID() {
-    //         return this.model._id;
-    //     },
     //     definition() {
     //         return this.config.definition;
     //     },

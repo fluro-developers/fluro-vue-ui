@@ -74,3 +74,8 @@ export default {
     }
 }
 </script>
+<style scoped lang="scss">
+    span {
+    white-space: nowrap;
+    }
+</style>

@@ -50,6 +50,10 @@ export default {
         color: {
             type: String,
         },
+        searchInheritable:{
+            type:Boolean,
+            default:true,
+        },
         allDefinitions: {
             type: Boolean,
         },
@@ -121,6 +125,7 @@ export default {
                 minimum: self.minimum,
                 maximum: self.maximum,
                 allDefinitions:self.allDefinitions,
+                searchInheritable:self.searchInheritable,
                 value: defaultValue,
             }
         });
@@ -161,6 +166,7 @@ export default {
                     selector: self.selector,
                     type: self.type,
                     allDefinitions: self.allDefinitions,
+                    searchInheritable:self.searchInheritable,
                     filter: self.filter,
                 }
             });
