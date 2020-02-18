@@ -1,6 +1,6 @@
 <template>
     <!-- grid-list-lg -->
-    <v-container class="filter-condition-row" :class="{mini:mini}" pa-0>
+    <v-container class="filter-condition-row grid-list-sm" :class="{mini:mini}" pa-0>
         <v-layout row wrap>
             <v-flex xs12 sm4>
                 <template v-if="fields.length">
@@ -113,6 +113,20 @@
                         </v-flex>
                     </v-layout> -->
                 </v-flex>
+
+                <v-flex xs12 sm5 v-else-if="inputType == 'datemeasure'">
+                    <v-layout>
+                        <v-flex xs6>
+                            <v-text-field v-model="model.value" class="small-input" single-line label="Total"/>
+                        </v-flex>
+                        <v-flex xs6>
+                            <v-autocomplete class="small-input" dense v-model="model.value2" label="Period" item-text="title" item-value="value" :items="dateMeasures"></v-autocomplete>
+                        </v-flex>
+                    </v-layout>
+                </v-flex>
+
+
+
                 <v-flex xs12 sm5 v-else-if="inputType == 'range'">
                     <v-layout>
                         <v-flex xs6>
@@ -292,6 +306,7 @@
                 <fluro-icon right icon="plus" />
             </v-btn>
         </template>
+        <!-- <pre>{{model}}</pre> -->
     </v-container>
 </template>
 <script>
@@ -427,6 +442,31 @@ export default {
         }
     },
     computed: {
+        dateMeasures() {
+            return [
+            {
+                title:'Hours',
+                value:'hour',
+            },
+            {
+                title:'Days',
+                value:'day',
+            },
+            {
+                title:'Weeks',
+                value:'week',
+            },
+            {
+                title:'Months',
+                value:'month',
+            },
+            {
+                title:'Years',
+                value:'year',
+            },
+            
+            ]
+        },
         referenceID:{
             get() {
                 return this.referenceIDModel;

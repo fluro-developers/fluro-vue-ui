@@ -22,15 +22,17 @@ export default {
             type: Object
         },
     },
-    inject: ['tabs', 'addTab', 'removeTab'],
+    inject: ['tabs', 'addTab', 'activeTabIndex', 'removeTab'],
     created() {
         // console.log('THISIIIIITY', this.tabs)
 
-        this.index = this.tabs.length;
-        this.active = this.index == 0;
+        
         // this.tabs.push(this);
 
+        
+        this.index = this.tabs.length;
         this.addTab(this);
+        this.active = this.index == this.activeTabIndex;
 
 
     },

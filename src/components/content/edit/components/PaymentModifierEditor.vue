@@ -1,7 +1,7 @@
 <template>
     <div class="payment-modifier-editor">
         <list-group>
-            <draggable v-model="model" v-bind="dragOptions" @start="drag=true" @end="drag=false">
+            <draggable v-model="model" v-bind="dragOptions" @sort="sorted" @start="drag=true" @end="drag=false">
                 <payment-modifier-item :form="form" @remove="remove" @duplicate="duplicate" @edit="edit" v-model="model[index]" v-for="(modifier, index) in model"/>
             </draggable>
         </list-group>
@@ -44,6 +44,10 @@ export default {
         }
     },
     methods: {
+        sorted() {
+            var self = this;
+            self.$emit('input', self.model)
+        },
         duplicate(modifier) {
 
         	var self = this;

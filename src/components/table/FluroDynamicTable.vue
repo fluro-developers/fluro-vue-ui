@@ -8,6 +8,7 @@
         <!-- <pre>{{sort}}</pre> -->
         <!-- <pre>{{filterCheckString}}</pre> -->
         <!-- {{startDate}} -->
+
         <fluro-page-preloader v-if="showLoading" contain />
         <v-container class="flex-center" v-if="!showLoading && !page.length">
             <slot name="emptytext">
@@ -442,6 +443,12 @@ export default {
                 return [];
             }
         },
+        additionalColumns: {
+            type: Array,
+            default () {
+                return [];
+            }
+        },
         filterConfig: {
             type: Object,
             default () {
@@ -487,8 +494,8 @@ export default {
         return {
             cacheKey: null,
             columnState: {},
-            structureColumns: this.columns,
-            additionalColumns:[],
+            structureColumns:_.compact(this.columns),
+            extraColumns:[],
             all: [],
             rows: [],
             page: [],
@@ -507,14 +514,16 @@ export default {
             return this.$fluro.types.readable(this.dataType, true);
         },
         pagePopulationString() {
-            return [this.currentPage, this.rawPage, this.structureColumns];
+            return [this.currentPage, this.rawPage, this.structureColumns, this.extraColumns];
         },
         renderColumns() {
 
             var self = this;
             var array = self.structureColumns ? self.structureColumns.slice() : [];
 
-            array = array.concat(self.additionalColumns);
+            if(self.extraColumns) {
+                array = array.concat(self.extraColumns);
+            }
 
             // array = _.filter(array, function(column) {
             //     return !self.columnState[column.key];
@@ -585,6 +594,7 @@ export default {
                 })
             }
 
+            console.log('COLUMNS', array);
             /////////////////////////////////////
 
             return array;
@@ -851,6 +861,9 @@ export default {
         },
     },
     watch: {
+        extraColumns() {
+            this.$emit('additionalColumns', this.extraColumns);
+        },
         'pagePopulationString': function() {
             this.loading = true;
             this.populatePage()
@@ -882,17 +895,16 @@ export default {
         },
         columnIsSelected(column) {
             var self = this;
-            return _.some(self.additionalColumns, { key: column.key })
+            return _.some(self.extraColumns, { key: column.key })
         },
         toggleColumn(column) {
             var self = this;
 
-            var index = _.findIndex(self.additionalColumns, { key: column.key });
+            var index = _.findIndex(self.extraColumns, { key: column.key });
             if (index == -1) {
-                self.$set(self.additionalColumns, self.additionalColumns.length, column);
+                self.$set(self.extraColumns, self.extraColumns.length, column);
             } else {
-                self.additionalColumns.splice(index, 1);
-
+                self.extraColumns.splice(index, 1);
             }
         },
         // toggleColumn(column) {
@@ -962,6 +974,7 @@ export default {
 
                 //Include the extra fields that make sense
                 fields = fields.concat(_.chain(renderColumns)
+                    .compact()
                     .map(function(column) {
 
                         if (column.actualField) {

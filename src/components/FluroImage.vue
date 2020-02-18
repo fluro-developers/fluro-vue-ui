@@ -38,6 +38,9 @@ export default {
         imageHeight: {
             type: Number,
         },
+        from:{
+            type:[String, Object],
+        },
         cacheKey:[String, Number],
         
     },
@@ -145,34 +148,48 @@ export default {
             return this.$fluro.utils.getStringID(this.item);
         },
         url() {
-            if (this.imageID) {
+
+            var self = this;
+
+            if (self.imageID) {
                 //Allow the Fluro API to decide the best dimensions based on screensize
-                var requestWidth = this.imageWidth || (this.width ? this.width * 2 : null);
-                var requestHeight = this.imageHeight || (this.height ? this.height * 2 : null);
+                var requestWidth = self.imageWidth || (self.width ? self.width * 2 : null);
+                var requestHeight = self.imageHeight || (self.height ? self.height * 2 : null);
 
 
                 var params = { includePublic: true };
 
-                if(this.cacheKey && String(this.cacheKey.length)) {
-                    params.cacheKey = this.cacheKey;
+                if(self.cacheKey && String(self.cacheKey.length)) {
+                    params.cacheKey = self.cacheKey;
                 }
 
-                return this.$fluro.asset.imageUrl(this.imageID, requestWidth, requestHeight, params);
+                if(self.from) {
+                    params.from = self.$fluro.utils.getStringID(self.from);
+                }
+
+                return self.$fluro.asset.imageUrl(self.imageID, requestWidth, requestHeight, params);
             } else {
                 return;
             }
         },
         placeholderImage() {
-            if (this.imageID) {
+
+            var self = this;
+
+            if (self.imageID) {
 
                 var params = { includePublic: true };
 
-                if(this.cacheKey && String(this.cacheKey.length)) {
-                    params.cacheKey = this.cacheKey;
+                if(self.cacheKey && String(self.cacheKey.length)) {
+                    params.cacheKey = self.cacheKey;
+                }
+
+                if(self.from) {
+                    params.from = self.$fluro.utils.getStringID(self.from);
                 }
 
 
-                var placeholderUrl = this.$fluro.asset.imageUrl(this.imageID, 50, null, params);
+                var placeholderUrl = self.$fluro.asset.imageUrl(self.imageID, 50, null, params);
                 return `url(${placeholderUrl})`;
             } else {
                 return;

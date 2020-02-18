@@ -1,5 +1,6 @@
 <template>
     <td :class="{wrap:column.wrap, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}">
+        <div class="wrap-limit">
         <!-- <pre>{{subField}}</pre> -->
         <component v-if="renderer" :data="preValue" :is="renderer" :row="row" :column="column" />
         <template v-else-if="simpleArray">
@@ -56,6 +57,7 @@
         <slot v-else :value="value" :row="row" :column="column">
             {{value}}
         </slot>
+    </div>
     </td>
 </template>
 <script>
@@ -509,6 +511,13 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+
+.wrap-limit {
+    max-width:500px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .wrap {
     white-space: normal !important;
 }

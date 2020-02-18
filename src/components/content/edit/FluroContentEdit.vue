@@ -29,7 +29,7 @@
                             <fluro-realm-select v-if="typeName != 'realm'" v-model="model.realms" :type="typeName" :definition="definitionName" />
                             <fluro-tag-select class="ml-2" v-if="typeName != 'tag'" v-model="model.tags" />
                             <!-- <pre>{{model.tags}}</pre> -->
-                            <v-btn v-if="model._id" icon class="mr-0" small @click="$actions.open([model])">
+                            <v-btn v-if="model._id" class="mr-0" @click="$actions.open([model])">
                                 <fluro-icon icon="ellipsis-h" />
                             </v-btn>
                             <v-btn @click="cancel">
@@ -42,112 +42,114 @@
                     </page-header>
                 </flex-column-header>
                 <component @errorMessages="validate" ref="form" :context="context" @input="updateModel" v-bind:is="component" :type="typeConfig" :config="config" v-model="model" @file="fileChanged" :definition="definition" v-if="component"></component>
-                <template v-if="$vuetify.breakpoint.xsOnly">
-                    <flex-column-footer>
-                        <template v-if="state == 'error'">
-                            <v-alert :value="true" type="error" style="margin:0;" @click.prevent.native="state = 'ready'">
-                                {{serverErrors}}
-                            </v-alert>
-                        </template>
-                    </flex-column-footer>
-                    <flex-column-footer class="border-top">
-                        <v-container py-0 px-1>
-                            <fluro-realm-select block v-model="model.realms" :type="typeName" :definition="definitionName" />
-                        </v-container>
-                    </flex-column-footer>
-                    <flex-column-footer class="border-top">
-                        <v-container py-0 px-1>
-                            <v-layout>
-                                <v-flex>
-                                    <v-btn block @click="cancel">
-                                        Cancel
-                                    </v-btn>
-                                </v-flex>
-                                <v-spacer />
-                                <v-flex>
-                                    <v-btn class="mr-0" block :loading="state == 'processing'" :disabled="hasErrors" @click="submit" color="primary">
-                                        {{saveText}}
-                                    </v-btn>
-                                </v-flex>
-                            </v-layout>
-                        </v-container>
-                    </flex-column-footer>
-                </template>
-                <template v-else>
-                    <flex-column-footer class="border-top">
-                        <v-container fluid pa-1>
-                            <v-layout row align-center>
-                                <template v-if="model._id" class="settings-popup">
-                                    <v-flex shrink>
-                                        <!-- <template v-if="model._id">
+                <template v-if="showFooter">
+                    <template v-if="$vuetify.breakpoint.xsOnly">
+                        <flex-column-footer>
+                            <template v-if="state == 'error'">
+                                <v-alert :value="true" type="error" style="margin:0;" @click.prevent.native="state = 'ready'">
+                                    {{serverErrors}}
+                                </v-alert>
+                            </template>
+                        </flex-column-footer>
+                        <flex-column-footer class="border-top">
+                            <v-container py-0 px-1>
+                                <fluro-realm-select block v-model="model.realms" :type="typeName" :definition="definitionName" />
+                            </v-container>
+                        </flex-column-footer>
+                        <flex-column-footer class="border-top">
+                            <v-container py-0 px-1>
+                                <v-layout>
+                                    <v-flex>
+                                        <v-btn block @click="cancel">
+                                            Cancel
+                                        </v-btn>
+                                    </v-flex>
+                                    <v-spacer />
+                                    <v-flex>
+                                        <v-btn class="mr-0" block :loading="state == 'processing'" :disabled="hasErrors" @click="submit" color="primary">
+                                            {{saveText}}
+                                        </v-btn>
+                                    </v-flex>
+                                </v-layout>
+                            </v-container>
+                        </flex-column-footer>
+                    </template>
+                    <template v-else>
+                        <flex-column-footer class="border-top">
+                            <v-container fluid pa-1>
+                                <v-layout row align-center>
+                                    <template v-if="model._id" class="settings-popup">
+                                        <v-flex shrink>
+                                            <!-- <template v-if="model._id">
                                         <v-btn small icon flat>
                                             <fluro-icon icon="cog" />
                                         </v-btn>
                                     </template> -->
-                                        <v-menu :close-on-content-click="false" @click.native.stop offset-y>
-                                            <template v-slot:activator="{ on }">
-                                                <v-btn class="my-0" small icon flat v-on="on">
-                                                    <fluro-icon icon="info" />
-                                                </v-btn>
-                                            </template>
-                                            <v-container pa-2 style="background:#fff;" grid-list-xl>
-                                                <fluro-content-form-field :field="extraFields.inheritable" v-model="model"></fluro-content-form-field>
-                                                <fluro-content-form-field :field="extraFields.slug" v-model="model"></fluro-content-form-field>
-                                            </v-container>
-                                            <v-container pa-2 v-if="model._id" class="white-background">
-                                                <label>Fluro ID</label>
-                                                <pre>{{model._id}}</pre>
-                                            </v-container>
-                                            <v-container pa-2 v-if="model._external" class="white-background">
-                                                <label>External ID</label>
-                                                <pre>{{model._external}}</pre>
-                                            </v-container>
-                                            <v-container pa-2 class="white-background">
-                                                <v-btn block small @click="$fluro.global.json(model)">
-                                                    View Raw JSON
-                                                    <fluro-icon right icon="brackets-curly" />
-                                                </v-btn>
-                                                <!-- <fluro-content-form-field :field="extraFields.slug" v-model="model"></fluro-content-form-field> -->
-                                            </v-container>
-                                        </v-menu>
-                                    </v-flex>
-                                </template>
-                                <template v-if="enableAutomationDates">
+                                            <v-menu :close-on-content-click="false" @click.native.stop offset-y>
+                                                <template v-slot:activator="{ on }">
+                                                    <v-btn class="my-0" small icon flat v-on="on">
+                                                        <fluro-icon library="fas" icon="info" />
+                                                    </v-btn>
+                                                </template>
+                                                <v-container pa-2 style="background:#fff;" grid-list-xl>
+                                                    <fluro-content-form-field :field="extraFields.inheritable" v-model="model"></fluro-content-form-field>
+                                                    <fluro-content-form-field :field="extraFields.slug" v-model="model"></fluro-content-form-field>
+                                                </v-container>
+                                                <v-container pa-2 v-if="model._id" class="white-background">
+                                                    <label>Fluro ID</label>
+                                                    <pre>{{model._id}}</pre>
+                                                </v-container>
+                                                <v-container pa-2 v-if="model._external" class="white-background">
+                                                    <label>External ID</label>
+                                                    <pre>{{model._external}}</pre>
+                                                </v-container>
+                                                <v-container pa-2 class="white-background">
+                                                    <v-btn block small @click="$fluro.global.json(model)">
+                                                        View Raw JSON
+                                                        <fluro-icon right icon="brackets-curly" />
+                                                    </v-btn>
+                                                    <!-- <fluro-content-form-field :field="extraFields.slug" v-model="model"></fluro-content-form-field> -->
+                                                </v-container>
+                                            </v-menu>
+                                        </v-flex>
+                                    </template>
+                                    <template v-if="enableAutomationDates">
+                                        <v-flex shrink>
+                                            <v-menu :close-on-content-click="false" @click.native.stop offset-y>
+                                                <template v-slot:activator="{ on }">
+                                                    <v-btn class="my-0" small icon flat v-on="on">
+                                                        <fluro-icon icon="clock" />
+                                                    </v-btn>
+                                                </template>
+                                                <v-container style="background:#fff;" grid-list-xl>
+                                                    <v-layout>
+                                                        <v-flex>
+                                                            <v-input class="no-flex" label="Publish Date" :persistent-hint="true" :hint="publishDateHint">
+                                                                <fluro-content-form-field :field="extraFields.publishDate" v-model="model"></fluro-content-form-field>
+                                                            </v-input>
+                                                        </v-flex>
+                                                        <v-flex>
+                                                            <v-input class="no-flex" label="Archive Date" :persistent-hint="true" :hint="archiveDateHint">
+                                                                <fluro-content-form-field :field="extraFields.archiveDate" v-model="model"></fluro-content-form-field>
+                                                            </v-input>
+                                                        </v-flex>
+                                                        <v-flex>
+                                                            <fluro-content-form-field :field="extraFields.createdDate" v-model="model"></fluro-content-form-field>
+                                                        </v-flex>
+                                                    </v-layout>
+                                                </v-container>
+                                            </v-menu>
+                                        </v-flex>
+                                    </template>
+                                    <v-spacer />
                                     <v-flex shrink>
-                                        <v-menu :close-on-content-click="false" @click.native.stop offset-y>
-                                            <template v-slot:activator="{ on }">
-                                                <v-btn class="my-0" small icon flat v-on="on">
-                                                    <fluro-icon icon="clock" />
-                                                </v-btn>
-                                            </template>
-                                            <v-container style="background:#fff;" grid-list-xl>
-                                                <v-layout>
-                                                    <v-flex>
-                                                        <v-input class="no-flex" label="Publish Date" :persistent-hint="true" :hint="publishDateHint">
-                                                            <fluro-content-form-field :field="extraFields.publishDate" v-model="model"></fluro-content-form-field>
-                                                        </v-input>
-                                                    </v-flex>
-                                                    <v-flex>
-                                                        <v-input class="no-flex" label="Archive Date" :persistent-hint="true" :hint="archiveDateHint">
-                                                            <fluro-content-form-field :field="extraFields.archiveDate" v-model="model"></fluro-content-form-field>
-                                                        </v-input>
-                                                    </v-flex>
-                                                    <v-flex>
-                                                        <fluro-content-form-field :field="extraFields.createdDate" v-model="model"></fluro-content-form-field>
-                                                    </v-flex>
-                                                </v-layout>
-                                            </v-container>
-                                        </v-menu>
+                                        <template v-if="model._id"><em class="muted sm">Last updated {{model.updated | timeago}}</em></template>
+                                        <fluro-status-select v-model="model.status" :type="model._type" />
                                     </v-flex>
-                                </template>
-                                <v-spacer />
-                                <v-flex shrink>
-                                    <template v-if="model._id"><em class="muted sm">Last updated {{model.updated | timeago}}</em></template>
-                                    <fluro-status-select v-model="model.status" :type="model._type" />
-                                </v-flex>
-                            </v-layout>
-                        </v-container>
-                    </flex-column-footer>
+                                </v-layout>
+                            </v-container>
+                        </flex-column-footer>
+                    </template>
                 </template>
             </form>
         </template>
@@ -260,8 +262,11 @@ export default {
         },
         editSuccess(result) {
             var self = this;
-            // console.log('UPDATE SUCCESS', result)
+            console.log('UPDATE SUCCESS', result)
+
+            self.state = 'ready'
             self.$fluro.resetCache();
+            
             // self.reset(true);
             self.$emit('success', result.data);
 
@@ -527,6 +532,13 @@ export default {
         }
     },
     computed: {
+        showFooter() {
+            return !this.hideFooter;
+        },
+        hideFooter() {
+            var self = this;
+            return self.typeName == 'definition';
+        },
         summary() {
             var self = this;
             switch (self.typeName) {
@@ -539,19 +551,15 @@ export default {
 
                     var readableStartDate;
 
-                    if (planStartDate) {
-                        readableStartDate = self.$fluro.date.formatDate(planStartDate, 'h:mm ddd D MMM')
-                    } else if (hasEvent) {
-                        readableStartDate = self.$fluro.date.readableEventDate(self.model.event);
-                    }
-
-                    ///////////////////////////////////////
-
                     if (hasEvent) {
+                        readableStartDate = self.$fluro.date.readableEventDate(self.model.event);
                         return readableStartDate ? `${readableStartDate} - ${self.model.event.title}` : undefined;
-                    } else {
+                    } else if (planStartDate) {
+                        readableStartDate = self.$fluro.date.formatDate(planStartDate, 'h:mm ddd D MMM')
                         return readableStartDate ? readableStartDate : undefined;
                     }
+
+
                     break;
             }
         },
@@ -788,7 +796,7 @@ export default {
 .modal-inner {
     .content-edit {
         width: 100%;
-        max-width: 1200px;
+        // max-width: 1200px;
         min-width: 80vw;
     }
 }

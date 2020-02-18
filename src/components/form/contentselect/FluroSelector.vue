@@ -30,6 +30,9 @@ export default {
             selectionMaximum:this.maximum,
         }
     },
+    created() {
+        this.setSelection(this.value);
+    },
     mixins:[FluroSelectionMixin],
     watch: {
         minimum(v) {
@@ -50,13 +53,15 @@ export default {
                 }
             }
         },
-        'value': function() {
+        'value': function(v) {
+
+            // console.log('SET SELECTION', v);
             //Set the value so update the selection
-            this.setSelection(this.value);
+            this.setSelection(v);
         },
         'selection': function(s) {
             var self = this;
-            console.log('Selection is now', s);
+            // console.log('Selection is now', s);
             this.$emit('input', s);
         }
     },

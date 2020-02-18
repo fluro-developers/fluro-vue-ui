@@ -97,7 +97,7 @@ export default {
                 var self = this;
 
                 var definition = self.options.definition;
-                var definitionName = definition ? defindefinition.definitionName : self.options.definitionName;
+                var definitionName = definition ? definition.definitionName : self.options.definitionName;
 
                 self.loading = true;
 

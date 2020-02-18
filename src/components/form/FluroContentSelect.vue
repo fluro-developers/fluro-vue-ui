@@ -58,7 +58,8 @@
         <div class="content-select-search-bar" v-if="canAddValue">
             <div class="content-select-search">
                 <!-- :label="label" -->
-                <v-autocomplete :outline="showOutline" :success="success" :required="required" :error-messages="errorMessages" :hint="hint" :hide-selected="true" @change="selected()" prepend-inner-icon="search" append-icon="" :persistent-hint="true" :placeholder="textPlaceholder" :return-object="true" item-text="title" v-model="candidates" :multiple="true" :loading="loading" :items="results" :search-input.sync="search" flat hide-no-data>
+                <!-- prepend-inner-icon="search" -->
+                <v-autocomplete @focus="$emit('focus')" @blur="$emit('blur')" :outline="showOutline" :success="success" :required="required" :error-messages="errorMessages" :hint="hint" :hide-selected="true" @change="selected()"  append-icon="" :persistent-hint="true" :placeholder="textPlaceholder" :return-object="true" item-text="title" v-model="candidates" :multiple="true" :loading="loading" :items="results" :search-input.sync="search" flat hide-no-data>
                     <template v-slot:item="{ item }">
                         <v-list-tile-avatar class="text-sm-center">
                             <template v-if="item._type == 'persona'">
@@ -87,14 +88,15 @@
                 </v-autocomplete>
             </div>
             <div class="content-select-search-buttons">
-                <v-btn color="primary" block class="mr-1" v-if="canCreate" @click="create()">
-                    Create
+                <v-btn small v-tippy :content="`Create new ${readableSingle}`" color="primary" icon class="ma-0 mr-1" v-if="canCreate" @click="create()">
+                    <fluro-icon icon="plus" />
                 </v-btn>
-                <v-btn block class="" @click="showModal">
-                    Browse
+                <v-btn small v-tippy :content="`Browse for ${readablePlural}`" icon class="ma-0" @click="showModal">
+                    <fluro-icon icon="search" />
                 </v-btn>
             </div>
         </div>
+        <!-- <pre>{{value}} - {{model}}</pre> -->
         <!-- <v-layout row v-if="canAddValue">
             <v-flex grow>
                 <v-autocomplete :hide-selected="true" @change="selected()" prepend-inner-icon="search" append-icon="" :hint="hint" :persistent-hint="true" :placeholder="placeholder" :return-object="true" item-text="title" v-model="candidates" :multiple="true" :loading="loading" :items="results" :search-input.sync="search" flat hide-no-data :label="label">
@@ -211,19 +213,7 @@ export default {
     },
     created() {
 
-        var initialValue = this.value || [];
-        this.selectionMinimum = this.minimum;
-        this.selectionMaximum = this.maximum;
-
-        ////////////////////////
-
-        // if(this.multiple) {
-        if (_.isArray(initialValue)) {
-            this.setSelection(initialValue);
-        } else {
-            // console.log('WHAT IS IS IT IT SHOULD BE AN IBJECT', initialValue.length)
-            this.setSelection([initialValue]);
-        }
+        this.setInitialValue();
 
 
 
@@ -231,6 +221,12 @@ export default {
 
     // <v-input class="no-flex" :success="success" :label="label" :required="required" :error-messages="errorMessages" :hint="field.description">
     computed: {
+        readableSingle() {
+            return this.$fluro.types.readable(this.type)
+        },
+        readablePlural() {
+            return this.$fluro.types.readable(this.type, true)
+        },
         canCreate() {
             var self = this;
             var type = self.type;
@@ -306,6 +302,22 @@ export default {
         // ]),
     },
     methods: {
+        setInitialValue() {
+
+            var initialValue = this.value || [];
+            this.selectionMinimum = this.minimum;
+            this.selectionMaximum = this.maximum;
+
+            ////////////////////////
+
+            // if(this.multiple) {
+            if (_.isArray(initialValue)) {
+                this.setSelection(initialValue);
+            } else {
+                // console.log('WHAT IS IS IT IT SHOULD BE AN IBJECT', initialValue.length)
+                this.setSelection([initialValue]);
+            }
+        },
         create() {
             // console.log('SHOW MODAL', this.$fluro.modal)
             var self = this;
@@ -394,6 +406,10 @@ export default {
         }
     },
     watch: {
+        value(value) {
+            var self = this;
+            self.setInitialValue();
+        },
         'terms': function(searchTerms) {
 
             var self = this;
@@ -456,7 +472,7 @@ export default {
 
 
         return {
-            listLimit:75,
+            listLimit: 75,
             actionIndexes: {},
             selection: [],
             candidates: [],

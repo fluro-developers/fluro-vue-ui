@@ -1,38 +1,24 @@
 <template>
-    <flex-column>
+    <flex-column class="fluro-field-editor">
         <flex-row>
             <flex-column class="fields-list">
-                <flex-column-header>
-                    <div class="palette-title">
-                        <v-layout align-center>
-                            <v-flex>
-                                <strong label>Fields</strong>
-                            </v-flex>
-                        </v-layout>
-                    </div>
-                </flex-column-header>
-                <flex-column-body>
-                    <div class="fields-tree">
-                        <template v-if="hasDefaultFields">
-                            <v-container pt-0 px-0>
-                                <v-layout align-center class="pb-1">
-                                    <v-flex>
-                                        <label>Default Fields</label>
-                                    </v-flex>
-                                    <v-spacer />
-                                    <!-- <v-flex shrink>
-                                        <v-menu :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
-                                            <template v-slot:activator="{ on }">
-                                                <v-btn icon small class="ma-0" v-on="on">
-                                                    <fluro-icon icon="cog" />
-                                                </v-btn>
-                                            </template> 
-                                            <v-container style="background: #fff;" pa-2>
-                                                
-                                            </v-container>
-                                        </v-menu>
-                                    </v-flex> -->
-                                </v-layout>
+                <!-- <flex-column v-if="formMode">
+                    <flex-column-header>
+                        <div class="palette-title">
+                            <v-layout align-center>
+                                <v-flex>
+                                    <strong label>Default Fields</strong>
+                                </v-flex>
+                                <v-spacer />
+                                <v-flex shrink class="text-xs-right">
+                                    <fluro-icon icon="angle-down" />
+                                </v-flex>
+                            </v-layout>
+                        </div>
+                    </flex-column-header>
+                    <flex-column-body>
+                        <v-container>
+                            <template v-if="hasDefaultFields">
                                 <div class="default-field" v-if="askFirstName">
                                     {{requireFirstName ? 'Require First Name' : 'Ask First Name'}}
                                 </div>
@@ -51,30 +37,81 @@
                                 <div class="default-field" v-if="askPhone">
                                     {{requirePhone ? 'Require Phone' : 'Ask Phone'}}
                                 </div>
-                            </v-container>
-                            <div class="pb-1">
-                                <label>Custom Fields</label>
-                            </div>
-                        </template>
-                        <draggable class="field-editor-children" handle=".handle" element="ul" v-model="model" :options="treeOptions">
-                            <fluro-field-editor-item :parent="model" :leaf="model[index]" :selected="field" :select="clicked" @duplicate="duplicateField" @injected="injectField" @deleted="deleteField" v-for="(leaf, index) in model" :key="leaf.guid" />
-                            <!-- <page-tree-item :maxDepth="2" :leaf="site.routes[index]" :select="clickedRoute"   /> -->
-                        </draggable>
+                            </template>
+                        </v-container>
+                    </flex-column-body>
+                </flex-column> -->
+                <!-- <flex-column> -->
+                <flex-column-header>
+                    <div class="palette-title">
+                        <v-layout align-center>
+                            <v-flex>
+                                <strong label>Field Tree</strong>
+                            </v-flex>
+                            <v-flex shrink>
+                                <span class="state-link" @click="expandAll()">
+                                    Expand All
+                                </span>
+                                <span class="state-link" @click="collapseAll()">
+                                    Collapse All
+                                </span>
+                                <!-- </v-flex> -->
+                                <!-- <v-spacer /> -->
+                                <!-- <v-flex shrink class="text-xs-right"> -->
+                                <!-- <fluro-icon icon="angle-down" /> -->
+                                </v-flex>
+                        </v-layout>
                     </div>
+                </flex-column-header>
+                <flex-column-body>
+                    <v-container pa-2>
+                        <div class="pseudo-field" :class="{active:configureDefaults && !field}" @click="showDefaultFieldOptions()">Form Configuration</div>
+                        <draggable class="field-editor-children" handle=".handle" element="ul" @sort="sorted" v-model="model" :options="treeOptions">
+                            <fluro-field-editor-item :mouseover="mouseover" :mouseleave="mouseleave" :parent="model" :leaf="model[index]" :selected="field" :select="clicked" @duplicate="duplicateField" @injected="injectField" @deleted="deleteField" v-for="(leaf, index) in model" :key="leaf.guid" />
+                        </draggable>
+                        <div class="pseudo-field" :class="{active:configurePayment && !field}" @click="showPaymentOptions()">Payment Options</div>
+                    </v-container>
                 </flex-column-body>
+                <!-- </flex-column> -->
+                <!-- <flex-column v-if="formMode">
+                    <flex-column-header>
+                        <div class="palette-title">
+                            <v-layout align-center>
+                                <v-flex>
+                                    <strong label>Payment Fields</strong>
+                                </v-flex>
+                                <v-spacer />
+                                <v-flex shrink class="text-xs-right">
+                                    <fluro-icon icon="angle-down" />
+                                </v-flex>
+                            </v-layout>
+                        </div>
+                    </flex-column-header>
+                    <flex-column-body>
+                        <v-container>
+                            Payment
+                        </v-container>
+                    </flex-column-body>
+                </flex-column> -->
                 <flex-column-footer class="border-top">
                     <v-container class="pa-2" style="background: #fff">
-                        <v-layout>
+                        <v-layout row>
+                            <!-- <v-flex>
+                                <v-btn small class="ma-1" color="primary" block @click="addNewField()">
+                                    Add Field
+                                    <fluro-icon icon="plus" right />
+                                </v-btn>
+                            </v-flex> -->
                             <v-flex>
-                                <v-btn small class="ma-0" color="primary" block @click="addNewField()">
-                                    New Field
+                                <v-btn small class="ma-1" color="primary" block @click="addNewTemplate()">
+                                    Add Field
                                     <fluro-icon icon="plus" right />
                                 </v-btn>
                             </v-flex>
                             <v-spacer />
                             <v-flex>
-                                <v-btn small class="ma-0" block @click="addNewField('group')">
-                                    New Group
+                                <v-btn small class="ma-1" block @click="addNewField('group')">
+                                    Add Group
                                     <fluro-icon icon="folder" right />
                                 </v-btn>
                             </v-flex>
@@ -82,32 +119,54 @@
                     </v-container>
                 </flex-column-footer>
             </flex-column>
-            <flex-column class="field-options" v-if="field">
-                <flex-column-header>
-                    <div class="palette-title">
-                        <v-layout align-center>
-                            <v-flex>
-                                <strong label>{{field.title || 'Untitled field'}}</strong>
-                            </v-flex>
-                            <v-spacer />
-                            <v-flex shrink @click="deselectField()">
-                                <fluro-icon icon="angle-left" />
-                            </v-flex>
-                        </v-layout>
-                    </div>
-                </flex-column-header>
-                <!-- <flex-column-body> -->
-                <fluro-field-edit @reset="resetPreview()" :expressionFields="model" v-model="field" />
-                <!-- <pre>{{field}}</pre> -->
-                <!-- </flex-column-body> -->
-                <!-- <pre>{{field}}</pre> -->
-            </flex-column>
+            <!--  -->
             <flex-column class="preview" v-if="showPreview">
                 <flex-column-header>
                     <div class="palette-title">
                         <v-layout align-center>
                             <v-flex>
                                 <strong label>Form Preview</strong>
+                            </v-flex>
+                            <v-spacer />
+                            <v-flex shrink>
+                                <v-menu :fixed="true" transition="slide-y-transition" offset-y>
+                                    <template v-slot:activator="{ on }">
+                                        <span class="state-link" v-tippy content="Change Preview State" v-on="on">
+                                            State: {{readablePreviewState}}
+                                            <fluro-icon icon="angle-down" />
+                                        </span>
+                                        <!-- <v-btn class="ma-0" small flat >Preview: {{previewState}}</v-btn> -->
+                                    </template>
+                                    <v-card tile>
+                                        <v-list dense>
+                                            <v-list-tile @click="previewState = 'ready'">
+                                                <v-list-tile-content>
+                                                    <v-list-tile-title>
+                                                        Ready for input
+                                                    </v-list-tile-title>
+                                                </v-list-tile-content>
+                                            </v-list-tile>
+                                            <v-list-tile @click="previewState = 'success'">
+                                                <v-list-tile-content>
+                                                    <v-list-tile-title>
+                                                        Success / Thank you message
+                                                    </v-list-tile-title>
+                                                </v-list-tile-content>
+                                            </v-list-tile>
+                                        </v-list>
+                                    </v-card>
+                                </v-menu>
+                            </v-flex>
+                            <v-flex shrink>
+                                <span class="state-link" @click="resetPreview()">
+                                    Reset Form
+                                    <fluro-icon icon="undo" />
+                                </span>
+                                <!-- <v-btn :loading="resetting" @click="resetPreview()" class="ma-0" tiny>
+                                        Reset
+                                        <fluro-icon icon="undo" right />
+                                    </v-btn> -->
+                                <!-- </div> -->
                             </v-flex>
                         </v-layout>
                     </div>
@@ -116,30 +175,40 @@
                     <v-container v-if="resetting">
                         <fluro-page-preloader contain />
                     </v-container>
-                    <v-container v-else>
-                        <constrain sm v-if="formMode">
-                           
-                            <fluro-interaction-form :title="item.title" :definition="fauxDefinition" :paymentIntegration="paymentIntegration" :debugMode="true" v-model="previewModel" ref="previewForm" :fields="model">
-                                <template v-slot:info>
-                                        <h1>{{displayTitle}}</h1>
-                                     <fluro-compile-html :template="publicData.body" :context="item" />
-                                </template>
-                                <template v-slot:success v-if="publicData.thankyou">
-                                    <div v-html="publicData.thankyou" />
-                                </template>
-                            </fluro-interaction-form>
-                        </constrain>
-                        <constrain sm v-else>
-                            <fluro-content-form v-model="previewModel" ref="previewForm" :fields="model" />
-                        </constrain>
-                    </v-container>
+                    <template v-else>
+                        <template sm v-if="formMode">
+                            <div class="form-image" v-if="image">
+                                <fluro-image cover :from="item" :imageWidth="1000" :imageHeight="300" :spinner="true" :item="image" />
+                            </div>
+                            <v-container fluid>
+                                <wrapper sm>
+                                    <constrain sm>
+                                        <fluro-interaction-form @state="stateChanged" :contextField="contextField" :defaultState="previewState" context="builder" :prefill="false" @debug="debugField" :title="item.title" :definition="fauxDefinition" :paymentIntegration="paymentIntegration" :debugMode="true" v-model="previewModel" ref="previewForm" :fields="model">
+                                            <template v-slot:info>
+                                                <h1 margin>{{displayTitle}}</h1>
+                                                <fluro-compile-html class="form-body" :template="publicData.body" :context="item" />
+                                            </template>
+                                            <template v-slot:success v-if="publicData.thankyou">
+                                                <fluro-compile-html class="form-thankyou" :template="publicData.thankyou" :context="item" />
+                                            </template>
+                                        </fluro-interaction-form>
+                                    </constrain>
+                                </wrapper>
+                            </v-container>
+                        </template>
+                        <v-container v-else>
+                            <constrain sm>
+                                <fluro-content-form :recursiveClick="debugField" v-model="previewModel" ref="previewForm" :fields="model" />
+                            </constrain>
+                        </v-container>
+                    </template>
                 </flex-column-body>
-                <flex-column-footer class="border-top">
+                <flex-column-footer class="border-top" v-if="false">
                     <v-container class="pa-2" style="background: #fff">
                         <v-layout>
                             <v-flex>
                                 <v-btn small class="ma-0" block :loading="resetting" @click="resetPreview()">
-                                    Reset Preview
+                                    Reset Form Preview
                                     <fluro-icon icon="undo" right />
                                 </v-btn>
                             </v-flex>
@@ -154,6 +223,62 @@
                     </v-container>
                 </flex-column-footer>
             </flex-column>
+            <flex-column class="field-options" v-if="field || configurePayment || configureDefaults">
+                <template v-if="field">
+                    <flex-column-header>
+                        <div class="palette-title">
+                            <!-- <v-layout align-center> -->
+                            <!-- <v-flex> -->
+                            <strong label>{{field.title || 'Untitled field'}}</strong>
+                            <!-- </v-flex> -->
+                            <!-- <v-spacer />
+                                <v-flex shrink >
+                                    <span class="state-link" @click="deleteSelectedField()">
+                                        Delete field <fluro-icon icon="trash-alt" />
+                                </span>
+                                </v-flex> -->
+                            <!-- </v-layout> -->
+                        </div>
+                    </flex-column-header>
+                    <fluro-field-edit @reset="resetPreview()" @deleted="deleteSelectedField" :expressionFields="model" v-model="field" />
+                </template>
+                <template v-else-if="configurePayment">
+                    <flex-column-header>
+                        <div class="palette-title">
+                            <v-layout align-center>
+                                <v-flex>
+                                    <strong label>Payment Settings</strong>
+                                </v-flex>
+                            </v-layout>
+                        </div>
+                    </flex-column-header>
+                    <flex-column-body>
+                        <slot name="payment" />
+                    </flex-column-body>
+                </template>
+                <template v-else-if="configureDefaults">
+                    <flex-column-header>
+                        <div class="palette-title">
+                            <v-layout align-center>
+                                <v-flex>
+                                    <strong label>Form Configuration</strong>
+                                </v-flex>
+                            </v-layout>
+                        </div>
+                    </flex-column-header>
+                    <flex-column-body>
+                        <slot name="form" />
+                    </flex-column-body>
+                </template>
+                <!-- <template v-else>
+                    <flex-column center>
+                        <v-container fluid style="flex:none" class="text-xs-center">
+                            <p class="muted">Select a field to configure</p>
+                        </v-container>
+                    </flex-column>
+                    
+                </template> -->
+            </flex-column>
         </flex-row>
     </flex-column>
 </template>
@@ -164,6 +289,7 @@ import FluroFieldEdit from './FluroFieldEdit.vue';
 import FluroContentForm from '../form/FluroContentForm.vue';
 import FluroInteractionForm from '../form/FluroInteractionForm.vue';
 import FluroCompileHtml from '../FluroCompileHtml.vue';
+import FieldTemplates from './FieldEditorTemplates';
 
 export default {
     components: {
@@ -191,21 +317,59 @@ export default {
 
         /////////////////////////////
 
-        function recursiveGUID(fields) {
-            _.each(fields, function(field) {
-                if (!field.guid) {
-                    field.guid = self.$fluro.utils.guid();
-                }
-
-                recursiveGUID(field.fields);
-            })
-        }
-
-        /////////////////////////////
-
-        recursiveGUID(self.model);
+        self.recursiveGUID(self.model);
     },
     computed: {
+        allFields() {
+            var self = this;
+
+            var array = [];
+
+            /////////////////////////////////
+
+            function recursiveExpand(fields) {
+                _.each(fields, function(field) {
+
+                    array.push(field);
+                    recursiveExpand(field.fields);
+                })
+            }
+
+            /////////////////////////////////
+
+            recursiveExpand(self.model);
+
+            /////////////////////////////////
+
+            return array;
+        },
+        readablePreviewState() {
+            switch (this.previewState) {
+                case 'ready':
+                    return 'Ready for input'
+                    break;
+                case 'success':
+                    return 'Thank you'
+                    break;
+                default:
+                    return '';
+                    break;
+            }
+        },
+        image() {
+
+            var self = this;
+            var image = _.get(self.publicData, 'mainImage');
+            if (!image || (!image._id && !image.length)) {
+                return;
+            }
+
+            return image;
+        },
+        noImage() {
+            return !this.image;
+        },
+
         displayTitle() {
             var self = this;
             return self.publicData.title || self.item.title;
@@ -312,6 +476,21 @@ export default {
 
             }
         },
+        hasPaymentFields() {
+            var self = this;
+
+            if (self.item.parentType != 'interaction') {
+                return;
+            }
+
+            //Check if we have the defaults turned off
+            if (!self.item.paymentDetails) {
+                return;
+            }
+
+            return (self.item.paymentDetails.required || self.item.paymentDetails.allow)
+
+        },
         hasDefaultFields() {
             var self = this;
 
@@ -347,7 +526,102 @@ export default {
 
         },
     },
+    // watch:{
+    //     'field.maximum':function() {
+
+    //         var currentGUID = this.field.guid;
+
+    //         this.$nextTick(function() {
+    //             if(currentGUID == this.field.guid) {
+
+    //             }
+    //         })
+
+    //     }
+    // },
     methods: {
+        sorted($event) {
+            var self = this;
+            self.$emit('input', self.model)
+        },
+        expandAll() {
+            var self = this;
+
+            _.each(self.allFields, function(field) {
+                if(field.directive == 'embedded' || field.type == 'group') {
+                    self.$set(field, 'collapsed', false)
+                }
+            })
+
+
+        },
+        collapseAll() {
+            var self = this;
+
+            _.each(self.allFields, function(field) {
+                if(field.directive == 'embedded' || field.type == 'group') {
+                    self.$set(field, 'collapsed', true)
+                }
+            })
+
+
+        },
+        stateChanged(value) {
+            this.previewState = value;
+        },
+        deleteSelectedField() {
+            var self = this;
+
+            var selectedField = self.field;
+
+            self.$fluro.confirm(`Delete Field`, `Are you sure you want to delete '${selectedField.title}'?`, {
+                    confirmColor: 'error',
+                    confirmText: 'Confirm Delete',
+                })
+                .then(function(res) {
+                    var { parent, index } = self.findSelectedParent();
+                    self.deleteField(self.field, parent);
+                })
+
+
+
+
+        },
+        recursiveGUID(fields) {
+            var self = this;
+
+            _.each(fields, function(field) {
+                if (!field.guid) {
+                    field.guid = self.$fluro.utils.guid();
+                }
+
+                self.recursiveGUID(field.fields);
+            })
+        },
+        showDefaultFieldOptions() {
+            var self = this;
+            self.field = null;
+            self.configurePayment = false;
+            self.configureDefaults = true;
+        },
+        showPaymentOptions() {
+            var self = this;
+            self.field = null;
+            self.configureDefaults = false;
+            self.configurePayment = true;
+        },
+        debugField(field) {
+            var self = this;
+
+            //Find the field in our fields list
+            var found = self.findField(field);
+            if (!found || !found.parent) {
+                return;
+            }
+
+            self.field = field;
+
+        },
         toggleDefaultFields() {
             var self = this;
             self.item.data.allowAnonymous = true;
@@ -357,6 +631,7 @@ export default {
             var self = this;
             self.field = null;
         },
+
         resetPreview() {
             var self = this;
 
@@ -368,6 +643,28 @@ export default {
 
 
         },
+        getFieldTemplate() {
+
+            var self = this;
+
+            //////////////////////////////////
+
+            return new Promise(function(resolve, reject) {
+
+
+
+
+                self.$fluro.options(FieldTemplates, 'Add a field')
+                    .then(function(selected) {
+                        var field = JSON.parse(JSON.stringify(selected.field));
+                        field.guid = self.$fluro.utils.guid();
+                        self.recursiveGUID(field.fields);
+                        resolve(field);
+
+                    })
+                    .catch(reject);
+            });
+        },
         getNewField(type) {
             var self = this;
 
@@ -377,12 +674,11 @@ export default {
                 case 'group':
 
                     field = {
-                        title: 'New Group',
-                        key: 'newgroup',
+                        title: '',
+                        key: '',
                         type: 'group',
                         fields: [],
-                        _activate: true,
-                        guid: self.$fluro.utils.guid(),
+
                         minimum: 1,
                         maximum: 1,
                         askCount: 1,
@@ -393,14 +689,13 @@ export default {
                 default:
 
                     field = {
-                        title: 'New Field',
+                        title: '',
                         key: '',
                         type: 'string',
                         directive: 'input',
                         minimum: 0,
                         maximum: 1,
-                        _activate: true,
-                        guid: self.$fluro.utils.guid(),
+
                         params: {},
                         defaultValues: [],
                         defaultReferences: [],
@@ -409,43 +704,82 @@ export default {
                     break;
             }
 
+            //Add a unique ID
+            field.guid = self.$fluro.utils.guid();
+
 
             return field;
         },
-        addNewField(type) {
+        addNewTemplate() {
+            var self = this;
+
+            self.getFieldTemplate()
+                .then(function(field) {
+                    self.addNewField(null, field);
+                })
+
+        },
+        addNewField(type, newField) {
             var self = this;
 
 
-            var newField = self.getNewField(type);
+            if (!newField) {
+                newField = self.getNewField(type);
+            }
+
+            ///////////////////////////////////////
+
+            newField.isNew = true;
+
+            ///////////////////////////////////////
+
 
             //If there is no field selected
             //we just add the field in at the end of the current form
             if (!self.field) {
-                self.model.push(newField)
+
+                //If we have the form configuration bit selected
+                if (self.configureDefaults) {
+                    //We want to add the field to the top of the list
+                    self.model.unshift(newField)
+                } else {
+                    //Add to the bottom of the list
+                    self.model.push(newField)
+                }
+
                 self.field = newField;
                 return;
             }
 
             ///////////////////////////////////////
 
-            //Check if it's a container field
-            if (self.field.type == 'group' || self.field.directive == 'embedded') {
-                if (!self.field.fields) {
-                    self.$set(self.field, 'fields', []);
-                }
 
-                //Add the new field into this container
-                self.field.fields.push(newField);
-                //And select the field
-                self.field = newField;
-                return;
+            if (newField.directive == 'embedded' && self.field.directive == 'embedded') {
+                //It's unlikely we want to embed an object inside another object
+            } else {
+
+                //Check if it's a container field
+                if (self.field.type == 'group') {
+                    // if (self.field.type == 'group' || self.field.directive == 'embedded') {
+                    if (!self.field.fields) {
+                        self.$set(self.field, 'fields', []);
+                    }
+
+                    //Add the new field into this container
+                    self.field.fields.push(newField);
+                    //And select the field
+                    self.field = newField;
+                    return;
+                }
             }
 
             ///////////////////////////////////////
 
             //Here we want to find where the current selected field is
             //so we can add it in underneath the current selected field
+            console.log('CHECK TO GET PARENT?')
             var { parent, index } = self.findSelectedParent();
+            console.log('GOT PARENT?', parent);
 
             if (!parent) {
                 parent = self.model;
@@ -477,11 +811,30 @@ export default {
             var self = this;
             self.field = item;
         },
+
+        mouseover(item) {
+            // console.log('Select', item);
+            var self = this;
+            self.contextField = item;
+        },
+        mouseleave(item) {
+            // console.log('Select', item);
+            var self = this;
+            if (self.contextField == item) {
+                self.contextField = null;
+            }
+        },
+
         findSelectedParent() {
             var self = this;
+            var needle = self.field;
+            return self.findField(needle);
+        },
+        findField(needle) {
+            var self = this;
+
             var parent;
             var index = -1;
-            var needle = self.field;
 
             ///////////////////////////////////////
 
@@ -514,7 +867,6 @@ export default {
                 }
             }
 
-            ///////////////////////////////////////
 
             return { parent, index };
         },
@@ -528,6 +880,8 @@ export default {
             var index = parent.indexOf(field);
             var copy = JSON.parse(JSON.stringify(field));
             copy.guid = self.$fluro.utils.guid();
+            copy.title = '';
+            copy.key = '';
             parent.splice(index + 1, 0, copy);
 
             //Seld the first field
@@ -541,7 +895,13 @@ export default {
         },
         deleteField(field, parent) {
 
-            console.log('PARENT', parent)
+            var self = this;
+
+            // //Deselect if we have it currently selected
+            // if (self.field == field) {
+            self.field = null
+            // }
+            // console.log('PARENT', parent)
             // var parent = this.findFieldParent(field);
 
             if (!parent) {
@@ -551,15 +911,14 @@ export default {
             var index = parent.indexOf(field);
             parent.splice(index, 1);
 
-            //Deselect if we have it currently selected
-            if (this.field == field) {
-                this.field = null
-            }
+
+
 
 
         },
     },
     data() {
+
         return {
             treeOptions: {
                 animation: 1,
@@ -567,21 +926,64 @@ export default {
                 // disabled: !this.editable,
                 ghostClass: 'ghost'
             },
+            previewState: 'ready',
+            configurePayment: false,
+            configureDefaults: false,
             model: this.value,
             resetting: false,
             previewModel: {},
             field: null,
+            contextField: null,
         }
     }
 }
 </script>
 <style lang="scss" scoped>
+.fluro-field-editor {
+    min-height: 50vh;
+}
+
+.state-link {
+    margin-left: 5px;
+    display: inline-block;
+    border-radius: 3px;
+    padding: 0 5px;
+    line-height: 16px;
+    height: 16px;
+    cursor: pointer;
+    ;
+    @extend .no-select;
+    letter-spacing: 0;
+    text-transform: none;
+    ;
+
+    &:hover {
+        background: rgba(#000, 0.1);
+    }
+}
+
 .fields-list {
     width: 300px;
-
     flex: none;
+    overflow: hidden;
     background: #eee;
-    @extend .border-right;
+    border-right: 1px solid #ddd;
+    @extend .no-select;
+}
+
+.pseudo-field {
+    padding: 5px;
+    border-radius: 3px;
+    background: #fff;
+    border: 1px solid rgba(#000, 0.1);
+    margin: 0 0 4px;
+    cursor: pointer;
+    font-weight: 500;
+
+    &.active {
+        background: $primary;
+        color: #fff;
+    }
 }
 
 .default-field {
@@ -590,23 +992,88 @@ export default {
     margin-bottom: 2px;
     border-radius: 3px;
     background: #eee;
+    font-weight: 500;
+    cursor: pointer;
+    ;
+
+    &:hover {
+        background: #fafafa;
+    }
 }
 
 .palette-title {
     text-transform: uppercase;
-    ;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.05em;
     font-weight: 500;
-    padding: 5px;
+    padding: 8px;
     font-size: 10px;
     @extend .border-bottom;
     background: #eee;
+    color: rgba(#000, 0.5);
 }
 
 
+.mini-switch {
+    border-radius: 100px;
+    line-height: 10px;
+    text-transform: uppercase;
+    height: 19px;
+    font-size: 9px;
+    width: 50px;
+    font-weight: 500;
+    position: relative;
+    line-height: 19px;
+    overflow: hidden;
+    background: #eee;
+    border: 1px solid #ddd;
+    color: #ddd;
+    background: rgba(#000, 0.1);
+    box-shadow: inset 0 1px 2px rgba(#000, 0.1);
+
+
+    .on,
+    .off {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        text-align: center;
+        ;
+
+    }
+
+    .on {
+        transform: translateX(100%);
+    }
+
+    .off {
+        transform: translateX(0);
+    }
+
+
+
+    &.active {
+        background: none;
+        box-shadow: none;
+        color: #999;
+        border: 1px solid #999;
+
+        .on {
+            transform: translateX(0);
+        }
+
+        .off {
+            transform: translateX(100%);
+        }
+    }
+}
 
 .preview {
-    // border: 2px solid #ddd;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
     background: #fff;
     min-width: 300px;
     flex: 2;
@@ -629,6 +1096,7 @@ export default {
     min-width: 380px;
     flex: 1;
     background: #fafafa;
-    @extend .border-right;
+    border-left: 1px solid #ddd;
+
 }
 </style>

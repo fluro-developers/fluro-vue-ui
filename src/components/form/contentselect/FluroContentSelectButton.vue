@@ -3,6 +3,7 @@
         <v-btn :small="small" :large="large" :color="color" :block="block" class="pill mx-0" @click.native="showModal">
             <span>{{selectionSummary}}</span>
         </v-btn>
+        <!-- <pre>{{selector.selection}}</pre> -->
     </div>
 </template>
 <script>
@@ -120,6 +121,7 @@ export default {
 
 
         var defaultValue = self.singleValue ? [self.value] : self.value;
+
         var selector = new SelectionManager({
             propsData: {
                 minimum: self.minimum,

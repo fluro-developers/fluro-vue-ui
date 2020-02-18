@@ -19,7 +19,9 @@
                         <strong>{{model.name}}</strong>
                     </template>
                     <template v-slot:edit="{props, blur, focus}">
-                        <input block @focus="focus($event)" @input="update" v-model="model.name" @keyup.enter="blur" @blur="blur" />
+                        
+                        <input class="input" @focus="focus($event)" @input="update" v-model="model.name" @keyup.enter="blur" @blur="blur" />
+                    
                     </template>
                 </fluro-inline-edit>
                 <div class="wrap">
@@ -32,7 +34,8 @@
                         </div>
                         </template>
                         <template v-slot:edit="{props, blur, focus}">
-                            <input block @focus="focus($event)" placeholder="Add more details to this task" @input="update" v-model="model.description" @keyup.enter="blur" @blur="blur" />
+                            <!-- <fluro-editor @focus="focus($event)" @keyup.enter="blur" @blur="blur" @input="update" v-model="model.description"/> -->
+                            <textarea class="input" @focus="focus($event)" placeholder="Add more details to this task" @input="update" v-model="model.description" @keyup.enter="blur" @blur="blur" />
                         </template>
                     </fluro-inline-edit>
                 </div>
@@ -194,6 +197,14 @@ export default {
     border-radius: 3px;
     font-size: 1.1em;
     cursor: pointer;
+
+    .input {
+        display: block;
+        padding:5px;
+        background: #fff;
+        border:1px solid $primary;
+        width:100%;
+    }
 
 
     .task-icon {

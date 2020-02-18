@@ -130,6 +130,35 @@ import { FilterService } from 'fluro';
 
 /////////////////////////////////////////
 
+import Vue from 'vue';
+let EventTitleCell = Vue.extend({
+    props: {
+        'row': {
+            type: Object,
+        },
+        'column': {
+            type: Object,
+        },
+        'data': {
+            // type: Object,
+        },
+    },
+    template: `
+    <div >
+        <strong>{{row.title}}</strong>
+        <div>
+            <em class="text-muted small">{{row | readableEventDate}}</em>
+            <div v-if="row.firstLine" ><em class="text-muted small">{{row.firstLine | limit(100)}}</em> </div>
+            <div v-if="row.rooms && row.rooms.length"  class="text-muted small" ><strong>Rooms:</strong> <em>{{row.rooms | comma('title')}}</em></div>
+        </div>
+
+       
+    </div>`,
+});
+
+
+/////////////////////////////////////////
+
 export default {
     props: {
         options: {
@@ -156,13 +185,13 @@ export default {
         var statuses = ['active', 'draft'];
 
         var basicType = this.$fluro.types.parentType(this.options.type) || this.options.type;
-        switch(basicType) {
+        switch (basicType) {
             case 'plan':
                 statuses.push('template')
-            break;
+                break;
         }
 
-        console.log('PLAN STATUSES',basicType, statuses)
+        console.log('PLAN STATUSES', basicType, statuses)
 
         var initialFilter = this.options.filter || {
             operator: 'and',
@@ -179,7 +208,7 @@ export default {
         /////////////////////////////////////////////
 
         console.log('INITIAL FILTER', this.options.filter, initialFilter);
-        
+
         var defaultFilter = JSON.parse(JSON.stringify(initialFilter));
 
         ///////////////////////////////////////
@@ -224,7 +253,7 @@ export default {
     },
     computed: {
         retrieveAllDefinitions() {
-            return this.options.allDefinitions || this.selector.allDefinitions 
+            return this.options.allDefinitions || this.selector.allDefinitions
         },
         computedFilterConfig() {
 
@@ -233,8 +262,8 @@ export default {
 
             if (lockedFilter) {
                 return {
-                    operator:'and',
-                    filters:[basicFilterConfig, lockedFilter],
+                    operator: 'and',
+                    filters: [basicFilterConfig, lockedFilter],
                 }
             }
 
@@ -259,7 +288,7 @@ export default {
             var count = this.selectionManager.selection.length;
 
             if (!count) {
-                return this.options.title ? this.options.title : (this.selector.maximum == 1 ?  `Select ${this.title}` : `Select ${this.plural}`);
+                return this.options.title ? this.options.title : (this.selector.maximum == 1 ? `Select ${this.title}` : `Select ${this.plural}`);
             }
 
             if (count == 1) {
@@ -315,6 +344,13 @@ export default {
                         { title: 'Title', key: 'title', renderer: TitleCell },
                         { title: 'Width', key: 'width', sortType: 'number' },
                         { title: 'Height', key: 'height', sortType: 'number' },
+                    ]);
+                    break;
+                case 'event':
+                    array = array.concat([
+                        { title: '', key: '_id', renderer: TypeImageCell, shrink: true },
+                        { title: 'Title', key: 'title', renderer: EventTitleCell, additionalFields: ['startDate', 'endDate', 'firstLine'] },
+
                     ]);
                     break;
                 default:

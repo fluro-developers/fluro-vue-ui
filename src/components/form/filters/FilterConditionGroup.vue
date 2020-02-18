@@ -123,7 +123,6 @@
                 Add {{model.filters.length ? 'Another' : ''}} Rule
                 <fluro-icon right icon="plus" />
             </v-btn>
-
             <!-- <pre>{{model}}</pre> -->
         </v-container>
     </div>
@@ -533,7 +532,22 @@ export default {
                 })
             },
         },
+        groupNames:{
+            get() {
+                var self = this;
+                return Promise.resolve([]);
 
+                // if (!self.isContactType) {
+                //     return Promise.resolve([]);
+                // }
+                // // return new Promise(function(resolve, reject) {
+
+                // return self.$fluro.types.subTypes('interaction')
+                // // .then(resolve)
+                // // .catch(reject);
+                // // })
+            },
+        },
         interactionTypes: {
             get() {
                 var self = this;
@@ -544,6 +558,22 @@ export default {
                 // return new Promise(function(resolve, reject) {
 
                 return self.$fluro.types.subTypes('interaction')
+                // .then(resolve)
+                // .catch(reject);
+                // })
+            },
+        },
+
+        rosterTypes: {
+            get() {
+                var self = this;
+
+                if (!self.isContactType) {
+                    return Promise.resolve([]);
+                }
+                // return new Promise(function(resolve, reject) {
+
+                return self.$fluro.types.subTypes('roster')
                 // .then(resolve)
                 // .catch(reject);
                 // })
@@ -702,9 +732,9 @@ export default {
                     .value();
 
 
-                    
 
-                   
+
+
 
                 //////////////////////////////////
 
@@ -745,10 +775,35 @@ export default {
 
                 var eventDefinitionOptions = [];
                 var eventTrackOptions = [];
+                var rosterDefinitionOptions = [];
                 var interactionDefinitionOptions = [];
+                var postDefinitionOptions = [];
+                var groupNameOptions = [];
+
+                groupNameOptions = groupNameOptions.concat(_.map(self.groupNames, function(group) {
+                    return {
+                        text: group.title,
+                        value: group.title,
+                    }
+                }))
 
 
                 interactionDefinitionOptions = interactionDefinitionOptions.concat(_.map(self.interactionTypes, function(definition) {
+                    return {
+                        text: definition.title,
+                        value: definition.definitionName,
+                    }
+                }))
+
+                postDefinitionOptions = postDefinitionOptions.concat(_.map(self.postTypes, function(definition) {
+                    return {
+                        text: definition.title,
+                        value: definition.definitionName,
+                    }
+                }))
+
+
+                rosterDefinitionOptions = rosterDefinitionOptions.concat(_.map(self.rosterTypes, function(definition) {
                     return {
                         text: definition.title,
                         value: definition.definitionName,
@@ -770,7 +825,7 @@ export default {
                         value: definition.definitionName,
                     }
                 }))
-              
+
 
                 injectFields.push({
                     title: 'Attendance > Total times checked in',
@@ -808,7 +863,7 @@ export default {
                             options: eventTrackOptions,
                         },
                         {
-                            title: 'Definition',
+                            title: 'Event Type',
                             key: 'definition',
                             maximum: 0,
                             minimum: 0,
@@ -816,6 +871,15 @@ export default {
                             directive: 'select',
                             options: eventDefinitionOptions,
                         },
+                        // {
+                        //     title: 'Group / Room name',
+                        //     key: 'groupNames',
+                        //     maximum: 0,
+                        //     minimum: 0,
+                        //     type: 'string',
+                        //     directive: 'select',
+                        //     options: groupNameOptions,
+                        // },
                     ],
                 });
 
@@ -825,7 +889,7 @@ export default {
                 injectFields.push({
                     title: 'Rostered Assignments > Total times rostered',
                     // key: '_checkins[]',
-                    key: '_assignments.length',
+                    key: '_assignments._raw.length',
                     maximum: 1,
                     minimum: 0,
                     type: 'integer',
@@ -845,6 +909,19 @@ export default {
                             minimum: 0,
                             type: 'string',
                             directive: 'select',
+                            options: [{
+                                value: '',
+                                name: 'None',
+                            }, {
+                                value: 'confirmed',
+                                name: 'Confirmed',
+                            }, {
+                                value: 'denied',
+                                name: 'Declined',
+                            }, {
+                                value: 'unknown',
+                                name: 'Unknown',
+                            }],
                         },
                         {
                             title: 'Roster Type',
@@ -853,14 +930,16 @@ export default {
                             minimum: 0,
                             type: 'string',
                             directive: 'select',
+                            options: rosterDefinitionOptions,
                         },
                         {
-                            title: 'Roster Type',
-                            key: 'rosterDefinition',
+                            title: 'Event Type',
+                            key: 'eventDefinition',
                             maximum: 1,
                             minimum: 0,
                             type: 'string',
                             directive: 'select',
+                            options: eventDefinitionOptions,
                         },
                         {
                             title: 'Date',
@@ -935,8 +1014,7 @@ export default {
                     minimum: 0,
                     type: 'integer',
                     subfieldTitle: 'That matches criteria...',
-                    subfields: [
-                        {
+                    subfields: [{
                             title: 'Send Date',
                             key: 'date',
                             maximum: 1,
@@ -949,28 +1027,27 @@ export default {
                             maximum: 1,
                             minimum: 0,
                             type: 'string',
-                            directive:'select',
-                            options: [
-                            {
-                                text:'Unopened',
-                                value:'sent',
-                            },
-                            {
-                                text:'Opened',
-                                value:'open',
-                            },
-                            {
-                                text:'Clicked',
-                                value:'click',
-                            },
-                            {
-                                text:'Unsubscribed',
-                                value:'unsubscribe',
-                            },
-                            {
-                                text:'Bounced / Failed',
-                                value:'error',
-                            },
+                            directive: 'select',
+                            options: [{
+                                    text: 'Unopened',
+                                    value: 'sent',
+                                },
+                                {
+                                    text: 'Opened',
+                                    value: 'open',
+                                },
+                                {
+                                    text: 'Clicked',
+                                    value: 'click',
+                                },
+                                {
+                                    text: 'Unsubscribed',
+                                    value: 'unsubscribe',
+                                },
+                                {
+                                    text: 'Bounced / Failed',
+                                    value: 'error',
+                                },
                             ],
                         },
                         {
@@ -979,16 +1056,15 @@ export default {
                             maximum: 0,
                             minimum: 0,
                             type: 'string',
-                            directive:'select',
-                            options: [
-                            {
-                                text:'Promotional',
-                                value:'promotional',
-                            },
-                            {
-                                text:'Transactional',
-                                value:'transactional',
-                            },
+                            directive: 'select',
+                            options: [{
+                                    text: 'Promotional',
+                                    value: 'promotional',
+                                },
+                                {
+                                    text: 'Transactional',
+                                    value: 'transactional',
+                                },
                             ],
                         },
                         {
@@ -997,9 +1073,9 @@ export default {
                             maximum: 0,
                             minimum: 0,
                             type: 'reference',
-                            typeSelect:'mailout',
+                            typeSelect: 'mailout',
 
-                            
+
                         },
                     ],
                 });
@@ -1012,7 +1088,7 @@ export default {
                     maximum: 1,
                     minimum: 0,
                     type: 'reference',
-                    typeSelect:'policy',
+                    typeSelect: 'policy',
                 });
 
                 injectFields.push({
@@ -1021,43 +1097,49 @@ export default {
                     maximum: 1,
                     minimum: 0,
                     type: 'string',
-                    directive:'select',
-                    options:[
-                    {
-                        text:'None / No Access',
-                        value:'none',
-                    },
-                    {
-                        text:'Awaiting Collection',
-                        value:'waiting',
-                    },
-                    {
-                        text:'Connected',
-                        value:'connected',
-                    },
+                    directive: 'select',
+                    options: [{
+                            text: 'None / No Access',
+                            value: 'none',
+                        },
+                        {
+                            text: 'Awaiting Collection',
+                            value: 'waiting',
+                        },
+                        {
+                            text: 'Connected',
+                            value: 'connected',
+                        },
                     ]
                 });
 
-                
+
 
 
 
 
                 injectFields.push({
-                    title: 'Posts / Notes > Total linked posts',
-                    key: '_posts.length',
+                    title: 'Posts and Notes > Total linked posts',
+                    key: '_posts.all.length',
                     maximum: 1,
                     minimum: 0,
                     type: 'integer',
                     subfieldTitle: 'Where post matches...',
-                    subfields: [    
+                    subfields: [
                         {
-                            title: 'Date',
+                            title: 'Created Date',
                             key: 'created',
                             maximum: 1,
                             minimum: 0,
                             type: 'date',
                         },
+                        // {
+                        //     title: 'Updated Date',
+                        //     key: 'updated',
+                        //     maximum: 1,
+                        //     minimum: 0,
+                        //     type: 'date',
+                        // },
                         {
                             title: 'Realms',
                             key: 'realms',
@@ -1068,13 +1150,13 @@ export default {
                             _discriminatorDefinition: 'realm',
                         },
                         {
-                            title: 'Definition',
+                            title: 'Post Type',
                             key: 'definition',
                             maximum: 0,
                             minimum: 0,
                             type: 'string',
                             directive: 'select',
-                            // options: interactionDefinitionOptions,
+                            options: postDefinitionOptions,
                         },
                     ],
                 });
@@ -1619,7 +1701,7 @@ export default {
             } else {
 
                 // var definitionName = _.get(self.definition, 'definitionName');
-                switch(self.type) {
+                switch (self.type) {
                     case 'photo':
 
                         injectFields.push({
@@ -1645,9 +1727,9 @@ export default {
                             minimum: 0,
                             type: 'string',
                         });
-                    break;
+                        break;
                 }
-                
+
             }
 
 

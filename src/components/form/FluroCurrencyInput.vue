@@ -75,6 +75,9 @@ export default {
         outline:{
             type:Boolean,
         },
+        'hideSuffix':{
+            type:Boolean,
+        },
         'value': {
             type: Number,
             default() {
@@ -84,7 +87,7 @@ export default {
         'min': {
             type: Number,
             default() {
-                return 5;
+                return 0;
             }
         },
         'max': {
@@ -97,7 +100,11 @@ export default {
 
         },
         suffix() {
-            return this.currency.toUpperCase();
+            if(this.hideSuffix) {
+                return;
+            }
+            
+            return String(this.currency || '').toUpperCase();
         },
     },
     data() {

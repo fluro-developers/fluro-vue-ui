@@ -4,297 +4,234 @@
             <fluro-page-preloader contain />
         </template>
         <template v-else>
-            <tabset :justified="true">
-                <tab heading="Form Fields">
-                    <!-- <flex-column-header>
-                    <v-container pa-2>
-                        <strong>Form Builder</strong>
-                    </v-container>
-                </flex-column-header> -->
-                    <fluro-field-editor v-model="model.fields" :item="model" />
-                    <!-- <field-editor ng-model="item.data.integrationPublicFields"></field-editor> -->
-                </tab>
-                <tab heading="Configuration">
-                    <flex-column-body style="background: #fafafa;">
-                        <v-container grid-list-xl>
-                            <constrain sm>
-                                <v-layout>
-                                    <v-flex xs12 sm6>
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />
-                                    </v-flex>
-                                    <v-flex xs12 sm6>
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.plural" v-model="model" />
-                                    </v-flex>
-                                </v-layout>
-                                <!-- <v-text-field :outline="showOutline" :success="success" :required="required" label="Definition Name" v-model="definitionName" hint="This is a unique key to store this field's data in the database" :persistent-hint="true" /> -->
-                                <template v-if="!model._id">
-                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.definitionName" v-model="model" />
-                                    <template v-if="lockedSubType">
-                                        <v-input class="no-flex">
-                                            <v-label>Extends Type</v-label>
-                                            <div>
-                                                <em class="small">{{definition.plural}} always extend {{lockedSubType | definitionTitle(true)}}</em>
-                                            </div>
-                                        </v-input>
-                                    </template>
-                                    <template v-else>
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.parentType" v-model="model" />
-                                    </template>
-                                </template>
-                                <template>
-                                    <fluro-panel>
-                                        <fluro-panel-body>
-                                            <v-layout>
-                                                <v-flex xs12 sm6>
-                                                    <div class="form-group">
-                                                        <label>Definition Name</label>
-                                                        <div>{{model.definitionName}}</div>
+            <tabset v-model="tabIndex" :justified="true">
+                <template v-if="isForm">
+                    <tab heading="Form Fields">
+                        <fluro-field-editor v-model="model.fields" :item="model">
+                            <template v-slot:form>
+                                <v-container>
+                                    <constrain sm>
+                                        <fluro-panel margin>
+                                            <fluro-panel-title>
+                                                <strong>Configuration</strong>
+                                            </fluro-panel-title>
+                                            <fluro-panel-body>
+                                                <v-layout>
+                                                    <v-flex xs12 sm6>
+                                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />
+                                                    </v-flex>
+                                                    <v-flex xs12 sm6>
+                                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.plural" v-model="model" />
+                                                    </v-flex>
+                                                </v-layout>
+                                                <template v-if="!model._id">
+                                                    <div v-show="showDefinitionName">
+                                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.definitionName" v-model="model" />
                                                     </div>
-                                                </v-flex>
-                                                <v-flex xs12 sm6>
-                                                    <div class="form-group">
-                                                        <label>Extends type</label>
-                                                        <div>{{model.parentType | definitionTitle}}</div>
-                                                    </div>
-                                                </v-flex>
-                                            </v-layout>
-                                        </fluro-panel-body>
-                                    </fluro-panel>
-                                </template>
-                                <!--  <div class="form-group">
-                            <label><i class="fa" ng-class="{'fa-unlock':item.privacy == 'public', 'fa-lock':item.privacy == 'secure'}"></i> Security / Privacy</label>
-                            <select class="form-control" ng-model="item.privacy">
-                                <option value="secure">Secure</option>
-                                <option value="public">Public</option>
-                            </select>
-                            <p class="help-block" ng-if="item.privacy == 'secure'">Only users and applications with the 'submit {{item.definitionName}}' or 'create {{item.definitionName}}' permission can submit these forms</p>
-                            <p class="help-block" ng-if="item.privacy == 'public'">Anyone can submit this interaction form without needing explicit 'submit' or 'create' permissions</p>
-                        </div>
-
-
-                         -->
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.privacy" v-model="model" />
-                            </constrain>
-                        </v-container>
-                    </flex-column-body>
-                </tab>
-                <tab :heading="`${definition.title} Information`" v-if="definition && definition.definitionName != 'form'">
-                    <flex-column-body style="background: #fafafa;">
-                        <v-container>
-                            <constrain sm>
-                                <fluro-content-form :options="definitionFormOptions" v-model="model.data" :fields="definition.fields" />
-                            </constrain>
-                        </v-container>
-                    </flex-column-body>
-                </tab>
-                <template v-if="model.parentType == 'interaction'">
-                    <tab heading="Form Settings">
-                        <flex-column-body style="background: #fafafa;">
-                            <v-container>
-                                <constrain sm>
-                                    <fluro-panel margin v-if="definition">
-                                        <fluro-panel-title>
-                                            <strong>{{definition.title}} Information</strong>
-                                        </fluro-panel-title>
-                                        <fluro-panel-body>
-                                            <fluro-content-form :options="definitionFormOptions" v-model="model.data" :fields="definition.fields" />
-                                        </fluro-panel-body>
-                                    </fluro-panel>
-                                    <fluro-panel margin>
-                                        <fluro-panel-title>
-                                            <strong>Contact Creation</strong>
-                                        </fluro-panel-title>
-                                        <fluro-panel-body>
+                                                </template>
+                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.privacy" v-model="model" />
+                                            </fluro-panel-body>
+                                        </fluro-panel>
+                                        <fluro-panel margin>
+                                            <fluro-panel-title>
+                                                <strong>Contact Creation</strong>
+                                            </fluro-panel-title>
+                                            <fluro-panel-body>
+                                                <fluro-content-form v-model="model.data" :fields="dataFields">
+                                                    <template v-slot:form="{formFields, fieldHash, model, update, options}">
+                                                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.allowAnonymous" v-model="model" />
+                                                        <template v-if="!model.allowAnonymous && !model.disableDefaultFields">
+                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.identifier" v-model="model" />
+                                                        </template>
+                                                    </template>
+                                                </fluro-content-form>
+                                            </fluro-panel-body>
+                                        </fluro-panel>
+                                        <fluro-panel margin>
+                                            <fluro-panel-title>
+                                                <strong>Optional Fields</strong>
+                                            </fluro-panel-title>
                                             <fluro-content-form v-model="model.data" :fields="dataFields">
                                                 <template v-slot:form="{formFields, fieldHash, model, update, options}">
-                                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.allowAnonymous" v-model="model" />
-                                                    <template v-if="!model.allowAnonymous && !model.disableDefaultFields">
-                                                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.identifier" v-model="model" />
+                                                    <template v-if="model.allowAnonymous">
+                                                        <div class="field-row">
+                                                            <v-layout align-center>
+                                                                <v-flex xs4>
+                                                                    <v-label>First Name</v-label>
+                                                                </v-flex>
+                                                                <v-flex xs4>
+                                                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.askFirstName" v-model="model" />
+                                                                </v-flex>
+                                                                <v-flex xs4>
+                                                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.requireFirstName" v-model="model" />
+                                                                </v-flex>
+                                                            </v-layout>
+                                                        </div>
+                                                        <div class="field-row">
+                                                            <v-layout align-center>
+                                                                <v-flex xs4>
+                                                                    <v-label>Last Name</v-label>
+                                                                </v-flex>
+                                                                <v-flex xs4>
+                                                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.askLastName" v-model="model" />
+                                                                </v-flex>
+                                                                <v-flex xs4>
+                                                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.requireLastName" v-model="model" />
+                                                                </v-flex>
+                                                            </v-layout>
+                                                        </div>
+                                                        <div class="field-row">
+                                                            <v-layout align-center>
+                                                                <v-flex xs4>
+                                                                    <v-label>Email Address</v-label>
+                                                                </v-flex>
+                                                                <v-flex xs4>
+                                                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.askEmail" v-model="model" />
+                                                                </v-flex>
+                                                                <v-flex xs4>
+                                                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.requireEmail" v-model="model" />
+                                                                </v-flex>
+                                                            </v-layout>
+                                                        </div>
+                                                        <div class="field-row">
+                                                            <v-layout align-center>
+                                                                <v-flex xs4>
+                                                                    <v-label>Phone Number</v-label>
+                                                                </v-flex>
+                                                                <v-flex xs4>
+                                                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.askPhone" v-model="model" />
+                                                                </v-flex>
+                                                                <v-flex xs4>
+                                                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.requirePhone" v-model="model" />
+                                                                </v-flex>
+                                                            </v-layout>
+                                                        </div>
+                                                        <div class="field-row">
+                                                            <v-layout align-center>
+                                                                <v-flex xs4>
+                                                                    <v-label>Gender</v-label>
+                                                                </v-flex>
+                                                                <v-flex xs4>
+                                                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.askGender" v-model="model" />
+                                                                </v-flex>
+                                                                <v-flex xs4>
+                                                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.requireGender" v-model="model" />
+                                                                </v-flex>
+                                                            </v-layout>
+                                                        </div>
                                                     </template>
+                                                    <div class="field-row">
+                                                        <v-layout align-center>
+                                                            <v-flex xs4>
+                                                                <v-label>Date of Birth</v-label>
+                                                            </v-flex>
+                                                            <v-flex xs4>
+                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.askDOB" v-model="model" />
+                                                            </v-flex>
+                                                            <v-flex xs4>
+                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.requireDOB" v-model="model" />
+                                                            </v-flex>
+                                                        </v-layout>
+                                                    </div>
+                                                    <fluro-panel-body class="border-top" v-if="model.allowAnonymous">
+                                                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.disableBestGuess" v-model="model" />
+                                                    </fluro-panel-body>
                                                 </template>
                                             </fluro-content-form>
-                                        </fluro-panel-body>
-                                    </fluro-panel>
-                                    <fluro-panel margin>
-                                        <fluro-panel-title>
-                                            <strong>Optional Fields</strong>
-                                        </fluro-panel-title>
-                                        <fluro-content-form v-model="model.data" :fields="dataFields">
-                                            <template v-slot:form="{formFields, fieldHash, model, update, options}">
-                                                <template v-if="model.allowAnonymous">
-                                                    <div class="field-row">
-                                                        <v-layout align-center>
-                                                            <v-flex xs4>
-                                                                <v-label>First Name</v-label>
-                                                            </v-flex>
-                                                            <v-flex xs4>
-                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.askFirstName" v-model="model" />
-                                                            </v-flex>
-                                                            <v-flex xs4>
-                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.requireFirstName" v-model="model" />
-                                                            </v-flex>
-                                                        </v-layout>
-                                                    </div>
-                                                    <div class="field-row">
-                                                        <v-layout align-center>
-                                                            <v-flex xs4>
-                                                                <v-label>Last Name</v-label>
-                                                            </v-flex>
-                                                            <v-flex xs4>
-                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.askLastName" v-model="model" />
-                                                            </v-flex>
-                                                            <v-flex xs4>
-                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.requireLastName" v-model="model" />
-                                                            </v-flex>
-                                                        </v-layout>
-                                                    </div>
-                                                    <div class="field-row">
-                                                        <v-layout align-center>
-                                                            <v-flex xs4>
-                                                                <v-label>Email Address</v-label>
-                                                            </v-flex>
-                                                            <v-flex xs4>
-                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.askEmail" v-model="model" />
-                                                            </v-flex>
-                                                            <v-flex xs4>
-                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.requireEmail" v-model="model" />
-                                                            </v-flex>
-                                                        </v-layout>
-                                                    </div>
-                                                    <div class="field-row">
-                                                        <v-layout align-center>
-                                                            <v-flex xs4>
-                                                                <v-label>Phone Number</v-label>
-                                                            </v-flex>
-                                                            <v-flex xs4>
-                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.askPhone" v-model="model" />
-                                                            </v-flex>
-                                                            <v-flex xs4>
-                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.requirePhone" v-model="model" />
-                                                            </v-flex>
-                                                        </v-layout>
-                                                    </div>
-                                                    <div class="field-row">
-                                                        <v-layout align-center>
-                                                            <v-flex xs4>
-                                                                <v-label>Gender</v-label>
-                                                            </v-flex>
-                                                            <v-flex xs4>
-                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.askGender" v-model="model" />
-                                                            </v-flex>
-                                                            <v-flex xs4>
-                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.requireGender" v-model="model" />
-                                                            </v-flex>
-                                                        </v-layout>
-                                                    </div>
-                                                </template>
-                                                <div class="field-row">
-                                                    <v-layout align-center>
-                                                        <v-flex xs4>
-                                                            <v-label>Date of Birth</v-label>
-                                                        </v-flex>
-                                                        <v-flex xs4>
-                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.askDOB" v-model="model" />
-                                                        </v-flex>
-                                                        <v-flex xs4>
-                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.requireDOB" v-model="model" />
-                                                        </v-flex>
-                                                    </v-layout>
-                                                </div>
-                                                <fluro-panel-body class="border-top" v-if="model.allowAnonymous">
-                                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.disableBestGuess" v-model="model" />
-                                                </fluro-panel-body>
-                                            </template>
-                                        </fluro-content-form>
-                                    </fluro-panel>
-                                    <v-container pa-0 grid-list-xl>
-                                        <v-layout row wrap>
-                                            <v-flex xs12 sm6>
-                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.publishDate" v-model="model" />
-                                            </v-flex>
-                                            <v-flex xs12 sm6>
-                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.archiveDate" v-model="model" />
-                                            </v-flex>
-                                        </v-layout>
-                                    </v-container>
-                                    <fluro-panel margin>
-                                        <fluro-panel-title>
-                                            <Strong>Automation and other settings</Strong>
-                                        </fluro-panel-title>
-                                        <tabset>
-                                            <tab heading="Notifications">
-                                                <fluro-panel-body>
-                                                    <fluro-content-form v-model="model.data" :fields="dataFields">
-                                                        <template v-slot:form="{formFields, fieldHash, model, update, options}">
-                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.enableConfirmation" v-model="model" />
-                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.includeTickets" v-model="model" />
-                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.confirmationMessage" v-model="model" />
-                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.notifyContacts" v-model="model" />
-                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.enableReceipt" v-model="model" />
-                                                        </template>
-                                                    </fluro-content-form>
-                                                </fluro-panel-body>
-                                            </tab>
-                                            <tab heading="Processes">
-                                                <fluro-panel-body>
-                                                    <fluro-content-form v-model="model.data" :fields="dataFields">
-                                                        <template v-slot:form="{formFields, fieldHash, model, update, options}">
-                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.interactionProcesses" v-model="model" />
-                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.contactProcesses" v-model="model" />
-                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.contactProcessesAll" v-model="model" />
-                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.processAssignTo" v-model="model" />
-                                                        </template>
-                                                    </fluro-content-form>
-                                                </fluro-panel-body>
-                                            </tab>
-                                            <tab heading="Groups and Teams">
-                                                <fluro-panel-body>
-                                                    <fluro-content-form v-model="model.data" :fields="dataFields">
-                                                        <template v-slot:form="{formFields, fieldHash, model, update, options}">
-                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.contactTeams" v-model="model" />
-                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.contactTeamsAll" v-model="model" />
-                                                        </template>
-                                                    </fluro-content-form>
-                                                </fluro-panel-body>
-                                            </tab>
-                                            <tab heading="Capabilities">
-                                                <fluro-panel-body>
-                                                    <fluro-content-form v-model="model.data" :fields="dataFields">
-                                                        <template v-slot:form="{formFields, fieldHash, model, update, options}">
-                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.contactCapabilities" v-model="model" />
-                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.capabilitiesAll" v-model="model" />
-                                                        </template>
-                                                    </fluro-content-form>
-                                                </fluro-panel-body>
-                                            </tab>
-                                            <tab heading="Reaction Pipelines">
-                                                <fluro-panel-body>
-                                                    <fluro-content-form v-model="model.data" :fields="dataFields">
-                                                        <template v-slot:form="{formFields, fieldHash, model, update, options}">
-                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.reactionPipelines" v-model="model" />
-                                                        </template>
-                                                    </fluro-content-form>
-                                                </fluro-panel-body>
-                                            </tab>
-                                            <tab heading="Other Options">
-                                                <fluro-panel-body>
-                                                    <fluro-content-form v-model="model.data" :fields="dataFields">
-                                                        <template v-slot:form="{formFields, fieldHash, model, update, options}">
-                                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.blc" v-model="model" />
-                                                        </template>
-                                                    </fluro-content-form>
-                                                </fluro-panel-body>
-                                            </tab>
-                                        </tabset>
-                                    </fluro-panel>
-                                </constrain>
-                            </v-container>
-                        </flex-column-body>
-                    </tab>
-                    <tab heading="Payment Settings">
-                        <flex-column-body>
-                            <v-container>
-                                <constrain sm>
+                                        </fluro-panel>
+                                        <fluro-panel margin v-if="definition">
+                                            <fluro-panel-title>
+                                                <strong>{{definition.title}} Information</strong>
+                                            </fluro-panel-title>
+                                            <fluro-panel-body>
+                                                <fluro-content-form :options="definitionFormOptions" v-model="model.data" :fields="definition.fields" />
+                                            </fluro-panel-body>
+                                        </fluro-panel>
+                                        <v-container pa-0 grid-list-xl>
+                                            <v-layout row wrap>
+                                                <v-flex xs12 sm6>
+                                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.publishDate" v-model="model" />
+                                                </v-flex>
+                                                <v-flex xs12 sm6>
+                                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.archiveDate" v-model="model" />
+                                                </v-flex>
+                                            </v-layout>
+                                        </v-container>
+                                        <fluro-panel margin>
+                                            <fluro-panel-title>
+                                                <Strong>Automation and other settings</Strong>
+                                            </fluro-panel-title>
+                                            <tabset>
+                                                <tab heading="Notifications">
+                                                    <fluro-panel-body>
+                                                        <fluro-content-form v-model="model.data" :fields="dataFields">
+                                                            <template v-slot:form="{formFields, fieldHash, model, update, options}">
+                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.enableConfirmation" v-model="model" />
+                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.includeTickets" v-model="model" />
+                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.confirmationMessage" v-model="model" />
+                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.notifyContacts" v-model="model" />
+                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.enableReceipt" v-model="model" />
+                                                            </template>
+                                                        </fluro-content-form>
+                                                    </fluro-panel-body>
+                                                </tab>
+                                                <tab heading="Processes">
+                                                    <fluro-panel-body>
+                                                        <fluro-content-form v-model="model.data" :fields="dataFields">
+                                                            <template v-slot:form="{formFields, fieldHash, model, update, options}">
+                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.interactionProcesses" v-model="model" />
+                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.contactProcesses" v-model="model" />
+                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.contactProcessesAll" v-model="model" />
+                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.processAssignTo" v-model="model" />
+                                                            </template>
+                                                        </fluro-content-form>
+                                                    </fluro-panel-body>
+                                                </tab>
+                                                <tab heading="Groups and Teams">
+                                                    <fluro-panel-body>
+                                                        <fluro-content-form v-model="model.data" :fields="dataFields">
+                                                            <template v-slot:form="{formFields, fieldHash, model, update, options}">
+                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.contactTeams" v-model="model" />
+                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.contactTeamsAll" v-model="model" />
+                                                            </template>
+                                                        </fluro-content-form>
+                                                    </fluro-panel-body>
+                                                </tab>
+                                                <tab heading="Capabilities">
+                                                    <fluro-panel-body>
+                                                        <fluro-content-form v-model="model.data" :fields="dataFields">
+                                                            <template v-slot:form="{formFields, fieldHash, model, update, options}">
+                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.contactCapabilities" v-model="model" />
+                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.capabilitiesAll" v-model="model" />
+                                                            </template>
+                                                        </fluro-content-form>
+                                                    </fluro-panel-body>
+                                                </tab>
+                                                <tab heading="Reaction Pipelines">
+                                                    <fluro-panel-body>
+                                                        <fluro-content-form v-model="model.data" :fields="dataFields">
+                                                            <template v-slot:form="{formFields, fieldHash, model, update, options}">
+                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.reactionPipelines" v-model="model" />
+                                                            </template>
+                                                        </fluro-content-form>
+                                                    </fluro-panel-body>
+                                                </tab>
+                                                <tab heading="Other Options">
+                                                    <fluro-panel-body>
+                                                        <fluro-content-form v-model="model.data" :fields="dataFields">
+                                                            <template v-slot:form="{formFields, fieldHash, model, update, options}">
+                                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.blc" v-model="model" />
+                                                            </template>
+                                                        </fluro-content-form>
+                                                    </fluro-panel-body>
+                                                </tab>
+                                            </tabset>
+                                        </fluro-panel>
+                                    </constrain>
+                                </v-container>
+                            </template>
+                            <template v-slot:payment>
+                                <v-container>
                                     <fluro-content-form v-model="model.paymentDetails" :fields="paymentFields">
                                         <template v-slot:form="{formFields, fieldHash, model, update, options}">
                                             <fluro-panel margin>
@@ -303,7 +240,7 @@
                                                     <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.allow" v-model="model" />
                                                 </fluro-panel-body>
                                                 <template v-if="paymentIsEnabled">
-                                                    <v-container pa-0 grid-list-xl>
+                                                    <v-container pa-0>
                                                         <fluro-panel-body class="border-top" v-if="model.required">
                                                             <v-layout>
                                                                 <v-flex xs9>
@@ -331,74 +268,163 @@
                                         </template>
                                     </fluro-content-form>
                                     <template v-if="paymentIsEnabled">
-                                        <fluro-panel margin>
-                                            <fluro-panel-body>
-                                                <v-input class="no-flex">
-                                                    <v-label>Payment Gateway</v-label>
-                                                    <p class="help-block">Select the payment gateways to be used to process these payments</p>
-                                                    <!-- <fluro-panel-body class="border-top"> -->
-                                                    <fluro-content-select-button block type="integration" v-model="model.data.publicData.paymentGateways" />
-                                                    <!-- </fluro-panel-body> -->
-                                                </v-input>
-                                            </fluro-panel-body>
-                                        </fluro-panel>
+                                        <v-input class="no-flex">
+                                            <v-label>Payment Gateway</v-label>
+                                            <p class="help-block">Select the integration that should be used to process these payments</p>
+                                            <!-- <fluro-panel-body class="border-top"> -->
+                                            <fluro-content-select-button block type="integration" v-model="model.data.publicData.paymentGateways" />
+                                            <!-- </fluro-panel-body> -->
+                                        </v-input>
                                         <fluro-panel margin>
                                             <fluro-panel-body>
                                                 <v-input class="no-flex">
                                                     <v-label>Payment Modifiers</v-label>
                                                     <p class="help-block">Add payment modifiers to adjust the required payment amount depending on values entered by the user</p>
                                                     <payment-modifier-editor :form="model" v-model="model.paymentDetails.modifiers" />
+                                                    <!-- <pre>{{model.paymentDetails.modifiers}}</pre> -->
                                                     <!-- <fluro-panel-body class="border-top"> -->
                                                     <!-- <fluro-content-select-button block type="integration" v-model="model.data.publicData.paymentGateways" /> -->
                                                     <!-- </fluro-panel-body> -->
                                                 </v-input>
                                             </fluro-panel-body>
                                         </fluro-panel>
-                                        <fluro-panel margin>
-                                            <fluro-content-form v-model="model.paymentDetails" :fields="paymentFields">
-                                                <template v-slot:form="{formFields, fieldHash, model, update, options}">
-                                                    <fluro-panel-body class="border-bottom">
-                                                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.allowAlternativePayments" v-model="model" />
+                                        <fluro-content-form v-model="model.data" :fields="dataFields">
+                                            <template v-slot:form="{formFields, fieldHash, model, update, options}">
+                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.enableReceipt" v-model="model" />
+                                            </template>
+                                        </fluro-content-form>
+                                        <fluro-content-form v-model="model.paymentDetails" :fields="paymentFields">
+                                            <template v-slot:form="{formFields, fieldHash, model, update, options}">
+                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.allowAlternativePayments" v-model="model" />
+                                                <fluro-panel margin v-if="model.allowAlternativePayments">
+                                                    <tabset v-model="alternativePaymentMethodIndex">
+                                                        <tab :heading="method.title" v-for="(method, index) in alternativePaymentMethods">
+                                                            <fluro-panel-body>
+                                                                <fluro-content-form v-model="alternativePaymentMethods[index]" :fields="paymentMethodFields" />
+                                                                <!-- <template v-slot:form="{formFields, fieldHash, model, update, options}"> -->
+                                                                <!-- </template> -->
+                                                                <!-- </fluro-content-form> -->
+                                                                <v-layout>
+                                                                    <v-spacer />
+                                                                    <v-flex shrink>
+                                                                        <v-btn class="ma-0" small color="error" @click="removeAlternativePaymentMethod(method, index)">
+                                                                            Remove {{method.title}}
+                                                                        </v-btn>
+                                                                    </v-flex>
+                                                                </v-layout>
+                                                            </fluro-panel-body>
+                                                        </tab>
+                                                    </tabset>
+                                                    <fluro-panel-body class="border-top">
+                                                        <!-- {{alternativePaymentMethodIndex}} -->
+                                                        <v-btn class="ma-0" @click="addAlternativePaymentMethod()" color="primary">Add additional payment method</v-btn>
                                                     </fluro-panel-body>
-                                                    <template v-if="model.allowAlternativePayments">
-                                                        <tabset v-model="alternativePaymentMethodIndex">
-                                                            <tab :heading="method.title" v-for="(method, index) in alternativePaymentMethods">
-                                                                <fluro-panel-body>
-                                                                    <fluro-content-form v-model="alternativePaymentMethods[index]" :fields="paymentMethodFields" />
-                                                                    <!-- <template v-slot:form="{formFields, fieldHash, model, update, options}"> -->
-                                                                    <!-- </template> -->
-                                                                    <!-- </fluro-content-form> -->
-                                                                    <v-layout>
-                                                                        <v-spacer />
-                                                                        <v-flex shrink>
-                                                                            <v-btn class="ma-0" small color="error" @click="removeAlternativePaymentMethod(method, index)">
-                                                                                Remove {{method.title}}
-                                                                            </v-btn>
-                                                                        </v-flex>
-                                                                    </v-layout>
-                                                                </fluro-panel-body>
-                                                            </tab>
-                                                            <!-- <template v-slot:menusuffix> -->
-                                                            <!-- <v-btn class="ma-0" @click="addAlternativePaymentMethod()" color="primary">Add additional payment method</v-btn> -->
-                                                            <!-- </template> -->
-                                                        </tabset>
-                                                        <fluro-panel-body class="border-top">
-                                                            <!-- {{alternativePaymentMethodIndex}} -->
-                                                            <v-btn class="ma-0" @click="addAlternativePaymentMethod()" color="primary">Add additional payment method</v-btn>
-                                                        </fluro-panel-body>
-                                                    </template>
-                                                </template>
-                                            </fluro-content-form>
-                                        </fluro-panel>
+                                                </fluro-panel>
+                                            </template>
+                                        </fluro-content-form>
                                         <!-- <pre>{{alternativePaymentMethods}}</pre> -->
                                     </template>
+                                </v-container>
+                            </template>
+                        </fluro-field-editor>
+                    </tab>
+                </template>
+                <template v-else>
+                    <tab heading="Configuration">
+                        <flex-column-body style="background: #fafafa;">
+                            <v-container grid-list-xl>
+                                <constrain sm>
+                                    <fluro-panel>
+                                        <fluro-panel-body>
+                                            <v-layout>
+                                                <v-flex xs12 sm6>
+                                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />
+                                                </v-flex>
+                                                <v-flex xs12 sm6>
+                                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.plural" v-model="model" />
+                                                </v-flex>
+                                            </v-layout>
+                                            <template v-if="!model._id">
+                                                <div v-show="showDefinitionName">
+                                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.definitionName" v-model="model" />
+                                                </div>
+                                                <template v-if="lockedSubType">
+                                                    <!-- <v-input class="no-flex">
+                                            <v-label>Extends Type</v-label>
+                                            <div>
+                                                <em class="small">{{definition.plural}} always extend {{lockedSubType | definitionTitle(true)}}</em>
+                                            </div>
+                                        </v-input> -->
+                                                </template>
+                                                <template v-else>
+                                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.parentType" v-model="model" />
+                                                    <fluro-panel>
+                                                        <fluro-panel-body>
+                                                            <v-layout>
+                                                                <v-flex xs12 sm6>
+                                                                    <div class="form-group">
+                                                                        <label>Definition Name</label>
+                                                                        <div>{{model.definitionName}}</div>
+                                                                    </div>
+                                                                </v-flex>
+                                                                <v-flex xs12 sm6>
+                                                                    <div class="form-group">
+                                                                        <label>Extends type</label>
+                                                                        <div>{{model.parentType | definitionTitle}}</div>
+                                                                    </div>
+                                                                </v-flex>
+                                                            </v-layout>
+                                                        </fluro-panel-body>
+                                                    </fluro-panel>
+                                                </template>
+                                            </template>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.privacy" v-model="model" />
+                                        </fluro-panel-body>
+                                    </fluro-panel>
+                                </constrain>
+                            </v-container>
+                        </flex-column-body>
+                    </tab>
+                    <tab heading="Manage Fields">
+                        <fluro-field-editor v-model="model.fields" :item="model">
+                        </fluro-field-editor>
+                    </tab>
+                    <tab :heading="`${definition.title} Information`" v-if="definition && definition.definitionName != 'form'">
+                        <flex-column-body style="background: #fafafa;">
+                            <v-container>
+                                <constrain sm>
+                                    <fluro-content-form :options="definitionFormOptions" v-model="model.data" :fields="definition.fields" />
+                                </constrain>
+                            </v-container>
+                        </flex-column-body>
+                    </tab>
+                    <tab heading="Advanced">
+                        <flex-column-body style="background: #fafafa;">
+                            <v-container>
+                                <constrain sm>
+                                    <fluro-panel v-if="definition.parentType != 'realm'">
+                                        <fluro-panel-title>
+                                            <h5>Restrict To Realms</h5>
+                                            <div class="muted">Select which realms these {{definition.parentType | definitionTitle(true)}} can be created in</div>
+                                        </fluro-panel-title>
+                                        <fluro-panel-body>
+                                            <fluro-realm-select v-model="model.restrictRealms" />
+                                        </fluro-panel-body>
+                                    </fluro-panel>
+                                    <fluro-panel>
+                                        <fluro-panel-title>
+                                            <h5>Display Columns</h5>
+                                            <div class="muted">Select columns to show when listing these {{definition.parentType | definitionTitle(true)}}</div>
+                                        </fluro-panel-title>
+                                        <fluro-panel-body>
+                                            Adjust columns
+                                        </fluro-panel-body>
+                                    </fluro-panel>
                                 </constrain>
                             </v-container>
                         </flex-column-body>
                     </tab>
                 </template>
-                <tab heading="Advanced">
-                </tab>
             </tabset>
         </template>
     </flex-column>
@@ -410,6 +436,7 @@
 import FluroContentEditMixin from '../FluroContentEditMixin';
 import PaymentModifierEditor from '../components/PaymentModifierEditor.vue';
 import { FluroContentSelectButton, FluroFieldEditor } from 'fluro-vue-ui';
+import FieldTemplates from '../../../fields/FieldEditorTemplates';
 
 
 /////////////////////////////////
@@ -432,6 +459,8 @@ export default {
 
             switch (parentType) {
                 case 'interaction':
+
+
                     if (!self.model.privacy) {
                         self.$set(self.model, 'privacy', 'public');
                     }
@@ -444,6 +473,22 @@ export default {
                     if (!self.model.data) {
                         self.$set(self.model, 'data', {});
                     }
+
+                    if (!self.model._id) {
+                        //Start off with the basic fields
+                        self.$set(self.model.data, 'allowAnonymous', true);
+
+                    }
+
+                    if (!self.model.fields || !self.model.fields.length) {
+                        self.$set(self.model, 'fields', []);
+
+
+                        var getPersonField = _.find(FieldTemplates, { key: 'person' });
+                        self.model.fields.push(JSON.parse(JSON.stringify(getPersonField.field)));
+                    }
+
+
 
                     if (!self.model.data.publicData) {
                         self.$set(self.model.data, 'publicData', {});
@@ -520,6 +565,14 @@ export default {
         if (self.model.parentType) {
             self.setParentType(self.model.parentType);
         }
+
+        if (self.model._id && !self.isForm) {
+            self.tabIndex = 1;
+        }
+
+        console.log('HERE WE GO', self.model)
+
+
     },
     watch: {
         'model.parentType': 'setParentType',
@@ -556,6 +609,15 @@ export default {
         }
     },
     computed: {
+        isForm() {
+            return this.definition && this.definition.definitionName == 'form'
+        },
+        showDefinitionName() {
+            return !this.model._id;
+        },
+        showFieldsFirst() {
+            return this.model._id && this.model.definition == 'form'
+        },
         paymentMethodFields() {
             return [{
                     title: 'Title',
@@ -564,6 +626,7 @@ export default {
                     maximum: 1,
                     type: 'string',
                     description: '',
+
                     placeholder: `Eg. 'Bank Transfer', 'Cash', 'Cheque', 'Payment Plan'...`,
                 },
                 {
@@ -574,6 +637,7 @@ export default {
                     type: 'string',
                     description: 'A unique key for this payment method',
                     placeholder: `Eg. 'bank', 'cash', 'cheque', 'plan'`,
+
                 },
                 {
                     title: 'Help / Description',
@@ -637,6 +701,9 @@ export default {
                 type: 'boolean',
 
                 description: `Require a payment for creating this content`,
+                hide() {
+                    return self.model.paymentDetails && self.model.paymentDetails.allow;
+                },
             })
 
             addField('allow', {
@@ -645,7 +712,9 @@ export default {
                 maximum: 1,
                 type: 'boolean',
                 expressions: {
-                    hide: 'data.required'
+                    hide() {
+                        return self.model.paymentDetails && self.model.paymentDetails.required;
+                    },
                 },
                 description: `Allow a payment to be made when creating this content`,
             })
@@ -661,11 +730,13 @@ export default {
                 minimum: 0,
                 maximum: 1,
                 type: 'integer',
+                directive: 'currency',
                 params: {
+                    currency: paymentDetails.currency || '',
                     persistentDescription: true,
+                    hideSuffix: true,
                 },
-                suffix: `(${self.$fluro.utils.formatCurrency(paymentDetails.amount, paymentDetails.currency)})`,
-                description: `The base amount required for payment to create this type of content. A positive integer in the smallest currency unit (e.g 100 cents to charge $1.00). If left empty payment modifiers will need to be used to create a positive amount`,
+                description: `The amount required to be paid to subit this form. You can leave this as 0 and calculate the cost with payment modifiers.`,
             })
 
 
@@ -764,6 +835,10 @@ export default {
             var self = this;
             var array = [];
 
+
+            var defaultConfirmationCheckbox = self.model._id ? undefined : [true];
+            var defaultQRCodeCheckbox = self.model._id ? undefined : [true];
+
             ///////////////////////////////////
 
             addField('allowAnonymous', {
@@ -794,6 +869,7 @@ export default {
                 minimum: 0,
                 maximum: 1,
                 type: 'boolean',
+                defaultValues: defaultConfirmationCheckbox,
                 description: `Send a confirmation email to the primary contact upon a new submission.`,
             })
 
@@ -811,6 +887,7 @@ export default {
                 minimum: 0,
                 maximum: 1,
                 type: 'boolean',
+                defaultValues: defaultQRCodeCheckbox,
                 description: `Check this box if you want Fluro to send digital a QR for ticket collection.`,
             })
 
@@ -857,16 +934,16 @@ export default {
                 type: 'reference',
                 params: {
                     restrictType: 'definition',
-                    parentType:'process',
+                    parentType: 'process',
                 },
                 description: `Select processes that the form submission will be added into`,
             })
 
 
-            var contactProcessesTitle = self.model.data.contactProcessesAll ? 'Add all connected contacts to processes' :  'Add primary contact to processes';
+            var contactProcessesTitle = self.model.data.contactProcessesAll ? 'Add all connected contacts to processes' : 'Add primary contact to processes';
 
             // Add {{item.data.contactProcessesAll ? 'All Connected Contacts' : 'Primary Contact'}} to Processes
-            
+
             addField('contactProcesses', {
                 title: contactProcessesTitle,
                 minimum: 0,
@@ -874,7 +951,7 @@ export default {
                 type: 'reference',
                 params: {
                     restrictType: 'definition',
-                    parentType:'process',
+                    parentType: 'process',
                 },
                 description: `Select processes to add the primary (or first linked) contact to after form submission`,
             })
@@ -894,7 +971,7 @@ export default {
                 type: 'reference',
                 params: {
                     restrictType: 'contact',
-                    allDefinitions:true,
+                    allDefinitions: true,
                 },
                 description: `Assign the process card to specific contacts`,
             })
@@ -903,10 +980,10 @@ export default {
             /////////////////////////////////////////////////////////////
             /////////////////////////////////////////////////////////////
 
-            var contactTeamsAllTitle = self.model.data.contactTeamsAll ? 'Add all connected contacts to groups/teams' :  'Add primary contact to groups/teams';
+            var contactTeamsAllTitle = self.model.data.contactTeamsAll ? 'Add all connected contacts to groups/teams' : 'Add primary contact to groups/teams';
 
             // Add {{item.data.contactTeamsAll ? 'All Connected Contacts' : 'Primary Contact'}} to Processes
-            
+
             addField('contactTeams', {
                 title: contactTeamsAllTitle,
                 minimum: 0,
@@ -914,7 +991,7 @@ export default {
                 type: 'reference',
                 params: {
                     restrictType: 'team',
-                    allDefinitions:true,
+                    allDefinitions: true,
                 },
                 description: `Select groups/teams to add the primary (or first linked) contact to after form submission`,
             })
@@ -932,10 +1009,10 @@ export default {
             /////////////////////////////////////////////////////////////
             /////////////////////////////////////////////////////////////
 
-            var capabilitiesAllTitle = self.model.data.capabilitiesAll ? 'Add capabilities to all connected contacts' :  'Add capabilities to primary contact';
+            var capabilitiesAllTitle = self.model.data.capabilitiesAll ? 'Add capabilities to all connected contacts' : 'Add capabilities to primary contact';
 
             // Add {{item.data.capabilitiesAll ? 'All Connected Contacts' : 'Primary Contact'}} to Processes
-            
+
             addField('contactCapabilities', {
                 title: capabilitiesAllTitle,
                 minimum: 0,
@@ -943,7 +1020,7 @@ export default {
                 type: 'reference',
                 params: {
                     restrictType: 'capability',
-                    allDefinitions:true,
+                    allDefinitions: true,
                 },
                 description: `Select groups/teams to add the primary (or first linked) contact to after form submission`,
             })
@@ -959,27 +1036,27 @@ export default {
 
 
 
-            
+
 
             addField('reactionPipelines', {
-                title:'Reaction Pipelines',
+                title: 'Reaction Pipelines',
                 minimum: 0,
                 maximum: 0,
                 type: 'reference',
                 params: {
                     restrictType: 'reaction',
-                    allDefinitions:true,
+                    allDefinitions: true,
                 },
                 description: `Select reaction pipelines to push submissions into when they are created`,
             })
 
 
             addField('blc', {
-                title:'Blacklist Country Codes',
+                title: 'Blacklist Country Codes',
                 minimum: 0,
                 maximum: 0,
                 type: 'string',
-                placeholder:'Country Code eg(AU, BR, US)',
+                placeholder: 'Country Code eg(AU, BR, US)',
                 description: `Block certain country codes from submitting this form`,
             })
 
@@ -1145,6 +1222,36 @@ export default {
             var self = this;
             var array = [];
 
+            var exampleSingle;
+            var examplePlural;
+
+            switch (self.model.parentType) {
+                case 'interaction':
+                    exampleSingle = 'Volunteer Application Form';
+                    examplePlural = 'Volunteer Application Forms';
+                    break;
+                case 'contactdetail':
+                    exampleSingle = 'Medical Details';
+                    examplePlural = 'Medical Details';
+                    break;
+                case 'event':
+                    exampleSingle = 'Small Group Meeting';
+                    examplePlural = 'Small Group Meetings';
+                    break;
+                case 'article':
+                    exampleSingle = 'Blog';
+                    examplePlural = 'Blogs';
+                    break;
+                case 'team':
+                    exampleSingle = 'Connect Group';
+                    examplePlural = 'Connect Groups';
+                    break;
+                default:
+                    exampleSingle = 'Thing';
+                    examplePlural = 'Things';
+                    break;
+            }
+
             ///////////////////////////////////
 
             addField('title', {
@@ -1152,7 +1259,10 @@ export default {
                 minimum: 1,
                 maximum: 1,
                 type: 'string',
-                description: `The human readable singular title for this ${self.readableContentType}`,
+                params: {
+                    persistentDescription: true
+                },
+                description: `What do you call this ${self.readableContentType}?. eg. '${exampleSingle}'`,
             })
 
             addField('plural', {
@@ -1160,7 +1270,10 @@ export default {
                 minimum: 1,
                 maximum: 1,
                 type: 'string',
-                description: `The human readable plural for this ${self.readableContentType}`,
+                params: {
+                    persistentDescription: true
+                },
+                description: `How do you want us to refer to multiple ${self.readableContentType} items?. eg. '${examplePlural}'`,
                 expressions: {
                     defaultValue() {
 
@@ -1171,15 +1284,11 @@ export default {
                             return '';
                         }
 
-
-                        if (_.endsWith(existingTitle, 's')) {
-                            existingTitle = existingTitle + 'es';
-                        } else {
-                            existingTitle = existingTitle + 's';
+                        if (_.endsWith(existingTitle, 's') || _.endsWith(existingTitle, 'es')) {
+                            return existingTitle;
                         }
 
-                        return existingTitle;
-                        // return ``
+                        return existingTitle = existingTitle + 's';
                     }
                 }
             })
@@ -1201,6 +1310,10 @@ export default {
                     //     return cleaned;
                     // },
                     defaultValue() {
+
+                        if (!self.model.title) {
+                            return ''
+                        }
 
                         var regexp = /[^a-zA-Z0-9-_]+/g;
                         var cleaned = _.camelCase(String(self.model.title).replace(regexp, ''));
@@ -1273,11 +1386,11 @@ export default {
                     },
                 },
                 options: [{
-                        name: `Secure - Only those with permissions can submit ${self.model.plural}`,
+                        name: `Secure (Only those with permissions can submit '${self.model.plural}')`,
                         value: 'secure',
                     },
                     {
-                        name: `Public - Anyone can submit ${self.model.plural}`,
+                        name: `Public (Anyone can submit '${self.model.plural}')`,
                         value: 'public',
                     },
                 ],
@@ -1297,6 +1410,7 @@ export default {
     },
     data() {
         return {
+            tabIndex: 0,
             alternativePaymentMethodIndex: 0,
             expandedSettings: {
                 _contacts: false,

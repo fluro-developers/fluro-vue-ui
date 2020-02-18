@@ -138,7 +138,7 @@ function getFieldDescriptions(contextField, fields) {
                     trail.push(field.key);
                     titles.push(field.title);
                 } else {
-                    trail.push(field.key + '[]');
+                    trail.push(field.key + '[0]');
                     titles.push(field.title);
                 }
             }
@@ -274,10 +274,10 @@ function getFieldDescriptions(contextField, fields) {
                     case 'reference':
                         if (field.isArray) {
                             exampleTitle =
-                                exampleValue = '[Object, Object, Object]';
+                                exampleValue = ['Object', 'Object', 'Object'];
                         } else {
                             exampleTitle =
-                                exampleValue = '(Object)';
+                                exampleValue = {};
                         }
                         break;
                     default:
@@ -290,13 +290,18 @@ function getFieldDescriptions(contextField, fields) {
 
                 //////////////////////////////////////////////////
 
-                var delimiter = '[]';
-                var delimiterIndex = field.path.lastIndexOf(delimiter);
-                var subFieldOfNested = (delimiterIndex != -1);
+                var delimiter = '[0]';
                 var fieldPath = field.path;
+                var delimiterIndex = fieldPath.lastIndexOf(delimiter);
+                var subFieldOfNested = (delimiterIndex != -1);
+                
 
-                var parentPath = field.path.slice(0, delimiterIndex);
-                var childPath = field.path.slice(delimiterIndex + delimiter.length + 1);
+                var parentPath = fieldPath.slice(0, delimiterIndex);
+                
+                    var sliceIndex = delimiterIndex == -1 ? 0 : delimiterIndex;
+                    var childPath = fieldPath.slice(sliceIndex);
+                
+                
                 var sibling = field.sameContext;
                 var isArray = field.isArray;
 
@@ -837,8 +842,9 @@ function getFieldDescriptions(contextField, fields) {
 </script>
 <style lang="scss" scoped>
 .expression-field-select {
-    max-width: 400px;
-    max-height: 400px;
+    width: 400px;
+    height: 100%;
+    max-height: 50vh;
     background: #fff;
 
     .example {

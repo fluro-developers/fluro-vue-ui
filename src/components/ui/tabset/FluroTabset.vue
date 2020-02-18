@@ -1,6 +1,5 @@
 <template>
     <flex-column class="tabset" :class="{justified, vertical}">
-        <!-- {{activeTabIndex}} -->
         <flex-column-header class="tabset-header" v-if="enabledTabs.length > 1 || persist">
             <slot name="menuprefix"></slot>
             <div class="tabset-menu" ref="outer">

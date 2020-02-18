@@ -8,11 +8,27 @@
         </flex-column-header>
         <flex-column-body>
             <!-- <pre>{{actions}}</pre> -->
-            <v-container>
-            <v-btn block color="primary" v-for="action in actions" @click="select(action)">
-                {{action.title}}
-            </v-btn>
-        </v-container>
+            <v-container style="background: #fafafa;">
+                <template v-for="action in actions">
+                    <div class="detail-button" @click="select(action)" v-if="action.description">
+                        <h5>
+                        <v-layout>
+                            <v-flex>
+                                {{action.title}}
+                            </v-flex>
+                            <v-spacer/>
+                            <v-flex class="text-xs-right" shrink>
+                                <fluro-icon icon="angle-right"/>
+                            </v-flex>
+                        </v-layout>
+                        </h5>
+                        <div class="sm muted">{{action.description}}</div>
+                    </div>
+                    <v-btn v-else block color="primary" @click="select(action)">
+                        {{action.title}}
+                    </v-btn>
+                </template>
+            </v-container>
             <!-- <v-list>
                 <v-list-tile v-for="action in actions" @click="select(action)">
                     
@@ -79,7 +95,7 @@ export default {
 
             //If there is a callback registered
             //then fire the callback
-            if(option.action) {
+            if (option.action) {
                 option.action();
             }
         },
@@ -106,6 +122,21 @@ export default {
     min-width: 300px;
     // max-width: 500px;
     text-align: center;
+
+    .detail-button {
+        border: 1px solid #ddd;
+        background: #fff;
+        padding: 10px;
+        border-radius: 3px;
+        text-align: left;
+        margin-bottom:2px;
+        cursor: pointer;
+
+        &:hover {
+            background: #fafafa;
+            border-color: $primary;
+        }
+    }
 
     .v-list__tile__title {
         font-size: 0.9em;

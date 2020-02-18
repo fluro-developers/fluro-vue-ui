@@ -5,10 +5,19 @@
                 <flex-column-body>
                     <v-container>
                         <fluro-content-form-field ref="grouptitle" :field="fields.title" v-model="model" />
-                        <fluro-content-form-field :field="fields.key" v-model="model" />
-                        <fluro-content-form-field @input="resetRequired()" :field="fields.asObject" v-model="model" />
-                        <fluro-content-form-field :field="fields.sameLine" v-model="model" />
-                        <fluro-content-form-field :field="fields.className" v-model="model" />
+                       
+                        <div v-show="showKey">
+                            <fluro-content-form-field :field="fields.key" v-model="model" />
+                        </div>
+                        <div class="key-preview" v-if="!editingKey" @click="editingKey = true">
+                            <fluro-icon icon="pencil"/> key: {{model.key}} 
+                        </div>
+
+
+                        <fluro-content-form-field :field="fields.asObject" v-model="model" />
+                        <template v-if="!model.asObject">
+                            <fluro-content-form-field :field="fields.sameLine" v-model="model" />
+                        </template>
                         <!-- <pre>{{model}}</pre> -->
                         <v-layout v-if="model.asObject">
                             <v-flex xs6>
@@ -16,15 +25,29 @@
                             </v-flex>
                             <v-spacer />
                             <v-flex xs6>
-                                <fluro-content-form-field @input="resetRequired()" :field="fields.groupMaximum" v-model="model" />
+                                <fluro-content-form-field @input="resetRequired(fields.groupMaximum)" :field="fields.groupMaximum" v-model="model" />
                             </v-flex>
                             <v-spacer />
                             <v-flex xs6>
                                 <fluro-content-form-field :field="fields.askCount" v-model="model" />
                             </v-flex>
                         </v-layout>
+                        <fluro-content-form-field :field="fields.className" v-model="model" />
                     </v-container>
                 </flex-column-body>
+                <!-- <flex-column-footer class="border-top">
+                    <v-container py-2>
+                        <v-layout>
+                            <v-spacer />
+                            <v-flex>
+                                <v-btn @click="deleteField" block class="ma-0" small>
+                                    Delete Group
+                                    <fluro-icon right icon="trash-alt" />
+                                </v-btn>
+                            </v-flex>
+                        </v-layout>
+                    </v-container>
+                </flex-column-footer> -->
             </tab>
             <tab heading="Expressions">
                 <flex-column-body>
@@ -50,14 +73,14 @@
                     <v-container>
                         <!-- <template v-if="model.hideExpression && model.hideExpression.length"> -->
                         <template v-if="true">
-                            <div class="expression-group">
+                            <div class="expression-group" :class="{active:model.hideExpression}">
                                 <v-input label="Hide group if" hint="Hide this group if this expression returns true " :persistent-hint="true" class="no-flex">
                                     <v-layout>
                                         <v-flex>
                                             <fluro-expression-editor v-model="model.hideExpression" />
                                         </v-flex>
                                         <v-flex shrink>
-                                            <v-menu :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
+                                            <v-menu :left="true" v-model="popup.hideExpression" :top="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
                                                 <template v-slot:activator="{ on }">
                                                     <v-btn icon small class="ma-0 ml-1" v-on="on">
                                                         <fluro-icon icon="bullseye" />
@@ -73,14 +96,14 @@
                             </div>
                         </template>
                         <template v-else>
-                            <div class="expression-group">
-                                <v-input label="Hide if" hint="Hide this group if this expression returns true " :persistent-hint="true" class="no-flex">
+                            <div class="expression-group" :class="{active:model.expressions.hide}">
+                                <v-input label="Hide field if" hint="Hide this group if this expression returns true " :persistent-hint="true" class="no-flex">
                                     <v-layout>
                                         <v-flex>
                                             <fluro-expression-editor v-model="model.expressions.hide" />
                                         </v-flex>
                                         <v-flex shrink>
-                                            <v-menu :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
+                                            <v-menu :left="true" v-model="popup.hide" :top="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
                                                 <template v-slot:activator="{ on }">
                                                     <v-btn icon small class="ma-0 ml-1" v-on="on">
                                                         <fluro-icon icon="bullseye" />
@@ -94,14 +117,14 @@
                                     </v-layout>
                                 </v-input>
                             </div>
-                            <div class="expression-group">
-                                <v-input label="Show if" hint="Show this group only if this expression returns true " :persistent-hint="true" class="no-flex">
+                            <div class="expression-group" :class="{active:model.expressions.show}">
+                                <v-input label="Show field if" hint="Show this group only if this expression returns true " :persistent-hint="true" class="no-flex">
                                     <v-layout>
                                         <v-flex>
                                             <fluro-expression-editor v-model="model.expressions.show" />
                                         </v-flex>
                                         <v-flex shrink>
-                                            <v-menu :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
+                                            <v-menu :left="true" v-model="popup.show" :top="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
                                                 <template v-slot:activator="{ on }">
                                                     <v-btn icon small class="ma-0 ml-1" v-on="on">
                                                         <fluro-icon icon="bullseye" />
@@ -123,25 +146,88 @@
         </tabset>
         <tabset v-else v-model="tabIndex">
             <tab heading="Field Settings">
-                <flex-column-body>
+                <flex-column-body ref="scrollbox">
                     <v-container>
+                        <!-- <v-layout row wrap> -->
+                        <!-- <v-flex xs12> -->
                         <fluro-content-form-field ref="title" :field="fields.title" v-model="model" />
-                        <fluro-content-form-field :field="fields.key" v-model="model" />
-                        <template v-if="model.directive != 'custom'">
-                            <fluro-content-form-field :field="fields.description" v-model="model" />
-                            <fluro-content-form-field :field="fields.placeholder" v-model="model" />
-                        </template>
+                        <!-- </v-flex> -->
+                        <!-- <v-spacer/> -->
+                        <!-- <v-flex xs12> -->
+                        <!-- <fluro-inline-edit :enabled="showKey">
+                            <template v-slot:default>
+                                <div class="key-name fade" v-if="!editingKey" @click="editingKey = true">
+                                    
+                                    (Key: {{model.key}})
+                                    
+                                </div>
+                            </template>
+                            <template v-slot:edit="{props, blur, focus}">
+                                <div class="key-name">
+                                    
+                                    <input class="input-block" @focus="focus($event)" v-model="model.key" @keyup.enter="blur" @blur="blur" />
+                                    
+                                </div>
+                            </template>
+                        </fluro-inline-edit> -->
+                        <!-- <div class="key" v-show="showKey"> -->
+                        <div v-show="showKey">
+                            <fluro-content-form-field :field="fields.key" v-model="model" />
+                        </div>
+                        <div class="key-preview" v-if="!editingKey" @click="editingKey = true">
+                            <fluro-icon icon="pencil"/> key: {{model.key}} 
+                        </div>
+                        <!-- </v-flex> -->
+                        <!-- </v-layout> -->
+                        <!-- </div> -->
+                        <!-- <div class="show-key" @click="showKey = !showKey"> -->
+                        <!-- <strong>Key:</strong>{{model.key}} -->
+                        <!-- </div> -->
+                        <fluro-content-form-field v-if="showDescription" :field="fields.description" v-model="model" />
+                        <fluro-content-form-field v-if="showPlaceholder" :field="fields.placeholder" v-model="model" />
                         <fluro-content-form-field :field="fields.type" v-model="model" />
-                        <v-layout v-if="model.type != 'void'">
-                            <v-flex xs6>
-                                <fluro-content-form-field :field="fields.minimum" v-model="model" />
-                            </v-flex>
-                            <v-spacer />
-                            <v-flex xs6>
-                                <fluro-content-form-field :field="fields.maximum" v-model="model" />
-                            </v-flex>
-                        </v-layout>
+                        <fluro-content-form-field v-if="model.type == 'reference'" :field="fields.referenceType" v-model="model.params" />
                         <fluro-content-form-field :field="fields.directive" v-model="model" />
+                        <fluro-content-form-field v-if="model.directive == 'currency'" :field="fields.currency" v-model="model.params" />
+                        <v-container class="grid-list-xl" pa-0 fluid v-if="model.type != 'void'">
+                            <v-layout>
+                                <v-flex xs6>
+                                    <fluro-content-form-field :field="fields.minimum" v-model="model" />
+                                </v-flex>
+                                <v-spacer />
+                                <v-flex xs6>
+                                    <fluro-content-form-field :field="fields.maximum" @input="resetRequired(fields.maximum)" v-model="model" />
+                                </v-flex>
+                                <template v-if="model.type == 'embedded'">
+                                    <v-spacer />
+                                    <v-flex xs6>
+                                        <fluro-content-form-field :field="fields.askCount" v-model="model" />
+                                    </v-flex>
+                                </template>
+                            </v-layout>
+                        </v-container>
+                        <v-container class="grid-list-xl" pa-0 fluid v-if="isNumeric">
+                            <v-layout>
+                                <v-flex xs6>
+                                    <fluro-content-form-field :field="fields.minValue" v-model="model.params" />
+                                </v-flex>
+                                <v-spacer />
+                                <v-flex xs6>
+                                    <fluro-content-form-field :field="fields.maxValue" v-model="model.params" />
+                                </v-flex>
+                            </v-layout>
+                        </v-container>
+                        <v-container class="grid-list-xl" pa-0 fluid v-if="isDate">
+                            <v-layout>
+                                <v-flex xs6>
+                                    <fluro-content-form-field :field="fields.minDate" v-model="model.params" />
+                                </v-flex>
+                                <v-spacer />
+                                <v-flex xs6>
+                                    <fluro-content-form-field :field="fields.maxDate" v-model="model.params" />
+                                </v-flex>
+                            </v-layout>
+                        </v-container>
                         <template v-if="model.directive == 'code'">
                             <fluro-content-form-field :field="fields.syntax" v-model="model.params" />
                             <!-- <fluro-content-form-field :field="fields." v-model="model" /> -->
@@ -149,39 +235,96 @@
                         <template v-if="model.directive == 'custom'">
                             <fluro-content-form-field :field="fields.template" v-model="model" />
                         </template>
-                        <template v-if="requiresOptions">
-                            <template v-if="advancedOptions">
-                                <v-input label="Selectable Options" class="no-flex">
-                                    <options-manager v-model="model.options" />
-                                </v-input>
-                            </template>
-                            <template v-else>
-                                <fluro-content-form-field :field="fields.allowedValues" v-model="model" />
-                                <div class="sm muted" @click="showAdvancedOptions = true">Show advanced labelling options</div>
-                            </template>
-                        </template>
-                        <template v-if="model.directive != 'embedded'">
-                            <template v-if="model.type == 'reference'">
-                                <fluro-content-form-field :field="fields.allowedReferences" v-model="model" />
-                                <fluro-content-form-field @input="resetRequired()" :field="fields.defaultReferences" v-model="model" />
-                            </template>
-                            <template v-else>
-                                <template v-if="model.directive == 'wysiwyg'">
-                                    <fluro-content-form-field @input="resetRequired()" :field="fields.wysiwygDefaultValues" v-model="model" />
-                                </template>
-                                <template v-else-if="model.directive == 'code'">
-                                    <fluro-content-form-field @input="resetRequired()" :field="fields.codeDefaultValues" v-model="model" />
+                        <template v-else>
+                            <template v-if="requiresOptions">
+                                <template v-if="advancedOptions">
+                                    <v-input label="Selectable Options" class="no-flex">
+                                        <options-manager v-model="model.options" />
+                                    </v-input>
                                 </template>
                                 <template v-else>
-                                    <fluro-content-form-field @input="resetRequired()" :field="fields.defaultValues" v-model="model" />
+                                    <fluro-content-form-field :field="fields.allowedValues" v-model="model" />
+                                    <div class="sm muted" @click="showAdvancedOptions = true">Show advanced labelling options</div>
                                 </template>
                             </template>
+                            <template v-if="model.directive != 'embedded'">
+                                <template v-if="model.type == 'reference'">
+                                    <fluro-content-form-field :field="fields.allowedReferences" v-model="model" />
+                                    <fluro-content-form-field @input="resetRequired(fields.defaultReferences)" :field="fields.defaultReferences" v-model="model" />
+                                </template>
+                                <template v-else>
+                                    <template v-if="model.directive == 'wysiwyg'">
+                                        <fluro-content-form-field @input="resetRequired(fields.wysiwygDefaultValues)" :field="fields.wysiwygDefaultValues" v-model="model" />
+                                    </template>
+                                    <template v-else-if="model.directive == 'code'">
+                                        <fluro-content-form-field @input="resetRequired(fields.codeDefaultValues)" :field="fields.codeDefaultValues" v-model="model" />
+                                    </template>
+                                    <template v-else>
+                                        <fluro-content-form-field @input="resetRequired(fields.defaultValues)" :field="fields.defaultValues" v-model="model" />
+                                    </template>
+                                </template>
+                            </template>
+                            <fluro-panel v-if="model.directive == 'embedded' && restrictType == 'contact'">
+                                <fluro-panel-title>
+                                    <strong>{{restrictType | definitionTitle}} Options</strong>
+                                </fluro-panel-title>
+                                <fluro-panel-body>
+                                    <!-- <pre>TEST: {{model.directive == 'embedded'}}</pre> -->
+                                    <fluro-content-form-field :field="fields.targetRealms" v-model="model.params" />
+                                    <v-input class="no-flex">
+                                        <v-label>Add fields from Detail Sheets</v-label>
+                                        <div class="sm muted">Add other pre-defined fields to this contact</div>
+                                        <v-btn class="ma-0" :loading="loadingFields" @click="selectDetailSheetFields">Select Fields</v-btn>
+                                    </v-input>
+                                    <fluro-content-form-field :field="fields.targetHouseholdRole" v-model="model.params" />
+                                    <fluro-content-form-field :field="fields.targetDefinition" v-model="model.params" />
+                                    <fluro-content-form-field :field="fields.targetTeams" v-model="model.params" />
+                                    <fluro-content-form-field :field="fields.targetProcesses" v-model="model.params" />
+                                    <fluro-content-form-field :field="fields.targetTags" v-model="model.params" />
+                                    <fluro-content-form-field :field="fields.targetCapabilities" v-model="model.params" />
+                                    <fluro-content-form-field :field="fields.targetReactions" v-model="model.params" />
+                                </fluro-panel-body>
+                            </fluro-panel>
+                            <fluro-panel v-if="model.directive == 'embedded' && restrictType == 'contact'">
+                                <fluro-panel-title>
+                                    <strong>Ticketing</strong>
+                                </fluro-panel-title>
+                                <fluro-panel-body>
+                                    <fluro-content-form v-model="model.params.ticketing" :fields="ticketingFields">
+                                        <template v-slot:form="{formFields, fieldHash, model, update, options}">
+                                            <fluro-content-form-field :field="fieldHash.enabled" v-model="model" />
+                                            <template v-if="ticketingEnabled">
+                                                <component ref="ticketingManager" :is="ticketingManager" :field="field" v-model="model.events" v-if="ticketingManager" />
+                                            </template>
+                                            <!-- <ticketing-manager v-model="model.events"/> -->
+                                            <!-- <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.allowAnonymous" v-model="model" />
+                                            <template v-if="!model.allowAnonymous && !model.disableDefaultFields">
+                                                <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.identifier" v-model="model" />
+                                            </template> -->
+                                        </template>
+                                    </fluro-content-form>
+                                    <!-- <fluro-content-form-field :field="fields.targetReactions" v-model="model.params.ticketing" /> -->
+                                </fluro-panel-body>
+                            </fluro-panel>
+                            <fluro-content-form-field :field="fields.errorMessage" v-model="model" />
+                            <fluro-content-form-field :field="fields.className" v-model="model" />
+                            <fluro-content-form-field :field="fields.officeUseOnly" v-model="model.params" />
                         </template>
-                        <fluro-content-form-field :field="fields.errorMessage" v-model="model" />
-                        <fluro-content-form-field :field="fields.className" v-model="model" />
-                        <fluro-content-form-field :field="fields.officeUseOnly" v-model="model.params" />
                     </v-container>
                 </flex-column-body>
+                <!-- <flex-column-footer class="border-top">
+                    <v-container py-2>
+                        <v-layout>
+                            <v-spacer />
+                            <v-flex>
+                                <v-btn @click="deleteField" block class="ma-0" small>
+                                    Delete Field
+                                    <fluro-icon right icon="trash-alt" />
+                                </v-btn>
+                            </v-flex>
+                        </v-layout>
+                    </v-container>
+                </flex-column-footer> -->
             </tab>
             <tab heading="Expressions">
                 <flex-column-body>
@@ -205,77 +348,14 @@
                         </v-layout>
                     </v-container>
                     <v-container>
-                        <div class="expression-group" v-if="simpleExpressionEnabled">
-                            <v-input label="Set value to" hint="Set the value of this field depending on the input of another" :persistent-hint="true" class="no-flex">
-                                <v-layout>
-                                    <v-flex>
-                                        <fluro-expression-editor v-model="model.expressions.value" />
-                                    </v-flex>
-                                    <v-flex shrink>
-                                        <v-menu :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
-                                            <template v-slot:activator="{ on }">
-                                                <v-btn icon small class="ma-0 ml-1" v-on="on">
-                                                    <fluro-icon icon="bullseye" />
-                                                </v-btn>
-                                            </template>
-                                            <div>
-                                                <expression-field-select :context="model" @click="injectExpression($event, 'value')" v-model="expressionFields" />
-                                            </div>
-                                        </v-menu>
-                                    </v-flex>
-                                </v-layout>
-                            </v-input>
-                        </div>
-                        <div class="expression-group" v-if="simpleExpressionEnabled">
-                            <v-input label="Set default value of" hint="Set the default value, (the value before the user changes it) of this field depending on the input of another. " :persistent-hint="true" class="no-flex">
-                                <v-layout>
-                                    <v-flex>
-                                        <fluro-expression-editor v-model="model.expressions.defaultValue" />
-                                    </v-flex>
-                                    <v-flex shrink>
-                                        <v-menu :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
-                                            <template v-slot:activator="{ on }">
-                                                <v-btn icon small class="ma-0 ml-1" v-on="on">
-                                                    <fluro-icon icon="bullseye" />
-                                                </v-btn>
-                                            </template>
-                                            <div>
-                                                <expression-field-select :context="model" @click="injectExpression($event, 'defaultValue')" v-model="expressionFields" />
-                                            </div>
-                                        </v-menu>
-                                    </v-flex>
-                                </v-layout>
-                            </v-input>
-                        </div>
-                        <div class="expression-group">
-                            <v-input label="Hide if" hint="Hide this field if this expression returns true " :persistent-hint="true" class="no-flex">
-                                <v-layout>
-                                    <v-flex>
-                                        <fluro-expression-editor v-model="model.expressions.hide" />
-                                    </v-flex>
-                                    <v-flex shrink>
-                                        <v-menu :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
-                                            <template v-slot:activator="{ on }">
-                                                <v-btn icon small class="ma-0 ml-1" v-on="on">
-                                                    <fluro-icon icon="bullseye" />
-                                                </v-btn>
-                                            </template>
-                                            <div>
-                                                <expression-field-select :context="model" @click="injectExpression($event, 'hide')" v-model="expressionFields" />
-                                            </div>
-                                        </v-menu>
-                                    </v-flex>
-                                </v-layout>
-                            </v-input>
-                        </div>
-                        <div class="expression-group">
-                            <v-input label="Show if" hint="Show this field only if this expression returns true " :persistent-hint="true" class="no-flex">
+                        <div class="expression-group" :class="{active:model.expressions.show}">
+                            <v-input label="Show this field if" hint="Show this field only if this expression returns true " :persistent-hint="true" class="no-flex">
                                 <v-layout>
                                     <v-flex>
                                         <fluro-expression-editor v-model="model.expressions.show" />
                                     </v-flex>
                                     <v-flex shrink>
-                                        <v-menu :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
+                                        <v-menu :left="true" :top="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
                                             <template v-slot:activator="{ on }">
                                                 <v-btn icon small class="ma-0 ml-1" v-on="on">
                                                     <fluro-icon icon="bullseye" />
@@ -289,14 +369,77 @@
                                 </v-layout>
                             </v-input>
                         </div>
-                        <div class="expression-group" v-if="simpleExpressionEnabled">
-                            <v-input label="Required if" hint="Require input for this field if it's visible and this expression returns true " :persistent-hint="true" class="no-flex">
+                        <div class="expression-group" :class="{active:model.expressions.hide}">
+                            <v-input label="Hide this field if" hint="Hide this field if this expression returns true " :persistent-hint="true" class="no-flex">
+                                <v-layout>
+                                    <v-flex>
+                                        <fluro-expression-editor v-model="model.expressions.hide" />
+                                    </v-flex>
+                                    <v-flex shrink>
+                                        <v-menu :left="true" :top="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
+                                            <template v-slot:activator="{ on }">
+                                                <v-btn icon small class="ma-0 ml-1" v-on="on">
+                                                    <fluro-icon icon="bullseye" />
+                                                </v-btn>
+                                            </template>
+                                            <div>
+                                                <expression-field-select :context="model" @click="injectExpression($event, 'hide')" v-model="expressionFields" />
+                                            </div>
+                                        </v-menu>
+                                    </v-flex>
+                                </v-layout>
+                            </v-input>
+                        </div>
+                        <div class="expression-group" :class="{active:model.expressions.defaultValue}" v-if="simpleExpressionEnabled">
+                            <v-input label="Set default value to" hint="Set the default value, (the value before the user changes it) of this field depending on the input of another. " :persistent-hint="true" class="no-flex">
+                                <v-layout>
+                                    <v-flex>
+                                        <fluro-expression-editor v-model="model.expressions.defaultValue" />
+                                    </v-flex>
+                                    <v-flex shrink>
+                                        <v-menu :left="true" v-model="popup.defaultValue" :top="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
+                                            <template v-slot:activator="{ on }">
+                                                <v-btn icon small class="ma-0 ml-1" v-on="on">
+                                                    <fluro-icon icon="bullseye" />
+                                                </v-btn>
+                                            </template>
+                                            <div>
+                                                <expression-field-select :context="model" @click="injectExpression($event, 'defaultValue')" v-model="expressionFields" />
+                                            </div>
+                                        </v-menu>
+                                    </v-flex>
+                                </v-layout>
+                            </v-input>
+                        </div>
+                        <div class="expression-group" :class="{active:model.expressions.value}" v-if="simpleExpressionEnabled">
+                            <v-input label="Set value to" hint="Set the value of this field depending on the input of another" :persistent-hint="true" class="no-flex">
+                                <v-layout>
+                                    <v-flex>
+                                        <fluro-expression-editor v-model="model.expressions.value" />
+                                    </v-flex>
+                                    <v-flex shrink>
+                                        <v-menu :left="true" v-model="popup.value" :top="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
+                                            <template v-slot:activator="{ on }">
+                                                <v-btn icon small class="ma-0 ml-1" v-on="on">
+                                                    <fluro-icon icon="bullseye" />
+                                                </v-btn>
+                                            </template>
+                                            <div>
+                                                <expression-field-select :context="model" @click="injectExpression($event, 'value')" v-model="expressionFields" />
+                                            </div>
+                                        </v-menu>
+                                    </v-flex>
+                                </v-layout>
+                            </v-input>
+                        </div>
+                        <div class="expression-group" :class="{active:model.expressions.required}" v-if="simpleExpressionEnabled">
+                            <v-input label="Require this field if" hint="Require input for this field if it's visible and this expression returns true " :persistent-hint="true" class="no-flex">
                                 <v-layout>
                                     <v-flex>
                                         <fluro-expression-editor v-model="model.expressions.required" />
                                     </v-flex>
                                     <v-flex shrink>
-                                        <v-menu :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
+                                        <v-menu :left="true" v-model="popup.required" :top="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
                                             <template v-slot:activator="{ on }">
                                                 <v-btn icon small class="ma-0 ml-1" v-on="on">
                                                     <fluro-icon icon="bullseye" />
@@ -322,6 +465,8 @@ import FluroContentForm from '../form/FluroContentForm.vue';
 import OptionsManager from './FluroOptionsManager.vue';
 import ExpressionFieldSelect from './ExpressionFieldSelect.vue';
 import FluroExpressionEditor from '../form/FluroExpressionEditor.vue';
+import FluroInlineEdit from '../form/FluroInlineEdit.vue';
+import FieldSelectModal from './FieldSelectModal.vue';
 
 export default {
     components: {
@@ -330,6 +475,7 @@ export default {
         OptionsManager,
         FluroExpressionEditor,
         ExpressionFieldSelect,
+        FluroInlineEdit,
     },
     props: {
         value: {
@@ -339,56 +485,200 @@ export default {
             type: Array,
         },
     },
+    created() {
+        // this.startListener();
+    },
     data() {
 
         var self = this;
         var model = this.value;
-        if (!model.params) {
-            self.$set(model, 'params', {});
-        }
-
-
-        if (!model.expressions) {
-            self.$set(model, 'expressions', {});
-        }
+        self.setDefaults(model);
 
         ////////////////////////////////
 
         return {
             tabIndex: 0,
             model,
+            editingKey: false,
             showAdvancedOptions: false,
+            loadingFields: false,
+            focussed: null,
+            popup: {
+                hide: false,
+                hideExpression: false,
+                show: false,
+                required: false,
+                value: false,
+                defaultValue: false,
+            },
         }
     },
     methods: {
+        setDefaults(model) {
+            var self = this;
+            if (!model.params) {
+                self.$set(model, 'params', {});
+            }
+
+            if (!model.params.ticketing) {
+                self.$set(model.params, 'ticketing', { events: [] });
+            }
+
+            if (!model.params.ticketing.events) {
+                self.$set(model.params.ticketing, 'events', []);
+            }
+
+            if (!model.expressions) {
+                self.$set(model, 'expressions', {});
+            }
+        },
+        deleteField() {
+            var self = this;
+            self.$emit('deleted');
+
+
+        },
+        selectDetailSheetFields() {
+            var self = this;
+            self.loadingFields = true;
+
+            ////////////////////////////////
+
+            return self.$fluro.api.get('/defined/types/contactdetail')
+                .then(function(res) {
+
+                    self.loadingFields = false;
+
+                    self.$fluro.options(res.data, 'Select detail sheet')
+                        .then(function(definition) {
+
+                            definition = JSON.parse(JSON.stringify(definition));
+
+                            ///////////////////////////////////////
+
+                            var detailsBlock = _.find(self.model.fields, { key: 'details' });
+                            if (!detailsBlock) {
+                                detailsBlock = {
+                                    title: 'Details',
+                                    type: 'group',
+                                    key: 'details',
+                                    asObject: true,
+                                    minimum: 1,
+                                    maximum: 1,
+                                    askCount: 1,
+                                    fields: [],
+                                    guid: self.$fluro.utils.guid(),
+                                }
+
+                                self.model.fields.push(detailsBlock);
+                            }
+
+                            ///////////////////////////////////////
+
+                            var sheetBlock = _.find(detailsBlock.fields, { key: definition.definitionName });
+                            var dataBlock;
+
+                            ///////////////////////////////////////
+
+                            if (!sheetBlock) {
+                                sheetBlock = {
+                                    title: definition.title,
+                                    type: 'group',
+                                    key: definition.definitionName,
+                                    asObject: true,
+                                    minimum: 1,
+                                    maximum: 1,
+                                    askCount: 1,
+                                    fields: [],
+                                    guid: self.$fluro.utils.guid(),
+                                }
+
+                                dataBlock = {
+                                    title: 'Data',
+                                    type: 'group',
+                                    key: 'data',
+                                    asObject: true,
+                                    minimum: 1,
+                                    maximum: 1,
+                                    askCount: 1,
+                                    fields: [],
+                                    guid: self.$fluro.utils.guid(),
+
+                                }
+
+                                //Add as a pyramid
+                                sheetBlock.fields.push(dataBlock);
+                                detailsBlock.fields.push(sheetBlock);
+                            }
+
+                            //////////////////////////////
+
+                            _.each(definition.fields, function(field) {
+
+                                // guid:self.$fluro.utils.guid(),
+                                var existingField = _.find(dataBlock.fields, { key: field.key });
+                                if (!existingField) {
+                                    field.guid = self.$fluro.utils.guid();
+
+                                    dataBlock.fields.push(field);
+
+                                }
+                            })
+
+
+                        })
+                        .catch(reject);
+
+
+                })
+                .catch(function(err) {
+                    self.loadingFields = false;
+                });
+
+
+
+
+
+            // self.$fluro.modal({
+            //     component: FieldSelectModal,
+            // })
+            // .then(function(res) {
+            //     console.log('RES', res);
+            // });
+        },
         selectTitle(select) {
+
+            var scrollbox = this.$refs.scrollbox;
+            if (scrollbox) {
+                scrollbox.$el.scrollTo(0, 0);
+            }
+
+            /////////////////////////////////////////
 
             var self = this;
 
-            setTimeout(function() {
+            if (select) {
+                setTimeout(function() {
+                    var match = self.model.type == 'group' ? self.$refs.grouptitle : self.$refs.title;
 
+                    if (match && match.$el) {
 
-                var match = self.model.type == 'group' ? self.$refs.grouptitle : self.$refs.title;
-
-                if (match && match.$el && match.$el.scrollIntoView) {
-                    match.$el.scrollIntoView();
-
-                    if (select) {
                         var input = match.$el.querySelectorAll('input');
                         if (input && input[0]) {
                             input = input[0];
-                            console.log('INPUT', input);
                             input.focus();
                             input.select();
                         }
+
                     }
-                }
-            }, 10)
-           
+                }, 10)
+            }
+
         },
         injectExpression($event, target) {
 
             var self = this;
+            self.popup[target] = false;
 
             var currentValue = self.model.expressions[target];
 
@@ -423,38 +713,234 @@ export default {
 
 
         },
-        resetRequired: _.debounce(function() {
-            this.$emit('reset');
-        }, 100),
+        // stopListener() {
+        //     var self = this;
+        //     self.resetRequired = function() {
+
+        //     }
+        // },
+        // startListener() {
+        //     var self = this;
+
+        //     self.resetRequired = _.debounce(function(field) {
+        //         console.log('NEEDS A RESET!', field)
+        //         this.$emit('reset');
+        //     }, 100)
+        // },
+        resetRequired: function(field) {
+            //Nothing
+            var self = this;
+
+            self.previousField = field;
+            setTimeout(function() {
+                if (self.previousField == field) {
+                    console.log('NEEDS RESET!')
+                    self.previousField = false;
+                    self.$emit('reset');
+                }
+            }, 100)
+        },
     },
     watch: {
+
         value(v) {
 
             var self = this;
+            self.editingKey = false
+
+            // self.stopListener();
+
+
             var model = v;
-            if (!model.params) {
-                self.$set(model, 'params', {});
-            }
 
+            self.setDefaults(model);
 
-            if (!model.expressions) {
-                self.$set(model, 'expressions', {});
-            }
 
 
             self.model = model;
             self.tabIndex = 0;
-            self.selectTitle(self.model.title == 'New Field' || self.model.title == 'New Group');
+            self.selectTitle(!self.model.title);
+
+
+
+            // self.startListener();
         },
     },
     mounted() {
         var self = this;
         setTimeout(function() {
-            self.selectTitle(self.model.title == 'New Field' || self.model.title == 'New Group');
+            self.selectTitle(!self.model.title);
         }, 100);
 
     },
+    asyncComputed: {
+        referenceOptions: {
+            default: [],
+            get() {
+                var self = this;
+
+
+                return new Promise(function(resolve, reject) {
+
+                    self.$fluro.types.terms()
+                        .then(function(terms) {
+
+                            /////////////////////////
+                            var mapped = _.chain(terms)
+                                .values()
+                                .map(function(term) {
+                                    return {
+                                        name: term.title,
+                                        title: term.title,
+                                        value: term.definitionName,
+                                    }
+                                })
+                                .orderBy('title')
+                                .value();
+
+                            /////////////////////////
+                            resolve(mapped);
+                        })
+                        .catch(reject);
+
+                    // Promise.all([
+                    //     new Promise(function(resolve, reject) {
+                    //         self.$fluro.types.basicTypes()
+                    //             .then(function(values) {
+                    //                 var cleaned = _.chain(values)
+                    //                     .compact()
+                    //                     .map(function(type) {
+                    //                         return {
+                    //                             name: type.title,
+                    //                             title: type.title,
+                    //                             value: type.definitionName,
+                    //                         }
+                    //                     })
+                    //                     .orderBy('title')
+                    //                     .value();
+
+                    //                 resolve(cleaned);
+                    //             });
+                    //     }),
+                    //     new Promise(function(resolve, reject) {
+                    //         self.$fluro.types.basicTypes()
+                    //             .then(function(values) {
+                    //                 var cleaned = _.chain(values)
+                    //                     .compact()
+                    //                     .map(function(type) {
+                    //                         return {
+                    //                             name: type.title,
+                    //                             title: type.title,
+                    //                             value: type.definitionName,
+                    //                         }
+                    //                     })
+                    //                     .orderBy('title')
+                    //                     .value();
+
+                    //                 resolve(cleaned);
+                    //             });
+                    //     }),
+
+                    // ])
+
+
+                })
+            }
+        }
+    },
     computed: {
+        field() {
+            return this.model;
+        },
+        ticketingEnabled() {
+            return this.model && this.model.params && this.model.params.ticketing && this.model.params.ticketing.enabled;
+        },
+        ticketingManager() {
+            if (this.model.type == 'reference' && this.restrictType == 'contact' && this.ticketingEnabled) {
+                var load = () => import(`./TicketingManager.vue`)
+                // console.log('GET LOADED', load);
+                return load;
+            }
+        },
+
+
+
+        isNumeric() {
+            switch (this.model.type) {
+                case 'float':
+                case 'decimal':
+                case 'integer':
+                case 'number':
+                    return true;
+                    break;
+            }
+        },
+        isDate() {
+            return this.model.type == 'date';
+        },
+        currencyOptions() {
+            var self = this;
+            var array = [];
+
+            if (_.get(self.user, 'countryCode') == 'AU') {
+                array.push({
+                    name: `AUD (${self.$fluro.utils.currencySymbol('aud')})`,
+                    value: 'aud',
+                })
+            }
+
+            array.push({
+                name: `USD (${self.$fluro.utils.currencySymbol('usd')})`,
+                value: 'usd',
+            })
+
+            if (_.get(self.user, 'countryCode') != 'AU') {
+                array.push({
+                    name: `AUD (${self.$fluro.utils.currencySymbol('aud')})`,
+                    value: 'aud',
+                })
+            }
+
+            array.push({
+                name: `GBP (${self.$fluro.utils.currencySymbol('gbp')})`,
+                value: 'gbp',
+            })
+
+            array.push({
+                name: `CAD (${self.$fluro.utils.currencySymbol('cad')})`,
+                value: 'cad',
+            })
+
+
+
+            return array;
+        },
+        showDescription() {
+            switch (this.model.directive) {
+                case 'embedded':
+                    return;
+                    break;
+                default:
+                    return true;
+                    break;
+            }
+        },
+        showPlaceholder() {
+            switch (this.model.directive) {
+                case 'custom':
+                case 'embedded':
+                    return;
+                    break;
+                default:
+                    return true;
+                    break;
+            }
+        },
+        showKey() {
+            var self = this;
+            return self.editingKey; // || !self.model.key;
+
+        },
         advancedOptions() {
 
             if (this.model.options && this.model.options.length) {
@@ -467,7 +953,7 @@ export default {
             return this.model.type != 'reference' && this.model.type != 'group'
         },
         restrictType() {
-            return this.model.params.restrictType;
+            return this.model && this.model.params && this.model.params.restrictType;
         },
         requiresOptions() {
             switch (this.model.directive) {
@@ -478,6 +964,31 @@ export default {
                     return true;
                     break;
             }
+        },
+        ticketingFields() {
+            var self = this;
+
+            var fields = [];
+
+            addField('enabled', {
+                title: 'Create tickets for this contact',
+                description: `If selected then this contact will be considered a ticketed attendee if an event is specified during the form submission a 'Standard' ticket will be created for each contact created by this field`,
+                minimum: 0,
+                maximum: 1,
+                type: 'boolean',
+            })
+
+            function addField(key, data) {
+                if (!data.key) {
+                    data.key = key;
+                }
+
+                fields.push(data);
+            }
+
+            return fields;
+
+
         },
         fields() {
             var self = this;
@@ -523,9 +1034,9 @@ export default {
 
 
             addField('wysiwygDefaultValues', {
-                title: 'Default Value(s)',
+                title: self.model.maximum == 1 ? 'Default Value' : 'Default Values',
                 key: 'defaultValues',
-                description: 'add a default value for this field',
+                description: 'Preselect values for this field',
                 minimum: 0,
                 maximum: 0,
                 type: 'string',
@@ -596,7 +1107,7 @@ export default {
 
             addField('title', {
                 title: 'Title',
-                description: 'The title as displayed to the user',
+                // description: 'The title as displayed to the user',
                 minimum: 1,
                 maximum: 1,
                 type: 'string',
@@ -622,6 +1133,49 @@ export default {
                     minValue: 0,
                 }
             })
+
+
+
+            addField('minValue', {
+                title: 'Minimum Amount',
+                description: 'Minimum amount that can be input',
+                minimum: 0,
+                maximum: 1,
+                type: self.model.type,
+                directive: self.model.directive || null,
+                params: {
+                    currency: self.model.params.currency,
+                },
+            })
+            addField('maxValue', {
+                title: 'Maximum Amount',
+                description: 'Maximum amount that can be input',
+                minimum: 0,
+                maximum: 1,
+                type: self.model.type,
+                directive: self.model.directive || null,
+                params: {
+                    currency: self.model.params.currency,
+                },
+            })
+
+            addField('minDate', {
+                title: 'Earliest Date',
+                description: 'Earliest date that can be input',
+                minimum: 0,
+                maximum: 1,
+                type: 'date',
+            })
+            addField('maxDate', {
+                title: 'Latest Date',
+                description: 'Latest date that can be input',
+                minimum: 0,
+                maximum: 1,
+                type: 'date',
+            })
+
+
+
 
             addField('groupMinimum', {
                 title: 'Minimum',
@@ -658,7 +1212,7 @@ export default {
             })
 
             addField('key', {
-                title: 'Key',
+                title: 'Database Key',
                 description: `A unique key used to store this field's data in the system`,
                 minimum: 1,
                 maximum: 1,
@@ -681,7 +1235,7 @@ export default {
             })
 
             addField('description', {
-                title: 'Description',
+                title: 'Help text',
                 description: 'An optional description that can add extra detail for users entering data',
                 minimum: 0,
                 maximum: 1,
@@ -755,11 +1309,26 @@ export default {
 
 
             addField('referenceType', {
+                key: 'restrictType',
                 title: 'Reference Type',
                 description: 'Restrict what kind of items can be referenced in this field',
                 minimum: 0,
                 maximum: 1,
                 type: 'string',
+                directive: 'select',
+                options: self.referenceOptions,
+            })
+
+
+            addField('currency', {
+                key: 'currency',
+                title: 'Currency',
+                description: 'Select what currency symbol to display',
+                minimum: 0,
+                maximum: 1,
+                type: 'string',
+                directive: 'select',
+                options: self.currencyOptions,
             })
 
 
@@ -862,6 +1431,8 @@ export default {
                         value: 'color',
                     })
 
+
+
                     inputOptions.push({
                         title: 'Signature',
                         value: 'signature',
@@ -886,12 +1457,32 @@ export default {
 
 
                     break;
+                case 'number':
+                case 'integer':
+                case 'decimal':
+                case 'float':
+
+                    inputOptions.push({
+                        title: 'Number Input',
+                        value: 'input',
+                    })
+
+                    inputOptions.push({
+                        title: 'Currency Input',
+                        value: 'currency',
+                    })
+
+
+                    break;
                 default:
                     inputOptions.push({
                         title: 'Text Input',
                         value: 'input',
                     })
                     break;
+
+
+
             }
 
             inputOptions.push({
@@ -920,7 +1511,7 @@ export default {
 
             addField('asObject', {
                 title: 'Group as Sub Object',
-                description: 'Attach the fields in this group onto the group object instead of the top level form model',
+                description: `Treat this group as it's own entity. If not selected this group will be purely for visual layout.`,
                 minimum: 0,
                 maximum: 1,
                 type: 'boolean',
@@ -935,7 +1526,7 @@ export default {
             })
 
             addField('className', {
-                title: 'Classes',
+                title: 'CSS Classes',
                 description: 'Add CSS classes to this field',
                 minimum: 0,
                 maximum: 1,
@@ -954,6 +1545,170 @@ export default {
                 }
             })
 
+            /////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////
+
+            var embeddedType = self.model.params.restrictType
+            var embeddedTitle = self.$fluro.types.readable(embeddedType);
+            var embeddedPlural = self.$fluro.types.readable(embeddedType, true);
+
+            var definitions = _.chain(self.$fluro.glossary)
+                .reduce(function(set, term, key) {
+                    term.definitionName = key;
+                    if (term.parentType == embeddedType) {
+                        set.push(term);
+                    }
+
+                    return set;
+                }, [])
+                .map(function(definition) {
+                    return {
+                        name: definition.title,
+                        value: definition.definitionName,
+                    }
+                })
+                .orderBy(function(definition) {
+                    return definition.title;
+                })
+                .value();
+
+            ////////////////////////////////////////////
+
+            addField('targetDefinition', {
+                title: 'Definition',
+                description: `Select the definition that should be applied to ${embeddedPlural}.`,
+                minimum: 0,
+                maximum: 1,
+                type: 'reference',
+                expressions: {
+                    hide() {
+                        return !definitions.length;
+                    }
+                },
+                params: {
+                    restrictType: 'realm',
+                }
+            })
+
+
+            addField('targetRealms', {
+                title: `Create ${embeddedTitle} in Realms`,
+                description: `Select realms that these ${embeddedPlural} should be created in. If left blank it will default to the same realm as the form submission itself`,
+                minimum: 0,
+                maximum: 0,
+                type: 'reference',
+                directive: 'realm-select',
+                params: {
+                    restrictType: 'realm',
+                }
+            })
+
+            addField('targetHouseholdRole', {
+                title: 'Household Role',
+                description: `Select the household role to add to these ${embeddedPlural}`,
+                minimum: 0,
+                maximum: 1,
+                type: 'string',
+                directive: 'select',
+                options: [{
+                        name: 'None',
+                        value: '',
+                    },
+                    {
+                        name: 'Parent',
+                        value: 'parent',
+                    },
+                    {
+                        name: 'Child',
+                        value: 'child',
+                    },
+                ],
+                expressions: {
+                    hide() {
+                        return (embeddedType != 'contact');
+                    }
+                }
+            })
+
+
+            addField('targetCapabilities', {
+                title: 'Add Capabilities',
+                description: `Select capabilities that will be added to these ${embeddedPlural}. `,
+                minimum: 0,
+                maximum: 0,
+                type: 'reference',
+                params: {
+                    restrictType: 'capability',
+                },
+                expressions: {
+                    hide() {
+                        return (embeddedType != 'contact');
+                    }
+                }
+            })
+
+            addField('targetTeams', {
+                title: 'Add to Groups / Teams',
+                description: `Select groups and teams that these ${embeddedPlural} should be created in. `,
+                minimum: 0,
+                maximum: 0,
+                type: 'reference',
+                params: {
+                    restrictType: 'team',
+                },
+                expressions: {
+                    hide() {
+                        return (embeddedType != 'contact');
+                    }
+                }
+            })
+
+            addField('targetTags', {
+                title: 'Add Tags',
+                description: `Select tags to add to these ${embeddedPlural}. `,
+                minimum: 0,
+                maximum: 0,
+                type: 'reference',
+                params: {
+                    restrictType: 'tag',
+                },
+            })
+
+            addField('targetProcesses', {
+                title: 'Add to Processes',
+                description: `Select processes that these ${embeddedPlural} should be added in to. `,
+                minimum: 0,
+                maximum: 0,
+                type: 'reference',
+                params: {
+                    restrictType: 'definition',
+                },
+            })
+
+            addField('targetReactions', {
+                title: 'Trigger Reactions',
+                description: `Select reaction pipelines that these ${embeddedPlural} should be added in to. `,
+                minimum: 0,
+                maximum: 0,
+                type: 'reference',
+                params: {
+                    restrictType: 'reaction',
+                },
+            })
+
+            ///////////////////////////////////////////////
+            ///////////////////////////////////////////////
+            ///////////////////////////////////////////////
+            ///////////////////////////////////////////////
+            ///////////////////////////////////////////////
+
+
+
+
+
+
+
             function addField(key, data) {
                 if (!data.key) {
                     data.key = key;
@@ -968,12 +1723,42 @@ export default {
 }
 </script>
 <style lang="scss">
+.key-name {
+    &.fade {
+        opacity: 0.5;
+    }
+
+    margin-bottom: 10px;
+    display: block;
+}
+
+.key {
+    border-radius: 3px;
+    background: rgba(#000, 0.1);
+    padding: 2px;
+    display: block;
+}
+
+.input-block {
+    background: #fff;
+    display: block;
+    border: 1px solid $primary;
+    width: 100%;
+}
+
 .expression-group {
 
     padding: 15px 15px;
     background: rgba(#000, 0.05);
     border-radius: 3px;
     margin-top: 16px;
+    border: 1px solid transparent;
+
+    &.active {
+        background: rgba($warning, 0.1);
+        border: 1px solid rgba($warning, 0.5);
+        color: $warning;
+    }
 
     // &.has-error {
     //     background: rgba(#ff5252, 0.05)
@@ -990,5 +1775,12 @@ export default {
 
     //     font-style: italic;
     // }
+}
+
+
+.key-preview {
+    margin-top:-15px;
+    font-size: 0.8em;
+    opacity: 0.5;
 }
 </style>

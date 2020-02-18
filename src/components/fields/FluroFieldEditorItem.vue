@@ -1,12 +1,19 @@
 <template>
-    <li class="field-editor-item" :class="classes">
-        <div class="field-editor-item-field" @click="select(model)">
+    <li class="field-editor-item"  :class="classes">
+        <div class="field-editor-item-field" @click="select(model)" @mouseover="mouseover(model)" @mouseleave="mouseleave(model)">
+            <!--  -->
+            <fluro-realm-bar :realm="targetRealms" v-if="targetRealms" />
             <v-layout align-center>
                 <!-- :click="clickedRoute" -->
-                <v-flex shrink class="handle">
+                <v-flex shrink class="handle grab">
                     <div class="icon">
                         <!-- <fluro-icon :icon="icon" /> -->
                         <fluro-icon icon="arrows" />
+                    </div>
+                </v-flex>
+                <v-flex shrink v-if="ticketed" v-tippy content="Ticketing Enabled">
+                    <div class="icon ticket">
+                        <fluro-icon library="fas" icon="ticket" />
                     </div>
                 </v-flex>
                 <v-flex shrink v-if="hasExpressions">
@@ -19,8 +26,15 @@
                         <fluro-icon icon="eye-slash" />
                     </div>
                 </v-flex>
-                <v-flex>
-                    {{model.title}}
+                <v-flex class="handle">
+                    {{model.title}} <span v-if="summary" class="summary">{{summary}}</span>
+                    <div v-if="readableIssues" class="issue-summary">
+                        <fluro-icon library="fas" icon="exclamation" /> {{readableIssues}}</div>
+                </v-flex>
+                <v-flex shrink v-if="hasSubFields" @click.stop.prevent="toggleCollapsed()">
+                    
+                        <fluro-icon :icon="model.collapsed ? 'angle-up': 'angle-down'" />
+                    
                 </v-flex>
                 <v-flex shrink @click.stop.prevent="">
                     <div class="actions" :class="{active:showActions}">
@@ -43,10 +57,10 @@
             </v-layout>
         </div>
         <!-- <div>{{depth}}</div> -->
-        <template v-if="hasSubFields">
-            <draggable class="field-editor-children" v-if="model.fields && !model.collapsed" v-model="model.fields" handle=".handle" element="ul" :options="treeOptions" :move="onPageMove">
+        <template v-if="hasSubFields ">
+            <draggable class="field-editor-children" v-if="showSubFields" v-model="model.fields" handle=".handle" element="ul" :options="treeOptions" :move="onPageMove">
                 <!-- @click="select(leaf)" -->
-                <fluro-field-editor-item :selected="selected" :parent="model.fields" :leaf="model.fields[index]" :select="select" @duplicate="duplicate" @injected="injected" @deleted="deleted" v-for="(leaf, index) in model.fields" :key="leaf.guid" />
+                <fluro-field-editor-item :selected="selected" :parent="model.fields" :leaf="model.fields[index]" :select="select" :mouseover="mouseover" :mouseleave="mouseleave" @duplicate="duplicate" @injected="injected" @deleted="deleted" v-for="(leaf, index) in model.fields" :key="leaf.guid" />
             </draggable>
         </template>
     </li>
@@ -72,6 +86,12 @@ export default {
         select: {
             type: Function,
         },
+        mouseover: {
+            type: Function,
+        },
+        mouseleave: {
+            type: Function,
+        },
         selected: {
             type: Object,
         },
@@ -79,7 +99,7 @@ export default {
     beforeCreate: function() {
         this.$options.components.FluroFieldEditorItem = require('./FluroFieldEditorItem.vue').default;
     },
-    
+
 
     data() {
         return {
@@ -94,6 +114,96 @@ export default {
         }
     },
     computed: {
+        ticketed() {
+            return this.model && this.model.params && this.model.params.ticketing && this.model.params.ticketing.enabled;
+        },
+        readableIssues() {
+            if (!this.issues.length) {
+                return;
+            }
+            return this.issues.join(', ');
+        },
+        issues() {
+            var self = this;
+            var array = [];
+
+            if (!self.model.title) {
+                array.push('This field does not have a title')
+                return array;
+            }
+
+            if (!self.model.key) {
+                array.push('This field does not have a key')
+            }
+
+            //////////////////////////////////////////////////
+
+            var conflict = self.parent.some(function(field) {
+                if (field == self.model) {
+                    return;
+                }
+
+                return field.key == self.model.key;
+
+            });
+
+            if (conflict) {
+                array.push(`Key '${self.model.key}' is already in use`)
+            }
+
+            //////////////////////////////////////////////////
+
+            //     )s = _.some(self.parent, function(field) {
+            //     // console.log('check match', field.key == self.model.key )
+            //     return field.key == self.model.key;
+            // })
+
+            // if(conflicts && conflicts.length) {
+            // }
+
+            return array;
+        },
+        targetRealms() {
+            return this.model.params ? this.model.params.targetRealms : null;
+        },
+        summary() {
+            var self = this;
+
+            var multiple = self.model.maximum != 1;
+            if (!self.model.params) {
+                self.model.params = {};
+            }
+
+            if (self.model.directive == 'embedded') {
+                if (self.model.params.targetHouseholdRole) {
+                    return `${multiple ? 'Multiple ' : ''}${_.startCase(self.model.params.targetHouseholdRole)}`;
+                }
+
+                if (self.model.params.restrictType) {
+                    return `${multiple ? 'Multiple ' : ''}${self.$fluro.types.readable(self.model.params.restrictType, multiple)}`;
+                }
+            }
+
+            var modelType = self.model.type;
+            switch (modelType) {
+                case 'void':
+                case 'value':
+                    return '';
+                    break;
+            }
+            return `${_.startCase(modelType)}`;
+        },
+        showSubFields() {
+            return this.hasSubFields && this.expanded;
+            //Allow collapsed later
+            // model.fields && !model.collapsed
+        },
+        expanded() {
+            return !this.collapsed;
+        },
+        collapsed() {
+            return this.model.collapsed;
+        },
         hasSubFields() {
             return this.model.type == 'group' || this.model.directive == 'embedded';
         },
@@ -101,31 +211,45 @@ export default {
             var self = this;
             var type = self.model.type == 'group' ? 'Group' : 'Field';
 
-            return [{
-                    title: `Duplicate ${type}`,
-                    icon: 'copy',
-                    click() {
-                        self.$emit('duplicate', self.model, self.parent);
-                    }
-                },
-                {
-                    title: `Add Field After`,
+            var actions = [{
+                title: `Duplicate ${type}`,
+                icon: 'copy',
+                click() {
+                    self.$emit('duplicate', self.model, self.parent);
+                }
+            }, ];
+
+            if (type == 'group' || self.model.directive == 'embedded') {
+                actions.push({
+                    title: `Add Field Inside`,
                     icon: 'plus',
                     click() {
-
-                        self.$emit('injected', self.model, self.parent);
+                        self.$emit('injected', self.model, self.model);
                     }
-                },
-                {
-                    title: `Delete ${type}`,
-                    icon: 'trash-alt',
-                    click() {
+                })
+            }
 
-                        self.$emit('deleted', self.model, self.parent);
-                    }
-                },
+            actions.push({
+                title: `Add Field After`,
+                icon: 'plus',
+                click() {
 
-            ]
+                    self.$emit('injected', self.model, self.parent);
+                }
+            })
+
+            actions.push({
+                title: `Delete ${type}`,
+                icon: 'trash-alt',
+                click() {
+
+                    self.$emit('deleted', self.model, self.parent);
+                }
+            });
+
+            return actions;
+
+
         },
         // icon() {
         //     return this.model.type == 'folder' ? (this.model.collapsed ? `folder` : `folder-open`) : `file`;
@@ -149,6 +273,10 @@ export default {
             //     array.push('leaf')
             // }
 
+            if (this.issues.length) {
+                array.push('issues');
+            }
+
             if (this.isSelected) {
                 array.push('active');
             }
@@ -169,11 +297,11 @@ export default {
         }
     },
 
-    watch:{
+    watch: {
         hasSubFields(bol) {
             var self = this;
 
-            if(bol && !self.model.fields) {
+            if (bol && !self.model.fields) {
                 self.$set(self.model, 'fields', []);
             }
         }
@@ -181,14 +309,28 @@ export default {
     mounted() {
 
         var self = this;
-        if(self.model._activate) {
-            self.$el.scrollIntoView({
-                behavior:'smooth',
-                block:'center',
-            });
-            console.log('Scroll into view')
-            self.model._activate = undefined;
+
+        if (self.model.isNew) {
+            console.log('SCROLL ITEM INTO VIEW')
+            self.$nextTick(function() {
+
+                self.$nextTick(function() {
+                    if (self.$el && self.$el.scrollIntoView) {
+                        self.$el.scrollIntoView({
+                            behavior: 'smooth',
+                            // block: 'top',
+                        });
+
+                        //Remove the new tag
+
+                        self.model.isNew = undefined;
+
+                    }
+                });
+            })
         }
+
+
         // self.$nextTick(function() {
 
 
@@ -203,6 +345,15 @@ export default {
         // })
     },
     methods: {
+        // mouseover() {
+        //     this.hovered(this.model)
+        // },
+        // mouseleave() {
+        //     this.hovered(null)
+        // },
+        toggleCollapsed() {
+            this.$set(this.model, 'collapsed', !this.model.collapsed)
+        },
         duplicate(field, parent) {
             this.$emit('duplicate', field, parent);
         },
@@ -216,9 +367,6 @@ export default {
         clicked($event, route) {
             console.log('EVENT', route.title)
             this.$emit('click', $event, route);
-        },
-        toggleCollapsed(route) {
-            this.$set(route, 'collapsed', !route.collapsed);
         },
         onPageMove({ relatedContext, draggedContext }) {
             const relatedElement = relatedContext.element;
@@ -271,15 +419,39 @@ export default {
 
 .field-editor-item {
     border: 1px solid rgba(#000, 0.1);
+
     border-radius: 3px;
     overflow: hidden;
     margin: 0 0 4px;
     list-style-type: none;
     list-style: none;
 
+    .summary {
+        font-size: 0.8em;
+        font-weight: normal;
+        opacity: 0.5;
+    }
+
+    .issue-summary {
+        clear: both;
+        font-size: 0.8em;
+        font-weight: normal;
+        color: #fff;
+        background: $danger;
+        border-radius: 4px;
+        padding: 5px;
+    }
 
     &.expressions {
         border: 1px dashed $warning;
+    }
+
+
+    &.issues,
+    &.issues>.field-editor-item-field,
+    &.issues>.field-editor-children {
+        background: rgba($danger, 0.5) !important;
+        border: 1px solid $danger;
     }
 
 
@@ -290,19 +462,31 @@ export default {
     }
 
 
+    &:hover {
+        border-color: $primary;
+    }
+
+
 
     .field-editor-item-field {
+        position: relative;
         padding: 5px;
         background: #fff;
         font-weight: 500;
+        cursor: pointer;
+        ;
 
-        .handle {
+        .grab {
             cursor: grab;
             opacity: 0;
+
+            svg {
+                opacity: 0.5;
+            }
         }
 
         .actions {
-            opacity: 0;
+            opacity: 0.3;
             cursor: pointer;
 
             &.active {
@@ -311,8 +495,9 @@ export default {
         }
 
         &:hover {
+            
 
-            .handle,
+            .grab,
             .actions {
                 opacity: 1;
             }
@@ -322,21 +507,24 @@ export default {
 
     &.office-use-only {
         .field-editor-item-field {
-        background: #eee;
-        color: #888;
+            background: #eee;
+            color: #888;
+        }
     }
-}
 
     &.void {
         border: 1px solid transparent;
+
         .field-editor-item-field {
-        background: none;
-        color: #888;
-        border:none;
-    }
+            background: none;
+            color: #888;
+            border: none;
+        }
     }
 
     &.active {
+        border: 1px solid $primary;
+
         &>.field-editor-item-field {
             background: $primary;
             color: #fff;
@@ -364,6 +552,10 @@ export default {
         text-align: center;
         margin-right: 2px;
         font-size: 12px;
+
+        &.ticket {
+            color: $success;
+        }
     }
 }
 </style>

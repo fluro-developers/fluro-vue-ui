@@ -15,10 +15,13 @@
             </template>
             <template v-if="allowed">
                 <slot name="success" :reset="reset" :result="result" v-if="state == 'success'">
-                    Success!
-                    <v-btn class="mx-0" @click="reset()">
-                        Back to form
-                    </v-btn>
+                    <div class="text-xs-center">
+                        <h3>Submission Successful</h3>
+                        <div>Thank you for your submission</div>
+                        <v-btn class="mx-0" @click="reset()">
+                            Back to form
+                        </v-btn>
+                    </div>
                 </slot>
                 <template v-else>
                     <slot name="info"></slot>
@@ -26,12 +29,55 @@
                         <!-- <pre>{{allowAnonymous}}</pre> -->
                         <!-- <pre>{{fields}}</pre> -->
                         <!-- <pre>{{options}}</pre> -->
-<!-- <pre>{{errorMessages}}</pre> -->
-
-                        <fluro-content-form @errorMessages="validate" @input="modelChanged" ref="form" :options="options" v-model="dataModel" :fields="fields" />
+                        <!-- <pre>{{errorMessages}}</pre> -->
+                        <fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" @errorMessages="validate" @input="modelChanged" ref="form" :options="options" v-model="dataModel" :fields="fields" />
+                        <div class="payment" v-if="showPaymentForm">
+                            <v-container>
+                                <h2>Payment Summary</h2>
+                                <v-layout align-center>
+                                    <v-flex class="modifier-title">
+                                        <strong>Amount</strong>
+                                    </v-flex>
+                                    <v-flex shrink v-if="baseAmount">
+                                        <strong>{{formattedBaseAmount}}</strong>
+                                    </v-flex>
+                                </v-layout>
+                                <div class="modifier" v-for="modifier in activeModifiers">
+                                    <v-layout align-center>
+                                        <v-flex class="modifier-title">
+                                            {{modifier.title}}
+                                        </v-flex>
+                                        <v-flex shrink>
+                                            {{modifier.description}}
+                                        </v-flex>
+                                        <v-flex shrink>
+                                            {{modifier.formattedTotal}}
+                                        </v-flex>
+                                    </v-layout>
+                                </div>
+                                <div>
+                                    <v-layout align-center>
+                                        <v-flex>
+                                            <h3>Total</h3>
+                                        </v-flex>
+                                        <v-flex shrink>
+                                            <h3>{{formattedTotal}} <span class="muted">{{currency.toUpperCase()}}</span></h3>
+                                        </v-flex>
+                                    </v-layout>
+                                </div>
+                            </v-container>
+                            <v-container style="background: #fafafa" class="border-top">
+                                <h4>Card Details</h4>
+                                <fluro-content-form @errorMessages="validate" @input="modelChanged" ref="payment" :options="options" v-model="dataModel" :fields="paymentFields" />
+                            </v-container>
+                            <v-container v-if="definition.data.enableReceipt" style="background: #fafafa" class="border-top">
+                                <!-- <h5>Would you like an email receipt?</h5> -->
+                                <fluro-content-form-field @input="modelChanged" :options="options" :field="receiptInput" v-model="dataModel" />
+                            </v-container>
+                        </div>
                         <div class="actions">
                             <template v-if="state == 'processing'">
-                                <v-btn class="mx-0" :disabled="true">
+                                <v-btn :block="mobile" :large="mobile" class="mx-0" :disabled="true">
                                     Processing
                                     <v-progress-circular indeterminate></v-progress-circular>
                                 </v-btn>
@@ -40,7 +86,7 @@
                                 <v-alert :value="true" type="error" outline>
                                     {{serverErrors}}
                                 </v-alert>
-                                <v-btn class="mx-0" @click.prevent.native="state = 'ready'">
+                                <v-btn :block="mobile" :large="mobile" class="mx-0" @click.prevent.native="state = 'ready'">
                                     Try Again
                                 </v-btn>
                                 <!-- <v-btn class="mx-0" :disabled="hasErrors" type="submit" color="primary">
@@ -55,7 +101,7 @@
                                     </div>
                                 </v-alert>
                                 <!-- <v-layout> -->
-                                <v-btn class="mx-0" :disabled="hasErrors" type="submit" color="primary">
+                                <v-btn :block="mobile" :large="mobile" class="mx-0" :disabled="hasErrors" type="submit" color="primary">
                                     Submit
                                 </v-btn>
                                 <!-- <v-spacer /> -->
@@ -71,9 +117,11 @@
 </template>
 <script>
 import FluroContentForm from './FluroContentForm.vue';
+import FluroContentFormField from './FluroContentFormField.vue';
+
 import _ from 'lodash';
 import Vue from 'vue';
-
+import Expressions from 'expression-eval';
 import { mapFields } from 'vuex-map-fields';
 
 
@@ -112,8 +160,24 @@ function injectScript(scriptURL, callback) {
 
 export default {
     props: {
+        'contextField':{
+            type:Object,
+        },
         'title': {
             type: String,
+        },
+        'prefill':{
+            type:Boolean,
+            default() {
+                return true;
+            }
+        },
+        'context': {
+            type: String,
+            default () {
+                //By default 
+                return this.$fluro.global.defaultFormContext;
+            },
         },
         'definition': {
             type: Object,
@@ -132,12 +196,24 @@ export default {
         'debugMode': {
             type: Boolean,
         },
+        'submissionConfig': {
+            type: Object,
+            default () {
+                return {}
+            }
+        },
         'value': {
             type: Object,
             default () {
                 return {
                     data: {}
                 };
+            }
+        },
+        'defaultState':{
+            type:String,
+            default() {
+                return 'ready';
             }
         },
         'options': {
@@ -151,6 +227,7 @@ export default {
     },
     data() {
         return {
+            paymentReady: false,
             dataModel: JSON.parse(JSON.stringify(this.value)),
             // model: {
             //     data: {},
@@ -158,43 +235,250 @@ export default {
             serverErrors: '',
             errorMessages: [],
             result: null,
-            state: 'ready',
+            state: this.defaultState,
         }
     },
     created() {
         this.reset();
     },
     mounted() {
-
-
         this.validate();
+        this.initializePayment();
     },
     watch: {
-        paymentIntegration(integration) {
-              console.log('INJECT INTEGRATION?', integration)
-            if (!integration) {
+        state(state) {
+            this.$emit('state', state);
+        },
+        defaultState(state) {
+            this.state =state;
+        },
+        paymentIntegration: 'initializePayment',
+    },
+    computed: {
+        recursiveClick() {
+
+            var self = this;
+            if (!self.debugMode) {
+                return;
+
+            }
+
+            //Create a callback
+            return function(component) {
+                // console.log('EMIT NOW!', component.field)
+                self.$emit('debug', component.field);
+            }
+        },
+        mobile() {
+            return this.$vuetify.breakpoint.xsOnly;
+        },
+        receiptInput() {
+            return {
+                title: 'Where should we send the receipt?',
+                placeholder: 'Eg. me@website.com',
+                key: 'receiptEmail',
+                type: 'email',
+                minimum: 0,
+                maximum: 1,
+            }
+        },
+        activeModifiers() {
+
+            var self = this;
+
+            //Store the calculatedAmount on the scope
+            var calculatedTotal = self.baseAmount || 0;
+            var date = Date.now();
+
+            /////////////////////////////////////////////////////
+
+            var modifications = [];
+
+            /////////////////////////////////////////////////////
+
+            var modifiers = self.paymentDetails.modifiers;
+            if (!modifiers || !modifiers.length) {
+                console.log('No modifiers');
+                return modifications;
+            }
+
+            /////////////////////////////////////////////////////
+
+            //Loop through each modifier
+            var activeModifiers = _.chain(modifiers)
+                .map(function(modifier) {
+
+                    //Create a new context for this modifier
+                    var context = {
+                        date: date,
+                        calculatedTotal,
+                        model: self.dataModel,
+                        data: self.dataModel,
+                        matchInArray: self.$fluro.utils.matchInArray,
+                        //Basic Bits
+                        getAge: self.$fluro.utils.getAge,
+                        Date: Date,
+                        Math: Math,
+                        String: String,
+                        Date: Date,
+                        parseInt: parseInt,
+                        parseFloat: parseFloat,
+                        Boolean: Boolean,
+                        Number: Number,
+                    }
+
+                    /////////////////////////////////////////////////////
+
+                    var parsedValue = self.evaluate(modifier.expression, context);
+                    parsedValue = Number(parsedValue) //.toFixed(2);
+
+                    /////////////////////////////////////////////////////
+
+                    if (isNaN(parsedValue)) {
+                        //We have an issue here
+
+                        // self.debugLog('NOT A NUMBER', modifier.expression, context, parsedValue)
+                        return;
+                    }
+
+                    /////////////////////////////////////////
+
+                    //Check the condition
+                    var parsedCondition = true;
+                    if (modifier.condition && String(modifier.condition).length) {
+                        parsedCondition = self.evaluate(modifier.condition, context);
+                    }
+
+                    /////////////////////////////////////////
+
+                    //If the condition returns false then just stop here and go to the next modifier
+                    if (!parsedCondition) {
+                        //Modifier is not active
+                        // self.debugLog('CONDITION DOES NOT MATCH', parsedCondition)
+                        return
+                    }
+
+                    /////////////////////////////////////////
+
+                    var operator = '';
+                    var operatingValue = self.$fluro.utils.formatCurrency(parsedValue, self.currency);
+
+                    switch (modifier.operation) {
+                        case 'add':
+                            operator = '+';
+                            calculatedTotal = calculatedTotal + parsedValue;
+                            break;
+                        case 'subtract':
+                            operator = '-';
+                            calculatedTotal = calculatedTotal - parsedValue;
+                            break;
+                        case 'divide':
+                            operator = '/';
+                            operatingValue = parsedValue;
+                            calculatedTotal = calculatedTotal / parsedValue;
+                            break;
+                        case 'multiply':
+                            operator = 'x';
+                            operatingValue = parsedValue;
+                            calculatedTotal = calculatedTotal * parsedValue;
+                            break;
+                        case 'set':
+                            calculatedTotal = parsedValue;
+                            break;
+                    }
+
+                    /////////////////////////////////////////
+
+                    var readableOperator = `${operator} ${operatingValue}`;
+
+                    if (!parsedValue) {
+                        readableOperator = '';
+                    }
+
+                    var resultModified = {
+                        title: modifier.title,
+                        total: Number(parseFloat(calculatedTotal).toFixed(2)),
+                        description: readableOperator,
+                        operation: modifier.operation,
+                    }
+
+                    return resultModified;
+                })
+                .compact()
+                .value();
+
+            if (!activeModifiers || !activeModifiers.length) {
+                return [];
+            }
+
+            /////////////////////////////////////////////////////
+
+            var lastSetIndex = _.findLastIndex(activeModifiers, function(mod) {
+                return mod.operation == 'set';
+            });
+
+            //////////////////////////////////////
+
+            //A Set was used
+            if (lastSetIndex && lastSetIndex != -1) {
+                activeModifiers = _.slice(activeModifiers, lastSetIndex)
+            }
+
+            //////////////////////////////////////
+
+            return activeModifiers;
+        },
+        currency() {
+            return this.paymentDetails.currency || '';
+        },
+        symbol() {
+            return this.$fluro.utils.currencySymbol(self.currency);
+        },
+        baseAmount() {
+            return this.paymentDetails.amount;
+        },
+        formattedBaseAmount() {
+            var self = this;
+            return self.$fluro.utils.formatCurrency(self.baseAmount, self.currency);
+        },
+        total() {
+
+            var self = this;
+            var calculatedTotal = this.baseAmount;
+
+            if (self.activeModifiers && self.activeModifiers.length) {
+                calculatedTotal = _.last(self.activeModifiers).total;
+            }
+
+            //If the modifiers change the price below 0 then change the total back to 0
+            if (!calculatedTotal || isNaN(calculatedTotal) || calculatedTotal < 0) {
+                calculatedTotal = 0;
+            }
+
+            return calculatedTotal;
+        },
+        formattedTotal() {
+            var self = this;
+            return self.$fluro.utils.formatCurrency(self.total, self.currency);
+        },
+        paymentDetails() {
+            return this.definition.paymentDetails || {};
+        },
+        showPaymentForm() {
+            if (this.requirePayment || this.allowPayment) {
+                return this.total && parseInt(this.total) > 0;
+            }
+        },
+        requirePayment() {
+            return this.paymentDetails.required;
+        },
+        allowPayment() {
+            if (this.requirePayment) {
                 return;
             }
 
-
-
-            switch (integration.module) {
-                case 'stripe':
-                    injectScript('https://js.stripe.com/v3/', function() {
-                        console.log('Stripe has been included on page')
-                    });
-                    break;
-                case 'eway':
-                    injectScript('https://secure.ewaypayments.com/scripts/eCrypt.js', function() {
-                        console.log('Eway has been included on page')
-                    });
-                    break;
-            }
-
+            return this.paymentDetails.allow;
         },
-    },
-    computed: {
-
         formErrors() {
 
         },
@@ -204,7 +488,93 @@ export default {
         formOptions() {
             return this.definition.data;
         },
+        paymentFields() {
+            var self = this;
+            var fields = [];
 
+
+
+            var defaultCardName;
+            var defaultCardNumber;
+            var defaultCardExpMonth;
+            var defaultCardExpYear;
+            var defaultCardCVC;
+            if (self.debugMode) {
+
+                defaultCardName = 'John Appleseed';
+                defaultCardNumber = '4242424242424242';
+                defaultCardExpMonth = '09';
+                defaultCardExpYear = '2025';
+                defaultCardCVC = '123';
+            }
+
+
+
+            //////////////////////////////
+
+            fields.push({
+                title: 'Name on Card',
+                key: 'cardName',
+                type: 'string',
+                minimum: 1,
+                maximum: 1,
+                defaultValues: [defaultCardName],
+            })
+
+            fields.push({
+                title: 'Card Number',
+                key: 'cardNumber',
+                type: 'string',
+                minimum: 1,
+                maximum: 1,
+                defaultValues: [defaultCardNumber],
+                params: {
+                    mask: 'credit-card',
+                }
+            })
+
+            var row = {
+                type: 'group',
+                sameLine: true,
+                fields: [],
+            }
+            row.fields.push({
+                title: 'Expiry Month',
+                key: 'cardExpMonth',
+                type: 'string',
+                placeholder: 'MM',
+                minimum: 1,
+                maximum: 1,
+                className: 'xs4',
+                defaultValues: [defaultCardExpMonth],
+            })
+
+            row.fields.push({
+                title: 'Expiry Year',
+                key: 'cardExpYear',
+                type: 'string',
+                placeholder: 'YYYY',
+                minimum: 1,
+                maximum: 1,
+                className: 'xs4',
+                defaultValues: [defaultCardExpYear],
+            })
+
+            row.fields.push({
+                title: 'CVN',
+                key: 'cardCVC',
+                type: 'string',
+                minimum: 1,
+                maximum: 1,
+                className: 'xs4',
+                defaultValues: [defaultCardCVC],
+            })
+
+            fields.push(row);
+
+            return fields;
+
+        },
         fields() {
 
             var self = this;
@@ -242,7 +612,7 @@ export default {
             if (self.askLastName) {
                 nameFields.fields.push({
                     key: '_lastName',
-                    minimum: self.requireFirstName ? 1 : 0,
+                    minimum: self.requireLastName ? 1 : 0,
                     maximum: 1,
                     title: 'Last Name',
                     directive: 'input',
@@ -326,7 +696,6 @@ export default {
 
             //Combine them together
             allFields = allFields.concat(formFields);
-
             // console.log('ALL FIELDS', allFields);
 
             return allFields;
@@ -486,9 +855,143 @@ export default {
         ]),
     },
     components: {
+        FluroContentFormField,
         FluroContentForm,
     },
     methods: {
+
+        createEwayToken(done) {
+
+            var self = this;
+            //Get the Public Encryption Key
+            var key = self.paymentIntegration.publicDetails.publicKey;
+
+            /////////////////////////////////////////////
+
+            //Get the card details from our form
+            var cardDetails = {};
+            cardDetails.name = self.dataModel.cardName;
+            cardDetails.number = self.dataModel.cardNumber;
+            cardDetails.cvc = self.dataModel.cardCVC;
+            cardDetails.exp_month = String(self.dataModel.cardExpMonth);
+            cardDetails.exp_year = String(self.dataModel.cardExpYear).slice(-2);
+
+            if (cardDetails.exp_month.length < 1) {
+                cardDetails.exp_month = '0' + cardDetails.exp_month;
+            }
+
+            ///////////////////////
+
+            if (self.debugMode) {
+                return done({
+                    message: `EWay can not be used with sandbox testing keys. Please add an additional testing integration.`
+                })
+            }
+
+            return done(null, cardDetails)
+        },
+        createStripeToken(done) {
+
+            //STRIPE v2 (DEPRECATED)
+            var self = this;
+            var liveKey = self.paymentIntegration.publicDetails.livePublicKey;
+            var sandboxKey = self.paymentIntegration.publicDetails.testPublicKey;
+            var stripeUseKey;
+
+            ///////////////////////
+
+            if (self.debugMode) {
+                stripeUseKey = sandboxKey;
+            } else {
+                stripeUseKey = liveKey;
+            }
+
+            if (!stripeUseKey) {
+                return done(null, {
+                    error: {
+                        message: self.debugMode ? `Integration Setup Error: No test keys found.` : `Integration Setup Error: No live keys found.`
+                    }
+                })
+            }
+
+            ///////////////////////
+
+            Stripe.setPublishableKey(stripeUseKey);
+
+            ///////////////////////
+
+            //Get the card details from our form
+            var stripeCardDetails = {};
+            stripeCardDetails.name = self.dataModel.cardName;
+            stripeCardDetails.number = self.dataModel.cardNumber;
+            stripeCardDetails.cvc = self.dataModel.cardCVC;
+            stripeCardDetails.exp_month = self.dataModel.cardExpMonth;
+            stripeCardDetails.exp_year = self.dataModel.cardExpYear;
+
+            ///////////////////////
+
+            return Stripe.card.createToken(stripeCardDetails, done);
+        },
+        debugLog() {
+            // return;
+            // if (this.debugMode) {
+            console.log(_.map(arguments, function(v) { return v }).join(' '));
+            // }
+        },
+        evaluate(expression, context) {
+            var self = this;
+            var ast;
+            var result;
+
+            try {
+                ast = Expressions.parse(expression);
+                result = Expressions.eval(ast, context);
+            } catch (err) {
+                // self.debugLog('EXPRESSION', expression, err);
+            } finally {
+
+                // self.debugLog('EXPRESSION RESULT', result, ast, expression, context)
+                return result;
+            }
+        },
+        initializePayment() {
+
+            var self = this;
+            var integration = self.paymentIntegration;
+
+            ////////////////////////////////////
+
+            self.paymentReady = false;
+
+            ////////////////////////////////////
+
+            // console.log('INJECT INTEGRATION?', integration)
+            if (!integration) {
+                return;
+            }
+
+            ////////////////////////////////////
+
+            switch (integration.module) {
+                case 'stripe':
+                    // injectScript('https://js.stripe.com/v3/', function() {
+                    //     console.log('Stripe has been included on page')
+                    //     self.paymentReady = true;
+                    // });
+                    injectScript('https://js.stripe.com/v2/', function() {
+                        console.log('Stripe has been included on page')
+                        self.paymentReady = true;
+                    });
+                    break;
+                case 'eway':
+                    injectScript('https://secure.ewaypayments.com/scripts/eCrypt.js', function() {
+                        console.log('Eway has been included on page')
+                        self.paymentReady = true;
+                    });
+                    break;
+            }
+
+        },
         modelChanged() {
             this.$emit('input', this.dataModel);
         },
@@ -497,14 +1000,36 @@ export default {
             if (!form) {
                 return [];
             }
-            this.errorMessages = form.errorMessages || [];
+
+            var errors = [];
+            errors = errors.concat(form.errorMessages);
+
+            if (this.showPaymentForm) {
+                var payment = this.$refs.payment;
+                if (payment && payment.errorMessages) {
+                    errors = errors.concat(payment.errorMessages);
+                }
+            }
+
+            this.errorMessages = errors;
         },
         validateAllFields() {
             var form = this.$refs.form;
             form.touch();
+
+            var payment = this.$refs.payment;
+            if (payment) {
+                payment.touch();
+            }
+
+
             this.validate();
         },
         defaultUserValue(key) {
+
+            if(!this.prefill) {
+                return;
+            }
 
             if (!this.user) {
                 return null;
@@ -548,8 +1073,19 @@ export default {
 
             /////////////////////////////////
 
+            var dataModel = JSON.parse(JSON.stringify(self.dataModel));
+
+            //Remove data we don't want to send to the server
+            delete dataModel.cardName;
+            delete dataModel.cardNumber;
+            delete dataModel.cardExpYear;
+            delete dataModel.cardExpMonth;
+            delete dataModel.cardCVC;
+
+            /////////////////////////////////
+
             var interactionData = {
-                interaction: self.dataModel,
+                interaction: dataModel,
                 event: self.$fluro.utils.getStringID(self.linkedEvent),
                 process: self.$fluro.utils.getStringID(self.linkedProcess),
                 // transaction:self.$fluro.utils.getStringID(self.linkedProcess),
@@ -582,15 +1118,101 @@ export default {
 
             /////////////////////////////////
 
-            //Create the post
-            self.$fluro.content.submitInteraction(this.definedName, interactionData, {
-                    params: {
-                        definition: self.$fluro.utils.getStringID(self.definition),
-                        process: self.$fluro.utils.getStringID(self.linkedProcess),
+            //If we need to have a payment
+            if (self.showPaymentForm) {
 
-                    }
-                })
-                .then(function(interaction) {
+                var paymentDetails = {
+                    amount: self.total,
+                    email: dataModel.receiptEmail,
+                    integration: self.$fluro.utils.getStringID(self.paymentIntegration),
+                }
+
+                /////////////////////////////////
+                /////////////////////////////////
+                /////////////////////////////////
+
+
+                //Here we generate our client side tokens
+                switch (self.paymentIntegration.module) {
+                    case 'eway':
+                        if (!window.eCrypt) {
+                            self.serverErrors = `ERROR: Eway is selected for payment but the eCrypt script has not been included in this application visit https://eway.io/api-v3/#encrypt-function for more information`;
+                            self.$fluro.error(self.serverErrors);
+                            self.state = 'error';
+                            self.$emit('error', err);
+                            return;
+                        }
+
+                        /////////////////////////////////////////////
+
+                        return self.createEwayToken(function(err, token) {
+                            if (err) {
+                                self.serverErrors = self.$fluro.utils.errorMessage(err)
+                                self.$fluro.error(self.serverErrors);
+                                self.state = 'error';
+                                self.$emit('error', err);
+                                return;
+                            }
+
+                            //Include the payment details
+                            paymentDetails.details = token;
+                            return submitRequest(paymentDetails);
+
+                        })
+
+                        break;
+                    case 'stripe':
+                        //Generate the Stripe Token
+                        return self.createStripeToken(function(status, response) {
+
+
+                            var error = status.error || response.error;
+
+                            if (error) {
+                                console.log('FORM -> Stripe token error', status, response);
+                                self.serverErrors = error.message;
+                                self.$fluro.error(self.serverErrors);
+                                self.state = 'error';
+                                self.$emit('error', error);
+                            } else {
+                                //Include the payment details
+                                console.log('FORM -> Stripe tokenized', status, response)
+                                paymentDetails.details = response;
+                                return submitRequest(paymentDetails);
+                            }
+                        })
+                        break;
+                }
+            } else {
+                return submitRequest();
+            }
+
+            /////////////////////////////////
+            /////////////////////////////////
+            /////////////////////////////////
+            /////////////////////////////////
+
+            function submitRequest(paymentDetails) {
+
+                if (paymentDetails) {
+                    interactionData.payment = paymentDetails;
+                    console.log('SUBMIT REQUEST', interactionData)
+                }
+
+                /////////////////////////////////
+
+                var submissionConfig = self.submissionConfig;
+                submissionConfig.params = {
+                    definition: self.$fluro.utils.getStringID(self.definition),
+                    process: self.$fluro.utils.getStringID(self.linkedProcess),
+                }
+
+                /////////////////////////////////
+
+                var request = self.$fluro.content.submitInteraction(self.definedName, interactionData, submissionConfig);
+
+
+                request.then(function(interaction) {
                     self.state = 'success';
                     self.dataModel = {
                         data: {},
@@ -611,6 +1233,7 @@ export default {
                     console.log('SWITCH STATE TO', err, self)
 
                 })
+            }
 
 
         }
@@ -618,7 +1241,28 @@ export default {
 }
 </script>
 <style scoped lang="scss">
-.fluro-post-form {
+.fluro-interaction-form {
+
+    .payment {
+        margin: 15px 0;
+        background: #fff;
+        border-radius: 3px;
+        border: 1px solid #ddd;
+        box-shadow: 0 1px 2px rgba(#000, 0.1);
+    }
+
+    dt,
+    label {
+        font-weight: 600;
+    }
+
+    .modifier {
+        opacity: 0.5;
+
+        .modifier-title {
+            font-style: italic;
+        }
+    }
 
     .v-btn {
         .v-progress-circular {

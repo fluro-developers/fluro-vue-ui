@@ -1,16 +1,28 @@
-<template>   
-        <component :is="component" v-if="component"></component>
+<template>
+    <component :is="component" v-if="component"></component>
 </template>
 <script>
 import _ from 'lodash'
 import Vue from 'vue';
 
 
+
+
 export default {
-    props: ['template', 'context'],
+    props: {
+        'template': {
+            type:String,
+        },
+        'context': {
+            type: Object,
+            default() {
+                return {}
+            }
+        },
+    },
     data() {
         return {
-            component:null,
+            component: null,
         }
     },
 
@@ -44,41 +56,19 @@ export default {
 
             var self = this;
 
+            if (!self.template || !self.template.length) {
+                self.component = null;
+                return;
+            }
+
             let DynamicComponent = Vue.extend({
-                template:`<div>${self.template}</div>`,
+                template: `<div>${self.template}</div>`,
                 data() {
-                    return {};
-                    // self.context;
-                }
+                    return self.context;
+                },
             });
 
             self.component = DynamicComponent;
-                
-
-
-            // this.templateRender = Vue.compile(`<div>${this.template}</div>`).render;
-
-
-            // // console.log('Render NOW')
-
-            // var options = {}
-            // options.interpolate = /{{([\s\S]+?)}}/g;
-
-            // ///////////////////////////////////
-
-            // var scope = this.context;
-            // var html = this.template;
-
-            // var compile = _.template(html, options);
-
-            // console.log('SCOPE', scope);
-
-            // var rendered = compile(scope);
-
-            // // console.log('RENDERED', rendered, html, scope, options)
-
-            // this.rendered = rendered;
-
         }
     },
 }

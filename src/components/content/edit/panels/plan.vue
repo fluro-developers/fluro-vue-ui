@@ -291,7 +291,8 @@ export default {
 
             var eventStartDate = _.get(self.model, 'event.startDate');
             var planStartDate = _.get(self.model, 'startDate');
-            var startDate = (planStartDate ? new Date(planStartDate) : false) || (eventStartDate ? new Date(eventStartDate) : false) || new Date(); 
+            // var startDate = (planStartDate ? new Date(planStartDate) : false) || (eventStartDate ? new Date(eventStartDate) : false) || new Date(); 
+            var startDate = (eventStartDate ? new Date(eventStartDate) : false) || (planStartDate ? new Date(planStartDate) : false) || new Date(); 
 
             //////////////////////////////////////////////////
 
@@ -586,18 +587,18 @@ export default {
         }
     },
     data() {
-        var array = [];
-        _.times(200, function() {
-            array.push({
-                id: array.length
-            });
-        });
+        // var array = [];
+        // _.times(200, function() {
+        //     array.push({
+        //         id: array.length
+        //     });
+        // });
 
         return {
             actionsOpen: false,
             drag: false,
             dragOptions: {},
-            array
+            // array
         };
     }
 };

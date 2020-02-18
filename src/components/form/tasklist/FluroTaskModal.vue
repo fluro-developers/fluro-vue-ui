@@ -1,7 +1,7 @@
 <template>
     <flex-column class="fluro-task-modal">
         <flex-column-header class="border-bottom">
-            <v-container class="text-xs-center">
+            <v-container>
                 <h3 margin>{{title}}</h3>
                 <div class="introduction" v-html="description"></div>
             </v-container>

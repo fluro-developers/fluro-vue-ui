@@ -11,10 +11,12 @@
                    
 
                     <!-- :parent="model[key]"  -->
-                    <fluro-content-form-field :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="field" @input="update" v-model="model"></fluro-content-form-field>
+                    <fluro-content-form-field  :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="field" @input="update" v-model="model"></fluro-content-form-field>
                 </v-container>
             </template>
         </slot>
+
+        
     </div>
 </template>
 <script>
@@ -131,6 +133,15 @@ var debouncer;
 
 export default {
     props: {
+        'contextField':{
+            type:Object,
+        },
+        'recursiveClick':{
+            type:Function,
+        },
+        'debugMode':{
+            type:Boolean,
+        },
         'debounce': {
             type: Number,
             default: 0,
@@ -196,7 +207,7 @@ export default {
                 })
                 .map(function(field) {
 
-                    console.log('ERROR MESSAGES', field);
+                    // console.log('ERROR MESSAGES', field);
                     // console.log('ERROR MESSAGE', field);
                     return {
                         title: field.errorTitle,
@@ -231,6 +242,7 @@ export default {
         //     }
         // },
         value(val) {
+            // console.log('value has changed', val)
             this.$set(this, 'model', val);
             return this.reset();
         },
