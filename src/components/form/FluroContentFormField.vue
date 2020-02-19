@@ -1,6 +1,6 @@
-<template>
+ <template>
     <div @click="clicked($event)" :data-field-key="key" class="fluro-content-form-field" v-if="isVisible" v-bind="attributes" :class="fieldClass">
-        <!-- <pre>{{isContext}} {{contextField}}</pre> -->
+        <!-- <pre>{{options}}</pre> -->
         <!-- <pre>{{field.title}} DATA {{renderer}}</pre> -->
         <template v-if="officeUseOnly">
         </template>
@@ -246,10 +246,10 @@
         </template> -->
         <template v-else-if="renderer == 'select'">
             <template v-if="mobile">
-                <v-select :persistent-hint="true" :outline="showOutline" :success="success" :required="required" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+                <v-select :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
             </template>
             <template v-else>
-                <v-autocomplete :persistent-hint="true" :outline="showOutline" :success="success" :required="required" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+                <v-autocomplete :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
             </template>
         </template>
         <template v-else-if="renderer == 'content-select'">
@@ -1333,6 +1333,9 @@ export default {
 
             // return ['Errors on purpose'];
 
+            if (self.type == 'void') {
+                return errors;
+            }
 
             if (!self.isVisible) {
                 // console.log('No errors', this.field.title);
@@ -1804,17 +1807,23 @@ export default {
 
             ///////////////////////////////////////////////////
 
-
-            //If we can't upload to a realm
+            //If there is no Realm
             if (!uploadRealmID) {
-                //Then fail here
-                file.state = 'error';
-                self.uploadNextFile();
+                // if there is no realm id, grab the form's realm
+                var defaultRealmID = _.get(self.options, 'backupUploadRealm');
+                if (defaultRealmID) {
+                    uploadRealmID = defaultRealmID
+                }
+                else {
+                    //Then there is no backup realm id, so fail here
+                    file.state = 'error';
+                    self.uploadNextFile();
+                }
             }
 
             ///////////////////////////////////////////////////
 
-            console.log('Uploading to ', self.field.params)
+            console.log('Uploading to ', uploadRealmID)
             return this.$fluro.api.post(`/file/attach/${uploadRealmID}`, body, config)
                 .then(function(res) {
                     //console.log('UPLOAD RESPONSE', res);
@@ -2634,6 +2643,8 @@ function checkValidInput(self, input) {
             if (numberError) {
                 errors.push(numberError);
             }
+            break;
+        case 'void':
             break;
     }
 
