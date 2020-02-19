@@ -14,7 +14,12 @@
                 </template>
             </template>
             <template v-if="allowed">
-                <slot name="success" :reset="reset" :result="result" v-if="state == 'success'">
+                <slot
+                    name="success"
+                    :reset="reset"
+                    :result="result"
+                    v-if="state == 'success'"
+                >
                     <div class="text-xs-center">
                         <h3>Submission Successful</h3>
                         <div>Thank you for your submission</div>
@@ -25,12 +30,26 @@
                 </slot>
                 <template v-else>
                     <slot name="info"></slot>
-                    <form @submit.prevent="submit" :disabled="state == 'processing'">
+                    <form
+                        @submit.prevent="submit"
+                        :disabled="state == 'processing'"
+                    >
                         <!-- <pre>{{allowAnonymous}}</pre> -->
                         <!-- <pre>{{fields}}</pre> -->
                         <!-- <pre>{{options}}</pre> -->
                         <!-- <pre>{{errorMessages}}</pre> -->
-                        <fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" @errorMessages="validate" @input="modelChanged" ref="form" :options="options" v-model="dataModel" :fields="fields" />
+                        <fluro-content-form
+                            :context="context"
+                            :debugMode="debugMode"
+                            :contextField="contextField"
+                            :recursiveClick="recursiveClick"
+                            @errorMessages="validate"
+                            @input="modelChanged"
+                            ref="form"
+                            :options="options"
+                            v-model="dataModel"
+                            :fields="fields"
+                        />
                         <div class="payment" v-if="showPaymentForm">
                             <v-container>
                                 <h2>Payment Summary</h2>
@@ -39,19 +58,24 @@
                                         <strong>Amount</strong>
                                     </v-flex>
                                     <v-flex shrink v-if="baseAmount">
-                                        <strong>{{formattedBaseAmount}}</strong>
+                                        <strong>{{
+                                            formattedBaseAmount
+                                        }}</strong>
                                     </v-flex>
                                 </v-layout>
-                                <div class="modifier" v-for="modifier in activeModifiers">
+                                <div
+                                    class="modifier"
+                                    v-for="modifier in activeModifiers"
+                                >
                                     <v-layout align-center>
                                         <v-flex class="modifier-title">
-                                            {{modifier.title}}
+                                            {{ modifier.title }}
                                         </v-flex>
                                         <v-flex shrink>
-                                            {{modifier.description}}
+                                            {{ modifier.description }}
                                         </v-flex>
                                         <v-flex shrink>
-                                            {{modifier.formattedTotal}}
+                                            {{ modifier.formattedTotal }}
                                         </v-flex>
                                     </v-layout>
                                 </div>
@@ -61,32 +85,68 @@
                                             <h3>Total</h3>
                                         </v-flex>
                                         <v-flex shrink>
-                                            <h3>{{formattedTotal}} <span class="muted">{{currency.toUpperCase()}}</span></h3>
+                                            <h3>
+                                                {{ formattedTotal }}
+                                                <span class="muted">{{
+                                                    currency.toUpperCase()
+                                                }}</span>
+                                            </h3>
                                         </v-flex>
                                     </v-layout>
                                 </div>
                             </v-container>
-                            <v-container style="background: #fafafa" class="border-top">
+                            <v-container
+                                style="background: #fafafa"
+                                class="border-top"
+                            >
                                 <h4>Card Details</h4>
-                                <fluro-content-form @errorMessages="validate" @input="modelChanged" ref="payment" :options="options" v-model="dataModel" :fields="paymentFields" />
+                                <fluro-content-form
+                                    @errorMessages="validate"
+                                    @input="modelChanged"
+                                    ref="payment"
+                                    :options="options"
+                                    v-model="dataModel"
+                                    :fields="paymentFields"
+                                />
                             </v-container>
-                            <v-container v-if="definition.data.enableReceipt" style="background: #fafafa" class="border-top">
+                            <v-container
+                                v-if="definition.data.enableReceipt"
+                                style="background: #fafafa"
+                                class="border-top"
+                            >
                                 <!-- <h5>Would you like an email receipt?</h5> -->
-                                <fluro-content-form-field @input="modelChanged" :options="options" :field="receiptInput" v-model="dataModel" />
+                                <fluro-content-form-field
+                                    @input="modelChanged"
+                                    :options="options"
+                                    :field="receiptInput"
+                                    v-model="dataModel"
+                                />
                             </v-container>
                         </div>
                         <div class="actions">
                             <template v-if="state == 'processing'">
-                                <v-btn :block="mobile" :large="mobile" class="mx-0" :disabled="true">
+                                <v-btn
+                                    :block="mobile"
+                                    :large="mobile"
+                                    class="mx-0"
+                                    :disabled="true"
+                                >
                                     Processing
-                                    <v-progress-circular indeterminate></v-progress-circular>
+                                    <v-progress-circular
+                                        indeterminate
+                                    ></v-progress-circular>
                                 </v-btn>
                             </template>
                             <template v-else-if="state == 'error'">
                                 <v-alert :value="true" type="error" outline>
-                                    {{serverErrors}}
+                                    {{ serverErrors }}
                                 </v-alert>
-                                <v-btn :block="mobile" :large="mobile" class="mx-0" @click.prevent.native="state = 'ready'">
+                                <v-btn
+                                    :block="mobile"
+                                    :large="mobile"
+                                    class="mx-0"
+                                    @click.prevent.native="state = 'ready'"
+                                >
                                     Try Again
                                 </v-btn>
                                 <!-- <v-btn class="mx-0" :disabled="hasErrors" type="submit" color="primary">
@@ -94,14 +154,28 @@
                             </v-btn> -->
                             </template>
                             <template v-else>
-                                <v-alert :value="true" type="error" outline v-if="hasErrors">
-                                    Please check the following issues before submitting
+                                <v-alert
+                                    :value="true"
+                                    type="error"
+                                    outline
+                                    v-if="hasErrors"
+                                >
+                                    Please check the following issues before
+                                    submitting
                                     <div v-for="error in errorMessages">
-                                        <strong>{{error.title}}</strong>: {{error.messages[0]}}
+                                        <strong>{{ error.title }}</strong
+                                        >: {{ error.messages[0] }}
                                     </div>
                                 </v-alert>
                                 <!-- <v-layout> -->
-                                <v-btn :block="mobile" :large="mobile" class="mx-0" :disabled="hasErrors" type="submit" color="primary">
+                                <v-btn
+                                    :block="mobile"
+                                    :large="mobile"
+                                    class="mx-0"
+                                    :disabled="hasErrors"
+                                    type="submit"
+                                    color="primary"
+                                >
                                     Submit
                                 </v-btn>
                                 <!-- <v-spacer /> -->
@@ -116,25 +190,21 @@
     </div>
 </template>
 <script>
-import FluroContentForm from './FluroContentForm.vue';
-import FluroContentFormField from './FluroContentFormField.vue';
+import FluroContentForm from "./FluroContentForm.vue";
+import FluroContentFormField from "./FluroContentFormField.vue";
 
-import _ from 'lodash';
-import Vue from 'vue';
-import Expressions from 'expression-eval';
-import { mapFields } from 'vuex-map-fields';
-
+import _ from "lodash";
+import Vue from "vue";
+import Expressions from "expression-eval";
+import { mapFields } from "vuex-map-fields";
 
 var hasBeenReset;
 
-
 //////////////////////////////////////////////////
-
 
 var injectedScripts = {};
 
 function injectScript(scriptURL, callback) {
-
     if (injectedScripts[scriptURL]) {
         return callback();
     }
@@ -144,86 +214,91 @@ function injectScript(scriptURL, callback) {
 
     //////////////////////////////////////
 
-    var script = document.createElement('script');
-    script.type = 'text/javascript';
+    var script = document.createElement("script");
+    script.type = "text/javascript";
     script.async = true;
     script.onload = callback;
     script.src = scriptURL;
-    document.getElementsByTagName('head')[0].appendChild(script);
+    document.getElementsByTagName("head")[0].appendChild(script);
 
     ////////////////////////////////////
 
-    console.log('Appended script dependency', scriptURL);
+    console.log("Appended script dependency", scriptURL);
 }
 
 //////////////////////////////////////////////////
 
 export default {
     props: {
-        'contextField':{
-            type:Object,
+        contextField: {
+            type: Object
         },
-        'title': {
-            type: String,
+        title: {
+            type: String
         },
-        'prefill':{
-            type:Boolean,
+        prefill: {
+            type: Boolean,
             default() {
                 return true;
             }
         },
-        'context': {
+        context: {
             type: String,
-            default () {
-                //By default 
+            default() {
+                //By default
                 return this.$fluro.global.defaultFormContext;
-            },
-        },
-        'definition': {
-            type: Object,
-            required: true,
-        },
-        'paymentIntegration': {
-            type: Object,
-        },
-        'linkedProcess': {
-            type: [Object, String],
-        },
-        'linkedEvent': {
-            type: [Object, String],
-        },
-
-        'debugMode': {
-            type: Boolean,
-        },
-        'submissionConfig': {
-            type: Object,
-            default () {
-                return {}
             }
         },
-        'value': {
+        definition: {
             type: Object,
-            default () {
+            required: true
+        },
+        paymentIntegration: {
+            type: Object
+        },
+        linkedProcess: {
+            type: [Object, String]
+        },
+        linkedEvent: {
+            type: [Object, String]
+        },
+
+        debugMode: {
+            type: Boolean
+        },
+        submissionConfig: {
+            type: Object,
+            default() {
+                return {};
+            }
+        },
+        value: {
+            type: Object,
+            default() {
                 return {
                     data: {}
                 };
             }
         },
-        'defaultState':{
-            type:String,
+        defaultState: {
+            type: String,
             default() {
-                return 'ready';
+                return "ready";
             }
         },
-        'options': {
+        options: {
             default: function() {
+                var self = this;
                 return {
                     validateSuccess: true,
-                }
+                    backupUploadRealm: _.chain(self.definition)
+                        .get("realms")
+                        .first()
+                        .value()
+                };
             },
-            type: Object,
-        },
+            type: Object
+        }
     },
     data() {
         return {
@@ -232,11 +307,11 @@ export default {
             // model: {
             //     data: {},
             // },
-            serverErrors: '',
+            serverErrors: "",
             errorMessages: [],
             result: null,
-            state: this.defaultState,
-        }
+            state: this.defaultState
+        };
     },
     created() {
         this.reset();
@@ -247,43 +322,40 @@ export default {
     },
     watch: {
         state(state) {
-            this.$emit('state', state);
+            this.$emit("state", state);
         },
         defaultState(state) {
-            this.state =state;
+            this.state = state;
         },
-        paymentIntegration: 'initializePayment',
+        paymentIntegration: "initializePayment"
     },
     computed: {
         recursiveClick() {
-
             var self = this;
             if (!self.debugMode) {
                 return;
-
             }
 
             //Create a callback
             return function(component) {
                 // console.log('EMIT NOW!', component.field)
-                self.$emit('debug', component.field);
-            }
+                self.$emit("debug", component.field);
+            };
         },
         mobile() {
             return this.$vuetify.breakpoint.xsOnly;
         },
         receiptInput() {
             return {
-                title: 'Where should we send the receipt?',
-                placeholder: 'Eg. me@website.com',
-                key: 'receiptEmail',
-                type: 'email',
+                title: "Where should we send the receipt?",
+                placeholder: "Eg. me@website.com",
+                key: "receiptEmail",
+                type: "email",
                 minimum: 0,
-                maximum: 1,
-            }
+                maximum: 1
+            };
         },
         activeModifiers() {
-
             var self = this;
 
             //Store the calculatedAmount on the scope
@@ -298,7 +370,7 @@ export default {
 
             var modifiers = self.paymentDetails.modifiers;
             if (!modifiers || !modifiers.length) {
-                console.log('No modifiers');
+                console.log("No modifiers");
                 return modifications;
             }
 
@@ -307,7 +379,6 @@ export default {
             //Loop through each modifier
             var activeModifiers = _.chain(modifiers)
                 .map(function(modifier) {
-
                     //Create a new context for this modifier
                     var context = {
                         date: date,
@@ -324,13 +395,16 @@ export default {
                         parseInt: parseInt,
                         parseFloat: parseFloat,
                         Boolean: Boolean,
-                        Number: Number,
-                    }
+                        Number: Number
+                    };
 
                     /////////////////////////////////////////////////////
 
-                    var parsedValue = self.evaluate(modifier.expression, context);
-                    parsedValue = Number(parsedValue) //.toFixed(2);
+                    var parsedValue = self.evaluate(
+                        modifier.expression,
+                        context
+                    );
+                    parsedValue = Number(parsedValue); //.toFixed(2);
 
                     /////////////////////////////////////////////////////
 
@@ -345,8 +419,14 @@ export default {
 
                     //Check the condition
                     var parsedCondition = true;
-                    if (modifier.condition && String(modifier.condition).length) {
-                        parsedCondition = self.evaluate(modifier.condition, context);
+                    if (
+                        modifier.condition &&
+                        String(modifier.condition).length
+                    ) {
+                        parsedCondition = self.evaluate(
+                            modifier.condition,
+                            context
+                        );
                     }
 
                     /////////////////////////////////////////
@@ -355,34 +435,37 @@ export default {
                     if (!parsedCondition) {
                         //Modifier is not active
                         // self.debugLog('CONDITION DOES NOT MATCH', parsedCondition)
-                        return
+                        return;
                     }
 
                     /////////////////////////////////////////
 
-                    var operator = '';
-                    var operatingValue = self.$fluro.utils.formatCurrency(parsedValue, self.currency);
+                    var operator = "";
+                    var operatingValue = self.$fluro.utils.formatCurrency(
+                        parsedValue,
+                        self.currency
+                    );
 
                     switch (modifier.operation) {
-                        case 'add':
-                            operator = '+';
+                        case "add":
+                            operator = "+";
                             calculatedTotal = calculatedTotal + parsedValue;
                             break;
-                        case 'subtract':
-                            operator = '-';
+                        case "subtract":
+                            operator = "-";
                             calculatedTotal = calculatedTotal - parsedValue;
                             break;
-                        case 'divide':
-                            operator = '/';
+                        case "divide":
+                            operator = "/";
                             operatingValue = parsedValue;
                             calculatedTotal = calculatedTotal / parsedValue;
                             break;
-                        case 'multiply':
-                            operator = 'x';
+                        case "multiply":
+                            operator = "x";
                             operatingValue = parsedValue;
                             calculatedTotal = calculatedTotal * parsedValue;
                             break;
-                        case 'set':
+                        case "set":
                             calculatedTotal = parsedValue;
                             break;
                     }
@@ -392,15 +475,15 @@ export default {
                     var readableOperator = `${operator} ${operatingValue}`;
 
                     if (!parsedValue) {
-                        readableOperator = '';
+                        readableOperator = "";
                     }
 
                     var resultModified = {
                         title: modifier.title,
                         total: Number(parseFloat(calculatedTotal).toFixed(2)),
                         description: readableOperator,
-                        operation: modifier.operation,
-                    }
+                        operation: modifier.operation
+                    };
 
                     return resultModified;
                 })
@@ -414,14 +497,14 @@ export default {
             /////////////////////////////////////////////////////
 
             var lastSetIndex = _.findLastIndex(activeModifiers, function(mod) {
-                return mod.operation == 'set';
+                return mod.operation == "set";
             });
 
             //////////////////////////////////////
 
             //A Set was used
             if (lastSetIndex && lastSetIndex != -1) {
-                activeModifiers = _.slice(activeModifiers, lastSetIndex)
+                activeModifiers = _.slice(activeModifiers, lastSetIndex);
             }
 
             //////////////////////////////////////
@@ -429,7 +512,7 @@ export default {
             return activeModifiers;
         },
         currency() {
-            return this.paymentDetails.currency || '';
+            return this.paymentDetails.currency || "";
         },
         symbol() {
             return this.$fluro.utils.currencySymbol(self.currency);
@@ -439,10 +522,12 @@ export default {
         },
         formattedBaseAmount() {
             var self = this;
-            return self.$fluro.utils.formatCurrency(self.baseAmount, self.currency);
+            return self.$fluro.utils.formatCurrency(
+                self.baseAmount,
+                self.currency
+            );
         },
         total() {
-
             var self = this;
             var calculatedTotal = this.baseAmount;
 
@@ -451,7 +536,11 @@ export default {
             }
 
             //If the modifiers change the price below 0 then change the total back to 0
-            if (!calculatedTotal || isNaN(calculatedTotal) || calculatedTotal < 0) {
+            if (
+                !calculatedTotal ||
+                isNaN(calculatedTotal) ||
+                calculatedTotal < 0
+            ) {
                 calculatedTotal = 0;
             }
 
@@ -479,9 +568,7 @@ export default {
 
             return this.paymentDetails.allow;
         },
-        formErrors() {
-
-        },
+        formErrors() {},
         hasErrors() {
             return this.errorMessages.length ? true : false;
         },
@@ -492,134 +579,123 @@ export default {
             var self = this;
             var fields = [];
 
-
-
             var defaultCardName;
             var defaultCardNumber;
             var defaultCardExpMonth;
             var defaultCardExpYear;
             var defaultCardCVC;
             if (self.debugMode) {
-
-                defaultCardName = 'John Appleseed';
-                defaultCardNumber = '4242424242424242';
-                defaultCardExpMonth = '09';
-                defaultCardExpYear = '2025';
-                defaultCardCVC = '123';
+                defaultCardName = "John Appleseed";
+                defaultCardNumber = "4242424242424242";
+                defaultCardExpMonth = "09";
+                defaultCardExpYear = "2025";
+                defaultCardCVC = "123";
             }
-
-
 
             //////////////////////////////
 
             fields.push({
-                title: 'Name on Card',
-                key: 'cardName',
-                type: 'string',
+                title: "Name on Card",
+                key: "cardName",
+                type: "string",
                 minimum: 1,
                 maximum: 1,
-                defaultValues: [defaultCardName],
-            })
+                defaultValues: [defaultCardName]
+            });
 
             fields.push({
-                title: 'Card Number',
-                key: 'cardNumber',
-                type: 'string',
+                title: "Card Number",
+                key: "cardNumber",
+                type: "string",
                 minimum: 1,
                 maximum: 1,
                 defaultValues: [defaultCardNumber],
                 params: {
-                    mask: 'credit-card',
+                    mask: "credit-card"
                 }
-            })
+            });
 
             var row = {
-                type: 'group',
+                type: "group",
                 sameLine: true,
-                fields: [],
-            }
+                fields: []
+            };
             row.fields.push({
-                title: 'Expiry Month',
-                key: 'cardExpMonth',
-                type: 'string',
-                placeholder: 'MM',
+                title: "Expiry Month",
+                key: "cardExpMonth",
+                type: "string",
+                placeholder: "MM",
                 minimum: 1,
                 maximum: 1,
-                className: 'xs4',
-                defaultValues: [defaultCardExpMonth],
-            })
+                className: "xs4",
+                defaultValues: [defaultCardExpMonth]
+            });
 
             row.fields.push({
-                title: 'Expiry Year',
-                key: 'cardExpYear',
-                type: 'string',
-                placeholder: 'YYYY',
+                title: "Expiry Year",
+                key: "cardExpYear",
+                type: "string",
+                placeholder: "YYYY",
                 minimum: 1,
                 maximum: 1,
-                className: 'xs4',
-                defaultValues: [defaultCardExpYear],
-            })
+                className: "xs4",
+                defaultValues: [defaultCardExpYear]
+            });
 
             row.fields.push({
-                title: 'CVN',
-                key: 'cardCVC',
-                type: 'string',
+                title: "CVN",
+                key: "cardCVC",
+                type: "string",
                 minimum: 1,
                 maximum: 1,
-                className: 'xs4',
-                defaultValues: [defaultCardCVC],
-            })
+                className: "xs4",
+                defaultValues: [defaultCardCVC]
+            });
 
             fields.push(row);
 
             return fields;
-
         },
         fields() {
-
             var self = this;
 
             var allFields = [];
 
-
-
             //////////////////////////////////////////
 
-
-
             var nameFields = {
-                key: '_name',
-                type: 'group',
+                key: "_name",
+                type: "group",
                 fields: [],
-                className: 'layout row wrap',
-            }
+                className: "layout row wrap"
+            };
 
             //////////////////////////////////////////
 
             if (self.askFirstName) {
                 nameFields.fields.push({
-                    key: '_firstName',
+                    key: "_firstName",
                     minimum: self.requireFirstName ? 1 : 0,
                     maximum: 1,
-                    title: 'First Name',
-                    directive: 'input',
-                    type: 'string',
-                    className: 'xs12 sm6',
-                    defaultValues: self.defaultUserValue('firstName'),
-                })
+                    title: "First Name",
+                    directive: "input",
+                    type: "string",
+                    className: "xs12 sm6",
+                    defaultValues: self.defaultUserValue("firstName")
+                });
             }
 
             if (self.askLastName) {
                 nameFields.fields.push({
-                    key: '_lastName',
+                    key: "_lastName",
                     minimum: self.requireLastName ? 1 : 0,
                     maximum: 1,
-                    title: 'Last Name',
-                    directive: 'input',
-                    type: 'string',
-                    className: 'xs12 sm6',
-                    defaultValues: self.defaultUserValue('lastName'),
-                })
+                    title: "Last Name",
+                    directive: "input",
+                    type: "string",
+                    className: "xs12 sm6",
+                    defaultValues: self.defaultUserValue("lastName")
+                });
             }
 
             //If there are actually name fields
@@ -632,67 +708,64 @@ export default {
 
             if (self.askGender) {
                 allFields.push({
-                    key: '_gender',
+                    key: "_gender",
                     minimum: this.requireGender ? 1 : 0,
                     maximum: 1,
-                    title: 'Gender',
-                    directive: 'select',
-                    type: 'string',
-                    options: [{
-                            name: 'Male',
-                            value: 'male',
+                    title: "Gender",
+                    directive: "select",
+                    type: "string",
+                    options: [
+                        {
+                            name: "Male",
+                            value: "male"
                         },
                         {
-                            name: 'Female',
-                            value: 'female',
+                            name: "Female",
+                            value: "female"
                         }
                     ]
-                })
+                });
             }
 
             //////////////////////////////////////////
 
-
             if (self.askEmail) {
                 allFields.push({
-                    key: '_email',
+                    key: "_email",
                     minimum: self.requireEmail ? 1 : 0,
                     maximum: 1,
-                    title: 'Email Address',
-                    directive: 'input',
-                    type: 'email',
-                    defaultValues: self.defaultUserValue('email'),
-                })
+                    title: "Email Address",
+                    directive: "input",
+                    type: "email",
+                    defaultValues: self.defaultUserValue("email")
+                });
             }
 
             if (self.askPhone) {
                 allFields.push({
-                    key: '_phoneNumber',
+                    key: "_phoneNumber",
                     minimum: self.requirePhone ? 1 : 0,
                     maximum: 1,
-                    title: 'Phone Number',
-                    directive: 'input',
-                    type: 'string',
-                    defaultValues: self.defaultUserValue('phoneNumber'),
-                })
+                    title: "Phone Number",
+                    directive: "input",
+                    type: "string",
+                    defaultValues: self.defaultUserValue("phoneNumber")
+                });
             }
-
 
             if (self.askDOB) {
                 allFields.push({
-                    key: '_dob',
+                    key: "_dob",
                     minimum: self.requireDOB ? 1 : 0,
                     maximum: 1,
-                    title: 'Date of Birth',
-                    directive: 'dob-select',
-                    type: 'date',
-                })
+                    title: "Date of Birth",
+                    directive: "dob-select",
+                    type: "date"
+                });
             }
 
             //Get the form fields
             var formFields = self.definition.fields;
-
-
 
             //Combine them together
             allFields = allFields.concat(formFields);
@@ -700,7 +773,6 @@ export default {
 
             return allFields;
         },
-
 
         // if (!interactionFormSettings.allowAnonymous && !interactionFormSettings.disableDefaultFields) {
         //     interactionFormSettings.requireFirstName = true;
@@ -736,12 +808,12 @@ export default {
 
         allowAnonymous() {
             // console.log('ONE > ANONYMOUS', this.formOptions)
-            return this.formOptions.allowAnonymous || false
+            return this.formOptions.allowAnonymous || false;
         },
 
         disableDefaultFields() {
             // console.log('TWO > DISABLE FIELDS', this.formOptions)
-            return this.formOptions.disableDefaultFields || false
+            return this.formOptions.disableDefaultFields || false;
         },
 
         requireDefaultContactFields() {
@@ -752,35 +824,63 @@ export default {
         ////////////////////////////////
 
         askFirstName() {
-            return this.requireDefaultContactFields || this.formOptions.askFirstName || this.formOptions.requireFirstName;
+            return (
+                this.requireDefaultContactFields ||
+                this.formOptions.askFirstName ||
+                this.formOptions.requireFirstName
+            );
         },
         askLastName() {
-            return this.requireDefaultContactFields || this.formOptions.askLastName || this.formOptions.requireLastName;
+            return (
+                this.requireDefaultContactFields ||
+                this.formOptions.askLastName ||
+                this.formOptions.requireLastName
+            );
         },
         askGender() {
-            return this.requireDefaultContactFields || this.formOptions.askGender || this.formOptions.requireGender;
+            return (
+                this.requireDefaultContactFields ||
+                this.formOptions.askGender ||
+                this.formOptions.requireGender
+            );
         },
         askDOB() {
             return this.formOptions.askDOB || this.formOptions.requireDOB;
         },
         askEmail() {
-            return this.formOptions.askEmail || this.requireEmail || (this.requireDefaultContactFields);
+            return (
+                this.formOptions.askEmail ||
+                this.requireEmail ||
+                this.requireDefaultContactFields
+            );
         },
         askPhone() {
-            return this.formOptions.askPhone || this.requirePhone || (this.requireDefaultContactFields); // && this.identifier == 'either');
+            return (
+                this.formOptions.askPhone ||
+                this.requirePhone ||
+                this.requireDefaultContactFields
+            ); // && this.identifier == 'either');
         },
-
 
         ////////////////////////////////
 
         requireFirstName() {
-            return this.formOptions.requireFirstName || this.requireDefaultContactFields;
+            return (
+                this.formOptions.requireFirstName ||
+                this.requireDefaultContactFields
+            );
         },
         requireLastName() {
-            return this.formOptions.requireLastName || this.requireDefaultContactFields;
+            return (
+                this.formOptions.requireLastName ||
+                this.requireDefaultContactFields
+            );
         },
         requireGender() {
-            return this.formOptions.requireGender || this.requireDefaultContactFields;
+            return (
+                this.formOptions.requireGender ||
+                this.requireDefaultContactFields
+            );
         },
         requireDOB() {
             return this.formOptions.requireDOB;
@@ -791,16 +891,19 @@ export default {
             }
 
             switch (this.identifier) {
-                case 'both':
+                case "both":
                     return true;
                     break;
-                case 'email':
+                case "email":
                     return true;
                     break;
-                case 'either':
+                case "either":
                 default:
                     //Return if the contact details are required and we haven't already provided a phone number
-                    return this.requireDefaultContactFields && (!(this.dataModel._phone && this.dataModel._phone.length))
+                    return (
+                        this.requireDefaultContactFields &&
+                        !(this.dataModel._phone && this.dataModel._phone.length)
+                    );
                     break;
             }
         },
@@ -810,19 +913,21 @@ export default {
             }
 
             switch (this.identifier) {
-                case 'both':
+                case "both":
                     return true;
                     break;
-                case 'phone':
+                case "phone":
                     return true;
                     break;
 
-                case 'either':
+                case "either":
                 default:
                     //Return if the contact details are required and we haven't already provided an email
-                    return this.requireDefaultContactFields && (!(this.dataModel._email && this.dataModel._email.length))
+                    return (
+                        this.requireDefaultContactFields &&
+                        !(this.dataModel._email && this.dataModel._email.length)
+                    );
                     break;
-
             }
         },
 
@@ -838,30 +943,35 @@ export default {
             return `${this.definition.title}`;
         },
         allowed() {
-
             // console.log('TESTING', this.definition)
             //If it's public
-            if (this.definition.privacy == 'public') {
+            if (this.definition.privacy == "public") {
                 return true;
             }
 
-            var canCreate = this.$fluro.access.can('create', this.definedName, 'interaction');
-            var canSubmit = this.$fluro.access.can('submit', this.definedName, 'interaction');
+            var canCreate = this.$fluro.access.can(
+                "create",
+                this.definedName,
+                "interaction"
+            );
+            var canSubmit = this.$fluro.access.can(
+                "submit",
+                this.definedName,
+                "interaction"
+            );
             return canCreate || canSubmit;
         },
-        ...mapFields('fluro', [
-            'application', //The Fluro application and all of it's permissions and data
-            'user', //The authenticated user if they log in
-        ]),
+        ...mapFields("fluro", [
+            "application", //The Fluro application and all of it's permissions and data
+            "user" //The authenticated user if they log in
+        ])
     },
     components: {
         FluroContentFormField,
-        FluroContentForm,
+        FluroContentForm
     },
     methods: {
-
         createEwayToken(done) {
-
             var self = this;
             //Get the Public Encryption Key
             var key = self.paymentIntegration.publicDetails.publicKey;
@@ -877,7 +987,7 @@ export default {
             cardDetails.exp_year = String(self.dataModel.cardExpYear).slice(-2);
 
             if (cardDetails.exp_month.length < 1) {
-                cardDetails.exp_month = '0' + cardDetails.exp_month;
+                cardDetails.exp_month = "0" + cardDetails.exp_month;
             }
 
             ///////////////////////
@@ -885,17 +995,17 @@ export default {
             if (self.debugMode) {
                 return done({
                     message: `EWay can not be used with sandbox testing keys. Please add an additional testing integration.`
-                })
+                });
             }
 
-            return done(null, cardDetails)
+            return done(null, cardDetails);
         },
         createStripeToken(done) {
-
             //STRIPE v2 (DEPRECATED)
             var self = this;
             var liveKey = self.paymentIntegration.publicDetails.livePublicKey;
-            var sandboxKey = self.paymentIntegration.publicDetails.testPublicKey;
+            var sandboxKey =
+                self.paymentIntegration.publicDetails.testPublicKey;
             var stripeUseKey;
 
             ///////////////////////
@@ -909,9 +1019,11 @@ export default {
             if (!stripeUseKey) {
                 return done(null, {
                     error: {
-                        message: self.debugMode ? `Integration Setup Error: No test keys found.` : `Integration Setup Error: No live keys found.`
+                        message: self.debugMode
+                            ? `Integration Setup Error: No test keys found.`
+                            : `Integration Setup Error: No live keys found.`
                     }
-                })
+                });
             }
 
             ///////////////////////
@@ -935,7 +1047,11 @@ export default {
         debugLog() {
             // return;
             // if (this.debugMode) {
-            console.log(_.map(arguments, function(v) { return v }).join(' '));
+            console.log(
+                _.map(arguments, function(v) {
+                    return v;
+                }).join(" ")
+            );
             // }
         },
         evaluate(expression, context) {
@@ -949,13 +1065,11 @@ export default {
             } catch (err) {
                 // self.debugLog('EXPRESSION', expression, err);
             } finally {
-
                 // self.debugLog('EXPRESSION RESULT', result, ast, expression, context)
                 return result;
             }
         },
         initializePayment() {
-
             var self = this;
             var integration = self.paymentIntegration;
 
@@ -973,27 +1087,29 @@ export default {
             ////////////////////////////////////
 
             switch (integration.module) {
-                case 'stripe':
+                case "stripe":
                     // injectScript('https://js.stripe.com/v3/', function() {
                     //     console.log('Stripe has been included on page')
                     //     self.paymentReady = true;
                     // });
-                    injectScript('https://js.stripe.com/v2/', function() {
-                        console.log('Stripe has been included on page')
+                    injectScript("https://js.stripe.com/v2/", function() {
+                        console.log("Stripe has been included on page");
                         self.paymentReady = true;
                     });
                     break;
-                case 'eway':
-                    injectScript('https://secure.ewaypayments.com/scripts/eCrypt.js', function() {
-                        console.log('Eway has been included on page')
-                        self.paymentReady = true;
-                    });
+                case "eway":
+                    injectScript(
+                        "https://secure.ewaypayments.com/scripts/eCrypt.js",
+                        function() {
+                            console.log("Eway has been included on page");
+                            self.paymentReady = true;
+                        }
+                    );
                     break;
             }
-
         },
         modelChanged() {
-            this.$emit('input', this.dataModel);
+            this.$emit("input", this.dataModel);
         },
         validate() {
             var form = this.$refs.form;
@@ -1022,12 +1138,10 @@ export default {
                 payment.touch();
             }
 
-
             this.validate();
         },
         defaultUserValue(key) {
-
-            if(!this.prefill) {
+            if (!this.prefill) {
                 return;
             }
 
@@ -1035,9 +1149,7 @@ export default {
                 return null;
             }
 
-            return _.compact([
-                _.get(this.user, key)
-            ])
+            return _.compact([_.get(this.user, key)]);
         },
         reset() {
             var self = this;
@@ -1049,15 +1161,14 @@ export default {
                 //Use the value that was input originally
                 self.dataModel = JSON.parse(JSON.stringify(this.value));
             } else {
-
                 self.dataModel = {};
             }
 
             self.result = null;
 
-            self.state = 'ready';
+            self.state = "ready";
             self.modelChanged();
-            self.$emit('reset');
+            self.$emit("reset");
         },
         submit() {
             var self = this;
@@ -1068,8 +1179,7 @@ export default {
                 return;
             }
 
-            self.state = 'processing';
-
+            self.state = "processing";
 
             /////////////////////////////////
 
@@ -1084,22 +1194,53 @@ export default {
 
             /////////////////////////////////
 
-            var interactionData = {
-                interaction: dataModel,
-                event: self.$fluro.utils.getStringID(self.linkedEvent),
-                process: self.$fluro.utils.getStringID(self.linkedProcess),
-                // transaction:self.$fluro.utils.getStringID(self.linkedProcess),
+
+
+            // From https://stackoverflow.com/questions/18515254/recursively-remove-null-values-from-javascript-object
+
+            function pruneEmpty(obj) {
+                return (function prune(current) {
+                    _.forOwn(current, function(value, key) {
+                        if (
+                            _.isUndefined(value) ||
+                            _.isNull(value) ||
+                            _.isNaN(value) ||
+                            (_.isString(value) && _.isEmpty(value)) ||
+                            (_.isObject(value) && _.isEmpty(prune(value)))
+                        ) {
+                            delete current[key];
+                        }
+                    });
+                    // remove any leftover undefined values from the delete
+                    // operation on an array
+                    if (_.isArray(current)) _.pull(current, undefined);
+
+                    return current;
+                })(_.cloneDeep(obj)); // Do not modify the original object, create a clone instead
             }
 
             /////////////////////////////////
 
+            dataModel = pruneEmpty(dataModel);
+
+            /////////////////////////////////
+
+            var interactionData = {
+                interaction: dataModel,
+                event: self.$fluro.utils.getStringID(self.linkedEvent),
+                process: self.$fluro.utils.getStringID(self.linkedProcess)
+                // transaction:self.$fluro.utils.getStringID(self.linkedProcess),
+            };
+
+            /////////////////////////////////
+
             //Get the _ prepended values
-            setDefaultContactField('firstName');
-            setDefaultContactField('lastName');
-            setDefaultContactField('email');
-            setDefaultContactField('phoneNumber');
-            setDefaultContactField('dob');
-            setDefaultContactField('gender');
+            setDefaultContactField("firstName");
+            setDefaultContactField("lastName");
+            setDefaultContactField("email");
+            setDefaultContactField("phoneNumber");
+            setDefaultContactField("dob");
+            setDefaultContactField("gender");
 
             //Set the default contact fields
             function setDefaultContactField(key) {
@@ -1120,26 +1261,26 @@ export default {
 
             //If we need to have a payment
             if (self.showPaymentForm) {
-
                 var paymentDetails = {
                     amount: self.total,
                     email: dataModel.receiptEmail,
-                    integration: self.$fluro.utils.getStringID(self.paymentIntegration),
-                }
+                    integration: self.$fluro.utils.getStringID(
+                        self.paymentIntegration
+                    )
+                };
 
                 /////////////////////////////////
                 /////////////////////////////////
                 /////////////////////////////////
-
 
                 //Here we generate our client side tokens
                 switch (self.paymentIntegration.module) {
-                    case 'eway':
+                    case "eway":
                         if (!window.eCrypt) {
                             self.serverErrors = `ERROR: Eway is selected for payment but the eCrypt script has not been included in this application visit https://eway.io/api-v3/#encrypt-function for more information`;
                             self.$fluro.error(self.serverErrors);
-                            self.state = 'error';
-                            self.$emit('error', err);
+                            self.state = "error";
+                            self.$emit("error", err);
                             return;
                         }
 
@@ -1147,40 +1288,50 @@ export default {
 
                         return self.createEwayToken(function(err, token) {
                             if (err) {
-                                self.serverErrors = self.$fluro.utils.errorMessage(err)
+                                self.serverErrors = self.$fluro.utils.errorMessage(
+                                    err
+                                );
                                 self.$fluro.error(self.serverErrors);
-                                self.state = 'error';
-                                self.$emit('error', err);
+                                self.state = "error";
+                                self.$emit("error", err);
                                 return;
                             }
 
                             //Include the payment details
                             paymentDetails.details = token;
                             return submitRequest(paymentDetails);
-
-                        })
+                        });
 
                         break;
-                    case 'stripe':
+                    case "stripe":
                         //Generate the Stripe Token
-                        return self.createStripeToken(function(status, response) {
-
-
+                        return self.createStripeToken(function(
+                            status,
+                            response
+                        ) {
                             var error = status.error || response.error;
 
                             if (error) {
-                                console.log('FORM -> Stripe token error', status, response);
+                                console.log(
+                                    "FORM -> Stripe token error",
+                                    status,
+                                    response
+                                );
                                 self.serverErrors = error.message;
                                 self.$fluro.error(self.serverErrors);
-                                self.state = 'error';
-                                self.$emit('error', error);
+                                self.state = "error";
+                                self.$emit("error", error);
                             } else {
                                 //Include the payment details
-                                console.log('FORM -> Stripe tokenized', status, response)
+                                console.log(
+                                    "FORM -> Stripe tokenized",
+                                    status,
+                                    response
+                                );
                                 paymentDetails.details = response;
                                 return submitRequest(paymentDetails);
                             }
-                        })
+                        });
                         break;
                 }
             } else {
@@ -1193,10 +1344,9 @@ export default {
             /////////////////////////////////
 
             function submitRequest(paymentDetails) {
-
                 if (paymentDetails) {
                     interactionData.payment = paymentDetails;
-                    console.log('SUBMIT REQUEST', interactionData)
+                    console.log("SUBMIT REQUEST", interactionData);
                 }
 
                 /////////////////////////////////
@@ -1204,45 +1354,45 @@ export default {
                 var submissionConfig = self.submissionConfig;
                 submissionConfig.params = {
                     definition: self.$fluro.utils.getStringID(self.definition),
-                    process: self.$fluro.utils.getStringID(self.linkedProcess),
-                }
+                    process: self.$fluro.utils.getStringID(self.linkedProcess)
+                };
 
                 /////////////////////////////////
 
-                var request = self.$fluro.content.submitInteraction(self.definedName, interactionData, submissionConfig);
+                var request = self.$fluro.content.submitInteraction(
+                    self.definedName,
+                    interactionData,
+                    submissionConfig
+                );
 
+                request.then(
+                    function(interaction) {
+                        self.state = "success";
+                        self.dataModel = {
+                            data: {}
+                        };
 
-                request.then(function(interaction) {
-                    self.state = 'success';
-                    self.dataModel = {
-                        data: {},
+                        self.result = interaction;
+                        self.$emit("success", interaction);
+                    },
+                    function(err) {
+                        //Dispatch an error
+                        var humanMessage = self.$fluro.utils.errorMessage(err);
+                        self.$fluro.error(err);
+                        self.serverErrors = humanMessage;
+                        self.state = "error";
+                        self.$emit("error", err);
+
+                        console.log("SWITCH STATE TO", err, self);
                     }
-
-                    self.result = interaction;
-                    self.$emit('success', interaction);
-
-                }, function(err) {
-                    //Dispatch an error
-                    var humanMessage = self.$fluro.utils.errorMessage(err);
-                    self.$fluro.error(err);
-                    self.serverErrors = humanMessage;
-                    self.state = 'error';
-                    self.$emit('error', err);
-
-
-                    console.log('SWITCH STATE TO', err, self)
-
-                })
+                );
             }
-
-
         }
     }
-}
+};
 </script>
 <style scoped lang="scss">
 .fluro-interaction-form {
-
     .payment {
         margin: 15px 0;
         background: #fff;
