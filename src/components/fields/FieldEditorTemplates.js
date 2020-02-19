@@ -20,7 +20,7 @@ templates.push({
 
 templates.push({
     title: 'Multiple Choice',
-    description: `Add a basic text field`,
+    description: `Add a select dropdown where the user can choose an option from a list`,
     field: {
         title: '',
         minimum: 0,
@@ -28,6 +28,14 @@ templates.push({
         askCount: 1,
         type: 'string',
         key: '',
+        directive:'select',
+        allowedValues:[
+            'Option One',
+            'Option Two',
+            'Option Three',
+            'Option Four',
+        ],
+
     }
 });
 

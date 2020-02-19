@@ -485,11 +485,12 @@ export default {
 
 
                         var getPersonField = _.find(FieldTemplates, { key: 'person' });
-                        self.model.fields.push(JSON.parse(JSON.stringify(getPersonField.field)));
+                        var copy = JSON.parse(JSON.stringify(getPersonField.field))
+                        copy.key = 'contact';
+                        copy.title = 'Contact';
+                        self.model.fields.push(copy);
                     }
-
-
-
+                    
                     if (!self.model.data.publicData) {
                         self.$set(self.model.data, 'publicData', {});
                     }

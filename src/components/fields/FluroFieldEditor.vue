@@ -1,126 +1,58 @@
 <template>
     <flex-column class="fluro-field-editor">
+
         <flex-row>
-            <flex-column class="fields-list">
-                <!-- <flex-column v-if="formMode">
+            <flex-column class="sidebar">
+                <flex-column class="fields-tree" v-show="true || !(field || configurePayment || configureDefaults)">
                     <flex-column-header>
                         <div class="palette-title">
                             <v-layout align-center>
                                 <v-flex>
-                                    <strong label>Default Fields</strong>
+                                    <strong label>Field Tree</strong>
                                 </v-flex>
-                                <v-spacer />
-                                <v-flex shrink class="text-xs-right">
-                                    <fluro-icon icon="angle-down" />
+                                <v-flex shrink>
+                                    <span class="state-link" @click="expandAll()">
+                                        Expand All
+                                    </span>
+                                    <span class="state-link" @click="collapseAll()">
+                                        Collapse All
+                                    </span>
                                 </v-flex>
                             </v-layout>
                         </div>
                     </flex-column-header>
                     <flex-column-body>
-                        <v-container>
-                            <template v-if="hasDefaultFields">
-                                <div class="default-field" v-if="askFirstName">
-                                    {{requireFirstName ? 'Require First Name' : 'Ask First Name'}}
-                                </div>
-                                <div class="default-field" v-if="askLastName">
-                                    {{requireLastName ? 'Require Last Name' : 'Ask Last Name'}}
-                                </div>
-                                <div class="default-field" v-if="askGender">
-                                    {{requireGender ? 'Require Gender' : 'Ask Gender'}}
-                                </div>
-                                <div class="default-field" v-if="askDOB">
-                                    {{requireDOB ? 'Require Date of Birth' : 'Ask Date of Birth'}}
-                                </div>
-                                <div class="default-field" v-if="askEmail">
-                                    {{requireEmail ? 'Require Email Address' : 'Ask Email Address'}}
-                                </div>
-                                <div class="default-field" v-if="askPhone">
-                                    {{requirePhone ? 'Require Phone' : 'Ask Phone'}}
-                                </div>
-                            </template>
+                        <v-container pa-2>
+                            <div class="pseudo-field" :class="{active:configureDefaults && !field}" @click="showDefaultFieldOptions()">Form Configuration</div>
+                            <draggable class="field-editor-children" handle=".handle" element="ul" @sort="sorted" v-model="model" :options="treeOptions">
+                                <fluro-field-editor-item :mouseover="mouseover" :mouseleave="mouseleave" :parent="model" :leaf="model[index]" :selected="field" :select="clicked" @duplicate="duplicateField" @injected="injectField" @deleted="deleteField" v-for="(leaf, index) in model" :key="leaf.guid" />
+                            </draggable>
+                            <div class="pseudo-field" :class="{active:configurePayment && !field}" @click="showPaymentOptions()">Payment Options</div>
                         </v-container>
                     </flex-column-body>
-                </flex-column> -->
-                <!-- <flex-column> -->
-                <flex-column-header>
-                    <div class="palette-title">
-                        <v-layout align-center>
-                            <v-flex>
-                                <strong label>Field Tree</strong>
-                            </v-flex>
-                            <v-flex shrink>
-                                <span class="state-link" @click="expandAll()">
-                                    Expand All
-                                </span>
-                                <span class="state-link" @click="collapseAll()">
-                                    Collapse All
-                                </span>
-                                <!-- </v-flex> -->
-                                <!-- <v-spacer /> -->
-                                <!-- <v-flex shrink class="text-xs-right"> -->
-                                <!-- <fluro-icon icon="angle-down" /> -->
-                                </v-flex>
-                        </v-layout>
-                    </div>
-                </flex-column-header>
-                <flex-column-body>
-                    <v-container pa-2>
-                        <div class="pseudo-field" :class="{active:configureDefaults && !field}" @click="showDefaultFieldOptions()">Form Configuration</div>
-                        <draggable class="field-editor-children" handle=".handle" element="ul" @sort="sorted" v-model="model" :options="treeOptions">
-                            <fluro-field-editor-item :mouseover="mouseover" :mouseleave="mouseleave" :parent="model" :leaf="model[index]" :selected="field" :select="clicked" @duplicate="duplicateField" @injected="injectField" @deleted="deleteField" v-for="(leaf, index) in model" :key="leaf.guid" />
-                        </draggable>
-                        <div class="pseudo-field" :class="{active:configurePayment && !field}" @click="showPaymentOptions()">Payment Options</div>
-                    </v-container>
-                </flex-column-body>
-                <!-- </flex-column> -->
-                <!-- <flex-column v-if="formMode">
-                    <flex-column-header>
-                        <div class="palette-title">
-                            <v-layout align-center>
+                    <flex-column-footer class="border-top">
+                        <v-container class="pa-2" style="background: #fff">
+                            <v-layout row>
                                 <v-flex>
-                                    <strong label>Payment Fields</strong>
+                                    <v-btn small class="ma-1" color="primary" block @click="addNewTemplate()">
+                                        Add Field
+                                        <fluro-icon icon="plus" right />
+                                    </v-btn>
                                 </v-flex>
                                 <v-spacer />
-                                <v-flex shrink class="text-xs-right">
-                                    <fluro-icon icon="angle-down" />
+                                <v-flex>
+                                    <v-btn small class="ma-1" block @click="addNewField('group')">
+                                        Add Group
+                                        <fluro-icon icon="folder" right />
+                                    </v-btn>
                                 </v-flex>
                             </v-layout>
-                        </div>
-                    </flex-column-header>
-                    <flex-column-body>
-                        <v-container>
-                            Payment
                         </v-container>
-                    </flex-column-body>
-                </flex-column> -->
-                <flex-column-footer class="border-top">
-                    <v-container class="pa-2" style="background: #fff">
-                        <v-layout row>
-                            <!-- <v-flex>
-                                <v-btn small class="ma-1" color="primary" block @click="addNewField()">
-                                    Add Field
-                                    <fluro-icon icon="plus" right />
-                                </v-btn>
-                            </v-flex> -->
-                            <v-flex>
-                                <v-btn small class="ma-1" color="primary" block @click="addNewTemplate()">
-                                    Add Field
-                                    <fluro-icon icon="plus" right />
-                                </v-btn>
-                            </v-flex>
-                            <v-spacer />
-                            <v-flex>
-                                <v-btn small class="ma-1" block @click="addNewField('group')">
-                                    Add Group
-                                    <fluro-icon icon="folder" right />
-                                </v-btn>
-                            </v-flex>
-                        </v-layout>
-                    </v-container>
-                </flex-column-footer>
+                    </flex-column-footer>
+                </flex-column>
             </flex-column>
-            <!--  -->
             <flex-column class="preview" v-if="showPreview">
+                <fluro-page-preloader contain v-if="resetting"/>
                 <flex-column-header>
                     <div class="palette-title">
                         <v-layout align-center>
@@ -223,21 +155,20 @@
                     </v-container>
                 </flex-column-footer>
             </flex-column>
-            <flex-column class="field-options" v-if="field || configurePayment || configureDefaults">
+             <!-- v-show="(field || configurePayment || configureDefaults)" -->
+            <flex-column class="field-options">
                 <template v-if="field">
                     <flex-column-header>
                         <div class="palette-title">
-                            <!-- <v-layout align-center> -->
-                            <!-- <v-flex> -->
-                            <strong label>{{field.title || 'Untitled field'}}</strong>
-                            <!-- </v-flex> -->
-                            <!-- <v-spacer />
-                                <v-flex shrink >
-                                    <span class="state-link" @click="deleteSelectedField()">
-                                        Delete field <fluro-icon icon="trash-alt" />
-                                </span>
-                                </v-flex> -->
-                            <!-- </v-layout> -->
+                            <v-layout align-center>
+                                <strong label>{{field.title || 'Untitled field'}}</strong>
+                                <v-spacer />
+                                <v-flex shrink>
+                                    <span class="state-link" @click="deselectAll()">
+                                        <fluro-icon icon="times" />
+                                    </span>
+                                </v-flex>
+                            </v-layout>
                         </div>
                     </flex-column-header>
                     <fluro-field-edit @reset="resetPreview()" @deleted="deleteSelectedField" :expressionFields="model" v-model="field" />
@@ -248,6 +179,11 @@
                             <v-layout align-center>
                                 <v-flex>
                                     <strong label>Payment Settings</strong>
+                                </v-flex>
+                                <v-flex shrink>
+                                    <span class="state-link" @click="deselectAll()">
+                                        <fluro-icon icon="times" />
+                                    </span>
                                 </v-flex>
                             </v-layout>
                         </div>
@@ -263,6 +199,11 @@
                                 <v-flex>
                                     <strong label>Form Configuration</strong>
                                 </v-flex>
+                                <v-flex shrink>
+                                    <span class="state-link" @click="deselectAll()">
+                                        <fluro-icon icon="times" />
+                                    </span>
+                                </v-flex>
                             </v-layout>
                         </div>
                     </flex-column-header>
@@ -270,14 +211,13 @@
                         <slot name="form" />
                     </flex-column-body>
                 </template>
-                <!-- <template v-else>
-                    <flex-column center>
+                <template v-else>
+                    <flex-column center class="placeholder">
                         <v-container fluid style="flex:none" class="text-xs-center">
-                            <p class="muted">Select a field to configure</p>
+                            <p class="muted">Select a field on the left to edit configuration</p>
                         </v-container>
                     </flex-column>
-                    
-                </template> -->
+                </template>
             </flex-column>
         </flex-row>
     </flex-column>
@@ -540,6 +480,10 @@ export default {
     //     }
     // },
     methods: {
+        deselectAll() {
+            var self = this;
+            self.configurePayment = self.configureDefaults = self.field = null;
+        },
         sorted($event) {
             var self = this;
             self.$emit('input', self.model)
@@ -548,7 +492,7 @@ export default {
             var self = this;
 
             _.each(self.allFields, function(field) {
-                if(field.directive == 'embedded' || field.type == 'group') {
+                if (field.directive == 'embedded' || field.type == 'group') {
                     self.$set(field, 'collapsed', false)
                 }
             })
@@ -559,7 +503,7 @@ export default {
             var self = this;
 
             _.each(self.allFields, function(field) {
-                if(field.directive == 'embedded' || field.type == 'group') {
+                if (field.directive == 'embedded' || field.type == 'group') {
                     self.$set(field, 'collapsed', true)
                 }
             })
@@ -962,13 +906,25 @@ export default {
     }
 }
 
-.fields-list {
-    width: 300px;
-    flex: none;
-    overflow: hidden;
+.fields-tree {
+    label {
+        text-transform: uppercase;
+        font-weight: 500;
+        letter-spacing: 0.03em;
+        font-size: 0.8em;
+        margin-bottom: 5px;
+    }
+
+    min-width: 300px;
+    // flex: none;
+    // overflow: hidden;
     background: #eee;
-    border-right: 1px solid #ddd;
+    // border-right: 1px solid #ddd;
     @extend .no-select;
+}
+
+.placeholder {
+    background: #eee;
 }
 
 .pseudo-field {
@@ -1072,31 +1028,34 @@ export default {
 }
 
 .preview {
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
+    border-left: 3px solid #ddd;
+    border-right: 3px solid #ddd;
+    // border-left:4px solid #555;
+    // border-right:4px solid #555;
     background: #fff;
     min-width: 300px;
     flex: 2;
+
+    // .palette-title {
+        // background: #555;
+        // color: #eee;
+    // }
 }
 
-.fields-tree {
-    padding: 10px;
 
-    label {
-        text-transform: uppercase;
-        ;
-        font-weight: 500;
-        letter-spacing: 0.03em;
-        font-size: 0.8em;
-        margin-bottom: 5px;
-    }
-}
-
-.field-options {
+.sidebar {
     min-width: 380px;
     flex: 1;
     background: #fafafa;
     border-left: 1px solid #ddd;
+}
+
+.field-options {
+
+    // min-width: 380px;
+    // flex: 1;
+    background: #fafafa;
+    // border-left: 1px solid #ddd;
 
 }
 </style>

@@ -113,7 +113,7 @@
             </template>
             <template v-else>
                 <template v-if="field.sameLine">
-                    <v-layout row wrap>
+                    <v-layout class="same-line" row wrap>
                         <!-- <fluro-content-form :dynamic="dynamic" :options="options" v-model="fieldModel[index]" @input="valueChange" :fields="fields"/> -->
                         <template v-for="subfield in fields">
                             <!-- FIELDS 2 -->
@@ -2648,6 +2648,11 @@ function checkValidInput(self, input) {
 }
 
 .fluro-content-form-field {
+
+    .same-line {
+        padding-top:0 !important;
+        padding-bottom:0 !important;
+    }
 
     &.is-context {
         border-radius: 5px;
