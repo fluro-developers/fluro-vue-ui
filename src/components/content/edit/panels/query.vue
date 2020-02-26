@@ -29,8 +29,8 @@
                                     </fluro-panel-body>
                                 </fluro-panel>
                                 <column-customiser v-model="model.columns" :sampleData="sample" :config="config" :loadingSample="loadingSample"/>
-                                <template v-if="!sample.length">
-                                    <!-- Loading Sample Data -->
+<!--                                 <template v-if="!sample.length">
+                                   
                                 </template>
                                 <template v-else>
                                     <h4 margin>Sample Output</h4>
@@ -46,7 +46,7 @@
                                             </tab>
                                         </tabset>
                                     </fluro-panel>
-                                </template>
+                                </template> -->
                             </constrain>
                         </v-container>
                     </flex-column-body>
@@ -170,7 +170,8 @@ export default {
                     // includeArchived: self.includeArchivedByDefault,
                     allDefinitions: true, //self.allDefinitions,
                     // includeUnmatched: true,
-                    sample: 5,
+                    sample: true,
+                    limit: 5,
                 })
                 .then(sampleLoaded)
                 .catch(sampleFailed);
