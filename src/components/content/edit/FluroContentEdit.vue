@@ -417,6 +417,11 @@ export default {
                 context = 'edit';
             }
 
+
+            if ((self.typeName == 'attendance') && (!requestData.title || !requestData.title.length)) {
+                requestData.title = `${requestData.event.title} headcount`; 
+            }
+
             console.log('SENDING TO SERVER', context, self.model);
 
             switch (context) {
