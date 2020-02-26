@@ -1822,8 +1822,8 @@ $color-and: $success;
             flex: none !important;
 
             padding-top: 8px;
-
-            width: 20px;
+            margin-right:8px;
+            width: 25px;
             position: relative;
 
             &:before {

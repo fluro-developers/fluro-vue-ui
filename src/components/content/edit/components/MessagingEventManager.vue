@@ -10,11 +10,9 @@
                     </v-flex>
                     <v-flex sm2 xs12 pa-1 class="full-width">
                         <v-btn block @click="toggleEdit(index)">{{editing[index] ? 'Done' : 'Edit'}}</v-btn>
-                        <fluro-confirm-button @click="remove(index)" v-tippy content="Remove">
+                        <fluro-confirm-button @click="remove(index)" content="Remove">
                             <template v-slot:default="{confirming}">
-                                <span class="btn" xs style="width:100%;text-align:center;">
-                                    {{confirming ? 'Confirm?' : 'Remove'}}
-                                </span>
+                                    <v-btn flat block :color="confirming ? 'red' : ''" style="transition: all 0.1s;width:100%;">{{confirming ? 'Confirm?' : 'Remove'}}</v-btn>
                             </template>
                         </fluro-confirm-button>
                     </v-flex>
