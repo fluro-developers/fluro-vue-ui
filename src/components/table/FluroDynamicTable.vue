@@ -8,7 +8,6 @@
         <!-- <pre>{{sort}}</pre> -->
         <!-- <pre>{{filterCheckString}}</pre> -->
         <!-- {{startDate}} -->
-
         <fluro-page-preloader v-if="showLoading" contain />
         <v-container class="flex-center" v-if="!showLoading && !page.length">
             <slot name="emptytext">
@@ -95,12 +94,30 @@
                                         <!-- <v-checkbox v-model="customColumns[column.key]" :label="column.title"></v-checkbox> -->
                                         <!-- </div> -->
                                         <!-- <pre>{{availableKeys}}</pre> -->
+                                        <v-container v-if="availableKeys.length">
+                                            <v-autocomplete label="Group rows by" :items="availableGroupingKeys" @change="toggleColumnGrouping" :return-object="true" item-text="title"></v-autocomplete>
+                                        </v-container>
+                                        <!-- <v-list style="max-height: 50vh;" class="scroll-y" dense>
+                                            <v-list-tile :class="{columnselected:columnIsGrouping(field)}" @click="toggleColumnGrouping(field)" v-for="field in availableKeys">
+                                                <v-list-tile-action>
+                                                    <fluro-icon icon="check" v-if="columnIsGrouping(field)" />
+                                                </v-list-tile-action>
+                                                <v-list-tile-content>
+                                                    <v-list-tile-title>
+                                                        {{field.title}}
+                                                    </v-list-tile-title>
+                                                </v-list-tile-content>
+                                            </v-list-tile>
+                                        </v-list> -->
+                                        <v-container class="border-top border-bottom">
+                                            <strong>Select Columns</strong>
+                                        </v-container>
                                         <v-list style="max-height: 50vh;" class="scroll-y" dense>
                                             <v-list-tile :class="{columnselected:columnIsSelected(field)}" @click="toggleColumn(field)" v-for="field in availableKeys">
                                                 <v-list-tile-action>
-                                                    <fluro-icon icon="check" v-if="columnIsSelected(field)"/>
+                                                    <fluro-icon icon="check" v-if="columnIsSelected(field)" />
                                                 </v-list-tile-action>
-                                                <v-list-tile-content  >
+                                                <v-list-tile-content>
                                                     <v-list-tile-title>
                                                         {{field.title}}
                                                     </v-list-tile-title>
@@ -148,25 +165,29 @@
                     <tbody>
                         <template v-if="grouped">
                             <template v-for="group in grouped">
-                                <tr class="breaker" v-if="group.title">
-                                    <th></th>
+                                <tr class="breaker">
+                                    <!-- <th></th> -->
+                                    <th is="table-row-checkbox" @click.native="toggleSet(group.items)" :checked="allInGroupSelected(group.items)" />
                                     <!-- <td></td> -->
                                     <!-- <th is="table-row-checkbox" :checked="selectionController.allSelected(group)"/> -->
-                                    <td :colspan="1 + renderColumns.length">{{group.title}}</td>
+                                    <td :colspan="1 + renderColumns.length">{{group.title || 'No value'}} <span class="sm muted">({{group.items.length}})</span></td>
                                 </tr>
                                 <tr :class="classes(item)" :key="item._id" v-for="(item, key) in group.items">
                                     <template v-if="item._populating">
                                         <!-- <th>TEST {{selection.isSelected(item)}}</th> -->
-                                        <th is="table-row-checkbox" />
+                                        <th is="table-row-checkbox" v-if="selectionEnabled" />
                                         <td @click.native="clicked(item, column, key)" :colspan="renderColumns.length">-</td>
-                                        <th class="shrink">
+                                        <th class="shrink" v-if="actionsEnabled">
                                         </th>
                                     </template>
                                     <template v-else>
-                                        <th is="table-row-checkbox" :checked="selectionController.isSelected(item)" @click.native.stop.prevent="checkboxClick(item, $event, item._pageIndex)" :value="item" />
-                                        <table-cell @click.native="clicked(item, column, key)" :row="item" v-for="column in renderColumns" :class="{'sorting':sort.sortKey == column.key}" :column="column" />
-                                        <th class="shrink">
-                                            <!-- {{item._id}} -->
+                                        <th is="table-row-checkbox" v-if="selectionEnabled" :checked="selectionController.isSelected(item)" @click.native.stop.prevent="checkboxClick(item, $event, key)" :value="item" />
+                                        <!-- <td  v-for="column in renderColumns"> -->
+                                            <!-- <pre>{{column.key}} {{item.emails}}</pre> -->
+                                        <!-- </td> -->
+                                        <table-cell @click.native="clicked(item, column, key)" :row="item" v-for="column in renderColumns" :class="{'sorting':sort.sortKey == column.key}" :column="column"></table-cell>
+                                        
+                                        <th class="shrink" v-if="actionsEnabled">
                                             <div class="action-buttons">
                                                 <!-- <pre>{{item._relevance}}</pre> -->
                                                 <!-- <v-btn class="ma-0" v-if="$vuetify.breakpoint.mdAndUp" small icon>
@@ -185,7 +206,7 @@
                             </template>
                         </template>
                         <template v-else>
-                            <tr :class="classes(item)" :key="item._id" v-for="(item, key) in page">
+                            <tr :class="classes(item)" :key="item.guid" v-for="(item, key) in page">
                                 <template v-if="item._populating">
                                     <!-- <th>TEST {{selection.isSelected(item)}}</th> -->
                                     <th is="table-row-checkbox" v-if="selectionEnabled" />
@@ -228,7 +249,12 @@
                             <v-menu @click.native.stop offset-y>
                                 <template v-slot:activator="{ on }">
                                     <div v-on="on">
-                                        {{startOffset + 1 | numberWithCommas}} to {{endOffset | numberWithCommas}} of {{filteredTotal | numberWithCommas}} {{plural}}
+                                        <div v-if="groupingColumn">
+                                            {{totalGroups}} groups - Showing {{startOffset + 1 | numberWithCommas}} to {{endOffset | numberWithCommas}} of {{filteredTotal | numberWithCommas}} rows
+                                        </div>
+                                        <div v-else>
+                                            {{startOffset + 1 | numberWithCommas}} to {{endOffset | numberWithCommas}} of {{filteredTotal | numberWithCommas}} {{plural}}
+                                        </div>
                                     </div>
                                 </template>
                                 <v-card tile>
@@ -492,10 +518,11 @@ export default {
     },
     data() {
         return {
+            groupingColumn: null,
             cacheKey: null,
             columnState: {},
-            structureColumns:_.compact(this.columns),
-            extraColumns:[],
+            structureColumns: _.compact(this.columns),
+            extraColumns: [],
             all: [],
             rows: [],
             page: [],
@@ -510,18 +537,49 @@ export default {
     },
 
     computed: {
+        availableGroupingKeys() {
+
+            var array = this.availableKeys.slice();
+
+            array.unshift({
+                title: 'None',
+                value: null,
+            })
+            return array;
+        },
+        totalGroups() {
+
+            var self = this;
+
+            if (!self.groupingColumn) {
+                return;
+            }
+
+
+            var num = _.chain(self.rows)
+                .groupBy(function(row) {
+                    return row._groupingKey;
+                })
+                .values()
+                .value()
+                .length;
+
+            return num;
+        },
         plural() {
             return this.$fluro.types.readable(this.dataType, true);
         },
         pagePopulationString() {
-            return [this.currentPage, this.rawPage, this.structureColumns, this.extraColumns];
+            return [this.currentPage, this.rawPage, this.renderColumns];
+            //this.structureColumns, this.groupingColumn ? this.groupingColumn.key : '', this.extraColumns];
         },
         renderColumns() {
 
             var self = this;
             var array = self.structureColumns ? self.structureColumns.slice() : [];
 
-            if(self.extraColumns) {
+            //Columns selected by the user
+            if (self.extraColumns) {
                 array = array.concat(self.extraColumns);
             }
 
@@ -531,7 +589,10 @@ export default {
 
             /////////////////////////////////////
 
+            //Columns to show because we are filtering on them
             if (!self.fixedColumns) {
+
+                ///////////////////////////////////////////////
                 var filterFields = _.chain(self.activeFilters || [])
                     .map(function(filter) {
 
@@ -589,12 +650,13 @@ export default {
                 _.each(filterFields, function(column) {
                     // console.log('COLUMN', column)
                     if (!_.some(array, { key: column.key })) {
+                        // console.log('COLUMNS', column);
                         array.push(column);
                     }
                 })
             }
 
-            console.log('COLUMNS', array);
+
             /////////////////////////////////////
 
             return array;
@@ -618,15 +680,20 @@ export default {
 
             var self = this;
 
+            var results;
+
             if (self.grouping) {
-                return self.grouping(self.page);
-            } else {
-                return;
+                results = self.grouping(self.page);
+            } else if (self.groupingColumn && self.groupingColumn.key) {
+                results = self.groupByColumn(self.page.slice(), self.groupingColumn);
             }
+
+            // console.log('RESULTS', results);
+            return results;
         },
 
         reloadRequired() {
-            return `${this.cacheKey}-${this.dataType}-${this.filterCheckString} ${this.dateWatchString} ${this.sort.sortKey} ${this.sort.sortDirection} ${this.sort.sortType}  ${this.debouncedSearch}`;
+            return `${this.cacheKey}-${this.dataType}-${this.filterCheckString} ${this.dateWatchString} ${this.sort.sortKey} ${this.sort.sortDirection} ${this.sort.sortType} ${this.groupingColumn ? this.groupingColumn.key : ''}  ${this.debouncedSearch}`;
         },
         selectionEnabled() {
             return (!(this.enableSelection === false) && this.selectionController) ? true : false;
@@ -713,12 +780,16 @@ export default {
             return Math.min(this.startOffset + this.perPage, this.filteredTotal);
         },
         rawPage() {
-            // console.log('RAW', this.currentPage, this.totalPages)
+
             if (this.currentPage > this.totalPages) {
-                return _.first(this.availablePages);
+                var set = _.first(this.availablePages);
             } else {
-                return this.availablePages[this.currentPage - 1];
+                var set = this.availablePages[this.currentPage - 1];
             }
+
+            // console.log('RAW', set)
+
+            return set || [];
         },
         totalPages() {
             return this.availablePages ? this.availablePages.length : 0;
@@ -864,7 +935,7 @@ export default {
         extraColumns() {
             this.$emit('additionalColumns', this.extraColumns);
         },
-        'pagePopulationString': function() {
+        'pagePopulationString': function(str) {
             this.loading = true;
             this.populatePage()
         },
@@ -887,6 +958,162 @@ export default {
         // }, 500),
     },
     methods: {
+        allInGroupSelected(items) {
+
+            var self = this;
+
+            if (!items || !items.length) {
+                return;
+            }
+
+            //Check if any of the rows are not selected
+            var anyNotSelected = _.some(items, function(item) {
+                var notSelected = !self.selectionController.isSelected(item);
+                return notSelected;
+            })
+
+            return !anyNotSelected;
+        },
+        someInGroupSelected(items) {
+
+            var self = this;
+
+            if (self.allInGroupSelected(items)) {
+                return true;
+            }
+
+            return _.some(items, function(item) {
+                return self.selectionController.isSelected(item);
+            })
+        },
+        groupByColumn(rows, column, local) {
+
+            var self = this;
+
+            if (!column || !column.key) {
+                return rows;
+            }
+
+            ////////////////////////////////////////////////////
+
+            var grouped;
+
+            if (!local) {
+
+                //We need to contact the server get the rows and then 
+                grouped = _.chain(rows)
+                    .reduce(function(set, row) {
+                        // addGroupingEntry(rawValue)
+
+                        var groupingTitle = row._groupingTitle || row._groupingKey;
+                        var existing = set[row._groupingKey];
+
+                        if (!existing) {
+                            existing = set[row._groupingKey] = {
+                                title: groupingTitle,
+                                items: [],
+                                sortKey: groupingTitle,
+                            }
+                        }
+
+                        //////////////////
+
+                        existing.items.push(row);
+
+                        //////////////////
+
+                        return set;
+                    }, {})
+                    .values()
+                    .orderBy('sortKey')
+                    .value();
+
+            } else {
+
+                ////////////////////////////////////////////////////
+
+                var key = column.key;
+                var split = key.split('|');
+                var dataPath = split[0];
+                var discriminator = split[1];
+
+                //////////////////////////////////////////////
+
+                grouped = _.chain(rows)
+                    .reduce(function(set, row) {
+
+                        var rawValue = _.get(row, dataPath);
+                        if (!rawValue) {
+                            // rawValue = '';
+                            //don't include the row if it can't be grouped
+                            return set;
+                        }
+
+                        ///////////////////////////////////////
+
+                        if (_.isArray(rawValue)) {
+                            _.chain(rawValue)
+                                .filter(function(rawEntry) {
+                                    if (!discriminator) {
+                                        return true;
+                                    }
+
+
+                                    var match = rawEntry._discriminator == discriminator;
+                                    return match;
+                                })
+                                .each(addGroupingEntry)
+                                .value();
+                        } else {
+                            addGroupingEntry(rawValue)
+                        }
+
+                        ////////////////////////////////////////////////////
+
+                        function addGroupingEntry(groupingObjectValue) {
+                            var groupingKey = _.get(groupingObjectValue, '_id') || _.get(groupingObjectValue, 'title') || _.get(groupingObjectValue, 'name') || _.get(groupingObjectValue, 'value') || groupingObjectValue;
+                            var groupingTitle = _.get(groupingObjectValue, 'title') || _.get(groupingObjectValue, 'name') || groupingKey || '';
+                            var sortKey = String(groupingTitle || '').toLowerCase();
+
+                            // console.log('Group by column', column.key, row, groupingObjectValue, groupingTitle, groupingKey)
+                            var existing = set[groupingKey];
+                            if (!existing) {
+                                existing = set[groupingKey] = {
+                                    title: groupingTitle,
+                                    items: [],
+                                    sortKey,
+                                }
+                            }
+
+                            existing.items.push(row);
+                        }
+
+                        return set;
+                    }, {})
+                    .values()
+                    .orderBy('sortKey')
+                    .value();
+            }
+
+            return grouped;
+
+
+        },
+        toggleColumnGrouping(column) {
+            var self = this;
+
+            // console.log('Switch column', column)
+            self.groupingColumn = column;
+
+        },
+        columnIsGrouping(column) {
+            var self = this;
+            return self.groupingColumn && (self.groupingColumn.key == column.key);
+
+        },
+
+
+
         updateCacheKey() {
             this.cacheKey = this.$fluro.global.CACHE_KEY;
         },
@@ -946,19 +1173,26 @@ export default {
 
             var self = this;
 
-            var rawPageLookup = _.reduce(rawPage, function(set, item) {
-                set[item._id] = JSON.parse(JSON.stringify(item));
-                return set;
-            }, {});
+            // var rawPageLookup = _.reduce(rawPage, function(set, item) {
+            //     set[item._id] = JSON.parse(JSON.stringify(item));
+            //     return set;
+            // }, {});
+
+
+
+            renderColumns = renderColumns.slice();
+            if (self.groupingColumn) {
+                renderColumns.push(self.groupingColumn);
+            }
 
 
             //////////////////////////////////////
 
             return new Promise(function(resolve, reject) {
 
-                var ids = _.keys(rawPageLookup);
+                // var ids = _.map(rawPage, '_id');//_.keys(rawPageLookup);
 
-                if (!ids || !ids.length) {
+                if (!rawPage || !rawPage.length) {
                     return resolve([]);
                 }
 
@@ -1027,9 +1261,14 @@ export default {
                     .value()
                 );
 
+                /////////////////////////////////////////////////
+
+                var ids = self.$fluro.utils.arrayIDs(rawPage);
+
+                /////////////////////////////////////////////////
 
                 self.$fluro.api.post(`/content/${dataType}/multiple`, {
-                        ids: ids,
+                        ids,
                         select: _.uniq(fields),
                         populateAll: true,
                         limit: ids.length,
@@ -1046,19 +1285,21 @@ export default {
                             return set;
                         }, {})
 
-                        //// console.log('Look for ids', ids);
-                        var pageItems = _.chain(ids)
-                            .map(function(id, i) {
-                                var entry = lookup[id]
+                        /////////////////////////////////////////
+
+                        // console.log('Look for ids', ids);
+                        var pageItems = _.chain(rawPage)
+                            .map(function(rawRow, i) {
+                                var entry = lookup[rawRow._id]
 
                                 if (!entry) {
-                                    console.log('No entry for', id)
                                     return;
                                 }
                                 entry._pageIndex = i;
 
-                                entry = _.merge(rawPageLookup[id], entry);
-                                // console.log('ENTRY', entry, rawPageLookup[id]);
+                                entry = Object.assign({}, rawRow, entry);
+                                // _.merge(rawRow, entry);
+                                // console.log('MERGE');
                                 return entry
 
                             })
@@ -1086,10 +1327,10 @@ export default {
             var self = this;
 
             self.loading = true;
-
             self.populatePageItems(self.rawPage, self.dataType, self.renderColumns)
                 .then(function(res) {
                     self.page = res;
+                    // console.log('>> Page is populated', res)
                     self.loading = false;
                 })
                 .catch(function(err) {
@@ -1110,16 +1351,33 @@ export default {
 
             ///////////////////////////////////////
 
+            var sort = self.sort;
+            // if(self.groupingColumn) {
+
+            //     // key: this.defaultSort,
+            //     //     direction: this.defaultSortDirection,
+            //     //     type: this.defaultSortType,
+
+
+            //     sort = {
+            //         key:self.groupingColumn.key,
+            //         direction:'asc',
+            //         type:self.groupingColumn.sortType,
+            //     };
+            // }
+
+            ///////////////////////////////////////
 
             var filterCriteria = {
                 // return self.$fluro.api.get(`/system/test`, {
-                sort: self.sort,
+                sort,
                 filter: self.filterConfig,
                 search: self.debouncedSearch,
                 includeArchived: self.includeArchivedByDefault,
                 allDefinitions: self.allDefinitions,
                 searchInheritable: self.searchInheritable,
                 includeUnmatched: true,
+                groupingColumn: self.groupingColumn ? self.groupingColumn.key : undefined,
             }
 
             /////////////////////////////////////////////////////////////
@@ -1149,6 +1407,7 @@ export default {
                     self.$emit('raw', self.all);
 
                     self.rows = _.filter(res.data, { _matched: true });
+                    // console.log('ROWS', self.rows);
                     self.$emit('filtered', self.rows);
 
                     self.setPage(1);
@@ -1300,7 +1559,7 @@ export default {
             var currentDirection = self.sort.sortDirection;
             var sortDirection = alreadyActive ? (currentDirection == 'asc' ? 'desc' : 'asc') : 'asc';
 
-            console.log('SORT SET', self.sort)
+            // console.log('SORT SET', self.sort)
 
             self.setSort({
                 sortKey,
@@ -1407,6 +1666,18 @@ export default {
         deselectAll() {
             this.selectionController.deselectAll();
         },
+        toggleSet(items) {
+
+            var self = this;
+
+            if (self.allInGroupSelected(items)) {
+                // console.log('Toggle set select', items.length)
+                self.selectionController.deselectMultiple(items)
+            } else {
+                // console.log('Toggle set deselect', items.length)
+                self.selectionController.selectMultiple(items)
+            }
+        },
         toggleSelectAll() {
             if (!this.page || !this.page.length) {
                 return;
@@ -1429,8 +1700,6 @@ export default {
 }
 </script>
 <style lang="scss">
-
-
 .columnselected {
     background: #eee;
     color: #aaa;

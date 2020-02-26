@@ -1,6 +1,8 @@
 <template>
     <div>
+        <!-- <pre>{{mediaID}}</pre> -->
         <div class="fluro-video" :class="classes" :style="style">
+
             <div class="fluro-video-embed" v-if="provider == 'youtube'">
                 <youtube-embed :video-id="mediaID"></youtube-embed>
             </div>
@@ -38,6 +40,7 @@ export default {
         height: {
             type: Number,
         },
+        cacheKey: [String, Number],
     },
     // data() {
     //     return {
@@ -53,19 +56,29 @@ export default {
         mediaID() {
             if (this.item) {
 
-                if (this.item.assetMediaID) {
-                    return this.item.assetMediaID;
+
+                switch (this.provider) {
+                    case 'upload':
+                        break;
+                    default:
+                        return this.$fluro.video.getAssetMediaIDFromURL(_.get(this, `item.external.${this.provider}`), this.provider);
+                        break;
                 }
 
-                if (this.item.external) {
-                    if (this.item.external.youtube) {
-                        return this.item.external.youtube
-                    }
 
-                    if (this.item.external.vimeo) {
-                        return this.item.external.vimeo
-                    }
-                }
+                // if (this.item.assetMediaID) {
+                //     return this.item.assetMediaID;
+                // }
+
+                // if (this.item.external) {
+                //     if (this.item.external.youtube) {
+                //         return this.item.external.youtube
+                //     }
+
+                //     if (this.item.external.vimeo) {
+                //         return this.item.external.vimeo
+                //     }
+                // }
             }
         },
         classes() {
@@ -115,10 +128,22 @@ export default {
             return this.$fluro.utils.getStringID(this.item);
         },
         posterUrl() {
-            return this.$fluro.asset.posterUrl(this.item, null, null, { extension: 'jpg' });
+            var self = this;
+            var params = { extension: 'jpg' };
+            if (self.cacheKey && String(self.cacheKey.length)) {
+                params.cacheKey = self.cacheKey;
+            }
+            return self.$fluro.asset.posterUrl(self.item, null, null, params);
         },
         assetUrl() {
-            return this.$fluro.asset.getUrl(this.item);
+            var self = this;
+            var params = {};
+
+            if (self.cacheKey && String(self.cacheKey.length)) {
+                params.cacheKey = self.cacheKey;
+            }
+
+            return self.$fluro.asset.getUrl(self.item, params);
         },
 
         backgroundImage() {

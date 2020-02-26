@@ -33,7 +33,7 @@ export default {
         FluroPrivacySelect,
         // "json-view": JSONView,
     },
-    mixins:[Layout],
+    mixins: [Layout],
     computed: {
         type() {
             return this.config.type;
@@ -49,6 +49,18 @@ export default {
         },
         readableContentType() {
             return this.$fluro.types.readable(this.config.definition ? this.config.definition.definitionName : this.config.type.definitionName)
+        },
+        fullBody() {
+            return this.definition && this.definition.data && this.definition.data.fullBody;
+        },
+        hideBody() {
+            return this.definition && this.definition.data && this.definition.data.hideBody;
+        },
+        titleLabel() {
+            return 'Title';
+        },
+        bodyLabel() {
+            return 'Body';
         }
     },
     methods: {

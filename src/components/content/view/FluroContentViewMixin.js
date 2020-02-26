@@ -19,7 +19,7 @@ export default {
             loading: false,
         }
     },
-    mixins:[Layout],
+    mixins: [Layout],
     // extends: FluroContentRender,
     components: {
         FluroContentRender,
@@ -30,6 +30,17 @@ export default {
         definition() {
             return this.config && this.config.definition ? this.config.definition : null
         },
+        data() {
+            return this.item.data || {}
+        },
+        fields() {
+
+            if (this.definition && this.definition.fields && this.definition.fields.length) {
+
+
+                return this.definition.fields;
+            }
+        }
         // itemID() {
         //     return this.model._id;
         // },

@@ -170,11 +170,14 @@ export default {
         }
     },
     created() {
-        if (this.datetime instanceof Date) {
-            this.selectedDatetime = this.datetime
-        } else if (typeof this.datetime === 'string' || this.datetime instanceof String) {
-            // see https://stackoverflow.com/a/9436948
-            this.selectedDatetime = moment(new Date(this.datetime), this.format)
+
+        if(this.datetime) {
+            if (this.datetime instanceof Date) {
+                this.selectedDatetime = this.datetime
+            } else if (typeof this.datetime === 'string' || this.datetime instanceof String) {
+                // see https://stackoverflow.com/a/9436948
+                this.selectedDatetime = moment(new Date(this.datetime), this.format)
+            }
         }
     },
     computed: {

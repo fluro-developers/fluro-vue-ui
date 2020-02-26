@@ -265,19 +265,20 @@ export default {
 
             var array = [];
 
+
             /////////////////////////////////
 
-            function recursiveExpand(fields) {
+            function recursiveFind(fields) {
                 _.each(fields, function(field) {
 
                     array.push(field);
-                    recursiveExpand(field.fields);
+                    recursiveFind(field.fields);
                 })
             }
 
             /////////////////////////////////
 
-            recursiveExpand(self.model);
+            recursiveFind(self.model);
 
             /////////////////////////////////
 

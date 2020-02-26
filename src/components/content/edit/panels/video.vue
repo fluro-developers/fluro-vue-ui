@@ -11,21 +11,56 @@
                         <v-container fluid>
                             <constrain sm>
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
-                                <fluro-content-form-field v-if="assetType != 'upload'" :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.assetType" v-model="model"></fluro-content-form-field>
-                                <template v-for="iter in urlArray">
-                                    <v-text-field v-if="assetType == iter" :v-model="`model.external[${iter.key}]`" :label="fieldHash[iter].title"></v-text-field>
+                                <template v-if="!model._id || assetType != 'upload'">
+                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.assetType" v-model="model"></fluro-content-form-field>
                                 </template>
-                                <fluro-code-editor lang="html" v-if="assetType == 'embed'" v-model="model.external[embed]" />
-                                <iframe v-if="(assetType == 'youtube') && model.external.youtube" type="text/html" width="640" height="360" :src="`https://www.youtube.com/embed/${youtubeURL}?controls=0&autoplay=0&modestbranding=1&playsinline=1&showinfo=0&theme=light&byline=0&portrait=0&title=0&start=0`" frameborder="0"></iframe>
-                                <v-input label="Body" class="no-flex pt-2">
-                                    <fluro-editor v-model="model.body" placeholder="Type your text in here"></fluro-editor>
-                                </v-input>
+                                <template v-if="assetType == 'upload'">
+                                    <!-- If we already exist -->
+                                    <template v-if="model._id">
+                                        <template v-if="replace">
+                                            <asset-replace-upload v-model="model" @input="assetReplaced" />
+                                        </template>
+                                        <template v-else>
+                                            <v-input :label="model.filename" class="no-flex">
+                                                <div>
+                                                    <v-btn class="ma-0" @click="replace = true">
+                                                        Replace with a new file
+                                                        <fluro-icon right library="fas" icon="cloud-upload" />
+                                                    </v-btn>
+                                                </div>
+                                            </v-input>
+                                        </template>
+                                    </template>
+                                    <template v-else>
+                                        <asset-replace-upload v-model="model" @file="fileSelected" />
+                                    </template>
+                                </template>
+                                <template v-else>
+                                    <fluro-content-form v-model="model.external" :fields="externalFields">
+                                        <!-- <template v-slot:form="{formFields, fieldHash, model, update, options}"> -->
+                                        <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.youtube" v-model="model"/> -->
+                                        <!-- </template> -->
+                                    </fluro-content-form>
+                                </template>
+                                <v-container px-0 pt-0 v-if="showVideo">
+                                    <fluro-video :cacheKey="videoCacheKey" :item="model" />
+                                </v-container>
+                                <template v-if="!hideBody && !fullBody">
+                                    <v-input label="Body / Caption" class="no-flex">
+                                        <fluro-editor v-model="model.body" :options="editorOptions" placeholder="Type your text in here"></fluro-editor>
+                                    </v-input>
+                                </template>
+
+
+                                <template v-if="definition && definition.fields && definition.fields.length">
+                                    <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
+                                </template>
                                 <fluro-privacy-select v-model="model.privacy" />
                             </constrain>
                         </v-container>
                     </flex-column-body>
                 </tab>
-                <tab :heading="`${definition.title} Information`" v-if="definition && definition.fields && definition.fields.length">
+                <!-- <tab :heading="`${definition.title} Information`" v-if="definition && definition.fields && definition.fields.length">
                     <flex-column-body style="background: #fafafa;">
                         <v-container fluid>
                             <constrain sm>
@@ -33,7 +68,7 @@
                             </constrain>
                         </v-container>
                     </flex-column-body>
-                </tab>
+                </tab> -->
                 <!-- <tab heading="Advanced / Metadata" v-if="hasMeta">
                     <flex-column-body style="background: #fafafa;">
                         <v-container fluid>
@@ -108,6 +143,71 @@ export default {
     },
     mixins: [FluroContentEditMixin, FluroAssetEditMixin, Layout],
     computed: {
+        showVideo() {
+            var self = this;
+            switch (self.assetType) {
+                case 'vimeo':
+                case 'youtube':
+                case 'embed':
+                    return !!self.model.external[self.assetType];
+                    break;
+                case 'upload':
+                    return !!self.model._id;
+                    break;
+
+            }
+        },
+        externalFields() {
+            var self = this;
+            var array = [];
+
+            array.push({
+                title: 'Youtube URL',
+                key: 'youtube',
+                type: 'string',
+                minimum: 1,
+                maximum: 1,
+                expressions: {
+                    hide() {
+                        return self.assetType != 'youtube';
+                    }
+                }
+            })
+
+
+            array.push({
+                title: 'Vimeo URL',
+                key: 'vimeo',
+                type: 'string',
+                minimum: 1,
+                maximum: 1,
+                expressions: {
+                    hide() {
+                        return self.assetType != 'vimeo';
+                    }
+                }
+            })
+
+            array.push({
+                title: 'Embed Code',
+                key: 'embed',
+                type: 'string',
+                directive: 'code',
+                params: {
+                    syntax: 'html',
+                },
+                minimum: 0,
+                maximum: 1,
+                expressions: {
+                    hide() {
+                        return self.assetType != 'embed';
+                    }
+                }
+            })
+
+            return array;
+
+        },
         fieldsOutput() {
 
 
@@ -214,7 +314,7 @@ export default {
                 return 'hey';
             }
             url = url.split('?');
-            query = url[url.length - 1];
+            var query = url[url.length - 1];
             console.log(url, query);
             return 'hello';
         }
@@ -225,13 +325,20 @@ export default {
             this.replace = false;
         }
     },
-    data() {
-        return {
-            cacheKey: 0,
-            replace: false,
-            urlArray: ['youtube', 'vimeo']
+    methods: {
+        assetReplaced(model) {
+            this.videoCacheKey = Math.random();
+            this.replace = false;
         }
     },
+    data() {
+        return {
+            videoCacheKey: 0,
+            replace: false,
+            editorOptions: {},
+        }
+    },
+
 }
 </script>
 <style lang="scss">

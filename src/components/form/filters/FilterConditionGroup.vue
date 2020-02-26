@@ -532,7 +532,7 @@ export default {
                 })
             },
         },
-        groupNames:{
+        groupNames: {
             get() {
                 var self = this;
                 return Promise.resolve([]);
@@ -765,6 +765,63 @@ export default {
 
             var injectFields = [];
 
+
+            /////////////////////////////////////////////
+
+            var postDefinitionOptions = [];
+
+            postDefinitionOptions = postDefinitionOptions.concat(_.map(self.postTypes, function(definition) {
+                return {
+                    text: definition.title,
+                    value: definition.definitionName,
+                }
+            }))
+
+            injectFields.push({
+                title: 'Posts and Notes > Total linked posts',
+                key: '_posts.all.length',
+                maximum: 1,
+                minimum: 0,
+                type: 'integer',
+                subfieldTitle: 'Where post matches...',
+                subfields: [{
+                        title: 'Created Date',
+                        key: 'created',
+                        maximum: 1,
+                        minimum: 0,
+                        type: 'date',
+                    },
+                    // {
+                    //     title: 'Updated Date',
+                    //     key: 'updated',
+                    //     maximum: 1,
+                    //     minimum: 0,
+                    //     type: 'date',
+                    // },
+                    {
+                        title: 'Realms',
+                        key: 'realms',
+                        maximum: 0,
+                        minimum: 0,
+                        type: 'reference',
+                        directive: 'select',
+                        _discriminatorDefinition: 'realm',
+                    },
+                    {
+                        title: 'Post Type',
+                        key: 'definition',
+                        maximum: 0,
+                        minimum: 0,
+                        type: 'string',
+                        directive: 'select',
+                        options: postDefinitionOptions,
+                    },
+                ],
+            });
+
+            /////////////////////////////////////////////
+
+
             if (self.isContactType) {
 
 
@@ -777,7 +834,7 @@ export default {
                 var eventTrackOptions = [];
                 var rosterDefinitionOptions = [];
                 var interactionDefinitionOptions = [];
-                var postDefinitionOptions = [];
+
                 var groupNameOptions = [];
 
                 groupNameOptions = groupNameOptions.concat(_.map(self.groupNames, function(group) {
@@ -787,7 +844,6 @@ export default {
                     }
                 }))
 
-
                 interactionDefinitionOptions = interactionDefinitionOptions.concat(_.map(self.interactionTypes, function(definition) {
                     return {
                         text: definition.title,
@@ -795,21 +851,12 @@ export default {
                     }
                 }))
 
-                postDefinitionOptions = postDefinitionOptions.concat(_.map(self.postTypes, function(definition) {
-                    return {
-                        text: definition.title,
-                        value: definition.definitionName,
-                    }
-                }))
-
-
                 rosterDefinitionOptions = rosterDefinitionOptions.concat(_.map(self.rosterTypes, function(definition) {
                     return {
                         text: definition.title,
                         value: definition.definitionName,
                     }
                 }))
-
 
                 eventTrackOptions = eventTrackOptions.concat(_.map(self.eventTracks, function(track) {
                     return {
@@ -825,7 +872,6 @@ export default {
                         value: definition.definitionName,
                     }
                 }))
-
 
                 injectFields.push({
                     title: 'Attendance > Total times checked in',
@@ -882,9 +928,6 @@ export default {
                         // },
                     ],
                 });
-
-
-
 
                 injectFields.push({
                     title: 'Rostered Assignments > Total times rostered',
@@ -1005,8 +1048,6 @@ export default {
                     ],
                 });
 
-
-
                 injectFields.push({
                     title: 'Mailouts > Total Emails',
                     key: '_mailouts.all.length',
@@ -1080,8 +1121,6 @@ export default {
                     ],
                 });
 
-
-
                 injectFields.push({
                     title: 'Fluro Login > Access Passes',
                     key: '_persona.policies',
@@ -1112,55 +1151,6 @@ export default {
                         },
                     ]
                 });
-
-
-
-
-
-
-                injectFields.push({
-                    title: 'Posts and Notes > Total linked posts',
-                    key: '_posts.all.length',
-                    maximum: 1,
-                    minimum: 0,
-                    type: 'integer',
-                    subfieldTitle: 'Where post matches...',
-                    subfields: [
-                        {
-                            title: 'Created Date',
-                            key: 'created',
-                            maximum: 1,
-                            minimum: 0,
-                            type: 'date',
-                        },
-                        // {
-                        //     title: 'Updated Date',
-                        //     key: 'updated',
-                        //     maximum: 1,
-                        //     minimum: 0,
-                        //     type: 'date',
-                        // },
-                        {
-                            title: 'Realms',
-                            key: 'realms',
-                            maximum: 0,
-                            minimum: 0,
-                            type: 'reference',
-                            directive: 'select',
-                            _discriminatorDefinition: 'realm',
-                        },
-                        {
-                            title: 'Post Type',
-                            key: 'definition',
-                            maximum: 0,
-                            minimum: 0,
-                            type: 'string',
-                            directive: 'select',
-                            options: postDefinitionOptions,
-                        },
-                    ],
-                });
-
 
                 // postTypes
 

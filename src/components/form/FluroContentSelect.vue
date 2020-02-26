@@ -472,7 +472,7 @@ export default {
 
 
         return {
-            listLimit: 75,
+            listLimit: 50,
             actionIndexes: {},
             selection: [],
             candidates: [],

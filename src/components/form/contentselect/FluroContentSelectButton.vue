@@ -3,7 +3,7 @@
         <v-btn :small="small" :large="large" :color="color" :block="block" class="pill mx-0" @click.native="showModal">
             <span>{{selectionSummary}}</span>
         </v-btn>
-        <!-- <pre>{{selector.selection}}</pre> -->
+        
     </div>
 </template>
 <script>
@@ -64,6 +64,9 @@ export default {
         'type': {
             //The type of thing we are selecting realms for
             type: String,
+            default() {
+                return 'node';
+            }
         },
 
         'minimum': {
@@ -89,15 +92,29 @@ export default {
             return this.$fluro.types.readable(this.type, true);
         },
         selectionSummary() {
+
+
             var self = this;
+
+            ///////////////////////////////////////
 
             var matchingSelection = _.filter(self.selection, function(entry) {
                 if(!entry) {
                     return;
                 }
 
+                if(!self.type || self.type == 'node') {
+                    return true;
+                }
+
                 return entry.definition ? entry.definition == self.type : (entry._type == self.type)
             })
+
+            ///////////////////////////////////////
+            
+            // console.log('NATCHING SELECTION',self.selection );
+
+            ///////////////////////////////////////
 
             if (!matchingSelection.length) {
                 if (self.label && self.label.length) {
@@ -107,9 +124,13 @@ export default {
                 }
             }
 
+            ///////////////////////////////////////
+
             if (matchingSelection.length > 3) {
                 return `${matchingSelection.length} ${self.plural} selected`;
             }
+
+            ///////////////////////////////////////
 
             return _.map(matchingSelection, 'title').join(', ');
         }

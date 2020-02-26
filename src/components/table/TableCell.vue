@@ -1,7 +1,10 @@
 <template>
-    <td :class="{wrap:column.wrap, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}">
-        <div class="wrap-limit">
-        <!-- <pre>{{subField}}</pre> -->
+    <td :class="{wrap:shouldWrap, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}">
+        <!-- {{rawValue.length}} {{shouldWrap}} -->
+
+        <!-- <pre>{{column.key}} - {{row}} - {{rawValue}}</pre> -->
+        <div :class="{'wrap-limit':shouldWrap}">
+        <!-- <pre>{{rawValue}}</pre> -->
         <component v-if="renderer" :data="preValue" :is="renderer" :row="row" :column="column" />
         <template v-else-if="simpleArray">
             <template v-for="entry in formattedArray">
@@ -92,6 +95,12 @@ export default {
         }
     },
     computed: {
+        characterCount() {
+            return String(this.rawValue).length;
+        },
+        shouldWrap() {
+            return this.column.wrap || _.isString(this.rawValue) && this.characterCount > 100;
+        },
         complexTitle() {
             return this.preValue.title
         },
@@ -322,14 +331,16 @@ export default {
         // },
 
         rawValue() {
-            var path = this.key;
+            var self = this;
+
+            var path = self.key;
 
             var pieces = path.split('[]');
             var steps = pieces.length;
 
             //Starter array
             if (pieces.length < 2) {
-                return _.get(this.row, this.key);
+                return _.get(self.row, self.key);
             } else if (pieces.length == 2) {
 
                 // var pathPiece = pieces[0];
@@ -337,7 +348,26 @@ export default {
                 //     pathPiece = pathPiece.slice(1);
                 // }
                 // var shallowArray = _.get(this.row, pieces[0]);
-                return _.get(this.row, pieces[0]);
+                var match =  _.get(self.row, pieces[0]);
+
+                 var subFieldPath = self.subField;
+                if(subFieldPath) {
+
+                    if (subFieldPath[0] == '.') {
+                        subFieldPath = subFieldPath.slice(1);
+                    }
+                    
+                    if(_.isArray(match)) {
+                        match = _.map(match, subFieldPath);
+                        
+                    } else {
+                        match = _.get(match, subFieldPath);
+                    }
+                    
+                }
+
+
+                return match;
 
                 // if(shallowArray)
                 // return shallowArray;
@@ -512,13 +542,12 @@ export default {
 </script>
 <style scoped lang="scss">
 
+
 .wrap-limit {
+    // white-space: normal !important;
     max-width:500px;
     overflow: hidden;
+    white-space: pre-line;
     text-overflow: ellipsis;
-}
-
-.wrap {
-    white-space: normal !important;
 }
 </style>

@@ -532,6 +532,10 @@ export default {
                     }
                 }
 
+                if (option.title) {
+                    option.text = option.title = option.title;
+                }
+
                 if (option.name) {
                     option.text = option.title = option.name;
                 }
@@ -945,7 +949,7 @@ export default {
             if (self.selector && self.selector.options && self.selector.options.length) {
                 self.possibleValues = self.selector.options;
                 self.loadingValues = false;
-                console.log('SELECTOR POSSIBLE VALUES', key, self.possibleValues)
+                // console.log('SELECTOR POSSIBLE VALUES', key, self.possibleValues)
                 return;
             }
 
@@ -971,7 +975,7 @@ export default {
             ////////////////////////////////
 
             var dataType = self.dataType;
-            console.log('Retrieve Values', key, self.dataType)
+            // console.log('Retrieve Values', key, self.dataType)
 
             ////////////////////////////////
 

@@ -54,6 +54,12 @@
                     
                 </v-flex>
             </v-layout>
+
+            <template v-if="item.body && item.body.length">
+                <div v-html="item.body"></div>
+            </template>
+
+            
             <template v-if="fields && fields.length">
                 <fluro-content-render :fields="fields" v-model="item.data" />
             </template>

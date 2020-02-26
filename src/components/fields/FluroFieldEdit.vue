@@ -1,5 +1,9 @@
 <template>
     <flex-column>
+        <!-- <flex-column-header> -->
+                        <!-- <pre>{{model.guid}}</pre> -->
+        <!-- </flex-column-header> -->
+
         <tabset v-model="tabIndex" v-if="model.type == 'group'">
             <tab heading="Group Settings">
                 <flex-column-body>
@@ -446,7 +450,7 @@
                                                 </v-btn>
                                             </template>
                                             <div>
-                                                <expression-field-select @click="injectExpression($event, 'required')" v-model="expressionFields" />
+                                                <expression-field-select :context="model" @click="injectExpression($event, 'required')" v-model="expressionFields" />
                                             </div>
                                         </v-menu>
                                     </v-flex>
@@ -514,6 +518,16 @@ export default {
         }
     },
     methods: {
+        recursiveGUID(fields) {
+            var self = this;
+            _.each(fields, function(field) {
+                if (!field.guid) {
+                    self.$set(field, 'guid', self.$fluro.utils.guid());
+                }
+
+                self.recursiveGUID(field.fields);
+            })
+        },
         setDefaults(model) {
             var self = this;
             if (!model.params) {
@@ -567,7 +581,7 @@ export default {
                                     maximum: 1,
                                     askCount: 1,
                                     fields: [],
-                                    guid: self.$fluro.utils.guid(),
+                                    guid:self.$fluro.utils.guid(),
                                 }
 
                                 self.model.fields.push(detailsBlock);
@@ -590,7 +604,7 @@ export default {
                                     maximum: 1,
                                     askCount: 1,
                                     fields: [],
-                                    guid: self.$fluro.utils.guid(),
+                                    guid:self.$fluro.utils.guid(),
                                 }
 
                                 dataBlock = {
@@ -602,8 +616,7 @@ export default {
                                     maximum: 1,
                                     askCount: 1,
                                     fields: [],
-                                    guid: self.$fluro.utils.guid(),
-
+                                    guid:self.$fluro.utils.guid(),
                                 }
 
                                 //Add as a pyramid
@@ -618,14 +631,17 @@ export default {
                                 // guid:self.$fluro.utils.guid(),
                                 var existingField = _.find(dataBlock.fields, { key: field.key });
                                 if (!existingField) {
+
                                     field.guid = self.$fluro.utils.guid();
-
+                                    self.recursiveGUID(field.fields)
                                     dataBlock.fields.push(field);
-
                                 }
                             })
 
 
+                            //Recursive create GUID
+
+                            self.resetRequired();
                         })
                         .catch(reject);
 
@@ -849,6 +865,10 @@ export default {
         }
     },
     computed: {
+        fullPath() {
+            console.log('TEST', this.expressionFields)
+            return this.model.key;
+        },
         field() {
             return this.model;
         },

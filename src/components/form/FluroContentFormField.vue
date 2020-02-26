@@ -1,6 +1,7 @@
- <template>
+<template>
     <div @click="clicked($event)" :data-field-key="key" class="fluro-content-form-field" v-if="isVisible" v-bind="attributes" :class="fieldClass">
         <!-- <pre>{{options}}</pre> -->
+        <!-- <pre>{{renderer}}</pre> -->
         <!-- <pre>{{field.title}} DATA {{renderer}}</pre> -->
         <template v-if="officeUseOnly">
         </template>
@@ -151,9 +152,9 @@
             <v-text-field :persistent-hint="persistentDescription" :suffix="suffix" :prefix="prefix" :outline="showOutline" :success="success" :required="required" type="number" :label="displayLabel" v-model="fieldModel" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
         </template>
         <template v-else-if="renderer == 'realmselect'">
-            <v-input class="no-flex" :persistent-hint="true" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
-                <fluro-realm-select v-model="fieldModel" />
-            </v-input>
+            <!-- <v-input class="no-flex" :persistent-hint="true" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description"> -->
+                <fluro-realm-select block type="collection" v-model="fieldModel" />
+            <!-- </v-input> -->
         </template>
         <template v-else-if="renderer == 'datepicker'">
             <!--      <template v-slot:activator="{ on }">
@@ -245,12 +246,19 @@
             <v-select  :persistent-hint="true" :outline="showOutline" :success="success" :required="required" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
         </template> -->
         <template v-else-if="renderer == 'select'">
-            <template v-if="mobile">
+            <template v-if="mobile || params.dropdown">
                 <v-select :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
             </template>
             <template v-else>
                 <v-autocomplete :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
             </template>
+        </template>
+        <template v-else-if="renderer == 'content-select-button'">
+            <!-- <pre>{{fieldModel}}</pre> -->
+            <v-input class="no-flex" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
+                <fluro-content-select-button :context="context" :debugMode="debugMode" :contextField="contextField" block :recursiveClick="recursiveClick" :type="restrictType" :minimum="minimum" :maximum="maximum" :searchInheritable="searchInheritable" :allDefinitions="allDefinitions" v-model="fieldModel" />
+                <!-- <fluro-content-select :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :success="success" :required="required" :error-messages="errorMessages" :label="displayLabel" :outline="showOutline" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" :minimum="minimum" @input="valueChange" @blur="touch()" @focus="focussed();" :type="restrictType" :lockFilter="referenceFilter" :searchInheritable="searchInheritable" :maximum="maximum" v-model="model[field.key]" /> -->
+            </v-input>
         </template>
         <template v-else-if="renderer == 'content-select'">
             <!-- <pre>{{fieldModel}}</pre> -->
@@ -430,8 +438,6 @@
                 <v-text-field :mask="params.mask" :autofocus="shouldAutofocus" :outline="showOutline" :success="success" browser-autocomplete="off" :required="required" :label="displayLabel" v-model="fieldModel" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" />
             </template>
         </template>
-
-
         <!-- <pre>{{field.title}} {{fieldModel}}</pre> -->
         <!-- <pre><label>{{field.title}}</label><br/>{{model}}</pre> -->
     </div>
@@ -450,6 +456,11 @@ import FluroCodeEditor from './FluroCodeEditor.vue';
 import FluroSignatureField from './FluroSignatureField.vue';
 import FluroDateTimePicker from './FluroDateTimePicker.vue';
 import FluroContentSelect from './FluroContentSelect.vue';
+import FluroContentSelectButton from './contentselect/FluroContentSelectButton.vue';
+import FluroRealmSelect from './realmselect/FluroRealmSelect.vue';
+
+console.log('FLURO REALM SELECT EXISTS?', FluroRealmSelect)
+
 
 
 import { Chrome } from 'vue-color'
@@ -490,6 +501,8 @@ export default {
         FluroSignatureField,
         FluroDateTimePicker,
         FluroContentSelect,
+        FluroContentSelectButton,
+        FluroRealmSelect,
     },
     data() {
         return {
@@ -768,6 +781,11 @@ export default {
         searchInheritable() {
             if (this.field.params && this.field.params.searchInheritable) {
                 return this.field.params.searchInheritable;
+            }
+        },
+        allDefinitions() {
+            if (this.field.params && this.field.params.allDefinitions) {
+                return this.field.params.allDefinitions;
             }
         },
         referenceFilter() {
@@ -1489,7 +1507,11 @@ export default {
                     directive = 'currency';
                     break;
                 case 'realm-select':
+                case 'realmselect':
                     directive = 'realmselect';
+                    break;
+                case 'content-select-button':
+                    directive == 'content-select-button';
                     break;
                 case 'dob-select':
                 case 'date-select':
@@ -1531,8 +1553,8 @@ export default {
 
                     }
                     break;
-                case 'button-select':
 
+                case 'button-select':
                 case 'order-select':
                     directive = 'select';
                     break;
@@ -1813,8 +1835,7 @@ export default {
                 var defaultRealmID = _.get(self.options, 'backupUploadRealm');
                 if (defaultRealmID) {
                     uploadRealmID = defaultRealmID
-                }
-                else {
+                } else {
                     //Then there is no backup realm id, so fail here
                     file.state = 'error';
                     self.uploadNextFile();
@@ -2057,7 +2078,7 @@ export default {
             //     clone[self.key] = self.fieldModel;
             //     console.log('tESITNG', self.type, clone[self.key], self.fieldModel);
             // }
-           
+
             self.$emit('input', self.model, self.fieldModel); //JSON.parse(JSON.stringify(self.model))); //[self.key])
         }
     },
@@ -2661,8 +2682,8 @@ function checkValidInput(self, input) {
 .fluro-content-form-field {
 
     .same-line {
-        padding-top:0 !important;
-        padding-bottom:0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
     }
 
     &.is-context {

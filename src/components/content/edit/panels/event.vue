@@ -41,7 +41,7 @@
                     </flex-column-body>
                 </slot>
             </tab>
-            <tab :heading="`${definition.title} details`" v-if="definition">
+            <tab :heading="`${definition.title} details`" v-if="definition && definition.fields && definition.fields.length">
                 <slot>
                     <flex-column-body style="background: #fafafa;">
                         <v-container>
