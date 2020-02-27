@@ -15,7 +15,7 @@
                                     <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
                                     <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.firstLine" v-model="model"></fluro-content-form-field>
                                 </div>
-                                <fluro-panel>
+                                <fluro-panel v-if="!model.query">
                                     <fluro-panel-title>
                                         <template v-if="model.disableDataTypeSelect || model._id">
                                             <h4>{{model.filterType | definitionTitle(true)}} </h4>
@@ -28,8 +28,9 @@
                                         <filter-condition-group :rows="rows" :useSample="true" :mini="true" v-model="model.filterConfiguration" :type="model.filterType" :debounce="filterDebounce" />
                                     </fluro-panel-body>
                                 </fluro-panel>
-                                <template v-if="!sample.length">
-                                    <!-- Loading Sample Data -->
+                                <column-customiser v-model="model.columns" :sampleData="sample" :config="config" :loadingSample="loadingSample"/>
+<!--                                 <template v-if="!sample.length">
+                                   
                                 </template>
                                 <template v-else>
                                     <h4 margin>Sample Output</h4>
@@ -45,7 +46,7 @@
                                             </tab>
                                         </tabset>
                                     </fluro-panel>
-                                </template>
+                                </template> -->
                             </constrain>
                         </v-container>
                     </flex-column-body>
@@ -108,7 +109,7 @@
 
 import FluroContentEditMixin from '../FluroContentEditMixin';
 import FilterConditionGroup from '../../../form/filters/FilterConditionGroup.vue';
-
+import ColumnCustomiser from '../components/ColumnCustomiser.vue';
 
 /////////////////////////////////
 
@@ -123,6 +124,7 @@ export default {
     mixins: [FluroContentEditMixin],
     components: {
         FilterConditionGroup,
+        ColumnCustomiser
     },
     methods: {
         modelUpdated() {
@@ -131,13 +133,14 @@ export default {
         reloadSample() {
             var self = this;
 
-            return;
+            //return;
 
             //////////////////////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////////////////////
 
             if (!self.model.filterType) {
+                console.log('NO FILTER TYPE')
                 return;
             }
 
@@ -157,20 +160,21 @@ export default {
 
             // } else {
 
-                //Run a dynamic query and get the sample data
-                return self.$fluro.api.post(`/content/${self.model.filterType}/filter`, {
-                        // sort: self.sort,
-                        filter: self.model.filterConfiguration,
-                        startDate: self.model.filterStartDate,
-                        endDate: self.model.filterEndDate,
-                        search: self.model.filterSearch,
-                        // includeArchived: self.includeArchivedByDefault,
-                        allDefinitions: true, //self.allDefinitions,
-                        // includeUnmatched: true,
-                        sample: 5,
-                    })
-                    .then(sampleLoaded)
-                    .catch(sampleFailed);
+            //Run a dynamic query and get the sample data
+            return self.$fluro.api.post(`/content/${self.model.filterType}/filter`, {
+                    // sort: self.sort,
+                    filter: self.model.filterConfiguration,
+                    startDate: self.model.filterStartDate,
+                    endDate: self.model.filterEndDate,
+                    search: self.model.filterSearch,
+                    // includeArchived: self.includeArchivedByDefault,
+                    allDefinitions: true, //self.allDefinitions,
+                    // includeUnmatched: true,
+                    sample: true,
+                    limit: 5,
+                })
+                .then(sampleLoaded)
+                .catch(sampleFailed);
             // }
 
 
@@ -184,6 +188,7 @@ export default {
             //////////////////////////////////////////////////////////////////////////////
 
             function sampleFailed(res) {
+                // console.log('SAMPLE FAILED', res)
                 self.sample = [];
                 self.loadingSample = false;
             }
@@ -210,9 +215,10 @@ export default {
             default: [],
             get() {
                 var self = this;
-
+                if (self.model.query) {
+                    return new Promise(function(resolve, reject) {return reject()});
+                }
                 return new Promise(function(resolve, reject) {
-
                     self.$fluro.types.terms()
                         .then(function(res) {
 
@@ -313,6 +319,9 @@ export default {
         },
         changeString() {
             var self = this;
+            if (self.model.query) {
+                return;
+            }
             var filterString = FilterService.getFilterChangeString(self.model.filterConfiguration);
 
             console.log('Filter configuration changed', filterString)
@@ -321,7 +330,7 @@ export default {
     },
     data() {
         return {
-            sample: {},
+            sample: [],
             loadingSample: false,
             filterDebounce: 500,
         }
