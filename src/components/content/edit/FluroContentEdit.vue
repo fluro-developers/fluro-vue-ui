@@ -266,7 +266,7 @@ export default {
 
             self.state = 'ready'
             self.$fluro.resetCache();
-            
+
             // self.reset(true);
             self.$emit('success', result.data);
 
@@ -532,6 +532,7 @@ export default {
         }
     },
     computed: {
+
         showFooter() {
             return !this.hideFooter;
         },

@@ -570,7 +570,7 @@ export default {
             return this.$fluro.types.readable(this.dataType, true);
         },
         pagePopulationString() {
-            return [this.currentPage, this.rawPage, this.renderColumns];
+            return [this.currentPage, _.map(this.rawPage, '_id'), _.map(this.renderColumns, 'key')].join('-');
             //this.structureColumns, this.groupingColumn ? this.groupingColumn.key : '', this.extraColumns];
         },
         renderColumns() {
@@ -936,6 +936,7 @@ export default {
             this.$emit('additionalColumns', this.extraColumns);
         },
         'pagePopulationString': function(str) {
+            console.log('POPULATION STRING CHANGED')
             this.loading = true;
             this.populatePage()
         },
