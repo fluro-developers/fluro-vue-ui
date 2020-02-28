@@ -1,6 +1,7 @@
 <template>
     <!-- grid-list-lg -->
     <v-container class="filter-condition-row grid-list-sm" :class="{mini:mini}" pa-0>
+        <!-- <pre>{{useBasicReferenceSelect}} {{referenceSelectField}}</pre> -->
         <v-layout row wrap>
             <v-flex xs12 sm4>
                 <template v-if="fields.length">
@@ -165,6 +166,8 @@
                             </template>
                             <template v-else>
                                 <!-- REFERENCE -->
+
+                                <!-- rEFERENCE {{loadingValues}} - {{cleanedValueSelection.length}} -->
                                 <v-autocomplete class="small-input" multiple dense v-model="model.values" item-text="title" item-value="_id" :loading="loadingValues" :items="cleanedValueSelection">
                                     <template v-slot:item="data">
                                         <template v-if="data.item._type == 'event'">

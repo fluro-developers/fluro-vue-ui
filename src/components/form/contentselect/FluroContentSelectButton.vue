@@ -172,7 +172,7 @@ export default {
             if (this.singleValue) {
                 model = _.first(model)
             }
-            console.log('EMIT CHANGE', this.singleValue || 'multiple', model);
+            // console.log('EMIT CHANGE', this.singleValue || 'multiple', model);
             this.$emit('input', model);
         }
     },

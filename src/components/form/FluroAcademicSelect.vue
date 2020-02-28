@@ -1,12 +1,13 @@
 <template>
 <div class="fluro-academic-select">
+    <!-- <pre>ACADEMIC {{model}}</pre> -->
     <v-input class="no-flex" :label="label" :required="required" :error-messages="errorMessages" :hint="hint">
     <v-layout row wrap class="fluro-academic-field">
         <v-flex xs12 sm6>
-            <v-select :outline="showOutline" :success="success" :required="required" label="School / Institution" no-data-text="No options available" v-model="model.academicCalendar" item-text="title" item-value="_id" :items="calendars" :return-object="true" :error-messages="errorMessages" @input="valueChanged"/>
+            <v-select :outline="showOutline" :success="success" :required="required" label="School / Institution" no-data-text="No options available" v-model="model.academicCalendar" item-text="title" item-value="_id" :items="calendars" :return-object="true" :error-messages="errorMessages" @input="calendarChanged"/>
         </v-flex>
         <v-flex xs12 sm6 v-if="model.academicCalendar">
-            <v-autocomplete :outline="showOutline" :success="success" :required="required" label="Grade / Year Level" :persistent-hint="true" :hint="gradeHint" no-data-text="No options available" v-model="model.academicGrade" item-text="title" item-value="key" :items="grades" @input="valueChanged":error-messages="errorMessages" />
+            <v-autocomplete :outline="showOutline" :success="success" :required="required" label="Grade / Year Level" :persistent-hint="true" :hint="gradeHint" no-data-text="No options available" v-model="model.academicGrade" item-text="title" item-value="key" :items="grades" @input="gradeChanged":error-messages="errorMessages" />
         </v-flex>
     </v-layout>
 
@@ -62,6 +63,10 @@ export default {
         }
     },
     watch:{
+        value(v) {
+            this.model = v;
+            this.createVariables(v);
+        },
         'model.academicCalendar':function() {
             this.$emit('calendar', this.model.academicCalendar);
         },
@@ -90,15 +95,8 @@ export default {
         if (this.formFields) {
             this.$set(this.formFields, this.formFields.length, this);
         }
-        ////////////////////////////////////////////
 
-        if(!this.model.academicGrade) {
-            this.model.academicGrade = null;
-        }
-
-        if(!this.model.academicCalendar) {
-            this.model.academicCalendar = null;
-        }
+        this.createVariables();
 
         ////////////////////////////////////////////
 
@@ -111,6 +109,23 @@ export default {
         }
     },
     methods:{
+        gradeChanged(v) {
+            this.$set(this.model, 'academicGrade', v);
+            this.valueChanged();
+        },
+        calendarChanged(v) {
+            this.$set(this.model, 'academicCalendar', v);
+            this.valueChanged();
+        },
+        createVariables() {
+            if(!this.model.academicCalendar) {
+                this.$set(this.model, 'academicCalendar', undefined);
+            }
+
+            if(!this.model.academicGrade) {
+                this.$set(this.model, 'academicGrade', undefined);
+            }
+        },
         valueChanged() {
             this.$emit('value', this.model);
         },

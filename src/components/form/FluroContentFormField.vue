@@ -1,12 +1,16 @@
 <template>
     <div @click="clicked($event)" :data-field-key="key" class="fluro-content-form-field" v-if="isVisible" v-bind="attributes" :class="fieldClass">
+        
+         <!-- <pre>{{field.title}}</pre> -->
+     <!-- {{model.academicCalendar}} - {{model.academicGrade}}</pre> -->
+           
         <!-- <pre>{{options}}</pre> -->
         <!-- <pre>{{renderer}}</pre> -->
         <!-- <pre>{{field.title}} DATA {{renderer}}</pre> -->
         <template v-if="officeUseOnly">
         </template>
         <template v-else-if="customComponent">
-            <component v-model="fieldModel" v-bind:is="customComponent" />
+            <component v-model="model" v-bind:is="customComponent" />
         </template>
         <template v-else-if="renderer == 'dynamicdate'">
             <v-input :label="displayLabel" :persistent-hint="true" :hint="dynamicDateHint" class="no-flex">
@@ -152,9 +156,11 @@
             <v-text-field :persistent-hint="persistentDescription" :suffix="suffix" :prefix="prefix" :outline="showOutline" :success="success" :required="required" type="number" :label="displayLabel" v-model="fieldModel" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
         </template>
         <template v-else-if="renderer == 'realmselect'">
-            <!-- <v-input class="no-flex" :persistent-hint="true" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description"> -->
+            <!-- <v-input class="no-flex" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description"> -->
+
+            <v-input class="no-flex" :persistent-hint="true" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
                 <fluro-realm-select block type="collection" v-model="fieldModel" />
-            <!-- </v-input> -->
+            </v-input>
         </template>
         <template v-else-if="renderer == 'datepicker'">
             <!--      <template v-slot:activator="{ on }">

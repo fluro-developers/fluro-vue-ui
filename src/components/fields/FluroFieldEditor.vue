@@ -1,6 +1,5 @@
 <template>
-    <flex-column class="fluro-field-editor">
-
+    <flex-column class="fluro-field-editor" :class="{'schema-mode':!formMode}">
         <flex-row>
             <flex-column class="sidebar">
                 <flex-column class="fields-tree" v-show="true || !(field || configurePayment || configureDefaults)">
@@ -23,18 +22,28 @@
                     </flex-column-header>
                     <flex-column-body>
                         <v-container pa-2>
-                            <div class="pseudo-field" :class="{active:configureDefaults && !field}" @click="showDefaultFieldOptions()">Form Configuration</div>
+                            <template v-if="formMode">
+                                <div class="pseudo-field" :class="{active:configureDefaults && !field}" @click="showDefaultFieldOptions()">Form Configuration</div>
+                            </template>
                             <draggable class="field-editor-children" handle=".handle" element="ul" @sort="sorted" v-model="model" :options="treeOptions">
                                 <fluro-field-editor-item :mouseover="mouseover" :mouseleave="mouseleave" :parent="model" :leaf="model[index]" :selected="field" :select="clicked" @duplicate="duplicateField" @injected="injectField" @deleted="deleteField" v-for="(leaf, index) in model" :key="leaf.guid" />
                             </draggable>
-                            <div class="pseudo-field" :class="{active:configurePayment && !field}" @click="showPaymentOptions()">Payment Options</div>
+                            <template v-if="formMode">
+                                <div class="pseudo-field" :class="{active:configurePayment && !field}" @click="showPaymentOptions()">Payment Options</div>
+                            </template>
                         </v-container>
                     </flex-column-body>
                     <flex-column-footer class="border-top">
                         <v-container class="pa-2" style="background: #fff">
                             <v-layout row>
-                                <v-flex>
+                                <v-flex v-if="formMode">
                                     <v-btn small class="ma-1" color="primary" block @click="addNewTemplate()">
+                                        Add Field
+                                        <fluro-icon icon="plus" right />
+                                    </v-btn>
+                                </v-flex>
+                                <v-flex v-else>
+                                    <v-btn small class="ma-1" color="primary" block @click="addNewField()">
                                         Add Field
                                         <fluro-icon icon="plus" right />
                                     </v-btn>
@@ -52,15 +61,15 @@
                 </flex-column>
             </flex-column>
             <flex-column class="preview" v-if="showPreview">
-                <fluro-page-preloader contain v-if="resetting"/>
+                <fluro-page-preloader contain v-if="resetting" />
                 <flex-column-header>
                     <div class="palette-title">
                         <v-layout align-center>
                             <v-flex>
-                                <strong label>Form Preview</strong>
+                                <strong label>{{formMode ? 'Form' : ''}} Preview</strong>
                             </v-flex>
                             <v-spacer />
-                            <v-flex shrink>
+                            <v-flex shrink v-if="formMode">
                                 <v-menu :fixed="true" transition="slide-y-transition" offset-y>
                                     <template v-slot:activator="{ on }">
                                         <span class="state-link" v-tippy content="Change Preview State" v-on="on">
@@ -91,7 +100,7 @@
                             </v-flex>
                             <v-flex shrink>
                                 <span class="state-link" @click="resetPreview()">
-                                    Reset Form
+                                    Reset {{formMode ? 'Form' : 'Preview'}}
                                     <fluro-icon icon="undo" />
                                 </span>
                                 <!-- <v-btn :loading="resetting" @click="resetPreview()" class="ma-0" tiny>
@@ -130,7 +139,20 @@
                         </template>
                         <v-container v-else>
                             <constrain sm>
-                                <fluro-content-form :recursiveClick="debugField" v-model="previewModel" ref="previewForm" :fields="model" />
+                                <!-- 
+                                <fluro-content-form
+                            :context="context"
+                            :debugMode="debugMode"
+                            :contextField="contextField"
+                            :recursiveClick="recursiveClick"
+                            @errorMessages="validate"
+                            @input="modelChanged"
+                            ref="form"
+                            :options="options"
+                            v-model="dataModel"
+                            :fields="fields"
+                        /> -->
+                                <fluro-content-form context="builder" :recursiveClick="debugComponent" :debugMode="true" :contextField="contextField" v-model="previewModel" ref="previewForm" :fields="model" />
                             </constrain>
                         </v-container>
                     </template>
@@ -155,7 +177,7 @@
                     </v-container>
                 </flex-column-footer>
             </flex-column>
-             <!-- v-show="(field || configurePayment || configureDefaults)" -->
+            <!-- v-show="(field || configurePayment || configureDefaults)" -->
             <flex-column class="field-options">
                 <template v-if="field">
                     <flex-column-header>
@@ -320,7 +342,16 @@ export default {
             return this.item.definition == 'form' || this.item.parentType == 'interaction';
         },
         showPreview() {
-            return !this.field || this.$vuetify.breakpoint.mdAndUp
+
+            // if(!this.formMode) {
+            //     return this.$vuetify.breakpoint.lgAndUp;
+            // }
+
+            // if(!this.field) {
+            return this.$vuetify.breakpoint.mdAndUp;
+            // }
+
+            // return !this.field || this.$vuetify.breakpoint.mdAndUp
         },
         formOptions() {
             if (!this.item) {
@@ -417,36 +448,40 @@ export default {
 
             }
         },
-        hasPaymentFields() {
-            var self = this;
+        // hasPaymentFields() {
+        //     var self = this;
 
-            if (self.item.parentType != 'interaction') {
-                return;
-            }
+        //     if(!self.formMode) {
+        //         return;
+        //     }
 
-            //Check if we have the defaults turned off
-            if (!self.item.paymentDetails) {
-                return;
-            }
+        //     if (self.item.parentType != 'interaction') {
+        //         return;
+        //     }
 
-            return (self.item.paymentDetails.required || self.item.paymentDetails.allow)
+        //     //Check if we have the defaults turned off
+        //     if (!self.item.paymentDetails) {
+        //         return;
+        //     }
 
-        },
-        hasDefaultFields() {
-            var self = this;
+        //     return (self.item.paymentDetails.required || self.item.paymentDetails.allow)
 
-            if (self.item.parentType != 'interaction') {
-                return;
-            }
+        // },
+        // hasDefaultFields() {
+        //     var self = this;
 
-            //Check if we have the defaults turned off
-            if (self.requireDefaultContactFields) {
-                return true;
-            }
+        //     if (self.item.parentType != 'interaction') {
+        //         return;
+        //     }
+
+        //     //Check if we have the defaults turned off
+        //     if (self.requireDefaultContactFields) {
+        //         return true;
+        //     }
 
 
-            return self.askFirstName || self.askLastName || self.askGender || self.askDOB || self.askEmail || self.askPhone
-        },
+        //     return self.askFirstName || self.askLastName || self.askGender || self.askDOB || self.askEmail || self.askPhone
+        // },
         fauxDefinition() {
             var self = this;
             return Object.assign({}, self.item, { fields: self.model });
@@ -555,12 +590,17 @@ export default {
             self.configureDefaults = false;
             self.configurePayment = true;
         },
+        debugComponent(component) {
+            this.debugField(component.field);
+        },
         debugField(field) {
+            // console.log('CLICKED FIELD', field)
             var self = this;
 
             //Find the field in our fields list
             var found = self.findField(field);
             if (!found || !found.parent) {
+                console.log('NOT FOUND', field)
                 return;
             }
 
@@ -1029,34 +1069,47 @@ export default {
 }
 
 .preview {
+    order: 1;
     border-left: 3px solid #ddd;
     border-right: 3px solid #ddd;
     // border-left:4px solid #555;
     // border-right:4px solid #555;
     background: #fff;
-    min-width: 300px;
     flex: 2;
 
     // .palette-title {
-        // background: #555;
-        // color: #eee;
+    // background: #555;
+    // color: #eee;
     // }
 }
 
 
 .sidebar {
-    min-width: 380px;
+    min-width: 300px;
+    max-width: 380px;
     flex: 1;
     background: #fafafa;
-    border-left: 1px solid #ddd;
+    // border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    order: 0;
 }
 
 .field-options {
-
-    // min-width: 380px;
+    order: 2;
+    min-width: 380px;
     // flex: 1;
     background: #fafafa;
     // border-left: 1px solid #ddd;
 
+}
+
+.schema-mode {
+    min-width: 40vw;
+
+    .preview {order:2;}
+
+    .sidebar {order:0;}
+
+    .field-options {order:1; min-width: 40vw;}
 }
 </style>

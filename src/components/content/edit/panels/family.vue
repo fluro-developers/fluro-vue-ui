@@ -27,6 +27,9 @@
                                     <v-flex xs12 sm12>
                                         <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
                                     </v-flex>
+                                    <v-flex xs12 sm12 v-if="!model._id">
+                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.items" v-model="model"></fluro-content-form-field>
+                                    </v-flex>
                                     <!--  -->
                                     <v-flex xs12 sm6>
                                         <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.emails" v-model="model"></fluro-content-form-field>
@@ -81,11 +84,11 @@
                                     </div>
                                     <div class="ghost-card" @click="create">
                                         <div class="add-contact ghost">
-<!--                                             <div class="avatar-flex"> -->
-                                                <div class="add-circle">
-                                                    <fluro-icon class="add-icon" icon="plus"/>
-                                                </div>
-                                                <h5 class="add-contact-text">Add Contact</h5>
+                                            <!--                                             <div class="avatar-flex"> -->
+                                            <div class="add-circle">
+                                                <fluro-icon class="add-icon" icon="plus" />
+                                            </div>
+                                            <h5 class="add-contact-text">Add Contact</h5>
                                             <!-- </div> -->
                                         </div>
                                     </div>
@@ -111,7 +114,7 @@
 import FamilyMemberCard from '../components/FamilyMemberCard.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
 import AddressManager from '../components/AddressManager.vue';
-import { FluroIcon, Layout } from 'fluro-vue-ui'
+import { FluroIcon, Layout, FluroAcademicSelect } from 'fluro-vue-ui'
 
 /////////////////////////////////
 
@@ -127,6 +130,7 @@ export default {
     created() {},
     mixins: [FluroContentEditMixin, Layout],
     computed: {
+
         fieldsOutput() {
 
 
@@ -146,17 +150,252 @@ export default {
             ///////////////////////////////////
 
             addField('phoneNumbers', {
-                title: 'Phone Numbers',
+                title: 'Household Phone Number',
                 minimum: 0,
                 maximum: 0,
                 type: 'string',
             });
 
             addField('emails', {
-                title: 'Emails',
+                title: 'Household Email Address',
                 minimum: 0,
                 maximum: 0,
                 type: 'string',
+            });
+
+
+            /////////////////////////////////////
+
+            var contactFields = [];
+
+
+            /////////////////////////////////////
+
+            var row0 = {
+                title: 'Definition',
+                key: 'definitions',
+                type: 'group',
+                sameLine: true,
+            }
+
+            row0.fields = [{
+                    title: 'Household Role',
+                    key: 'householdRole',
+                    minimum: 0,
+                    maximum: 1,
+                    type: 'string',
+                    directive: 'select',
+                    options: [{
+                            title: 'None',
+                            value: '',
+                        },
+                        {
+                            title: 'Parent',
+                            value: 'parent',
+                        },
+                        {
+                            title: 'Child',
+                            value: 'child',
+                        },
+                    ]
+
+                },
+                {
+                    title: 'Definition',
+                    key: 'definition',
+                    minimum: 0,
+                    maximum: 1,
+                    type: 'string',
+                    directive: 'select',
+                    options: self.contactDefinitionOptions,
+                    expressions: {
+                        hide() {
+                            return !self.contactDefinitions || !self.contactDefinitions.length;
+                        }
+                    }
+
+
+                },
+            ]
+            contactFields.push(row0)
+
+
+
+            /////////////////////////////////////
+
+            var row1 = {
+                title: 'Names',
+                key: 'names',
+                type: 'group',
+                sameLine: true,
+            }
+
+            row1.fields = [{
+                    title: 'First Name',
+                    key: 'firstName',
+                    minimum: 1,
+                    maximum: 1,
+                    type: 'string',
+                },
+                {
+                    title: 'Last Name',
+                    key: 'lastName',
+                    placeholder: self.model.title,
+                    minimum: 0,
+                    maximum: 1,
+                    type: 'string',
+                    expressions: {
+                        defaultValue() {
+                            return self.model.title;
+                        }
+                    }
+                }
+            ]
+            contactFields.push(row1)
+
+            /////////////////////////////////////
+
+            var row2 = {
+                title: 'Bits',
+                key: 'bits',
+                type: 'group',
+                sameLine: true,
+            }
+
+            row2.fields = [{
+                    title: 'Gender',
+                    key: 'gender',
+                    minimum: 0,
+                    maximum: 1,
+                    type: 'string',
+                    directive: 'select',
+                    options: [{
+                            title: 'Male',
+                            value: 'male',
+                        },
+                        {
+                            title: 'Female',
+                            value: 'female',
+                        },
+                        {
+                            title: 'Unknown',
+                            value: '',
+                        },
+                    ]
+                },
+                {
+                    title: 'Date of Birth',
+                    key: 'dob',
+                    minimum: 0,
+                    maximum: 1,
+                    type: 'date',
+                },
+            ]
+            contactFields.push(row2)
+
+
+            /////////////////////////////////////
+
+
+
+            /////////////////////////////////////
+
+
+            var row3 = {
+                title: 'Comms',
+                key: 'comms',
+                type: 'group',
+                sameLine: true,
+            }
+
+            row3.fields = [{
+                    title: 'Email Address',
+                    key: 'emails',
+                    minimum: 0,
+                    maximum: 0,
+                    type: 'email',
+                },
+                {
+                    title: 'Phone Number',
+                    key: 'phoneNumbers',
+                    minimum: 0,
+                    maximum: 0,
+                    type: 'string',
+                }
+            ]
+            contactFields.push(row3)
+
+
+            var row4 = {
+                title: 'Comms',
+                key: 'comms',
+                type: 'group',
+                sameLine: true,
+                fields: [],
+            }
+
+            row4.fields = [{
+                    title: 'Realms',
+                    description: 'If different from the family',
+                    key: 'realms',
+                    minimum: 0,
+                    maximum: 0,
+                    type: 'reference',
+                    directive: 'realmselect',
+                    params: {
+                        restrictType: 'realm'
+                    },
+                    expressions: {
+                        defaultValue() {
+                            return self.model.realms.slice();
+                        }
+                    }
+                },
+                {
+                    title: 'Tags',
+                    key: 'tags',
+                    minimum: 0,
+                    maximum: 0,
+                    type: 'reference',
+                    directive: 'content-select-button',
+                    params: {
+                        restrictType: 'tag',
+                        allDefinitions: true,
+                    }
+                },
+            ]
+
+
+            contactFields.push({
+                title: 'School / Academic Calendar',
+                key: '_academic',
+                minimum: 0,
+                maximum: 1,
+                type:'string',
+                customComponent: FluroAcademicSelect,
+                expressions:{
+                    hide:`model.householdRole == 'parent'`,
+                }
+            })
+
+            contactFields.push(row4)
+
+            // <fluro-academic-select :form-fields="formFields" :outline="showOutline" :options="formOptions" @calendar="updateAcademicCalendar" @grade="updateAcademicGrade" v-model="model" />
+            //                             </fluro-academic-select>
+            
+
+
+
+
+
+            addField('items', {
+                title: 'Family Member',
+                minimum: 1,
+                maximum: 0,
+                type: 'group',
+                asObject: true,
+                askCount: 1,
+                fields: contactFields,
             });
 
 
@@ -177,14 +416,16 @@ export default {
             }
         },
         contactDefinitionOptions() {
+
             var self = this;
-            var arr = [];
-            var defs = self.definitions;
-            _.forEach(defs, function(obj) {
-                return arr.push({ name: obj.title, value: obj.definitionName });
-            });
-            arr.splice(0, 0, { name: 'Contact', value: '' });
-            return arr;
+
+            var options = self.contactDefinitions;
+            options.unshift({
+                name: 'None',
+                value: '',
+            })
+
+            return options;
         }
     },
     methods: {
@@ -201,15 +442,15 @@ export default {
             //self.$fluro.global.create
 
             var template = {
-                    family: self.model,
-                    lastName: self.model.title,
-                };
+                family: self.model,
+                lastName: self.model.title,
+            };
 
 
-                console.log('Create new contact', template)
+            console.log('Create new contact', template)
             self.$fluro.global.create('contact', {
-                template,
-            }, true)
+                    template,
+                }, true)
                 .then(function(res) {
                     self.model.items.push(res);
                 });
@@ -219,24 +460,27 @@ export default {
         return {}
     },
     asyncComputed: {
-        definitions: {
+        contactDefinitions: {
             default: [],
             get() {
                 var self = this;
-                return new Promise(function(resolve, reject) {
-                    return self.$fluro.api
-                        .get('defined/types/contact')
-                        .then(function(res) {
-                            resolve(res.data);
-                            return self.loading = false;
-                        })
-                        .catch(function(err) {
-                            console.log(err);
-                            self.$fluro.notify(err);
 
-                            return reject(err);
-                        });
-                });
+
+                return new Promise(function(resolve, reject) {
+
+                        return self.$fluro.types.subTypes('contact')
+                            .catch(reject)
+                            .then(resolve)
+                    })
+                    .catch(function(err) {
+                        console.log(err);
+                        self.$fluro.notify(err);
+
+                        return reject(err);
+                    });
+
+
+
             }
         }
     }
@@ -271,6 +515,7 @@ export default {
     color: inherit;
     background-color: transparent;
     transition: background-color 0.3s;
+
     &:hover {
         background-color: white;
     }
@@ -280,7 +525,7 @@ export default {
     border: 1px dashed #ccc;
     border-radius: 50%;
     height: 132.8px;
-    width:132.8px;
+    width: 132.8px;
     padding: 8px;
     margin: auto;
     display: flex;
@@ -294,8 +539,8 @@ export default {
 }
 
 .add-icon {
-    width:100%;
-    height:100%;
+    width: 100%;
+    height: 100%;
 }
 
 .add-contact-text {

@@ -172,7 +172,7 @@
                                     <!-- <th is="table-row-checkbox" :checked="selectionController.allSelected(group)"/> -->
                                     <td :colspan="1 + renderColumns.length">{{group.title || 'No value'}} <span class="sm muted">({{group.items.length}})</span></td>
                                 </tr>
-                                <tr :class="classes(item)" :key="item._id" v-for="(item, key) in group.items">
+                                <tr :class="classes(item)" :key="item.guid" v-for="(item, key) in group.items">
                                     <template v-if="item._populating">
                                         <!-- <th>TEST {{selection.isSelected(item)}}</th> -->
                                         <th is="table-row-checkbox" v-if="selectionEnabled" />
@@ -539,11 +539,25 @@ export default {
     computed: {
         availableGroupingKeys() {
 
-            var array = this.availableKeys.slice();
+            var currentFilterColumns = _.chain(this.activeFilterRows)
+            .map(function(row) {
+                if(!row) {
+                    return;
+                }
+
+                return {
+                    title:`Current Filter > ${row.title || row.key}`,
+                    key:row.key,
+                }
+            })
+            .compact()
+            .value();
+
+            var array = currentFilterColumns.concat(this.availableKeys.slice());
 
             array.unshift({
                 title: 'None',
-                value: null,
+                key: null,
             })
             return array;
         },
@@ -1103,7 +1117,7 @@ export default {
         toggleColumnGrouping(column) {
             var self = this;
 
-            // console.log('Switch column', column)
+            console.log('GROUPING COLUMN', column)
             self.groupingColumn = column;
 
         },

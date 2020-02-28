@@ -386,8 +386,7 @@
                         </flex-column-body>
                     </tab>
                     <tab heading="Manage Fields">
-                        <fluro-field-editor v-model="model.fields" :item="model">
-                        </fluro-field-editor>
+                        <fluro-field-editor v-model="model.fields" :item="model"/>
                     </tab>
                     <tab :heading="`${definition.title} Information`" v-if="definition && definition.definitionName != 'form'">
                         <flex-column-body style="background: #fafafa;">
@@ -402,10 +401,10 @@
                         <flex-column-body style="background: #fafafa;">
                             <v-container>
                                 <constrain sm>
-                                    <fluro-panel v-if="definition.parentType != 'realm'">
+                                    <fluro-panel v-if="model.parentType != 'realm'">
                                         <fluro-panel-title>
                                             <h5>Restrict To Realms</h5>
-                                            <div class="muted">Select which realms these {{definition.parentType | definitionTitle(true)}} can be created in</div>
+                                            <div class="muted">Select which realms these {{model.parentType | definitionTitle(true)}} can be created in</div>
                                         </fluro-panel-title>
                                         <fluro-panel-body>
                                             <fluro-realm-select v-model="model.restrictRealms" />
@@ -414,7 +413,7 @@
                                     <fluro-panel>
                                         <fluro-panel-title>
                                             <h5>Display Columns</h5>
-                                            <div class="muted">Select columns to show when listing these {{definition.parentType | definitionTitle(true)}}</div>
+                                            <div class="muted">Select columns to show when listing these {{model.parentType | definitionTitle(true)}}</div>
                                         </fluro-panel-title>
                                         <fluro-panel-body>
                                             Adjust columns
@@ -454,6 +453,7 @@ export default {
     },
     mixins: [FluroContentEditMixin],
     methods: {
+
         setParentType(parentType) {
             var self = this;
 
@@ -610,6 +610,7 @@ export default {
         }
     },
     computed: {
+
         isForm() {
             return this.definition && this.definition.definitionName == 'form'
         },

@@ -595,6 +595,21 @@ export default {
                 // })
             },
         },
+        teamTypes: {
+            get() {
+                var self = this;
+
+                if (!self.isContactType) {
+                    return Promise.resolve([]);
+                }
+                // return new Promise(function(resolve, reject) {
+
+                return self.$fluro.types.subTypes('team')
+                // .then(resolve)
+                // .catch(reject);
+                // })
+            },
+        },
         processTypes: {
             get() {
                 var self = this;
@@ -635,20 +650,7 @@ export default {
                 // })
             },
         },
-        teamTypes: {
-            get() {
-                var self = this;
 
-
-
-                // return new Promise(function(resolve, reject) {
-
-                return self.$fluro.types.subTypes('team')
-                // .then(resolve)
-                // .catch(reject);
-                // })
-            },
-        },
         definition: {
             get() {
 
@@ -834,6 +836,7 @@ export default {
                 var eventTrackOptions = [];
                 var rosterDefinitionOptions = [];
                 var interactionDefinitionOptions = [];
+                var teamDefinitionOptions = [];
 
                 var groupNameOptions = [];
 
@@ -868,15 +871,74 @@ export default {
                 // console.log('EVENT DEFINITIONS', self.eventTypes);
                 eventDefinitionOptions = eventDefinitionOptions.concat(_.map(self.eventTypes, function(definition) {
                     return {
+                        title: definition.title,
                         text: definition.title,
                         value: definition.definitionName,
                     }
                 }))
 
+
+                // console.log('EVENT DEFINITIONS', self.eventTypes);
+                teamDefinitionOptions = teamDefinitionOptions.concat(_.map(self.teamTypes, function(definition) {
+                    return {
+                        title: definition.title,
+                        text: definition.title,
+                        value: definition.definitionName,
+                    }
+                }))
+
+
+
+                injectFields.push({
+                    title: 'Total number of groups',
+                    // key: '_checkins[]',
+                    key: '_teams.all.length',
+                    maximum: 1,
+                    minimum: 0,
+                    type: 'integer',
+                    subfieldTitle: 'Where group matches...',
+                    subfields: [
+
+                        {
+                            title: 'Realms',
+                            key: 'realms',
+                            maximum: 0,
+                            minimum: 0,
+                            type: 'reference',
+                            directive: 'select',
+                            _discriminatorDefinition: 'realm',
+                        },
+                        {
+                            title: 'Tags',
+                            key: 'tags',
+                            maximum: 0,
+                            minimum: 0,
+                            type: 'reference',
+                            typeSelect: 'tag',
+                            // directive: 'content-select-button',
+                            // directive: 'select',
+
+                            // directive: 'select',
+                            //_discriminatorDefinition: 'tag',
+                        },
+                        {
+                            title: 'Definition',
+                            key: 'definition',
+                            maximum: 0,
+                            minimum: 0,
+                            type: 'string',
+                            directive: 'select',
+                            options: teamDefinitionOptions,
+                        },
+                    ],
+                });
+
+
+
                 injectFields.push({
                     title: 'Attendance > Total times checked in',
                     // key: '_checkins[]',
-                    key: '_checkins._raw.length',
+                    key: '_checkins.all.length',
                     maximum: 1,
                     minimum: 0,
                     type: 'integer',
@@ -932,7 +994,7 @@ export default {
                 injectFields.push({
                     title: 'Rostered Assignments > Total times rostered',
                     // key: '_checkins[]',
-                    key: '_assignments._raw.length',
+                    key: '_assignments.all.length',
                     maximum: 1,
                     minimum: 0,
                     type: 'integer',
@@ -1557,8 +1619,9 @@ export default {
                     maximum: 0,
                     minimum: 0,
                     type: 'reference',
-                    directive: 'select',
-                    _discriminatorDefinition: 'tag',
+                    typeSelect: 'tag',
+                    // directive: 'content-select-button',
+                    //_discriminatorDefinition: 'tag',
                 });
 
                 injectFields.push({
@@ -1567,8 +1630,10 @@ export default {
                     maximum: 0,
                     minimum: 0,
                     type: 'reference',
-                    directive: 'select',
-                    _discriminatorDefinition: 'tag',
+                    typeSelect: 'tag',
+                    // directive: 'content-select-button',
+                    // directive: 'select',
+                    //_discriminatorDefinition: 'tag',
                 });
 
                 injectFields.push({
@@ -1577,8 +1642,10 @@ export default {
                     maximum: 0,
                     minimum: 0,
                     type: 'reference',
-                    directive: 'select',
-                    _discriminatorDefinition: 'tag',
+                    typeSelect: 'tag',
+                    // directive: 'select',
+                    // directive: 'content-select-button',
+                    //_discriminatorDefinition: 'tag',
                 });
 
                 _.each(self.tagTypes, function(tagType) {
@@ -1589,8 +1656,10 @@ export default {
                         maximum: 0,
                         minimum: 0,
                         type: 'reference',
-                        directive: 'select',
-                        _discriminatorDefinition: tagType.definitionName,
+                        typeSelect:tagType.definitionName,
+                        // directive: 'select',
+                        // directive: 'content-select-button',
+                        // _discriminatorDefinition: tagType.definitionName,
                     });
 
                     injectFields.push({
@@ -1599,8 +1668,10 @@ export default {
                         maximum: 0,
                         minimum: 0,
                         type: 'reference',
-                        directive: 'select',
-                        _discriminatorDefinition: tagType.definitionName,
+                        typeSelect:tagType.definitionName,
+                        // directive: 'content-select-button',
+                        // directive: 'select',
+                        // _discriminatorDefinition: tagType.definitionName,
                     });
 
                     injectFields.push({
@@ -1609,8 +1680,10 @@ export default {
                         maximum: 0,
                         minimum: 0,
                         type: 'reference',
-                        directive: 'select',
-                        _discriminatorDefinition: tagType.definitionName,
+                        typeSelect:tagType.definitionName,
+                        // directive: 'content-select-button',
+                        // directive: 'select',
+                        // _discriminatorDefinition: tagType.definitionName,
                     });
                 })
 
@@ -1822,7 +1895,7 @@ $color-and: $success;
             flex: none !important;
 
             padding-top: 8px;
-            margin-right:8px;
+            margin-right: 8px;
             width: 25px;
             position: relative;
 

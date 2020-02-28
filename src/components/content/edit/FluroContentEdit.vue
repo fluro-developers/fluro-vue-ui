@@ -87,7 +87,18 @@
                                     </template> -->
                                             <v-menu :close-on-content-click="false" @click.native.stop offset-y>
                                                 <template v-slot:activator="{ on }">
-                                                    <v-btn class="my-0" small icon flat v-on="on">
+                                                    <v-btn v-tippy content="History and Change log" class="my-0" small icon flat v-on="on">
+                                                        <fluro-icon library="fas" icon="history" />
+                                                    </v-btn>
+                                                </template>
+                                                <v-container pa-2 style="background:#fff;" grid-list-xl>
+                                                </v-container>
+                                            </v-menu>
+                                        </v-flex>
+                                         <v-flex shrink>
+                                            <v-menu :close-on-content-click="false" @click.native.stop offset-y>
+                                                <template v-slot:activator="{ on }">
+                                                    <v-btn v-tippy content="Metadata Options" class="my-0" small icon flat v-on="on">
                                                         <fluro-icon library="fas" icon="info" />
                                                     </v-btn>
                                                 </template>
@@ -95,20 +106,23 @@
                                                     <fluro-content-form-field :field="extraFields.inheritable" v-model="model"></fluro-content-form-field>
                                                     <fluro-content-form-field :field="extraFields.slug" v-model="model"></fluro-content-form-field>
                                                 </v-container>
-                                                <v-container pa-2 v-if="model._id" class="white-background">
-                                                    <label>Fluro ID</label>
-                                                    <pre>{{model._id}}</pre>
-                                                </v-container>
-                                                <v-container pa-2 v-if="model._external" class="white-background">
-                                                    <label>External ID</label>
-                                                    <pre>{{model._external}}</pre>
-                                                </v-container>
                                                 <v-container pa-2 class="white-background">
-                                                    <v-btn block small @click="$fluro.global.json(model)">
-                                                        View Raw JSON
-                                                        <fluro-icon right icon="brackets-curly" />
-                                                    </v-btn>
-                                                    <!-- <fluro-content-form-field :field="extraFields.slug" v-model="model"></fluro-content-form-field> -->
+                                                    <template v-if="model._id">
+                                                        <v-input class="no-flex" label="Fluro ID">
+                                                            <v-btn small block v-tippy content="Click to copy to clipboard">{{model._id}}</v-btn>
+                                                        </v-input>
+                                                    </template>
+                                                    <template v-if="model._external" class="white-background">
+                                                        <v-input class="no-flex" label="External ID">
+                                                            <v-btn small block v-tippy content="Click to copy to clipboard">{{model._external}}</v-btn>
+                                                        </v-input>
+                                                    </template>
+                                                    <template>
+                                                        <v-btn block small @click="$fluro.global.json(model)">
+                                                            View JSON
+                                                            <fluro-icon right icon="brackets-curly" />
+                                                        </v-btn>
+                                                    </template>
                                                 </v-container>
                                             </v-menu>
                                         </v-flex>
@@ -419,7 +433,7 @@ export default {
 
 
             if ((self.typeName == 'attendance') && (!requestData.title || !requestData.title.length)) {
-                requestData.title = `${requestData.event.title} headcount`; 
+                requestData.title = `${requestData.event.title} headcount`;
             }
 
             console.log('SENDING TO SERVER', context, self.model);
@@ -634,16 +648,40 @@ export default {
                 maximum: 1,
                 type: 'boolean',
                 key: 'inheritable',
+                expressions: {
+                    hide() {
+                        switch (this.typeName) {
+                            case 'contact':
+                            case 'family':
+                                return true;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
                 // directive: 'datetimepicker',
             }
 
             fields.slug = {
                 title: 'Slug / Readable ID',
-                description: 'Allow child accounts to reference and use this content',
+                description: 'A readable id that can be used for website urls and paths',
                 minimum: 0,
                 maximum: 1,
                 type: 'string',
                 key: 'slug',
+                expressions: {
+                    hide() {
+                        switch (this.typeName) {
+                            case 'contact':
+                            case 'family':
+                                return true;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
                 // directive: 'datetimepicker',
             }
 
