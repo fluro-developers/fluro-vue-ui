@@ -452,7 +452,7 @@ export default {
 .row-item {
     display: block;
     padding: 10px;
-    @extend .border-bottom;
+    @extend .border-bottom !optional;
     color: inherit;
     text-decoration: none;
 

@@ -1,5 +1,5 @@
 <template>
-    <div class="fluro-table-wrapper">
+    <div class="fluro-table-wrapper" >
         <!-- <pre>{{items}}</pre> -->
         <!-- <pre>{{rawPage}}</pre> -->
         <!-- <pre>{{totalPages}}</pre> -->
@@ -11,12 +11,12 @@
             </slot>
         </v-container>
         <template v-else>
-            <div ref="scrollableArea" class="fluro-table-scroll" :class="{loading:showLoading}">
+            <div ref="scrollableArea" class="fluro-table-scroll" :class="{clickable:clickable, loading:showLoading}">
                 <span ref="top"></span>
                 <table class="fluro-table-main no-select">
                     <thead>
                         <tr>
-                            <th class="shrink checkbox-cell" v-if="selectionEnabled">
+                            <th class="first shrink checkbox-cell" v-if="selectionEnabled">
                                 <v-menu @click.native.stop offset-y>
                                     <template v-slot:activator="{ on }">
                                         <div v-on="on">
@@ -57,16 +57,16 @@
                                     </v-card>
                                 </v-menu>
                             </th>
-                            <th @click="toggleSort(column)" :class="{'shrink':column.shrink, sortable:isSortable(column), 'sorting':sort.sortKey == column.key, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}" v-for="column in columns">
+                            <th @click="toggleSort(column)" :class="[column.classes, {'shrink':column.shrink, sortable:isSortable(column), 'sorting':sort.sortKey == column.key, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}]" v-for="column in columns">
                                 <div class="sort-icon" v-if="isActiveSort(column.key)">
                                     <fluro-icon library="fas" icon="caret-down" v-if="sort.sortDirection == 'desc'" />
                                     <fluro-icon library="fas" icon="caret-up" v-if="sort.sortDirection == 'asc'" />
                                 </div>
                                 {{column.title}}
                             </th>
-                            <th class="shrink" v-if="selectionEnabled">
+                            <th class="last shrink" v-if="selectionEnabled">
                                 <!-- <v-btn class="ma-0" small icon @click.stop.prevent="toggleConfiguration()"> -->
-                                    <!-- <fluro-icon icon="cog" /> -->
+                                <!-- <fluro-icon icon="cog" /> -->
                                 <!-- </v-btn> -->
                             </th>
                         </tr>
@@ -89,9 +89,9 @@
                                         </th>
                                     </template>
                                     <template v-else>
-                                        <th is="table-row-checkbox" :checked="$selection.isSelected(item)" @click.native.stop.prevent="checkboxClick(item, $event, item._pageIndex)" :value="item" />
-                                        <table-cell @click.native="clicked(item, column, key)" :row="item" v-for="column in columns" :class="{'sorting':sort.sortKey == column.key}" :column="column"></table-cell>
-                                        <th class="shrink">
+                                        <th class="first" is="table-row-checkbox" :checked="$selection.isSelected(item)" @click.native.stop.prevent="checkboxClick(item, $event, item._pageIndex)" :value="item" />
+                                        <table-cell @click.native="clicked(item, column, key)" :row="item" v-for="column in columns" :class="[column.classes, {'sorting':sort.sortKey == column.key}]" :column="column"></table-cell>
+                                        <th class="last shrink">
                                             <div class="action-buttons">
                                                 <!-- <pre>{{item._relevance}}</pre> -->
                                                 <!-- <v-btn class="ma-0" v-if="$vuetify.breakpoint.mdAndUp" small icon>
@@ -110,7 +110,7 @@
                             </template>
                         </template>
                         <template v-else>
-                            <tr :class="classes(item)" :key="item[trackingKey]" v-for="(item, key) in page">
+                            <tr :class="classes(item)" v-if="!item.hidden" :key="item[trackingKey]" v-for="(item, key) in page">
                                 <template v-if="item._populating">
                                     <!-- <th>TEST {{selection.isSelected(item)}}</th> -->
                                     <th is="table-row-checkbox" v-if="selectionEnabled" />
@@ -119,9 +119,9 @@
                                     </th>
                                 </template>
                                 <template v-else>
-                                    <th is="table-row-checkbox" v-if="selectionEnabled" :checked="$selection.isSelected(item)" @click.native.stop.prevent="checkboxClick(item, $event, key)" :value="item" />
-                                    <table-cell @click.native="clicked(item, column, key)" :row="item" v-for="column in columns" :class="{'sorting':sort.sortKey == column.key}" :column="column"></table-cell>
-                                    <th class="shrink" v-if="selectionEnabled">
+                                    <th class="first" is="table-row-checkbox" v-if="selectionEnabled" :checked="$selection.isSelected(item)" @click.native.stop.prevent="checkboxClick(item, $event, key)" :value="item" />
+                                    <table-cell @click.native="clicked(item, column, key)" :row="item" v-for="column in columns" :class="[column.classes, {'sorting':sort.sortKey == column.key}]" :column="column"></table-cell>
+                                    <th class="last shrink" v-if="selectionEnabled">
                                         <div class="action-buttons">
                                             <!-- <pre>{{item._relevance}}</pre> -->
                                             <!-- <v-btn class="ma-0" v-if="$vuetify.breakpoint.mdAndUp" small icon>
@@ -197,7 +197,7 @@ import TableCell from './TableCell.vue';
 import axios from 'axios';
 const CancelToken = axios.CancelToken;
 
-import {FilterService} from 'fluro';
+import { FilterService } from 'fluro';
 
 /////////////////////////////////
 /////////////////////////////////
@@ -214,12 +214,12 @@ var INITIAL = true;
 
 export default {
     props: {
-        showFooter:{
-            type:Boolean,
+        showFooter: {
+            type: Boolean,
         },
-        trackingKey:{
-            type:String,
-            default:'_id',
+        trackingKey: {
+            type: String,
+            default: '_id',
         },
         defaultFields: {
             type: Array,
@@ -249,6 +249,12 @@ export default {
         defaultSortDirection: {
             type: String,
             default: 'asc',
+        },
+        clickable:{
+            type:Boolean,
+            default() {
+                return true;
+            } 
         },
         clicked: {
             type: Function,
@@ -288,9 +294,9 @@ export default {
             type: Object,
             default () {
                 return {
-                    key:this.defaultSort || 'title',
-                    direction:this.defaultSortDirection || 'asc',
-                    type:this.defaultSortType || 'string',
+                    key: this.defaultSort || 'title',
+                    direction: this.defaultSortDirection || 'asc',
+                    type: this.defaultSortType || 'string',
                 }
             },
         },
@@ -339,11 +345,11 @@ export default {
     computed: {
         footerEnabled() {
 
-            if(this.showFooter) {
+            if (this.showFooter) {
                 return true;
             }
 
-            if(this.totalPages > 1) {
+            if (this.totalPages > 1) {
                 return true;
             }
         },
@@ -739,9 +745,9 @@ export default {
 
                 //////////////////////////////////////////
 
-                var fields =['_id', 'title', 'status']
+                var fields = ['_id', 'title', 'status']
 
-                if(self.startDate || self.endDate) {
+                if (self.startDate || self.endDate) {
                     fields.push('startDate');
                     fields.push('endDate');
                 }
@@ -963,7 +969,7 @@ export default {
                             cancelToken: currentRawRequest.token,
                         }).then(function(res) {
                             //Store in cache for later
-                            
+
                             valueStorageCache.set(cacheString, res.data);
                             chunkLoaded(res.data);
 
@@ -1128,7 +1134,7 @@ export default {
                             var pageItems = _.chain(ids)
                                 .map(function(id, i) {
                                     var entry = lookup[id];
-                                    if(!entry) {
+                                    if (!entry) {
                                         console.log('No entry for', id)
                                         return;
                                     }
@@ -1214,7 +1220,7 @@ export default {
 
             ///////////////////////////////////////////////////////////////
 
-            
+
 
             ///////////////////////////////////////////////////////////////
 
@@ -1486,7 +1492,7 @@ export default {
             return this.$selection.toggle(item);
         },
         isActiveSort(key) {
-            return  this.sort.sortKey == key;
+            return this.sort.sortKey == key;
         },
         isSortable(column) {
             if (!column) {
@@ -1666,12 +1672,12 @@ export default {
     }
 
 
-    
-  .thumbnail {
-        background-size:cover;
-        background-position:center;
-        width:50px;
-        height:30px;
+
+    .thumbnail {
+        background-size: cover;
+        background-position: center;
+        width: 50px;
+        height: 30px;
         border-radius: 3px;
         display: block;
         // border:1px solid rgba(#000, 0.1);
@@ -1735,42 +1741,70 @@ export default {
         tr {
             background: #fff;
 
-            th:first-child,
-            th:last-child {
-                background: #fff;
+            th,
+            td {
+
+                &.first,
+                &.last,
+                &.sticky-first,
+                &.sticky-last {
+                    background: #fff;
+                }
+
             }
+
 
             &:nth-child(odd) {
                 background: #fcfcfc;
 
-                th:first-child,
-                th:last-child {
-                    background: #fcfcfc;
+                th,
+                td {
+
+                    &.first,
+                    &.last,
+                    &.sticky-first,
+                    &.sticky-last {
+                        background: #fcfcfc;
+                    }
+
                 }
             }
 
             &.status-archived,
             &.status-deceased {
 
-                th:first-child,
-                th:last-child,
-                td,
-                th {
-                    color: #888; //rgba(#000, 0.5);
-                    background: #f4f4f4;
+                th,
+                td {
+
+                    &.first,
+                    &.last,
+                    &.sticky-first,
+                    &.sticky-last {
+                        color: #888; //rgba(#000, 0.5);
+                        background: #f4f4f4;
+                    }
+
                 }
+
+
             }
 
             &.selected {
 
-                th:first-child,
-                th:last-child,
-                td,
-                th {
-                    // background: yellow;
-                    background-color: #f7f6de !important;
-                    color: #846b1f;
-                    border-color: #f2eac9 !important;
+
+
+                th,
+                td {
+
+                    &.first,
+                    &.last,
+                    &.sticky-first,
+                    &.sticky-last {
+                        // background: yellow;
+                        background-color: #f7f6de !important;
+                        color: #846b1f;
+                        border-color: #f2eac9 !important;
+                    }
 
                 }
             }
@@ -1778,16 +1812,17 @@ export default {
 
         }
 
-        tbody tr {
+        &.clickable tbody tr {
 
             &:hover {
 
-                td,
-                th {
+                th,
+                td {
 
-                    &,
-                    &:first-child,
-                    &:last-child {
+                    &.first,
+                    &.last,
+                    &.sticky-first,
+                    &.sticky-last {
                         background-color: #f4fafa;
                         color: #055d52;
                     }
@@ -1844,8 +1879,6 @@ export default {
             th {
                 white-space: nowrap;
 
-
-
                 &.sortable {
                     .sort-icon {
                         position: absolute;
@@ -1880,32 +1913,50 @@ export default {
 
 
 
-        th:first-child {
-            position: -webkit-sticky;
-            position: sticky;
-            left: 0;
-            z-index: 2;
+        th,
+        td {
+
+            &.first,
+            &.sticky-first {
+
+                position: -webkit-sticky;
+                position: sticky;
+                left: 0;
+                z-index: 2;
 
 
 
-            // background: #ccc;
+                // background: #ccc;
+            }
         }
 
-        th:last-child {
-            position: -webkit-sticky;
-            position: sticky;
-            right: 0;
-            z-index: 2;
-            text-align: right;
-            // background: #ccc;
+        th,
+        td {
+
+            &.last,
+            &.sticky-last {
+                position: -webkit-sticky;
+                position: sticky;
+                right: 0;
+                z-index: 2;
+                text-align: right;
+                // background: #ccc;
+            }
         }
 
-        thead th:first-child,
-        tfoot th:first-child,
-        thead th:last-child,
-        tfoot th:last-child {
-            z-index: 5;
 
+        thead {
+
+            th,
+            td {
+
+                &.first,
+                &.sticky-first,
+                &.last,
+                &.sticky-last {
+                    z-index: 5;
+                }
+            }
         }
 
 
@@ -1913,7 +1964,7 @@ export default {
     }
 
     .footer-stats {
-        @extend .border-top;
+        @extend .border-top !optional;
         padding: 5px 10px;
         font-size: 0.9em;
     }

@@ -269,7 +269,7 @@
         <template v-else-if="renderer == 'content-select'">
             <!-- <pre>{{fieldModel}}</pre> -->
             <v-input class="no-flex" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
-                <fluro-content-select :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :success="success" :required="required" :error-messages="errorMessages" :label="displayLabel" :outline="showOutline" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" :minimum="minimum" @input="valueChange" @blur="touch()" @focus="focussed();" :type="restrictType" :lockFilter="referenceFilter" :searchInheritable="searchInheritable" :maximum="maximum" v-model="model[field.key]" />
+                <fluro-content-select :context="context" :template="params.template" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :success="success" :required="required" :error-messages="errorMessages" :label="displayLabel" :outline="showOutline" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" :minimum="minimum" @input="valueChange" @blur="touch()" @focus="focussed();" :type="restrictType" :lockFilter="referenceFilter" :searchInheritable="searchInheritable" :maximum="maximum" v-model="model[field.key]" />
             </v-input>
         </template>
         <template v-else-if="renderer == 'search-select'">
@@ -1506,6 +1506,9 @@ export default {
             /////////////////////////////////
 
             switch (directive) {
+                case 'value':
+                     directive = 'value';
+                break;
                 case 'color':
                     directive = 'color';
                     break;
@@ -2029,6 +2032,10 @@ export default {
             // }
             // this.$set(this.model, this.field.key, [value]);
 
+            if(!this.fieldModel) {
+                this.fieldModel =[];
+                console.log('Create Field Model');
+            }
 
             // if (this.total < this.maximum) {
             if (this.canAddValue) {

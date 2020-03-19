@@ -7,9 +7,9 @@
             <!-- :vertical="true" -->
             <tabset :justified="true" :vertical="true">
                 <tab :heading="bodyLabel" v-if="!definition || fullBody">
-                    <slot>
+                    <!-- <flex-row> -->
                         <fluro-editor class="full-bleed" v-model="model.body" :options="editorOptions" placeholder="Type your text in here"></fluro-editor>
-                    </slot>
+                    <!-- </flex-row> -->
                 </tab>
                 <tab :heading="`${definition.title} Details`" v-if="definition">
                     <slot>

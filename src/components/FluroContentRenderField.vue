@@ -86,7 +86,7 @@
                     <label>{{label}}</label>
                     <template v-if="!multiple">
                         <list-group>
-                            <list-group-item :item="fieldModel">
+                            <list-group-item @click="$fluro.global.view(fieldModel, true)" :item="fieldModel">
                                 <template v-slot:right>
                                     <v-btn class="ma-0" small icon @click.stop.prevent="$actions.open([fieldModel])">
                                         <fluro-icon icon="ellipsis-h" />
@@ -98,7 +98,7 @@
                     </template>
                     <template v-if="multiple">
                         <list-group>
-                            <list-group-item :item="object" v-for="(object, index) in fieldModel">
+                            <list-group-item @click="$fluro.global.view(object, true)" :item="object" v-for="(object, index) in fieldModel">
                                 <template v-slot:right>
                                     <v-btn class="ma-0" small icon @click.stop.prevent="$actions.open([object])">
                                         <fluro-icon icon="ellipsis-h" />

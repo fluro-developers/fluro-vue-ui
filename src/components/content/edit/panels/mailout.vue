@@ -439,7 +439,10 @@ export default {
                 type: 'string',
                 placeholder: 'Eg. My awesome new email',
                 expressions: {
-                    defaultValue: 'data.title',
+                    defaultValue() {
+                            return self.model.title;
+                    }
+                    // : 'data.title',
                 }
             })
 

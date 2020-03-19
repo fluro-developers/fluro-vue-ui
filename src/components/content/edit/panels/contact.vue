@@ -370,26 +370,13 @@
                     <flex-column-body style="background: #fafafa;">
                         <v-container>
                             <constrain sm>
-                                <!-- <pre>{{sheet}}</pre> -->
-                                <!-- <pre>{{details[sheet.definitionName]}}</pre> -->
-                                <!-- <pre>{{details[sheet.definitionName]}}</pre> -->
-                                <!-- <pre>{{details[sheet.definitionName]}}</pre> -->
                                 <h3 margin>{{sheet.title}}</h3>
-                                <!-- <pre>{{sheet._id}}</pre> -->
                                 <v-input class="no-flex">
                                     <v-label>Realms</v-label>
                                     <p class="help-block">Select where {{contextName}} {{sheet.title}} information should be stored</p>
-                                    <fluro-realm-select v-model="details[sheet.definitionName].realms" type="contactdetail" :definition="sheet.definitionName" />
-                                    </fluro-realm-select>
+                                    <fluro-realm-select @input="updateSheetRealms($event, sheet.definitionName)" v-model="sheet.dataModel.realms" type="contactdetail" :definition="sheet.definitionName" />
                                 </v-input>
-                                <!-- @input="updateSheet" -->
-                                <!-- <pre>{{details[sheet.definitionName].data}}</pre> -->
-                                <!-- @input="updateSheet"  -->
-                                <!-- <pre>{{details[sheet.definitionName].data}}</pre> -->
-                                <fluro-content-form :options="formOptions" @input="updateSheet" v-model="details[sheet.definitionName].data" :fields="sheet.fields" />
-                                <!-- <pre>{{details[sheet.definitionName].data}}</pre> -->
-                                <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="formOptions" :field="sheet.field" v-model="details"></fluro-content-form-field> -->
-                                <!-- <fluro-content-form @input="updateDetailSheet" :options="formOptions" v-model="details[sheet.definitionName].data" :fields="sheet.fields" /> -->
+                                <fluro-content-form :options="formOptions" @input="updateSheet($event, sheet.definitionName)" v-model="sheet.dataModel.data" :fields="sheet.fields" />
                             </constrain>
                         </v-container>
                     </flex-column-body>
@@ -451,7 +438,7 @@
             </tab> -->
         </tabset>
         <!-- <flex-column-body> -->
-        <!-- <pre>{{details}}</pre> -->
+            <!-- <pre>{{model.details}}</pre> -->
         <!-- </flex-column-body> -->
     </flex-column>
 </template>
@@ -480,307 +467,13 @@ import Vue from 'vue';
 
 export default {
 
-    props: {
-        'fields': {
-            type: Array,
-            default () {
+    // props: {
+    //     'fields': {
+    //         type: Array,
 
-                var self = this;
-                var array = [];
+    //     }
+    // },
 
-                ///////////////////////////////////
-
-                addField('firstName', {
-                    title: 'First Name',
-                    minimum: 1,
-                    maximum: 1,
-                    type: 'string',
-                    placeholder: 'Eg. Jessica',
-                })
-
-                addField('preferredName', {
-                    title: 'Preferred/Nick Name',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'string',
-                    enabled: false,
-                    placeholder: `Eg. 'Jess'`,
-                })
-
-                addField('middleName', {
-                    title: 'Middle Name',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'string',
-                    enabled: false,
-                    placeholder: `Eg. 'Heather'`,
-                })
-
-                addField('ethnicName', {
-                    title: 'Ethnic Name',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'string',
-                    enabled: false,
-                    placeholder: `Eg. '吳爾霏'`,
-                })
-
-                addField('maidenName', {
-                    title: 'Maiden Name',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'string',
-                    enabled: false,
-                    placeholder: `Eg. 'Johnson'`,
-                })
-
-                addField('lastName', {
-                    title: 'Last Name',
-                    minimum: 1,
-                    maximum: 1,
-                    type: 'string',
-                    placeholder: 'Eg. Michaels',
-                })
-
-
-                addField('dob', {
-                    title: 'Date of Birth',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'date',
-                    directive: 'date-select',
-                })
-                addField('dobVerified', {
-                    title: 'Birthday type',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'boolean',
-                    directive: 'select',
-                    defaultValues: [false],
-                    options: [{
-                            name: `It's a Guess`,
-                            value: false,
-                        },
-                        {
-                            name: `It's Correct`,
-                            value: true,
-                        },
-                    ]
-                })
-
-                addField('family', {
-                    title: 'Household / Primary Residence',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'reference',
-                    directive: 'reference-select',
-                    params: {
-                        restrictType: 'family',
-                    }
-                });
-
-                addField('householdRole', {
-                    title: 'Household Role',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'string',
-                    directive: 'select',
-                    options: [{
-                            name: 'None',
-                            value: '',
-                        },
-                        {
-                            name: 'Parent',
-                            value: 'parent',
-                        },
-                        {
-                            name: 'Child',
-                            value: 'child',
-                        },
-                    ],
-                    params: {
-                        restrictType: 'family',
-                    }
-                })
-
-
-
-                addField('deceased', {
-                    title: 'Mark as deceased',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'boolean',
-                    directive: 'checkbox',
-                })
-
-                addField('deceasedDate', {
-                    title: 'Deceased Date',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'date',
-                    directive: 'date-select',
-                })
-
-
-
-
-
-                var timezones = _.map(self.$fluro.date.timezones(), function(timezone) {
-                    return { name: timezone, value: timezone };
-                });
-
-                timezones.unshift({
-                    name: 'Use Account Default',
-                    value: '',
-                })
-
-
-
-                addField('gender', {
-                    title: 'Gender',
-                    minimum: 1,
-                    maximum: 1,
-                    type: 'string',
-                    directive: 'select',
-                    placeholder: '',
-                    // defaultValues: ['unknown'],
-                    options: [{
-                            name: 'Male',
-                            value: 'male',
-                        },
-                        {
-                            name: 'Female',
-                            value: 'female',
-                        },
-                        {
-                            name: 'Unknown',
-                            value: 'unknown',
-                        },
-                    ]
-                })
-
-                addField('maritalStatus', {
-                    title: 'Marital Status',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'string',
-                    directive: 'select',
-                    placeholder: '',
-                    options: [{
-                            name: 'None',
-                            value: '',
-                        },
-                        {
-                            name: 'Single',
-                            value: 'single',
-                        },
-                        {
-                            name: 'In a relationship',
-                            value: 'relationship',
-                        },
-                        {
-                            name: 'Married',
-                            value: 'married',
-                        },
-                        {
-                            name: 'Widowed',
-                            value: 'widowed',
-                        },
-                        {
-                            name: 'Seperated',
-                            value: 'seperated',
-                        },
-                        {
-                            name: 'Divorced',
-                            value: 'divorced',
-                        },
-                    ]
-                })
-
-
-                ///////////////////////////////////
-
-                addField('emails', {
-                    title: 'Email Address',
-                    minimum: 0,
-                    maximum: 0,
-                    type: 'email',
-                    // directive:'select',
-                    placeholder: '',
-                })
-
-
-                addField('phoneNumbers', {
-                    title: 'Phone Number',
-                    minimum: 0,
-                    maximum: 0,
-                    type: 'string',
-                    // directive:'select',
-                    placeholder: '+61 400 123 456',
-                })
-
-                ///////////////////////////////////
-
-                addField('timezone', {
-                    title: 'Primary Timezone',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'string',
-                    directive: 'timezone-select',
-                    description: 'Set a local timezone for this contact',
-                })
-
-                addField('countryCode', {
-                    title: 'Default Country Code',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'string',
-                    directive: 'countrycodeselect',
-                })
-                ///////////////////////////////////
-
-                addField('nametagNotes', {
-                    title: 'Checkin Nametag Notes',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'string',
-                })
-
-                ///////////////////////////////////
-
-                addField('capabilities', {
-                    title: 'Capabilities',
-                    minimum: 0,
-                    maximum: 0,
-                    type: 'reference',
-                    description: 'Add capabilities for this contact',
-                    params: {
-                        restrictType: 'capability',
-                    }
-                })
-
-                ///////////////////////////////////
-
-                function addField(key, details) {
-                    details.key = key;
-                    array.push(details)
-                    // // Vue.set(self.fields, key, details);
-
-                    // if (details.enabled === false) {
-
-                    // } else {
-                    //     details.enabled = true;
-                    // }
-
-
-                    // var defaultValue = self.getDefaultValue(key, details);
-                    // Vue.set(self.model, key, defaultValue);
-                }
-
-                return array;
-            }
-        }
-    },
     mixins: [FluroContentEditMixin],
     components: {
         ContactTimeline,
@@ -830,7 +523,7 @@ export default {
                         .then(function(answer) {
 
                             var options = {
-                                definition:answer.definition,
+                                definition: answer.definition,
                                 items: [self.model],
                             }
 
@@ -1024,38 +717,50 @@ export default {
             }
             // console.log('Family Updated', self.mod el);
         },
-        updateSheet() {
+        updateSheetRealms(realms, definitionName) {
+            var self = this;
+
+            var realms = self.$fluro.utils.arrayIDs(realms);
+
+            var existingSheet = self.model.details[definitionName];
+            if (!existingSheet) {
+                self.$set(self.model.details, definitionName, {});
+
+            }
+
+            self.$set(self.model.details[definitionName], 'realms', realms);
+
+        },
+        updateSheet(entry, definitionName) {
 
             var self = this;
 
-            var mappedDetails = _.reduce(self.details, function(set, entry, key) {
-                if (entry) {
-                    var enteredValues = _.chain(entry.data)
-                        .values()
-                        .compact()
-                        .value();
-                    if (enteredValues.length) {
-                        set[key] = entry;
-                    }
-                }
 
-                return set;
+            ///////////////////////////////
 
-            }, {});
+            var existingSheet = self.model.details[definitionName];
+            if (!existingSheet) {
+                self.$set(self.model.details, definitionName, {});
+            }
+
+            self.$set(self.model.details[definitionName], 'data', entry);
 
 
 
 
-            // console.log('Details', mappedDetails)
-            // if (self.context == 'edit') {
-            //If we are in edit mode we don't want to edit the details
+            // if (!self.model.details[definitionName]) {
+            //     self.$set(self.model.details, definitionName, {
+            //         realms: [],
+            //         data,
+            //     });
             // } else {
-            //Add the details onto our model so they are saved when we hit submit
-            self.$set(self.model, 'details', mappedDetails);
+            //     if (!_.keys(data).length) {
+            //         self.model.details[definitionName] = null;
+            //     } else {
+            //         self.model.details[definitionName].data = data;
+            //     }
             // }
 
-            self.update(self.model);
-            // console.log('Sheet Updated', self.model);
         }
     },
 
@@ -1091,17 +796,22 @@ export default {
 
         //When we first create the thing, we need to double check and see if we already have data
         //If we do already have data then we will use that
+
+        //Check if there are detail sheets
         if (self.config && self.config.details && self.config.details.length) {
 
+            //Each detail sheet we want to create a thing for it
             self.sheetDefinitions = _.reduce(self.config.details, function(set, definition) {
 
                 if (!definition.fields || !definition.fields.length) {
                     return set;
                 }
 
+                /////////////////////////////////////
 
                 var definitionName = definition.definitionName;
 
+                /////////////////////////////////////
 
                 var field = {
                     _id: definition._id,
@@ -1115,13 +825,10 @@ export default {
                     askCount: 1,
                 }
 
-
-                ///////////////////////////////////////////////////////////////
-                ///////////////////////////////////////////////////////////////
                 ///////////////////////////////////////////////////////////////
 
-
-                var existingEntry = _.get(self.model, `details.${definitionName}`);
+                var extractedEntry = _.get(self.model, `details.${definitionName}`);
+                var existingEntry = JSON.parse(JSON.stringify(extractedEntry || {}));
 
                 var cleanedEntry = {
                     realms: [],
@@ -1147,10 +854,9 @@ export default {
 
                 ///////////////////////////////////////////////////////////////
 
+                self.$set(definition, 'dataModel', cleanedEntry);
+                // self.$set(self.details, definitionName, cleanedEntry);
 
-                self.$set(self.details, definitionName, cleanedEntry);
-
-                ///////////////////////////////////////////////////////////////
                 ///////////////////////////////////////////////////////////////
 
                 definition.field = field;
@@ -1161,6 +867,10 @@ export default {
 
             }, [])
 
+
+            if(!self.model.details) {
+                self.model.details ={}
+            }
 
             // console.log('dETAILS', self.details)
         }
@@ -1317,6 +1027,307 @@ export default {
         }
     },
     computed: {
+        fieldsOutput() {
+
+            var self = this;
+            var array = [];
+
+            ///////////////////////////////////
+
+            addField('firstName', {
+                title: 'First Name',
+                minimum: 1,
+                maximum: 1,
+                type: 'string',
+                placeholder: 'Eg. Jessica',
+            })
+
+            addField('preferredName', {
+                title: 'Preferred/Nick Name',
+                minimum: 0,
+                maximum: 1,
+                type: 'string',
+                enabled: false,
+                placeholder: `Eg. 'Jess'`,
+            })
+
+            addField('middleName', {
+                title: 'Middle Name',
+                minimum: 0,
+                maximum: 1,
+                type: 'string',
+                enabled: false,
+                placeholder: `Eg. 'Heather'`,
+            })
+
+            addField('ethnicName', {
+                title: 'Ethnic Name',
+                minimum: 0,
+                maximum: 1,
+                type: 'string',
+                enabled: false,
+                placeholder: `Eg. '吳爾霏'`,
+            })
+
+            addField('maidenName', {
+                title: 'Maiden Name',
+                minimum: 0,
+                maximum: 1,
+                type: 'string',
+                enabled: false,
+                placeholder: `Eg. 'Johnson'`,
+            })
+
+            addField('lastName', {
+                title: 'Last Name',
+                minimum: 1,
+                maximum: 1,
+                type: 'string',
+                placeholder: 'Eg. Michaels',
+            })
+
+
+            addField('dob', {
+                title: 'Date of Birth',
+                minimum: 0,
+                maximum: 1,
+                type: 'date',
+                directive: 'date-select',
+            })
+            addField('dobVerified', {
+                title: 'Birthday type',
+                minimum: 0,
+                maximum: 1,
+                type: 'boolean',
+                directive: 'select',
+                defaultValues: [false],
+                options: [{
+                        name: `It's a Guess`,
+                        value: false,
+                    },
+                    {
+                        name: `It's Correct`,
+                        value: true,
+                    },
+                ]
+            })
+
+            addField('family', {
+                title: 'Household / Primary Residence',
+                minimum: 0,
+                maximum: 1,
+                type: 'reference',
+                directive: 'reference-select',
+                params: {
+                    restrictType: 'family',
+                    template: {
+                        _context: 'contact',
+                        title: self.model.lastName || '',
+                        realms: self.model.realms,
+                    }
+                }
+            });
+
+            addField('householdRole', {
+                title: 'Household Role',
+                minimum: 0,
+                maximum: 1,
+                type: 'string',
+                directive: 'select',
+                options: [{
+                        name: 'None',
+                        value: '',
+                    },
+                    {
+                        name: 'Parent',
+                        value: 'parent',
+                    },
+                    {
+                        name: 'Child',
+                        value: 'child',
+                    },
+                ],
+                params: {
+                    restrictType: 'family',
+                }
+            })
+
+
+
+            addField('deceased', {
+                title: 'Mark as deceased',
+                minimum: 0,
+                maximum: 1,
+                type: 'boolean',
+                directive: 'checkbox',
+            })
+
+            addField('deceasedDate', {
+                title: 'Deceased Date',
+                minimum: 0,
+                maximum: 1,
+                type: 'date',
+                directive: 'date-select',
+            })
+
+
+
+
+
+            var timezones = _.map(self.$fluro.date.timezones(), function(timezone) {
+                return { name: timezone, value: timezone };
+            });
+
+            timezones.unshift({
+                name: 'Use Account Default',
+                value: '',
+            })
+
+
+
+            addField('gender', {
+                title: 'Gender',
+                minimum: 1,
+                maximum: 1,
+                type: 'string',
+                directive: 'select',
+                placeholder: '',
+                // defaultValues: ['unknown'],
+                options: [{
+                        name: 'Male',
+                        value: 'male',
+                    },
+                    {
+                        name: 'Female',
+                        value: 'female',
+                    },
+                    {
+                        name: 'Unknown',
+                        value: 'unknown',
+                    },
+                ]
+            })
+
+            addField('maritalStatus', {
+                title: 'Marital Status',
+                minimum: 0,
+                maximum: 1,
+                type: 'string',
+                directive: 'select',
+                placeholder: '',
+                options: [{
+                        name: 'None',
+                        value: '',
+                    },
+                    {
+                        name: 'Single',
+                        value: 'single',
+                    },
+                    {
+                        name: 'In a relationship',
+                        value: 'relationship',
+                    },
+                    {
+                        name: 'Married',
+                        value: 'married',
+                    },
+                    {
+                        name: 'Widowed',
+                        value: 'widowed',
+                    },
+                    {
+                        name: 'Seperated',
+                        value: 'seperated',
+                    },
+                    {
+                        name: 'Divorced',
+                        value: 'divorced',
+                    },
+                ]
+            })
+
+
+            ///////////////////////////////////
+
+            addField('emails', {
+                title: 'Email Address',
+                minimum: 0,
+                maximum: 0,
+                type: 'email',
+                // directive:'select',
+                placeholder: '',
+            })
+
+
+            addField('phoneNumbers', {
+                title: 'Phone Number',
+                minimum: 0,
+                maximum: 0,
+                type: 'string',
+                // directive:'select',
+                placeholder: '+61 400 123 456',
+            })
+
+            ///////////////////////////////////
+
+            addField('timezone', {
+                title: 'Primary Timezone',
+                minimum: 0,
+                maximum: 1,
+                type: 'string',
+                directive: 'timezone-select',
+                description: 'Set a local timezone for this contact',
+            })
+
+            addField('countryCode', {
+                title: 'Default Country Code',
+                minimum: 0,
+                maximum: 1,
+                type: 'string',
+                directive: 'countrycodeselect',
+            })
+            ///////////////////////////////////
+
+            addField('nametagNotes', {
+                title: 'Checkin Nametag Notes',
+                minimum: 0,
+                maximum: 1,
+                type: 'string',
+            })
+
+            ///////////////////////////////////
+
+            addField('capabilities', {
+                title: 'Capabilities',
+                minimum: 0,
+                maximum: 0,
+                type: 'reference',
+                description: 'Add capabilities for this contact',
+                params: {
+                    restrictType: 'capability',
+                }
+            })
+
+            ///////////////////////////////////
+
+            function addField(key, details) {
+                details.key = key;
+                array.push(details)
+                // // Vue.set(self.fields, key, details);
+
+                // if (details.enabled === false) {
+
+                // } else {
+                //     details.enabled = true;
+                // }
+
+
+                // var defaultValue = self.getDefaultValue(key, details);
+                // Vue.set(self.model, key, defaultValue);
+            }
+
+            return array;
+        },
         canPost() {
             return this.postable.length;
         },
@@ -1418,6 +1429,7 @@ export default {
             subscriptionCacheKey: 0,
             sheetDefinitions: [],
             details: {},
+            detailsModel: {},
             family: {},
             show: {
                 preferredName: false,

@@ -371,10 +371,10 @@ export default {
                 key: '_academic',
                 minimum: 0,
                 maximum: 1,
-                type:'string',
+                type: 'string',
                 customComponent: FluroAcademicSelect,
-                expressions:{
-                    hide:`model.householdRole == 'parent'`,
+                expressions: {
+                    hide: `model.householdRole == 'parent'`,
                 }
             })
 
@@ -382,20 +382,25 @@ export default {
 
             // <fluro-academic-select :form-fields="formFields" :outline="showOutline" :options="formOptions" @calendar="updateAcademicCalendar" @grade="updateAcademicGrade" v-model="model" />
             //                             </fluro-academic-select>
-            
 
 
 
 
+            var minimumFamilyMembers = self.model._context == 'contact' ? 0 : 1;
 
             addField('items', {
-                title: 'Family Member',
-                minimum: 1,
+                title: self.model._context == 'contact' ? 'Additional Family Member' : 'Family Member',
+                minimum: minimumFamilyMembers,
                 maximum: 0,
                 type: 'group',
                 asObject: true,
-                askCount: 1,
+                askCount: minimumFamilyMembers,
                 fields: contactFields,
+                expressions:{
+                    hide() {
+                        return self.model._context == 'contact';
+                    }
+                }
             });
 
 

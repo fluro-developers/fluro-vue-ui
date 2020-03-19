@@ -126,7 +126,7 @@
                                     <constrain sm>
                                         <fluro-interaction-form @state="stateChanged" :contextField="contextField" :defaultState="previewState" context="builder" :prefill="false" @debug="debugField" :title="item.title" :definition="fauxDefinition" :paymentIntegration="paymentIntegration" :debugMode="true" v-model="previewModel" ref="previewForm" :fields="model">
                                             <template v-slot:info>
-                                                <h1 margin>{{displayTitle}}</h1>
+                                                <h1 margin v-if="!hideDisplayTitle">{{displayTitle}}</h1>
                                                 <fluro-compile-html class="form-body" :template="publicData.body" :context="item" />
                                             </template>
                                             <template v-slot:success v-if="publicData.thankyou">
@@ -333,6 +333,10 @@ export default {
             return !this.image;
         },
 
+        hideDisplayTitle() {
+            var self = this;
+            return self.publicData.hideDisplayTitle;
+        },
         displayTitle() {
             var self = this;
             return self.publicData.title || self.item.title;
@@ -895,7 +899,6 @@ export default {
 
             var index = parent.indexOf(field);
             parent.splice(index, 1);
-
 
 
 

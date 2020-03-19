@@ -166,7 +166,7 @@ export default {
 }
 
 .timeline-entry {
-    @extend .border-top;
+    @extend .border-top !optional;
     padding:5px;
     position: relative;
 

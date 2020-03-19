@@ -8,7 +8,7 @@
             <!-- <div class="event-cover-image" :style="{backgroundImage:`url(${coverImage})`}"/> -->
             <!-- <fluro-image cover :spinner="true" :height="150" :item="coverImage"/> -->
             <!-- </template> -->
-            <tab heading="Event details">
+            <tab :heading="`${readableTypeName} Info`">
                 <slot>
                     <flex-column-body style="background: #fafafa;">
                         <v-container class="grid-list-xl">
@@ -35,21 +35,126 @@
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.mainImage" v-model="model"></fluro-content-form-field>
                                 <!-- </v-input> -->
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.body" v-model="model"></fluro-content-form-field>
+                                <fluro-panel v-if="definition && definition.fields && definition.fields.length">
+                                    <fluro-panel-title>
+                                        <strong>{{definition.title}} Information</strong>
+                                    </fluro-panel-title>
+                                    <fluro-panel-body>
+                                        <!-- <pre>{{model.data}}</pre> -->
+                                        <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields">
+                                        </fluro-content-form>
+                                    </fluro-panel-body>
+                                </fluro-panel>
                                 <fluro-content-form-field :override-label="definition && definition.definitionName && definition.definitionName == 'service' ? 'Service Time / Event Track' : 'Event Track' " :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.track" v-model="model"></fluro-content-form-field>
                             </constrain>
                         </v-container>
                     </flex-column-body>
                 </slot>
             </tab>
-            <tab :heading="`${definition.title} details`" v-if="definition && definition.fields && definition.fields.length">
+            <!-- <tab :heading="`${definition.title} details`" v-if="definition && definition.fields && definition.fields.length">
                 <slot>
                     <flex-column-body style="background: #fafafa;">
                         <v-container>
                             <constrain sm>
                                 <h3 margin>{{definition.title}}</h3>
-                                <!-- <pre>{{model.data}}</pre> -->
+                               
                                 <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields">
                                 </fluro-content-form>
+                            </constrain>
+                        </v-container>
+                    </flex-column-body>
+                </slot>
+            </tab> -->
+            <tab :heading="`Team Members`" v-if="model.rostered">
+                <flex-column-body style="background: #fafafa;">
+                    <v-container>
+                        <constrain sm>
+                            <v-layout align-center>
+                                <v-flex>
+                                    <h3>Team Members</h3>
+                                </v-flex>
+                                <v-flex shrink>
+                                    <v-btn color="primary" :to="{name:'events.multi', query:{ids:[model._id]}}">
+                                        Open in Multi Planner
+                                        <fluro-icon right icon="game-board" />
+                                    </v-btn>
+                                </v-flex>
+                            </v-layout>
+                            <fluro-panel v-for="roster in model.rostered">
+                                <fluro-panel-title>
+                                    <v-layout align-center>
+                                        <v-flex>
+                                            <strong>{{roster.title}}</strong>
+                                        </v-flex>
+                                        <v-flex shrink v-if="canEditRoster(roster)">
+                                            <v-btn icon class="ma-0" @click="$actions.open([roster])" v-tippy :content="`Actions`">
+                                                <fluro-icon icon="ellipsis-h" />
+                                            </v-btn>
+                                        </v-flex>
+                                    </v-layout>
+                                </fluro-panel-title>
+                                <fluro-panel-body>
+                                    <v-layout row wrap>
+                                        <v-flex xs6 sm4 md3 v-for="slot in roster.slots" v-if="slot.assignments && slot.assignments.length">
+                                            <v-container class="mb-2 pa-2">
+                                                <h5>{{slot.title}}</h5>
+                                                <div class="assignment-item" @click="$actions.open([assignment])" :class="assignment.confirmationStatus" v-for="assignment in slot.assignments">
+                                                    <v-layout>
+                                                        <v-flex>
+                                                            {{assignment.contact && assignment.contact.title ? assignment.contact.title : assignment.contactName}}
+                                                        </v-flex>
+                                                        <v-flex shrink>
+                                                            <fluro-icon right :icon="confirmationIcon(assignment)" />
+                                                        </v-flex>
+                                                    </v-layout>
+                                                </div>
+                                            </v-container>
+                                        </v-flex>
+                                    </v-layout>
+                                    <!-- <pre>{{roster}}</pre> -->
+                                </fluro-panel-body>
+                            </fluro-panel>
+                            <v-btn block @click="createRoster(rosterType)" class="btn-ghost" v-for="rosterType in rosterTypes">
+                                Add {{rosterType.title}}
+                            </v-btn>
+                        </constrain>
+                    </v-container>
+                </flex-column-body>
+            </tab>
+            <tab :heading="`${plans.length} Plan${plans.length == 1 ? '' : 's'}`" v-if="model._id">
+                <flex-column-body style="background: #fafafa;">
+                    <v-container fluid>
+                        <v-layout align-center>
+                            <v-flex>
+                                <h3>{{plans.length}} Plan{{plans.length == 1 ? '' : 's'}}</h3>
+                            </v-flex>
+                            <v-flex shrink>
+                                <v-btn color="primary" @click="createPlan()" v-if="$fluro.access.can('create', 'plan')">
+                                    <span>Add Plan</span>
+                                    <fluro-icon icon="plus" right />
+                                </v-btn>
+                            </v-flex>
+                        </v-layout>
+                        <fluro-panel>
+                            <tabset :justified="true">
+                                <tab :heading="plan.title" v-for="(plan, index) in plans">
+                                    <!-- <fluro-content-edit :embedded="true" v-if="$fluro.access.canEditItem(plan)" v-model="plans[index]" :disableCacheClearOnSave="true" context="edit" type="plan" @cancel="closePlan" @success="planUpdated" /> -->
+                                    <!-- v-else -->
+                                    <fluro-content-view  :id="plans[index]" :embedded="true"  type="plan" />
+                                </tab>
+                            </tabset>
+                            <!-- <pre>{{plans}}</pre> -->
+                        </fluro-panel>
+                    </v-container>
+                </flex-column-body>
+            </tab>
+            <tab :heading="`Location & Rooms`">
+                <slot>
+                    <flex-column-body style="background: #fafafa;">
+                        <v-container fluid pa-0>
+                            <location-view-map-component style="width:100%;min-height:300px;height:50vh;" name="locationMap" :positions="model.locations" />
+                            <constrain sm class="mt-4">
+                                <location-selector v-model="model" :allLocations="locations" locationsPath="locations" roomsPath="rooms" />
                             </constrain>
                         </v-container>
                     </flex-column-body>
@@ -66,38 +171,35 @@
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.videos" v-model="model"></fluro-content-form-field>
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.assets" v-model="model"></fluro-content-form-field>
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.externalLinks" v-model="model"></fluro-content-form-field>
-                                <h3 margin>Social Media</h3>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.socialImages" v-model="model"></fluro-content-form-field>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.socialBody" v-model="model"></fluro-content-form-field>
-                            </constrain>
-                        </v-container>
-                    </flex-column-body>
-                </slot>
-            </tab>
-            <tab :heading="`Location`">
-                <slot>
-                    <flex-column-body style="background: #fafafa;">
-                        <v-container fluid pa-0>
-                            <location-view-map-component style="width:100%;min-height:300px;height:50vh;" name="locationMap" :positions="model.locations" />
-                            <constrain sm class="mt-4">
-                                <location-selector v-model="model" :allLocations="locations" locationsPath="locations" roomsPath="rooms" />
+                                <fluro-panel>
+                                    <fluro-panel-title>
+                                        <strong>Social Media</strong>
+                                    </fluro-panel-title>
+                                    <fluro-panel-body>
+                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.socialImages" v-model="model"></fluro-content-form-field>
+                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.socialBody" v-model="model"></fluro-content-form-field>
+                                    </fluro-panel-body>
+                                </fluro-panel>
                             </constrain>
                         </v-container>
                     </flex-column-body>
                 </slot>
             </tab>
             <tab :heading="`Registrations & Ticketing`">
-                <slot>
+                
                     <flex-column-body style="background: #fafafa;">
                         <v-container>
-                            <constrain sm>
+                            <!-- <constrain sm> -->
                                 <h3 margin>Registrations &amp; Ticketing</h3>
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.forms" v-model="model"></fluro-content-form-field>
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.expectTeams" v-model="model"></fluro-content-form-field>
-                            </constrain>
+                            <!-- </constrain> -->
+                        
+                            <guest-list :event="model"/>
+                            
                         </v-container>
                     </flex-column-body>
-                </slot>
+               
             </tab>
             <tab :heading="`Messaging`">
                 <slot>
@@ -111,7 +213,7 @@
                     </flex-column-body>
                 </slot>
             </tab>
-            <tab :heading="`Checkin`">
+            <tab :heading="`Checkin Options`">
                 <slot>
                     <flex-column-body style="background: #fafafa;">
                         <v-container>
@@ -195,10 +297,12 @@
 
 
 import MessagingEventManager from '../components/MessagingEventManager.vue';
-import LocationViewMapComponent from '../components/LocationViewMapComponent.vue';
+import LocationViewMapComponent from '../../event/LocationViewMapComponent.vue';
 import LocationSelector from '../components/LocationSelector.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
-
+import FluroContentEdit from '../FluroContentEdit';
+import FluroContentView from '../../view/FluroContentView';
+import GuestList from '../../event/GuestList.vue';
 // import { JSONView } from "vue-json-component";
 
 /////////////////////////////////
@@ -209,7 +313,14 @@ import Vue from 'vue';
 /////////////////////////////////
 
 export default {
-    components: { MessagingEventManager, LocationSelector, LocationViewMapComponent },
+    components: {
+        GuestList,
+        FluroContentEdit,
+        FluroContentView,
+        MessagingEventManager,
+        LocationSelector,
+        LocationViewMapComponent,
+    },
     props: {
         'fields': {
             type: Array,
@@ -485,7 +596,108 @@ export default {
     },
     mixins: [FluroContentEditMixin],
     methods: {
+        closePlan() {
 
+        },
+        planUpdated(result) {
+            console.log('changed the plan!', result);
+        },
+        createPlan() {
+
+            var self = this;
+            var event = self.model;
+
+            ///////////////////////////////////////////////////////
+
+            self.$fluro.global.select('plan', { title: 'Select a template', minimum: 1, maximum: 1 }, true)
+                .then(function(plans) {
+                    if (!plans || !plans.length) {
+                        return;
+                    }
+
+                    var planID = self.$fluro.utils.getStringID(plans[0]);
+                    self.processing = true;
+
+                    return self.$fluro.content.get(planID).then(function(fullPlan) {
+
+                        var template = fullPlan;
+                        template.realms = event.realms;
+
+                        ///////////////////////////////////
+
+                        template.event = event;
+                        template.startDate = event.startDate;
+                        template.status = 'active';
+                        delete template._id;
+
+                        self.$fluro.global.create('plan', {
+                                template,
+                                copy: true,
+                            }, true)
+                            .then(function(res) {
+                                self.processing = false;
+                            }, function(err) {
+                                self.processing = false;
+                            })
+                    })
+                })
+
+
+
+
+
+
+
+        },
+        createRoster(rosterType) {
+
+            var self = this;
+
+
+            var template = {
+                title:rosterType.title,
+                event: self.model,
+                definition: rosterType.definitionName,
+                realms: self.model.realms.slice(),
+            }
+
+            self.$fluro.global.create(rosterType.definitionName, {
+                    template,
+                }, true)
+                .then(function(result) {
+                    console.log('Result')
+                })
+                .catch(function(err) {
+
+                });
+
+            // fluro.global.create = function(definedType, options, modal) {
+
+        },
+        confirmationIcon(assignment) {
+
+            switch (assignment.confirmationStatus) {
+                case 'confirmed':
+                    return 'check';
+                    break;
+                case 'denied':
+                    return 'times';
+                    break;
+                case 'unknown':
+                    return 'clock';
+                    break;
+                case 'proposed':
+                    return 'question-circle';
+                    break;
+            }
+
+        },
+        canEditRoster(roster) {
+            return this.$fluro.access.canEditItem(roster);
+        },
+        // editRoster(roster) {
+        //     console.log('Eit roster', roster);
+        // },
     },
 
     // beforeCreate: function() {
@@ -561,6 +773,34 @@ export default {
         }
     },
     asyncComputed: {
+        rosterTypes: {
+            default: [],
+            get() {
+                var self = this;
+
+                ///////////////////////////////////
+
+                return new Promise(function(resolve, reject) {
+
+                    return self.$fluro.types.subTypes('roster')
+                        .then(function(types) {
+
+                            var filtered = _.filter(types, function(type) {
+                                var alreadyCreated = !self.existingRosterTypes[type.definitionName];
+                                if (!alreadyCreated) {
+                                    return;
+                                }
+
+                                //Return if we have enough permissions to create this thing
+                                return self.$fluro.access.can('create', type.definitionName, 'roster')
+                            })
+                            resolve(filtered)
+                        })
+                        .catch(reject);
+
+                });
+            }
+        },
         locations: {
             default: [],
             get() {
@@ -581,6 +821,18 @@ export default {
         },
     },
     computed: {
+        readableTypeName() {
+            return this.definition ? this.$fluro.types.readable(this.definition.title) : 'Event';
+        },
+        plans() {
+            return this.model.plans || [];
+        },
+        existingRosterTypes() {
+            return _.reduce(this.model.rostered, function(set, roster) {
+                set[roster.definition] = true;
+                return set;
+            }, {})
+        },
         coverImage() {
             var self = this;
             return self.$fluro.asset.coverImage(self.model._id, 'event', { w: 150 });
@@ -663,8 +915,7 @@ export default {
     display: block;
     margin: 5%;
 }
-</style>
-<style scoped lang="scss">
+
 .hint {
     font-size: 10px;
     opacity: 0.5;
@@ -673,6 +924,50 @@ export default {
 
 }
 
+
+.assignment-item {
+    font-size: 12px;
+    text-overflow: ellipsis;
+    ;
+    white-space: nowrap;
+    ;
+    overflow: hidden;
+    ;
+    border-radius: 100px;
+    margin-bottom: 2px;
+    padding: 2px 10px;
+    font-weight: 500;
+    background-color: rgba(#000, 0.05);
+
+    &.confirmed {
+        color: $success;
+        background-color: rgba($success, 0.05);
+    }
+
+    &.denied {
+        color: $danger;
+        background-color: rgba($danger, 0.05);
+    }
+
+    &.unknown {
+        color: #555;
+    }
+
+    &.proposed {
+        background-color: rgba($primary, 0.1);
+        color: darken($primary, 20%);
+    }
+}
+
+.btn-ghost {
+    border: 1px dashed #555;
+    color: #555;
+    opacity: 0.5;
+
+    &:hover {
+        opacity: 1;
+    }
+}
 
 
 .bordered {

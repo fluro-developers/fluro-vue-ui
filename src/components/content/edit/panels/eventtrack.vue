@@ -35,7 +35,7 @@
                 <flex-column-body style="background: #fafafa;">
                     <v-container>
                         <constrain md>
-                            <default-roster-manager :config="config" v-model="model.defaultRosters" :rosterOptions="rosterDefinitions.definitions"/>
+                            <!-- <default-roster-manager :config="config" v-model="model.defaultRosters" :rosterOptions="rosterDefinitions.definitions"/> -->
                             <reminder-event-manager :config="config" v-model="model.defaultReminders" :allAssignmentOptions="allPositions" />
                         </constrain>
                     </v-container>

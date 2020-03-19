@@ -330,7 +330,7 @@
                     </tab>
                 </template>
                 <template v-else>
-                    <tab heading="Configuration">
+                    <tab heading="Configuration" >
                         <flex-column-body style="background: #fafafa;">
                             <v-container grid-list-xl>
                                 <constrain sm>
@@ -349,12 +349,6 @@
                                                     <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.definitionName" v-model="model" />
                                                 </div>
                                                 <template v-if="lockedSubType">
-                                                    <!-- <v-input class="no-flex">
-                                            <v-label>Extends Type</v-label>
-                                            <div>
-                                                <em class="small">{{definition.plural}} always extend {{lockedSubType | definitionTitle(true)}}</em>
-                                            </div>
-                                        </v-input> -->
                                                 </template>
                                                 <template v-else>
                                                     <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.parentType" v-model="model" />
@@ -386,7 +380,8 @@
                         </flex-column-body>
                     </tab>
                     <tab heading="Manage Fields">
-                        <fluro-field-editor v-model="model.fields" :item="model"/>
+                        <!-- <pre>MANAGE {{model.fields}}</pre> -->
+                        <fluro-field-editor v-model="model.fields" :item="model" />
                     </tab>
                     <tab :heading="`${definition.title} Information`" v-if="definition && definition.definitionName != 'form'">
                         <flex-column-body style="background: #fafafa;">
@@ -490,7 +485,7 @@ export default {
                         copy.title = 'Contact';
                         self.model.fields.push(copy);
                     }
-                    
+
                     if (!self.model.data.publicData) {
                         self.$set(self.model.data, 'publicData', {});
                     }
@@ -569,6 +564,10 @@ export default {
 
         if (self.model._id && !self.isForm) {
             self.tabIndex = 1;
+        }
+
+        if (!self.model.fields) {
+            self.$set(self.model, 'fields', []);
         }
 
         console.log('HERE WE GO', self.model)

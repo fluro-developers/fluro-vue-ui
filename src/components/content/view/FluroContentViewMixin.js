@@ -27,6 +27,9 @@ export default {
         // "json-view": JSONView,
     },
     computed: {
+        itemID() {
+            return this.$fluro.utils.getStringID(this.item);
+        },
         definition() {
             return this.config && this.config.definition ? this.config.definition : null
         },
@@ -40,6 +43,8 @@ export default {
 
                 return this.definition.fields;
             }
+
+            return [];
         }
         // itemID() {
         //     return this.model._id;

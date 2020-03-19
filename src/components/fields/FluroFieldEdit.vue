@@ -187,12 +187,12 @@
                         <!-- <div class="show-key" @click="showKey = !showKey"> -->
                         <!-- <strong>Key:</strong>{{model.key}} -->
                         <!-- </div> -->
-                        <fluro-content-form-field v-if="showDescription" :field="fields.description" v-model="model" />
-                        <fluro-content-form-field v-if="showPlaceholder" :field="fields.placeholder" v-model="model" />
                         <fluro-content-form-field :field="fields.type" v-model="model" />
                         <fluro-content-form-field v-if="model.type == 'reference'" :field="fields.referenceType" v-model="model.params" />
                         <fluro-content-form-field :field="fields.directive" v-model="model" />
                         <fluro-content-form-field v-if="model.directive == 'currency'" :field="fields.currency" v-model="model.params" />
+
+
                         <v-container class="grid-list-xl" pa-0 fluid v-if="model.type != 'void'">
                             <v-layout>
                                 <v-flex xs6>
@@ -202,7 +202,8 @@
                                 <v-flex xs6>
                                     <fluro-content-form-field :field="fields.maximum" @input="resetRequired(fields.maximum)" v-model="model" />
                                 </v-flex>
-                                <template v-if="model.type == 'embedded'">
+                                
+                                <template v-if="model.directive == 'embedded'">
                                     <v-spacer />
                                     <v-flex xs6>
                                         <fluro-content-form-field :field="fields.askCount" v-model="model" />
@@ -232,6 +233,11 @@
                                 </v-flex>
                             </v-layout>
                         </v-container>
+                        <fluro-content-form-field v-if="showDescription" :field="fields.description" v-model="model" />
+                        <fluro-content-form-field v-if="showPlaceholder" :field="fields.placeholder" v-model="model" />
+                        
+
+
                         <template v-if="model.directive == 'code'">
                             <fluro-content-form-field :field="fields.syntax" v-model="model.params" />
                             <!-- <fluro-content-form-field :field="fields." v-model="model" /> -->
@@ -1255,7 +1261,7 @@ export default {
             })
 
             addField('description', {
-                title: 'Help text',
+                title: 'Help /Hint text',
                 description: 'An optional description that can add extra detail for users entering data',
                 minimum: 0,
                 maximum: 1,

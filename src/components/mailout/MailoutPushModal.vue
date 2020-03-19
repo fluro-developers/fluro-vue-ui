@@ -41,7 +41,7 @@
                     <flex-column-body>
                         <v-container>
                         	<p>Select contacts from your database to add them to this mailout</p>
-                            <fluro-content-select-button block type="contact" v-model="model.contacts" />
+                            <fluro-content-select-button block type="contact" :allDefinitions="true" v-model="model.contacts" />
                         </v-container>
                     </flex-column-body>
                     <flex-column-footer class="border-top">

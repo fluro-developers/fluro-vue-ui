@@ -2,11 +2,7 @@
     <component :is="component" v-if="component"></component>
 </template>
 <script>
-import _ from 'lodash'
 import Vue from 'vue';
-
-
-
 
 export default {
     props: {

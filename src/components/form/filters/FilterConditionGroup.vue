@@ -36,8 +36,9 @@
                             <v-layout row>
                                 <v-flex d-flex align-center>
                                     <template v-if="mini">
-                                        <div class="description" v-if="group.filters.length > 1">
-                                            Match
+                                        <!-- v-if="group.filters.length > 1" -->
+                                        <div class="description">
+                                            Matches
                                             <select class="select-operator" v-model="group.operator">
                                                 <option value="and">all</option>
                                                 <option value="or">any</option>
@@ -45,9 +46,9 @@
                                             </select>
                                             of these conditions
                                         </div>
-                                        <div class="description" v-else>
-                                            Match these conditions
-                                        </div>
+                                        <!-- <div class="description" v-else>
+                                            Matches these conditions
+                                        </div> -->
                                     </template>
                                     <template v-else>
                                         <div>
@@ -891,7 +892,6 @@ export default {
 
                 injectFields.push({
                     title: 'Total number of groups',
-                    // key: '_checkins[]',
                     key: '_teams.all.length',
                     maximum: 1,
                     minimum: 0,
@@ -920,6 +920,108 @@ export default {
 
                             // directive: 'select',
                             //_discriminatorDefinition: 'tag',
+                        },
+                        {
+                            title: 'Definition',
+                            key: 'definition',
+                            maximum: 0,
+                            minimum: 0,
+                            type: 'string',
+                            directive: 'select',
+                            options: teamDefinitionOptions,
+                        },
+                    ],
+                });
+
+
+                injectFields.push({
+                    title: 'Total number of tickets',
+                    key: '_tickets.all.length',
+                    maximum: 1,
+                    minimum: 0,
+                    type: 'integer',
+                    subfieldTitle: 'Where...',
+                    subfields: [
+                        {
+                            title: 'Event',
+                            key: 'event',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'reference',
+                            typeSelect: 'event',
+                        },
+
+                        {
+                            title: 'Event Date',
+                            key: 'eventDate',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'date',
+                        },
+
+                        {
+                            title: 'Event Type',
+                            key: 'eventDefinition',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'string',
+                            directive:'select',
+                            options:eventDefinitionOptions,
+                        },
+
+                        {
+                            title: 'Event Track',
+                            key: 'eventTrack',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'reference',
+                            typeSelect: 'eventtrack',
+                        },
+
+                        {
+                            title: 'Ticket Title / Type',
+                            key: 'title',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'string',
+                        },
+                        {
+                            title: 'Collected',
+                            key: 'collected',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'boolean',
+                        },
+                        {
+                            title: 'Collected By',
+                            key: 'collectedBy',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'string',
+                        },
+                        {
+                            title: 'Collection Date',
+                            key: 'collectionDate',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'date',
+                        },
+                        {
+                            title: 'Realms',
+                            key: 'realms',
+                            maximum: 0,
+                            minimum: 0,
+                            type: 'reference',
+                            directive: 'select',
+                            _discriminatorDefinition: 'realm',
+                        },
+                        {
+                            title: 'Tags',
+                            key: 'tags',
+                            maximum: 0,
+                            minimum: 0,
+                            type: 'reference',
+                            typeSelect: 'tag',
                         },
                         {
                             title: 'Definition',
@@ -1656,7 +1758,7 @@ export default {
                         maximum: 0,
                         minimum: 0,
                         type: 'reference',
-                        typeSelect:tagType.definitionName,
+                        typeSelect: tagType.definitionName,
                         // directive: 'select',
                         // directive: 'content-select-button',
                         // _discriminatorDefinition: tagType.definitionName,
@@ -1668,7 +1770,7 @@ export default {
                         maximum: 0,
                         minimum: 0,
                         type: 'reference',
-                        typeSelect:tagType.definitionName,
+                        typeSelect: tagType.definitionName,
                         // directive: 'content-select-button',
                         // directive: 'select',
                         // _discriminatorDefinition: tagType.definitionName,
@@ -1680,7 +1782,7 @@ export default {
                         maximum: 0,
                         minimum: 0,
                         type: 'reference',
-                        typeSelect:tagType.definitionName,
+                        typeSelect: tagType.definitionName,
                         // directive: 'content-select-button',
                         // directive: 'select',
                         // _discriminatorDefinition: tagType.definitionName,

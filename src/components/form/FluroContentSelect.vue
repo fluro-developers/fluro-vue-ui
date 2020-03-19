@@ -3,15 +3,17 @@
         <!-- <pre>{{lockFilter}}</pre> -->
         <!-- <pre>TESTING WOWOWOW {{selectionMinimum}} {{selectionMaximum}}</pre> -->
         <!-- <pre>{{model}}</pre> -->
+
+        <!-- <pre>{{template}}</pre> -->
         <template v-if="model.length">
             <div class="fluro-content-list" v-if="model.length <= listLimit">
                 <list-group>
                     <draggable v-model="model" v-bind="dragOptions" @start="drag=true" @end="drag=false">
-                        <list-group-item :item="item" v-for="(item, index) in model">
+                        <list-group-item @click="$fluro.global.view(item, true)" :item="item" v-for="(item, index) in model">
                             <template v-slot:right>
                                 <v-menu :left="true" v-model="actionIndexes[index]" :fixed="true" transition="slide-y-transition" offset-y>
                                     <template v-slot:activator="{ on }">
-                                        <v-btn class="ma-0" icon small flat v-on="on">
+                                        <v-btn class="ma-0" @click.prevent.stop="" icon small flat v-on="on">
                                             <fluro-icon v-if="actionIndexes[index]" icon="times" />
                                             <fluro-icon v-else icon="ellipsis-h" />
                                         </v-btn>
@@ -36,16 +38,16 @@
                         <template v-slot:right>
                             <v-menu :left="true" v-model="actionIndexes[index]" :fixed="true" transition="slide-y-transition" offset-y>
                                 <template v-slot:activator="{ on }">
-                                    <v-btn class="ma-0" icon small flat v-on="on">
+                                    <v-btn class="ma-0" @click.prevent.stop="" icon small flat v-on="on">
                                         <fluro-icon v-if="actionIndexes[index]" icon="times" />
                                         <fluro-icon v-else icon="ellipsis-h" />
                                     </v-btn>
                                 </template>
                                 <v-list dense>
-                                    <v-list-tile @click="$actions.open([item])">
+                                    <v-list-tile @click.prevent.stop="$actions.open([item])">
                                         <v-list-tile-content>Actions</v-list-tile-content>
                                     </v-list-tile>
-                                    <v-list-tile @click="deselect(item)">
+                                    <v-list-tile @click.prevent.stop="deselect(item)">
                                         <v-list-tile-content>Deselect</v-list-tile-content>
                                     </v-list-tile>
                                 </v-list>
@@ -151,6 +153,9 @@ export default {
     },
     mixins: [FluroSelectionMixin],
     props: {
+        'template':{
+            type:Object,
+        },
         'success': {
             type: Boolean,
         },
@@ -324,7 +329,10 @@ export default {
 
             //////////////////////////////////////
 
-            self.$fluro.global.create(self.type, null, true)
+            self.$fluro.global.create(self.type, {
+                disableCacheClearOnSave:true,
+                template:JSON.parse(JSON.stringify(self.template || {})),
+            }, true)
                 .then(function(res) {
                     self.select(res);
                 });

@@ -1,5 +1,5 @@
 <template>
-    <div class="thumbnail" :style="{backgroundImage:`url(${$fluro.asset.imageUrl(id, 50)})`}"/>
+    <div class="thumbnail" :style="{backgroundImage:`url(${url})`}"/>
 </template>
 <script>
 export default {
@@ -15,6 +15,9 @@ export default {
         },
     },
     computed:{
+        url() {
+            return this.row._type == 'video' ? this.$fluro.asset.posterUrl(this.id, 50) : this.$fluro.asset.imageUrl(this.id, 50);
+        },
         id() {
             return this.$fluro.utils.getStringID(this.data);
         }

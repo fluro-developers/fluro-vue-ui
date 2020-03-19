@@ -121,7 +121,6 @@
                     </v-list>
                 </v-menu>
                 <v-menu v-if="tokens.length" :fixed="true" transition="slide-y-transition" offset-y>
-
                     <template v-slot:activator="{ on }">
                         <v-btn small :disabled="showSource" v-on="on">
                             Tokens
@@ -281,9 +280,7 @@
                 </div>
             </div>
         </template>
-        
     </div>
-
 </template>
 <script>
 // Import the editor
@@ -358,7 +355,7 @@ export default {
         }
     },
     computed: {
-       
+
         tokens() {
             return this.options.tokens || [];
         },
@@ -665,7 +662,7 @@ export default {
         ///////////////////////////////////
         ///////////////////////////////////
         ///////////////////////////////////
-        
+
         var enabledExtensions = [
 
             new Bold(),
@@ -721,43 +718,45 @@ export default {
         ///////////////////////////////////
 
 
+        if (!(typeof window === 'undefined')) {
 
-        if (window.hljs) {
+            if (window.hljs) {
 
 
 
-            // var json = function() { return window.hljs.getLanguage('json');} 
-            // var javascript = function() { return window.hljs.getLanguage('javascript');} 
-            // var scss = function() { return window.hljs.getLanguage('scss');} 
+                // var json = function() { return window.hljs.getLanguage('json');} 
+                // var javascript = function() { return window.hljs.getLanguage('javascript');} 
+                // var scss = function() { return window.hljs.getLanguage('scss');} 
 
-            // // console.log('Got him', window.hljs, window.hljs.listLanguages());
-            // // var json = window.hljs.registerLanguage('json');
-            // var json1 = window.hljs.getLanguage('json');
-            // // var scss = window.hljs.registerLanguage('scss');
-            // // var javascript = window.hljs.registerLanguage('javascript');
+                // // console.log('Got him', window.hljs, window.hljs.listLanguages());
+                // // var json = window.hljs.registerLanguage('json');
+                // var json1 = window.hljs.getLanguage('json');
+                // // var scss = window.hljs.registerLanguage('scss');
+                // // var javascript = window.hljs.registerLanguage('javascript');
 
-            // console.log('JSON 1', json1);
-            // console.log('JSON 2', json2);
+                // console.log('JSON 1', json1);
+                // console.log('JSON 2', json2);
 
-            // var highlightLanguages = {
-            //     scss,
-            //     javascript,
-            //     json,
+                // var highlightLanguages = {
+                //     scss,
+                //     javascript,
+                //     json,
 
-            // }
+                // }
 
-            // var highlightLanguages = {
-            //     javascript,
-            //     json,
-            //     scss,
-            //     html,
-            // }
+                // var highlightLanguages = {
+                //     javascript,
+                //     json,
+                //     scss,
+                //     html,
+                // }
 
-            // console.log('GOT Languages', window, highlightLanguages)
-            //Add Code highlighting to the extension list
-            enabledExtensions.push(new CodeBlockHighlight({
-                languages: [json, javascript, scss],
-            }))
+                // console.log('GOT Languages', window, highlightLanguages)
+                //Add Code highlighting to the extension list
+                enabledExtensions.push(new CodeBlockHighlight({
+                    languages: [json, javascript, scss],
+                }))
+            }
         }
 
         ///////////////////////////////////
@@ -807,8 +806,8 @@ export default {
                 this.editor.setContent(value)
             }
 
-                this.$emit('input', value);
-            
+            this.$emit('input', value);
+
 
 
         }

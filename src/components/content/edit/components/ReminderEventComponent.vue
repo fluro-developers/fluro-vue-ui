@@ -314,7 +314,7 @@ export default {
             addField('message', {
                 title: 'Message',
                 placeholder: 'Write a custom message in here',
-                minimum: 1,
+                minimum: 0,
                 maximum: 1,
                 type: 'string',
             })

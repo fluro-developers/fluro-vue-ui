@@ -1,5 +1,8 @@
 <template>
     <div class="fluro-interaction-form">
+        <!-- <pre>Form Options: {{formOptions}}</pre> -->
+        <!-- <pre>Email: {{askEmail}} {{requireEmail}}</pre> -->
+        <!-- <pre>Phone: {{askPhone}} {{requirePhone}}</pre> -->
         <template v-if="definition">
             <template v-if="!allowed">
                 <template v-if="user">
@@ -14,12 +17,7 @@
                 </template>
             </template>
             <template v-if="allowed">
-                <slot
-                    name="success"
-                    :reset="reset"
-                    :result="result"
-                    v-if="state == 'success'"
-                >
+                <slot name="success" :reset="reset" :result="result" v-if="state == 'success'">
                     <div class="text-xs-center">
                         <h3>Submission Successful</h3>
                         <div>Thank you for your submission</div>
@@ -30,26 +28,12 @@
                 </slot>
                 <template v-else>
                     <slot name="info"></slot>
-                    <form
-                        @submit.prevent="submit"
-                        :disabled="state == 'processing'"
-                    >
+                    <form @submit.prevent="submit" :disabled="state == 'processing'">
                         <!-- <pre>{{allowAnonymous}}</pre> -->
                         <!-- <pre>{{fields}}</pre> -->
                         <!-- <pre>{{options}}</pre> -->
                         <!-- <pre>{{errorMessages}}</pre> -->
-                        <fluro-content-form
-                            :context="context"
-                            :debugMode="debugMode"
-                            :contextField="contextField"
-                            :recursiveClick="recursiveClick"
-                            @errorMessages="validate"
-                            @input="modelChanged"
-                            ref="form"
-                            :options="options"
-                            v-model="dataModel"
-                            :fields="fields"
-                        />
+                        <fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" @errorMessages="validate" @input="modelChanged" ref="form" :options="options" v-model="dataModel" :fields="fields" />
                         <div class="payment" v-if="showPaymentForm">
                             <v-container>
                                 <h2>Payment Summary</h2>
@@ -60,13 +44,10 @@
                                     <v-flex shrink v-if="baseAmount">
                                         <strong>{{
                                             formattedBaseAmount
-                                        }}</strong>
+                                            }}</strong>
                                     </v-flex>
                                 </v-layout>
-                                <div
-                                    class="modifier"
-                                    v-for="modifier in activeModifiers"
-                                >
+                                <div class="modifier" v-for="modifier in activeModifiers">
                                     <v-layout align-center>
                                         <v-flex class="modifier-title">
                                             {{ modifier.title }}
@@ -89,97 +70,51 @@
                                                 {{ formattedTotal }}
                                                 <span class="muted">{{
                                                     currency.toUpperCase()
-                                                }}</span>
+                                                    }}</span>
                                             </h3>
                                         </v-flex>
                                     </v-layout>
                                 </div>
                             </v-container>
-                            <v-container
-                                style="background: #fafafa"
-                                class="border-top"
-                            >
+                            <v-container style="background: #fafafa" class="border-top">
                                 <h4>Card Details</h4>
-                                <fluro-content-form
-                                    @errorMessages="validate"
-                                    @input="modelChanged"
-                                    ref="payment"
-                                    :options="options"
-                                    v-model="dataModel"
-                                    :fields="paymentFields"
-                                />
+                                <fluro-content-form @errorMessages="validate" @input="modelChanged" ref="payment" :options="options" v-model="dataModel" :fields="paymentFields" />
                             </v-container>
-                            <v-container
-                                v-if="definition.data.enableReceipt"
-                                style="background: #fafafa"
-                                class="border-top"
-                            >
+                            <v-container v-if="definition.data.enableReceipt" style="background: #fafafa" class="border-top">
                                 <!-- <h5>Would you like an email receipt?</h5> -->
-                                <fluro-content-form-field
-                                    @input="modelChanged"
-                                    :options="options"
-                                    :field="receiptInput"
-                                    v-model="dataModel"
-                                />
+                                <fluro-content-form-field @input="modelChanged" :options="options" :field="receiptInput" v-model="dataModel" />
                             </v-container>
                         </div>
                         <div class="actions">
                             <template v-if="state == 'processing'">
-                                <v-btn
-                                    :block="mobile"
-                                    :large="mobile"
-                                    class="mx-0"
-                                    :disabled="true"
-                                >
+                                <v-btn :block="mobile" :large="mobile" class="mx-0" :disabled="true">
                                     Processing
-                                    <v-progress-circular
-                                        indeterminate
-                                    ></v-progress-circular>
+                                    <v-progress-circular indeterminate></v-progress-circular>
                                 </v-btn>
                             </template>
                             <template v-else-if="state == 'error'">
                                 <v-alert :value="true" type="error" outline>
                                     {{ serverErrors }}
                                 </v-alert>
-                                <v-btn
-                                    :block="mobile"
-                                    :large="mobile"
-                                    class="mx-0"
-                                    @click.prevent.native="state = 'ready'"
-                                >
+                                <v-btn :block="mobile" :large="mobile" class="mx-0" @click.prevent.native="state = 'ready'">
                                     Try Again
                                 </v-btn>
-                                <!-- <v-btn class="mx-0" :disabled="hasErrors" type="submit" color="primary">
-                                Try Again
-                            </v-btn> -->
                             </template>
                             <template v-else>
-                                <v-alert
-                                    :value="true"
-                                    type="error"
-                                    outline
-                                    v-if="hasErrors"
-                                >
+                                <v-alert :value="true" type="error" outline v-if="hasErrors">
                                     Please check the following issues before
                                     submitting
                                     <div v-for="error in errorMessages">
-                                        <strong>{{ error.title }}</strong
-                                        >: {{ error.messages[0] }}
+                                        <strong>{{ error.title }}</strong>: {{ error.messages[0] }}
                                     </div>
                                 </v-alert>
-                                <!-- <v-layout> -->
-                                <v-btn
-                                    :block="mobile"
-                                    :large="mobile"
-                                    class="mx-0"
-                                    :disabled="hasErrors"
-                                    type="submit"
-                                    color="primary"
-                                >
-                                    Submit
-                                </v-btn>
-                                <!-- <v-spacer /> -->
-                                <!-- </v-layout> -->
+                                <v-layout>
+                                    <v-btn :block="mobile" :large="mobile" class="mx-0" :disabled="hasErrors" type="submit" color="primary">
+                                        Submit
+                                    </v-btn>
+                                    <v-spacer />
+                                    <slot name="submit"></slot>
+                                </v-layout>
                             </template>
                         </div>
                     </form>
@@ -238,13 +173,13 @@ export default {
         },
         prefill: {
             type: Boolean,
-            default() {
+            default () {
                 return true;
             }
         },
         context: {
             type: String,
-            default() {
+            default () {
                 //By default
                 return this.$fluro.global.defaultFormContext;
             }
@@ -268,13 +203,13 @@ export default {
         },
         submissionConfig: {
             type: Object,
-            default() {
+            default () {
                 return {};
             }
         },
         value: {
             type: Object,
-            default() {
+            default () {
                 return {
                     data: {}
                 };
@@ -282,7 +217,7 @@ export default {
         },
         defaultState: {
             type: String,
-            default() {
+            default () {
                 return "ready";
             }
         },
@@ -714,8 +649,7 @@ export default {
                     title: "Gender",
                     directive: "select",
                     type: "string",
-                    options: [
-                        {
+                    options: [{
                             name: "Male",
                             value: "male"
                         },
@@ -890,6 +824,15 @@ export default {
                 return true;
             }
 
+            ///////////////////////////////////
+            //If we are anonymous and we haven't required the phone
+            if (this.allowAnonymous) {
+                //Return false
+                return;
+            }
+
+            ///////////////////////////////////
+
             switch (this.identifier) {
                 case "both":
                     return true;
@@ -911,6 +854,15 @@ export default {
             if (this.formOptions.requirePhone) {
                 return true;
             }
+
+            ///////////////////////////////////
+            //If we are anonymous and we haven't required the phone
+            if (this.allowAnonymous) {
+                //Return false
+                return;
+            }
+
+            ///////////////////////////////////
 
             switch (this.identifier) {
                 case "both":
@@ -942,6 +894,8 @@ export default {
             }
             return `${this.definition.title}`;
         },
+
+
         allowed() {
             // console.log('TESTING', this.definition)
             //If it's public
@@ -1019,9 +973,8 @@ export default {
             if (!stripeUseKey) {
                 return done(null, {
                     error: {
-                        message: self.debugMode
-                            ? `Integration Setup Error: No test keys found.`
-                            : `Integration Setup Error: No live keys found.`
+                        message: self.debugMode ?
+                            `Integration Setup Error: No test keys found.` : `Integration Setup Error: No live keys found.`
                     }
                 });
             }

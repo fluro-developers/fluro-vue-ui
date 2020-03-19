@@ -2,9 +2,8 @@
     <td :class="{wrap:shouldWrap, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}">
         <!-- {{rawValue.length}} {{shouldWrap}} -->
 
-        <!-- <pre>{{column.key}} - {{row}} - {{rawValue}}</pre> -->
+        
         <div :class="{'wrap-limit':shouldWrap}">
-        <!-- <pre>{{rawValue}}</pre> -->
         <component v-if="renderer" :data="preValue" :is="renderer" :row="row" :column="column" />
         <template v-else-if="simpleArray">
             <template v-for="entry in formattedArray">
@@ -23,6 +22,9 @@
                     <template v-if="entry._type == 'event'">
                         <fluro-icon type="event" /> {{entry.title}} <span class="text-muted">// {{entry | readableEventDate}}</span>
                     </template>
+                    <template v-else-if="entry._type == 'ticket'">
+                        <fluro-icon type="ticket" /> {{entry.title}} - {{entry.event.title}}<span class="text-muted">// {{entry.event | readableEventDate}}</span>
+                    </template>
                     <template :content="entry.title" v-tippy v-else-if="entry._type == 'team' && entry.position">
                         
                         <!-- <fluro-icon type="team" />  -->
@@ -39,6 +41,7 @@
                 </template>
                 <template v-else>{{entry}}</template>
             </template>
+            <!-- <template>{{formattedArray.length}} in total</template> -->
         </div>
         <div v-else-if="complexObject">
             <template v-if="preValue._type == 'event'">
@@ -520,7 +523,8 @@ export default {
                 }
                 //////////////////////////////
 
-                var childLimit = Math.min(10, array.length);
+
+                var childLimit = Math.min(100, array.length);
                 return array.slice(0, childLimit)
             }
 

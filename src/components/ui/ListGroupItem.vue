@@ -1,5 +1,5 @@
 <template>
-<div class="list-group-item" @click="clicked" :class="isSelected ? 'active selected' : ''">
+<component :is="componentType" tag="a" class="list-group-item" :to="to" @click="clicked" :class="isSelected ? 'active selected' : ''">
         <div>
             <fluro-realm-bar v-if="item" :realm="item.realms" />
             <slot name="left">
@@ -21,17 +21,21 @@
         </div>
         <!-- WOOOOTT -->
         <!-- <pre>{{item}}</pre> -->
-    </div>
+    </component>
 </template>
 <script>
 import FluroItemImage from './FluroItemImage.vue';
 import FluroRealmBar from './FluroRealmBar.vue';
+
 
 export default {
     components: {
         FluroItemImage,
     },
     props: {
+        to:{
+            type:[String,Object]
+        },
         item: {
             type: Object
         },
@@ -51,6 +55,13 @@ export default {
     methods: {
         clicked() {
             this.$emit('click', this.item);
+        }
+    },
+    created() {
+        if(this.to) {
+            this.componentType = 'router-link';
+        } else {
+            this.componentType = 'div';
         }
     },
     computed: {
@@ -102,6 +113,7 @@ export default {
 </script>
 <style lang="scss">
 .list-group-item {
+    color:inherit;
     position: relative;
     padding: 7px 10px;
     background: #fff;
@@ -110,6 +122,7 @@ export default {
     align-items: center;
     transition: background 0.3s;
     transition: color 0.3s;
+    text-decoration: none;
 
 
     .tick-icon {
