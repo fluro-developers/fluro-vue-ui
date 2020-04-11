@@ -2,9 +2,9 @@
   "name": "fluro-vue-ui",
   "version": "2.0.65",
   "description": "A package that contains helpful Fluro UI components and mixins",
-  "main": "dist/index.js",
+  "main": "src/index.js",
   "scripts": {
-    "build": "webpack --mode=production && webpack --mode=production && npm run test",
+    "build": "webpack --mode=production && npm run test",
     "dev": "webpack --mode=development --progress --colors --watch",
     "test": "mocha  --colors ./test/*.spec.js",
     "test:watch": "mocha  --colors -w ./test/*.spec.js",
