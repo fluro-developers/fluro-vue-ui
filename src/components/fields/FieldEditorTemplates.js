@@ -353,6 +353,22 @@ templates.push({
     params: {},
 })
 
+
+templates.push({
+    title: 'Signature',
+    description: `Request the user to write their signature`,
+    field: {
+        title: 'Signature',
+        description: 'Please sign your name',
+        minimum: 1,
+        maximum: 1,
+        type: 'string',
+        directive: 'signature',
+        key: 'signature',
+    },
+    params: {},
+})
+
 templates.push({
     title: 'File Upload',
     description: `Add a video, asset, or image upload field`,

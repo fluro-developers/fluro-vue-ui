@@ -43,11 +43,12 @@
 <script>
 // import { FluroModalMixin, FluroExpressionEditor } from 'fluro-vue-ui';
 import FluroModalMixin from '../../../../mixins/ModalMixin.js';
-import FluroExpressionEditor from '../../../form/FluroExpressionEditor.vue';
+// import FluroExpressionEditor from '../../../form/FluroExpressionEditor.vue';
 
 export default {
     components: {
-        FluroExpressionEditor,
+        FluroExpressionEditor: () => import('../../../form/FluroExpressionEditor.vue'),
+        // FluroExpressionEditor,
     },
     props: {
         options: {

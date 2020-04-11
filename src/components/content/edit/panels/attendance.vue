@@ -37,7 +37,6 @@
 
 import FluroContentEditMixin from '../FluroContentEditMixin';
 import AreaCountManager from '../components/AreaCountManager.vue';
-// import { Layout } from 'fluro-ui'
 
 
 /////////////////////////////////

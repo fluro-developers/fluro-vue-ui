@@ -53,7 +53,7 @@
 <script>
 import FluroConfirmButton from "../../../ui/FluroConfirmButton.vue";
 // import { FluroContentForm } from 'fluro-vue-ui';
-import draggable from 'vuedraggable'
+// import draggable from 'vuedraggable'
 
 import FluroContentForm from '../../../form/FluroContentForm.vue';
 
@@ -67,7 +67,7 @@ export default {
     components: {
         FluroContentForm,
         FluroConfirmButton,
-        draggable,
+        draggable: () => import('vuedraggable'),
 
     },
     data() {

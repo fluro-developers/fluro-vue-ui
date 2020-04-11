@@ -13,9 +13,27 @@ module.exports = {
     },
     externals: {
         'vue':'vue',
+        'lodash':'lodash',
+        'brace':'brace',
         'fluro':'fluro',
+        'vue-color':'vue-color',
+        'vuetify':'vuetify',
+        'signature_pad':'signature_pad',
+        'js-beautify':'js-beautify',
+        'vue2-ace-editor':'vue2-ace-editor',
+        'vuedraggable':'vuedraggable',
         'fluro-vue':'fluro-vue',
         'vuex-map-fields':'vuex-map-fields',
+
+        //Brace Stuff
+        'brace/ext/language_tools':'brace/ext/language_tools',
+        'brace/mode/html':'brace/mode/html',
+        'brace/mode/json':'brace/mode/json',
+        'brace/mode/javascript':'brace/mode/javascript',
+        'brace/mode/ejs':'brace/mode/ejs',
+        'brace/mode/scss':'brace/mode/scss',
+        'brace/theme/tomorrow_night_eighties':'brace/theme/tomorrow_night_eighties',
+        'brace/snippets/javascript':'brace/snippets/javascript',
     },
 
 

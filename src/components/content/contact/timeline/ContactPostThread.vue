@@ -23,8 +23,8 @@
     </flex-column>
 </template>
 <script>
-import PostCard from './cards/PostCard.vue';
-import AddPost from '../../../ui/modal/AddPost.vue';
+// import PostCard from './cards/PostCard.vue';
+// import AddPost from '../../../ui/modal/AddPost.vue';
 
 export default {
     props: {
@@ -33,7 +33,8 @@ export default {
         }
     },
     components: {
-        PostCard,
+        PostCard:() => import('./cards/PostCard.vue'),
+        AddPost:() => import('../../../ui/modal/AddPost.vue'),
     },
     data() {
         return {

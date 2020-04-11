@@ -22,7 +22,7 @@
 <script>
 // import FluroContentRender from '../../../../FluroContentRender.vue';
 // import FluroAvatar from '../../../../FluroAvatar.vue';
-import FluroRealmBar from '../../../../ui/FluroRealmBar.vue';
+// import FluroRealmBar from '../../../../ui/FluroRealmBar.vue';
 
 export default {
     props: {
@@ -34,7 +34,8 @@ export default {
     components: {
         // FluroContentRender,
         // FluroAvatar,
-        FluroRealmBar,
+       
+        FluroRealmBar:() => import('../../../../ui/FluroRealmBar.vue'),
     },
     computed: {
         rosterIcon() {

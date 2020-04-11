@@ -103,7 +103,7 @@
 import FluroContentEditMixin from '../FluroContentEditMixin';
 // import { FluroConfirmButton } from 'fluro-vue-ui';
 import FluroConfirmButton from "../../../ui/FluroConfirmButton.vue";
-import draggable from 'vuedraggable'
+// import draggable from 'vuedraggable'
 
 
 export default {
@@ -118,7 +118,8 @@ export default {
     mixins: [FluroContentEditMixin],
     components: {
         // FluroContentForm,
-        draggable,
+        // draggable,
+        draggable: () => import('vuedraggable'),
         FluroConfirmButton
 
     },

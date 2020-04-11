@@ -26,7 +26,7 @@
                                 <div class="pseudo-field" :class="{active:configureDefaults && !field}" @click="showDefaultFieldOptions()">Form Configuration</div>
                             </template>
                             <draggable class="field-editor-children" handle=".handle" element="ul" @sort="sorted" v-model="model" :options="treeOptions">
-                                <fluro-field-editor-item  :mouseover="mouseover" :mouseleave="mouseleave" :parent="model" :leaf="model[index]" :selected="field" :select="clicked" @duplicate="duplicateField" @injected="injectField" @deleted="deleteField" v-for="(leaf, index) in model" :key="leaf.guid" />
+                                <fluro-field-editor-item :mouseover="mouseover" :mouseleave="mouseleave" :parent="model" :leaf="model[index]" :selected="field" :select="clicked" @duplicate="duplicateField" @injected="injectField" @deleted="deleteField" v-for="(leaf, index) in model" :key="leaf.guid" />
                             </draggable>
                             <template v-if="formMode">
                                 <div class="pseudo-field" :class="{active:configurePayment && !field}" @click="showPaymentOptions()">Payment Options</div>
@@ -251,23 +251,24 @@
     </flex-column>
 </template>
 <script>
-import draggable from 'vuedraggable';
-import FluroFieldEditorItem from './FluroFieldEditorItem.vue';
-import FluroFieldEdit from './FluroFieldEdit.vue';
-import FluroContentForm from '../form/FluroContentForm.vue';
-import FluroInteractionForm from '../form/FluroInteractionForm.vue';
-import FluroCompileHtml from '../FluroCompileHtml.vue';
+// import draggable from 'vuedraggable';
+
 import FieldTemplates from './FieldEditorTemplates';
 import ComponentFieldTemplates from './FieldEditorComponentTemplates';
 
 export default {
     components: {
-        draggable,
-        FluroFieldEditorItem,
-        FluroFieldEdit,
-        FluroContentForm,
-        FluroInteractionForm,
-        FluroCompileHtml,
+        draggable: () => import('vuedraggable'),
+        // FluroFieldEditorItem,
+        // FluroFieldEdit,
+        // FluroContentForm,
+        // FluroInteractionForm,
+        // FluroCompileHtml,
+        FluroFieldEditorItem: () => import('./FluroFieldEditorItem.vue'),
+        FluroFieldEdit: () => import('./FluroFieldEdit.vue'),
+        FluroContentForm: () => import('../form/FluroContentForm.vue'),
+        FluroInteractionForm: () => import('../form/FluroInteractionForm.vue'),
+        FluroCompileHtml: () => import('../FluroCompileHtml.vue'),
     },
     props: {
         'value': {
@@ -349,7 +350,7 @@ export default {
             return self.publicData.title || self.item.title;
         },
         componentMode() {
-            return  this.item._type == 'component';
+            return this.item._type == 'component';
         },
         formMode() {
 
@@ -654,8 +655,8 @@ export default {
             return new Promise(function(resolve, reject) {
 
                 var templateSet = FieldTemplates;
-                if(self.componentMode) {
-                    templateSet =ComponentFieldTemplates;
+                if (self.componentMode) {
+                    templateSet = ComponentFieldTemplates;
                 }
 
                 self.$fluro.options(templateSet, 'Add a field')
@@ -1132,10 +1133,17 @@ export default {
 .schema-mode {
     min-width: 40vw;
 
-    .preview {order:2;}
+    .preview {
+        order: 2;
+    }
 
-    .sidebar {order:0;}
+    .sidebar {
+        order: 0;
+    }
 
-    .field-options {order:1; min-width: 40vw;}
+    .field-options {
+        order: 1;
+        min-width: 40vw;
+    }
 }
 </style>

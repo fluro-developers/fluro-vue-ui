@@ -4,55 +4,48 @@
             <fluro-page-preloader contain />
         </template>
         <template v-else>
-
             <!-- @clicked="clicked"  -->
-
-
-
             <fluro-timeline v-model="array">
                 <template v-slot:card="{entry}">
                     <template v-if="entry.grouped">
-
                         <!-- <grouped-card :item="entry"/> -->
-                        <log-card :item="log" :key="log._id" v-for="log in entry.entries"/>
-                       
+                        <log-card :item="log" :key="log._id" v-for="log in entry.entries" />
                     </template>
                     <template v-else-if="!entry._type">
                         <!-- <div class="timeline-card log-message"> -->
-                            <log-card :item="entry"/>
-                            <!-- <fluro-icon type="log"/> {{entry.message}} <em class="muted">- {{entry.date | formatDate('hh:mma')}} ({{entry.date | timeago}})</em> -->
+                        <log-card :item="entry" />
+                        <!-- <fluro-icon type="log"/> {{entry.message}} <em class="muted">- {{entry.date | formatDate('hh:mma')}} ({{entry.date | timeago}})</em> -->
                         <!-- </div> -->
-                         <!-- <pre>{{entry}}</pre> -->
+                        <!-- <pre>{{entry}}</pre> -->
                     </template>
                     <template v-else>
                         <!-- <div class="timeline-card"> -->
-                            <template v-if="entry._type == 'mailout'">
-                                <mailout-card :item="entry"/>
-                            </template>
-                            <template v-else-if="entry._type == 'post'">
-                                <post-card :item="entry"/>
-                            </template>
-                            <template v-else-if="entry._type == 'interaction'">
-                                <interaction-card :item="entry"/>
-                            </template>
-                            <template v-else-if="entry._type == 'checkin'">
-                                <checkin-card :item="entry"/>
-                            </template>
-                            <template v-else-if="entry._type == 'assignment'">
-                                <roster-card :item="entry"/>
-                            </template>
-                            <template v-else-if="entry._type == 'sms'">
-                                <text-message-card :item="entry"/>
-                            </template>
-                            <template v-else>
-                                <div class="timeline-card">
+                        <template v-if="entry._type == 'mailout'">
+                            <mailout-card :item="entry" />
+                        </template>
+                        <template v-else-if="entry._type == 'post'">
+                            <post-card :item="entry" />
+                        </template>
+                        <template v-else-if="entry._type == 'interaction'">
+                            <interaction-card :item="entry" />
+                        </template>
+                        <template v-else-if="entry._type == 'checkin'">
+                            <checkin-card :item="entry" />
+                        </template>
+                        <template v-else-if="entry._type == 'assignment'">
+                            <roster-card :item="entry" />
+                        </template>
+                        <template v-else-if="entry._type == 'sms'">
+                            <text-message-card :item="entry" />
+                        </template>
+                        <template v-else>
+                            <div class="timeline-card">
                                 <pre>{{entry}}</pre>
                             </div>
-                            </template>
-                            <!-- <fluro-realm-bar :realm="entry.realms"/> -->
-                            <!-- <label>{{entry.title}}</label> -->
-                           
-                            <!-- } -->
+                        </template>
+                        <!-- <fluro-realm-bar :realm="entry.realms"/> -->
+                        <!-- <label>{{entry.title}}</label> -->
+                        <!-- } -->
                         <!-- </div> -->
                     </template>
                 </template>
@@ -80,35 +73,45 @@
     </div> -->
 </template>
 <script>
-import FluroTimeline from '../../../ui/FluroTimeline.vue';
-import MailoutCard from './cards/MailoutCard.vue';
-import PostCard from './cards/PostCard.vue';
-import InteractionCard from './cards/InteractionCard.vue';
-import CheckinCard from './cards/CheckinCard.vue';
-import LogCard from './cards/LogCard.vue';
-import RosterCard from './cards/RosterCard.vue';
-import TextMessageCard from './cards/TextMessageCard.vue';
-import GroupedCard from './cards/GroupedCard.vue';
+// import FluroTimeline from '../../../ui/FluroTimeline.vue';
+// import MailoutCard from './cards/MailoutCard.vue';
+// import PostCard from './cards/PostCard.vue';
+// import InteractionCard from './cards/InteractionCard.vue';
+// import CheckinCard from './cards/CheckinCard.vue';
+// import LogCard from './cards/LogCard.vue';
+// import RosterCard from './cards/RosterCard.vue';
+// import TextMessageCard from './cards/TextMessageCard.vue';
+// import GroupedCard from './cards/GroupedCard.vue';
 
 export default {
     props: {
-        items:{
-            type:Array,
+        items: {
+            type: Array,
         },
         value: {
             type: Object,
         }
     },
     components: {
-        FluroTimeline,
-        GroupedCard,
-        MailoutCard,
-        PostCard,
-        InteractionCard,
-        CheckinCard,
-        LogCard,
-        RosterCard,
-        TextMessageCard,
+        FluroTimeline: () => import('../../../ui/FluroTimeline.vue'),
+        MailoutCard: () => import('./cards/MailoutCard.vue'),
+        PostCard: () => import('./cards/PostCard.vue'),
+        InteractionCard: () => import('./cards/InteractionCard.vue'),
+        CheckinCard: () => import('./cards/CheckinCard.vue'),
+        LogCard: () => import('./cards/LogCard.vue'),
+        RosterCard: () => import('./cards/RosterCard.vue'),
+        TextMessageCard: () => import('./cards/TextMessageCard.vue'),
+        GroupedCard: () => import('./cards/GroupedCard.vue'),
+
+        // FluroTimeline,
+        // GroupedCard,
+        // MailoutCard,
+        // PostCard,
+        // InteractionCard,
+        // CheckinCard,
+        // LogCard,
+        // RosterCard,
+        // TextMessageCard,
     },
     data() {
         return {
@@ -150,11 +153,10 @@ export default {
 }
 </script>
 <style lang="scss">
-
 .contact-timeline {
     .timeline-wrapper {
         max-width: 960px;
-        margin:auto;
+        margin: auto;
     }
 }
 
@@ -167,7 +169,7 @@ export default {
 
 .timeline-entry {
     @extend .border-top !optional;
-    padding:5px;
+    padding: 5px;
     position: relative;
 
     .summary {
@@ -178,10 +180,10 @@ export default {
 
 
 .timeline-icon {
-    text-align:center;
-    width:34px;
+    text-align: center;
+    width: 34px;
     line-height: 34px;
-    height:34px;
+    height: 34px;
     background: rgba(#000, 0.1);
     border-radius: 100%;
     display: block;

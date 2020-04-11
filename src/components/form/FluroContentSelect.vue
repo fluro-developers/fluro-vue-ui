@@ -96,7 +96,7 @@
 <script>
 // import FluroContentBrowser from './FluroContentBrowser.vue';
 import FluroSelectionMixin from '../../mixins/FluroSelectionMixin';
-import draggable from 'vuedraggable'
+// import draggable from 'vuedraggable'
 
 import FluroContentSelectModal from './contentselect/FluroContentSelectModal.vue';
 
@@ -104,7 +104,8 @@ import FluroContentSelectModal from './contentselect/FluroContentSelectModal.vue
 
 export default {
     components: {
-        draggable,
+        // draggable,
+        draggable: () => import('vuedraggable'),
         // FluroContentBrowser,
     },
     mixins: [FluroSelectionMixin],

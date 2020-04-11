@@ -461,22 +461,28 @@
     </flex-column>
 </template>
 <script>
-import FluroContentFormField from '../form/FluroContentFormField.vue';
-import FluroContentForm from '../form/FluroContentForm.vue';
-import OptionsManager from './FluroOptionsManager.vue';
-import ExpressionFieldSelect from './ExpressionFieldSelect.vue';
-import FluroExpressionEditor from '../form/FluroExpressionEditor.vue';
-import FluroInlineEdit from '../form/FluroInlineEdit.vue';
+// import FluroContentFormField from '../form/FluroContentFormField.vue';
+// import FluroContentForm from '../form/FluroContentForm.vue';
+// import OptionsManager from './FluroOptionsManager.vue';
+// import ExpressionFieldSelect from './ExpressionFieldSelect.vue';
+// import FluroExpressionEditor from '../form/FluroExpressionEditor.vue';
+// import FluroInlineEdit from '../form/FluroInlineEdit.vue';
 import FieldSelectModal from './FieldSelectModal.vue';
 
 export default {
     components: {
-        FluroContentFormField,
-        FluroContentForm,
-        OptionsManager,
-        FluroExpressionEditor,
-        ExpressionFieldSelect,
-        FluroInlineEdit,
+        // FluroContentFormField,
+        // FluroContentForm,
+        // OptionsManager,
+        // FluroExpressionEditor,
+        // ExpressionFieldSelect,
+        // FluroInlineEdit,
+        FluroContentFormField:() => import('../form/FluroContentFormField.vue'),
+        FluroContentForm:() => import('../form/FluroContentForm.vue'),
+        OptionsManager:() => import('./FluroOptionsManager.vue'),
+        ExpressionFieldSelect:() => import('./ExpressionFieldSelect.vue'),
+        FluroExpressionEditor:() => import('../form/FluroExpressionEditor.vue'),
+        FluroInlineEdit:() => import('../form/FluroInlineEdit.vue'),
     },
     props: {
         value: {
@@ -1071,8 +1077,8 @@ export default {
                 maximum: 0,
                 type: 'string',
                 directive: 'code',
-                params:{
-                    syntax:self.model.params.syntax,
+                params: {
+                    syntax: self.model.params.syntax,
                 }
             })
 
@@ -1517,7 +1523,7 @@ export default {
 
             if (self.item._type == 'component') {
 
-                if(self.model.type == 'string') {
+                if (self.model.type == 'string') {
                     inputOptions.push({
                         title: 'Website Builder Menu Select',
                         value: 'app-menu-select',

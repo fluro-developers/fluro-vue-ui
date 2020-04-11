@@ -43,8 +43,6 @@
 import FluroEditor from '../../../form/FluroEditor.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
 import GradeManager from '../components/GradeManager.vue';
-// import { Layout } from 'fluro-ui'
-// import Layout from '../../../../mixins/Layout.js';
 
 /////////////////////////////////
 

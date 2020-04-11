@@ -5,10 +5,6 @@
     </div>
 </template>
 <script>
-
-
-
-
 import CodeEditor from 'vue2-ace-editor';
 import js_beautify from 'js-beautify';
 
@@ -17,9 +13,9 @@ import js_beautify from 'js-beautify';
 export default {
 
     props: {
-        'autoformat':{
-            type:Boolean,
-            default:true,
+        'autoformat': {
+            type: Boolean,
+            default: true,
         },
         'value': {
             type: String,
@@ -67,12 +63,12 @@ export default {
     methods: {
         beautify() {
 
-           
 
-            if(!this.autoformat) {
+
+            if (!this.autoformat) {
                 return;
             }
-             // console.log('Beautify!!!')
+            // console.log('Beautify!!!')
             //Get the current string
             var input = this.editor.session.getValue() || '';
 
@@ -104,54 +100,69 @@ export default {
 
             var self = this;
 
-            require('brace/ext/language_tools') //language extension prerequsite...
-            require('brace/mode/html')
-            require('brace/mode/json') //language
-            require('brace/mode/javascript') //language
-            require('brace/mode/ejs') //language
-            require('brace/mode/scss')
-            require('brace/theme/tomorrow_night_eighties')
-            require('brace/snippets/javascript') //snippet
-            self.editor = editor;
+            // Promise.all([
+            //         () => import('brace/ext/language_tools'),
+            //         () => import('brace/mode/html'),
+            //         () => import('brace/mode/json'),
+            //         () => import('brace/mode/javascript'),
+            //         () => import('brace/mode/ejs'),
+            //         () => import('brace/mode/scss'),
+            //         () => import('brace/theme/tomorrow_night_eighties'),
+            //         () => import('brace/snippets/javascript'),
+            //     ])
+            //     .then(function() {
 
-            //             editor.setOptions({
-            //     maxLines: Infinity
-            // });
-
-            var editorDiv = this.$refs.outer;
-            var doc = editor.getSession().getDocument();
-            editor.on("change", function() {
-                var lineHeight = editor.renderer.lineHeight;
-                editorDiv.style.height = lineHeight * doc.getLength() + "px";
-                editor.resize();
-            });
-
-            //     var editor = ace.edit("editor");                   // the editor object
-            // var editorDiv = document.getElementById("editor");     // its container
-            // var doc = editor.getSession().getDocument();  // a reference to the doc
+            //         console.log('brace extras loaded');
 
 
-            ////////////////////////////////////////
+                    require('brace/ext/language_tools') //language extension prerequsite...
+                    require('brace/mode/html')
+                    require('brace/mode/json') //language
+                    require('brace/mode/javascript') //language
+                    require('brace/mode/ejs') //language
+                    require('brace/mode/scss')
+                    require('brace/theme/tomorrow_night_eighties')
+                    require('brace/snippets/javascript') //snippet
+                    self.editor = editor;
 
-            if (this.readonly) {
-                editor.setReadOnly(true);
-                editor.renderer.setShowGutter(false);
-            } else {
-                editor.on('blur', self.beautify);
-            }
+                    //             editor.setOptions({
+                    //     maxLines: Infinity
+                    // });
 
-            ////////////////////////////////////////
+                    var editorDiv = this.$refs.outer;
+                    var doc = editor.getSession().getDocument();
+                    editor.on("change", function() {
+                        var lineHeight = editor.renderer.lineHeight;
+                        editorDiv.style.height = lineHeight * doc.getLength() + "px";
+                        editor.resize();
+                    });
 
-            // editor.setOptions({
+                    //     var editor = ace.edit("editor");                   // the editor object
+                    // var editorDiv = document.getElementById("editor");     // its container
+                    // var doc = editor.getSession().getDocument();  // a reference to the doc
 
-            //     // autoScrollEditorIntoView: true,
-            //     // copyWithEmptySelection: true,
-            // });
 
-            // editor.setReadOnly(true);
-            // editor.setMode(this.computedSyntax);
-            // console.log('Initialize the editor', editor);
+                    ////////////////////////////////////////
 
+                    if (this.readonly) {
+                        editor.setReadOnly(true);
+                        editor.renderer.setShowGutter(false);
+                    } else {
+                        editor.on('blur', self.beautify);
+                    }
+
+                    ////////////////////////////////////////
+
+                    // editor.setOptions({
+
+                    //     // autoScrollEditorIntoView: true,
+                    //     // copyWithEmptySelection: true,
+                    // });
+
+                    // editor.setReadOnly(true);
+                    // editor.setMode(this.computedSyntax);
+                    // console.log('Initialize the editor', editor);
+                // })
 
         },
     },

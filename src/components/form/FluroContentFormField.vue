@@ -117,7 +117,6 @@
                         <fluro-content-form-field :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" class="flex" :field="subfield" @input="valueChange" v-model="model" />
                     </template>
                 </template>
-
             </template>
         </template>
         <template v-else-if="renderer == 'checkbox'">
@@ -131,7 +130,7 @@
         </template>
         <template v-else-if="renderer == 'number'">
             <!-- type="number" -->
-            <v-text-field :persistent-hint="persistentDescription" :suffix="suffix" :prefix="prefix" :outline="showOutline" :success="success" :required="required"  pattern="^-?(\d*\.)?\d+$;" :label="displayLabel" v-model="fieldModel" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+            <v-text-field :persistent-hint="persistentDescription" :suffix="suffix" :prefix="prefix" :outline="showOutline" :success="success" :required="required" pattern="^-?(\d*\.)?\d+$;" :label="displayLabel" v-model="fieldModel" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
         </template>
         <template v-else-if="renderer == 'realmselect'">
             <v-input class="no-flex" :persistent-hint="true" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
@@ -199,12 +198,11 @@
             <v-textarea :outline="showOutline" :success="success" :required="required" :label="displayLabel" v-model="fieldModel" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" />
         </template>
         <template v-else-if="renderer == 'select'">
-          
             <template v-if="mobile || params.dropdown">
                 <v-select :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
             </template>
             <template v-else>
-                <v-autocomplete  :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+                <v-autocomplete :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
             </template>
         </template>
         <template v-else-if="renderer == 'content-select-button'">
@@ -384,7 +382,7 @@
                 </v-input>
             </template>
             <template v-if="!multipleInput">
-                <v-text-field :mask="params.mask" :autofocus="shouldAutofocus" :outline="showOutline" :success="success" browser-autocomplete="off" :required="required" :label="displayLabel"  @input="valueChange"  v-model="fieldModel" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" />
+                <v-text-field :mask="params.mask" :autofocus="shouldAutofocus" :outline="showOutline" :success="success" browser-autocomplete="off" :required="required" :label="displayLabel" @input="valueChange" v-model="fieldModel" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" />
             </template>
         </template>
     </div>
@@ -395,16 +393,16 @@ import { validationMixin } from 'vuelidate';
 import { required, minLength, maxLength, email, url } from 'vuelidate/lib/validators';
 import _ from 'lodash';
 import Vue from 'vue';
-import FluroCompileHtml from '../FluroCompileHtml.vue';
-import FluroEditor from './FluroEditor.vue';
-import FluroCurrencyInput from './FluroCurrencyInput.vue';
-import FluroCodeEditor from './FluroCodeEditor.vue';
-import FluroSignatureField from './FluroSignatureField.vue';
-import FluroDateTimePicker from './FluroDateTimePicker.vue';
-import FluroContentSelect from './FluroContentSelect.vue';
-import FluroContentSelectButton from './contentselect/FluroContentSelectButton.vue';
-import FluroRealmSelect from './realmselect/FluroRealmSelect.vue';
-import { Chrome } from 'vue-color'
+// import FluroCompileHtml from '../FluroCompileHtml.vue';
+// import FluroEditor from './FluroEditor.vue';
+// import FluroCurrencyInput from './FluroCurrencyInput.vue';
+// import FluroCodeEditor from './FluroCodeEditor.vue';
+// import FluroSignatureField from './FluroSignatureField.vue';
+// import FluroDateTimePicker from './FluroDateTimePicker.vue';
+// import FluroContentSelect from './FluroContentSelect.vue';
+// import FluroContentSelectButton from './contentselect/FluroContentSelectButton.vue';
+// import FluroRealmSelect from './realmselect/FluroRealmSelect.vue';
+import { Chrome } from 'vue-color';
 
 
 
@@ -414,7 +412,7 @@ import Expressions from 'expression-eval';
 
 ////////////////////////////////////////////////////////
 
-import draggable from 'vuedraggable'
+// import draggable from 'vuedraggable'
 
 
 ////////////////////////////////////////////////////////
@@ -433,16 +431,27 @@ function mapDefaultDateValue(value) {
 export default {
     components: {
         'color-picker': Chrome,
-        draggable,
-        FluroCurrencyInput,
-        FluroEditor,
-        FluroCompileHtml,
-        FluroCodeEditor,
-        FluroSignatureField,
-        FluroDateTimePicker,
-        FluroContentSelect,
-        FluroContentSelectButton,
-        FluroRealmSelect,
+        // draggable,
+        draggable: () => import('vuedraggable'),
+        // FluroCurrencyInput,
+        // FluroEditor,
+        // FluroCompileHtml,
+        // FluroCodeEditor,
+        // FluroSignatureField,
+        // FluroDateTimePicker,
+        // FluroContentSelect,
+        // FluroContentSelectButton,
+        // FluroRealmSelect,
+        // FluroTimeline: () => import('../../../ui/FluroTimeline.vue'),
+        FluroCompileHtml: () => import('../FluroCompileHtml.vue'),
+        FluroEditor: () => import('./FluroEditor.vue'),
+        FluroCurrencyInput: () => import('./FluroCurrencyInput.vue'),
+        FluroCodeEditor: () => import('./FluroCodeEditor.vue'),
+        FluroSignatureField: () => import('./FluroSignatureField.vue'),
+        FluroDateTimePicker: () => import('./FluroDateTimePicker.vue'),
+        FluroContentSelect: () => import('./FluroContentSelect.vue'),
+        FluroContentSelectButton: () => import('./contentselect/FluroContentSelectButton.vue'),
+        FluroRealmSelect: () => import('./realmselect/FluroRealmSelect.vue'),
     },
     data() {
         return {
@@ -574,7 +583,7 @@ export default {
     },
     computed: {
         autoformat() {
-            return this.params.autoformat !=  false;
+            return this.params.autoformat != false;
         },
         isContext() {
             return this.contextField == this.field;
@@ -659,7 +668,7 @@ export default {
             return 'D MMM YYYY';
         },
         dateHint() {
-            
+
             var self = this;
 
 
@@ -701,7 +710,7 @@ export default {
                     return;
                 }
 
-                this.fieldModel = new Date(dateString); 
+                this.fieldModel = new Date(dateString);
 
                 console.log('SET', dateString, this.fieldModel)
                 // new Date(dateString);
@@ -1100,7 +1109,7 @@ export default {
                         break;
                     case 'integer':
 
-                       
+
 
                         if (value != undefined && value != null) {
                             if (String(value).length) {
@@ -1110,7 +1119,7 @@ export default {
                             }
                         }
 
-                         console.log('SET VALUE', value);
+                        console.log('SET VALUE', value);
                         break;
                     case 'number':
                         if (value != undefined && value != null && !isNaN(value)) {
@@ -1124,7 +1133,7 @@ export default {
                             }
 
                             //If we have to transform the data
-                            if(parseFloat(value) != parseFloat(changeValue)) {
+                            if (parseFloat(value) != parseFloat(changeValue)) {
                                 value = changeValue;
                             }
                         }
@@ -1623,7 +1632,7 @@ export default {
                         self.results = (self.defaultReferences || []).slice();
                         break;
                     case 'group':
-                        if(self.field.asObject) {
+                        if (self.field.asObject) {
                             if (!_.isArray(self.fieldModel)) {
                                 if (self.fieldModel) {
                                     self.fieldModel = [self.fieldModel];
@@ -1634,7 +1643,7 @@ export default {
                         }
                         break;
                     case 'void':
-                    break;
+                        break;
                     default:
                         self.results = (self.defaultValues || []).slice();
                         break;
@@ -2227,7 +2236,7 @@ export default {
                     //Add to the form fields
                     self.$set(self.formFields, self.formFields.length, self);
                 }
-            break;
+                break;
         }
 
 

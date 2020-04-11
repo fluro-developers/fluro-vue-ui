@@ -437,7 +437,6 @@
 // import FluroEditor from '../../../form/FluroEditor.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
 import PaymentModifierEditor from '../components/PaymentModifierEditor.vue';
-// import { FluroContentSelectButton, FluroFieldEditor } from 'fluro-ui';
 import FluroFieldEditor from '../../../fields/FluroFieldEditor.vue';
 import FluroContentSelectButton from '../../../form/contentselect/FluroContentSelectButton.vue';
 import FieldTemplates from '../../../fields/FieldEditorTemplates';

@@ -188,7 +188,7 @@
                         </v-btn>
                     </template>
                     <v-list>
-                        <v-list-tile @click="commands.token(token.key)" v-for="token in tokens">
+                        <v-list-tile @click="commands.token(token.key)" :key="token.key" v-for="token in tokens">
                             <v-list-tile-content><span style="margin:0 !important">{{token.title}}</span></v-list-tile-content>
                         </v-list-tile>
                     </v-list>
