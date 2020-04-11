@@ -1,5 +1,5 @@
 <template>
-    <div class="fluro-table-wrapper" >
+    <div class="fluro-table-wrapper">
         <!-- <pre>{{items}}</pre> -->
         <!-- <pre>{{rawPage}}</pre> -->
         <!-- <pre>{{totalPages}}</pre> -->
@@ -194,8 +194,7 @@ import TableCell from './TableCell.vue';
 
 /////////////////////////////////
 
-import axios from 'axios';
-const CancelToken = axios.CancelToken;
+
 
 import { FilterService } from 'fluro';
 
@@ -250,11 +249,11 @@ export default {
             type: String,
             default: 'asc',
         },
-        clickable:{
-            type:Boolean,
-            default() {
+        clickable: {
+            type: Boolean,
+            default () {
                 return true;
-            } 
+            }
         },
         clicked: {
             type: Function,
@@ -891,7 +890,7 @@ export default {
 
 
                         //Create a cancel token
-                        currentRawRequest = CancelToken.source();
+                        currentRawRequest = self.$fluro.api.CancelToken.source();
 
                         var parameters = {
                             fields: fields,
@@ -974,7 +973,7 @@ export default {
                             chunkLoaded(res.data);
 
                         }, function(err) {
-                            if (axios.isCancel(err)) {
+                            if (self.$fluro.api.axios.isCancel(err)) {
                                 // return reject(err);
                                 //console.log('Nothing man!')
                             } else {
@@ -986,45 +985,7 @@ export default {
 
                 });
 
-                //////////////////////////////////////////
 
-                /**
-                return new Promise(function(resolve, reject) {
-
-                    /////////////////////////////////////////////////
-
-                    //Create a cancel token
-                    currentRawRequest = CancelToken.source();
-
-                    //////////////////////////////////////////
-
-                    //Load just the IDS from the serveand required fields
-                    return self.$fluro.api.get(self.dataSource, {
-                        params: {
-                            fields: fields,
-                        },
-                        cancelToken: currentRawRequest.token,
-                    }).then(function(res) {
-                        resolve(res.data);
-                        self.loadingItems = false;
-
-                        self.$emit('raw', res.data);
-                    }, function(err) {
-                        if (axios.isCancel(err)) {
-                            // return reject(err);
-                            //console.log('Nothing man!')
-                        } else {
-                            return reject(err);
-                        }
-                    });
-
-
-
-
-
-                });
-
-                /**/
 
 
 
@@ -1109,7 +1070,7 @@ export default {
                 return new Promise(function(resolve, reject) {
 
                     //Create a cancel token
-                    currentPageItemsRequest = CancelToken.source();
+                    currentPageItemsRequest = self.$fluro.api.CancelToken.source();
 
                     /////////////////////////////////////////////////
 
@@ -1164,7 +1125,7 @@ export default {
                             self.loading = false;
 
                         }, function(err) {
-                            if (axios.isCancel(err)) {
+                            if (self.$fluro.api.axios.isCancel(err)) {
                                 // return reject(err)
                             } else {
                                 return reject(err);

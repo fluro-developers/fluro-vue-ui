@@ -2,15 +2,14 @@ import { FilterService } from 'fluro';
 
 /////////////////////////////////
 
-import axios from 'axios';
-const CancelToken = axios.CancelToken;
+
 
 /////////////////////////////////
 
 export default {
     props: {
-    		
-    	changeKey: {
+
+        changeKey: {
             type: [String, Number],
         },
         filterConfig: {
@@ -21,6 +20,9 @@ export default {
                     filters: [],
                 }
             }
+        },
+        lockFilter: {
+            type: Object,
         },
         allDefinitions: {
             type: Boolean,
@@ -65,6 +67,7 @@ export default {
                 return defaultSort;
             },
         },
+
     },
     data() {
         return {
@@ -78,7 +81,7 @@ export default {
         }
     },
     watch: {
-    	changeKey() {
+        changeKey() {
             this.reload();
         },
         search: _.debounce(function(newValue) {
@@ -86,10 +89,10 @@ export default {
             this.debouncedSearch = newValue;
             // this.refine();
         }, 500),
-         reloadRequired: {
+        reloadRequired: {
             immediate: true,
             handler: _.debounce(function(string) {
-                console.log('RELOAD NOW')
+                // console.log('RELOAD NOW')
                 this.reload();
             }, 500)
         },
@@ -111,28 +114,40 @@ export default {
 
             var sort = self.sort;
 
+
+            var filter = JSON.parse(JSON.stringify(self.filterConfig));
+
+            if (this.lockFilter) {
+                if (filter.operator == 'and') {
+                    filter.filters.push(this.lockFilter);
+                } else {
+                    filter = this.lockFilter.filters.push(filter);
+                }
+                console.log('LOCK FILTER CHECK', filter);
+            }
+
             ///////////////////////////////////////
 
             var filterCriteria = {
                 // return self.$fluro.api.get(`/system/test`, {
                 sort,
-                filter: self.filterConfig,
+                filter, //: self.filterConfig,
                 search: self.debouncedSearch,
                 includeArchived: self.includeArchived,
                 allDefinitions: self.allDefinitions,
                 searchInheritable: self.searchInheritable,
                 includeUnmatched: true,
                 groupingColumn: self.groupingColumn ? self.groupingColumn.key : undefined,
-            	
+
             }
 
             /////////////////////////////////////////////////////////////
 
-            if(this.select) {
-            	filterCriteria.select =this.select;
+            if (this.select) {
+                filterCriteria.select = this.select;
             }
 
-            if(this.populateAll) {
+            if (this.populateAll) {
                 filterCriteria.populateAll = this.populateAll;
             }
             /////////////////////////////////////////////////////////////
@@ -178,10 +193,11 @@ export default {
                     self.all = [];
                     self.$emit('raw', self.all);
                     if (self.setPage) {
+
                         self.setPage(1);
                     }
 
-                    if (axios.isCancel(err)) {
+                    if (self.$fluro.api.axios.isCancel(err)) {
                         // return reject(err);
                         //console.log('Nothing man!')
                     } else {
@@ -194,7 +210,7 @@ export default {
         includeArchived() {
             return this.includeArchivedByDefault
         },
-    	reloadRequired() {
+        reloadRequired() {
             return `${this.cacheKey}-${this.dataType}-${this.filterCheckString} ${this.dateWatchString} ${this.sort.sortKey} ${this.sort.sortDirection} ${this.sort.sortType} ${this.groupingColumn ? this.groupingColumn.key : ''}  ${this.debouncedSearch}`;
         },
         activeFilters() {
@@ -236,10 +252,10 @@ export default {
             }
 
             var startDate = new Date(this.startDate);
-            startDate.setHours(0,0,0,0);
+            startDate.setHours(0, 0, 0, 0);
 
             var endDate = new Date(this.endDate);
-            endDate.setHours(0,0,0,0);
+            endDate.setHours(0, 0, 0, 0);
 
 
             return `${startDate.getTime()} ${endDate.getTime()}`;

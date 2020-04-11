@@ -14,12 +14,23 @@ export default {
             default() {
                 return [];
             },
-            type:Array,
+            type:[Array, Object],
         },
     },
     computed:{
+        actualRealms() {
+            if(!this.realms) {
+                return;
+            }
+
+            if(this.realms.length) {
+                return this.realms;
+            }
+
+            return [this.realms];
+        },
         filtered() {
-            var filtered = _.filter(this.realms, function(realm) {
+            var filtered = _.filter(this.actualRealms, function(realm) {
                 if(!realm) {
                     return;
                 }

@@ -71,7 +71,8 @@
 </template>
 <script>
 import FluroModalMixin from '../../mixins/ModalMixin.js';
-import {FluroContentForm, FluroContentFormField } from 'fluro-vue-ui';
+import FluroContentForm from '../form/FluroContentForm.vue';
+import FluroContentFormField from '../form/FluroContentFormField.vue';
 import FluroRealmDots from '../ui/FluroRealmDots.vue';
 export default {
     props: {

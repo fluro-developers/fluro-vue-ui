@@ -281,7 +281,6 @@ export default {
                 //Here is where we clean up in case the data isn't correct
                 if (self.maximum == 1) {
                     if (_.isArray(value) && value.length == 1) {
-                        console.log('WHAT IS IT?', value)
                         value = value[0];
 
                     }

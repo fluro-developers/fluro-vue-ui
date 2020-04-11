@@ -12,6 +12,24 @@
                     <div class="muted">{{item.age}}</div>
                 </v-flex>
             </v-layout>
+            <v-container px-0 class="border-bottom text-xs-center" fluid>
+                <v-btn class="ma-0 mx-1 ml-0" :disabled="!canEmail" @click="communicate('email')" icon color="primary" content="Send Email" v-tippy>
+                    <fluro-icon library="fas" icon="envelope" />
+                </v-btn>
+                <v-btn class="ma-0 mx-1" :disabled="!canSMS" @click="communicate('sms')" icon color="primary" content="Send SMS" v-tippy>
+                    <fluro-icon library="fas" icon="comment" />
+                </v-btn>
+                <v-btn class="ma-0 mx-1" :disabled="!canCall" @click="communicate('phone')" icon color="primary" content="Call" v-tippy>
+                    <fluro-icon library="fas" icon="phone" />
+                </v-btn>
+                <v-btn class="ma-0 mx-1" :disabled="!canPost" @click="addPost" icon color="primary" content="Add Post/Note" v-tippy>
+                    <fluro-icon library="fas" type="post" />
+                </v-btn>
+                <v-btn class="ma-0 mx-1 mr-0" icon color="primary" @click="communicate('vcard')" content="Add to Address Book" v-tippy>
+                    <!-- <fluro-icon library="fas" icon="id-card" /> -->
+                    <fluro-icon library="fas" icon="address-book" />
+                </v-btn>
+            </v-container>
             <!-- <h5></h5> -->
             <!-- <pre>{{item}}</pre> -->
         </v-container>
@@ -22,6 +40,7 @@
 
 import Vue from 'vue';
 
+import FluroContactCommunicateMixin from '../../../../mixins/FluroContactCommunicateMixin';
 import FluroContentViewMixin from '../FluroContentViewMixin';
 import FluroContentRender from '../../../FluroContentRender.vue';
 import FluroAvatar from '../../../FluroAvatar.vue';
@@ -43,7 +62,7 @@ export default {
         FluroContentRender,
         FluroAvatar,
     },
-    mixins: [FluroContentViewMixin],
+    mixins: [FluroContentViewMixin, FluroContactCommunicateMixin],
     methods: {},
     computed: {
         data() {

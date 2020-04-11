@@ -445,9 +445,13 @@
 <script>
 /////////////////////////////////
 
-import FluroAcademicSelect from '../../../form/FluroAcademicSelect';
+import FluroAcademicSelect from '../../../form/FluroAcademicSelect.vue';
 import FluroRealmSelect from '../../../form/realmselect/FluroRealmSelect.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
+import FluroContactCommunicateMixin from '../../../../mixins/FluroContactCommunicateMixin';
+
+
+
 import FluroAvatarUpdate from '../../../FluroAvatarUpdate.vue';
 import ContactTimeline from '../../contact/timeline/ContactTimeline.vue';
 import ContactGroupManager from '../components/ContactGroupManager.vue';
@@ -474,7 +478,7 @@ export default {
     //     }
     // },
 
-    mixins: [FluroContentEditMixin],
+    mixins: [FluroContentEditMixin, FluroContactCommunicateMixin],
     components: {
         ContactTimeline,
         ContactGroupManager,
@@ -487,95 +491,8 @@ export default {
         FluroAcademicSelect,
     },
     methods: {
-        addPost() {
-
-            console.log('ADD NEW POST')
-            var self = this;
-
-            //Load all the types of posts we can create
-            return self.$fluro.types.subTypes('post')
-                .then(function(definitions) {
-
-
-                    var mapped = _.chain(definitions)
-                        .map(function(def) {
-
-                            // console.log('DEF', def);
-                            if (def.status == 'archived') {
-                                return;
-                            }
-
-                            if (def.systemOnly) {
-                                return;
-                            }
-
-                            return {
-                                title: `New ${def.title}`,
-                                definition: def,
-                            };
-                        })
-                        .compact()
-                        .value();
-
-                    /////////////////////////////
-
-                    self.$fluro.options(mapped)
-                        .then(function(answer) {
-
-                            var options = {
-                                definition: answer.definition,
-                                items: [self.model],
-                            }
-
-                            ///////////////////////////
-
-                            var promise = self.$fluro.modal({
-                                component: AddPost,
-                                options,
-                            });
-
-
-
-                        })
-
-                });
-        },
-        communicate(channel) {
-
-            var self = this;
-
-
-            switch (channel) {
-                case 'vcard':
-
-
-                    var token = self.$fluro.auth.getCurrentToken();
-
-                    window.open(`${self.$fluro.apiURL}/contact/${self.itemID}/vcard.vcf?access_token=${token}`, '_blank');
-                    break;
-                case 'phone':
-                    // console.log('CALL NOW?', self.model.phoneNumbers)
-
-                    var phoneNumbers = self.model.international || self.model.phoneNumbers;
-
-                    self.$communications.call(phoneNumbers);
-                    break;
-
-                case 'email':
-                    // console.log('EMAIL NOW?', self.model.emails)
-
-
-                    self.$communications.email([self.model]);
-                    break;
-                case 'sms':
-                    // console.log('SMS NOW?', self.model.emails)
-
-
-                    self.$communications.sms([self.model]);
-                    break;
-            }
-
-        },
+        
+        
         ping(device) {
             var self = this;
 
@@ -876,30 +793,7 @@ export default {
         }
     },
     asyncComputed: {
-        postable: {
-            default: [],
-            get() {
-                var self = this;
-
-                /////////////////////////////////////////////////////////////////
-
-                return new Promise(function(resolve, reject) {
-                    return self.$fluro.types.subTypes('post')
-                        .then(function(res) {
-
-                            var filtered = _.filter(res, function(postType) {
-                                var canSubmit = self.$fluro.access.can('submit', postType.definitionName, 'post');
-                                var canCreate = self.$fluro.access.can('create', postType.definitionName, 'post');
-                                return (canSubmit || canCreate);
-                            })
-
-                            resolve(filtered);
-                        })
-                        .catch(reject);
-
-                });
-            }
-        },
+        
         contactDefinitions: {
             default: [],
             get() {
@@ -1328,18 +1222,7 @@ export default {
 
             return array;
         },
-        canPost() {
-            return this.postable.length;
-        },
-        canEmail() {
-            return this.model.emails && this.model.emails.length;
-        },
-        canCall() {
-            return this.model.phoneNumbers && this.model.phoneNumbers.length;
-        },
-        canSMS() {
-            return this.model.phoneNumbers && this.model.phoneNumbers.length;
-        },
+        
 
         formOptions() {
             return {

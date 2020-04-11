@@ -35,10 +35,10 @@
 <script>
 /////////////////////////////////
 
-import FluroEditor from '../../../form/FluroEditor.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
 import AreaCountManager from '../components/AreaCountManager.vue';
-import { Layout } from 'fluro-vue-ui'
+// import { Layout } from 'fluro-ui'
+
 
 /////////////////////////////////
 
@@ -48,11 +48,10 @@ import Vue from 'vue';
 
 export default {
     components: {
-        FluroEditor,
         AreaCountManager,
     },
     created() {},
-    mixins: [FluroContentEditMixin, Layout],
+    mixins: [FluroContentEditMixin],
     computed: {
         fieldsOutput() {
 

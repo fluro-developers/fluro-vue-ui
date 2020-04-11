@@ -87,7 +87,16 @@
     </flex-column>
 </template>
 <script>
-import { FluroContentFormField, FluroContentForm, FluroModalMixin, FluroContentSelectButton } from 'fluro-vue-ui';
+// import { FluroContentFormField, FluroContentForm, FluroModalMixin, FluroContentSelectButton } from 'fluro-vue-ui';
+
+
+import FluroContentForm from '../form/FluroContentForm.vue';
+import FluroContentFormField from '../form/FluroContentFormField.vue';
+import FluroModalMixin from '../../mixins/ModalMixin';
+import FluroContentSelectButton from '../form/contentselect/FluroContentSelectButton.vue';
+
+
+
 
 export default {
     props: {

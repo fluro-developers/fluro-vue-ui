@@ -1,7 +1,7 @@
 <template>
     <form @submit.prevent="submit" :disabled="state == 'processing'" class="add-post-modal">
         <fluro-page-preloader v-if="loading" contain />
-        <flex-column v-else>
+        <flex-column  v-else>
             <flex-column-header class="border-bottom">
                 <page-header type="post">
                     <template v-slot:left>
@@ -11,7 +11,9 @@
             </flex-column-header>
             <flex-column-body>
                 <v-container>
-                    <fluro-content-form v-model="dataModel.data" ref="form" :fields="definition.fields"></fluro-content-form>
+
+                    <!-- <pre>{{definition}}</pre> -->
+                    <fluro-content-form v-model="dataModel.data" ref="form" @errorMessages="validate" :fields="definition.fields"></fluro-content-form>
                     <fluro-realm-select v-model="dataModel.realms" type="event" :definition="dataModel.definition" />
                 </v-container>
             </flex-column-body>
@@ -55,8 +57,13 @@
 </template>
 <script>
 import async from 'async';
-import { FluroModalMixin } from 'fluro-vue-ui';
+// import { FluroModalMixin } from 'fluro-vue-ui';
 // import { FluroRealmSelect, FluroContentForm, FluroModalMixin } from 'fluro-vue-ui';
+import FluroRealmSelect from '../../form/realmselect/FluroRealmSelect.vue';
+import FluroContentForm from '../../form/FluroContentForm.vue';
+import FluroModalMixin from '../../../mixins/ModalMixin';
+
+// , FluroContentForm, FluroModalMixin } from 'fluro-vue-ui';
 
 // console.log('ADD POST EXISTS NOW', FluroRealmSelect, FluroContentForm, FluroModalMixin)
 
@@ -66,13 +73,13 @@ export default {
             type: Object
         }
     },
-    beforeCreate: function() {
-        this.$options.components.FluroContentForm = require('../../form/FluroContentForm.vue').default;
-        this.$options.components.FluroRealmSelect = require('../../form/realmselect/FluroRealmSelect.vue').default;
-    },
+    // beforeCreate: function() {
+    //     this.$options.components.FluroContentForm = require('../../form/FluroContentForm.vue').default;
+    //     this.$options.components.FluroRealmSelect = require('../../form/realmselect/FluroRealmSelect.vue').default;
+    // },
     components: {
-        // FluroRealmSelect,
-        // FluroContentForm,
+        FluroRealmSelect,
+        FluroContentForm,
     },
     mixins: [FluroModalMixin],
     data() {
@@ -96,11 +103,13 @@ export default {
 
                 var self = this;
 
+
+
+
                 var definition = self.options.definition;
                 var definitionName = definition ? definition.definitionName : self.options.definitionName;
 
                 self.loading = true;
-
                 return new Promise(function(resolve, reject) {
                     return self.$fluro.types.get(definitionName)
                         .then(function(def) {
@@ -117,16 +126,6 @@ export default {
                             self.loading = false;
                         })
                 });
-
-
-
-                //     //Update all of the definitions
-
-                //         .then(function(res) {
-                //             return resolve(_.get(res, '[0].definitions'));
-                //         })
-                //         .catch(reject);
-                // });
             }
         }
     },
@@ -191,6 +190,8 @@ export default {
                 var submission = JSON.parse(JSON.stringify(self.dataModel));
                 submission.parent = self.$fluro.utils.getStringID(item);
 
+                console.log('SUBMIT POST AGAINST', submission.parent);
+
                 //Create the post
                 return self.$fluro.content.submitPost(submission.parent, self.definition.definitionName, submission)
                     .then(function(result) {
@@ -208,6 +209,7 @@ export default {
                     self.state = 'error';
                     self.$emit('error', err);
                     self.serverErrors = self.$fluro.utils.errorMessage(err);
+                    return;
 
                 }
 
@@ -216,6 +218,7 @@ export default {
                 });
 
 
+                // self.$fluro.resetCache();
                 self.close(results);
 
 
@@ -225,11 +228,23 @@ export default {
 
             function submissionComplete(err, res) {
 
+                if (err) {
+                    //Dispatch an error
+                    self.$fluro.error(err);
+                    self.state = 'error';
+                    self.$emit('error', err);
+                    self.serverErrors = self.$fluro.utils.errorMessage(err);
+                    return;
+
+                }
+
+
+
                 self.$fluro.notify(`${self.definition.title} for ${self.items[0].title} was saved successfully`, {
                     type: 'success',
                 });
 
-
+                // self.$fluro.resetCache();
                 self.close(res);
             }
 

@@ -1,4 +1,4 @@
-console.log('fluro-vue-ui 2.0.53')
+console.log('fluro-vue-ui 2.0.60')
 
 /////////////////////////////////////////////////////
 
@@ -25,6 +25,7 @@ export { FluroFieldEditor as FluroFieldEditor };
 
 
 import FluroImage from './components/FluroImage.vue';
+export { FluroImage as FluroImage };
 
 
 import FluroCompileHtml from './components/FluroCompileHtml.vue';
@@ -43,8 +44,9 @@ export { FluroPagedContent as FluroPagedContent };
 
 
 import FluroVideo from './components/FluroVideo.vue';
+export { FluroVideo as FluroVideo };
 import FluroVideoThumbnail from './components/FluroVideoThumbnail.vue';
-
+export { FluroVideoThumbnail as FluroVideoThumbnail };
 ////////////////////////////////////////////////////////////////////
 
 import FluroModal from './components/ui/modal/Modal.vue';
@@ -174,6 +176,16 @@ import ContactAvatarCell from './components/table/cells/ContactAvatarCell.vue';
 export { ContactAvatarCell as ContactAvatarCell };
 
 
+import ContactTimeline from './components/content/contact/timeline/ContactTimeline.vue';
+export { ContactTimeline as ContactTimeline };
+
+
+
+import ContactPostThread from './components/content/contact/timeline/ContactPostThread.vue';
+export { ContactPostThread as ContactPostThread };
+
+
+
 import PrivacyCell from './components/table/cells/PrivacyCell.vue';
 export { PrivacyCell as PrivacyCell };
 
@@ -276,6 +288,10 @@ export { FluroSearchBar as FluroSearchBar };
 
 
 import FluroIcon from './components/ui/FluroIcon.vue';
+export { FluroIcon as FluroIcon };
+
+
+
 import FluroRealmDots from './components/ui/FluroRealmDots.vue';
 import FluroRealmTags from './components/ui/FluroRealmTags.vue';
 import FluroStatusLabel from './components/ui/FluroStatusLabel.vue';
@@ -324,6 +340,10 @@ export { FluroContentSelect as FluroContentSelect };
 
 import FluroSelector from './components/form/contentselect/FluroSelector.vue';
 export { FluroSelector as FluroSelector };
+
+
+import AddPostModal from './components/ui/modal/AddPost.vue';
+export { AddPostModal as AddPostModal };
 
 
 import FluroContentSelectModal from './components/form/contentselect/FluroContentSelectModal.vue';
@@ -472,6 +492,14 @@ import DynamicListMixin from './mixins/DynamicListMixin';
 export { DynamicListMixin as DynamicListMixin };
 
 
+import DynamicPageMixin from './mixins/DynamicPageMixin';
+export { DynamicPageMixin as DynamicPageMixin };
+
+
+import FluroContactCommunicateMixin from './mixins/FluroContactCommunicateMixin';
+export { FluroContactCommunicateMixin as FluroContactCommunicateMixin };
+
+
 
 
 
@@ -486,7 +514,7 @@ export { FluroSelectionMixin as FluroSelectionMixin };
 /////////////////////////////////////////////////////
 
 
-
+/**
 import {
     VApp,
     VToolbar,
@@ -522,7 +550,7 @@ import {
     VDialog,
 } from 'vuetify/lib';
 
-
+/**/
 
 
 
@@ -533,40 +561,42 @@ const FluroVueUI = {
 
 
 
-        //Add the default Vuetify Components
-        Vue.component('v-menu', VMenu)
-        Vue.component('v-spacer', VSpacer)
-        Vue.component('v-toolbar', VToolbar)
-        Vue.component('v-toolbar-title', VToolbarTitle)
-        Vue.component('v-toolbar-items', VToolbarItems)
-        Vue.component('v-card', VCard)
-        Vue.component('v-card-text', VCardText)
-        Vue.component('v-app', VApp)
-        Vue.component('v-container', VContainer)
-        Vue.component('v-flex', VFlex)
-        Vue.component('v-layout', VLayout)
-        Vue.component('v-btn', VBtn)
-        Vue.component('v-btn-toggle', VBtnToggle)
-        Vue.component('v-alert', VAlert)
-        Vue.component('v-autocomplete', VAutocomplete)
-        Vue.component('v-select', VSelect)
-        Vue.component('v-text-field', VTextField)
-        Vue.component('v-list', VList)
-        // Vue.component('v-list-title', VListTitle)
-        Vue.component('v-checkbox', VCheckbox)
-        Vue.component('v-date-picker', VDatePicker)
-        Vue.component('v-textarea', VTextarea)
-        Vue.component('v-time-picker', VTimePicker)
-        Vue.component('v-input', VInput)
-        Vue.component('v-list-tile-title', VListTileTitle)
-        Vue.component('v-list-tile-content', VListTileContent)
-        Vue.component('v-hover', VHover)
-        Vue.component('v-dialog', VDialog)
-        Vue.component('v-card-text', VCardText)
-        Vue.component('v-card-actions', VCardActions)
-        Vue.component('v-tabs', VTabs)
-        Vue.component('v-tab', VTab)
+        /**
+                //Add the default Vuetify Components
+                Vue.component('v-menu', VMenu)
+                Vue.component('v-spacer', VSpacer)
+                Vue.component('v-toolbar', VToolbar)
+                Vue.component('v-toolbar-title', VToolbarTitle)
+                Vue.component('v-toolbar-items', VToolbarItems)
+                Vue.component('v-card', VCard)
+                Vue.component('v-card-text', VCardText)
+                Vue.component('v-app', VApp)
+                Vue.component('v-container', VContainer)
+                Vue.component('v-flex', VFlex)
+                Vue.component('v-layout', VLayout)
+                Vue.component('v-btn', VBtn)
+                Vue.component('v-btn-toggle', VBtnToggle)
+                Vue.component('v-alert', VAlert)
+                Vue.component('v-autocomplete', VAutocomplete)
+                Vue.component('v-select', VSelect)
+                Vue.component('v-text-field', VTextField)
+                Vue.component('v-list', VList)
+                // Vue.component('v-list-title', VListTitle)
+                Vue.component('v-checkbox', VCheckbox)
+                Vue.component('v-date-picker', VDatePicker)
+                Vue.component('v-textarea', VTextarea)
+                Vue.component('v-time-picker', VTimePicker)
+                Vue.component('v-input', VInput)
+                Vue.component('v-list-tile-title', VListTileTitle)
+                Vue.component('v-list-tile-content', VListTileContent)
+                Vue.component('v-hover', VHover)
+                Vue.component('v-dialog', VDialog)
+                Vue.component('v-card-text', VCardText)
+                Vue.component('v-card-actions', VCardActions)
+                Vue.component('v-tabs', VTabs)
+                Vue.component('v-tab', VTab)
 
+        /**/
 
 
         /////////////////////////////////////////////////////
@@ -607,12 +637,13 @@ const FluroVueUI = {
         /////////////////////////////////////////////
 
         //Request the user to answer some questions
-        fluro.prompt = function(fields, title) {
+        fluro.prompt = function(fields, title, model) {
             return fluro.modal({
                 component: FluroPromptDialog,
                 options: {
                     title,
                     fields,
+                    model,
                 }
             })
         }
@@ -645,6 +676,8 @@ const FluroVueUI = {
         }
 
         /////////////////////////////////////////////////////
+
+        Vue.mixin(Layout);
 
         //Add Fluro Components Globally
         Vue.component('fluro-icon', FluroIcon);

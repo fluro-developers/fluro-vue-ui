@@ -379,8 +379,6 @@ import DynamicListMixin from '../../mixins/DynamicListMixin.js'
 
 /////////////////////////////////
 
-import axios from 'axios';
-const CancelToken = axios.CancelToken;
 
 
 import { FilterService } from 'fluro';
@@ -1358,7 +1356,7 @@ export default {
                         resolve(pageItems.slice());
                     })
                     .catch(function(err) {
-                        if (axios.isCancel(err)) {
+                        if (self.$fluro.api.axios.isCancel(err)) {
                             // return reject(err)
                             // //Not sure if this is correct
                             resolve([]);
@@ -1389,84 +1387,6 @@ export default {
                 });
 
         }, 500),
-
-        /**
-        reload() {
-
-            var self = this;
-
-            //////////////////////////////////////////
-
-            self.loadingItems = true;
-
-            ///////////////////////////////////////
-
-            var sort = self.sort;
-            
-            ///////////////////////////////////////
-
-            var filterCriteria = {
-                // return self.$fluro.api.get(`/system/test`, {
-                sort,
-                filter: self.filterConfig,
-                search: self.debouncedSearch,
-                includeArchived: self.includeArchivedByDefault,
-                allDefinitions: self.allDefinitions,
-                searchInheritable: self.searchInheritable,
-                includeUnmatched: true,
-                groupingColumn: self.groupingColumn ? self.groupingColumn.key : undefined,
-            }
-
-            /////////////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////////////
-
-            if (self.startDate) {
-                filterCriteria.startDate = new Date(self.startDate);
-            }
-
-            if (self.endDate) {
-                filterCriteria.endDate = new Date(self.endDate);
-            }
-
-            //Include the timezone of the current requesting user
-            filterCriteria.timezone = self.$fluro.date.defaultTimezone;
-
-            /////////////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////////////
-
-            //Load just the IDS from the server and required fields
-            return self.$fluro.api.post(`/content/${self.dataType}/filter`, filterCriteria)
-                .then(function(res) {
-                    self.all = res.data;
-                    self.$emit('raw', self.all);
-
-                    self.rows = _.filter(res.data, { _matched: true });
-                    self.$emit('filtered', self.rows);
-                    self.setPage(1);
-                    self.loadingItems = false;
-                })
-                .catch(function(err) {
-                    self.loadingItems = false;
-                    self.rows = [];
-                    self.$emit('filtered', self.rows);
-
-
-                    self.all = [];
-                    self.$emit('raw', self.all);
-                    self.setPage(1);
-                    if (axios.isCancel(err)) {
-                        // return reject(err);
-                        //console.log('Nothing man!')
-                    } else {
-
-                    }
-                });
-
-        },
-        /**/
         checkboxClick(item, $event, itemIndex) {
             // console.log('ITEM INDEX', itemIndex, item, $event);
             return this.toggleSelection(item, $event, itemIndex);
@@ -1619,6 +1539,10 @@ export default {
 
             if (item.paymentStatus) {
                 classes.push('payment-status-' + item.paymentStatus);
+            }
+
+            if (item.processStatus) {
+                classes.push('process-status-' + item.processStatus);
             }
 
             //////////////////////////////////
@@ -1883,7 +1807,8 @@ export default {
                 }
             }
 
-            &.state-scheduled {
+            &.state-scheduled,
+            &.process-status-pending {
 
                 th.first,
                 th.last,
@@ -1891,6 +1816,37 @@ export default {
                 th {
                     background: lighten(#fff3b9, 5%) !important;
                     color: desaturate(darken(#f0974e, 20%), 30%) !important;
+                    // color: darken($warning, 20%);
+                    // background: rgba($warning, 0.05);
+                }
+            }
+
+
+            &.process-status-complete {
+
+                th.first,
+                th.last,
+                td,
+                th {
+                    color: darken($success, 10%) !important;
+                     background: lighten($success, 40%) !important;
+
+                    //background: lighten($success, 25%) !important;
+                    //color: desaturate(darken($success, 20%), 30%) !important;
+                    // color: darken($warning, 20%);
+                    // background: rgba($warning, 0.05);
+                }
+            }
+
+
+            &.process-status-failed {
+
+                th.first,
+                th.last,
+                td,
+                th {
+                    color: darken($danger, 10%) !important;
+            background: lighten($danger, 41%) !important;
                     // color: darken($warning, 20%);
                     // background: rgba($warning, 0.05);
                 }
@@ -2093,7 +2049,7 @@ export default {
     }
 
     .footer-stats {
-        @extend .border-top;
+        @extend .border-top !optional;
         padding: 5px 10px;
         font-size: 0.9em;
     }

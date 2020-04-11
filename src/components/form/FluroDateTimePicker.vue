@@ -61,7 +61,7 @@
     </v-dialog>
 </template>
 <script>
-import moment from 'moment'
+
 import FluroTab from '../ui/tabset/FluroTab.vue'
 import FluroTabset from '../ui/tabset/FluroTabset.vue'
 
@@ -171,21 +171,25 @@ export default {
     },
     created() {
 
-        if(this.datetime) {
-            if (this.datetime instanceof Date) {
-                this.selectedDatetime = this.datetime
-            } else if (typeof this.datetime === 'string' || this.datetime instanceof String) {
+        var self = this;
+
+        if(self.datetime) {
+            if (self.datetime instanceof Date) {
+                self.selectedDatetime = self.datetime
+            } else if (typeof self.datetime === 'string' || self.datetime instanceof String) {
                 // see https://stackoverflow.com/a/9436948
-                this.selectedDatetime = moment(new Date(this.datetime), this.format)
+                self.selectedDatetime = self.$fluro.date.moment(new Date(self.datetime), self.format)
             }
         }
     },
     computed: {
         minDateString() {
-            return this.min ? moment(this.min).format(DEFAULT_DATE_FORMAT) : null;
+            var self = this;
+            return self.min ? self.$fluro.date.moment(self.min).format(DEFAULT_DATE_FORMAT) : null;
         },
         maxDateString() {
-            return this.max ? moment(this.max).format(DEFAULT_DATE_FORMAT) : null;
+            var self = this;
+            return self.max ? self.$fluro.date.moment(self.max).format(DEFAULT_DATE_FORMAT) : null;
         },
         readable() {
             return this.datetime ? this.formattedDatetime : this.placeholder;//'Select a date'
@@ -193,36 +197,44 @@ export default {
         datePart: {
             get() {
 
-                let val = this.selectedDatetime ? moment(this.selectedDatetime).format(DEFAULT_DATE_FORMAT) : ''
+                var self = this;
+
+                let val = self.selectedDatetime ? self.$fluro.date.moment(self.selectedDatetime).format(DEFAULT_DATE_FORMAT) : ''
                 return val
             },
             set(val) {
-                this.dateSelected = true
-                this.activeTab = 1
+                var self = this;
+                self.dateSelected = true
+                self.activeTab = 1
 
+                var moment = self.$fluro.date.moment;
                 let date = moment(val, DEFAULT_DATE_FORMAT)
-                let hour = this.selectedDatetime ? moment(this.selectedDatetime).hour() : 0
-                let minute = this.selectedDatetime ? moment(this.selectedDatetime).minute() : 0
+                let hour = self.selectedDatetime ? moment(self.selectedDatetime).hour() : 0
+                let minute = self.selectedDatetime ? moment(self.selectedDatetime).minute() : 0
                 let input = moment().year(date.year()).month(date.month()).date(date.date()).hour(hour).minute(minute).second(0)
-                this.selectedDatetime = input.toDate()
+                self.selectedDatetime = input.toDate()
             }
         },
         timePart: {
             get() {
 
-                let val = this.selectedDatetime ? moment(this.selectedDatetime).format(DEFAULT_TIME_FORMAT) : DEFAULT_TIME
+                var self = this;
+
+                let val = self.selectedDatetime ? self.$fluro.date.moment(self.selectedDatetime).format(DEFAULT_TIME_FORMAT) : DEFAULT_TIME
                 return val
             },
             set(val) {
-                this.timeSelected = true
+                var self = this;
+                self.timeSelected = true
 
-                let time = moment(val, DEFAULT_TIME_FORMAT)
-                let input = moment(this.selectedDatetime).hour(time.hour()).minute(time.minute()).second(0)
-                this.selectedDatetime = input.toDate()
+                let time = self.$fluro.date.moment(val, DEFAULT_TIME_FORMAT)
+                let input = self.$fluro.date.moment(self.selectedDatetime).hour(time.hour()).minute(time.minute()).second(0)
+                self.selectedDatetime = input.toDate()
             }
         },
         formattedDatetime() {
-            return this.datetime ? moment(this.datetime).format(this.format) : ''
+            var self = this;
+            return self.datetime ? self.$fluro.date.moment(self.datetime).format(self.format) : ''
         }
     },
     methods: {

@@ -77,10 +77,10 @@
                 <tab :heading="`${membersLength} Members`" v-if="model._id">
                     <flex-column-body style="background: #fafafa;">
                         <v-container fluid grid-list-lg>
-                            <constrain sm>
+                            <!-- <constrain sm> -->
                                 <v-layout row wrap justify-space-around fill-height style="overflow-x:scroll">
-                                    <div v-for="(contact, index) in model.items" class="cards border">
-                                        <family-member-card :contactDefinitions="contactDefinitionOptions" v-model="model.items[index]" />
+                                    <div v-for="(contact, index) in members" class="cards border">
+                                        <family-member-card :contactDefinitions="contactDefinitionOptions" v-model="members[index]" />
                                     </div>
                                     <div class="ghost-card" @click="create">
                                         <div class="add-contact ghost">
@@ -93,7 +93,7 @@
                                         </div>
                                     </div>
                                 </v-layout>
-                            </constrain>
+                            <!-- </constrain> -->
                         </v-container>
                     </flex-column-body>
                     <!--                     <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
@@ -114,7 +114,8 @@
 import FamilyMemberCard from '../components/FamilyMemberCard.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
 import AddressManager from '../components/AddressManager.vue';
-import { FluroIcon, Layout, FluroAcademicSelect } from 'fluro-vue-ui'
+import FluroAcademicSelect from '../../../form/FluroAcademicSelect.vue';
+// import { FluroIcon, Layout, FluroAcademicSelect } from 'fluro-vue-ui'
 
 /////////////////////////////////
 
@@ -128,9 +129,21 @@ export default {
         FamilyMemberCard
     },
     created() {},
-    mixins: [FluroContentEditMixin, Layout],
+    mixins: [FluroContentEditMixin],
     computed: {
+        members() {
+            return _.orderBy(this.model.items, function(contact) {
+                if(contact.householdRole == 'parent') {
+                    return -1;
+                }
 
+                if(contact.age) {
+                    return 120 - parseInt(contact.age)
+                }
+
+                return 0;
+            })
+        },  
         fieldsOutput() {
 
 

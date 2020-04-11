@@ -26,7 +26,7 @@
                                 <div class="pseudo-field" :class="{active:configureDefaults && !field}" @click="showDefaultFieldOptions()">Form Configuration</div>
                             </template>
                             <draggable class="field-editor-children" handle=".handle" element="ul" @sort="sorted" v-model="model" :options="treeOptions">
-                                <fluro-field-editor-item :mouseover="mouseover" :mouseleave="mouseleave" :parent="model" :leaf="model[index]" :selected="field" :select="clicked" @duplicate="duplicateField" @injected="injectField" @deleted="deleteField" v-for="(leaf, index) in model" :key="leaf.guid" />
+                                <fluro-field-editor-item  :mouseover="mouseover" :mouseleave="mouseleave" :parent="model" :leaf="model[index]" :selected="field" :select="clicked" @duplicate="duplicateField" @injected="injectField" @deleted="deleteField" v-for="(leaf, index) in model" :key="leaf.guid" />
                             </draggable>
                             <template v-if="formMode">
                                 <div class="pseudo-field" :class="{active:configurePayment && !field}" @click="showPaymentOptions()">Payment Options</div>
@@ -38,6 +38,12 @@
                             <v-layout row>
                                 <v-flex v-if="formMode">
                                     <v-btn small class="ma-1" color="primary" block @click="addNewTemplate()">
+                                        Add Field
+                                        <fluro-icon icon="plus" right />
+                                    </v-btn>
+                                </v-flex>
+                                <v-flex v-else-if="componentMode">
+                                    <v-btn small class="ma-1" color="primary" block @click="addNewComponentTemplate()">
                                         Add Field
                                         <fluro-icon icon="plus" right />
                                     </v-btn>
@@ -193,7 +199,7 @@
                             </v-layout>
                         </div>
                     </flex-column-header>
-                    <fluro-field-edit @reset="resetPreview()" @deleted="deleteSelectedField" :expressionFields="model" v-model="field" />
+                    <fluro-field-edit @reset="resetPreview()" :item="item" @deleted="deleteSelectedField" :expressionFields="model" v-model="field" />
                 </template>
                 <template v-else-if="configurePayment">
                     <flex-column-header>
@@ -252,6 +258,7 @@ import FluroContentForm from '../form/FluroContentForm.vue';
 import FluroInteractionForm from '../form/FluroInteractionForm.vue';
 import FluroCompileHtml from '../FluroCompileHtml.vue';
 import FieldTemplates from './FieldEditorTemplates';
+import ComponentFieldTemplates from './FieldEditorComponentTemplates';
 
 export default {
     components: {
@@ -340,6 +347,9 @@ export default {
         displayTitle() {
             var self = this;
             return self.publicData.title || self.item.title;
+        },
+        componentMode() {
+            return  this.item._type == 'component';
         },
         formMode() {
 
@@ -520,6 +530,9 @@ export default {
     //     }
     // },
     methods: {
+        fieldPath() {
+
+        },
         deselectAll() {
             var self = this;
             self.configurePayment = self.configureDefaults = self.field = null;
@@ -632,7 +645,7 @@ export default {
 
 
         },
-        getFieldTemplate() {
+        getFieldTemplate(type) {
 
             var self = this;
 
@@ -640,10 +653,12 @@ export default {
 
             return new Promise(function(resolve, reject) {
 
+                var templateSet = FieldTemplates;
+                if(self.componentMode) {
+                    templateSet =ComponentFieldTemplates;
+                }
 
-
-
-                self.$fluro.options(FieldTemplates, 'Add a field')
+                self.$fluro.options(templateSet, 'Add a field')
                     .then(function(selected) {
                         var field = JSON.parse(JSON.stringify(selected.field));
                         field.guid = self.$fluro.utils.guid();
@@ -699,10 +714,18 @@ export default {
 
             return field;
         },
+        addNewComponentTemplate() {
+            var self = this;
+
+            self.getFieldTemplate('component')
+                .then(function(field) {
+                    self.addNewField(null, field);
+                })
+        },
         addNewTemplate() {
             var self = this;
 
-            self.getFieldTemplate()
+            self.getFieldTemplate('form')
                 .then(function(field) {
                     self.addNewField(null, field);
                 })
@@ -940,7 +963,7 @@ export default {
     height: 16px;
     cursor: pointer;
     ;
-    @extend .no-select;
+    @extend .no-select !optional;
     letter-spacing: 0;
     text-transform: none;
     ;
@@ -964,7 +987,7 @@ export default {
     // overflow: hidden;
     background: #eee;
     // border-right: 1px solid #ddd;
-    @extend .no-select;
+    @extend .no-select !optional;
 }
 
 .placeholder {
@@ -1007,7 +1030,7 @@ export default {
     font-weight: 500;
     padding: 8px;
     font-size: 10px;
-    @extend .border-bottom;
+    @extend .border-bottom !optional;
     background: #eee;
     color: rgba(#000, 0.5);
 }

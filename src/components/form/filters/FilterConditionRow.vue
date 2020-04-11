@@ -317,7 +317,6 @@ import { FilterService } from 'fluro';
 import FluroRealmSelect from '../realmselect/FluroRealmSelect.vue';
 import FluroContentSelectButton from '../contentselect/FluroContentSelectButton.vue';
 
-// import moment from 'moment';
 
 export default {
     components: {

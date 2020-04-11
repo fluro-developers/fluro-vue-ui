@@ -14,7 +14,6 @@
 import _ from 'lodash';
 import { mapFields } from 'vuex-map-fields';
 
-
 //////////////////////////////////////////////////
 
 export default {
@@ -29,6 +28,7 @@ export default {
         }
     },
     computed: {
+       
         ...mapFields('fluro', [
             'application', //The Fluro application and all of it's permissions and data
             'user', //The authenticated user if they log in

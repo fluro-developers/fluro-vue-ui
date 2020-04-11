@@ -12,7 +12,7 @@
 <script>
 import _ from 'lodash';
 
-import { Layout, FluroIcon } from 'fluro-vue-ui';
+// import { Layout, FluroIcon } from 'fluro-vue-ui';
 import FluroCheckbox from './FluroCheckbox.vue';
 
 /////////////////////////////////
@@ -61,7 +61,7 @@ export default {
     },
     watch: {
         'otherOptions': function() {
-            console.log('OTHER OPTIONS CHANGED')
+            // console.log('OTHER OPTIONS CHANGED')
             return this.maintainWorkingModel();
         },
         'value': function() {

@@ -125,7 +125,6 @@
 import FluroEditor from '../../../form/FluroEditor.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
 import FluroAssetEditMixin from '../FluroAssetEditMixin';
-import { Layout } from 'fluro-vue-ui'
 
 /////////////////////////////////
 
@@ -140,7 +139,7 @@ export default {
     created() {
         this.$set(this.model, 'assetType', 'upload');
     },
-    mixins: [FluroContentEditMixin, FluroAssetEditMixin, Layout],
+    mixins: [FluroContentEditMixin, FluroAssetEditMixin],
     computed: {
         hasMeta() {
             if (!this.model.data) {

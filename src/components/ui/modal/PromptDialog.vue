@@ -46,7 +46,7 @@ export default {
     mixins: [ModalMixin],
     data() {
         return {
-            model:{},
+            model:this.options.model || {},
         }
     },
     computed: {

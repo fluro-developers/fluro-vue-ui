@@ -827,11 +827,7 @@ export default {
 
             if (self.isContactType) {
 
-
-                // console.log('IS A CONTACT TYPE!!!!', self.definition, self.type)
                 /////////////////////////////////////////////
-
-                // key: 'family._parents[]definition',
 
                 var eventDefinitionOptions = [];
                 var eventTrackOptions = [];
@@ -1316,141 +1312,51 @@ export default {
                     ]
                 });
 
-                // postTypes
+                /////////////////////////////////////////////////////
 
-
-                /**
 
                 injectFields.push({
-                    title: 'Attendance > Any Event > Date',
-                    key: '_checkins.all[]startDate',
-                    maximum: 1,
-                    minimum: 0,
-                    type: 'date',
-                });
-
-                injectFields.push({
-                    title: 'Attendance > Any Event > Total',
-                    key: '_checkins.all.length',
+                    title: 'Posts and Notes > Total linked posts to family members',
+                    key: '_familyPosts.all.length',
                     maximum: 1,
                     minimum: 0,
                     type: 'integer',
-                    
+                    subfieldTitle: 'Where post matches...',
+                    subfields: [{
+                            title: 'Created Date',
+                            key: 'created',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'date',
+                        },
+                        // {
+                        //     title: 'Updated Date',
+                        //     key: 'updated',
+                        //     maximum: 1,
+                        //     minimum: 0,
+                        //     type: 'date',
+                        // },
+                        {
+                            title: 'Realms',
+                            key: 'realms',
+                            maximum: 0,
+                            minimum: 0,
+                            type: 'reference',
+                            directive: 'select',
+                            _discriminatorDefinition: 'realm',
+                        },
+                        {
+                            title: 'Post Type',
+                            key: 'definition',
+                            maximum: 0,
+                            minimum: 0,
+                            type: 'string',
+                            directive: 'select',
+                            options: postDefinitionOptions,
+                        },
+                    ],
                 });
-                /**/
 
-                ////////////////////////////////////////////////
-
-                /**
-                _.each(self.eventTypes, function(definition) {
-
-                    injectFields.push({
-                        title: `Attendance > Definition > ${definition.plural} > Date`,
-                        key: `_checkins.definition.${definition.definitionName}[]startDate`,
-                        maximum: 1,
-                        minimum: 0,
-                        type: 'date',
-                    });
-
-
-                    injectFields.push({
-                        title: `Attendance > Definition > ${definition.plural} > Total`,
-                        key: `_checkins.definition.${definition.definitionName}.length`,
-                        maximum: 1,
-                        minimum: 0,
-                        type: 'integer',
-                    });
-
-                })
-
-
-                ////////////////////////////////////////////////
-
-                _.each(self.eventTracks, function(track) {
-
-
-                    var titleString = `Attendance > Event Track > ${track.title}`;
-                    if (track.definitionTitle) {
-                        titleString = `Attendance > ${track.definitionTitle} (Track) > ${track.title}`;
-                    }
-
-                    injectFields.push({
-                        title: `${titleString} > Date`,
-                        key: `_checkins.track.${track._id}[]startDate`,
-                        maximum: 1,
-                        minimum: 0,
-                        type: 'date',
-                    });
-
-
-                    injectFields.push({
-                        title: `${titleString} > Total`,
-                        key: `_checkins.track.${track._id}.length`,
-                        maximum: 1,
-                        minimum: 0,
-                        type: 'integer',
-                    });
-
-                })
-    
-                ////////////////////////////////////////////////
-
-                _.each(self.eventRealms, function(realm) {
-                    // console.log('EVENT REALMS!!!', realm);
-
-                    // console.log('REALMS', realm)
-                    var titleString = `Attendance > Realm > ${realm.title}`;
-                    if (realm.fullDefinition) {
-                        titleString = `Attendance > ${realm.fullDefinition.title} (Realm) > ${realm.title}`;
-                    }
-
-                    injectFields.push({
-                        title: `${titleString} > Date`,
-                        key: `_checkins.realm.${realm._id}[]startDate`,
-                        maximum: 1,
-                        minimum: 0,
-                        type: 'date',
-                    });
-
-
-                    injectFields.push({
-                        title: `${titleString} > Total`,
-                        key: `_checkins.realm.${realm._id}.length`,
-                        maximum: 1,
-                        minimum: 0,
-                        type: 'integer',
-                    });
-
-                })
-
-/**/
-                ////////////////////////////////////////////////
-
-                // _.each(self.realmTypes, function(realmType) {
-
-                //     injectFields.push({
-                //         title: `Attendance > Realm > ${realm.title} > Date`,
-                //         key: `_checkins.realm.${realm._id}[]startDate`,
-                //         maximum: 1,
-                //         minimum: 0,
-                //         type: 'date',
-                //     });
-
-
-                //     injectFields.push({
-                //         title: `Attendance > Realm > ${realm.title} > Total`,
-                //         key: `_checkins.realm.${realm._id}.length`,
-                //         maximum: 1,
-                //         minimum: 0,
-                //         type: 'integer',
-                //     });
-
-                // })
-
-
-
-
-                /////////////////////////////////////////////////////
 
 
                 injectFields.push({
@@ -1550,10 +1456,6 @@ export default {
                     ]
                 });
 
-
-
-
-
                 injectFields.push({
                     title: 'Family Members > Of Household Role',
                     key: 'family.items[]householdRole',
@@ -1575,7 +1477,6 @@ export default {
                     //     },
                     // ]
                 });
-
 
                 injectFields.push({
                     title: 'Family Children > Of Gender',

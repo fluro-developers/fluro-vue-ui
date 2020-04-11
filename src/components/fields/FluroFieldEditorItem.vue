@@ -1,11 +1,11 @@
 <template>
-    <li class="field-editor-item"  :class="classes">
-        <div class="field-editor-item-field" @click="select(model)" @mouseover="mouseover(model)" @mouseleave="mouseleave(model)">
+    <li class="field-editor-item" :class="classes">
+        <div class="field-editor-item-field" v-tippy :content="fieldPath" @click="select(model)" @mouseover="mouseover(model)" @mouseleave="mouseleave(model)">
             <!--  -->
             <fluro-realm-bar :realm="targetRealms" v-if="targetRealms" />
-            <v-layout align-center>
+            <v-layout align-center >
                 <!-- :click="clickedRoute" -->
-                <v-flex shrink class="handle grab">
+                <v-flex shrink class="handle grab" >
                     <div class="icon">
                         <!-- <fluro-icon :icon="icon" /> -->
                         <fluro-icon icon="arrows" />
@@ -66,12 +66,10 @@
     </li>
 </template>
 <script>
-import { FluroInlineEdit } from 'fluro-vue-ui';
 import draggable from 'vuedraggable';
 
 export default {
     components: {
-        FluroInlineEdit,
         draggable,
     },
     props: {
@@ -114,6 +112,9 @@ export default {
         }
     },
     computed: {
+        fieldPath() {
+            return this.model.key;
+        },
         ticketed() {
             return this.model && this.model.params && this.model.params.ticketing && this.model.params.ticketing.enabled;
         },
@@ -351,6 +352,7 @@ export default {
         // mouseleave() {
         //     this.hovered(null)
         // },
+        
         toggleCollapsed() {
             this.$set(this.model, 'collapsed', !this.model.collapsed)
         },

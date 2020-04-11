@@ -50,7 +50,7 @@
                 <v-layout fill-height>
                     <flex-column style="min-height:50vh;">
                         <!-- :init-page="$route.query.page"  :init-sort="{sortKey:$route.query.sortKey, sortDirection:$route.query.sortDirection, sortType:$route.query.sortType}" @raw="rowsChanged" @filtered="filteredChanged" @page="pageChanged" @sort="sortChanged"  -->
-                        <fluro-dynamic-table :queryString="false" :enable-actions="false" :allDefinitions="retrieveAllDefinitions" :searchInheritable="options.searchInheritable" :filter-config="computedFilterConfig" :selection-controller="selector" :clicked="rowClicked" :search="search" :data-type="type" :columns="columns" @raw="rowsChanged" @filtered="filteredChanged" @page="pageChanged" @sort="sortChanged" />
+                        <fluro-dynamic-table :queryString="false" :enable-actions="false" :allDefinitions="retrieveAllDefinitions" :searchInheritable="options.searchInheritable" :filter-config="filterConfig" :lock-filter="options.lockFilter" :selection-controller="selector" :clicked="rowClicked" :search="search" :data-type="type" :columns="columns" @raw="rowsChanged" @filtered="filteredChanged" @page="pageChanged" @sort="sortChanged" />
                     </flex-column>
                     <div class="filter-sidebar scroll-y" v-show="showFilters">
                         <div>
@@ -99,6 +99,7 @@
     <!-- </flex-column> -->
 </template>
 <script>
+
 import ModalMixin from '../../../mixins/ModalMixin';
 import Layout from '../../../mixins/Layout';
 import FluroTabset from '../../ui/tabset/FluroTabset.vue';
@@ -255,22 +256,22 @@ export default {
         retrieveAllDefinitions() {
             return this.options.allDefinitions || this.selector.allDefinitions
         },
-        computedFilterConfig() {
+        // filterConfig() {
 
-            var basicFilterConfig = this.filterConfig;
-            var lockedFilter = this.options.lockFilter;
+        //     var basicFilterConfig = this.filterConfig;
+        //     var lockedFilter = this.options.lockFilter;
 
-            if (lockedFilter) {
-                return {
-                    operator: 'and',
-                    filters: [basicFilterConfig, lockedFilter],
-                }
-            }
+        //     if (lockedFilter) {
+        //         return {
+        //             operator: 'and',
+        //             filters: [basicFilterConfig, lockedFilter],
+        //         }
+        //     }
 
-            return basicFilterConfig;
+        //     return basicFilterConfig;
 
 
-        },
+        // },
         selectionManager() {
             return this.selector;
         },

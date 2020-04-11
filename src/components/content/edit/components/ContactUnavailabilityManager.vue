@@ -69,7 +69,6 @@
     </div>
 </template>
 <script>
-import moment from 'moment';
 // import FluroContentSelectButton from '../../../form/contentselect/FluroContentSelectButton.vue';
 import ListGroup from '../../../ui/ListGroup.vue';
 import ListGroupItem from '../../../ui/ListGroupItem.vue';
@@ -261,13 +260,15 @@ export default {
             return _.startCase(str);
         },
         readableDate(obj) {
-            var start = moment(obj.startDate).format('dddd, MMMM Do YYYY');
-            var end = moment(obj.endDate).format('dddd, MMMM Do YYYY');
+            var self = this;
+
+            var start = self.$fluro.date.moment(obj.startDate).format('dddd, MMMM Do YYYY');
+            var end = self.$fluro.date.moment(obj.endDate).format('dddd, MMMM Do YYYY');
             //console.log(start, end, obj.startDate, obj.endDate);
             if (start == end) {
-                return moment(obj.startDate).format('dddd, MMMM Do YYYY');
+                return self.$fluro.date.moment(obj.startDate).format('dddd, MMMM Do YYYY');
             } else {
-                return moment(obj.startDate).format('dddd, MMMM Do YYYY') + ' - ' + moment(obj.endDate).format('dddd, MMMM Do YYYY')
+                return self.$fluro.date.moment(obj.startDate).format('dddd, MMMM Do YYYY') + ' - ' + self.$fluro.date.moment(obj.endDate).format('dddd, MMMM Do YYYY')
             }
         }
     }

@@ -131,9 +131,9 @@ import FluroContentFormField from "./FluroContentFormField.vue";
 import _ from "lodash";
 import Vue from "vue";
 import Expressions from "expression-eval";
-import { mapFields } from "vuex-map-fields";
-
+import { mapFields } from "vuex-map-fields"; 
 var hasBeenReset;
+
 
 //////////////////////////////////////////////////
 
@@ -249,6 +249,9 @@ export default {
         };
     },
     created() {
+
+        // console.log('INTERACTION FORM VUE', Vue.$store._modulesNamespaceMap);
+
         this.reset();
     },
     mounted() {
@@ -915,10 +918,18 @@ export default {
             );
             return canCreate || canSubmit;
         },
-        ...mapFields("fluro", [
-            "application", //The Fluro application and all of it's permissions and data
-            "user" //The authenticated user if they log in
-        ])
+        user() {
+            console.log('FIND USER MATCH', Vue.$store)
+            return Vue.$store.state.fluro.user;
+        },
+        application() {
+            return Vue.$store.state.fluro.application;
+        },
+
+        //  ...mapFields('fluro', ['user', 'application']),
+        // }
+       
+
     },
     components: {
         FluroContentFormField,

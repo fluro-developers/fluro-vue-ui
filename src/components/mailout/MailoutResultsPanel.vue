@@ -95,11 +95,23 @@
     </flex-column>
 </template>
 <script>
+// import Vue from 'vue';
+
+// import CorrespondenceInfoModal from './CorrespondenceInfoModal.vue';
+// import MailoutPushModal from './MailoutPushModal.vue';
+// import { SearchInput, StatusCell, AvatarCell, FluroTable, MailoutRenderPreview, MailoutTestPanel, FluroContentFormField, FluroContentSelectButton } from 'fluro-vue-ui';
+
 import Vue from 'vue';
 
 import CorrespondenceInfoModal from './CorrespondenceInfoModal.vue';
 import MailoutPushModal from './MailoutPushModal.vue';
-import { SearchInput, StatusCell, AvatarCell, FluroTable, MailoutRenderPreview, MailoutTestPanel, FluroContentFormField, FluroContentSelectButton } from 'fluro-vue-ui';
+import MailoutRenderPreview from './MailoutRenderPreview.vue';
+import MailoutTestPanel from './MailoutTestPanel.vue';
+import SearchInput from '../ui/SearchInput.vue';
+import StatusCell from '../table/cells/StatusCell.vue';
+import AvatarCell from '../table/cells/AvatarCell.vue';
+import FluroTable from '../table/FluroTable.vue';
+
 
 
 

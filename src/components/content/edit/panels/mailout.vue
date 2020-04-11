@@ -347,12 +347,22 @@
 /////////////////////////////////
 
 // import FluroEditor from '../../../form/FluroEditor.vue';
-import { MailoutRenderPreview, MailoutResultsPanel, MailoutPreflightPanel, MailoutTestPanel } from 'fluro-vue-ui'
-import FluroContentEditMixin from '../FluroContentEditMixin';
+// import { MailoutRenderPreview, MailoutResultsPanel, MailoutPreflightPanel, MailoutTestPanel } from 'fluro-vue-ui'
+// import FluroContentEditMixin from '../FluroContentEditMixin';
+
 
 /////////////////////////////////
 
 import Vue from 'vue';
+
+/////////////////////////////////
+
+import MailoutRenderPreview from '../../../mailout/MailoutRenderPreview.vue';
+import MailoutResultsPanel from '../../../mailout/MailoutResultsPanel.vue';
+import MailoutPreflightPanel from '../../../mailout/MailoutPreflightPanel.vue';
+import MailoutTestPanel from '../../../mailout/MailoutTestPanel.vue';
+import FluroContentEditMixin from '../FluroContentEditMixin';
+
 
 /////////////////////////////////
 

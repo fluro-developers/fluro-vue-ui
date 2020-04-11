@@ -5,6 +5,10 @@
     </div>
 </template>
 <script>
+
+
+
+
 import CodeEditor from 'vue2-ace-editor';
 import js_beautify from 'js-beautify';
 
@@ -13,6 +17,10 @@ import js_beautify from 'js-beautify';
 export default {
 
     props: {
+        'autoformat':{
+            type:Boolean,
+            default:true,
+        },
         'value': {
             type: String,
             default: '',
@@ -59,7 +67,12 @@ export default {
     methods: {
         beautify() {
 
-            console.log('Beautify!!!')
+           
+
+            if(!this.autoformat) {
+                return;
+            }
+             // console.log('Beautify!!!')
             //Get the current string
             var input = this.editor.session.getValue() || '';
 

@@ -19,6 +19,9 @@
             </fluro-panel-body>
             <tabset :justified="true">
                 <tab :heading="`${segment.contacts.length} ${segment.title}`" v-for="segment in segments">
+                    <v-container pa2 class="border-bottom" v-if="segments.length <= 1">
+                        <h3 margin>{{segment.contacts.length}} {{segment.title}}</h3>
+                    </v-container>
                     <fluro-table trackingKey="_id" defaultSort="firstName" :pageSize="35" style="max-height:50vh;" :items="segment.contacts" :columns="columns" />
                 </tab>
             </tabset>
@@ -26,7 +29,9 @@
     </div>
 </template>
 <script>
-import { SearchInput, AvatarCell, FluroTable } from 'fluro-vue-ui';
+import SearchInput from '../../ui/SearchInput.vue';
+import AvatarCell from '../../table/cells/AvatarCell.vue';
+import FluroTable from '../../table/FluroTable.vue';
 
 export default {
     components: {
@@ -125,6 +130,8 @@ export default {
 
                     return set;
                 }, {
+
+                  
                     expected: {
                         title: 'Expected',
                         contacts: []

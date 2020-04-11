@@ -127,7 +127,7 @@
 </template>
 <script>
 
-import { FluroContentFormField } from 'fluro-vue-ui';
+import FluroContentFormField from '../form/FluroContentFormField.vue';
 
 export default {
     components:{

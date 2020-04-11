@@ -78,7 +78,13 @@
     </flex-column>
 </template>
 <script>
-import { FluroModalMixin, DateCell, TimeagoCell, FluroTable } from 'fluro-vue-ui';
+// import { FluroModalMixin, DateCell, TimeagoCell, FluroTable } from 'fluro-vue-ui';
+import FluroModalMixin from '../../mixins/ModalMixin';
+import FluroTable from '../table/FluroTable.vue';
+import DateCell from '../table/cells/DateCell.vue';
+import TimeagoCell from '../table/cells/TimeagoCell.vue';
+
+
 
 export default {
     props: {

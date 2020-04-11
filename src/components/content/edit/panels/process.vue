@@ -104,7 +104,7 @@
                                     <template>
                                         <!-- <task-list ng-model="list" ng-host="item" ng-definition="definition" show-link="true" ng-repeat="list in item.taskLists"></task-list> -->
                                         <!-- <template> -->
-                                        <fluro-task-list @remove="removeTaskList(index)" @input="dispatchUpdate" v-model="model.taskLists[index]" :state="model.state" :definition="definition" v-for="(list, index) in model.taskLists"></fluro-task-list>
+                                        <fluro-task-list @remove="removeTaskList(index)" @input="dispatchUpdate" :card="model" v-model="model.taskLists[index]" :state="model.state" :definition="definition" v-for="(list, index) in model.taskLists"></fluro-task-list>
                                         <!-- </template> -->
                                         <!-- <pre>{{model.taskLists}}</pre> -->
                                         <span class="horizontal-rule" />
@@ -448,6 +448,10 @@ export default {
         // },
     },
     computed: {
+        // ...mapState('fluro', {
+        //     application: state => state.application,
+        //     user: state => state.user,
+        // }),
         ...mapFields('fluro', [
             'application', //The Fluro application and all of it's permissions and data
             'user', //The authenticated user if they log in

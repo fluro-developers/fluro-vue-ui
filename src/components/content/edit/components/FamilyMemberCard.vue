@@ -9,16 +9,17 @@
                     <v-flex class="text-centered less-padding">
                         <h4>{{contactName}}</h4>
                     </v-flex>
+                     <v-flex class="less-padding status-flex">
+                        <fluro-status-select v-model="model.status" />
+                    </v-flex>
                     <v-flex class="text-centered less-padding">
-                        <p class="muted" style="margin-bottom: 0px">{{contactGender}}</p>
+                        <p class="muted" style="margin-bottom: 0px">{{contactGender}} {{contactAge}}</p>
                     </v-flex>
                     <v-flex class="less-padding">
                         <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.householdRole" v-model="model">
                         </fluro-content-form-field>
                     </v-flex>
-                    <v-flex class="less-padding status-flex">
-                        <fluro-status-select v-model="model.status" />
-                    </v-flex>
+                   
                     <v-flex class="less-padding">
                         <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.definition" v-model="model">
                         </fluro-content-form-field>
@@ -31,7 +32,13 @@
 <script>
 /////////////////////////////////
 
-import { FluroAvatar, Layout, FluroContentForm, FluroContentFormField, FluroStatusSelect } from 'fluro-vue-ui';
+// import { FluroAvatar, Layout, FluroContentForm, FluroContentFormField, FluroStatusSelect } from 'fluro-vue-ui';
+
+import FluroContentForm from '../../../form/FluroContentForm.vue';
+import FluroContentFormField from '../../../form/FluroContentFormField.vue';
+import FluroStatusSelect from '../../../form/FluroStatusSelect.vue';
+import FluroAvatar from '../../../FluroAvatar.vue';
+
 
 /////////////////////////////////
 
@@ -91,6 +98,9 @@ export default {
     computed: {
         contactName() {
             return this.model.title;
+        },
+        contactAge() {
+            return this.model.age;
         },
         contactGender() {
             if (this.model.gender) {

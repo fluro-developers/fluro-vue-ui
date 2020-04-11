@@ -12,10 +12,52 @@ module.exports = {
         path: path.resolve(__dirname, 'dist')
     },
     externals: {
+        'vue':'vue',
         'fluro':'fluro',
         'fluro-vue':'fluro-vue',
         'vuex-map-fields':'vuex-map-fields',
     },
+
+
+    module: {
+        // css: {
+        //     loaderOptions: {
+        //         sass: {
+        //             prependData: "@import '~/src/variables.scss';",
+        //         },
+        //     },
+        // },
+        rules: [
+
+            {
+                test: /\.(s*)css$/,
+                use: [
+                    'vue-style-loader',
+                    'css-loader',
+                    'sass-loader',
+                    {
+                        loader: 'sass-resources-loader',
+                        options: {
+                            resources: './styles/_variables.scss',
+                        },
+                    },
+                ],
+            }, {
+                test: /\.vue$/,
+                loader: 'vue-loader'
+            },
+            // this will apply to both plain `.js` files
+            // AND `<script>` blocks in `.vue` files
+            {
+                test: /\.js$/,
+                loader: 'babel-loader',
+            },
+
+
+        ]
+    },
+
+    /**
     module: {
         rules: [{
                 test: /\.vue$/,
@@ -43,6 +85,7 @@ module.exports = {
             }
         ]
     },
+    /**/
     plugins: [
         new VueLoaderPlugin(),
         // new VuetifyLoaderPlugin(),

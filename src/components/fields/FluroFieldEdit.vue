@@ -1,23 +1,19 @@
 <template>
     <flex-column>
         <!-- <flex-column-header> -->
-                        <!-- <pre>{{model.guid}}</pre> -->
+        <!-- <pre>{{model.guid}}</pre> -->
         <!-- </flex-column-header> -->
-
         <tabset v-model="tabIndex" v-if="model.type == 'group'">
             <tab heading="Group Settings">
                 <flex-column-body>
                     <v-container>
                         <fluro-content-form-field ref="grouptitle" :field="fields.title" v-model="model" />
-                       
                         <div v-show="showKey">
                             <fluro-content-form-field :field="fields.key" v-model="model" />
                         </div>
                         <div class="key-preview" v-if="!editingKey" @click="editingKey = true">
-                            <fluro-icon icon="pencil"/> key: {{model.key}} 
+                            <fluro-icon icon="pencil" /> key: {{model.key}}
                         </div>
-
-
                         <fluro-content-form-field :field="fields.asObject" v-model="model" />
                         <template v-if="!model.asObject">
                             <fluro-content-form-field :field="fields.sameLine" v-model="model" />
@@ -179,7 +175,7 @@
                             <fluro-content-form-field :field="fields.key" v-model="model" />
                         </div>
                         <div class="key-preview" v-if="!editingKey" @click="editingKey = true">
-                            <fluro-icon icon="pencil"/> key: {{model.key}} 
+                            <fluro-icon icon="pencil" /> key: {{model.key}}
                         </div>
                         <!-- </v-flex> -->
                         <!-- </v-layout> -->
@@ -191,8 +187,6 @@
                         <fluro-content-form-field v-if="model.type == 'reference'" :field="fields.referenceType" v-model="model.params" />
                         <fluro-content-form-field :field="fields.directive" v-model="model" />
                         <fluro-content-form-field v-if="model.directive == 'currency'" :field="fields.currency" v-model="model.params" />
-
-
                         <v-container class="grid-list-xl" pa-0 fluid v-if="model.type != 'void'">
                             <v-layout>
                                 <v-flex xs6>
@@ -202,7 +196,6 @@
                                 <v-flex xs6>
                                     <fluro-content-form-field :field="fields.maximum" @input="resetRequired(fields.maximum)" v-model="model" />
                                 </v-flex>
-                                
                                 <template v-if="model.directive == 'embedded'">
                                     <v-spacer />
                                     <v-flex xs6>
@@ -235,9 +228,6 @@
                         </v-container>
                         <fluro-content-form-field v-if="showDescription" :field="fields.description" v-model="model" />
                         <fluro-content-form-field v-if="showPlaceholder" :field="fields.placeholder" v-model="model" />
-                        
-
-
                         <template v-if="model.directive == 'code'">
                             <fluro-content-form-field :field="fields.syntax" v-model="model.params" />
                             <!-- <fluro-content-form-field :field="fields." v-model="model" /> -->
@@ -263,6 +253,7 @@
                                     <fluro-content-form-field @input="resetRequired(fields.defaultReferences)" :field="fields.defaultReferences" v-model="model" />
                                 </template>
                                 <template v-else>
+                                    <!-- <pre>{{model.defaultValues}}</pre> -->
                                     <template v-if="model.directive == 'wysiwyg'">
                                         <fluro-content-form-field @input="resetRequired(fields.wysiwygDefaultValues)" :field="fields.wysiwygDefaultValues" v-model="model" />
                                     </template>
@@ -494,6 +485,9 @@ export default {
         expressionFields: {
             type: Array,
         },
+        item: {
+            type: Object,
+        },
     },
     created() {
         // this.startListener();
@@ -587,7 +581,7 @@ export default {
                                     maximum: 1,
                                     askCount: 1,
                                     fields: [],
-                                    guid:self.$fluro.utils.guid(),
+                                    guid: self.$fluro.utils.guid(),
                                 }
 
                                 self.model.fields.push(detailsBlock);
@@ -610,7 +604,7 @@ export default {
                                     maximum: 1,
                                     askCount: 1,
                                     fields: [],
-                                    guid:self.$fluro.utils.guid(),
+                                    guid: self.$fluro.utils.guid(),
                                 }
 
                                 dataBlock = {
@@ -622,7 +616,7 @@ export default {
                                     maximum: 1,
                                     askCount: 1,
                                     fields: [],
-                                    guid:self.$fluro.utils.guid(),
+                                    guid: self.$fluro.utils.guid(),
                                 }
 
                                 //Add as a pyramid
@@ -872,7 +866,6 @@ export default {
     },
     computed: {
         fullPath() {
-            console.log('TEST', this.expressionFields)
             return this.model.key;
         },
         field() {
@@ -1021,6 +1014,7 @@ export default {
             var fields = {};
 
 
+
             var definitionTitle = self.$fluro.types.readable(self.restrictType || 'node', true);
 
             addField('defaultReferences', {
@@ -1077,6 +1071,9 @@ export default {
                 maximum: 0,
                 type: 'string',
                 directive: 'code',
+                params:{
+                    syntax:self.model.params.syntax,
+                }
             })
 
             addField('defaultValues', {
@@ -1125,8 +1122,9 @@ export default {
                     },
                     {
                         title: 'CSS',
-                        value: 'css',
+                        value: 'scss',
                     },
+
                 ]
             })
 
@@ -1457,12 +1455,16 @@ export default {
                         value: 'color',
                     })
 
-
-
                     inputOptions.push({
                         title: 'Signature',
                         value: 'signature',
                     })
+
+
+
+
+
+
                     break;
                 case 'date':
 
@@ -1510,6 +1512,35 @@ export default {
 
 
             }
+
+            //////////////////////////////////////////
+
+            if (self.item._type == 'component') {
+
+                if(self.model.type == 'string') {
+                    inputOptions.push({
+                        title: 'Website Builder Menu Select',
+                        value: 'app-menu-select',
+                    })
+
+                    inputOptions.push({
+                        title: 'Website Builder Page Select',
+                        value: 'app-page-select',
+                    })
+
+                    inputOptions.push({
+                        title: 'Website Builder Size Select',
+                        value: 'app-size-select',
+                    })
+
+                    inputOptions.push({
+                        title: 'Website Builder Theme Select',
+                        value: 'app-theme-select',
+                    })
+                }
+            }
+
+            //////////////////////////////////////////
 
             inputOptions.push({
                 title: 'Hidden Value',
@@ -1805,7 +1836,7 @@ export default {
 
 
 .key-preview {
-    margin-top:-15px;
+    margin-top: -15px;
     font-size: 0.8em;
     opacity: 0.5;
 }

@@ -26,7 +26,7 @@
                             </fluro-inline-edit>
                         </template>
                         <template v-slot:right>
-                            <fluro-realm-select v-if="typeName != 'realm'" v-model="model.realms" :type="typeName" :definition="definitionName" />
+                            <fluro-realm-select  v-tippy :content="`Select where this ${definitionTitle} should be stored`" v-if="typeName != 'realm'" v-model="model.realms" :type="typeName" :definition="definitionName" />
                             <fluro-tag-select class="mx-0 ml-2" v-if="typeName != 'tag'" v-model="model.tags" />
                             <!-- <pre>{{model.tags}}</pre> -->
                             <v-btn v-if="model._id" class="mx-0 ml-2" @click="$actions.open([model])">
@@ -79,22 +79,7 @@
                             <v-container fluid pa-1>
                                 <v-layout row align-center>
                                     <template v-if="model._id" class="settings-popup">
-                                        <v-flex shrink>
-                                            <!-- <template v-if="model._id">
-                                        <v-btn small icon flat>
-                                            <fluro-icon icon="cog" />
-                                        </v-btn>
-                                    </template> -->
-                                            <v-menu :close-on-content-click="false" @click.native.stop offset-y>
-                                                <template v-slot:activator="{ on }">
-                                                    <v-btn v-tippy content="History and Change log" class="my-0" small icon flat v-on="on">
-                                                        <fluro-icon library="fas" icon="history" />
-                                                    </v-btn>
-                                                </template>
-                                                <v-container pa-2 style="background:#fff;" grid-list-xl>
-                                                </v-container>
-                                            </v-menu>
-                                        </v-flex>
+                                        
                                         <v-flex shrink>
                                             <v-menu :close-on-content-click="false" @click.native.stop offset-y>
                                                 <template v-slot:activator="{ on }">
@@ -109,12 +94,12 @@
                                                 <v-container pa-2 class="white-background">
                                                     <template v-if="model._id">
                                                         <v-input class="no-flex" label="Fluro ID">
-                                                            <v-btn small block v-tippy content="Click to copy to clipboard">{{model._id}}</v-btn>
+                                                            <v-btn small @click="copyToClipboard(model._id)" block v-tippy content="Click to copy to clipboard">{{model._id}}</v-btn>
                                                         </v-input>
                                                     </template>
                                                     <template v-if="model._external" class="white-background">
                                                         <v-input class="no-flex" label="External ID">
-                                                            <v-btn small block v-tippy content="Click to copy to clipboard">{{model._external}}</v-btn>
+                                                            <v-btn small @click="copyToClipboard(model._external)" block v-tippy content="Click to copy to clipboard">{{model._external}}</v-btn>
                                                         </v-input>
                                                     </template>
                                                     <template>
@@ -123,6 +108,7 @@
                                                             <fluro-icon right icon="brackets-curly" />
                                                         </v-btn>
                                                     </template>
+                                                    <input type="hidden" ref="clipboard">
                                                 </v-container>
                                             </v-menu>
                                         </v-flex>
@@ -131,7 +117,7 @@
                                         <v-flex shrink>
                                             <v-menu :close-on-content-click="false" @click.native.stop offset-y>
                                                 <template v-slot:activator="{ on }">
-                                                    <v-btn class="my-0" small icon flat v-on="on">
+                                                    <v-btn v-tippy content="Publish/Archive Dates" class="my-0" small icon flat v-on="on">
                                                         <fluro-icon icon="clock" />
                                                     </v-btn>
                                                 </template>
@@ -159,7 +145,27 @@
                                     <v-flex shrink>
                                         <template v-if="model._id"><em class="muted sm">Last updated {{model.updated | timeago}}</em></template>
                                         <fluro-status-select v-model="model.status" :type="model._type" />
+
+
                                     </v-flex>
+                                    <v-flex shrink v-if="model._id">
+                                            <!-- <template v-if="model._id">
+                                        <v-btn small icon flat>
+                                            <fluro-icon icon="cog" />
+                                        </v-btn>
+                                    </template> -->
+                                            <v-menu lazy :close-on-content-click="false" @click.native.stop offset-y>
+                                                <template v-slot:activator="{ on }">
+                                                    <v-btn v-tippy content="History and Change log" class="my-0" small icon flat v-on="on">
+                                                        <fluro-icon library="fas" icon="history" />
+                                                    </v-btn>
+                                                </template>
+                                                <div style="min-width:320px;">
+                                                <changelog :item="model"/>
+                                            </div>
+                                                
+                                            </v-menu>
+                                        </v-flex>
                                 </v-layout>
                             </v-container>
                         </flex-column-footer>
@@ -178,7 +184,7 @@ import FluroRealmSelect from '../../form/realmselect/FluroRealmSelect.vue';
 import FluroStatusSelect from '../../form/FluroStatusSelect.vue';
 import FluroInlineEdit from '../../form/FluroInlineEdit.vue';
 import FluroContentFormField from '../../form/FluroContentFormField.vue';
-
+import Changelog from './components/Changelog.vue';
 // console.log('PRIBACY', FluroPrivacySelect)
 // import Contact from './panels/Contact.vue';
 // import Event from './panels/Event.vue';
@@ -243,35 +249,58 @@ export default {
 
     },
     mounted() {
-        console.log('MOUNTED');
+        // console.log('MOUNTED');
         var self = this;
         self.addListeners();
     },
     activated() {
-        console.log('ACTIVATED')
+        // console.log('ACTIVATED')
         var self = this;
         self.addListeners();
     },
     deactivated() {
-        console.log('DEACTIVATED')
+        // console.log('DEACTIVATED')
         var self = this;
         self.removeListeners();
     },
     beforeDestroy() {
-        console.log('DESTROYED')
+        // console.log('DESTROYED')
         var self = this;
         self.removeListeners();
     },
     methods: {
+        copyToClipboard(string) {
+
+            var self = this;
+
+            let inputField = this.$refs.clipboard;
+            inputField.value = string;
+            inputField.setAttribute('type', 'text') // 不是 hidden 才能複製
+            inputField.select()
+
+            try {
+                var successful = document.execCommand('copy');
+                var msg = successful ? 'successful' : 'unsuccessful';
+                // alert('Testing code was copied ' + msg);
+                self.$fluro.notify('Copied to clipboard');
+            } catch (err) {
+                // alert('Oops, unable to copy');
+                // self.$fluro.error({message:'Unable to copy to clipboard'});
+            }
+
+            /* unselect the range */
+            inputField.setAttribute('type', 'hidden')
+            window.getSelection().removeAllRanges()
+        },
         addListeners() {
-            console.log('ADD LISTENERS')
+            // console.log('ADD LISTENERS')
             var self = this;
             if (document) {
                 document.addEventListener("keydown", self.keypress, false);
             }
         },
         removeListeners() {
-            console.log('REMOVE LISTENERS')
+            // console.log('REMOVE LISTENERS')
             var self = this;
             if (document) {
                 document.removeEventListener("keydown", self.keypress);
@@ -860,6 +889,7 @@ export default {
         FluroStatusSelect,
         FluroInlineEdit,
         FluroContentFormField,
+        Changelog,
     },
     asyncComputed: {
         config: {
@@ -890,7 +920,7 @@ export default {
 
                     promise.then(function(res) {
 
-                        console.log('RESO', res);
+                        // console.log('RESO', res);
                         resolve(res.data);
                         // console.log('CONFIG LOADED', res.data);
                         self.loading = false;

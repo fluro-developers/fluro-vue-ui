@@ -8,13 +8,15 @@
                 <flex-column-body>
                     <!-- TESTING STUFF -->
                     <!-- <pre>{{item}}</pre> -->
-                    <template v-if="item.mainImage">
-                        <fluro-image :item="item.mainImage" :imageWidth="1200" :imageHeight="675" :from="item._id" />
-                    </template>
+                    
                     <!-- <img preload-image aspect="56.25" ng-src="{{$root.asset.imageUrl(item.mainImage._id, 768, null, {from:item._id})}}" /> -->
                     <!-- <fluro-image/> -->
                     <v-container>
                         <constrain sm>
+                            <template v-if="item.mainImage">
+                        <fluro-image :item="item.mainImage" :imageWidth="1200" :imageHeight="675" :from="item._id" />
+                    </template>
+                    
                             <v-container fluid pa-2 class="border-bottom">
                                 <h2><strong>{{item.title}}</strong></h2>
                                 <h4 class="muted text-uppercase">{{item.firstLine}}</h4>
@@ -200,7 +202,7 @@
 /////////////////////////////////
 
 import Vue from 'vue';
-import FluroContentView from '../../view/FluroContentView';
+import FluroContentView from '../FluroContentView.vue';
 import LocationViewMapComponent from '../../event/LocationViewMapComponent.vue';
 import FluroContentViewMixin from '../FluroContentViewMixin';
 import FluroContentRender from '../../../FluroContentRender.vue';

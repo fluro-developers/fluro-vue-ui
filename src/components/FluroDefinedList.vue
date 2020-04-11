@@ -38,7 +38,7 @@ export default {
     computed:{
         grouped() {
             var self = this;
-            var mapped = self.$fluro.types.mapDefinitionItems(self.items, self.type);
+            var mapped = self.$fluro.types.mapDefinitionItems(_.orderBy(self.items, 'title'), self.type);
 
             
             return mapped;

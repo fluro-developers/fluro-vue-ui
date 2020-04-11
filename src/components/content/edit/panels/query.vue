@@ -15,7 +15,9 @@
                                     <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
                                     <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.firstLine" v-model="model"></fluro-content-form-field>
                                 </div>
-                                <fluro-panel v-if="!model.query">
+
+
+                                <fluro-panel v-if="!model.query || model.filterType">
                                     <fluro-panel-title>
                                         <template v-if="model.disableDataTypeSelect || model._id">
                                             <h4>{{model.filterType | definitionTitle(true)}} </h4>
@@ -28,6 +30,12 @@
                                         <filter-condition-group :rows="rows" :useSample="true" :mini="true" v-model="model.filterConfiguration" :type="model.filterType" :debounce="filterDebounce" />
                                     </fluro-panel-body>
                                 </fluro-panel>
+</constrain>
+</v-container>
+<v-container class="border-top">
+                            <constrain>
+
+                                <h3 margin>Columns</h3>
                                 <column-customiser v-model="model.columns" :sampleData="sample" :config="config" :loadingSample="loadingSample"/>
 <!--                                 <template v-if="!sample.length">
                                    
