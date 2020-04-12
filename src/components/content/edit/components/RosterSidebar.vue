@@ -1,23 +1,18 @@
 <template>
-    <flex-column class="multi-planner-sidebar" v-if="model">
+    <flex-column class="multi-planner-sidebar">
         <flex-column-header>
             <v-container class="border-bottom">
                 <v-layout align-center>
                     <v-flex>
-                        <h4><strong>{{slot.title}}</strong></h4>
-                    </v-flex>
-                    <v-flex shrink>
-                        <v-btn class="close" icon block small @click="deselect()">
-                            <fluro-icon icon="times" />
-                        </v-btn>
+                        <h4><strong v-if="slot">{{slot.title}}</strong></h4>
                     </v-flex>
                 </v-layout>
-                <h6>{{event.title}} <span class="muted">{{event.definition || event._type | definitionTitle}}</span></h6>
-                <div>{{event | readableEventDate}} <span class="sm muted">(Starts {{event.startDate | timeago}})</span></div>
+                <h6 v-if="event">{{event.title}} <span class="muted">{{event.definition || event._type | definitionTitle}}</span></h6>
+                <div v-if="event">{{event | readableEventDate}} <span class="sm muted">(Starts {{event.startDate | timeago}})</span></div>
             </v-container>
         </flex-column-header>
         <flex-column>
-            <tabset v-model="activeTabIndex">
+            <tabset v-model="activeTabIndex" v-if="slot">
                 <tab :heading="`${rosteredCount} Rostered`">
                     <flex-column-body>
                         <v-container>
@@ -39,7 +34,7 @@
                                     <template v-else>
                                         <label>Search Results</label>
                                         <list-group>
-                                            <suggestion-list-item v-for="(contact, index) in searchResults" @click.native="selectSuggestion(searchResults[index])" v-model="searchResults[index]" :assignmentSlot="slot" :event="event" />
+                                            <roster-slot-suggestion-list-item v-for="(contact, index) in searchResults" @click.native="selectSuggestion(searchResults[index])" v-model="searchResults[index]" :assignmentSlot="slot" :event="event" />
                                         </list-group>
                                     </template>
                                 </v-container>
@@ -52,7 +47,7 @@
                                     <!-- <list-group> -->
                                     <div>
                                         <template v-for="(assignment, index) in assignments">
-                                            <assignment-list-item @unassign="removeAssignment" @send="sendAssignment" v-model="assignments[index]" />
+                                            <roster-slot-assignment-list-item @unassign="removeAssignment" @send="sendAssignment" v-model="assignments[index]" />
                                         </template>
                                     </div>
                                     <!-- </list-group> -->
@@ -81,7 +76,7 @@
                                     </div>
                                     <div v-else>
                                         <list-group v-if="suggestedContacts.length">
-                                            <suggestion-list-item v-for="(contact, index) in suggestedContacts" @click.native="selectSuggestion(suggestedContacts[index])" v-model="suggestedContacts[index]" :assignmentSlot="slot" :event="event" />
+                                            <roster-slot-suggestion-list-item v-for="(contact, index) in suggestedContacts" @click.native="selectSuggestion(suggestedContacts[index])" v-model="suggestedContacts[index]" :assignmentSlot="slot" :event="event" />
                                             <!-- <template v-for="row in suggestions" v-if="row.length">
                                             <suggestion-list-item @click.native="selectSuggestion(row[0])" v-model="row[0]" :assignmentSlot="slot" :event="event" />
                                         </template> -->
@@ -101,19 +96,19 @@
                             <v-container pa-0 pb-2 v-if="conflicts.length">
                                 <label>Already Rostered</label>
                                 <list-group>
-                                    <suggestion-list-item v-for="(contact, index) in conflicts" @click.native="selectSuggestion(conflicts[index])" v-model="conflicts[index]" :assignmentSlot="slot" :event="event" />
+                                    <roster-slot-suggestion-list-item v-for="(contact, index) in conflicts" @click.native="selectSuggestion(conflicts[index])" v-model="conflicts[index]" :assignmentSlot="slot" :event="event" />
                                 </list-group>
                             </v-container>
                             <v-container pa-0 pb-2 v-if="unavailable.length">
                                 <label>Unavailable at this time</label>
                                 <list-group>
-                                    <suggestion-list-item v-for="(contact, index) in unavailable" @click.native="selectSuggestion(unavailable[index])" v-model="unavailable[index]" :assignmentSlot="slot" :event="event" />
+                                    <roster-slot-suggestion-list-item v-for="(contact, index) in unavailable" @click.native="selectSuggestion(unavailable[index])" v-model="unavailable[index]" :assignmentSlot="slot" :event="event" />
                                 </list-group>
                             </v-container>
                             <v-container pa-0 pb-2 v-if="unqualified.length">
                                 <label>Unqualified</label>
                                 <list-group>
-                                    <suggestion-list-item v-for="(contact, index) in unqualified" @click.native="selectSuggestion(unqualified[index])" v-model="unqualified[index]" :assignmentSlot="slot" :event="event" />
+                                    <roster-slot-suggestion-list-item v-for="(contact, index) in unqualified" @click.native="selectSuggestion(unqualified[index])" v-model="unqualified[index]" :assignmentSlot="slot" :event="event" />
                                 </list-group>
                             </v-container>
                         </v-container>
@@ -129,8 +124,8 @@
     </flex-column>
 </template>
 <script>
-import SuggestionListItem from './SuggestionListItem.vue';
-import AssignmentListItem from './AssignmentListItem.vue';
+import RosterSlotSuggestionListItem from './RosterSlotSuggestionListItem.vue';
+import RosterSlotAssignmentListItem from './RosterSlotAssignmentListItem.vue';
 
 export default {
     props: {
@@ -139,8 +134,8 @@ export default {
         }
     },
     components: {
-        SuggestionListItem,
-        AssignmentListItem
+        RosterSlotSuggestionListItem,
+        RosterSlotAssignmentListItem
     },
     data() {
         return {
@@ -691,14 +686,11 @@ export default {
                 }, [])
                 .value();
         },
-        column() {
-            return this.model.column;
-        },
         event() {
-            return this.column.event;
+            return _.get(this.roster,'event');
         },
         slot() {
-            return this.model.slot
+            return _.get(this.model,'slot')
         },
         rostered() {
             return _.chain(this.assignments)
@@ -718,7 +710,7 @@ export default {
             return this.slot ? this.slot.assignments || [] : []
         },
         roster() {
-            return this.model.roster
+            return _.get(this.model,'roster')
         }
     },
 }

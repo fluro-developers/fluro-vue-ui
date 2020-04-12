@@ -1,61 +1,11 @@
-<template>
-    <flex-column>
-        <template v-if="loading">
-            <fluro-page-preloader contain />
-        </template>
-        <tabset v-else :justified="true" :vertical="true">
-            <tab heading="Roster">
-                <flex-column-body style="background: #fafafa;">
-
-                        	<roster-main v-model="model" :definition="definition"></roster-main>
-                            <!-- <default-roster-manager :config="config" v-model="model.defaultRosters" :rosterOptions="rosterDefinitions.definitions" /> -->
-                </flex-column-body>
-            </tab>
-            <tab heading="X Scheduled Reminders">
-                <flex-column-body style="background: #fafafa;">
-                    <v-container>
-                        <constrain md>
-                            <reminder-event-manager :config="config" v-model="model.reminders" :allAssignmentOptions="model.slots" />
-                        </constrain>
-                    </v-container>
-                </flex-column-body>
-            </tab>
-            <tab :heading="`${definition.title} Information`" v-if="definition && definition.fields && definition.fields.length">
-                <flex-column-body style="background: #fafafa;">
-                    <v-container>
-                        <constrain sm>
-                            <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
-                        </constrain>
-                    </v-container>
-                </flex-column-body>
-            </tab>
-        </tabset>
-    </flex-column>
-</template>
-<script>
-/////////////////////////////////
-import RosterMain from '../components/RosterMain.vue';
-import ReminderEventManager from '../components/ReminderEventManager.vue';
-import FluroContentEditMixin from '../FluroContentEditMixin';
-
-/////////////////////////////////
-
 import Vue from 'vue';
 
-/////////////////////////////////
-
-export default {
-
-    mixins: [FluroContentEditMixin],
-    components: { ReminderEventManager, RosterMain },
+export default new Vue({
     methods: {
-        modelUpdated() {
-            this.update(this.model);
-        },
         injectAssignment(roster, assignment) {
             var self = this;
 
-            var rosterID = self.model._id;
+            var rosterID = self.$fluro.utils.getStringID(roster);
 
             //////////////////////////////////////////////////////////////
 
@@ -87,7 +37,7 @@ export default {
                 //Create the assignment
                 return self.createAssignment(roster, matchingSlot.assignments, assignment, true)
                     .then(function(savedAssignment) {
-
+                        
                         _.assign(assignment, savedAssignment);
                         self.$set(assignment, 'sending', false);
                         self.$set(savedAssignment, 'sending', false);
@@ -109,7 +59,8 @@ export default {
 
             var self = this;
 
-            rosterID = self.model._id;
+            //Ensure it's an ID
+            rosterID = self.$fluro.utils.getStringID(rosterID);
 
             return new Promise(function(resolve, reject) {
 
@@ -177,69 +128,5 @@ export default {
 
             })
         },
-    },
-    created() {
-        var self = this;
-    },
-    asyncComputed: {
-    	// definition: {
-    	// 	default: {},
-    	// 	get() {
-    	// 		var self = this;
-    	// 		return new Promise(function(resolve, reject) {
-     //                self.$fluro.content.get(self.model.definition, {})
-     //                    .then(function(res) {
-     //                        resolve(res);
-     //                    })
-     //                    .catch(function(err) {
-     //                        reject(err);
-     //                    })
-     //            })
-    	// 	},
-    	// }
-    },
-    computed: {
-        showOutline() {
-            return false;
-        },
-        fieldsOutput() {
-
-            var self = this;
-            var array = [];
-
-            ///////////////////////////////////
-
-            addField('event', {
-                title: 'Event',
-                minimum: 1,
-                maximum: 1,
-                type: 'reference',
-                params: {
-                    restrictType: 'event',
-                },
-            })
-
-            function addField(key, details) {
-                details.key = key;
-                array.push(details)
-            }
-
-            return array;
-
-        },
-    },
-    data() {
-        return {
-
-        }
-    },
-}
-</script>
-<style scoped lang="scss">
-.hint {
-    font-size: 10px;
-    opacity: 0.5;
-    color: inherit;
-    display: block;
-}
-</style>
+    }
+});
