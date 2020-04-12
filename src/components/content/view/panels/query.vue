@@ -27,10 +27,12 @@
 <script>
 /////////////////////////////////
 
-import Vue from 'vue';
 
 import FluroContentViewMixin from '../FluroContentViewMixin';
-import { FluroTable, RealmDotCell, TitleCell, DefinitionCell } from 'fluro-vue-ui';
+import FluroTable from '../../../table/FluroTable.vue';
+import RealmDotCell from '../../../table/cells/RealmDotCell.vue';
+import TitleCell from '../../../table/cells/TitleCell.vue';
+import DefinitionCell from '../../../table/cells/DefinitionCell.vue';
 import FluroContentRender from '../../../FluroContentRender.vue';
 
 /////////////////////////////////

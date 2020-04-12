@@ -49,7 +49,7 @@
     </v-input>
 </template>
 <script>
-import axios from 'axios';
+
 
 export default {
     props: {
@@ -225,7 +225,7 @@ export default {
 
             ///////////////////////////////////////////////////
 
-            const CancelToken = axios.CancelToken;
+            const CancelToken = self.$fluro.api.CancelToken;
             const source = CancelToken.source();
             config.cancelToken = source.token;
             file.cancelToken = source;

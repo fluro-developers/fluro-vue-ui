@@ -22,14 +22,15 @@
     </div>
 </template>
 <script>
-import { FluroContentForm, Layout } from 'fluro-vue-ui';
+// import { FluroContentForm, Layout } from 'fluro-vue-ui';
 import FluroContentEditMixin from '../FluroContentEditMixin';
 import DefaultRosterSlot from './DefaultRosterSlot.vue';
+import FluroContentForm from '../../../form/FluroContentForm.vue';
 
-import moment from 'moment';
+
 
 export default {
-    mixins: [FluroContentEditMixin, Layout],
+    mixins: [FluroContentEditMixin],
     props: {
         value: {
             type: Object,

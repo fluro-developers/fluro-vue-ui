@@ -177,6 +177,7 @@ export default {
             // self.$fluro.content.type(definitionName)
             //     .then(function(form) {
 
+                console.log('Do a task', self.card.item, self.card);
 
                     var promise = self.$fluro.modal({
                             // component: FluroOptionsDialog,
@@ -187,7 +188,7 @@ export default {
                                 // definition:{
                                 //     definitionName,
                                 // },
-                                item: self.card,
+                                item: self.card.item || self.card,
                                 // title:'something',
                                 // description:'desc',
                                 // options:[]

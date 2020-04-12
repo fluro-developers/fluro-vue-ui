@@ -28,7 +28,8 @@
     </list-group-item>
 </template>
 <script>
-import { FluroConfirmButton } from 'fluro-vue-ui';
+// import { FluroConfirmButton } from 'fluro-vue-ui';
+import FluroConfirmButton from '../../../ui/FluroConfirmButton.vue';
 
 export default {
     components: {

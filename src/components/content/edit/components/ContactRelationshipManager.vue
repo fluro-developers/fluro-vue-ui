@@ -3,38 +3,52 @@
         <fluro-page-preloader v-if="loading" contain />
         <template v-else>
             <v-layout row wrap>
-            <template v-for="row in backlinks">
-                <v-flex xs12 sm6>
-                <v-input class="no-flex">
-                    <v-label>{{row.relationship | capitalize}} <span class="anniversary">{{anniversaryDate(row)}}</span></v-label>
-                    <div class="faces">
-                        <div @click="$fluro.global.edit(contact, true)" class="face" v-for="contact in row.contacts">
-                            <fluro-avatar lg :id="contact" />
-                            <div>{{contact.title}}</div>
-                        </div>
-                    </div>
-                    <!-- <pre>{{model.relationships.length}}</pre> -->
-                    <!-- <fluro-avatar-stack :contacts="row.contacts"/> -->
-                </v-input>
-            </v-flex>
-            </template>
-            <template v-for="row in model.relationships">
-                <v-flex xs12 sm6>
-                <v-input class="no-flex">
-                    <v-label>{{contextName}} {{row.relationship | capitalize}} <span class="anniversary">{{anniversaryDate(row)}}</span></v-label>
-                    <div class="faces">
-                        <div @click="$fluro.global.edit(contact, true)" class="face" v-for="contact in row.contacts">
-                            <fluro-avatar lg :id="contact" />
-                            <div>{{contact.title}}</div>
-                        </div>
-                    </div>
-                    <!-- <pre>{{model.relationships.length}}</pre> -->
-                    <!-- <fluro-avatar-stack :contacts="row.contacts"/> -->
-                </v-input>
-            </v-flex>
-            </template>
-        </v-layout>
-
+                <template v-for="row in backlinks">
+                    <v-flex >
+                        <v-input class="no-flex">
+                            <v-label>{{row.relationship | capitalize}} <span class="anniversary">{{anniversaryDate(row)}}</span></v-label>
+                            <div class="faces">
+                                <div @click="$fluro.global.edit(contact, true)" class="face" :class="contact.status" v-for="contact in row.contacts">
+                                    <fluro-avatar lg :id="contact" />
+                                    <div class="details">
+                                        <div><strong>{{contact.title}}</strong></div>
+                                        <div>{{contact.householdRole}}</div>
+                                        <div>{{contact.gender}}</div>
+                                        <div>{{contact.age}}</div>
+                                        <div>{{contact.definition | definitionTitle}}</div>
+                                        <fluro-status-label :value="contact.status" />
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <pre>{{model.relationships.length}}</pre> -->
+                            <!-- <fluro-avatar-stack :contacts="row.contacts"/> -->
+                        </v-input>
+                    </v-flex>
+                </template>
+                <template v-for="row in model.relationships">
+                    <v-flex >
+                        <v-input class="no-flex">
+                            <v-label>{{contextName}} {{row.relationship | capitalize}} <span class="anniversary">{{anniversaryDate(row)}}</span></v-label>
+                            <div class="faces">
+                                <div @click="$fluro.global.edit(contact, true)" class="face" :class="contact.status" v-for="contact in row.contacts">
+                                    <fluro-avatar lg :id="contact" />
+                                    <div class="details">
+                                       
+                                        <div><strong>{{contact.title}}</strong></div>
+                                         <div>{{contact.householdRole}}</div>
+                                        <div>{{contact.gender}}</div>
+                                        <div>{{contact.age}}</div>
+                                        <div>{{contact.definition | definitionTitle}}</div>
+                                        <fluro-status-label :value="contact.status" />
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <pre>{{model.relationships.length}}</pre> -->
+                            <!-- <fluro-avatar-stack :contacts="row.contacts"/> -->
+                        </v-input>
+                    </v-flex>
+                </template>
+            </v-layout>
             <fluro-panel>
                 <fluro-panel-title>
                     <h4>Add a relationship</h4>
@@ -48,7 +62,7 @@
                                     <v-text-field label="Custom Relationshp" v-model="proposed.relationship" placeholder="Boss, Coworker, Friend" />
                                 </template>
                                 <template v-if="proposed.relationship == 'spouse'">
-                                <fluro-content-form-field :field="anniversaryField" v-model="proposed"/>
+                                    <fluro-content-form-field :field="anniversaryField" v-model="proposed" />
                                 </template>
                             </v-flex>
                             <v-flex xs12 sm5>
@@ -56,8 +70,6 @@
                                 <!-- <v-label>Select Contacts</v-label> -->
                                 <fluro-content-select-button block type="contact" v-model="proposed.contacts" />
                                 <!-- </v-input> -->
-                                
-
                             </v-flex>
                             <v-flex xs12 sm4>
                                 <v-btn block color="primary" :disabled="disabled" @click="add()">
@@ -126,10 +138,10 @@ export default {
     },
     data() {
         return {
-            anniversaryField:{
-                key:'anniversary',
-                type:'date',
-                title:'Anniversary Date',
+            anniversaryField: {
+                key: 'anniversary',
+                type: 'date',
+                title: 'Anniversary Date',
             },
             actionIndexes: {},
             model: this.value,
@@ -139,7 +151,7 @@ export default {
                 checkinAuthorised: true,
                 relationshipType: null,
                 relationship: null,
-                anniversary:null,
+                anniversary: null,
                 contacts: [],
             }
         }
@@ -151,7 +163,7 @@ export default {
     },
     methods: {
         anniversaryDate(row) {
-            if(row.anniversary) {
+            if (row.anniversary) {
                 return `${this.$fluro.date.formatDate(row.anniversary, 'D MMM')} (${this.$fluro.date.timeago(row.anniversary)})`;
             }
         },
@@ -177,7 +189,7 @@ export default {
                 checkinAuthorised: true,
                 relationshipType: null,
                 relationship: null,
-                anniversary:null,
+                anniversary: null,
                 contacts: [],
             }
         },
@@ -268,7 +280,7 @@ export default {
             var self = this;
             self.loading = true;
 
-            if(!self.contactID) {
+            if (!self.contactID) {
                 self.loading = false;
                 return;
             }
@@ -402,7 +414,7 @@ export default {
             ]
         },
         contactID() {
-            if(!this.model._id) {
+            if (!this.model._id) {
                 return;
             }
 
@@ -417,27 +429,46 @@ export default {
 }
 </script>
 <style lang="scss">
-
-
 .anniversary {
     font-weight: normal;
     opacity: 0.5;
 }
+
 .faces {
     display: block;
 
     .face {
+
+        
+
+        width: 23%;
         padding: 10px;
         background: #fff;
         border: 1px solid rgba(#000, 0.1);
         border-radius: 4px;
-        margin: 0 5px 5px 0;
+        margin: 0 1% 1% 0;
         display: inline-block;
         text-align: center;
+        font-size: 14px;
+        cursor: pointer;
 
-        font-size: 10px;
-        font-weight: 600;
+        &:hover {
+            background: #fafafa;
+        }
+        // font-weight: 600;
+        
+        &.archived {
+            opacity: 0.5;
+            border: 1px solid rgba(#000, 0.1);
+            background: none;
+        }
 
+        .details {
+            padding:5px 0;
+            text-transform: capitalize;;
+            font-size: 0.8em;
+            opacity: 0.8;
+        }
     }
 }
 </style>

@@ -43,6 +43,48 @@
         </editor-floating-menu> -->
         <editor-menu-bubble v-if="bubbleEnabled" :editor="editor" @hide="hideBubble" :keep-in-bounds="keepInBounds" v-slot="{ commands, isActive, getMarkAttrs, menu }">
             <div class="menububble" :class="{ 'active': menu.isActive }" :style="`left: ${menu.left}px; bottom: ${menu.bottom}px;`">
+                <v-menu attach v-if="isEnabled('formats')" transition="slide-y-transition" offset-y>
+                    <template v-slot:activator="{ on }">
+                        <v-btn small icon :disabled="showSource" v-on="on">
+                            <!-- H1 -->
+                            <fluro-icon icon="paragraph" />
+                        </v-btn>
+                    </template>
+                    <div style="overflow: auto; width:300px; max-height:300px;">
+                    <v-list>
+                        <v-list-tile :class="{ 'active': isActive.heading({ level: 1 }) }" @click.stop.prevent="commands.heading({ level: 1 })">
+                            <v-list-tile-content><span style="margin:0 !important" class="h1">Heading 1</span></v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile :class="{ 'active': isActive.heading({ level: 2 }) }" @click.stop.prevent="commands.heading({ level: 2 })">
+                            <v-list-tile-content><span style="margin:0 !important" class="h2">Heading 2</span></v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile :class="{ 'active': isActive.heading({ level: 3 }) }" @click.stop.prevent="commands.heading({ level: 3 })">
+                            <v-list-tile-content><span style="margin:0 !important" class="h3">Heading 3</span></v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile :class="{ 'active': isActive.heading({ level: 4 }) }" @click.stop.prevent="commands.heading({ level: 4 })">
+                            <v-list-tile-content><span style="margin:0 !important" class="h4">Heading 4</span></v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile :class="{ 'active': isActive.heading({ level: 5 }) }" @click.stop.prevent="commands.heading({ level: 5 })">
+                            <v-list-tile-content><span style="margin:0 !important" class="h5">Heading 5</span></v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile :class="{ 'active': isActive.typography({ level:option.level}) }" v-for="option in typographyOptions" @click.stop.prevent="commands.typography({ level:option.level })">
+                            <v-list-tile-content><span style="margin:0 !important" :class="option.level">{{option.title}}</span></v-list-tile-content>
+                        </v-list-tile>
+                        <!-- <template v-if="getFluroNodes().length"> -->
+                        <template v-if="false">
+                            <v-list-tile @click.stop.prevent="commands.fluroNode(option)" v-for="option in getFluroNodes()">
+                                <v-list-tile-content><span style="margin:0 !important" :class="option.className">{{option.title}}</span></v-list-tile-content>
+                            </v-list-tile>
+                        </template>
+                        <!-- <template v-if="getFluroMarks().length"> -->
+                        <template v-if="false">
+                            <v-list-tile @click.stop.prevent="commands.fluroMark(option)" v-for="option in getFluroMarks()">
+                                <v-list-tile-content><span style="margin:0 !important" :class="option.class">{{option.title}}</span></v-list-tile-content>
+                            </v-list-tile>
+                        </template>
+                    </v-list>
+                </div>
+                </v-menu>
                 <v-btn icon small flat :class="{ 'active': isActive.bold() }" @click.stop.prevent="commands.bold">
                     <fluro-icon icon="bold" />
                 </v-btn>
@@ -52,6 +94,21 @@
                 <v-btn icon small flat :class="{ 'active': isActive.underline() }" @click.stop.prevent="commands.underline">
                     <fluro-icon icon="underline" />
                 </v-btn>
+
+                <template v-if="isEnabled('alignment')">
+                    <v-btn icon small flat :class="{ 'active': isActive.alignment({ textAlign: 'left' }) }" @click.stop.prevent="commands.alignment({ textAlign: 'left' })">
+                        <fluro-icon icon="align-left" />
+                    </v-btn>
+                    <v-btn icon small flat :class="{ 'active': isActive.alignment({ textAlign: 'center' }) }" @click.stop.prevent="commands.alignment({ textAlign: 'center' })">
+                        <fluro-icon icon="align-center" />
+                    </v-btn>
+                    <v-btn icon small flat :class="{ 'active': isActive.alignment({ textAlign: 'right' }) }" @click.stop.prevent="commands.alignment({ textAlign: 'right' })">
+                        <fluro-icon icon="align-right" />
+                    </v-btn>
+                </template>
+
+
+
                 <form class="menububble__form" v-if="linkMenuIsActive" @submit.prevent="setLinkUrl(commands.link, linkUrl)">
                     <input class="link-input" type="text" v-model="linkUrl" placeholder="https://" ref="linkInput" @keydown.esc="hideLinkMenu" />
                     <v-btn small icon flat @click.stop.prevent="setLinkUrl(commands.link, null)">
@@ -72,22 +129,11 @@
                     <fluro-icon v-if="showSource" icon="edit" />
                     <fluro-icon v-else icon="code" />
                 </v-btn>
-                <v-btn v-if="isEnabled('bold')" icon :disabled="showSource" small flat :class="{ 'active': isActive.bold() }" @click.stop.prevent="commands.bold">
-                    <fluro-icon icon="bold" />
-                </v-btn>
-                <v-btn v-if="isEnabled('italic')" icon :disabled="showSource" small flat :class="{ 'active': isActive.italic() }" @click.stop.prevent="commands.italic">
-                    <fluro-icon icon="italic" />
-                </v-btn>
-                <v-btn v-if="isEnabled('underline')" icon :disabled="showSource" small flat :class="{ 'active': isActive.underline() }" @click.stop.prevent="commands.underline">
-                    <fluro-icon icon="underline" />
-                </v-btn>
-                <!-- <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.strike() }" @click.stop.prevent="commands.strike">
-                    <v-icon>format_strikethrough</v-icon>
-                </v-btn> -->
                 <v-menu v-if="isEnabled('formats')" :fixed="true" transition="slide-y-transition" offset-y>
                     <template v-slot:activator="{ on }">
                         <v-btn small icon :disabled="showSource" v-on="on">
-                            H1
+                            <!-- H1 -->
+                            <fluro-icon icon="paragraph" />
                         </v-btn>
                     </template>
                     <v-list>
@@ -106,6 +152,9 @@
                         <v-list-tile :class="{ 'active': isActive.heading({ level: 5 }) }" @click.stop.prevent="commands.heading({ level: 5 })">
                             <v-list-tile-content><span style="margin:0 !important" class="h5">Heading 5</span></v-list-tile-content>
                         </v-list-tile>
+                        <v-list-tile :class="{ 'active': isActive.typography({ level:option.level}) }" v-for="option in typographyOptions" @click.stop.prevent="commands.typography({ level:option.level })">
+                            <v-list-tile-content><span style="margin:0 !important" :class="option.level">{{option.title}}</span></v-list-tile-content>
+                        </v-list-tile>
                         <!-- <template v-if="getFluroNodes().length"> -->
                         <template v-if="false">
                             <v-list-tile @click.stop.prevent="commands.fluroNode(option)" v-for="option in getFluroNodes()">
@@ -120,15 +169,26 @@
                         </template>
                     </v-list>
                 </v-menu>
+                <v-btn v-if="isEnabled('bold')" icon :disabled="showSource" small flat :class="{ 'active': isActive.bold() }" @click.stop.prevent="commands.bold">
+                    <fluro-icon icon="bold" />
+                </v-btn>
+                <v-btn v-if="isEnabled('italic')" icon :disabled="showSource" small flat :class="{ 'active': isActive.italic() }" @click.stop.prevent="commands.italic">
+                    <fluro-icon icon="italic" />
+                </v-btn>
+                <v-btn v-if="isEnabled('underline')" icon :disabled="showSource" small flat :class="{ 'active': isActive.underline() }" @click.stop.prevent="commands.underline">
+                    <fluro-icon icon="underline" />
+                </v-btn>
+                <!-- <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.strike() }" @click.stop.prevent="commands.strike">
+                    <v-icon>format_strikethrough</v-icon>
+                </v-btn> -->
                 <v-menu v-if="tokens.length" :fixed="true" transition="slide-y-transition" offset-y>
-
                     <template v-slot:activator="{ on }">
                         <v-btn small :disabled="showSource" v-on="on">
                             Tokens
                         </v-btn>
                     </template>
                     <v-list>
-                        <v-list-tile @click="commands.token(token.key)" v-for="token in tokens">
+                        <v-list-tile @click="commands.token(token.key)" :key="token.key" v-for="token in tokens">
                             <v-list-tile-content><span style="margin:0 !important">{{token.title}}</span></v-list-tile-content>
                         </v-list-tile>
                     </v-list>
@@ -145,6 +205,9 @@
                         </v-list-tile>
                     </v-list>
                 </v-menu>
+                <!-- <pre>{{typographyOptions}}</pre> -->
+                <!-- <button class="menubar__button" :class="{ 'active': isActive.typography({ level: 'text-muted' }) }" @click="commands.typography({ level: 'text-muted' })">Muted</button> -->
+                <!-- <button class="menubar__button" :class="{ 'active': isActive.typography({ level: 'lead' }) }" @click="commands.typography({ level: 'lead' })">Lead</button> -->
                 <!-- 
                 <v-btn icon :disabled="showSource" small flat :class="{ 'active': isActive.heading({ level: 1 }) }" @click.stop.prevent="commands.heading({ level: 1 })">
                     H1
@@ -165,15 +228,6 @@
                         <v-icon>code</v-icon>
                     </v-btn> -->
                 <!--  -->
-                <!-- <v-btn class="menubar__button" :class="{ 'active': isActive.alignment({ textAlign: 'left' }) }" @click.stop.prevent="commands.alignment({ textAlign: 'left' })">
-                    <v-icon>format_align_left</v-icon>
-                </v-btn>
-                <v-btn class="menubar__button" :class="{ 'active': isActive.alignment({ textAlign: 'center' }) }" @click.stop.prevent="commands.alignment({ textAlign: 'center' })">
-                    <v-icon>format_align_center</v-icon>
-                </v-btn>
-                <v-btn class="menubar__button" :class="{ 'active': isActive.alignment({ textAlign: 'center' }) }" @click.stop.prevent="commands.alignment({ textAlign: 'right' })">
-                    <v-icon>format_align_right</v-icon>
-                </v-btn> -->
                 <!--  -->
                 <v-btn icon v-if="isEnabled('list')" :disabled="showSource" small flat :class="{ 'active': isActive.bullet_list() }" @click.stop.prevent="commands.bullet_list">
                     <fluro-icon icon="list-ul" />
@@ -181,6 +235,17 @@
                 <v-btn icon v-if="isEnabled('list')" :disabled="showSource" small flat :class="{ 'active': isActive.ordered_list() }" @click.stop.prevent="commands.ordered_list">
                     <fluro-icon icon="list-ol" />
                 </v-btn>
+                <template v-if="isEnabled('alignment')">
+                    <v-btn icon small flat :disabled="showSource" :class="{ 'active': isActive.alignment({ textAlign: 'left' }) }" @click.stop.prevent="commands.alignment({ textAlign: 'left' })">
+                        <fluro-icon icon="align-left" />
+                    </v-btn>
+                    <v-btn icon small flat :disabled="showSource" :class="{ 'active': isActive.alignment({ textAlign: 'center' }) }" @click.stop.prevent="commands.alignment({ textAlign: 'center' })">
+                        <fluro-icon icon="align-center" />
+                    </v-btn>
+                    <v-btn icon small flat :disabled="showSource" :class="{ 'active': isActive.alignment({ textAlign: 'right' }) }" @click.stop.prevent="commands.alignment({ textAlign: 'right' })">
+                        <fluro-icon icon="align-right" />
+                    </v-btn>
+                </template>
                 <v-btn icon v-if="isEnabled('blockquote')" :disabled="showSource" small flat :class="{ 'active': isActive.blockquote() }" @click.stop.prevent="commands.blockquote">
                     <fluro-icon icon="quote-right" />
                 </v-btn>
@@ -281,9 +346,7 @@
                 </div>
             </div>
         </template>
-        
     </div>
-
 </template>
 <script>
 // Import the editor
@@ -296,14 +359,20 @@ import FluroNode from './tiptap/fluroNode';
 import FluroMark from './tiptap/fluroMark';
 import Image from './tiptap/image';
 import Token from './tiptap/token';
+import Alignment from './tiptap/alignment';
+import Typography from './tiptap/typography';
+
 // import AutoLinkMark from './tiptap/autolink';
 
 
 // import hljs from 'highlight.js/lib/highlight';
 // import html from 'highlight.js/lib/languages/html';
+
+/**
 import scss from 'highlight.js/lib/languages/scss';
 import javascript from 'highlight.js/lib/languages/javascript';
 import json from 'highlight.js/lib/languages/json';
+/**/
 // require('brace/theme/tomorrow_night_eighties')
 
 
@@ -321,7 +390,6 @@ import {
     TodoItem,
     TodoList,
     Bold,
-    Alignment,
     Code,
     Italic,
     Link,
@@ -353,12 +421,16 @@ export default {
             observer: null,
             linkUrl: null,
             linkMenuIsActive: false,
+            TypographyPlugin: new Typography(),
             FluroNodePlugin: new FluroNode(),
             FluroMarkPlugin: new FluroMark(),
         }
     },
     computed: {
-       
+
+        typographyOptions() {
+            return this.TypographyPlugin.options.levels;
+        },
         tokens() {
             return this.options.tokens || [];
         },
@@ -665,7 +737,7 @@ export default {
         ///////////////////////////////////
         ///////////////////////////////////
         ///////////////////////////////////
-        
+
         var enabledExtensions = [
 
             new Bold(),
@@ -673,7 +745,8 @@ export default {
             new Strike(),
             new Underline(),
             new Link(),
-            // new Alignment(),
+
+            new Alignment(),
             new HorizontalRule(),
             new Blockquote(),
             new CodeBlock(),
@@ -692,6 +765,7 @@ export default {
             new Token(),
             this.FluroNodePlugin,
             this.FluroMarkPlugin,
+            this.TypographyPlugin,
             MentionPlugin,
             new Placeholder({
                 emptyClass: 'placeholder-text',
@@ -721,43 +795,45 @@ export default {
         ///////////////////////////////////
 
 
+        if (!(typeof window === 'undefined')) {
 
-        if (window.hljs) {
+            if (window.hljs) {
 
 
 
-            // var json = function() { return window.hljs.getLanguage('json');} 
-            // var javascript = function() { return window.hljs.getLanguage('javascript');} 
-            // var scss = function() { return window.hljs.getLanguage('scss');} 
+                // var json = function() { return window.hljs.getLanguage('json');} 
+                // var javascript = function() { return window.hljs.getLanguage('javascript');} 
+                // var scss = function() { return window.hljs.getLanguage('scss');} 
 
-            // // console.log('Got him', window.hljs, window.hljs.listLanguages());
-            // // var json = window.hljs.registerLanguage('json');
-            // var json1 = window.hljs.getLanguage('json');
-            // // var scss = window.hljs.registerLanguage('scss');
-            // // var javascript = window.hljs.registerLanguage('javascript');
+                // // console.log('Got him', window.hljs, window.hljs.listLanguages());
+                // // var json = window.hljs.registerLanguage('json');
+                // var json1 = window.hljs.getLanguage('json');
+                // // var scss = window.hljs.registerLanguage('scss');
+                // // var javascript = window.hljs.registerLanguage('javascript');
 
-            // console.log('JSON 1', json1);
-            // console.log('JSON 2', json2);
+                // console.log('JSON 1', json1);
+                // console.log('JSON 2', json2);
 
-            // var highlightLanguages = {
-            //     scss,
-            //     javascript,
-            //     json,
+                // var highlightLanguages = {
+                //     scss,
+                //     javascript,
+                //     json,
 
-            // }
+                // }
 
-            // var highlightLanguages = {
-            //     javascript,
-            //     json,
-            //     scss,
-            //     html,
-            // }
+                // var highlightLanguages = {
+                //     javascript,
+                //     json,
+                //     scss,
+                //     html,
+                // }
 
-            // console.log('GOT Languages', window, highlightLanguages)
-            //Add Code highlighting to the extension list
-            enabledExtensions.push(new CodeBlockHighlight({
-                languages: [json, javascript, scss],
-            }))
+                // console.log('GOT Languages', window, highlightLanguages)
+                //Add Code highlighting to the extension list
+                enabledExtensions.push(new CodeBlockHighlight({
+                    languages: [json, javascript, scss],
+                }))
+            }
         }
 
         ///////////////////////////////////
@@ -807,8 +883,8 @@ export default {
                 this.editor.setContent(value)
             }
 
-                this.$emit('input', value);
-            
+            this.$emit('input', value);
+
 
 
         }
@@ -826,6 +902,46 @@ $color-white: #fff;
 
 .fluro-editor {
     margin-bottom: 15px;
+
+
+    .text-muted {
+        color: inherit;
+        opacity: 0.5;
+    }
+
+    .font-xs {
+        font-size: 0.7em;
+    }
+
+    .font-sm {
+        font-size: 0.8em;
+    }
+
+    .font-lg {
+        font-size: 1.3em;
+    }
+
+    .font-xl {
+        font-size: 1.6em;
+    }
+
+    .font-xxl {
+        font-size: 2em;
+    }
+
+
+
+
+
+
+    table {
+        border-collapse: collapse;
+
+        th,
+        td {
+            border: 1px dotted rgba(#000, 0.1) !important;
+        }
+    }
 
     .ace_editor {
         border-radius: 5px;
@@ -953,6 +1069,7 @@ $color-white: #fff;
     flex-direction: column;
     min-height: 200px;
     overflow: hidden;
+    resize: vertical;
 
     .selectedCell {
         background: rgba($primary, 0.1);

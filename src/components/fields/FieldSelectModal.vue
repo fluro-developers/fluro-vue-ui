@@ -5,7 +5,7 @@
 </template>
 <script>
 
-import { FluroModalMixin } from 'fluro-vue-ui';
+import FluroModalMixin from '../../mixins/ModalMixin';
 
 export default {
 	components:{

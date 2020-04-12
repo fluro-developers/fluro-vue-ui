@@ -90,7 +90,6 @@
 import FluroEditor from '../../../form/FluroEditor.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
 import GradeManager from '../components/GradeManager.vue';
-import { Layout } from 'fluro-vue-ui'
 
 /////////////////////////////////
 
@@ -105,7 +104,7 @@ export default {
     },
     created() {
     },
-    mixins: [FluroContentEditMixin, Layout],
+    mixins: [FluroContentEditMixin],
     computed: {
         fieldsOutput() {
 

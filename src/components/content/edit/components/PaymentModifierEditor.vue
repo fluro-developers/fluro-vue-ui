@@ -12,13 +12,14 @@
     </div>
 </template>
 <script>
-import draggable from 'vuedraggable'
+// import draggable from 'vuedraggable'
 import PaymentModifierItem from './PaymentModifierItem.vue';
 import PaymentModifierModal from './PaymentModifierModal.vue';
 
 export default {
     components: {
-        draggable,
+        // draggable,
+        draggable: () => import('vuedraggable'),
         PaymentModifierItem,
     },
     props: {

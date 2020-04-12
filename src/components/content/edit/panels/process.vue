@@ -15,15 +15,16 @@
                 </template>
             </template>
             <tab heading="Card Details">
-                <slot>
-                    <flex-row>
-                        <v-flex xs12 sm8 class="main">
-                            <flex-column-body style="background: #fafafa;">
-                                <v-container>
-                                    <constrain sm>
-                                        <template v-if="reference">
-                                            <fluro-panel>
-                                               <!--  <fluro-panel-title class="border-bottom">
+                <flex-row>
+                    <v-flex xs12 sm8 class="main">
+                        <flex-column-body style="background: #fafafa;">
+                            <!-- <pre>{{definition.fields}}</pre> -->
+                            <v-container>
+                                <!-- <pre>{{model}}</pre> -->
+                                <constrain sm>
+                                    <template v-if="reference">
+                                        <fluro-panel>
+                                            <!--  <fluro-panel-title class="border-bottom">
                                                     <v-layout align-center>
                                                         <v-flex>
                                                             <h5>{{title}}</h5>
@@ -39,101 +40,102 @@
                                                         </v-flex>
                                                     </v-layout>
                                                 </fluro-panel-title> -->
-                                                <fluro-panel-body style="padding:0;">
-                                                    <!-- <template v-if="reference._type == 'contact'"> -->
-                                                    <!-- </template> -->
-                                                    <!-- <template v-else> -->
+                                            <fluro-panel-body style="padding:0;">
+                                                <!-- <template v-if="reference._type == 'contact'"> -->
+                                                <!-- </template> -->
+                                                <!-- <template v-else> -->
+                                                <!-- <pre>{{reference}}</pre> -->
+                                                <flex-column-body style="max-height:50vh">
                                                     <!-- <pre>{{reference}}</pre> -->
-                                                    <flex-column-body style="max-height:50vh">
-                                                        <!-- <pre>{{reference}}</pre> -->
-                                                        <fluro-content-view :id="reference" :embedded="true" :definition="reference.definition" :type="reference._type" />
-                                                    </flex-column-body>
-                                                    <!-- </template> -->
-                                                </fluro-panel-body>
-                                            </fluro-panel>
-                                        </template>
-                                        <template v-else>
-                                            <h3 margin>{{title}}</h3>
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="referenceItemField" v-model="model"></fluro-content-form-field>
-                                        </template>
-                                        <template v-if="definition && definition.fields.length">
-                                            <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields"></fluro-content-form>
-                                        </template>
-                                        <template v-if="model.forms && model.forms.length">
-                                            <!-- <h3 margin>Forms</h3> -->
-                                            <v-input class="no-flex" v-if="receivedForms && receivedForms.length">
-                                                <v-label>Received {{receivedForms.length}} Form Responses</v-label>
-                                                <p class="help-block">These forms have not yet been submitted</p>
-                                                <list-group>
-                                                    <list-group-item v-for="form in receivedForms">
-                                                        <strong>
-                                                            <fluro-icon type="form" /> {{form.form.title}}
-                                                        </strong>
-                                                        <div class="sm">
-                                                            <span class="status-label active">
-                                                                <fluro-icon icon="check" /> Received </span> {{form.received | formatDate('h:mma ddd MMM YYYY')}} <span class="muted">{{form.received | timeago}}</span>
-                                                        </div>
-                                                    </list-group-item>
-                                                </list-group>
-                                            </v-input>
-                                            <v-input class="no-flex" v-if="awaitingForms && awaitingForms.length">
-                                                <v-label>Awaiting {{awaitingForms.length}} Form Responses</v-label>
-                                                <p class="help-block">These forms have not yet been submitted</p>
-                                                <list-group>
-                                                    <list-group-item v-for="form in awaitingForms">
-                                                        <strong>
-                                                            <fluro-icon type="form" /> {{form.form.title}}
-                                                        </strong>
-                                                        <div class="sm">
-                                                            Sent {{form.sent | timeago}} - <span class="status-label draft">
-                                                                <fluro-icon icon="clock" /> Awaiting form response</span>
-                                                        </div>
-                                                        <template v-slot:right>
-                                                            <v-btn small color="primary" @click="resend(form)" :loading="resending[form.form._id]">
-                                                                Resend
-                                                                <fluro-icon right icon="paper-plane" />
-                                                            </v-btn>
-                                                        </template>
-                                                    </list-group-item>
-                                                </list-group>
-                                            </v-input>
-                                        </template>
-                                        <template>
-                                            <!-- <task-list ng-model="list" ng-host="item" ng-definition="definition" show-link="true" ng-repeat="list in item.taskLists"></task-list> -->
-                                            <!-- <template> -->
-                                            <fluro-task-list @remove="removeTaskList(index)" @input="dispatchUpdate" v-model="model.taskLists[index]" :state="model.state" :definition="definition" v-for="(list, index) in model.taskLists"></fluro-task-list>
-                                            <!-- </template> -->
-                                            <!-- <pre>{{model.taskLists}}</pre> -->
-                                            <span class="horizontal-rule" />
-                                            <v-btn class="ml-0" @click="addTaskList()">
-                                                Add Task List
-                                                <fluro-icon right icon="plus" />
-                                            </v-btn>
-                                        </template>
-                                    </constrain>
-                                </v-container>
-                            </flex-column-body>
-                        </v-flex>
-                        <v-flex xs12 sm4 class="sidebar">
-                            <flex-column-body>
-                                <v-container>
-                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="fieldHash.dueDate" v-model="model"></fluro-content-form-field>
-                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="stateField" v-model="model"></fluro-content-form-field>
-                                    <v-input class="no-flex">
-                                        <v-label>Key Contacts</v-label>
-                                        <p class="help-block">This card does not reference a contact, Here you can specify who should be sent Automated SMS and Mailouts as this card progresses</p>
-                                        <fluro-content-form-field :form-fields="formFields" :showLabel="false" :outline="showOutline" :options="options" :field="fieldHash.contacts" v-model="model"></fluro-content-form-field>
-                                    </v-input>
-                                    <v-input class="no-flex">
-                                        <v-label>Assigned To</v-label>
-                                        <p class="help-block">Assign who is in charge of this card</p>
-                                        <fluro-content-form-field :form-fields="formFields" :showLabel="false" :outline="showOutline" :options="options" :field="fieldHash.assignedTo" v-model="model"></fluro-content-form-field>
-                                    </v-input>
-                                </v-container>
-                            </flex-column-body>
-                        </v-flex>
-                    </flex-row>
-                </slot>
+                                                    <fluro-content-view :id="reference" :embedded="true" :definition="reference.definition" :type="reference._type" />
+                                                </flex-column-body>
+                                                <!-- </template> -->
+                                            </fluro-panel-body>
+                                        </fluro-panel>
+                                    </template>
+                                    <template v-else-if="definition && definition.fields && definition.fields.length">
+                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="fieldHash.title" v-model="model"/>
+                                        <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields"></fluro-content-form>
+                                    </template>
+                                    <template v-else>
+                                        <h3 margin>{{title}}</h3>
+                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="referenceItemField" v-model="model"></fluro-content-form-field>
+                                    </template>
+                                    
+                                    <template v-if="model.forms && model.forms.length">
+                                        <!-- <h3 margin>Forms</h3> -->
+                                        <v-input class="no-flex" v-if="receivedForms && receivedForms.length">
+                                            <v-label>Received {{receivedForms.length}} Form Responses</v-label>
+                                            <p class="help-block">These forms have not yet been submitted</p>
+                                            <list-group>
+                                                <list-group-item v-for="form in receivedForms">
+                                                    <strong>
+                                                        <fluro-icon type="form" /> {{form.form.title}}
+                                                    </strong>
+                                                    <div class="sm">
+                                                        <span class="status-label active">
+                                                            <fluro-icon icon="check" /> Received </span> {{form.received | formatDate('h:mma ddd MMM YYYY')}} <span class="muted">{{form.received | timeago}}</span>
+                                                    </div>
+                                                </list-group-item>
+                                            </list-group>
+                                        </v-input>
+                                        <v-input class="no-flex" v-if="awaitingForms && awaitingForms.length">
+                                            <v-label>Awaiting {{awaitingForms.length}} Form Responses</v-label>
+                                            <p class="help-block">These forms have not yet been submitted</p>
+                                            <list-group>
+                                                <list-group-item v-for="form in awaitingForms">
+                                                    <strong>
+                                                        <fluro-icon type="form" /> {{form.form.title}}
+                                                    </strong>
+                                                    <div class="sm">
+                                                        Sent {{form.sent | timeago}} - <span class="status-label draft">
+                                                            <fluro-icon icon="clock" /> Awaiting form response</span>
+                                                    </div>
+                                                    <template v-slot:right>
+                                                        <v-btn small color="primary" @click="resend(form)" :loading="resending[form.form._id]">
+                                                            Resend
+                                                            <fluro-icon right icon="paper-plane" />
+                                                        </v-btn>
+                                                    </template>
+                                                </list-group-item>
+                                            </list-group>
+                                        </v-input>
+                                    </template>
+                                    <template>
+                                        <!-- <task-list ng-model="list" ng-host="item" ng-definition="definition" show-link="true" ng-repeat="list in item.taskLists"></task-list> -->
+                                        <!-- <template> -->
+                                        <fluro-task-list @remove="removeTaskList(index)" @input="dispatchUpdate" :card="model" v-model="model.taskLists[index]" :state="model.state" :definition="definition" v-for="(list, index) in model.taskLists"></fluro-task-list>
+                                        <!-- </template> -->
+                                        <!-- <pre>{{model.taskLists}}</pre> -->
+                                        <span class="horizontal-rule" />
+                                        <v-btn class="ml-0" @click="addTaskList()">
+                                            Add Task List
+                                            <fluro-icon right icon="plus" />
+                                        </v-btn>
+                                    </template>
+                                </constrain>
+                            </v-container>
+                        </flex-column-body>
+                    </v-flex>
+                    <v-flex xs12 sm4 class="sidebar">
+                        <flex-column-body>
+                            <v-container>
+                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="fieldHash.dueDate" v-model="model"></fluro-content-form-field>
+                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="fieldHash.state" v-model="model"></fluro-content-form-field>
+                                <v-input class="no-flex">
+                                    <v-label>Key Contacts</v-label>
+                                    <p class="help-block">This card does not reference a contact, Here you can specify who should be sent Automated SMS and Mailouts as this card progresses</p>
+                                    <fluro-content-form-field :form-fields="formFields" :showLabel="false" :outline="showOutline" :options="options" :field="fieldHash.contacts" v-model="model"></fluro-content-form-field>
+                                </v-input>
+                                <v-input class="no-flex">
+                                    <v-label>Assigned To</v-label>
+                                    <p class="help-block">Assign who is in charge of this card</p>
+                                    <fluro-content-form-field :form-fields="formFields" :showLabel="false" :outline="showOutline" :options="options" :field="fieldHash.assignedTo" v-model="model"></fluro-content-form-field>
+                                </v-input>
+                            </v-container>
+                        </flex-column-body>
+                    </v-flex>
+                </flex-row>
             </tab>
             <!-- <tab heading="Forms" v-if="model.forms && model.forms.length">
                 <slot>
@@ -254,88 +256,38 @@ import { mapFields } from 'vuex-map-fields';
 export default {
 
     props: {
-        'fields': {
-            type: Array,
-            default () {
+        // 'fields': {
+        //     type: Array,
+        //     default () {
 
-                var array = [];
+        //         var array = [];
 
-                ///////////////////////////////////
-
-                addField('title', {
-                    title: 'Title',
-                    minimum: 1,
-                    maximum: 1,
-                    type: 'string',
-                    placeholder: '',
-                })
-
-                ///////////////////////////////////
-
-                addField('contacts', {
-                    title: 'Key Contacts',
-                    minimum: 0,
-                    maximum: 0,
-                    type: 'reference',
-                    params: {
-                        restrictType: 'contact',
-                    }
-                })
+                
 
 
 
+        //         ///////////////////////////////////
+
+        //         function addField(key, details) {
+        //             details.key = key;
+        //             array.push(details)
+        //             // // Vue.set(self.fields, key, details);
+
+        //             // if (details.enabled === false) {
+
+        //             // } else {
+        //             //     details.enabled = true;
+        //             // }
 
 
-                ///////////////////////////////////
+        //             // var defaultValue = self.getDefaultValue(key, details);
+        //             // Vue.set(self.model, key, defaultValue);
+        //         }
 
-                addField('dueDate', {
-                    title: 'Due Date',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'date',
-                    directive: 'datetime-select',
-                    params: {
-
-                    }
-                })
-
-
-                ///////////////////////////////////
-
-                addField('assignedTo', {
-                    title: 'Assigned To',
-                    minimum: 0,
-                    maximum: 0,
-                    type: 'reference',
-                    params: {
-                        restrictType: 'contact',
-                    }
-                })
-
-
-
-                ///////////////////////////////////
-
-                function addField(key, details) {
-                    details.key = key;
-                    array.push(details)
-                    // // Vue.set(self.fields, key, details);
-
-                    // if (details.enabled === false) {
-
-                    // } else {
-                    //     details.enabled = true;
-                    // }
-
-
-                    // var defaultValue = self.getDefaultValue(key, details);
-                    // Vue.set(self.model, key, defaultValue);
-                }
-
-                //Update fields to use the default fields we set above
-                return array;
-            }
-        }
+        //         //Update fields to use the default fields we set above
+        //         return array;
+        //     }
+        // }
     },
 
     created() {
@@ -496,11 +448,99 @@ export default {
         // },
     },
     computed: {
+        // ...mapState('fluro', {
+        //     application: state => state.application,
+        //     user: state => state.user,
+        // }),
         ...mapFields('fluro', [
             'application', //The Fluro application and all of it's permissions and data
             'user', //The authenticated user if they log in
         ]),
 
+        fieldsOutput() {
+
+            var self = this;
+            var array = [];
+
+            ///////////////////////////////////
+
+                addField('title', {
+                    title: 'Title',
+                    minimum: 1,
+                    maximum: 1,
+                    type: 'string',
+                    placeholder: '',
+                })
+
+                ///////////////////////////////////
+
+                addField('contacts', {
+                    title: 'Key Contacts',
+                    minimum: 0,
+                    maximum: 0,
+                    type: 'reference',
+                    params: {
+                        restrictType: 'contact',
+                    }
+                })
+
+
+
+
+
+                ///////////////////////////////////
+
+                addField('dueDate', {
+                    title: 'Due Date',
+                    minimum: 0,
+                    maximum: 1,
+                    type: 'date',
+                    directive: 'datetime-select',
+                    params: {
+
+                    }
+                })
+
+                addField('state', {
+                    title: 'Current State',
+                    minimum: 0,
+                    maximum: 1,
+                    type: 'string',
+                    directive: 'select',
+                    options: _.map(self.states, function(state) {
+                        return {
+                            name: state.title,
+                            value: state.key,
+                        }
+                    })
+                })
+
+
+
+
+                ///////////////////////////////////
+
+                addField('assignedTo', {
+                    title: 'Assigned To',
+                    minimum: 0,
+                    maximum: 0,
+                    type: 'reference',
+                    params: {
+                        restrictType: 'contact',
+                    }
+                })
+
+            ///////////////////////////////////
+
+            function addField(key, details) {
+                details.key = key;
+                array.push(details)
+            }
+
+            // console.log('DO THE OUTPUT!!!');
+            return array;
+
+        },
         referenceItemField() {
 
             var self = this;
@@ -536,36 +576,16 @@ export default {
         reference() {
             return this.model.item;
         },
-        stateField() {
 
-            var self = this;
-            return {
-                title: 'Current State',
-                minimum: 0,
-                maximum: 1,
-                key: 'state',
-                type: 'string',
-                directive: 'select',
-                options: _.map(self.states, function(state) {
-                    // console.log('STATE', state);
-                    return {
-                        name: state.title,
-                        value: state.key,
-                    }
-                })
-            }
-
-
-        },
         title() {
             if (this.model) {
                 if (this.model.title && this.model.title.length) {
                     return this.model.title;
                 }
 
-                if(this.model.item && this.model.item.title) {
+                if (this.model.item && this.model.item.title) {
                     return this.model.item.title
-                } 
+                }
             }
 
             return 'New Card';

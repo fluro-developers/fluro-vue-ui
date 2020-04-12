@@ -13,6 +13,9 @@
                                 <v-flex sm8 xs12>
                                     <path-selector v-model="model[index].key" :options="columnKeyOptions" :loading="loadingSample" @pathupdated="pathUpdated(index, ...arguments)" />
                                 </v-flex>
+                                <!-- <v-flex sm8 xs12>
+                                    <v-select/>
+                                </v-flex> -->
                             </v-layout>
                         </v-flex>
                         <v-flex sm2 xs12 pa-1 class="full-width">
@@ -58,7 +61,6 @@
 import FluroConfirmButton from "../../../ui/FluroConfirmButton.vue";
 import FluroContentEditMixin from "../FluroContentEditMixin";
 import PathSelector from "./PathSelector.vue";
-import moment from 'moment';
 export default {
     mixins: [FluroContentEditMixin],
     props: {
@@ -108,6 +110,9 @@ export default {
             this.model.splice(index, 1);
         },
         extract(model) {
+
+            var self = this;
+
             var item = this.flatten(model);
             return _.chain(item)
                 .map(function(value, key) {
@@ -134,7 +139,7 @@ export default {
                     }
 
                     if (_.isString(matchObject)) {
-                        var momentDate = moment(matchObject, moment.ISO_8601, true);
+                        var momentDate = self.$fluro.date.moment(matchObject, self.$fluro.date.moment.ISO_8601, true);
                         var isValid = momentDate.isValid();
                         if (isValid) {
                             matchObject = momentDate.toDate();

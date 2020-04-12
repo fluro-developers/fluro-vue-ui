@@ -15,12 +15,12 @@
             </slot>
         </v-container>
         <template v-else>
-            <div ref="scrollableArea" class="fluro-table-scroll" :class="{loading:showLoading}">
+            <div ref="scrollableArea" class="fluro-table-scroll" :class="{clickable:clickable, loading:showLoading}">
                 <span ref="top"></span>
                 <table class="fluro-table-main no-select">
                     <thead>
                         <tr>
-                            <th class="shrink checkbox-cell" v-if="selectionEnabled">
+                            <th class="first shrink checkbox-cell" v-if="selectionEnabled">
                                 <v-menu attach @click.native.stop offset-y>
                                     <template v-slot:activator="{ on }">
                                         <div v-on="on">
@@ -76,7 +76,7 @@
                                 <!-- <fluro-icon library="far" icon="ellipsis-v" /> -->
                                 <!-- </div> -->
                             </th>
-                            <th class="shrink">
+                            <th class="last shrink">
                                 <v-menu :close-on-content-click="false" @click.native.stop offset-y>
                                     <template v-slot:activator="{ on }">
                                         <div v-on="on">
@@ -167,7 +167,7 @@
                             <template v-for="group in grouped">
                                 <tr class="breaker">
                                     <!-- <th></th> -->
-                                    <th is="table-row-checkbox" @click.native="toggleSet(group.items)" :checked="allInGroupSelected(group.items)" />
+                                    <th class="first" is="table-row-checkbox" @click.native="toggleSet(group.items)" :checked="allInGroupSelected(group.items)" />
                                     <!-- <td></td> -->
                                     <!-- <th is="table-row-checkbox" :checked="selectionController.allSelected(group)"/> -->
                                     <td :colspan="1 + renderColumns.length">{{group.title || 'No value'}} <span class="sm muted">({{group.items.length}})</span></td>
@@ -175,19 +175,18 @@
                                 <tr :class="classes(item)" :key="item.guid" v-for="(item, key) in group.items">
                                     <template v-if="item._populating">
                                         <!-- <th>TEST {{selection.isSelected(item)}}</th> -->
-                                        <th is="table-row-checkbox" v-if="selectionEnabled" />
+                                        <th class="first" is="table-row-checkbox" v-if="selectionEnabled" />
                                         <td @click.native="clicked(item, column, key)" :colspan="renderColumns.length">-</td>
-                                        <th class="shrink" v-if="actionsEnabled">
+                                        <th class="last shrink" v-if="actionsEnabled">
                                         </th>
                                     </template>
                                     <template v-else>
-                                        <th is="table-row-checkbox" v-if="selectionEnabled" :checked="selectionController.isSelected(item)" @click.native.stop.prevent="checkboxClick(item, $event, key)" :value="item" />
+                                        <th class="first" is="table-row-checkbox" v-if="selectionEnabled" :checked="selectionController.isSelected(item)" @click.native.stop.prevent="checkboxClick(item, $event, key)" :value="item" />
                                         <!-- <td  v-for="column in renderColumns"> -->
-                                            <!-- <pre>{{column.key}} {{item.emails}}</pre> -->
+                                        <!-- <pre>{{column.key}} {{item.emails}}</pre> -->
                                         <!-- </td> -->
                                         <table-cell @click.native="clicked(item, column, key)" :row="item" v-for="column in renderColumns" :class="{'sorting':sort.sortKey == column.key}" :column="column"></table-cell>
-                                        
-                                        <th class="shrink" v-if="actionsEnabled">
+                                        <th class="last shrink" v-if="actionsEnabled">
                                             <div class="action-buttons">
                                                 <!-- <pre>{{item._relevance}}</pre> -->
                                                 <!-- <v-btn class="ma-0" v-if="$vuetify.breakpoint.mdAndUp" small icon>
@@ -209,15 +208,15 @@
                             <tr :class="classes(item)" :key="item.guid" v-for="(item, key) in page">
                                 <template v-if="item._populating">
                                     <!-- <th>TEST {{selection.isSelected(item)}}</th> -->
-                                    <th is="table-row-checkbox" v-if="selectionEnabled" />
+                                    <th class="first" is="table-row-checkbox" v-if="selectionEnabled" />
                                     <td @click.native="clicked(item, column, key)" :colspan="renderColumns.length">-</td>
-                                    <th class="shrink" v-if="actionsEnabled">
+                                    <th class="last shrink" v-if="actionsEnabled">
                                     </th>
                                 </template>
                                 <template v-else>
-                                    <th is="table-row-checkbox" v-if="selectionEnabled" :checked="selectionController.isSelected(item)" @click.native.stop.prevent="checkboxClick(item, $event, key)" :value="item" />
+                                    <th class="first" is="table-row-checkbox" v-if="selectionEnabled" :checked="selectionController.isSelected(item)" @click.native.stop.prevent="checkboxClick(item, $event, key)" :value="item" />
                                     <table-cell @click.native="clicked(item, column, key)" :row="item" v-for="column in renderColumns" :class="{'sorting':sort.sortKey == column.key}" :column="column"></table-cell>
-                                    <th class="shrink" v-if="actionsEnabled">
+                                    <th class="last shrink" v-if="actionsEnabled">
                                         <div class="action-buttons">
                                             <!-- <pre>{{item._relevance}}</pre> -->
                                             <!-- <v-btn class="ma-0" v-if="$vuetify.breakpoint.mdAndUp" small icon>
@@ -376,12 +375,10 @@
 import TableHeaderCheckbox from './TableHeaderCheckbox.vue';
 import TableRowCheckbox from './TableRowCheckbox.vue';
 import TableCell from './TableCell.vue';
-
+import DynamicListMixin from '../../mixins/DynamicListMixin.js'
 
 /////////////////////////////////
 
-import axios from 'axios';
-const CancelToken = axios.CancelToken;
 
 
 import { FilterService } from 'fluro';
@@ -394,28 +391,28 @@ export default {
         //     type:Boolean,
         //     default:true,
         // },
-        changeKey: {
-            type: [String, Number],
-        },
+        // changeKey: {
+        //     type: [String, Number],
+        // },
         fixedColumns: {
             type: Boolean,
             default: false,
         },
-        allDefinitions: {
-            type: Boolean,
-            default: false,
-        },
-        searchInheritable: {
-            type: Boolean,
-            default: false,
-        },
+        // allDefinitions: {
+        //     type: Boolean,
+        //     default: false,
+        // },
+        // searchInheritable: {
+        //     type: Boolean,
+        //     default: false,
+        // },
         grouping: {
             type: Function,
         },
 
-        includeArchivedByDefault: {
-            type: Boolean,
-        },
+        // includeArchivedByDefault: {
+        //     type: Boolean,
+        // },
         enableSelection: {
             type: Boolean,
             default: true,
@@ -448,6 +445,12 @@ export default {
                 return this.$selection;
             }
         },
+        clickable:{
+            type:Boolean,
+            default() {
+                return true;
+            }
+        },
         clicked: {
             type: Function,
             default () {
@@ -475,64 +478,65 @@ export default {
                 return [];
             }
         },
-        filterConfig: {
-            type: Object,
-            default () {
-                return {
-                    operator: 'and',
-                    filters: [],
-                }
-            }
-        },
+        // filterConfig: {
+        //     type: Object,
+        //     default () {
+        //         return {
+        //             operator: 'and',
+        //             filters: [],
+        //         }
+        //     }
+        // },
         initPage: {
             type: [Number, String],
             default: 1,
         },
-        initSort: {
-            type: Object,
-            default () {
-                var defaultSort = {
-                    key: this.defaultSort,
-                    direction: this.defaultSortDirection,
-                    type: this.defaultSortType,
-                }
-                return defaultSort;
-            },
-        },
+        // initSort: {
+        //     type: Object,
+        //     default () {
+        //         var defaultSort = {
+        //             key: this.defaultSort,
+        //             direction: this.defaultSortDirection,
+        //             type: this.defaultSortType,
+        //         }
+        //         return defaultSort;
+        //     },
+        // },
         pageSize: {
             type: Number,
             default: 50,
         },
-        dataType: {
-            type: String,
-        },
-        search: {
-            type: String,
-        },
-        startDate: {
-            type: Date,
-        },
-        endDate: {
-            type: Date,
-        }
+        // dataType: {
+        //     type: String,
+        // },
+        // search: {
+        //     type: String,
+        // },
+        // startDate: {
+        //     type: Date,
+        // },
+        // endDate: {
+        //     type: Date,
+        // }
     },
     data() {
         return {
-            groupingColumn: null,
+            // groupingColumn: null,
             cacheKey: null,
             columnState: {},
             structureColumns: _.compact(this.columns),
             extraColumns: [],
-            all: [],
-            rows: [],
+            // all: [],
+            // rows: [],
             page: [],
-            debouncedSearch: this.search,
+            // debouncedSearch: this.search,
             perPage: this.pageSize,
-            loading: true,
-            loadingItems: true,
+            loading: false,
+            // loadingItems: true,
+
             currentPage: parseInt(this.initPage),
             previousSelectionIndex: -1,
-            sort: JSON.parse(JSON.stringify(this.initSort)),
+            // sort: JSON.parse(JSON.stringify(this.initSort)),
         }
     },
 
@@ -540,18 +544,18 @@ export default {
         availableGroupingKeys() {
 
             var currentFilterColumns = _.chain(this.activeFilterRows)
-            .map(function(row) {
-                if(!row) {
-                    return;
-                }
+                .map(function(row) {
+                    if (!row) {
+                        return;
+                    }
 
-                return {
-                    title:`Current Filter > ${row.title || row.key}`,
-                    key:row.key,
-                }
-            })
-            .compact()
-            .value();
+                    return {
+                        title: `Current Filter > ${row.title || row.key}`,
+                        key: row.key,
+                    }
+                })
+                .compact()
+                .value();
 
             var array = currentFilterColumns.concat(this.availableKeys.slice());
 
@@ -592,6 +596,8 @@ export default {
             var self = this;
             var array = self.structureColumns ? self.structureColumns.slice() : [];
 
+            var iteratorCounts = {};
+
             //Columns selected by the user
             if (self.extraColumns) {
                 array = array.concat(self.extraColumns);
@@ -606,18 +612,38 @@ export default {
             //Columns to show because we are filtering on them
             if (!self.fixedColumns) {
 
+
+
+
+
                 ///////////////////////////////////////////////
                 var filterFields = _.chain(self.activeFilters || [])
                     .map(function(filter) {
 
+                        var filterKey = filter.key;
+                        var columnDataType = filter.dataType;
+                        var allowDuplicates;
+
                         if (filter.criteria && filter.criteria.length) {
-                            return;
+
+                            if (!iteratorCounts[filter.key]) {
+                                iteratorCounts[filter.key] = 0;
+                            }
+
+                            filterKey = `_matchedFilters['${filterKey}'][${iteratorCounts[filterKey]}]`;
+                            columnDataType = 'reference';
+                            allowDuplicates = true;
+
+                            iteratorCounts[filter.key]++;
+
                         }
+
                         // console.log('FILTER', filter);
                         if (filter.comparator) {
                             var column = {
                                 title: filter.title || _.startCase(filter.key),
-                                key: filter.key
+                                key: filterKey,
+                                allowDuplicates,
                             }
 
                             //Treat as a date value
@@ -632,7 +658,7 @@ export default {
                                 case 'decimal':
                                 case 'float':
                                     column.sortType =
-                                        column.type = filter.dataType
+                                        column.type = columnDataType
                                     break;
                             }
                             // console.log('FILTER COMPARATOR', filter);
@@ -662,10 +688,15 @@ export default {
                 /////////////////////////////////////
 
                 _.each(filterFields, function(column) {
-                    // console.log('COLUMN', column)
-                    if (!_.some(array, { key: column.key })) {
-                        // console.log('COLUMNS', column);
-                        array.push(column);
+
+                    if (column.allowDuplicates) {
+                        array.push(column)
+                    } else {
+                        // console.log('COLUMN', column)
+                        if (!_.some(array, { key: column.key })) {
+                            // console.log('COLUMNS', column);
+                            array.push(column);
+                        }
                     }
                 })
             }
@@ -678,18 +709,18 @@ export default {
 
         },
 
-        dateWatchString() {
+        // dateWatchString() {
 
-            if (!this.startDate) {
-                return
-            }
+        //     if (!this.startDate) {
+        //         return
+        //     }
 
-            if (!this.endDate) {
-                return
-            }
+        //     if (!this.endDate) {
+        //         return
+        //     }
 
-            return String(Date(this.startDate).setHours(0, 0, 0, 0).getTime()) + String(Date(this.endDate).setHours(0, 0, 0, 0).getTime());
-        },
+        //     return String(Date(this.startDate).setHours(0, 0, 0, 0).getTime()) + String(Date(this.endDate).setHours(0, 0, 0, 0).getTime());
+        // },
         grouped() {
 
             var self = this;
@@ -721,26 +752,26 @@ export default {
         showLoading() {
             return this.loading || this.loadingItems;
         },
-        activeFilters() {
-            return FilterService.activeFilters(this.filterConfig);
-        },
-        activeFilterRows() {
-            return _.filter(this.activeFilters, function(row) {
-                return row.comparator && row.comparator.length;
-            })
-        },
-        activeFilterKeys() {
-            return FilterService.activeFilterKeys(this.filterConfig);
-        },
-        activeFilterValues() {
-            return FilterService.activeFilterValues(this.filterConfig);
-        },
-        activeFilterComparators() {
-            return FilterService.activeFilterComparators(this.filterConfig);
-        },
-        activeFilterOperators() {
-            return FilterService.activeFilterComparators(this.filterConfig);
-        },
+        // activeFilters() {
+        //     return FilterService.activeFilters(this.filterConfig);
+        // },
+        // activeFilterRows() {
+        //     return _.filter(this.activeFilters, function(row) {
+        //         return row.comparator && row.comparator.length;
+        //     })
+        // },
+        // activeFilterKeys() {
+        //     return FilterService.activeFilterKeys(this.filterConfig);
+        // },
+        // activeFilterValues() {
+        //     return FilterService.activeFilterValues(this.filterConfig);
+        // },
+        // activeFilterComparators() {
+        //     return FilterService.activeFilterComparators(this.filterConfig);
+        // },
+        // activeFilterOperators() {
+        //     return FilterService.activeFilterComparators(this.filterConfig);
+        // },
         rowCheckString() {
             // console.log('RECOMPUTE ROWS')
             var rows = this.rows || [];
@@ -752,24 +783,24 @@ export default {
             //     return id;
             // }).join('');
         },
-        dateWatchString() {
+        // dateWatchString() {
 
-            if (!this.startDate) {
-                return
-            }
+        //     if (!this.startDate) {
+        //         return
+        //     }
 
-            if (!this.endDate) {
-                return
-            }
+        //     if (!this.endDate) {
+        //         return
+        //     }
 
 
-            return String(this.startDate) + String(this.endDate);
-        },
-        filterCheckString() {
+        //     return String(this.startDate) + String(this.endDate);
+        // },
+        // filterCheckString() {
 
-            var filterString = FilterService.getFilterChangeString(this.filterConfig);
-            return filterString;
-        },
+        //     var filterString = FilterService.getFilterChangeString(this.filterConfig);
+        //     return filterString;
+        // },
         isAsync() {
             return this.dataType && this.dataType.length;
         },
@@ -932,12 +963,12 @@ export default {
             }
         },
     },
-    created() {
-        this.$fluro.addEventListener('cache.reset', this.updateCacheKey);
-    },
-    beforeDestroy() {
-        this.$fluro.removeEventListener('cache.reset', this.updateCacheKey);
-    },
+    // created() {
+    //     this.$fluro.addEventListener('cache.reset', this.updateCacheKey);
+    // },
+    // beforeDestroy() {
+    //     this.$fluro.removeEventListener('cache.reset', this.updateCacheKey);
+    // },
 
 
     filters: {
@@ -950,25 +981,23 @@ export default {
             this.$emit('additionalColumns', this.extraColumns);
         },
         'pagePopulationString': function(str) {
-            console.log('POPULATION STRING CHANGED')
+            // console.log('POPULATION STRING CHANGED')
             this.loading = true;
             this.populatePage()
         },
-        changeKey() {
-            this.reload();
-        },
-        reloadRequired: {
-            immediate: true,
-            handler: _.debounce(function(string) {
-                this.reload();
-            }, 500)
-        },
-        search: _.debounce(function(newValue) {
-            // console.log('Search changed!')
-            this.debouncedSearch = newValue;
-            // this.refine();
-        }, 500),
-        // dateWatchString: _.debounce(function(newValue) {
+        // changeKey() {
+        //     this.reload();
+        // },
+        // reloadRequired: {
+        //     immediate: true,
+        //     handler: _.debounce(function(string) {
+        //         this.reload();
+        //     }, 500)
+        // },
+        //COMMENTED DUE TO MOVE TO MIXIN
+        // search: _.debounce(function(newValue) {
+        //     // console.log('Search changed!')
+        //     this.debouncedSearch = newValue;
         //     // this.refine();
         // }, 500),
     },
@@ -1129,9 +1158,9 @@ export default {
 
 
 
-        updateCacheKey() {
-            this.cacheKey = this.$fluro.global.CACHE_KEY;
-        },
+        // updateCacheKey() {
+        //     this.cacheKey = this.$fluro.global.CACHE_KEY;
+        // },
         showOptionsForColumn(column) {
 
         },
@@ -1208,6 +1237,7 @@ export default {
                 // var ids = _.map(rawPage, '_id');//_.keys(rawPageLookup);
 
                 if (!rawPage || !rawPage.length) {
+                    self.loading = false;
                     return resolve([]);
                 }
 
@@ -1326,7 +1356,7 @@ export default {
                         resolve(pageItems.slice());
                     })
                     .catch(function(err) {
-                        if (axios.isCancel(err)) {
+                        if (self.$fluro.api.axios.isCancel(err)) {
                             // return reject(err)
                             // //Not sure if this is correct
                             resolve([]);
@@ -1342,6 +1372,8 @@ export default {
             var self = this;
 
             self.loading = true;
+
+
             self.populatePageItems(self.rawPage, self.dataType, self.renderColumns)
                 .then(function(res) {
                     self.page = res;
@@ -1355,103 +1387,6 @@ export default {
                 });
 
         }, 500),
-        reload() {
-
-            var self = this;
-
-            //////////////////////////////////////////
-
-            self.loadingItems = true;
-            // console.log('Load the items!!');
-
-            ///////////////////////////////////////
-
-            var sort = self.sort;
-            // if(self.groupingColumn) {
-
-            //     // key: this.defaultSort,
-            //     //     direction: this.defaultSortDirection,
-            //     //     type: this.defaultSortType,
-
-
-            //     sort = {
-            //         key:self.groupingColumn.key,
-            //         direction:'asc',
-            //         type:self.groupingColumn.sortType,
-            //     };
-            // }
-
-            ///////////////////////////////////////
-
-            var filterCriteria = {
-                // return self.$fluro.api.get(`/system/test`, {
-                sort,
-                filter: self.filterConfig,
-                search: self.debouncedSearch,
-                includeArchived: self.includeArchivedByDefault,
-                allDefinitions: self.allDefinitions,
-                searchInheritable: self.searchInheritable,
-                includeUnmatched: true,
-                groupingColumn: self.groupingColumn ? self.groupingColumn.key : undefined,
-            }
-
-            /////////////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////////////
-
-            if (self.startDate) {
-                filterCriteria.startDate = new Date(self.startDate);
-            }
-
-            if (self.endDate) {
-                filterCriteria.endDate = new Date(self.endDate);
-            }
-
-            //Include the timezone of the current requesting user
-            filterCriteria.timezone = self.$fluro.date.defaultTimezone;
-
-            /////////////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////////////
-
-            //Load just the IDS from the server and required fields
-            return self.$fluro.api.post(`/content/${self.dataType}/filter`, filterCriteria)
-                .then(function(res) {
-                    self.all = res.data;
-                    self.$emit('raw', self.all);
-
-                    self.rows = _.filter(res.data, { _matched: true });
-                    // console.log('ROWS', self.rows);
-                    self.$emit('filtered', self.rows);
-
-                    self.setPage(1);
-
-
-                    self.loadingItems = false;
-
-
-                })
-                .catch(function(err) {
-                    self.loadingItems = false;
-                    self.rows = [];
-                    self.$emit('filtered', self.rows);
-
-
-                    self.all = [];
-                    self.$emit('raw', self.all);
-
-                    self.setPage(1);
-
-                    if (axios.isCancel(err)) {
-                        // return reject(err);
-                        //console.log('Nothing man!')
-                    } else {
-
-                    }
-                });
-
-        },
         checkboxClick(item, $event, itemIndex) {
             // console.log('ITEM INDEX', itemIndex, item, $event);
             return this.toggleSelection(item, $event, itemIndex);
@@ -1606,6 +1541,10 @@ export default {
                 classes.push('payment-status-' + item.paymentStatus);
             }
 
+            if (item.processStatus) {
+                classes.push('process-status-' + item.processStatus);
+            }
+
             //////////////////////////////////
             //If it's a mailout
             switch (item.state) {
@@ -1707,6 +1646,7 @@ export default {
             }
         }
     },
+    mixins: [DynamicListMixin],
     components: {
         TableHeaderCheckbox,
         TableRowCheckbox,
@@ -1823,8 +1763,8 @@ export default {
         tr {
             background: #fff;
 
-            th:first-child,
-            th:last-child {
+            th.first,
+            th.last {
                 background: #fff;
 
             }
@@ -1832,8 +1772,8 @@ export default {
             &:nth-child(odd) {
                 background: #fcfcfc;
 
-                th:first-child,
-                th:last-child {
+                th.first,
+                th.last {
                     background: #fcfcfc;
                 }
             }
@@ -1845,8 +1785,8 @@ export default {
             // &.payment-status-partial_refund,
             &.status-deceased {
 
-                th:first-child,
-                th:last-child,
+                th.first,
+                th.last,
                 td,
                 th {
                     color: #888; //rgba(#000, 0.5);
@@ -1858,8 +1798,8 @@ export default {
 
             &.state-sent {
 
-                th:first-child,
-                th:last-child,
+                th.first,
+                th.last,
                 td,
                 th {
                     // color: #888; //rgba(#000, 0.5);
@@ -1867,14 +1807,46 @@ export default {
                 }
             }
 
-            &.state-scheduled {
+            &.state-scheduled,
+            &.process-status-pending {
 
-                th:first-child,
-                th:last-child,
+                th.first,
+                th.last,
                 td,
                 th {
                     background: lighten(#fff3b9, 5%) !important;
                     color: desaturate(darken(#f0974e, 20%), 30%) !important;
+                    // color: darken($warning, 20%);
+                    // background: rgba($warning, 0.05);
+                }
+            }
+
+
+            &.process-status-complete {
+
+                th.first,
+                th.last,
+                td,
+                th {
+                    color: darken($success, 10%) !important;
+                     background: lighten($success, 40%) !important;
+
+                    //background: lighten($success, 25%) !important;
+                    //color: desaturate(darken($success, 20%), 30%) !important;
+                    // color: darken($warning, 20%);
+                    // background: rgba($warning, 0.05);
+                }
+            }
+
+
+            &.process-status-failed {
+
+                th.first,
+                th.last,
+                td,
+                th {
+                    color: darken($danger, 10%) !important;
+            background: lighten($danger, 41%) !important;
                     // color: darken($warning, 20%);
                     // background: rgba($warning, 0.05);
                 }
@@ -1886,8 +1858,8 @@ export default {
 
             &.payment-status-pending {
 
-                th:first-child,
-                th:last-child,
+                th.first,
+                th.last,
                 td,
                 th {
                     color: darken($primary, 20%);
@@ -1900,8 +1872,8 @@ export default {
 
             &.selected {
 
-                th:first-child,
-                th:last-child,
+                th.first,
+                th.last,
                 td,
                 th {
                     // background: yellow;
@@ -1915,7 +1887,8 @@ export default {
 
         }
 
-        tbody tr {
+        &.clickable tbody tr {
+
 
             &:hover {
 
@@ -1923,8 +1896,8 @@ export default {
                 th {
 
                     &,
-                    &:first-child,
-                    &:last-child {
+                    &.first,
+                    &.last {
                         background-color: #f4fafa;
                         color: #055d52;
                     }
@@ -1982,7 +1955,7 @@ export default {
                 white-space: nowrap;
                 border-left: 1px solid rgba(#000, 0.05);
 
-                &:first-child {
+                &.first {
                     border-left: none;
                 }
 
@@ -2043,7 +2016,7 @@ export default {
 
 
 
-        th:first-child {
+        th.first {
             position: -webkit-sticky;
             position: sticky;
             left: 0;
@@ -2054,7 +2027,7 @@ export default {
             // background: #ccc;
         }
 
-        th:last-child {
+        th.last {
             position: -webkit-sticky;
             position: sticky;
             right: 0;
@@ -2063,10 +2036,10 @@ export default {
             // background: #ccc;
         }
 
-        thead th:first-child,
-        tfoot th:first-child,
-        thead th:last-child,
-        tfoot th:last-child {
+        thead th.first,
+        tfoot th.first,
+        thead th.last,
+        tfoot th.last {
             z-index: 5;
 
         }
@@ -2076,7 +2049,7 @@ export default {
     }
 
     .footer-stats {
-        @extend .border-top;
+        @extend .border-top !optional;
         padding: 5px 10px;
         font-size: 0.9em;
     }
@@ -2120,11 +2093,11 @@ export default {
 
     th,
     td {
-        &:first-child {
+        &.first {
             // padding-left: $padding-h * 2 !important;
         }
 
-        &:last-child {
+        &.last {
             // padding-right: $padding-h * 2 !important;
         }
     }

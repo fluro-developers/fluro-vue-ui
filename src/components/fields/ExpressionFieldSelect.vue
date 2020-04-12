@@ -556,7 +556,7 @@ function getFieldDescriptions(contextField, fields) {
     .accordion {
         .accordion-panel {
             margin: 0;
-            @extend .border-bottom;
+            @extend .border-bottom !optional;
 
             .accordion-panel-title {
                 padding: 5px;

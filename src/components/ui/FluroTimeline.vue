@@ -267,5 +267,6 @@ export default {
     box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
     flex: 1;
     margin-bottom: 15px;
+    overflow: hidden;
 }
 </style>

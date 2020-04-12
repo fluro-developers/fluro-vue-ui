@@ -1,7 +1,7 @@
-import FluroContentForm from '../../form/FluroContentForm';
-import FluroContentFormField from '../../form/FluroContentFormField';
-import Layout from '../../../mixins/Layout';
-import FluroPrivacySelect from '../../form/FluroPrivacySelect.vue';
+import FluroContentForm from '../../form/FluroContentForm.vue';
+// import FluroContentFormField from '../../form/FluroContentFormField.vue';
+// import Layout from '../../../mixins/Layout';
+// import FluroPrivacySelect from '../../form/FluroPrivacySelect.vue';
 
 
 // import { JSONView } from "vue-json-component";
@@ -29,11 +29,14 @@ export default {
     extends: FluroContentForm,
     components: {
         FluroContentForm,
-        FluroContentFormField,
-        FluroPrivacySelect,
+        FluroContentFormField:() => import("../../form/FluroContentFormField.vue"),
+        FluroPrivacySelect:() => import("../../form/FluroPrivacySelect.vue"),
+        // FluroContentForm,
+        // FluroContentFormField,
+        // FluroPrivacySelect,
         // "json-view": JSONView,
     },
-    mixins: [Layout],
+    // mixins: [Layout],
     computed: {
         type() {
             return this.config.type;
@@ -46,6 +49,13 @@ export default {
         },
         definition() {
             return this.config.definition;
+        },
+        definedFields() {
+            if (this.definition && this.definition.fields && this.definition.fields.length) {
+                return this.definition.fields;
+            }
+
+            return [];
         },
         readableContentType() {
             return this.$fluro.types.readable(this.config.definition ? this.config.definition.definitionName : this.config.type.definitionName)

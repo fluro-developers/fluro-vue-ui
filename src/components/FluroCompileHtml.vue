@@ -1,17 +1,18 @@
 <template>
-    <component :is="component" v-if="component"></component>
+    <component :is="component"></component>
+    <!-- <component :is="component" v-if="component"></component> -->
+<!-- </div> -->
 </template>
 <script>
-import _ from 'lodash'
 import Vue from 'vue';
-
-
-
 
 export default {
     props: {
         'template': {
             type:String,
+            default() {
+                return '';
+            },
         },
         'context': {
             type: Object,
@@ -64,7 +65,7 @@ export default {
             let DynamicComponent = Vue.extend({
                 template: `<div>${self.template}</div>`,
                 data() {
-                    return self.context;
+                    return self.context || {};
                 },
             });
 

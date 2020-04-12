@@ -12,10 +12,70 @@ module.exports = {
         path: path.resolve(__dirname, 'dist')
     },
     externals: {
+        'vue':'vue',
+        'lodash':'lodash',
+        'brace':'brace',
         'fluro':'fluro',
+        'vue-color':'vue-color',
+        'vuetify':'vuetify',
+        'signature_pad':'signature_pad',
+        'js-beautify':'js-beautify',
+        'vue2-ace-editor':'vue2-ace-editor',
+        'vuedraggable':'vuedraggable',
         'fluro-vue':'fluro-vue',
         'vuex-map-fields':'vuex-map-fields',
+
+        //Brace Stuff
+        'brace/ext/language_tools':'brace/ext/language_tools',
+        'brace/mode/html':'brace/mode/html',
+        'brace/mode/json':'brace/mode/json',
+        'brace/mode/javascript':'brace/mode/javascript',
+        'brace/mode/ejs':'brace/mode/ejs',
+        'brace/mode/scss':'brace/mode/scss',
+        'brace/theme/tomorrow_night_eighties':'brace/theme/tomorrow_night_eighties',
+        'brace/snippets/javascript':'brace/snippets/javascript',
     },
+
+
+    module: {
+        // css: {
+        //     loaderOptions: {
+        //         sass: {
+        //             prependData: "@import '~/src/variables.scss';",
+        //         },
+        //     },
+        // },
+        rules: [
+
+            {
+                test: /\.(s*)css$/,
+                use: [
+                    'vue-style-loader',
+                    'css-loader',
+                    'sass-loader',
+                    {
+                        loader: 'sass-resources-loader',
+                        options: {
+                            resources: './styles/_variables.scss',
+                        },
+                    },
+                ],
+            }, {
+                test: /\.vue$/,
+                loader: 'vue-loader'
+            },
+            // this will apply to both plain `.js` files
+            // AND `<script>` blocks in `.vue` files
+            {
+                test: /\.js$/,
+                loader: 'babel-loader',
+            },
+
+
+        ]
+    },
+
+    /**
     module: {
         rules: [{
                 test: /\.vue$/,
@@ -43,6 +103,7 @@ module.exports = {
             }
         ]
     },
+    /**/
     plugins: [
         new VueLoaderPlugin(),
         // new VuetifyLoaderPlugin(),

@@ -33,7 +33,7 @@
     </form>
 </template>
 <script>
-import { FluroContentForm } from 'fluro-vue-ui';
+import FluroContentForm from './FluroContentForm.vue';
 
 
 export default {

@@ -9,7 +9,7 @@
                     </wrapper>
                     <v-layout>
                         <v-flex>
-                            <fluro-content-select-button large block type="contact" v-model="testContacts" />
+                            <fluro-content-select-button large block type="contact" :allDefinitions="true" v-model="testContacts" />
                         </v-flex>
                         <v-spacer />
                         <v-flex>
@@ -26,7 +26,7 @@
 </template>
 <script>
 
-import { FluroContentSelectButton } from 'fluro-vue-ui';
+import FluroContentSelectButton from '../form/contentselect/FluroContentSelectButton.vue';
 
 export default {
 	components:{

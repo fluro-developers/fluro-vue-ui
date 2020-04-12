@@ -66,7 +66,7 @@
 
 // import FluroEditor from '../../../form/FluroEditor.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
-import { Layout } from 'fluro-vue-ui'
+// import { Layout } from 'fluro-vue-ui'
 
 /////////////////////////////////
 
@@ -82,7 +82,7 @@ export default {
     data() {
         return {}
     },
-    mixins: [FluroContentEditMixin, Layout],
+    mixins: [FluroContentEditMixin],
     methods: {},
     asyncComputed: {
 

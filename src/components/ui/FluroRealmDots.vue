@@ -1,6 +1,7 @@
 <template>
     <div class="dots">
-        <!-- {{filtered}} -->
+        <!-- <pre>{{filtered}}</pre> -->
+        <!-- <pre>{{realms.length}}</pre> -->
         <!-- {{colouredRealms}} {{filtered}} -->
         <span class="dot" :style="{backgroundColor:realm.bgColor || '#000'}" :content="realm.title" v-tippy small v-for="realm in filtered"/>
     </div>
@@ -13,17 +14,29 @@ export default {
             default() {
                 return [];
             },
-            type:Array,
+            type:[Array, Object],
         },
     },
     computed:{
+        actualRealms() {
+            if(!this.realms) {
+                return;
+            }
+
+            if(this.realms.length) {
+                return this.realms;
+            }
+
+            return [this.realms];
+        },
         filtered() {
-            var filtered = _.filter(this.realms, function(realm) {
+            var filtered = _.filter(this.actualRealms, function(realm) {
                 if(!realm) {
                     return;
                 }
                 
                 if(realm._discriminatorType) {
+                    // console.log('REALM', realm.title)
                     return;
                 }
 

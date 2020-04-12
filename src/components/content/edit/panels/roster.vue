@@ -11,7 +11,7 @@
                             <!-- <default-roster-manager :config="config" v-model="model.defaultRosters" :rosterOptions="rosterDefinitions.definitions" /> -->
                 </flex-column-body>
             </tab>
-            <tab heading="X Scheduled Reminders">
+            <!-- <tab heading="X Scheduled Reminders">
                 <flex-column-body style="background: #fafafa;">
                     <v-container>
                         <constrain md>
@@ -19,7 +19,7 @@
                         </constrain>
                     </v-container>
                 </flex-column-body>
-            </tab>
+            </tab> -->
             <tab :heading="`${definition.title} Information`" v-if="definition && definition.fields && definition.fields.length">
                 <flex-column-body style="background: #fafafa;">
                     <v-container>

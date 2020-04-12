@@ -89,7 +89,12 @@
 
 // import FluroEditor from '../../../form/FluroEditor.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
-import { Layout, SearchInput, FluroToggleItem } from 'fluro-vue-ui'
+// import { Layout, SearchInput, FluroToggleItem } from 'fluro-vue-ui'
+// import SearchInput from '../../../'
+import SearchInput from '../../../ui/SearchInput.vue';
+import FluroToggleItem from '../../../ui/FluroToggleItem.vue';
+
+
 
 /////////////////////////////////
 
@@ -110,7 +115,7 @@ export default {
             loadingPermissions: true,
         }
     },
-    mixins: [FluroContentEditMixin, Layout],
+    mixins: [FluroContentEditMixin],
     methods: { 
 
         of (type) {

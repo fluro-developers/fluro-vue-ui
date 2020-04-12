@@ -39,6 +39,7 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+* {
     [left] {
         margin-right:10px;
     }
@@ -46,4 +47,5 @@ export default {
     [right] {
         margin-left: 10px;
     }
+}
 </style>

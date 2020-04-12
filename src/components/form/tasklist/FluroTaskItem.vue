@@ -172,6 +172,7 @@ export default {
 
             /////////////////////////////////////
 
+            console.log('Prompt Task ', self.card)
             return self.$fluro.modal({
                     component: FluroTaskModal,
                     options: {

@@ -9,8 +9,12 @@
                             Test {{tab.$slots.title}} <slot name="title"/>
                         </div> -->
                         <!-- v-else  -->
-                        <a flat  :class="{active:index == activeTabIndex, muted:tab.muted}" @click="selectTab(index)">
-                            {{tab.heading}} <fluro-icon v-if="tab.icon" :icon="tab.icon.icon" :library="tab.icon.library" :style="{ color: tab.icon.color }"/>
+                        <a flat v-tippy :content="tab.tooltip" :class="{active:index == activeTabIndex, muted:tab.muted}" @click="selectTab(index)">
+                            {{tab.heading}} 
+                            <template v-if="tab.icon">
+                            <fluro-icon v-if="tab.icon.icon" :icon="tab.icon.icon" :library="tab.icon.library" :style="{ color: tab.icon.color }"/>
+                            <fluro-icon v-if="tab.icon.type" :type="tab.icon.type" :library="tab.icon.library" :style="{ color: tab.icon.color }"/>
+                            </template>
                         </a>
                     </template>
 
@@ -218,7 +222,7 @@ export default {
         white-space: nowrap;
         overflow-x: auto;
         overflow-y: hidden;
-        @extend .no-select;
+        @extend .no-select !optional;
         // display: flex;
         -webkit-overflow-scrolling: touch;
 

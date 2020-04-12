@@ -26,16 +26,16 @@
                             </fluro-inline-edit>
                         </template>
                         <template v-slot:right>
-                            <fluro-realm-select v-if="typeName != 'realm'" v-model="model.realms" :type="typeName" :definition="definitionName" />
-                            <fluro-tag-select class="ml-2" v-if="typeName != 'tag'" v-model="model.tags" />
+                            <fluro-realm-select  v-tippy :content="`Select where this ${definitionTitle} should be stored`" v-if="typeName != 'realm'" v-model="model.realms" :type="typeName" :definition="definitionName" />
+                            <fluro-tag-select class="mx-0 ml-2" v-if="typeName != 'tag'" v-model="model.tags" />
                             <!-- <pre>{{model.tags}}</pre> -->
-                            <v-btn v-if="model._id" class="mr-0" @click="$actions.open([model])">
+                            <v-btn v-if="model._id" class="mx-0 ml-2" @click="$actions.open([model])">
                                 <fluro-icon icon="ellipsis-h" />
                             </v-btn>
-                            <v-btn @click="cancel">
+                            <v-btn class="mx-0 ml-2" @click="cancel" v-if="!embedded">
                                 Close
                             </v-btn>
-                            <v-btn class="mx-0" :loading="state == 'processing'" :disabled="hasErrors" @click="submit" color="primary">
+                            <v-btn class="mx-0 ml-2" :loading="state == 'processing'" :disabled="hasErrors" @click="submit" color="primary">
                                 {{saveText}}
                             </v-btn>
                         </template>
@@ -79,23 +79,8 @@
                             <v-container fluid pa-1>
                                 <v-layout row align-center>
                                     <template v-if="model._id" class="settings-popup">
+                                        
                                         <v-flex shrink>
-                                            <!-- <template v-if="model._id">
-                                        <v-btn small icon flat>
-                                            <fluro-icon icon="cog" />
-                                        </v-btn>
-                                    </template> -->
-                                            <v-menu :close-on-content-click="false" @click.native.stop offset-y>
-                                                <template v-slot:activator="{ on }">
-                                                    <v-btn v-tippy content="History and Change log" class="my-0" small icon flat v-on="on">
-                                                        <fluro-icon library="fas" icon="history" />
-                                                    </v-btn>
-                                                </template>
-                                                <v-container pa-2 style="background:#fff;" grid-list-xl>
-                                                </v-container>
-                                            </v-menu>
-                                        </v-flex>
-                                         <v-flex shrink>
                                             <v-menu :close-on-content-click="false" @click.native.stop offset-y>
                                                 <template v-slot:activator="{ on }">
                                                     <v-btn v-tippy content="Metadata Options" class="my-0" small icon flat v-on="on">
@@ -109,12 +94,12 @@
                                                 <v-container pa-2 class="white-background">
                                                     <template v-if="model._id">
                                                         <v-input class="no-flex" label="Fluro ID">
-                                                            <v-btn small block v-tippy content="Click to copy to clipboard">{{model._id}}</v-btn>
+                                                            <v-btn small @click="copyToClipboard(model._id)" block v-tippy content="Click to copy to clipboard">{{model._id}}</v-btn>
                                                         </v-input>
                                                     </template>
                                                     <template v-if="model._external" class="white-background">
                                                         <v-input class="no-flex" label="External ID">
-                                                            <v-btn small block v-tippy content="Click to copy to clipboard">{{model._external}}</v-btn>
+                                                            <v-btn small @click="copyToClipboard(model._external)" block v-tippy content="Click to copy to clipboard">{{model._external}}</v-btn>
                                                         </v-input>
                                                     </template>
                                                     <template>
@@ -123,6 +108,7 @@
                                                             <fluro-icon right icon="brackets-curly" />
                                                         </v-btn>
                                                     </template>
+                                                    <input type="hidden" ref="clipboard">
                                                 </v-container>
                                             </v-menu>
                                         </v-flex>
@@ -131,7 +117,7 @@
                                         <v-flex shrink>
                                             <v-menu :close-on-content-click="false" @click.native.stop offset-y>
                                                 <template v-slot:activator="{ on }">
-                                                    <v-btn class="my-0" small icon flat v-on="on">
+                                                    <v-btn v-tippy content="Publish/Archive Dates" class="my-0" small icon flat v-on="on">
                                                         <fluro-icon icon="clock" />
                                                     </v-btn>
                                                 </template>
@@ -159,7 +145,27 @@
                                     <v-flex shrink>
                                         <template v-if="model._id"><em class="muted sm">Last updated {{model.updated | timeago}}</em></template>
                                         <fluro-status-select v-model="model.status" :type="model._type" />
+
+
                                     </v-flex>
+                                    <v-flex shrink v-if="model._id">
+                                            <!-- <template v-if="model._id">
+                                        <v-btn small icon flat>
+                                            <fluro-icon icon="cog" />
+                                        </v-btn>
+                                    </template> -->
+                                            <v-menu lazy :close-on-content-click="false" @click.native.stop offset-y>
+                                                <template v-slot:activator="{ on }">
+                                                    <v-btn v-tippy content="History and Change log" class="my-0" small icon flat v-on="on">
+                                                        <fluro-icon library="fas" icon="history" />
+                                                    </v-btn>
+                                                </template>
+                                                <div style="min-width:320px;">
+                                                <changelog :item="model"/>
+                                            </div>
+                                                
+                                            </v-menu>
+                                        </v-flex>
                                 </v-layout>
                             </v-container>
                         </flex-column-footer>
@@ -178,13 +184,22 @@ import FluroRealmSelect from '../../form/realmselect/FluroRealmSelect.vue';
 import FluroStatusSelect from '../../form/FluroStatusSelect.vue';
 import FluroInlineEdit from '../../form/FluroInlineEdit.vue';
 import FluroContentFormField from '../../form/FluroContentFormField.vue';
-
+import Changelog from './components/Changelog.vue';
 // console.log('PRIBACY', FluroPrivacySelect)
 // import Contact from './panels/Contact.vue';
 // import Event from './panels/Event.vue';
 
 export default {
     props: {
+        embedded: {
+            type: Boolean,
+        },
+        disableCacheClearOnSave: {
+            type: Boolean,
+            default() {
+                return true;
+            }
+        },
         context: {
             type: String,
             default: 'create',
@@ -212,6 +227,7 @@ export default {
     },
     data() {
         return {
+            cacheClearRequired:false,
             file: null,
             model: JSON.parse(JSON.stringify(this.value)),
             serverErrors: '',
@@ -233,35 +249,58 @@ export default {
 
     },
     mounted() {
-        console.log('MOUNTED');
+        // console.log('MOUNTED');
         var self = this;
         self.addListeners();
     },
     activated() {
-        console.log('ACTIVATED')
+        // console.log('ACTIVATED')
         var self = this;
         self.addListeners();
     },
     deactivated() {
-        console.log('DEACTIVATED')
+        // console.log('DEACTIVATED')
         var self = this;
         self.removeListeners();
     },
     beforeDestroy() {
-        console.log('DESTROYED')
+        // console.log('DESTROYED')
         var self = this;
         self.removeListeners();
     },
     methods: {
+        copyToClipboard(string) {
+
+            var self = this;
+
+            let inputField = this.$refs.clipboard;
+            inputField.value = string;
+            inputField.setAttribute('type', 'text') // 不是 hidden 才能複製
+            inputField.select()
+
+            try {
+                var successful = document.execCommand('copy');
+                var msg = successful ? 'successful' : 'unsuccessful';
+                // alert('Testing code was copied ' + msg);
+                self.$fluro.notify('Copied to clipboard');
+            } catch (err) {
+                // alert('Oops, unable to copy');
+                // self.$fluro.error({message:'Unable to copy to clipboard'});
+            }
+
+            /* unselect the range */
+            inputField.setAttribute('type', 'hidden')
+            window.getSelection().removeAllRanges()
+        },
         addListeners() {
-            console.log('ADD LISTENERS')
+            // console.log('ADD LISTENERS')
             var self = this;
             if (document) {
                 document.addEventListener("keydown", self.keypress, false);
             }
         },
         removeListeners() {
-            console.log('REMOVE LISTENERS')
+            // console.log('REMOVE LISTENERS')
             var self = this;
             if (document) {
                 document.removeEventListener("keydown", self.keypress);
@@ -276,10 +315,21 @@ export default {
         },
         editSuccess(result) {
             var self = this;
-            console.log('UPDATE SUCCESS', result)
+
+            //Reload the terminology!
+            if (result.data._type == 'definition') {
+                console.log('Reload glossary')
+                self.$fluro.global.reloadTerminology();
+            }
+
+
 
             self.state = 'ready'
-            self.$fluro.resetCache();
+
+            self.cacheClearRequired = true;
+            if (!self.disableCacheClearOnSave) {
+                self.$fluro.resetCache();
+            }
 
             // self.reset(true);
             self.$emit('success', result.data);
@@ -300,12 +350,29 @@ export default {
             self.$emit('error', err);
         },
         createSuccess(result) {
+
+
+
+
             var self = this;
-            // console.log('CREATE SUCCESS', result)
+            console.log('CREATE SUCCESS', result)
+            
+
+            //Reload the terminology!
+            if (result.data._type == 'definition') {
+                console.log('Reload glossary')
+                self.$fluro.global.reloadTerminology();
+            }
+
+            
+            self.cacheClearRequired = true;
+            console.log('CREATE CLEAR?', self.cacheClearRequired, self.disableCacheClearOnSave)
+            if (!self.disableCacheClearOnSave) {
+                self.$fluro.resetCache();
+            }
+
             self.reset(true);
             self.$emit('success', result.data);
-
-            self.$fluro.resetCache();
 
             // console.log('RESULT WAS', result);
             //Print a success message to the screen
@@ -402,6 +469,32 @@ export default {
         isValidDate(d) {
             return d instanceof Date && !isNaN(d);
         },
+        autosave() {
+            var self = this;
+
+
+            if (self.state == 'processing') {
+                return;
+            }
+
+            console.log('AUTOSAVE')
+            self.submitUpdate()
+                .then(function(res) {
+                    self.state = 'ready';
+                })
+                .catch(function(err) {
+                    self.state = 'ready';
+                })
+        },
+        submitUpdate() {
+            var self = this;
+            self.state = 'processing';
+            var requestData = Object.assign({}, self.model);
+            delete requestData.__v;
+            var definedType = requestData.definition || self.definitionName || self.typeName;
+
+            return self.$fluro.api.put(`/content/${definedType}/${requestData._id}`, requestData);
+        },
         submit() {
             var self = this;
             self.validateAllFields();
@@ -440,12 +533,9 @@ export default {
 
             switch (context) {
                 case 'edit':
-
-                    self.$fluro.api.put(`/content/${definedType}/${requestData._id}`, requestData)
+                    self.submitUpdate()
                         .then(self.editSuccess)
                         .catch(self.editFailed)
-
-
 
                     break;
                 default:
@@ -539,10 +629,19 @@ export default {
 
                     //////////////////////////////////////////////////////////////
 
-                    //Create a new item
-                    self.$fluro.api.post(`/content/${definedType}`, requestData)
-                        .then(self.createSuccess)
-                        .catch(self.createFailed)
+                    if (definedType == 'family') {
+                        //Create a new item
+                        self.$fluro.api.post(`/family`, requestData)
+                            .then(self.createSuccess)
+                            .catch(self.createFailed)
+
+                    } else {
+                        //Create a new item
+                        self.$fluro.api.post(`/content/${definedType}`, requestData)
+                            .then(self.createSuccess)
+                            .catch(self.createFailed)
+                    }
+
                     break;
             }
 
@@ -551,7 +650,9 @@ export default {
         }
     },
     computed: {
-
+        // changeString() {
+        //     return JSON.stringify(this.model);
+        // },
         showFooter() {
             return !this.hideFooter;
         },
@@ -562,6 +663,9 @@ export default {
         summary() {
             var self = this;
             switch (self.typeName) {
+                case 'event':
+                    return self.$fluro.date.readableEventDate(self.model);
+                    break;
                 case 'plan':
 
                     var hasEvent = _.get(self.model, 'event.title');
@@ -785,6 +889,7 @@ export default {
         FluroStatusSelect,
         FluroInlineEdit,
         FluroContentFormField,
+        Changelog,
     },
     asyncComputed: {
         config: {
@@ -798,7 +903,7 @@ export default {
 
                 if (!self.type || !self.type.length) {
 
-                    // console.log('NO CONFIG LOADED');
+                    console.log('NO CONFIG LOADED');
                     // self.loading = false;
                     return Promise.reject({});;
 
@@ -810,18 +915,51 @@ export default {
 
                 return new Promise(function(resolve, reject) {
 
-                    return self.$fluro.api.get(`/defined/type/${self.type}`).then(function(res) {
+                    
+                    var promise = self.$fluro.api.get(`/defined/type/${self.type}`);
 
+                    promise.then(function(res) {
 
+                        // console.log('RESO', res);
                         resolve(res.data);
                         // console.log('CONFIG LOADED', res.data);
                         self.loading = false;
-                    }, reject);
+                    });
+
+                    promise.catch(function(err) {
+                       
+                        self.$fluro.error(err);
+                        // // console.log('ERROR', err.response);
+                        // if (err.response.status === 404) {
+                        //     console.log('RESOLVE THE 404')
+                        //     return resolve(null);
+                        // }
+
+                        return reject(err);
+                    });
                 })
+                // .then(function(res) {
+                //     console.log('RESI', res);
+                // })
+                // .catch(function(err) {
+                //     console.log('ERRESI', err);
+                // })
             },
         }
     },
     watch: {
+        // 'changeString': _.debounce(function(newModel, oldModel) {
+
+        //     if (!oldModel) {
+        //         console.log('no old model')
+        //         return;
+        //     }
+
+        //     console.log('MODEL SAVED', oldModel)
+        //     this.autosave();
+
+        // }, 1000),
+
         value() {
             this.model = this.value; //JSON.parse(JSON.stringify(this.value));
         },

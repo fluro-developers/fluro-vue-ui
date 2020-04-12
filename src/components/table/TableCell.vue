@@ -2,9 +2,8 @@
     <td :class="{wrap:shouldWrap, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}">
         <!-- {{rawValue.length}} {{shouldWrap}} -->
 
-        <!-- <pre>{{column.key}} - {{row}} - {{rawValue}}</pre> -->
+        
         <div :class="{'wrap-limit':shouldWrap}">
-        <!-- <pre>{{rawValue}}</pre> -->
         <component v-if="renderer" :data="preValue" :is="renderer" :row="row" :column="column" />
         <template v-else-if="simpleArray">
             <template v-for="entry in formattedArray">
@@ -23,6 +22,12 @@
                     <template v-if="entry._type == 'event'">
                         <fluro-icon type="event" /> {{entry.title}} <span class="text-muted">// {{entry | readableEventDate}}</span>
                     </template>
+                    <template v-if="entry._type == 'post'">
+                        <fluro-icon type="post" /> {{entry.title}} <span class="text-muted">// {{entry.managedAuthor ? entry.managedAuthor.title : ''}} {{entry.created | timeago}}</span>
+                    </template>
+                    <template v-else-if="entry._type == 'ticket'">
+                        <fluro-icon type="ticket" /> {{entry.title}} - {{entry.event.title}}<span class="text-muted">// {{entry.event | readableEventDate}}</span>
+                    </template>
                     <template :content="entry.title" v-tippy v-else-if="entry._type == 'team' && entry.position">
                         
                         <!-- <fluro-icon type="team" />  -->
@@ -39,6 +44,7 @@
                 </template>
                 <template v-else>{{entry}}</template>
             </template>
+            <!-- <template>{{formattedArray.length}} in total</template> -->
         </div>
         <div v-else-if="complexObject">
             <template v-if="preValue._type == 'event'">
@@ -64,12 +70,20 @@
     </td>
 </template>
 <script>
-import {
-    NumberCell,
-    BooleanCell,
-    DateCell,
-    RealmDotCell,
-} from 'fluro-vue-ui';
+// import {
+//     NumberCell,
+//     BooleanCell,
+//     DateCell,
+//     RealmDotCell,
+//     TimeagoCell,
+// } from 'fluro-vue-ui';
+
+
+import NumberCell from './cells/NumberCell.vue';
+import BooleanCell from './cells/BooleanCell.vue';
+import DateCell from './cells/DateCell.vue';
+import RealmDotCell from './cells/RealmDotCell.vue';
+import TimeagoCell from './cells/TimeagoCell.vue';
 
 
 
@@ -123,6 +137,10 @@ export default {
                 case 'datetime':
                     this.column.type = 'date';
                     return DateCell;
+                    break;
+                case 'timeago':
+                    this.column.type = 'date';
+                    return TimeagoCell;
                     break;
                 case 'capitalize':
                     renderer = null
@@ -224,6 +242,7 @@ export default {
                                 bgColor: entry.bgColor,
                                 startDate: entry.startDate,
                                 endDate: entry.endDate,
+                                created:entry.created,
                             }
                         }
 
@@ -236,6 +255,7 @@ export default {
                         return entry;
                     })
                     .compact()
+
                     .value();
             }
 
@@ -512,6 +532,18 @@ export default {
                     .uniqBy(function(v) {
                         return v._id || v;
                     })
+                    .orderBy(function(entry) {
+                        if(entry.startDate) {
+                            return new Date(entry.startDate);
+                        }
+
+                        if(entry.created) {
+                            return new Date(entry.created);
+                        }
+
+                        return entry.title || entry.name || ''
+                    })
+                    .reverse()
 
                     .value()
 
@@ -520,7 +552,8 @@ export default {
                 }
                 //////////////////////////////
 
-                var childLimit = Math.min(10, array.length);
+
+                var childLimit = Math.min(100, array.length);
                 return array.slice(0, childLimit)
             }
 

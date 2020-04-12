@@ -30,27 +30,26 @@ export default {
         },
     },
     created() {
-        var self = this;
-        var mapped = _.map(self.model, function(m) {
-            return m.definition;
-        });
-        if (!self.value) {
-            self.model = [];
-        }
-        else {
-            self.model = self.value;
-        }
-        _.each(self.rosterOptions, function(val) {
-            if (mapped.includes(val.definitionName)) {
-                self.$set(self.workingModel, val.definitionName, _.filter(self.model, function(m) {
-                    return m.definition == val.definitionName;
-                })[0]);
-            } else {
-                self.$set(self.workingModel, val.definitionName, {
-                    definition: val.definitionName,
-                });
-            }
-        });
+        // var self = this;
+        // var mapped = _.map(self.model, function(m) {
+        //     return m.definition;
+        // });
+        // if (!self.value) {
+        //     self.model = [];
+        // } else {
+        //     self.model = self.value;
+        // }
+        // _.each(self.rosterOptions, function(val) {
+        //     if (mapped.includes(val.definitionName)) {
+        //         self.$set(self.workingModel, val.definitionName, _.filter(self.model, function(m) {
+        //             return m.definition == val.definitionName;
+        //         })[0]);
+        //     } else {
+        //         self.$set(self.workingModel, val.definitionName, {
+        //             definition: val.definitionName,
+        //         });
+        //     }
+        // });
     },
     components: { DefaultRosterComponent },
     data() {
@@ -72,11 +71,9 @@ export default {
             //console.log('FIND',find, self.model[find])
             if (!find && val.create) {
                 self.model.push(val);
-            }
-            else if (val.create) {
+            } else if (val.create) {
                 self.model[find] = val;
-            }
-            else {
+            } else {
                 self.model.splice(find, 1);
             }
         },
@@ -88,17 +85,15 @@ export default {
                     library: 'fas',
                     color: '#4cc650',
                 }
-            }
-            else return;
+            } else return;
         },
         muted(model) {
-           
+
             return !model.create
-            
+
         },
     },
-    watch: {
-    },
+    watch: {},
 }
 </script>
 <style lang="scss">

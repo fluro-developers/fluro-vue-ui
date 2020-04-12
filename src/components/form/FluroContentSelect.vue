@@ -1,17 +1,14 @@
 <template>
     <div class="fluro-content-select" :class="{outlined:showOutline}">
-        <!-- <pre>{{lockFilter}}</pre> -->
-        <!-- <pre>TESTING WOWOWOW {{selectionMinimum}} {{selectionMaximum}}</pre> -->
-        <!-- <pre>{{model}}</pre> -->
         <template v-if="model.length">
             <div class="fluro-content-list" v-if="model.length <= listLimit">
                 <list-group>
                     <draggable v-model="model" v-bind="dragOptions" @start="drag=true" @end="drag=false">
-                        <list-group-item :item="item" v-for="(item, index) in model">
+                        <list-group-item @click="$fluro.global.view(item, true)" :item="item" v-for="(item, index) in model">
                             <template v-slot:right>
                                 <v-menu :left="true" v-model="actionIndexes[index]" :fixed="true" transition="slide-y-transition" offset-y>
                                     <template v-slot:activator="{ on }">
-                                        <v-btn class="ma-0" icon small flat v-on="on">
+                                        <v-btn class="ma-0" @click.prevent.stop="" icon small flat v-on="on">
                                             <fluro-icon v-if="actionIndexes[index]" icon="times" />
                                             <fluro-icon v-else icon="ellipsis-h" />
                                         </v-btn>
@@ -36,16 +33,16 @@
                         <template v-slot:right>
                             <v-menu :left="true" v-model="actionIndexes[index]" :fixed="true" transition="slide-y-transition" offset-y>
                                 <template v-slot:activator="{ on }">
-                                    <v-btn class="ma-0" icon small flat v-on="on">
+                                    <v-btn class="ma-0" @click.prevent.stop="" icon small flat v-on="on">
                                         <fluro-icon v-if="actionIndexes[index]" icon="times" />
                                         <fluro-icon v-else icon="ellipsis-h" />
                                     </v-btn>
                                 </template>
                                 <v-list dense>
-                                    <v-list-tile @click="$actions.open([item])">
+                                    <v-list-tile @click.prevent.stop="$actions.open([item])">
                                         <v-list-tile-content>Actions</v-list-tile-content>
                                     </v-list-tile>
-                                    <v-list-tile @click="deselect(item)">
+                                    <v-list-tile @click.prevent.stop="deselect(item)">
                                         <v-list-tile-content>Deselect</v-list-tile-content>
                                     </v-list-tile>
                                 </v-list>
@@ -57,9 +54,7 @@
         </template>
         <div class="content-select-search-bar" v-if="canAddValue">
             <div class="content-select-search">
-                <!-- :label="label" -->
-                <!-- prepend-inner-icon="search" -->
-                <v-autocomplete @focus="$emit('focus')" @blur="$emit('blur')" :outline="showOutline" :success="success" :required="required" :error-messages="errorMessages" :hint="hint" :hide-selected="true" @change="selected()"  append-icon="" :persistent-hint="true" :placeholder="textPlaceholder" :return-object="true" item-text="title" v-model="candidates" :multiple="true" :loading="loading" :items="results" :search-input.sync="search" flat hide-no-data>
+                <v-autocomplete @focus="$emit('focus')" @blur="$emit('blur')" :outline="showOutline" :success="success" :required="required" :error-messages="errorMessages" :hint="hint" :hide-selected="true" @change="selected()" append-icon="" :persistent-hint="true" :placeholder="textPlaceholder" :return-object="true" item-text="title" v-model="candidates" :multiple="true" :loading="loading" :items="results" :search-input.sync="search" flat hide-no-data>
                     <template v-slot:item="{ item }">
                         <v-list-tile-avatar class="text-sm-center">
                             <template v-if="item._type == 'persona'">
@@ -96,49 +91,12 @@
                 </v-btn>
             </div>
         </div>
-        <!-- <pre>{{value}} - {{model}}</pre> -->
-        <!-- <v-layout row v-if="canAddValue">
-            <v-flex grow>
-                <v-autocomplete :hide-selected="true" @change="selected()" prepend-inner-icon="search" append-icon="" :hint="hint" :persistent-hint="true" :placeholder="placeholder" :return-object="true" item-text="title" v-model="candidates" :multiple="true" :loading="loading" :items="results" :search-input.sync="search" flat hide-no-data :label="label">
-                    <template v-slot:item="{ item }">
-                        <v-list-tile-avatar class="text-sm-center">
-                            <template v-if="item._type == 'persona'">
-                                <fluro-avatar :id="item._id" type="persona" />
-                            </template>
-                            <template v-else-if="item._type == 'contact'">
-                                <fluro-avatar :id="item._id" type="contact" />
-                            </template>
-                            <template v-else-if="item._type == 'image'">
-                                <fluro-image :item="item" :spinner="true" :width="40" :height="40" />
-                            </template>
-                            <template v-else>
-                                <fluro-icon :type="item._type"></fluro-icon>
-                            </template>
-                        </v-list-tile-avatar>
-                        <v-list-tile-content>
-                            <v-list-tile-title v-text="item.title"></v-list-tile-title>
-                        </v-list-tile-content>
-                    </template>-
-                </v-autocomplete>
-            </v-flex>
-            <v-flex shrink class="buttons"> 
-                <v-btn flat block @click="dialog = true">
-                    Browse
-                </v-btn>
-            </v-flex>
-        </v-layout> -->
-        <!-- <v-dialog content-class="fluro-content-select-dialog" v-model="dialog">
-            <template v-if="dialog">
-                <fluro-content-browser :minimum="minimum" :maximum="maximum" :type="type" @close="closeModal()" v-model="model"></fluro-content-browser>
-            </template>
-        </v-dialog> -->
     </div>
 </template>
 <script>
 // import FluroContentBrowser from './FluroContentBrowser.vue';
 import FluroSelectionMixin from '../../mixins/FluroSelectionMixin';
-import draggable from 'vuedraggable'
-// import { mapFields } from 'vuex-map-fields';
+// import draggable from 'vuedraggable'
 
 import FluroContentSelectModal from './contentselect/FluroContentSelectModal.vue';
 
@@ -146,11 +104,15 @@ import FluroContentSelectModal from './contentselect/FluroContentSelectModal.vue
 
 export default {
     components: {
-        draggable,
+        // draggable,
+        draggable: () => import('vuedraggable'),
         // FluroContentBrowser,
     },
     mixins: [FluroSelectionMixin],
     props: {
+        'template': {
+            type: Object,
+        },
         'success': {
             type: Boolean,
         },
@@ -212,11 +174,7 @@ export default {
         }
     },
     created() {
-
         this.setInitialValue();
-
-
-
     },
 
     // <v-input class="no-flex" :success="success" :label="label" :required="required" :error-messages="errorMessages" :hint="field.description">
@@ -297,25 +255,35 @@ export default {
                 this.terms = newValue;
             }, 500)
         },
-        // ...mapFields('fluro', [
-        //     'realmSelectFullScreen', //The authenticated user if they log in
-        // ]),
     },
     methods: {
         setInitialValue() {
 
-            var initialValue = this.value || [];
+            var initialValue = this.value;// || [];
             this.selectionMinimum = this.minimum;
             this.selectionMaximum = this.maximum;
 
             ////////////////////////
 
+            // if(this.selection == initialValue) {
+            //     console.log('No change necessary')
+            //     return;
+            // }
+           
             // if(this.multiple) {
-            if (_.isArray(initialValue)) {
-                this.setSelection(initialValue);
-            } else {
-                // console.log('WHAT IS IS IT IT SHOULD BE AN IBJECT', initialValue.length)
-                this.setSelection([initialValue]);
+
+            if(initialValue) {
+                if (_.isArray(initialValue) && initialValue.length) {
+                    // console.log('CHECKIT HAS LENGTH', initialValue.length)
+                    this.setSelection(initialValue);
+                } else {
+
+                    if(initialValue._id || initialValue.length) {
+                         // console.log('CHECKINT WHAT IS IT', typeof initialValue)
+                        this.setSelection([initialValue]);
+                    }
+                   
+                }
             }
         },
         create() {
@@ -324,7 +292,10 @@ export default {
 
             //////////////////////////////////////
 
-            self.$fluro.global.create(self.type, null, true)
+            self.$fluro.global.create(self.type, {
+                    disableCacheClearOnSave: true,
+                    template: JSON.parse(JSON.stringify(self.template || {})),
+                }, true)
                 .then(function(res) {
                     self.select(res);
                 });
@@ -406,9 +377,11 @@ export default {
         }
     },
     watch: {
-        value(value) {
-            var self = this;
-            self.setInitialValue();
+        value(v) {
+                var self = this;
+                // console.log('Value changed', v);
+                self.setInitialValue();
+                
         },
         'terms': function(searchTerms) {
 
@@ -470,11 +443,10 @@ export default {
 
 
 
-
         return {
             listLimit: 50,
             actionIndexes: {},
-            selection: [],
+            selection:[],
             candidates: [],
             results: [],
             terms: '',

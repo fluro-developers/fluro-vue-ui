@@ -18,13 +18,13 @@
     </fluro-content-form>
 </template>
 <script>
-import { FluroContentForm, Layout } from 'fluro-vue-ui';
+// import { FluroContentForm, Layout } from 'fluro-vue-ui';
 import FluroContentEditMixin from '../FluroContentEditMixin';
+import FluroContentForm from '../../../form/FluroContentForm.vue';
 
-import moment from 'moment';
 
 export default {
-    mixins: [FluroContentEditMixin, Layout],
+    mixins: [FluroContentEditMixin],
     props: {
         value: {
             type: Object,

@@ -112,12 +112,13 @@ import LocationEditMapComponent from '../components/LocationEditMapComponent.vue
 import FluroContentEditMixin from '../FluroContentEditMixin';
 import AddressManager from '../components/AddressManager.vue';
 import KeyContactLocationManager from '../components/KeyContactLocationManager.vue';
-import axios from 'axios';
-import { FluroIcon, Layout } from 'fluro-vue-ui'
 
 /////////////////////////////////
 
 import Vue from 'vue';
+
+
+
 
 /////////////////////////////////
 
@@ -129,7 +130,7 @@ export default {
         LocationEditMapComponent,
     },
     created() {},
-    mixins: [FluroContentEditMixin, Layout],
+    mixins: [FluroContentEditMixin],
     computed: {
         fieldsOutput() {
 
@@ -203,6 +204,8 @@ export default {
         getLatLong() {
             var self = this;
             if (!self.model.longitude && !self.model.latitude) {
+
+                var axios = self.$fluro.api.axios;
                 axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
                     params: {
                         key: self.$fluro.global.googleMapsAPIKey,

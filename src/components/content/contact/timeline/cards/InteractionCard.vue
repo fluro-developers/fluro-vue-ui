@@ -40,9 +40,9 @@
     </div>
 </template>
 <script>
-import FluroContentRender from '../../../../FluroContentRender.vue';
-import FluroAvatar from '../../../../FluroAvatar.vue';
-import FluroRealmBar from '../../../../ui/FluroRealmBar.vue';
+// import FluroContentRender from '../../../../FluroContentRender.vue';
+// import FluroAvatar from '../../../../FluroAvatar.vue';
+// import FluroRealmBar from '../../../../ui/FluroRealmBar.vue';
 
 export default {
     props: {
@@ -52,9 +52,12 @@ export default {
         }
     },
     components: {
-        FluroContentRender,
-        FluroAvatar,
-        FluroRealmBar,
+        FluroContentRender:() => import('../../../../FluroContentRender.vue'),
+        FluroAvatar:() => import('../../../../FluroAvatar.vue'),
+        FluroRealmBar:() => import('../../../../ui/FluroRealmBar.vue'),
+        // FluroContentRender,
+        // FluroAvatar,
+        // FluroRealmBar,
     },
     computed: {
         definedFields() {

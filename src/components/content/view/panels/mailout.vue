@@ -31,12 +31,39 @@
 <script>
 /////////////////////////////////
 
+
+
 import Vue from 'vue';
 
 // import CorrespondenceInfoModal from '../components/CorrespondenceInfoModal.vue';
 // import MailoutPushModal from '../components/MailoutPushModal.vue';
 import FluroContentViewMixin from '../FluroContentViewMixin';
-import { SearchInput, StatusCell, AvatarCell, FluroTable, MailoutResultsPanel, MailoutPreflightPanel, MailoutRenderPreview, MailoutTestPanel, FluroContentFormField, FluroContentSelectButton } from 'fluro-vue-ui';
+// import { 
+//     SearchInput, 
+//     StatusCell, 
+//     AvatarCell, 
+//     FluroTable, 
+//     MailoutResultsPanel, 
+//     MailoutPreflightPanel, 
+//     MailoutRenderPreview, 
+//     MailoutTestPanel, 
+//     FluroContentFormField, 
+//     FluroContentSelectButton,
+//      } from 'fluro-ui';
+
+import MailoutRenderPreview from '../../../mailout/MailoutRenderPreview.vue';
+import MailoutTestPanel from '../../../mailout/MailoutTestPanel.vue';
+import MailoutResultsPanel from '../../../mailout/MailoutResultsPanel.vue';
+import MailoutPreflightPanel from '../../../mailout/MailoutPreflightPanel.vue';
+
+
+
+// import Vue from 'vue';
+
+// // import CorrespondenceInfoModal from '../components/CorrespondenceInfoModal.vue';
+// // import MailoutPushModal from '../components/MailoutPushModal.vue';
+// import FluroContentViewMixin from '../FluroContentViewMixin';
+// import { SearchInput, StatusCell, AvatarCell, FluroTable, MailoutResultsPanel, MailoutPreflightPanel, MailoutRenderPreview, MailoutTestPanel, FluroContentFormField, FluroContentSelectButton } from 'fluro-vue-ui';
 
 //////////////////////////////////////////////////////
 
@@ -171,7 +198,7 @@ export default {
 .row-item {
     display: block;
     padding: 10px;
-    @extend .border-bottom;
+    @extend .border-bottom !optional;
     color: inherit;
     text-decoration: none;
 

@@ -101,8 +101,9 @@
 </template>
 <script>
 import FluroContentEditMixin from '../FluroContentEditMixin';
-import { FluroContentForm, Layout, FluroConfirmButton } from 'fluro-vue-ui';
-import draggable from 'vuedraggable'
+// import { FluroConfirmButton } from 'fluro-vue-ui';
+import FluroConfirmButton from "../../../ui/FluroConfirmButton.vue";
+// import draggable from 'vuedraggable'
 
 
 export default {
@@ -114,10 +115,11 @@ export default {
             required: true,
         }
     },
-    mixins: [FluroContentEditMixin, Layout],
+    mixins: [FluroContentEditMixin],
     components: {
-        FluroContentForm,
-        draggable,
+        // FluroContentForm,
+        // draggable,
+        draggable: () => import('vuedraggable'),
         FluroConfirmButton
 
     },

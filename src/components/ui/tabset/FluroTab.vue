@@ -18,6 +18,12 @@ export default {
         heading: {
             type: String
         },
+        tooltip: {
+            type: String
+        },
+        iconType: {
+            type: String
+        },
         icon: {
             type: Object
         },

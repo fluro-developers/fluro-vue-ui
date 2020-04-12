@@ -79,7 +79,6 @@ import FluroContentEditMixin from '../FluroContentEditMixin.js';
 
 /////////////////////////////////
 
-import moment from 'moment';
 import Vue from 'vue';
 
 /////////////////////////////////

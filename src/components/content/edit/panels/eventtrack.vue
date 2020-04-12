@@ -4,7 +4,7 @@
             <fluro-page-preloader contain />
         </template>
         <tabset v-else :justified="true" :vertical="true">
-            <tab heading="Event Info">
+            <tab heading="Event Track Info">
                 <flex-column-body style="background: #fafafa;">
                     <v-container class="grid-list-xl">
                         <constrain sm>
@@ -35,7 +35,7 @@
                 <flex-column-body style="background: #fafafa;">
                     <v-container>
                         <constrain md>
-                            <default-roster-manager :config="config" v-model="model.defaultRosters" :rosterOptions="rosterDefinitions.definitions"/>
+                            <!-- <default-roster-manager :config="config" v-model="model.defaultRosters" :rosterOptions="rosterDefinitions.definitions"/> -->
                             <reminder-event-manager :config="config" v-model="model.defaultReminders" :allAssignmentOptions="allPositions" />
                         </constrain>
                     </v-container>
@@ -137,12 +137,22 @@
                     </v-container>
                 </flex-column-body>
             </tab>
+            <tab heading="Events" v-if="eventList">
+                <component v-bind:is="eventList" />
+            </tab>
         </tabset>
     </flex-column>
 </template>
+
 <script>
+
+
+
 /////////////////////////////////
 
+import Vue from 'vue';
+
+/////////////////////////////////
 import LocationSelector from '../components/LocationSelector.vue';
 import MessagingEventManager from '../components/MessagingEventManager.vue';
 import ReminderEventManager from '../components/ReminderEventManager.vue';
@@ -151,16 +161,34 @@ import FluroContentEditMixin from '../FluroContentEditMixin.js';
 
 // import { JSONView } from "vue-json-component";
 
-/////////////////////////////////
 
-import moment from 'moment';
-import Vue from 'vue';
+// array.push({
+//     name: 'events.tracks',
+//     path: '/events/tracks',
+//     meta: {
+//         title: 'Event Tracks',
+//         requireUser: true,
+//     },
+//     component: () => import('./routes/List.vue'),
+//     props: (route) => ({
+//         type: 'eventtrack',
+//         initialSearch: route.query.keywords || '',
+
+//     }),
+// });
+
+
 
 /////////////////////////////////
 
 export default {
     components: { DefaultRosterManager, ReminderEventManager, MessagingEventManager, LocationSelector },
     mixins: [FluroContentEditMixin],
+    data() {
+        return {
+            eventList: null,
+        }
+    },
     created() {
         var self = this;
 
@@ -183,8 +211,149 @@ export default {
         if (!self.model.defaultRosters) {
             self.$set(self.model, 'defaultRosters', []);
         }
+
+
+        
+
+
+
+
     },
+    /**
+    mounted() {
+        if(!this.eventList) {
+            console.log('Create and mount')
+            this.eventList = this.createEventList();
+        }
+    },
+    /**/
     methods: {
+        /**
+        createEventList() {
+
+            var self = this;
+            if(!self.model || !self.model._id) {
+                return;
+            }
+
+            //Load the list view component
+            var ListView = import('@/router/routes/List.vue');
+            var ListViewInstanceConstructor = Vue.extend(ListView);
+
+            
+            //Setup the list settings
+            var includeArchivedByDefault = true;
+            var dateFilterEnabled = true;
+            var groupingFunction = self.$fluro.date.groupEventByDate
+            var allDefinitions = true;
+            var searchInheritable = false;
+            var dateFilterPresets = [];
+            var dateFilterDefault;
+
+            var lockFilter = {
+                operator: 'and',
+                filters: [{
+                    key: 'track',
+                    comparator: '==',
+                    value: self.model._id,
+                    dataType: 'reference',
+                }],
+            }
+
+            /////////////////////////////////////////////////
+
+            var initialDefaultSort = {
+
+                sortKey: 'startDate',
+                sortDirection: 'asc',
+                sortType: 'date',
+            }
+
+            /////////////////////////////////////////////////
+
+            var initialDefaultFilters = {
+                operator: 'and',
+                filters: [{
+                    operator: 'and',
+                    filters: [{
+                        key: 'status',
+                        comparator: 'in',
+                        values: ['active', 'draft', 'archived'],
+                    }, ]
+                }]
+            }
+
+            ///////////////////////////////////////
+
+            var now = new Date();
+
+            dateFilterPresets.push({
+                title: 'This Week',
+                startDate: moment().startOf('week').toDate(),
+                endDate: moment().endOf('week').toDate(),
+            });
+
+            dateFilterPresets.push({
+                title: 'Last Week',
+                startDate: moment().subtract(1, 'weeks').startOf('week').toDate(),
+                endDate: moment().subtract(1, 'weeks').endOf('week').toDate(),
+            });
+
+            dateFilterPresets.push({
+                title: 'This Month',
+                startDate: moment().startOf('month').toDate(),
+                endDate: moment().endOf('month').toDate(),
+            });
+
+            dateFilterPresets.push({
+                title: 'Last Month',
+                startDate: moment().subtract(1, 'months').startOf('week').toDate(),
+                endDate: moment().subtract(1, 'months').endOf('week').toDate(),
+            });
+
+            dateFilterPresets.push({
+                title: 'This Year',
+                startDate: moment().startOf('year').toDate(),
+                endDate: moment().endOf('year').toDate(),
+            });
+
+            dateFilterPresets.push({
+                title: 'Last Year',
+                startDate: moment().subtract(1, 'years').startOf('week').toDate(),
+                endDate: moment().subtract(1, 'years').endOf('week').toDate(),
+            });
+
+
+            dateFilterDefault = {
+                startDate: now, //moment().subtract(12, 'months').toDate(),
+                endDate: moment().endOf('year').toDate(), //endDate: now,
+            }
+
+            //////////////////////////////////
+
+            var propsData = {
+                type: 'event',
+                initialDefaultFilters,
+                includeArchivedByDefault,
+                initialDefaultSort,
+                dateFilterEnabled,
+                groupingFunction,
+                allDefinitions,
+                dateFilterPresets,
+                dateFilterDefault,
+                searchInheritable,
+                lockFilter,
+            }
+
+
+            //////////////////////////////////////////////////
+
+            return new ListViewInstanceConstructor({
+                propsData
+            })
+
+        },
+        /**/
         toggleAutoRecur() {
             //console.log('INIT TOGGLE');
             var self = this;
@@ -546,7 +715,7 @@ export default {
         },
         nextRecurDateFromNow() {
             var self = this;
-            return moment(self.model.nextRecurDate).fromNow();
+            return self.$fluro.date.moment(self.model.nextRecurDate).fromNow();
         },
         allPositions() {
             var self = this;

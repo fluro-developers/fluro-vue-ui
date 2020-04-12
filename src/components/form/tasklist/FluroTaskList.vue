@@ -53,7 +53,7 @@
         <!-- <fluro-panel-body> -->
         <!--  -->
         <draggable class="task-list-items" @start="dragStart" @change="onChange" @end="dragEnd" :list="model.tasks" :options="dragOptions">
-            <fluro-task-item :state="state" :definition="definition" :card="model" v-model="model.tasks[index]" @input="update" :key="task.guid" v-for="(task, index) in model.tasks" />
+            <fluro-task-item :state="state" :definition="definition" :card="card" v-model="model.tasks[index]" @input="update" :key="task.guid" v-for="(task, index) in model.tasks" />
         </draggable>
         <template >
             <fluro-inline-edit :autofocus="value.autofocus">
@@ -89,18 +89,22 @@
     </div>
 </template>
 <script>
-import draggable from 'vuedraggable';
+// import draggable from 'vuedraggable';
 
 import FluroTaskItem from './FluroTaskItem.vue';
 import FluroInlineEdit from '../FluroInlineEdit.vue';
 
 export default {
     components: {
-        draggable,
+        // draggable,
+        draggable: () => import('vuedraggable'),
         FluroTaskItem,
         FluroInlineEdit,
     },
     props: {
+        card:{
+            type:Object,
+        },
         editMode: {
             type: Boolean,
         },

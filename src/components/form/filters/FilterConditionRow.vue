@@ -317,7 +317,6 @@ import { FilterService } from 'fluro';
 import FluroRealmSelect from '../realmselect/FluroRealmSelect.vue';
 import FluroContentSelectButton from '../contentselect/FluroContentSelectButton.vue';
 
-// import moment from 'moment';
 
 export default {
     components: {
@@ -912,6 +911,7 @@ export default {
 
             var self = this;
             var key = self.model.key;
+            console.log('RETRIEVE VALUES', key);
 
             ////////////////////////////////////
 
@@ -919,6 +919,7 @@ export default {
                 //Just show a normal reference selector
                 self.possibleValues = [];
                 self.loadingValues = false;
+                console.log('Use basic reference select')
                 return;
             }
 
@@ -931,6 +932,7 @@ export default {
                 // console.log('Values > No key so clear values');
                 self.possibleValues = [];
                 self.loadingValues = false;
+                console.log('No key')
                 return;
             }
 
@@ -953,36 +955,15 @@ export default {
                 self.possibleValues = self.selector.options;
                 self.loadingValues = false;
                 // console.log('SELECTOR POSSIBLE VALUES', key, self.possibleValues)
+                console.log('has options')
                 return;
             }
 
-            ////////////////////////////////////
 
-            if (!self.useSample) {
-                //There are no rows
-                if (!self.rows || !self.rows.length) {
-                    //console.log('Values > No rows')
-                    self.possibleValues = [];
-                    this.loadingValues = false;
-                    return;
-                }
-            }
-
-
-
-
-
-            ////////////////////////////////
-            ////////////////////////////////
-            ////////////////////////////////
             ////////////////////////////////
 
             var dataType = self.dataType;
-            // console.log('Retrieve Values', key, self.dataType)
 
-            ////////////////////////////////
-
-            //Anything goes
             ////////////////////////////////
 
             //For certain data types we already know
@@ -1032,6 +1013,18 @@ export default {
 
                     }
                     break
+            }
+
+            ////////////////////////////////////
+
+            if (!self.useSample) {
+                //There are no rows
+                if (!self.rows || !self.rows.length) {
+                    //console.log('Values > No rows')
+                    self.possibleValues = [];
+                    this.loadingValues = false;
+                    return;
+                }
             }
 
             ////////////////////////////////////
@@ -1180,7 +1173,7 @@ export default {
             valueCache.then(function(res) {
 
                 // console.log('GOT THE VALUES', res);
-                self.possibleValues = res;
+                self.possibleValues = (res && res.length) ? res : self.possibleValues || [];
                 self.loadingValues = false;
             }, function(err) {
 

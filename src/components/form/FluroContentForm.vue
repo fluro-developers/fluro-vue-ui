@@ -1,20 +1,16 @@
 <template>
     <div class="fluro-content-form">
-        <!-- <pre>FORM: {{model}}</pre> -->
         <slot name="form" :parent="formModel" :context="context" :form-fields="formFields" :field-hash="fieldHash" :model="model" :update="update" :options="options">
-           
-
-
             <template v-for="field in fields">
                 <!-- <fluro-code-editor v-model="model[field.key]" @input="valueChange" :height="200"></fluro-code-editor> -->
-                <v-container fluid class="grid-list-xl" pa-0>
-                   
-
+                <v-container fluid class="grid-list-lg" pa-0>
                     <!-- :parent="model[key]"  -->
                     <fluro-content-form-field  :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="field" @input="update" v-model="model"></fluro-content-form-field>
                 </v-container>
             </template>
         </slot>
+
+       
 
         
     </div>
@@ -321,6 +317,7 @@ export default {
         update(input, valueThatWasChanged) {
             this.model = input;
             this.$emit('input', this.model);
+            // JSON.parse(JSON.stringify(this.model)));
            
         },
 

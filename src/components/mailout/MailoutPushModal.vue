@@ -41,7 +41,7 @@
                     <flex-column-body>
                         <v-container>
                         	<p>Select contacts from your database to add them to this mailout</p>
-                            <fluro-content-select-button block type="contact" v-model="model.contacts" />
+                            <fluro-content-select-button block type="contact" :allDefinitions="true" v-model="model.contacts" />
                         </v-container>
                     </flex-column-body>
                     <flex-column-footer class="border-top">
@@ -87,7 +87,16 @@
     </flex-column>
 </template>
 <script>
-import { FluroContentFormField, FluroContentForm, FluroModalMixin, FluroContentSelectButton } from 'fluro-vue-ui';
+// import { FluroContentFormField, FluroContentForm, FluroModalMixin, FluroContentSelectButton } from 'fluro-vue-ui';
+
+
+import FluroContentForm from '../form/FluroContentForm.vue';
+import FluroContentFormField from '../form/FluroContentFormField.vue';
+import FluroModalMixin from '../../mixins/ModalMixin';
+import FluroContentSelectButton from '../form/contentselect/FluroContentSelectButton.vue';
+
+
+
 
 export default {
     props: {

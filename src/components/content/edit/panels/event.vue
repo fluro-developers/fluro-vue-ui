@@ -8,7 +8,7 @@
             <!-- <div class="event-cover-image" :style="{backgroundImage:`url(${coverImage})`}"/> -->
             <!-- <fluro-image cover :spinner="true" :height="150" :item="coverImage"/> -->
             <!-- </template> -->
-            <tab heading="Event details">
+            <tab :heading="`${readableTypeName} Info`">
                 <slot>
                     <flex-column-body style="background: #fafafa;">
                         <v-container class="grid-list-xl">
@@ -35,113 +35,120 @@
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.mainImage" v-model="model"></fluro-content-form-field>
                                 <!-- </v-input> -->
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.body" v-model="model"></fluro-content-form-field>
+                                <fluro-panel v-if="definition && definition.fields && definition.fields.length">
+                                    <fluro-panel-title>
+                                        <strong>{{definition.title}} Information</strong>
+                                    </fluro-panel-title>
+                                    <fluro-panel-body>
+                                        <!-- <pre>{{model.data}}</pre> -->
+                                        <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields">
+                                        </fluro-content-form>
+                                    </fluro-panel-body>
+                                </fluro-panel>
                                 <fluro-content-form-field :override-label="definition && definition.definitionName && definition.definitionName == 'service' ? 'Service Time / Event Track' : 'Event Track' " :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.track" v-model="model"></fluro-content-form-field>
                             </constrain>
                         </v-container>
                     </flex-column-body>
                 </slot>
             </tab>
-            <tab :heading="`${definition.title} details`" v-if="definition && definition.fields && definition.fields.length">
+            <!-- <tab :heading="`${definition.title} details`" v-if="definition && definition.fields && definition.fields.length">
                 <slot>
                     <flex-column-body style="background: #fafafa;">
                         <v-container>
                             <constrain sm>
                                 <h3 margin>{{definition.title}}</h3>
-                                <!-- <pre>{{model.data}}</pre> -->
+                               
                                 <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields">
                                 </fluro-content-form>
                             </constrain>
                         </v-container>
                     </flex-column-body>
                 </slot>
+            </tab> -->
+            <tab :heading="`Team Members`" v-if="model.rostered">
+                <flex-column-body style="background: #fafafa;">
+                    <v-container>
+                        <constrain sm>
+                            <v-layout align-center>
+                                <v-flex>
+                                    <h3>Team Members</h3>
+                                </v-flex>
+                                <v-flex shrink>
+                                    <v-btn color="primary" :to="{name:'events.multi', query:{ids:[model._id]}}">
+                                        Open in Multi Planner
+                                        <fluro-icon right icon="game-board" />
+                                    </v-btn>
+                                </v-flex>
+                            </v-layout>
+                            <fluro-panel v-for="roster in model.rostered">
+                                <fluro-panel-title>
+                                    <v-layout align-center>
+                                        <v-flex>
+                                            <strong>{{roster.title}}</strong>
+                                        </v-flex>
+                                        <v-flex shrink v-if="canEditRoster(roster)">
+                                            <v-btn icon class="ma-0" @click="$actions.open([roster])" v-tippy :content="`Actions`">
+                                                <fluro-icon icon="ellipsis-h" />
+                                            </v-btn>
+                                        </v-flex>
+                                    </v-layout>
+                                </fluro-panel-title>
+                                <fluro-panel-body>
+                                    <v-layout row wrap>
+                                        <v-flex xs6 sm4 md3 v-for="slot in roster.slots" v-if="slot.assignments && slot.assignments.length">
+                                            <v-container class="mb-2 pa-2">
+                                                <h5>{{slot.title}}</h5>
+                                                <div class="assignment-item" @click="$actions.open([assignment])" :class="assignment.confirmationStatus" v-for="assignment in slot.assignments">
+                                                    <v-layout>
+                                                        <v-flex>
+                                                            {{assignment.contact && assignment.contact.title ? assignment.contact.title : assignment.contactName}}
+                                                        </v-flex>
+                                                        <v-flex shrink>
+                                                            <fluro-icon right :icon="confirmationIcon(assignment)" />
+                                                        </v-flex>
+                                                    </v-layout>
+                                                </div>
+                                            </v-container>
+                                        </v-flex>
+                                    </v-layout>
+                                    <!-- <pre>{{roster}}</pre> -->
+                                </fluro-panel-body>
+                            </fluro-panel>
+                            <v-btn block @click="createRoster(rosterType)" class="btn-ghost" v-for="rosterType in rosterTypes">
+                                Add {{rosterType.title}}
+                            </v-btn>
+                        </constrain>
+                    </v-container>
+                </flex-column-body>
             </tab>
-            <tab :heading="`Media & Resources`">
-                <slot>
-                    <flex-column-body style="background: #fafafa;">
-                        <v-container>
-                            <constrain sm>
-                                <h3 margin>Media &amp; Resources</h3>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.mainImage" v-model="model"></fluro-content-form-field>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.images" v-model="model"></fluro-content-form-field>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.videos" v-model="model"></fluro-content-form-field>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.assets" v-model="model"></fluro-content-form-field>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.externalLinks" v-model="model"></fluro-content-form-field>
-                                <h3 margin>Social Media</h3>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.socialImages" v-model="model"></fluro-content-form-field>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.socialBody" v-model="model"></fluro-content-form-field>
-                            </constrain>
-                        </v-container>
-                    </flex-column-body>
-                </slot>
-            </tab>
-            <tab :heading="`Location`">
-                <slot>
-                    <flex-column-body style="background: #fafafa;">
-                        <v-container fluid pa-0>
-                            <location-view-map-component style="width:100%;min-height:300px;height:50vh;" name="locationMap" :positions="model.locations" />
-                            <constrain sm class="mt-4">
-                                <location-selector v-model="model" :allLocations="locations" locationsPath="locations" roomsPath="rooms" />
-                            </constrain>
-                        </v-container>
-                    </flex-column-body>
-                </slot>
-            </tab>
-            <tab :heading="`Registrations & Ticketing`">
-                <slot>
-                    <flex-column-body style="background: #fafafa;">
-                        <v-container>
-                            <constrain sm>
-                                <h3 margin>Registrations &amp; Ticketing</h3>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.forms" v-model="model"></fluro-content-form-field>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.expectTeams" v-model="model"></fluro-content-form-field>
-                            </constrain>
-                        </v-container>
-                    </flex-column-body>
-                </slot>
-            </tab>
-            <tab :heading="`Messaging`">
-                <slot>
-                    <flex-column-body style="background: #fafafa;">
-                        <v-container>
-                            <constrain lg>
-                                <h3 margin>Automated Messages</h3>
-                                <messaging-event-manager :config="config" v-model="model.messages" :startDate="model.startDate" :endDate="model.endDate" />
-                            </constrain>
-                        </v-container>
-                    </flex-column-body>
-                </slot>
-            </tab>
-            <tab :heading="`Checkin`">
-                <slot>
-                    <flex-column-body style="background: #fafafa;">
-                        <v-container>
-                            <constrain sm>
-                                <h3 margin>Checkin Settings</h3>
-                                <fluro-content-form :options="options" v-model="model.checkinData" :fields="checkinFields">
+            <tab :heading="`Livestream Settings`">
+                <flex-column-body style="background: #fafafa;">
+                    <v-container>
+                        <constrain sm>
+                            <h3 margin>Livestream Settings</h3>
+                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.streamEnabled" v-model="model" />
+                            <template v-if="model.streamEnabled">
+                                <fluro-content-form :options="options" v-model="model.streamData" :fields="streamFields">
                                     <template v-slot:form="{formFields, fieldHash, model, update, options}">
                                         <v-container pa-0 grid-list-xl>
                                             <v-layout row wrap>
                                                 <v-flex xs12 sm6>
                                                     <v-input class="no-flex">
-                                                        <v-label>Checkin Opens</v-label>
-                                                        <p class="help-block">How many minutes earlier can users checkin</p>
-                                                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.checkinStartOffset" v-model="model" />
-                                                        <p class="help-block">No checkins before</p>
+                                                        <v-label>Stream Starts</v-label>
+                                                        <p class="help-block">How many minutes earlier should the stream be available?</p>
+                                                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.streamStartOffset" v-model="model" />
                                                         <p class="lead">
-                                                            {{checkinStartDate | formatDate('h:mma dddd D MMM', model.timezone)}}
-                                                            <!-- {{checkinStartDate | formatDate:'g:ia l j M':model.timezone}} -->
+                                                            {{streamStartDate | formatDate('h:mma dddd D MMM', model.timezone)}}
                                                         </p>
                                                     </v-input>
                                                 </v-flex>
                                                 <v-flex xs12 sm6>
                                                     <v-input class="no-flex">
-                                                        <v-label>Checkin Closes</v-label>
-                                                        <p class="help-block">How many minutes after this event's end time can a user still check in?</p>
-                                                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.checkinEndOffset" v-model="model" />
-                                                        <p class="help-block">No checkins after</p>
+                                                        <v-label>Stream Ends</v-label>
+                                                        <p class="help-block">How many minutes after this event's end time should the stream be available?</p>
+                                                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.streamEndOffset" v-model="model" />
                                                         <p class="lead">
-                                                            {{checkinEndDate | formatDate('h:mma dddd D MMM', model.timezone)}}
-                                                            <!-- {{checkinEndDate | formatDate:'g:ia l j M':model.timezone}} -->
+                                                            {{streamEndDate | formatDate('h:mma dddd D MMM', model.timezone)}}
                                                         </p>
                                                     </v-input>
                                                 </v-flex>
@@ -149,24 +156,81 @@
                                         </v-container>
                                     </template>
                                 </fluro-content-form>
-                                <!-- <v-layout row wrap> -->
-                                <!-- <v-flex xs12 sm6> -->
-                                <!-- <v-input class="no-flex"> -->
-                                <!-- <v-label>Checkin Opens</v-label> -->
-                                <!-- <p class="help-block">How many minutes earlier can users checkin</p> -->
-                                <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.checkinStartOffset" v-model="model.checkinData"></fluro-content-form-field> -->
-                                <!-- <div class="input-group">
+                                <v-btn v-if="model._id && liveUrl" target="_blank" :href="liveUrl" block large color="primary">
+                                    Watch on Fluro Live
+                                </v-btn>
+
+
+                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.streamIntegrations" v-model="model"/>
+
+
+                                <fluro-panel>
+                                    <fluro-panel-body>
+                                        <v-input class="no-flex" label="RTMP Upstream URL">
+                                            <div v-tippy content="Click to copy to clipboard" @click.stop.prevent="copyToClipboard('rtmpUrl')">
+                                                <v-layout align-center>
+                                                    <!-- <v-flex shrink>
+                                                        <fluro-icon icon="copy" />
+                                                    </v-flex> -->
+                                                    <v-flex class="copystring">{{rtmpUrl}}</v-flex>
+                                                </v-layout>
+                                                <input type="hidden" ref="rtmpUrl" :value="rtmpUrl">
+                                            </div>
+                                        </v-input>
+                                        <v-input class="no-flex" label="RTMP Stream Key">
+                                            <div v-tippy content="Click to copy to clipboard" @click.stop.prevent="copyToClipboard('streamKey')">
+                                                <v-layout align-center>
+                                                    <!-- <v-flex shrink>
+                                                        <fluro-icon icon="copy" />
+                                                    </v-flex> -->
+                                                    <v-flex class="copystring">{{streamKey}}</v-flex>
+                                                </v-layout>
+                                                <input type="hidden" ref="streamKey" :value="streamKey">
+                                            </div>
+                                        </v-input>
+                                        <v-input class="no-flex" label="Fluro Live URL">
+                                            <div v-tippy content="Click to copy to clipboard" @click.stop.prevent="copyToClipboard('liveUrl')">
+                                                <v-layout align-center>
+                                                    <!-- <v-flex shrink>
+                                                        <fluro-icon icon="copy" />
+                                                    </v-flex> -->
+                                                    <v-flex class="copystring">{{liveUrl}}</v-flex>
+                                                </v-layout>
+                                                <input type="hidden" ref="liveUrl" :value="liveUrl">
+                                            </div>
+                                        </v-input>
+                                        <v-input class="no-flex" label="Video Stream URL">
+                                            <div v-tippy content="Click to copy to clipboard" @click.stop.prevent="copyToClipboard('streamUrl')">
+                                                <v-layout align-center>
+                                                    <!-- <v-flex shrink>
+                                                        <fluro-icon icon="copy" />
+                                                    </v-flex> -->
+                                                    <v-flex class="copystring">{{streamUrl}}</v-flex>
+                                                </v-layout>
+                                                <input type="hidden" ref="streamUrl" :value="streamUrl">
+                                            </div>
+                                        </v-input>
+                                    </fluro-panel-body>
+                                </fluro-panel>
+                            </template>
+                            <!-- <v-layout row wrap> -->
+                            <!-- <v-flex xs12 sm6> -->
+                            <!-- <v-input class="no-flex"> -->
+                            <!-- <v-label>Checkin Opens</v-label> -->
+                            <!-- <p class="help-block">How many minutes earlier can users checkin</p> -->
+                            <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.checkinStartOffset" v-model="model.checkinData"></fluro-content-form-field> -->
+                            <!-- <div class="input-group">
                                                 <input type="number" min="0" placeholder="Defaults to 90 mins" class="form-control" ng-model="item.checkinData.checkinStartOffset" />
                                                 <div class="input-group-addon">Minutes earlier</div>
                                             </div> -->
-                                <!-- </v-input> -->
-                                <!-- <p class="help-block">No checkins before</p> -->
-                                <!-- <p class="lead"> -->
-                                <!-- {{checkinStartDate | formatDate:'g:ia l j M':model.timezone}}<br /> -->
-                                <!-- <em class="text-muted small">{{model.timezone}}</em> -->
-                                <!-- </p> -->
-                                <!-- </v-flex> -->
-                                <!-- <v-flex xs12 sm6>
+                            <!-- </v-input> -->
+                            <!-- <p class="help-block">No checkins before</p> -->
+                            <!-- <p class="lead"> -->
+                            <!-- {{checkinStartDate | formatDate:'g:ia l j M':model.timezone}}<br /> -->
+                            <!-- <em class="text-muted small">{{model.timezone}}</em> -->
+                            <!-- </p> -->
+                            <!-- </v-flex> -->
+                            <!-- <v-flex xs12 sm6>
                                         <v-input class="no-flex">
                                             <v-label>Checkin Closes</v-label>
                                             <p class="help-block">How many minutes after this event's end time can a user still checkin</p>
@@ -181,11 +245,168 @@
                                             <em class="text-muted small">{{model.timezone}}</em>
                                         </p>
                                     </v-flex> -->
-                                <!-- </v-layout> -->
+                            <!-- </v-layout> -->
+                        </constrain>
+                    </v-container>
+                </flex-column-body>
+            </tab>
+            <tab :heading="`${plans.length} Plan${plans.length == 1 ? '' : 's'}`" v-if="model._id">
+                <flex-column-body style="background: #fafafa;">
+                    <v-container fluid>
+                        <v-layout align-center>
+                            <v-flex>
+                                <h3>{{plans.length}} Plan{{plans.length == 1 ? '' : 's'}}</h3>
+                            </v-flex>
+                            <v-flex shrink>
+                                <v-btn color="primary" @click="createPlan()" v-if="$fluro.access.can('create', 'plan')">
+                                    <span>Add Plan</span>
+                                    <fluro-icon icon="plus" right />
+                                </v-btn>
+                            </v-flex>
+                        </v-layout>
+                        <fluro-panel>
+                            <tabset :justified="true">
+                                <tab :heading="plan.title" v-for="(plan, index) in plans">
+                                    <!-- <fluro-content-edit :embedded="true" v-if="$fluro.access.canEditItem(plan)" v-model="plans[index]" :disableCacheClearOnSave="true" context="edit" type="plan" @cancel="closePlan" @success="planUpdated" /> -->
+                                    <!-- v-else -->
+                                    <fluro-content-view :id="plans[index]" :embedded="true" type="plan" />
+                                </tab>
+                            </tabset>
+                            <!-- <pre>{{plans}}</pre> -->
+                        </fluro-panel>
+                    </v-container>
+                </flex-column-body>
+            </tab>
+            <tab :heading="`Location & Rooms`">
+                <flex-column-body style="background: #fafafa;">
+                    <v-container fluid pa-0>
+                        <location-view-map-component style="width:100%;min-height:300px;height:50vh;" name="locationMap" :positions="model.locations" />
+                        <constrain sm class="mt-4">
+                            <location-selector v-model="model" :allLocations="locations" locationsPath="locations" roomsPath="rooms" />
+                        </constrain>
+                    </v-container>
+                </flex-column-body>
+            </tab>
+            <tab :heading="`Media & Resources`">
+                <flex-column-body style="background: #fafafa;">
+                    <v-container>
+                        <constrain sm>
+                            <h3 margin>Media &amp; Resources</h3>
+                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.mainImage" v-model="model"></fluro-content-form-field>
+                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.images" v-model="model"></fluro-content-form-field>
+                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.videos" v-model="model"></fluro-content-form-field>
+                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.assets" v-model="model"></fluro-content-form-field>
+                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.externalLinks" v-model="model"></fluro-content-form-field>
+                            <fluro-panel>
+                                <fluro-panel-title>
+                                    <strong>Social Media</strong>
+                                </fluro-panel-title>
+                                <fluro-panel-body>
+                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.socialImages" v-model="model"></fluro-content-form-field>
+                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.socialBody" v-model="model"></fluro-content-form-field>
+                                </fluro-panel-body>
+                            </fluro-panel>
+                        </constrain>
+                    </v-container>
+                </flex-column-body>
+            </tab>
+            <tab :heading="`Guests / Ticketing`">
+                <flex-column-body style="background: #fafafa;">
+                    <v-container>
+                        <!-- <constrain sm> -->
+                        <h3 margin>Registrations &amp; Ticketing</h3>
+                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.forms" v-model="model"></fluro-content-form-field>
+                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.expectTeams" v-model="model"></fluro-content-form-field>
+                        <!-- </constrain> -->
+                        <guest-list :event="model" />
+                    </v-container>
+                </flex-column-body>
+            </tab>
+            <tab :heading="`Messaging`">
+                <slot>
+                    <flex-column-body style="background: #fafafa;">
+                        <v-container>
+                            <constrain lg>
+                                <h3 margin>Automated Messages</h3>
+                                <messaging-event-manager :config="config" v-model="model.messages" :startDate="model.startDate" :endDate="model.endDate" />
                             </constrain>
                         </v-container>
                     </flex-column-body>
                 </slot>
+            </tab>
+            <tab :heading="`Checkin Settings`">
+                <flex-column-body style="background: #fafafa;">
+                    <v-container>
+                        <constrain sm>
+                            <h3 margin>Checkin Settings</h3>
+                            <fluro-content-form :options="options" v-model="model.checkinData" :fields="checkinFields">
+                                <template v-slot:form="{formFields, fieldHash, model, update, options}">
+                                    <v-container pa-0 grid-list-xl>
+                                        <v-layout row wrap>
+                                            <v-flex xs12 sm6>
+                                                <v-input class="no-flex">
+                                                    <v-label>Checkin Opens</v-label>
+                                                    <p class="help-block">How many minutes earlier can users checkin</p>
+                                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.checkinStartOffset" v-model="model" />
+                                                    <p class="help-block">No checkins before</p>
+                                                    <p class="lead">
+                                                        {{checkinStartDate | formatDate('h:mma dddd D MMM', model.timezone)}}
+                                                        <!-- {{checkinStartDate | formatDate:'g:ia l j M':model.timezone}} -->
+                                                    </p>
+                                                </v-input>
+                                            </v-flex>
+                                            <v-flex xs12 sm6>
+                                                <v-input class="no-flex">
+                                                    <v-label>Checkin Closes</v-label>
+                                                    <p class="help-block">How many minutes after this event's end time can a user still check in?</p>
+                                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.checkinEndOffset" v-model="model" />
+                                                    <p class="help-block">No checkins after</p>
+                                                    <p class="lead">
+                                                        {{checkinEndDate | formatDate('h:mma dddd D MMM', model.timezone)}}
+                                                        <!-- {{checkinEndDate | formatDate:'g:ia l j M':model.timezone}} -->
+                                                    </p>
+                                                </v-input>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-container>
+                                </template>
+                            </fluro-content-form>
+                            <!-- <v-layout row wrap> -->
+                            <!-- <v-flex xs12 sm6> -->
+                            <!-- <v-input class="no-flex"> -->
+                            <!-- <v-label>Checkin Opens</v-label> -->
+                            <!-- <p class="help-block">How many minutes earlier can users checkin</p> -->
+                            <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.checkinStartOffset" v-model="model.checkinData"></fluro-content-form-field> -->
+                            <!-- <div class="input-group">
+                                                <input type="number" min="0" placeholder="Defaults to 90 mins" class="form-control" ng-model="item.checkinData.checkinStartOffset" />
+                                                <div class="input-group-addon">Minutes earlier</div>
+                                            </div> -->
+                            <!-- </v-input> -->
+                            <!-- <p class="help-block">No checkins before</p> -->
+                            <!-- <p class="lead"> -->
+                            <!-- {{checkinStartDate | formatDate:'g:ia l j M':model.timezone}}<br /> -->
+                            <!-- <em class="text-muted small">{{model.timezone}}</em> -->
+                            <!-- </p> -->
+                            <!-- </v-flex> -->
+                            <!-- <v-flex xs12 sm6>
+                                        <v-input class="no-flex">
+                                            <v-label>Checkin Closes</v-label>
+                                            <p class="help-block">How many minutes after this event's end time can a user still checkin</p>
+                                            <div class="input-group">
+                                                <input type="number" min="0" placeholder="Defaults to 90 mins" class="form-control" ng-model="model.checkinData.checkinEndOffset" />
+                                                <div class="input-group-addon">Minutes later</div>
+                                            </div>
+                                        </v-input>
+                                        <p class="help-block">No checkins after</p>
+                                        <p class="lead">
+                                            {{checkinEndDate | formatDate:'g:ia l j M':model.timezone}}<br />
+                                            <em class="text-muted small">{{model.timezone}}</em>
+                                        </p>
+                                    </v-flex> -->
+                            <!-- </v-layout> -->
+                        </constrain>
+                    </v-container>
+                </flex-column-body>
             </tab>
         </tabset>
     </flex-column>
@@ -195,297 +416,159 @@
 
 
 import MessagingEventManager from '../components/MessagingEventManager.vue';
-import LocationViewMapComponent from '../components/LocationViewMapComponent.vue';
+import LocationViewMapComponent from '../../event/LocationViewMapComponent.vue';
 import LocationSelector from '../components/LocationSelector.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
-
+// import FluroContentEdit from '../FluroContentEdit';
+import GuestList from '../../event/GuestList.vue';
 // import { JSONView } from "vue-json-component";
+
+import FluroContentView from '../../view/FluroContentView.vue';
 
 /////////////////////////////////
 
-import moment from 'moment';
 import Vue from 'vue';
 
 /////////////////////////////////
 
 export default {
-    components: { MessagingEventManager, LocationSelector, LocationViewMapComponent },
+    components: {
+        GuestList,
+        // FluroContentEdit,
+        FluroContentView,
+        MessagingEventManager,
+        LocationSelector,
+        LocationViewMapComponent,
+    },
     props: {
-        'fields': {
-            type: Array,
-            default () {
 
-
-                var self = this;
-                var array = [];
-
-                //console.log('SELF', self);
-
-                ///////////////////////////////////
-
-                addField('title', {
-                    title: 'Event Title',
-                    minimum: 1,
-                    maximum: 1,
-                    type: 'string',
-                    placeholder: 'Event title',
-                })
-
-                addField('firstLine', {
-                    title: 'Subtitle',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'string',
-                    placeholder: 'Eg. A great event for the whole family. Featuring Special Guest...',
-                    description: 'A short one line description about this event',
-                })
-
-
-
-                ///////////////////////////////////
-                ///////////////////////////////////
-                ///////////////////////////////////
-
-
-                var now = new Date();
-                addField('startDate', {
-                    title: 'Start Date',
-                    minimum: 1,
-                    maximum: 1,
-                    type: 'date',
-                    directive: 'datetimepicker',
-                    defaultValues: [now],
-
-                })
-
-                addField('endDate', {
-                    title: 'End Date',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'date',
-                    directive: 'datetimepicker',
-                    defaultValues: [now],
-
-                })
-
-
-
-                addField('timezone', {
-                    title: 'Event Timezone',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'string',
-                    directive: 'timezone-select',
-                    description: 'Set a local timezone for this event',
-                })
-
-
-                ///////////////////////////////////
-                ///////////////////////////////////
-                ///////////////////////////////////
-
-
-                addField('mainImage', {
-                    title: 'Main Promotional Image',
-                    description: 'Select a main promotional image for this event',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'reference',
-                    directive: 'reference-select',
-                    params: {
-                        restrictType: 'image',
-                    }
-                });
-
-
-                addField('track', {
-                    title: 'Event Track',
-                    description: 'The event track for this event',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'reference',
-                    directive: 'reference-select',
-                    params: {
-                        restrictType: 'eventtrack',
-                    }
-                });
-
-
-
-                addField('body', {
-                    title: 'Body',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'string',
-                    directive: 'wysiwyg',
-                    placeholder: '',
-                    description: '',
-                })
-
-                ///////////////////////////////////
-                ///////////////////////////////////
-                ///////////////////////////////////
-
-
-                addField('images', {
-                    title: 'Additional Images',
-                    description: 'Additional promotional images for this event',
-                    minimum: 0,
-                    maximum: 0,
-                    type: 'reference',
-                    directive: 'reference-select',
-                    params: {
-                        restrictType: 'image',
-                    }
-                });
-
-                addField('videos', {
-                    title: 'Videos',
-                    description: 'Additional video content for this event',
-                    minimum: 0,
-                    maximum: 0,
-                    type: 'reference',
-                    directive: 'reference-select',
-                    params: {
-                        restrictType: 'video',
-                    }
-                });
-
-                addField('assets', {
-                    title: 'Files and Resources',
-                    description: 'Additional downloadable assets and resources for this event',
-                    minimum: 0,
-                    maximum: 0,
-                    type: 'reference',
-                    directive: 'reference-select',
-                    params: {
-                        restrictType: 'asset',
-                    }
-                });
-
-
-                addField('externalLinks', {
-                    title: 'External Link',
-                    // description: '',
-                    minimum: 0,
-                    maximum: 0,
-                    askCount: 0,
-                    type: 'group',
-                    asObject: true,
-                    sameLine: true,
-                    fields: [{
-                        type: 'group',
-                        sameLine: true,
-                        fields: [{
-                                title: 'Title',
-                                key: 'title',
-                                type: 'string',
-                                minimum: 1,
-                                maximum: 1,
-                            },
-                            {
-                                title: 'URL',
-                                key: 'url',
-                                type: 'url',
-                                minimum: 1,
-                                maximum: 1,
-                                placeholder: 'https://',
-                            },
-                        ],
-                    }],
-                });
-
-                ///////////////////////////////////
-
-                addField('socialImages', {
-                    title: 'Social Media Artwork',
-                    description: 'Add images and artwork that can be shared from pulse and slipstream to promote this event',
-                    minimum: 0,
-                    maximum: 0,
-                    type: 'reference',
-                    directive: 'reference-select',
-                    params: {
-                        restrictType: 'image',
-                    }
-                });
-
-                addField('socialBody', {
-                    title: 'Social Media Blurb',
-                    description: 'Add a social blurb and hashtags to use when sharing/promoting this event',
-                    minimum: 0,
-                    maximum: 1,
-                    type: 'string',
-                    directive: 'textarea',
-                });
-
-
-
-                // addField('externalLinks', {
-                //     title: 'External Links',
-                //     description: 'Relevant external links and URLs for this event',
-                //     minimum: 0,
-                //     maximum: 0,
-                //     type: '',
-                //     directive: 'reference-select',
-                //     params: {
-                //         restrictType: 'asset',
-                //     }
-                // });
-
-
-                ///////////////////////////////////
-                ///////////////////////////////////
-                ///////////////////////////////////
-
-                addField('forms', {
-                    title: 'Registration Forms',
-                    description: 'Manage registration forms that can be used to register for this event',
-                    minimum: 0,
-                    maximum: 0,
-                    type: 'reference',
-                    directive: 'reference-select',
-                    params: {
-                        restrictType: 'form',
-                    },
-                })
-
-                addField('expectTeams', {
-                    title: 'Expect Groups',
-                    description: 'Select groups to expect as attendees. This will expect all active members of these groups as attending at the time of event start',
-                    minimum: 0,
-                    maximum: 0,
-                    type: 'reference',
-                    directive: 'reference-select',
-                    params: {
-                        restrictType: 'team',
-                    },
-                })
-
-                ///////////////////////////////////
-
-                function addField(key, details) {
-                    details.key = key;
-                    array.push(details)
-                    // // Vue.set(self.fields, key, details);
-
-                    // if (details.enabled === false) {
-
-                    // } else {
-                    //     details.enabled = true;
-                    // }
-
-
-                    // var defaultValue = self.getDefaultValue(key, details);
-                    // Vue.set(self.model, key, defaultValue);
-                }
-
-                return array;
-            }
-        }
     },
     mixins: [FluroContentEditMixin],
     methods: {
+        copyToClipboard(refID) {
 
+            var self = this;
+
+            let testingCodeToCopy = this.$refs[refID];
+            testingCodeToCopy.setAttribute('type', 'text') // 不是 hidden 才能複製
+            testingCodeToCopy.select()
+
+            try {
+                var successful = document.execCommand('copy');
+                var msg = successful ? 'successful' : 'unsuccessful';
+                // alert('Testing code was copied ' + msg);
+                self.$fluro.notify('Invite Code Copied to clipboard');
+            } catch (err) {
+                // alert('Oops, unable to copy');
+                // self.$fluro.error({message:'Unable to copy to clipboard'});
+            }
+
+            /* unselect the range */
+            testingCodeToCopy.setAttribute('type', 'hidden')
+            window.getSelection().removeAllRanges()
+        },
+        closePlan() {
+
+        },
+        planUpdated(result) {
+            console.log('changed the plan!', result);
+        },
+        createPlan() {
+
+            var self = this;
+            var event = self.model;
+
+            ///////////////////////////////////////////////////////
+
+            self.$fluro.global.select('plan', { title: 'Select a template', minimum: 1, maximum: 1 }, true)
+                .then(function(plans) {
+                    if (!plans || !plans.length) {
+                        return;
+                    }
+
+                    var planID = self.$fluro.utils.getStringID(plans[0]);
+                    self.processing = true;
+
+                    return self.$fluro.content.get(planID).then(function(fullPlan) {
+
+                        var template = fullPlan;
+                        template.realms = event.realms;
+
+                        ///////////////////////////////////
+
+                        template.event = event;
+                        template.startDate = event.startDate;
+                        template.status = 'active';
+                        delete template._id;
+
+                        self.$fluro.global.create('plan', {
+                                template,
+                                copy: true,
+                            }, true)
+                            .then(function(res) {
+                                self.processing = false;
+                            }, function(err) {
+                                self.processing = false;
+                            })
+                    })
+                })
+
+
+
+
+
+
+
+        },
+        createRoster(rosterType) {
+
+            var self = this;
+
+
+            var template = {
+                title: rosterType.title,
+                event: self.model,
+                definition: rosterType.definitionName,
+                realms: self.model.realms.slice(),
+            }
+
+            self.$fluro.global.create(rosterType.definitionName, {
+                    template,
+                }, true)
+                .then(function(result) {
+                    console.log('Result')
+                })
+                .catch(function(err) {
+
+                });
+
+            // fluro.global.create = function(definedType, options, modal) {
+
+        },
+        confirmationIcon(assignment) {
+
+            switch (assignment.confirmationStatus) {
+                case 'confirmed':
+                    return 'check';
+                    break;
+                case 'denied':
+                    return 'times';
+                    break;
+                case 'unknown':
+                    return 'clock';
+                    break;
+                case 'proposed':
+                    return 'question-circle';
+                    break;
+            }
+
+        },
+        canEditRoster(roster) {
+            return this.$fluro.access.canEditItem(roster);
+        },
+        // editRoster(roster) {
+        //     console.log('Eit roster', roster);
+        // },
     },
 
     // beforeCreate: function() {
@@ -548,6 +631,13 @@ export default {
             });
         }
 
+        if (!self.model.streamData) {
+            self.$set(self.model, 'streamData', {
+                streamStartOffset: 30,
+                streamEndOffset: 30,
+            });
+        }
+
         if (!self.model.messages) {
             self.$set(self.model, 'messages', []);
         }
@@ -561,6 +651,34 @@ export default {
         }
     },
     asyncComputed: {
+        rosterTypes: {
+            default: [],
+            get() {
+                var self = this;
+
+                ///////////////////////////////////
+
+                return new Promise(function(resolve, reject) {
+
+                    return self.$fluro.types.subTypes('roster')
+                        .then(function(types) {
+
+                            var filtered = _.filter(types, function(type) {
+                                var alreadyCreated = !self.existingRosterTypes[type.definitionName];
+                                if (!alreadyCreated) {
+                                    return;
+                                }
+
+                                //Return if we have enough permissions to create this thing
+                                return self.$fluro.access.can('create', type.definitionName, 'roster')
+                            })
+                            resolve(filtered)
+                        })
+                        .catch(reject);
+
+                });
+            }
+        },
         locations: {
             default: [],
             get() {
@@ -581,6 +699,348 @@ export default {
         },
     },
     computed: {
+        fieldsOutput() {
+
+
+            var self = this;
+            var array = [];
+
+            ///////////////////////////////////
+
+            addField('title', {
+                title: 'Event Title',
+                minimum: 1,
+                maximum: 1,
+                type: 'string',
+                placeholder: 'Event title',
+            })
+
+            addField('firstLine', {
+                title: 'Subtitle',
+                minimum: 0,
+                maximum: 1,
+                type: 'string',
+                placeholder: 'Eg. A great event for the whole family. Featuring Special Guest...',
+                description: 'A short one line description about this event',
+            })
+
+            ///////////////////////////////////
+
+            addField('streamEnabled', {
+                title: 'Stream Enabled',
+                description: 'Enable live streaming for this event',
+                minimum: 0,
+                maximum: 1,
+                type: 'boolean',
+                defaultValues: [true]
+            });
+
+
+
+            ///////////////////////////////////
+
+            addField('streamIntegrations', {
+                title: 'Stream Integrations',
+                description: 'Broadcast to multiple endpoints',
+                minimum: 0,
+                maximum: 0,
+                type: 'reference',
+                params: {
+                    restrictType: 'integration',
+                },
+                defaultValues: [true]
+            });
+
+            ///////////////////////////////////
+            ///////////////////////////////////
+            ///////////////////////////////////
+
+
+            var now = new Date();
+            addField('startDate', {
+                title: 'Start Date',
+                minimum: 1,
+                maximum: 1,
+                type: 'date',
+                directive: 'datetimepicker',
+                defaultValues: [now],
+
+            })
+
+            addField('endDate', {
+                title: 'End Date',
+                minimum: 0,
+                maximum: 1,
+                type: 'date',
+                directive: 'datetimepicker',
+                defaultValues: [now],
+
+            })
+
+
+
+            addField('timezone', {
+                title: 'Event Timezone',
+                minimum: 0,
+                maximum: 1,
+                type: 'string',
+                directive: 'timezone-select',
+                description: 'Set a local timezone for this event',
+            })
+
+
+            ///////////////////////////////////
+            ///////////////////////////////////
+            ///////////////////////////////////
+
+
+            addField('mainImage', {
+                title: 'Main Promotional Image',
+                description: 'Select a main promotional image for this event',
+                minimum: 0,
+                maximum: 1,
+                type: 'reference',
+                directive: 'reference-select',
+                params: {
+                    restrictType: 'image',
+                }
+            });
+
+
+            addField('track', {
+                title: 'Event Track',
+                description: 'The event track for this event',
+                minimum: 0,
+                maximum: 1,
+                type: 'reference',
+                directive: 'reference-select',
+                params: {
+                    restrictType: 'eventtrack',
+                }
+            });
+
+
+
+            addField('body', {
+                title: 'Body',
+                minimum: 0,
+                maximum: 1,
+                type: 'string',
+                directive: 'wysiwyg',
+                placeholder: '',
+                description: '',
+            })
+
+            ///////////////////////////////////
+            ///////////////////////////////////
+            ///////////////////////////////////
+
+
+            addField('images', {
+                title: 'Additional Images',
+                description: 'Additional promotional images for this event',
+                minimum: 0,
+                maximum: 0,
+                type: 'reference',
+                directive: 'reference-select',
+                params: {
+                    restrictType: 'image',
+                }
+            });
+
+            addField('videos', {
+                title: 'Videos',
+                description: 'Additional video content for this event',
+                minimum: 0,
+                maximum: 0,
+                type: 'reference',
+                directive: 'reference-select',
+                params: {
+                    restrictType: 'video',
+                }
+            });
+
+            addField('assets', {
+                title: 'Files and Resources',
+                description: 'Additional downloadable assets and resources for this event',
+                minimum: 0,
+                maximum: 0,
+                type: 'reference',
+                directive: 'reference-select',
+                params: {
+                    restrictType: 'asset',
+                }
+            });
+
+
+            addField('externalLinks', {
+                title: 'External Link',
+                // description: '',
+                minimum: 0,
+                maximum: 0,
+                askCount: 0,
+                type: 'group',
+                asObject: true,
+                sameLine: true,
+                fields: [{
+                    type: 'group',
+                    sameLine: true,
+                    fields: [{
+                            title: 'Title',
+                            key: 'title',
+                            type: 'string',
+                            minimum: 1,
+                            maximum: 1,
+                        },
+                        {
+                            title: 'URL',
+                            key: 'url',
+                            type: 'url',
+                            minimum: 1,
+                            maximum: 1,
+                            placeholder: 'https://',
+                        },
+                    ],
+                }],
+            });
+
+            ///////////////////////////////////
+
+            addField('socialImages', {
+                title: 'Social Media Artwork',
+                description: 'Add images and artwork that can be shared from pulse and slipstream to promote this event',
+                minimum: 0,
+                maximum: 0,
+                type: 'reference',
+                directive: 'reference-select',
+                params: {
+                    restrictType: 'image',
+                }
+            });
+
+            addField('socialBody', {
+                title: 'Social Media Blurb',
+                description: 'Add a social blurb and hashtags to use when sharing/promoting this event',
+                minimum: 0,
+                maximum: 1,
+                type: 'string',
+                directive: 'textarea',
+            });
+
+
+
+            // addField('externalLinks', {
+            //     title: 'External Links',
+            //     description: 'Relevant external links and URLs for this event',
+            //     minimum: 0,
+            //     maximum: 0,
+            //     type: '',
+            //     directive: 'reference-select',
+            //     params: {
+            //         restrictType: 'asset',
+            //     }
+            // });
+
+
+            ///////////////////////////////////
+            ///////////////////////////////////
+            ///////////////////////////////////
+
+            addField('forms', {
+                title: 'Registration Forms',
+                description: 'Manage registration forms that can be used to register for this event',
+                minimum: 0,
+                maximum: 0,
+                type: 'reference',
+                directive: 'reference-select',
+                params: {
+                    restrictType: 'form',
+                },
+            })
+
+            addField('expectTeams', {
+                title: 'Expect Groups',
+                description: 'Select groups to expect as attendees. This will expect all active members of these groups as attending at the time of event start',
+                minimum: 0,
+                maximum: 0,
+                type: 'reference',
+                directive: 'reference-select',
+                params: {
+                    restrictType: 'team',
+                },
+            })
+
+            ///////////////////////////////////
+
+            function addField(key, details) {
+                details.key = key;
+                array.push(details)
+                // // Vue.set(self.fields, key, details);
+
+                // if (details.enabled === false) {
+
+                // } else {
+                //     details.enabled = true;
+                // }
+
+
+                // var defaultValue = self.getDefaultValue(key, details);
+                // Vue.set(self.model, key, defaultValue);
+            }
+
+            return array;
+
+        },
+        eventID() {
+            return this.$fluro.utils.getStringID(this.model)
+        },
+        accountID() {
+            return this.$fluro.utils.getStringID(this.model.account)
+        },
+        rtmpUrl() {
+            if (!this.streamKey) {
+                return 'Please save this event to generate your RTMP URL';
+            }
+            return 'rtmp://52.63.92.162/live/';
+        },
+        liveUrl() {
+
+
+            if (!this.streamKey) {
+                return 'Please save this event to generate your fluro live url';
+            }
+
+            return `https://fluro.live/event/${this.accountID}/${this.eventID}`;
+        },
+        streamUrl() {
+            if (!this.streamKey) {
+                return 'Please save this event to generate your fluro live url';
+            }
+
+            return `https://stream.fluro.live/live/${this.accountID}.${this.eventID}/index.m3u8`;
+        },
+        streamKey() {
+
+            var self = this;
+            if (!self.eventID || !self.accountID) {
+                return;
+                // 'Please save this event to get your stream key';
+            }
+
+            return `${self.accountID}.${self.eventID}`;
+        },
+        readableTypeName() {
+            return this.definition ? this.$fluro.types.readable(this.definition.title) : 'Event';
+        },
+        plans() {
+            return this.model.plans || [];
+        },
+        existingRosterTypes() {
+            return _.reduce(this.model.rostered, function(set, roster) {
+                set[roster.definition] = true;
+                return set;
+            }, {})
+        },
         coverImage() {
             var self = this;
             return self.$fluro.asset.coverImage(self.model._id, 'event', { w: 150 });
@@ -597,7 +1057,7 @@ export default {
         },
         checkinStartDate() {
             var self = this;
-            return moment(self.model.startDate).subtract(self.checkinStartOffset, 'minutes').toDate();
+            return self.$fluro.date.moment(self.model.startDate).subtract(self.checkinStartOffset, 'minutes').toDate();
         },
         checkinEndOffset() {
             var self = this;
@@ -611,7 +1071,7 @@ export default {
         },
         checkinEndDate() {
             var self = this;
-            return moment(self.model.startDate).add(self.checkinEndOffset, 'minutes').toDate();
+            return self.$fluro.date.moment(self.model.startDate).add(self.checkinEndOffset, 'minutes').toDate();
         },
         checkinFields() {
 
@@ -635,6 +1095,69 @@ export default {
                 type: 'integer',
             }]
         },
+
+
+
+
+
+
+
+        streamStartOffset() {
+            var self = this;
+            var originalOffsetValue = self.model.streamData.streamStartOffset;
+
+            if (originalOffsetValue === undefined || originalOffsetValue === null || isNaN(originalOffsetValue)) {
+                return 90;
+            } else {
+                return parseInt(originalOffsetValue);
+            }
+        },
+        streamStartDate() {
+            var self = this;
+            return self.$fluro.date.moment(self.model.startDate).subtract(self.streamStartOffset, 'minutes').toDate();
+        },
+        streamEndOffset() {
+            var self = this;
+            var originalOffsetValue = self.model.streamData.streamEndOffset;
+
+            if (originalOffsetValue === undefined || originalOffsetValue === null || isNaN(originalOffsetValue)) {
+                return 90;
+            } else {
+                return parseInt(originalOffsetValue);
+            }
+        },
+        streamEndDate() {
+            var self = this;
+            return self.$fluro.date.moment(self.model.endDate || self.model.startDate).add(self.streamEndOffset, 'minutes').toDate();
+        },
+        streamFields() {
+
+            return [
+
+                {
+                    title: 'Stream Opens',
+                    description: 'How many minutes earlier can users stream',
+                    key: 'streamStartOffset',
+                    placeholder: "Defaults to 30 mins before event start",
+                    minimum: 0,
+                    maximum: 1,
+                    // suffix:'minutes',
+                    type: 'integer',
+                }, {
+                    title: 'Stream Closes',
+                    description: `How many minutes after this event's end time can a user still stream`,
+                    key: 'streamEndOffset',
+                    placeholder: "Defaults to 30 mins after event ends",
+                    minimum: 0,
+                    maximum: 1,
+                    // suffix:'minutes',
+                    type: 'integer',
+                }
+            ]
+        },
+
+
+
         showOutline() {
             return false; //true; //false;//true;//false;//true;
         },
@@ -663,8 +1186,7 @@ export default {
     display: block;
     margin: 5%;
 }
-</style>
-<style scoped lang="scss">
+
 .hint {
     font-size: 10px;
     opacity: 0.5;
@@ -673,6 +1195,67 @@ export default {
 
 }
 
+.copystring {
+    width: 100%;
+    overflow: auto;
+    display: block;
+    background: #eee;
+    border-radius: 3px;
+    // font-size: 0.9em;
+    // font-weight: bold;
+    opacity: 0.5;
+    padding: 10px;
+    line-height: 20px;
+
+    &:hover {
+        opacity: 1;
+    }
+}
+
+
+.assignment-item {
+    font-size: 12px;
+    text-overflow: ellipsis;
+    ;
+    white-space: nowrap;
+    ;
+    overflow: hidden;
+    ;
+    border-radius: 100px;
+    margin-bottom: 2px;
+    padding: 2px 10px;
+    font-weight: 500;
+    background-color: rgba(#000, 0.05);
+
+    &.confirmed {
+        color: $success;
+        background-color: rgba($success, 0.05);
+    }
+
+    &.denied {
+        color: $danger;
+        background-color: rgba($danger, 0.05);
+    }
+
+    &.unknown {
+        color: #555;
+    }
+
+    &.proposed {
+        background-color: rgba($primary, 0.1);
+        color: darken($primary, 20%);
+    }
+}
+
+.btn-ghost {
+    border: 1px dashed #555;
+    color: #555;
+    opacity: 0.5;
+
+    &:hover {
+        opacity: 1;
+    }
+}
 
 
 .bordered {

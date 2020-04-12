@@ -57,8 +57,8 @@
     </div>
 </template>
 <script>
-import { FluroContentForm } from 'fluro-vue-ui';
-import draggable from 'vuedraggable'
+// import { FluroContentForm } from 'fluro-vue-ui';
+// import draggable from 'vuedraggable'
 
 
 export default {
@@ -68,8 +68,9 @@ export default {
         }
     },
     components: {
-        FluroContentForm,
-        draggable,
+        // FluroContentForm,
+        // draggable,
+        draggable: () => import('vuedraggable'),
 
     },
     data() {

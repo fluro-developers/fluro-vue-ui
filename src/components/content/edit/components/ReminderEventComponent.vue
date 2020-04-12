@@ -120,14 +120,14 @@
     </div>
 </template>
 <script>
-import { FluroContentForm, Layout } from 'fluro-vue-ui';
+// import { FluroContentForm, Layout } from 'fluro-vue-ui';
 import FluroContentEditMixin from '../FluroContentEditMixin';
 import FluroExclusiveSelector from '../components/FluroExclusiveSelector.vue';
+import FluroContentForm from '../../../form/FluroContentForm.vue';
 
-import moment from 'moment';
 
 export default {
-    mixins: [FluroContentEditMixin, Layout],
+    mixins: [FluroContentEditMixin],
     props: {
         value: {
             type: Object,
@@ -314,7 +314,7 @@ export default {
             addField('message', {
                 title: 'Message',
                 placeholder: 'Write a custom message in here',
-                minimum: 1,
+                minimum: 0,
                 maximum: 1,
                 type: 'string',
             })
@@ -389,9 +389,9 @@ export default {
 
             var displayedTime;
             if (when == 'before') {
-                displayedTime = moment(eventTime).subtract(total, period);
+                displayedTime = self.$fluro.date.moment(eventTime).subtract(total, period);
             } else {
-                displayedTime = moment(eventTime).add(total, period);
+                displayedTime = self.$fluro.date.moment(eventTime).add(total, period);
             }
 
             return displayedTime;

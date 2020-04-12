@@ -8,6 +8,24 @@
                 <flex-column-body style="background: #fafafa;">
                     <v-container>
                         <constrain sm>
+                            <template v-if="!model._id">
+                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.parent" v-model="model" />
+                            </template>
+                            <template v-else>
+                                <v-input class="no-flex" label="Linked to">
+                                
+                                <list-group>
+                                    <list-group-item @click.native="$fluro.global.edit(model.parent, true)" :item="model.parent">
+                                        <template v-slot:right>
+                                            <v-btn class="ma-0" icon small flat @click.stop.prevent="$actions.open([model.parent])">
+                                                <fluro-icon icon="ellipsis-h" />
+                                            </v-btn>
+                                        </template>
+                                    </list-group-item>
+                                </list-group>
+                            
+                            </v-input>
+                            </template>
                             <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
                         </constrain>
                     </v-container>
@@ -44,6 +62,35 @@ export default {
 
     },
     computed: {
+        fieldsOutput() {
+
+            var self = this;
+            var array = [];
+
+            ///////////////////////////////////
+
+            //We need to add more smarts here so we can
+            //only attach to the correct things
+            addField('parent', {
+                title: 'Linked To',
+                minimum: 1,
+                maximum: 1,
+                type: 'reference',
+                // params: {
+                // restrictType: 'event',
+                // },
+            })
+
+            ///////////////////////////////////
+
+            function addField(key, details) {
+                details.key = key;
+                array.push(details)
+            }
+
+            return array;
+
+        },
         showOutline() {
             return false; //true; //false;//true;//false;//true;
         },

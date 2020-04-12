@@ -50,11 +50,12 @@
     </fluro-panel>
 </template>
 <script>
-import draggable from 'vuedraggable';
+// import draggable from 'vuedraggable';
 
 export default {
     components: {
-        draggable,
+        // draggable,
+        draggable: () => import('vuedraggable'),
     },
     props: {
         value: {

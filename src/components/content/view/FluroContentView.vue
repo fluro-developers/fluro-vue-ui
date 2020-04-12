@@ -6,7 +6,10 @@
             <flex-column-header class="border-bottom">
                 <page-header :type="type">
                     <template v-slot:left>
-                        <h3>{{title}} <span class="small text-muted">{{definitionTitle}}</span></h3>
+                        <div>
+                            <h3>{{title}} <span class="small text-muted">{{definitionTitle}}</span></h3>
+                            <v-label v-if="summary">{{summary}}</v-label>
+                        </div>
                     </template>
                     <template v-slot:right>
                         <v-btn v-if="model._id" icon class="mr-0" small @click="$actions.open([model])">
@@ -14,8 +17,8 @@
                         </v-btn>
                         <template v-if="embedded">
                             <v-btn icon v-if="canEdit" @click="edit">
-                            <fluro-icon icon="pencil" />
-                        </v-btn>
+                                <fluro-icon icon="pencil" />
+                            </v-btn>
                         </template>
                         <template v-else>
                             <v-btn @click="cancel">
@@ -25,7 +28,6 @@
                                 Edit
                             </v-btn>
                         </template>
-                        
                     </template>
                 </page-header>
             </flex-column-header>
@@ -85,6 +87,33 @@ export default {
         }
     },
     computed: {
+        summary() {
+            var self = this;
+            switch (self.type) {
+                case 'event':
+                    return self.$fluro.date.readableEventDate(self.model);
+                    break;
+                case 'plan':
+
+                    var hasEvent = _.get(self.model, 'event.title');
+                    var planStartDate = _.get(self.model, 'startDate');
+
+                    ///////////////////////////////////////
+
+                    var readableStartDate;
+
+                    if (hasEvent) {
+                        readableStartDate = self.$fluro.date.readableEventDate(self.model.event);
+                        return readableStartDate ? `${readableStartDate} - ${self.model.event.title}` : undefined;
+                    } else if (planStartDate) {
+                        readableStartDate = self.$fluro.date.formatDate(planStartDate, 'h:mm ddd D MMM')
+                        return readableStartDate ? readableStartDate : undefined;
+                    }
+
+
+                    break;
+            }
+        },
         typeName() {
             var self = this;
             return self.definition || self.type;
@@ -155,8 +184,12 @@ export default {
             get() {
                 var self = this;
                 self.loadingModel = true;
+                
                 return new Promise(function(resolve, reject) {
-                    self.$fluro.content.get(self.itemID)
+                    self.$fluro.content.get(self.itemID, {
+                        appendContactDetail:'all',
+                        appendAssignments:'all',
+                    })
                         .then(function(res) {
 
                             if (!res.data) {

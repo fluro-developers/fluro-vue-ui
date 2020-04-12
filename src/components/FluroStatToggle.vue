@@ -10,7 +10,7 @@
 </template>
 <script>
 import _ from 'lodash';
-import { mapFields } from 'vuex-map-fields';
+
 
 
 

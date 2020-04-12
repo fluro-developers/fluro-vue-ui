@@ -250,7 +250,7 @@
 <script>
 /////////////////////////////////
 
-import draggable from "vuedraggable";
+// import draggable from "vuedraggable";
 import PlanRow from "../components/PlanRow.vue";
 import FluroContentEditMixin from "../FluroContentEditMixin";
 
@@ -260,7 +260,8 @@ import FluroContentEditMixin from "../FluroContentEditMixin";
 
 export default {
     components: {
-        draggable,
+        // draggable,
+        draggable: () => import('vuedraggable'),
         // FluroEditor,
         PlanRow
     },
