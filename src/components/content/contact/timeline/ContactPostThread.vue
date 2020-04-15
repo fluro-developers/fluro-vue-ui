@@ -5,7 +5,7 @@
         </template>
         <template v-else>
             <flex-column-header>
-                <v-container class="border-bottom text-xs-center" style="background: #fff;">
+                <v-container fluid class="border-bottom text-xs-center" style="background: #fff;">
                     <v-btn small @click="create(postType)" v-for="postType in postTypes">
                         Add {{postType.title}}
                         <fluro-icon right icon="plus" />
@@ -53,7 +53,7 @@ export default {
             ///////////////////////////
 
             var promise = self.$fluro.modal({
-                    component: AddPost,
+                    component: () => import('../../../ui/modal/AddPost.vue'),
                     options,
                 })
                 .then(function() {

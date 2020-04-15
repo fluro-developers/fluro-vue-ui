@@ -51,3 +51,8 @@ export default {
     }
 }
 </script>
+<style scoped>
+    .timeline-entry {
+        cursor: pointer;;
+    }
+</style>

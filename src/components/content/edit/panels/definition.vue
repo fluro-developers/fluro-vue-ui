@@ -330,7 +330,7 @@
                     </tab>
                 </template>
                 <template v-else>
-                    <tab heading="Configuration" >
+                    <tab heading="Configuration">
                         <flex-column-body style="background: #fafafa;">
                             <v-container grid-list-xl>
                                 <constrain sm>
@@ -375,6 +375,18 @@
                                             <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.privacy" v-model="model" />
                                         </fluro-panel-body>
                                     </fluro-panel>
+
+
+                                    <fluro-panel v-if="model.parentType == 'process'">
+                                        
+                                        <fluro-panel-body>
+                                            <h4 margin>Process Board Options</h4>
+                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.firstLine" v-model="model" />
+                                        <fluro-content-form v-model="model.data" :fields="processFields" />
+                                        </fluro-panel-body>
+                                    </fluro-panel>
+
+
                                 </constrain>
                             </v-container>
                         </flex-column-body>
@@ -383,6 +395,16 @@
                         <!-- <pre>MANAGE {{model.fields}}</pre> -->
                         <fluro-field-editor v-model="model.fields" :item="model" />
                     </tab>
+                    <!-- <tab heading="Process Options" v-if="model.parentType == 'process'">
+                        <flex-column-body style="background: #fafafa;">
+                            <v-container>
+                                <constrain sm>
+                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.firstLine" v-model="model" />
+                                    <fluro-content-form v-model="model.data" :fields="processFields" />
+                                </constrain>
+                            </v-container>
+                        </flex-column-body>
+                    </tab> -->
                     <tab :heading="`${definition.title} Information`" v-if="definition && definition.definitionName != 'form'">
                         <flex-column-body style="background: #fafafa;">
                             <v-container>
@@ -613,6 +635,39 @@ export default {
 
                             resolve(cleaned);
                         });
+
+                })
+            }
+        },
+        referenceOptions: {
+            default: [],
+            get() {
+                var self = this;
+
+
+                return new Promise(function(resolve, reject) {
+
+                    self.$fluro.types.terms()
+                        .then(function(terms) {
+
+                            /////////////////////////
+                            var mapped = _.chain(terms)
+                                .values()
+                                .map(function(term) {
+                                    return {
+                                        name: term.title,
+                                        title: term.title,
+                                        value: term.definitionName,
+                                    }
+                                })
+                                .orderBy('title')
+                                .value();
+
+                            /////////////////////////
+                            resolve(mapped);
+                        })
+                        .catch(reject);
+
 
                 })
             }
@@ -1228,6 +1283,79 @@ export default {
             // console.log('DO THE OUTPUT!!!');
             return array;
         },
+        processFields() {
+            var self = this;
+            var array = [];
+
+
+            ///////////////////////////////////
+
+            array.push({
+                title: 'Types that can be processed',
+                minimum: 0,
+                maximum: 0,
+                key: 'processTypes',
+                type: 'string',
+                directive: 'select',
+                options: self.referenceOptions,
+                params: {
+                    persistentDescription: true
+                },
+                description: `Restrict what kind of content types can be referenced and added to this process`,
+            })
+
+
+            // addField('referenceType', {
+            //     key: 'restrictType',
+            //     title: 'Reference Type',
+            //     description: 'Restrict what kind of items can be referenced in this field',
+            //     minimum: 0,
+            //     maximum: 1,
+            //     type: 'string',
+            //     directive: 'select',
+            //     options: self.referenceOptions,
+            // })
+
+            ///////////////////////////////////
+
+            array.push({
+                title: 'Mode',
+                minimum: 0,
+                maximum: 1,
+                key: 'mode',
+                type: 'string',
+                directive: 'select',
+                options: [{
+                        title: 'Linear Progression',
+                        value: '',
+                    },
+                    {
+                        title: 'Kanban / Lanes',
+                        value: 'lanes',
+                    },
+                ],
+                params: {
+                    persistentDescription: true
+                },
+            })
+
+            ///////////////////////////////////
+
+            array.push({
+                title: 'Disable Drag and Drop',
+                minimum: 0,
+                maximum: 1,
+                key: 'dragLocked',
+                type: 'boolean',
+                description: 'Lock drag and drop functionality so that cards can not be dragged into other columns',
+                params: {
+                    persistentDescription: true
+                },
+            })
+
+
+            return array;
+        },
         fieldsOutput() {
 
             var self = this;
@@ -1276,6 +1404,8 @@ export default {
                 description: `What do you call this ${self.readableContentType}?. eg. '${exampleSingle}'`,
             })
 
+
+
             addField('plural', {
                 title: 'Plural',
                 minimum: 1,
@@ -1302,6 +1432,20 @@ export default {
                         return existingTitle = existingTitle + 's';
                     }
                 }
+            })
+
+
+            ///////////////////////////////////
+
+            addField('firstLine', {
+                title: 'Short Description',
+                minimum: 0,
+                maximum: 1,
+                type: 'string',
+                params: {
+                    persistentDescription: true
+                },
+                description: `Optional short description describing this ${self.$fluro.types.readable(self.model.parentType)}`,
             })
 
             addField('definitionName', {

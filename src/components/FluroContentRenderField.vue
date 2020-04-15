@@ -215,6 +215,11 @@ export default {
             model: this.value,
         }
     },
+    watch:{
+        value(v) {
+            this.model = v;
+        }
+    },
     computed: {
         className() {
 

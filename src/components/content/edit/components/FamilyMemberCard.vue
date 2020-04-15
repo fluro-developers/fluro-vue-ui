@@ -9,7 +9,7 @@
                     <v-flex class="text-centered less-padding">
                         <h4>{{contactName}}</h4>
                     </v-flex>
-                     <v-flex class="less-padding status-flex">
+                    <v-flex class="less-padding status-flex">
                         <fluro-status-select v-model="model.status" />
                     </v-flex>
                     <v-flex class="text-centered less-padding">
@@ -19,10 +19,22 @@
                         <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.householdRole" v-model="model">
                         </fluro-content-form-field>
                     </v-flex>
-                   
                     <v-flex class="less-padding">
                         <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.definition" v-model="model">
                         </fluro-content-form-field>
+                    </v-flex>
+                </v-layout>
+                <v-layout align-center>
+                    <v-flex>
+                        <v-btn block @click="editContact()">
+                            Edit
+                        </v-btn>
+                    </v-flex>
+                    <v-spacer />
+                    <v-flex>
+                        <v-btn block @click="viewContact()">
+                            View
+                        </v-btn>
                     </v-flex>
                 </v-layout>
             </template>
@@ -64,13 +76,13 @@ export default {
         }
     },
     created() {
-    	var self = this;
-    	if (!self.model.definition) {
-    		self.model.definition = '';
-    	}
-      	if (!self.model.householdRole) {
-    		self.model.householdRole = '';
-    	}
+        var self = this;
+        if (!self.model.definition) {
+            self.model.definition = '';
+        }
+        if (!self.model.householdRole) {
+            self.model.householdRole = '';
+        }
     },
     watch: {
         contactStatus: function() {
@@ -78,6 +90,18 @@ export default {
         }
     },
     methods: {
+        editContact() {
+            var self = this;
+            self.$fluro.global.edit(self.model, true)
+            .then(function(res) {
+                _.assign(self.model, res);
+                console.log('Update')
+            });
+        },
+        viewContact() {
+            var self = this;
+            self.$fluro.global.view(self.model, true);
+        },
         save: _.debounce(function() {
             console.log('TRIGGER UPDATE');
             var self = this;
@@ -88,11 +112,11 @@ export default {
             };
 
             self.$fluro.api.put(`content/contact/${self.model._id}`, data).then(function(res) {
-                self.$fluro.notify(`${self.model.title} was successfully updated!`);
-            })
-            .catch(function(err) {
-                self.$fluro.error(err);
-            });
+                    self.$fluro.notify(`${self.model.title} was successfully updated!`);
+                })
+                .catch(function(err) {
+                    self.$fluro.error(err);
+                });
         }, 100),
     },
     computed: {
@@ -174,19 +198,19 @@ export default {
 }
 
 .avatar-icon {
-    width:80% !important;
-    display:block;
+    width: 80% !important;
+    display: block;
 }
 
 .avatar-flex {
-    display:flex;
-    width:100%;
+    display: flex;
+    width: 100%;
     justify-content: center;
 }
 
 .status-flex {
-    display:flex;
-    width:100%;
+    display: flex;
+    width: 100%;
     justify-content: center;
 }
 
@@ -199,7 +223,7 @@ export default {
 }
 
 .archived {
-    opacity:0.5;
+    opacity: 0.5;
 }
 
 .draft {

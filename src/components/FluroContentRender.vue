@@ -29,6 +29,11 @@ export default {
             type:Boolean,
         },
     },
+    watch:{
+        value(v) {
+            this.model = v;
+        }
+    },
     data() {
         return {
             model: this.value,

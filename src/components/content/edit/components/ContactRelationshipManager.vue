@@ -4,11 +4,11 @@
         <template v-else>
             <v-layout row wrap>
                 <template v-for="row in backlinks">
-                    <v-flex >
+                    <v-flex>
                         <v-input class="no-flex">
                             <v-label>{{row.relationship | capitalize}} <span class="anniversary">{{anniversaryDate(row)}}</span></v-label>
-                            <div class="faces">
-                                <div @click="$fluro.global.edit(contact, true)" class="face" :class="contact.status" v-for="contact in row.contacts">
+                            <div class="relation-faces">
+                                <div @click="$fluro.global.edit(contact, true)" class="relation-face" :class="contact.status" v-for="contact in row.contacts">
                                     <fluro-avatar lg :id="contact" />
                                     <div class="details">
                                         <div><strong>{{contact.title}}</strong></div>
@@ -26,16 +26,15 @@
                     </v-flex>
                 </template>
                 <template v-for="row in model.relationships">
-                    <v-flex >
+                    <v-flex>
                         <v-input class="no-flex">
                             <v-label>{{contextName}} {{row.relationship | capitalize}} <span class="anniversary">{{anniversaryDate(row)}}</span></v-label>
-                            <div class="faces">
-                                <div @click="$fluro.global.edit(contact, true)" class="face" :class="contact.status" v-for="contact in row.contacts">
+                            <div class="relation-faces">
+                                <div @click="$fluro.global.edit(contact, true)" class="relation-face" :class="contact.status" v-for="contact in row.contacts">
                                     <fluro-avatar lg :id="contact" />
                                     <div class="details">
-                                       
                                         <div><strong>{{contact.title}}</strong></div>
-                                         <div>{{contact.householdRole}}</div>
+                                        <div>{{contact.householdRole}}</div>
                                         <div>{{contact.gender}}</div>
                                         <div>{{contact.age}}</div>
                                         <div>{{contact.definition | definitionTitle}}</div>
@@ -434,14 +433,14 @@ export default {
     opacity: 0.5;
 }
 
-.faces {
+.relation-faces {
     display: block;
 
-    .face {
+    .relation-face {
 
-        
 
-        width: 23%;
+
+        width: 100px;
         padding: 10px;
         background: #fff;
         border: 1px solid rgba(#000, 0.1);
@@ -451,12 +450,14 @@ export default {
         text-align: center;
         font-size: 14px;
         cursor: pointer;
+        vertical-align: top;
 
         &:hover {
             background: #fafafa;
         }
+
         // font-weight: 600;
-        
+
         &.archived {
             opacity: 0.5;
             border: 1px solid rgba(#000, 0.1);
@@ -464,8 +465,9 @@ export default {
         }
 
         .details {
-            padding:5px 0;
-            text-transform: capitalize;;
+            padding: 5px 0;
+            text-transform: capitalize;
+            ;
             font-size: 0.8em;
             opacity: 0.8;
         }

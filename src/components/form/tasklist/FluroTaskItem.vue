@@ -172,11 +172,38 @@ export default {
 
             /////////////////////////////////////
 
-            console.log('Prompt Task ', self.card)
+            var cardTask = this.model;
+
+            /////////////////////////////////////
+
+            var currentState = _.chain(self.definition)
+            .get('data.states')
+            .find(function(state) {
+                return state.key == self.card.state;
+            })
+            .value();
+
+            /////////////////////////////////////
+
+            var taskLists =  currentState.taskLists || [];
+
+            var matchingTask = _.chain(taskLists)
+            .map('tasks')
+            .flatten()
+            .find(function(task) {
+                return task.name == cardTask.name;
+            })
+            .value();
+
+
+            /////////////////////////////////////
+
+            // var getCurrentColumnTask = 
+            // console.log('Prompt Task ', self.model, matchingTask)
             return self.$fluro.modal({
                     component: FluroTaskModal,
                     options: {
-                        task: self.model,
+                        task: matchingTask || self.model, 
                         card:self.card,
                     }
                 })

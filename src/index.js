@@ -1,4 +1,4 @@
-console.log('fluro-vue-ui 2.0.66')
+console.log('fluro-vue-ui 2.0.67')
 
 /////////////////////////////////////////////////////
 
@@ -139,6 +139,12 @@ import ContactTimeline from './components/content/contact/timeline/ContactTimeli
 
 
 import ContactPostThread from './components/content/contact/timeline/ContactPostThread.vue';
+import ContactDetailList from './components/content/contact/timeline/ContactDetailList.vue';
+import ContactMessageList from './components/content/contact/timeline/ContactMessageList.vue';
+import ContactTransactionList from './components/content/contact/timeline/ContactTransactionList.vue';
+import ContactInteractionList from './components/content/contact/timeline/ContactInteractionList.vue';
+import ContactCheckinList from './components/content/contact/timeline/ContactCheckinList.vue';
+import ContactTeamList from './components/content/contact/timeline/ContactTeamList.vue';
 
 
 
@@ -629,6 +635,12 @@ export {
     ContactAvatarCell as ContactAvatarCell,
     ContactTimeline as ContactTimeline,
     ContactPostThread as ContactPostThread,
+    ContactMessageList as ContactMessageList,
+    ContactTransactionList as ContactTransactionList,
+    ContactInteractionList as ContactInteractionList,
+    ContactTeamList as ContactTeamList,
+    ContactCheckinList as ContactCheckinList,
+    ContactDetailList as ContactDetailList,
     PrivacyCell as PrivacyCell,
     JSONCell as JSONCell,
     TicketCollectCell as TicketCollectCell,

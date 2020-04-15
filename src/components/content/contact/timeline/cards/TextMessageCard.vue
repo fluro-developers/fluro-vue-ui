@@ -1,5 +1,5 @@
 <template>
-    <div class="timeline-entry border-top">
+    <div @click="$fluro.global.json(item)" class="timeline-entry border-top">
 
         <v-layout>
             <v-flex shrink>
@@ -52,6 +52,8 @@ export default {
     }
 }
 </script>
-<style lang="scss">
-
+<style scoped lang="scss">
+.timeline-entry {
+cursor: pointer;
+}
 </style>

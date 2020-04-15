@@ -937,8 +937,7 @@ export default {
                     minimum: 0,
                     type: 'integer',
                     subfieldTitle: 'Where...',
-                    subfields: [
-                        {
+                    subfields: [{
                             title: 'Event',
                             key: 'event',
                             maximum: 1,
@@ -961,8 +960,8 @@ export default {
                             maximum: 1,
                             minimum: 0,
                             type: 'string',
-                            directive:'select',
-                            options:eventDefinitionOptions,
+                            directive: 'select',
+                            options: eventDefinitionOptions,
                         },
 
                         {
@@ -1768,6 +1767,209 @@ export default {
 
                 // var definitionName = _.get(self.definition, 'definitionName');
                 switch (self.type) {
+                    case 'family':
+
+                        injectFields.push({
+                            title: 'Total Number of Family Members',
+                            key: 'memberCount.total',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'integer',
+                        });
+
+                        injectFields.push({
+                            title: 'Total Number of Parents / Guardians',
+                            key: 'memberCount.parental',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'integer',
+                        });
+
+                        injectFields.push({
+                            title: 'Total Number of Children',
+                            key: 'memberCount.child',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'integer',
+                        });
+
+                        injectFields.push({
+                            title: 'Total Number of Active Parents / Guardians',
+                            key: 'memberCount.active_parental',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'integer',
+                        });
+
+                        injectFields.push({
+                            title: 'Total Number of Active Children',
+                            key: 'memberCount.active_child',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'integer',
+                        });
+
+                        injectFields.push({
+                            title: 'Total Number of Archived Parents / Guardians',
+                            key: 'memberCount.archived_parental',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'integer',
+                        });
+
+                        injectFields.push({
+                            title: 'Total Number of Archived Children',
+                            key: 'memberCount.archived_child',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'integer',
+                        });
+
+                        injectFields.push({
+                            title: 'Number of Active Family Members',
+                            key: 'memberCount.active',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'integer',
+                        });
+
+                        injectFields.push({
+                            title: 'Number of Archived Family Members',
+                            key: 'memberCount.archived',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'integer',
+                        });
+
+                        injectFields.push({
+                            title: 'Number of Male Family Members',
+                            key: 'memberCount.gender_male',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'integer',
+                        });
+
+                        injectFields.push({
+                            title: 'Number of Female Family Members',
+                            key: 'memberCount.gender_female',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'integer',
+                        });
+
+                        injectFields.push({
+                            title: 'Number of Unknown Gender Family Members',
+                            key: 'memberCount.gender_unknown',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'integer',
+                        });
+
+                        injectFields.push({
+                            title: 'Number of Female Parents / Guardians',
+                            key: 'memberCount.gender_female_parental',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'integer',
+                        });
+
+                        injectFields.push({
+                            title: 'Number of Male Parents / Guardians',
+                            key: 'memberCount.gender_male_parental',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'integer',
+                        });
+
+                        injectFields.push({
+                            title: 'Number of Unknown Gender Parents / Guardians',
+                            key: 'memberCount.gender_unknown_parental',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'integer',
+                        });
+
+
+
+                        injectFields.push({
+                            title: 'Number of Active Female Parents / Guardians',
+                            key: 'memberCount.gender_female_active_parental',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'integer',
+                        });
+
+                        injectFields.push({
+                            title: 'Number of Active Male Parents / Guardians',
+                            key: 'memberCount.gender_male_active_parental',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'integer',
+                        });
+
+
+
+                        injectFields.push({
+                            title: 'Number of Active Unknown Gender Parents / Guardians',
+                            key: 'memberCount.gender_unknown_active_parental',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'integer',
+                        });
+
+                     
+                        injectFields.push({
+                            title: 'Number of Archived Female Parents / Guardians',
+                            key: 'memberCount.gender_female_archived_parental',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'integer',
+                        });
+
+                        injectFields.push({
+                            title: 'Number of Archived Male Parents / Guardians',
+                            key: 'memberCount.gender_male_archived_parental',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'integer',
+                        });
+
+                        injectFields.push({
+                            title: 'Number of Archived Unknown Parents / Guardians',
+                            key: 'memberCount.gender_unknown_archived_parental',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'integer',
+                        });
+
+                        injectFields.push({
+                            title: 'Number of Female Children',
+                            key: 'memberCount.gender_female_child',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'integer',
+                        });
+
+                        injectFields.push({
+                            title: 'Number of Male Children',
+                            key: 'memberCount.gender_male_child',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'integer',
+                        });
+
+                        injectFields.push({
+                            title: 'Number of Unknown Gender Children',
+                            key: 'memberCount.gender_unknown_child',
+                            maximum: 1,
+                            minimum: 0,
+                            type: 'integer',
+                        });
+
+                        
+
+
+                        break;
                     case 'photo':
 
                         injectFields.push({

@@ -4,35 +4,37 @@
             <fluro-page-preloader contain />
         </template>
         <template v-else>
-                    <flex-column-body style="background: #fafafa;">
-                        <v-container fluid grid-list-xl>
-                            <constrain sm>
-                                <!--  -->
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
-                                <v-layout wrap>
-                                    <v-flex xs12 sm12>
-                                        <h4>Realm Label Preview</h4>
-                                        <p class="muted mb-0">Select colors for the realm below</p>
-                                        <v-chip label small disabled class="chip" :color="model.bgColor" :text-color="model.color">{{model.title || 'Realm Title'}}</v-chip>
-                                        <hr class="mt-4">
-                                    </v-flex>
-                                    <v-flex xs6 sm3>
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.color" v-model="model"></fluro-content-form-field>
-                                    </v-flex>
-                                    <v-flex xs6 sm3>
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.bgColor" v-model="model"></fluro-content-form-field>
-                                    </v-flex>
-                                    <v-flex xs12 sm6>
-                                        <h4>Example Colors</h4>
-                                        <v-chip label small class="chip" v-for="eg in exampleColors" :color="eg.bgColor" :text-color="eg.color" @click="setColor(eg)">{{eg.title}}</v-chip>
-                                    </v-flex>
-                                </v-layout>
-                                
-                                <!-- -->
-                                <fluro-content-form v-if="definition && definition.fields && definition.fields.length" :options="options" v-model="model.data" :fields="definition.fields" />
-                            </constrain>
-                        </v-container>
-                    </flex-column-body>
+            <flex-column-body style="background: #fafafa;">
+                <v-container fluid grid-list-xl>
+                    <constrain sm>
+                       
+                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />
+                        <v-layout wrap>
+                            <v-flex xs12 sm12>
+                                <h4>Realm Colors</h4>
+                                <p class="muted mb-0">Select colors for the realm below</p>
+                                <v-chip label small disabled class="chip" :color="model.bgColor" :text-color="model.color">{{model.title || 'Realm Title'}}</v-chip>
+                            </v-flex>
+                            <v-flex xs6 sm3>
+                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.color" v-model="model" />
+                            </v-flex>
+                            <v-flex xs6 sm3>
+                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.bgColor" v-model="model" />
+                            </v-flex>
+                            <v-flex xs12 sm6>
+                                <h4>Example Colors</h4>
+                                <v-chip label small class="chip" v-for="eg in exampleColors" :color="eg.bgColor" :text-color="eg.color" @click="setColor(eg)">{{eg.title}}</v-chip>
+                            </v-flex>
+                        </v-layout>
+                        <template v-if="definition && definition.fields && definition.fields.length">
+                            <h3 margin>{{definition.title}} Information</h3>
+                            <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
+                        </template>
+                        <!-- <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" /> -->
+                        <!-- <fluro-content-form v-if="definition && definition.fields && definition.fields.length" :options="options" v-model="model.data" :fields="definition.fields" /> -->
+                    </constrain>
+                </v-container>
+            </flex-column-body>
         </template>
     </flex-column>
 </template>
@@ -40,9 +42,8 @@
 /////////////////////////////////
 
 
-import FluroEditor from '../../../form/FluroEditor.vue';
+// import FluroEditor from '../../../form/FluroEditor.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
-import GradeManager from '../components/GradeManager.vue';
 
 /////////////////////////////////
 
@@ -60,10 +61,8 @@ import Vue from 'vue';
 /////////////////////////////////
 
 export default {
-    components: {
-    },
-    created() {
-    },
+    components: {},
+    created() {},
     mixins: [FluroContentEditMixin],
     computed: {
         fieldsOutput() {
@@ -83,7 +82,7 @@ export default {
 
             addField('color', {
                 title: 'Text Color',
-                minimum: 1,
+                minimum: 0,
                 maximum: 1,
                 type: 'string',
                 directive: 'color',
@@ -91,7 +90,7 @@ export default {
 
             addField('bgColor', {
                 title: 'Background Color',
-                minimum: 1,
+                minimum: 0,
                 maximum: 1,
                 type: 'string',
                 directive: 'color',
@@ -110,6 +109,7 @@ export default {
         },
         exampleColors() {
             var res = [];
+
             function addColor(title, color, bgcolor) {
                 res.push({
                     title: title,

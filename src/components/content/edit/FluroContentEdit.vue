@@ -144,7 +144,8 @@
                                     <v-spacer />
                                     <v-flex shrink>
                                         <template v-if="model._id"><em class="muted sm">Last updated {{model.updated | timeago}}</em></template>
-                                        <fluro-status-select v-model="model.status" :type="model._type" />
+                                        
+                                        <fluro-status-select v-if="canChangeStatus" v-model="model.status" :type="model._type" />
 
 
                                     </v-flex>
@@ -501,6 +502,7 @@ export default {
 
             if (self.hasErrors) {
                 console.log('WE HAVE ERRORS', self.errorMessages);
+                // self.$notify()
                 //Gotta finish the stuff first!
                 return;
             }
@@ -650,6 +652,17 @@ export default {
         }
     },
     computed: {
+        canChangeStatus() {
+            switch(this.typeName) {
+                case 'persona':
+                case 'realm':
+                case 'transaction':
+                break;
+                default:
+                    return true;
+                break;
+            }
+        },
         // changeString() {
         //     return JSON.stringify(this.model);
         // },

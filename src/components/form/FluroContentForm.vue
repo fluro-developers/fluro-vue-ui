@@ -5,7 +5,10 @@
                 <!-- <fluro-code-editor v-model="model[field.key]" @input="valueChange" :height="200"></fluro-code-editor> -->
                 <v-container fluid class="grid-list-lg" pa-0>
                     <!-- :parent="model[key]"  -->
+                 <!-- <pre>{{field.title}} {{field.key}}</pre> -->
+                 <!-- <div v-if="field.key == 'campusOversight'"> -->
                     <fluro-content-form-field  :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="field" @input="update" v-model="model"></fluro-content-form-field>
+                <!-- </div> -->
                 </v-container>
             </template>
         </slot>

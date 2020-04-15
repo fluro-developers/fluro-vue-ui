@@ -55,7 +55,7 @@ export default {
 
             var self = this;
 
-            if (self.selectionMaximum) {
+            if (self.selectionMaximum && array.length > self.selectionMaximum) {
                 array = array.slice(0, self.selectionMaximum);
                 // console.log('sliced to', array.length, self.selectionMaximum)
             }

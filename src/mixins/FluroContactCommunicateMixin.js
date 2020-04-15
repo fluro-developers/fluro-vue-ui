@@ -27,38 +27,54 @@ export default {
     },
 
     computed: {
+        phoneNumbers() {
+            var self = this;
+            var contact = self.model || self.item;
+
+            var array = [];
+
+            if (contact.phoneNumbers && contact.phoneNumbers.length) {
+                array = array.concat(contact.phoneNumbers)
+            }
+
+            if (contact.family && contact.family.phoneNumbers && contact.family.phoneNumbers.length) {
+                array = array.concat(contact.family.phoneNumbers)
+            }
+
+            return array;
+        },
         canPost() {
 
-        	var self = this;
+            var self = this;
 
 
             return this.postable.length;
         },
         canEmail() {
 
-        	var self = this
-        	var contact = self.model || self.item;
+            var self = this
+            var contact = self.model || self.item;
 
             return contact.emails && contact.emails.length;
         },
         canCall() {
 
-        	var self = this;
-        	var contact = self.model || self.item;
+            var self = this;
 
-            return contact.phoneNumbers && contact.phoneNumbers.length;
+
+            return self.phoneNumbers && self.phoneNumbers.length;
         },
         canSMS() {
 
-        	var self = this;
-        	var contact = self.model || self.item;
+            var self = this;
+            var contact = self.model || self.item;
 
             return contact.phoneNumbers && contact.phoneNumbers.length;
         },
     },
     methods: {
 
-    	addPost() {
+        addPost() {
 
             console.log('ADD NEW POST')
             var self = this;
@@ -101,7 +117,7 @@ export default {
                             ///////////////////////////
 
                             var promise = self.$fluro.modal({
-                                component:() => import('../components/ui/modal/AddPost.vue'),
+                                component: () => import('../components/ui/modal/AddPost.vue'),
                                 options,
                             });
 
@@ -129,7 +145,7 @@ export default {
                 case 'phone':
                     // console.log('CALL NOW?', self.model.phoneNumbers)
 
-                    var phoneNumbers = contact.international || contact.phoneNumbers;
+                    var phoneNumbers = contact.international || self.phoneNumbers;
 
                     self.$communications.call(phoneNumbers);
                     break;

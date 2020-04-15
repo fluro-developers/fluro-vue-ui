@@ -105,6 +105,10 @@
                 </template>
             </template>
             <template v-else>
+
+
+                <!-- <fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="model" @input="valueChange" :fields="fields" /> -->
+
                 <template v-if="field.sameLine">
                     <v-layout class="same-line" row>
                         <template v-for="subfield in fields">
@@ -114,7 +118,9 @@
                 </template>
                 <template v-else>
                     <template v-for="subfield in fields">
+                        <!-- <pre>{{subfield.title}} {{subfield.key}}</pre> -->
                         <fluro-content-form-field :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" class="flex" :field="subfield" @input="valueChange" v-model="model" />
+                        <!-- <fluro-content-form-field :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" class="flex" :field="subfield" @input="valueChange" v-model="fieldModel" /> -->
                     </template>
                 </template>
             </template>
@@ -211,8 +217,10 @@
             </v-input>
         </template>
         <template v-else-if="renderer == 'content-select'">
+           
             <v-input class="no-flex" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
-                <fluro-content-select :context="context" :template="params.template" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :success="success" :required="required" :error-messages="errorMessages" :label="displayLabel" :outline="showOutline" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" :minimum="minimum" @input="valueChange" @blur="touch()" @focus="focussed();" :type="restrictType" :lockFilter="referenceFilter" :searchInheritable="searchInheritable" :maximum="maximum" v-model="model[field.key]" />
+                <!-- <fluro-content-select :context="context" :template="params.template" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :success="success" :required="required" :error-messages="errorMessages" :label="displayLabel" :outline="showOutline" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" :minimum="minimum" @input="valueChange" @blur="touch()" @focus="focussed();" :type="restrictType" :lockFilter="referenceFilter" :searchInheritable="searchInheritable" :maximum="maximum" v-model="model[field.key]" /> -->
+                <fluro-content-select :context="context" :template="params.template" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :success="success" :required="required" :error-messages="errorMessages" :label="displayLabel" :outline="showOutline" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" :minimum="minimum" @input="valueChange" @blur="touch()" @focus="focussed();" :type="restrictType" :lockFilter="referenceFilter" :searchInheritable="searchInheritable" :maximum="maximum" v-model="fieldModel" />
             </v-input>
         </template>
         <template v-else-if="renderer == 'search-select'">
@@ -1629,6 +1637,7 @@ export default {
                         }
                         break;
                     case 'reference':
+                        // console.log('Fix up corruptions', self.defaultReferences, self.results)
                         self.results = (self.defaultReferences || []).slice();
                         break;
                     case 'group':

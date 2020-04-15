@@ -14,11 +14,14 @@
                                         </v-btn>
                                     </template>
                                     <v-list dense>
-                                        <v-list-tile @click="$actions.open([item])">
-                                            <v-list-tile-content>Actions</v-list-tile-content>
+                                        <v-list-tile @click="editInPlace(item)" v-if="editInPlaceEnabled(item)">
+                                            <v-list-tile-content>Edit</v-list-tile-content>
                                         </v-list-tile>
                                         <v-list-tile @click="deselect(item)">
                                             <v-list-tile-content>Deselect</v-list-tile-content>
+                                        </v-list-tile>
+                                        <v-list-tile @click="$actions.open([item])">
+                                            <v-list-tile-content>More Actions</v-list-tile-content>
                                         </v-list-tile>
                                     </v-list>
                                 </v-menu>
@@ -174,11 +177,12 @@ export default {
         }
     },
     created() {
-        this.setInitialValue();
+        this.setInitialValue(this.value);
     },
 
     // <v-input class="no-flex" :success="success" :label="label" :required="required" :error-messages="errorMessages" :hint="field.description">
     computed: {
+        
         readableSingle() {
             return this.$fluro.types.readable(this.type)
         },
@@ -257,11 +261,33 @@ export default {
         },
     },
     methods: {
-        setInitialValue() {
+        editInPlaceEnabled(item) {
+            return this.$fluro.access.canEditItem(item) && this.$fluro.global.edit;
+        },
+        editInPlace(item) {
 
-            var initialValue = this.value;// || [];
+            var self = this;
+            if(self.$fluro.global.edit) {
+                self.$fluro.global.edit(item, true)
+                .then(function(res) {
+                    //Update the item with what we know about it now
+                    _.assign(item, res);
+
+                    console.log('Updated!', item);
+
+                })
+            }
+        },
+        setInitialValue(initialValue) {
+            
+
+            // var initialValue = this.selection; // || [];
             this.selectionMinimum = this.minimum;
             this.selectionMaximum = this.maximum;
+
+
+            // console.log('SET INITIAL VALUE', initialValue, initialValue.length);
+            // return
 
             ////////////////////////
 
@@ -269,20 +295,20 @@ export default {
             //     console.log('No change necessary')
             //     return;
             // }
-           
+
             // if(this.multiple) {
 
-            if(initialValue) {
+            if (initialValue) {
                 if (_.isArray(initialValue) && initialValue.length) {
-                    // console.log('CHECKIT HAS LENGTH', initialValue.length)
-                    this.setSelection(initialValue);
+                    //this.selection = initialValue;//.slice();
+                     this.setSelection(initialValue);
                 } else {
 
-                    if(initialValue._id || initialValue.length) {
-                         // console.log('CHECKINT WHAT IS IT', typeof initialValue)
-                        this.setSelection([initialValue]);
+                    if (initialValue._id || initialValue.length) {
+                        // console.log('CHECKINT WHAT IS IT', typeof initialValue)
+                         this.setSelection([initialValue]);
+                        //this.selection = [initialValue];
                     }
-                   
                 }
             }
         },
@@ -378,10 +404,10 @@ export default {
     },
     watch: {
         value(v) {
-                var self = this;
-                // console.log('Value changed', v);
-                self.setInitialValue();
-                
+            var self = this;
+            // console.log('Value changed', v);
+            self.setInitialValue(v);
+
         },
         'terms': function(searchTerms) {
 
@@ -446,7 +472,7 @@ export default {
         return {
             listLimit: 50,
             actionIndexes: {},
-            selection:[],
+            // selection: [],
             candidates: [],
             results: [],
             terms: '',

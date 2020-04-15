@@ -1,7 +1,7 @@
 <template>
     <flex-column-body>
         <v-container>
-            <v-layout align-center>
+            <v-layout align-center row wrap>
                 <v-flex shrink>
                     <fluro-avatar left xl :id="item" type="contact"></fluro-avatar>
                 </v-flex>
@@ -11,8 +11,8 @@
                     <div class="muted">{{item.gender}}</div>
                     <div class="muted">{{item.age}}</div>
                 </v-flex>
-            </v-layout>
-            <v-container px-0 class="border-bottom text-xs-center" fluid>
+                <v-flex class="text-xs-center">
+
                 <v-btn class="ma-0 mx-1 ml-0" :disabled="!canEmail" @click="communicate('email')" icon color="primary" content="Send Email" v-tippy>
                     <fluro-icon library="fas" icon="envelope" />
                 </v-btn>
@@ -29,7 +29,10 @@
                     <!-- <fluro-icon library="fas" icon="id-card" /> -->
                     <fluro-icon library="fas" icon="address-book" />
                 </v-btn>
-            </v-container>
+           
+                </v-flex>
+            </v-layout>
+            
             <!-- <h5></h5> -->
             <!-- <pre>{{item}}</pre> -->
         </v-container>

@@ -51,6 +51,11 @@ import FluroContentViewMixin from '../FluroContentViewMixin';
 //     FluroContentSelectButton,
 //      } from 'fluro-ui';
 
+
+
+// import FluroContentFormField from '../../../form/FluroContentFormField.vue';
+// import SearchInput from '../../../ui/SearchInput.vue';
+// import FluroTable from '../../../table/FluroTable.vue';
 import MailoutRenderPreview from '../../../mailout/MailoutRenderPreview.vue';
 import MailoutTestPanel from '../../../mailout/MailoutTestPanel.vue';
 import MailoutResultsPanel from '../../../mailout/MailoutResultsPanel.vue';
@@ -113,10 +118,10 @@ export default {
         console.log('RECREATED')
     },
     components: {
-        SearchInput,
-        FluroTable,
-        FluroContentFormField,
-        FluroContentSelectButton,
+        // SearchInput,
+        // FluroTable,
+        // FluroContentFormField,
+        // FluroContentSelectButton,
         MailoutRenderPreview,
         MailoutTestPanel,
         MailoutResultsPanel,

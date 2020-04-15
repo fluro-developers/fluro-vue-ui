@@ -20,7 +20,7 @@
                                         <v-list-tile @click="$actions.open([team])">
                                             <v-list-tile-content>Actions</v-list-tile-content>
                                         </v-list-tile>
-                                        <v-list-tile @click="leave(team)">
+                                        <v-list-tile @click="leave(team)" v-if="canLeave(team)">
                                             <v-list-tile-content>Remove {{model.firstName}} from group</v-list-tile-content>
                                         </v-list-tile>
                                     </v-list>
@@ -32,10 +32,12 @@
                         </list-group-item>
                     </template>
                 </list-group>
-                <v-btn small color="primary" @click="select(group.key)" class="ml-0">
-                    Add {{group.title}}
-                    <fluro-icon right icon="plus" />
-                </v-btn>
+                <template v-if="canAdd(group.key)">
+                    <v-btn small color="primary" @click="select(group.key)" class="ml-0">
+                        Add {{group.title}}
+                        <fluro-icon right icon="plus" />
+                    </v-btn>
+                </template>
                 <!-- <pre>{{group.key}}</pre> -->
                 <!-- <fluro-content-select-button color="primary" :type="group.key" v-model="newGroups" /> -->
             </v-input>
@@ -68,10 +70,23 @@ export default {
         }
     },
     created() {
-    	console.log('RELOAD TEAMS')
+        console.log('RELOAD TEAMS')
         this.reloadTeams();
     },
     methods: {
+        canLeave(group) {
+
+            var self = this;
+            var definition = group.definition;
+            var canLeaveGroupsOfThisType = this.$fluro.access.can('leave', definition, 'team');
+            return canLeaveGroupsOfThisType || self.$fluro.access.canEditItem(group);
+        },
+        canAdd(definition) {
+            var self = this;
+            var canAddGroupsOfThisType = this.$fluro.access.can('join', definition, 'team');
+            var canEditGroupsOfThisType = this.$fluro.access.can('edit', definition, 'team');
+            return canAddGroupsOfThisType || canEditGroupsOfThisType;
+        },
         leave(team) {
             var self = this;
 
@@ -87,7 +102,7 @@ export default {
                     teams: [teamID],
                 })
                 .then(function(res) {
-                    var index = _.findIndex(self.teams, {_id:teamID});
+                    var index = _.findIndex(self.teams, { _id: teamID });
                     self.teams.splice(index, 1);
                     self.loading = false;
                 })
@@ -178,6 +193,7 @@ export default {
         FluroContentSelectModal,
     },
     computed: {
+        
         contactID() {
             return this.$fluro.utils.getStringID(this.model);
         },

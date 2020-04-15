@@ -171,6 +171,8 @@ export default {
     @extend .border-top !optional;
     padding: 5px;
     position: relative;
+    overflow: hidden;
+    text-overflow: ellipsis;;
 
     .summary {
         font-size: 0.8em;
