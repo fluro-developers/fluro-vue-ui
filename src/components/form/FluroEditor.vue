@@ -51,39 +51,39 @@
                         </v-btn>
                     </template>
                     <div style="overflow: auto; width:300px; max-height:300px;">
-                    <v-list>
-                        <v-list-tile :class="{ 'active': isActive.heading({ level: 1 }) }" @click.stop.prevent="commands.heading({ level: 1 })">
-                            <v-list-tile-content><span style="margin:0 !important" class="h1">Heading 1</span></v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile :class="{ 'active': isActive.heading({ level: 2 }) }" @click.stop.prevent="commands.heading({ level: 2 })">
-                            <v-list-tile-content><span style="margin:0 !important" class="h2">Heading 2</span></v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile :class="{ 'active': isActive.heading({ level: 3 }) }" @click.stop.prevent="commands.heading({ level: 3 })">
-                            <v-list-tile-content><span style="margin:0 !important" class="h3">Heading 3</span></v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile :class="{ 'active': isActive.heading({ level: 4 }) }" @click.stop.prevent="commands.heading({ level: 4 })">
-                            <v-list-tile-content><span style="margin:0 !important" class="h4">Heading 4</span></v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile :class="{ 'active': isActive.heading({ level: 5 }) }" @click.stop.prevent="commands.heading({ level: 5 })">
-                            <v-list-tile-content><span style="margin:0 !important" class="h5">Heading 5</span></v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile :class="{ 'active': isActive.typography({ level:option.level}) }" v-for="option in typographyOptions" @click.stop.prevent="commands.typography({ level:option.level })">
-                            <v-list-tile-content><span style="margin:0 !important" :class="option.level">{{option.title}}</span></v-list-tile-content>
-                        </v-list-tile>
-                        <!-- <template v-if="getFluroNodes().length"> -->
-                        <template v-if="false">
-                            <v-list-tile @click.stop.prevent="commands.fluroNode(option)" v-for="option in getFluroNodes()">
-                                <v-list-tile-content><span style="margin:0 !important" :class="option.className">{{option.title}}</span></v-list-tile-content>
+                        <v-list>
+                            <v-list-tile :class="{ 'active': isActive.heading({ level: 1 }) }" @click.stop.prevent="commands.heading({ level: 1 })">
+                                <v-list-tile-content><span style="margin:0 !important" class="h1">Heading 1</span></v-list-tile-content>
                             </v-list-tile>
-                        </template>
-                        <!-- <template v-if="getFluroMarks().length"> -->
-                        <template v-if="false">
-                            <v-list-tile @click.stop.prevent="commands.fluroMark(option)" v-for="option in getFluroMarks()">
-                                <v-list-tile-content><span style="margin:0 !important" :class="option.class">{{option.title}}</span></v-list-tile-content>
+                            <v-list-tile :class="{ 'active': isActive.heading({ level: 2 }) }" @click.stop.prevent="commands.heading({ level: 2 })">
+                                <v-list-tile-content><span style="margin:0 !important" class="h2">Heading 2</span></v-list-tile-content>
                             </v-list-tile>
-                        </template>
-                    </v-list>
-                </div>
+                            <v-list-tile :class="{ 'active': isActive.heading({ level: 3 }) }" @click.stop.prevent="commands.heading({ level: 3 })">
+                                <v-list-tile-content><span style="margin:0 !important" class="h3">Heading 3</span></v-list-tile-content>
+                            </v-list-tile>
+                            <v-list-tile :class="{ 'active': isActive.heading({ level: 4 }) }" @click.stop.prevent="commands.heading({ level: 4 })">
+                                <v-list-tile-content><span style="margin:0 !important" class="h4">Heading 4</span></v-list-tile-content>
+                            </v-list-tile>
+                            <v-list-tile :class="{ 'active': isActive.heading({ level: 5 }) }" @click.stop.prevent="commands.heading({ level: 5 })">
+                                <v-list-tile-content><span style="margin:0 !important" class="h5">Heading 5</span></v-list-tile-content>
+                            </v-list-tile>
+                            <v-list-tile :class="{ 'active': isActive.typography({ level:option.level}) }" v-for="option in typographyOptions" @click.stop.prevent="commands.typography({ level:option.level })">
+                                <v-list-tile-content><span style="margin:0 !important" :class="option.level">{{option.title}}</span></v-list-tile-content>
+                            </v-list-tile>
+                            <!-- <template v-if="getFluroNodes().length"> -->
+                            <template v-if="false">
+                                <v-list-tile @click.stop.prevent="commands.fluroNode(option)" v-for="option in getFluroNodes()">
+                                    <v-list-tile-content><span style="margin:0 !important" :class="option.className">{{option.title}}</span></v-list-tile-content>
+                                </v-list-tile>
+                            </template>
+                            <!-- <template v-if="getFluroMarks().length"> -->
+                            <template v-if="false">
+                                <v-list-tile @click.stop.prevent="commands.fluroMark(option)" v-for="option in getFluroMarks()">
+                                    <v-list-tile-content><span style="margin:0 !important" :class="option.class">{{option.title}}</span></v-list-tile-content>
+                                </v-list-tile>
+                            </template>
+                        </v-list>
+                    </div>
                 </v-menu>
                 <v-btn icon small flat :class="{ 'active': isActive.bold() }" @click.stop.prevent="commands.bold">
                     <fluro-icon icon="bold" />
@@ -94,7 +94,6 @@
                 <v-btn icon small flat :class="{ 'active': isActive.underline() }" @click.stop.prevent="commands.underline">
                     <fluro-icon icon="underline" />
                 </v-btn>
-
                 <template v-if="isEnabled('alignment')">
                     <v-btn icon small flat :class="{ 'active': isActive.alignment({ textAlign: 'left' }) }" @click.stop.prevent="commands.alignment({ textAlign: 'left' })">
                         <fluro-icon icon="align-left" />
@@ -106,9 +105,6 @@
                         <fluro-icon icon="align-right" />
                     </v-btn>
                 </template>
-
-
-
                 <form class="menububble__form" v-if="linkMenuIsActive" @submit.prevent="setLinkUrl(commands.link, linkUrl)">
                     <input class="link-input" type="text" v-model="linkUrl" placeholder="https://" ref="linkInput" @keydown.esc="hideLinkMenu" />
                     <v-btn small icon flat @click.stop.prevent="setLinkUrl(commands.link, null)">
@@ -167,6 +163,12 @@
                                 <v-list-tile-content><span style="margin:0 !important" :class="option.class">{{option.title}}</span></v-list-tile-content>
                             </v-list-tile>
                         </template>
+                        <v-list-tile :class="{ 'active': isActive.blockquote() }" @click.stop.prevent="commands.blockquote">
+                            <v-list-tile-content><span style="margin:0 !important" ><fluro-icon icon="quote-right" />&nbsp;Blockquote</span></v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile :class="{ 'active': isActive.code_block() }" @click.stop.prevent="commands.code_block">
+                            <v-list-tile-content><span style="margin:0 !important" ><fluro-icon icon="code" />&nbsp;Code</span></v-list-tile-content>
+                        </v-list-tile>
                     </v-list>
                 </v-menu>
                 <v-btn v-if="isEnabled('bold')" icon :disabled="showSource" small flat :class="{ 'active': isActive.bold() }" @click.stop.prevent="commands.bold">
@@ -246,9 +248,6 @@
                         <fluro-icon icon="align-right" />
                     </v-btn>
                 </template>
-                <v-btn icon v-if="isEnabled('blockquote')" :disabled="showSource" small flat :class="{ 'active': isActive.blockquote() }" @click.stop.prevent="commands.blockquote">
-                    <fluro-icon icon="quote-right" />
-                </v-btn>
                 <v-btn icon v-if="isEnabled('hr')" :disabled="showSource" small flat :class="{ 'active': isActive.horizontal_rule() }" @click.stop.prevent="commands.horizontal_rule">
                     <fluro-icon icon="horizontal-rule" />
                 </v-btn>
