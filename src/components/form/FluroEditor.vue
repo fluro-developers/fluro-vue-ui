@@ -211,12 +211,17 @@
                 <v-menu v-if="isEnabled('image')" :fixed="true" transition="slide-y-transition" offset-y>
                     <template v-slot:activator="{ on }">
                         <v-btn small icon :disabled="showSource" v-on="on">
-                            <fluro-icon icon="image" />
+                            <fluro-icon icon="images" />
                         </v-btn>
                     </template>
                     <v-list>
                         <v-list-tile @click.stop.prevent="showImagePrompt(commands.image)">
-                            <v-list-tile-content>Add Image</v-list-tile-content>
+                            <v-list-tile-content><span style="margin:0 !important" ><fluro-icon icon="image" />&nbsp;Add Image</span></v-list-tile-content>
+                        </v-list-tile>
+                    </v-list>
+                    <v-list>
+                        <v-list-tile @click.stop.prevent="showVideoPrompt(commands.video)">
+                            <v-list-tile-content><span style="margin:0 !important" ><fluro-icon icon="video" />&nbsp;Add Video</span></v-list-tile-content>
                         </v-list-tile>
                     </v-list>
                 </v-menu>
@@ -367,6 +372,7 @@ import Mention from './tiptap/mentions';
 import FluroNode from './tiptap/fluroNode';
 import FluroMark from './tiptap/fluroMark';
 import Image from './tiptap/image';
+import Video from './tiptap/video';
 import Token from './tiptap/token';
 import Alignment from './tiptap/alignment';
 import Typography from './tiptap/typography';
@@ -529,10 +535,52 @@ export default {
             this.model = input;
         },
         showImagePrompt(command) {
-            const src = prompt('Enter the url of your image here')
-            if (src !== null) {
-                command({ src })
-            }
+            var self = this;
+
+            self.$fluro.global.select('image', { 
+                title: 'Select an Image/Photo', 
+                minimum: 1, 
+                maximum: 1,
+                allDefinitions:true,
+                }, true)
+                .then(function(res) {
+                    if(res) {
+
+                        var first = _.first(res)
+
+                        command( {item: first._id} )
+                    }
+                }
+            )
+
+
+            // const src = prompt('Enter the url of your image here')
+            // if (src !== null) {
+            //     command({ src })
+            // }
+        },
+        showVideoPrompt(command) {
+            var self = this;
+
+            self.$fluro.global.select('video', { 
+                title: 'Select a Video', 
+                minimum: 1, 
+                maximum: 1,
+                allDefinitions:true,
+                }, true)
+                .then(function(res) {
+                    if(res) {
+                        var first = _.first(res)
+                        command( {item: first._id} )
+                    }
+                }
+            )
+
+
+            // const src = prompt('Enter the url of your image here')
+            // if (src !== null) {
+            //     command({ src })
+            // }
         },
         addToken(command, key) {
             command(key)
@@ -765,6 +813,7 @@ export default {
             new OrderedList(),
             new ListItem(),
             new Image(),
+            new Video(),
             new Code(),
             new History(),
             new Table(),
