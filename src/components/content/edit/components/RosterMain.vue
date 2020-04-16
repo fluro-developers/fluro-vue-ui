@@ -53,7 +53,7 @@
 
 import RosterSlotManager from './RosterSlotManager.vue';
 import RosterSidebar from './RosterSidebar.vue';
-import TeamSelectModal from '@/components/modal/modals/TeamSelectModal.vue';
+// import TeamSelectModal from '@/components/modal/modals/TeamSelectModal.vue';
 
 import { FluroContentEdit } from 'fluro-vue-ui';
 import draggable from 'vuedraggable';

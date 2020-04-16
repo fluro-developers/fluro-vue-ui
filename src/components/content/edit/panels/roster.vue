@@ -7,7 +7,7 @@
             <tab heading="Roster">
                 <flex-column-body style="background: #fafafa;">
 
-                        	<roster-main v-model="model" :definition="definition"></roster-main>
+                        	<!-- <roster-main v-model="model" :definition="definition"></roster-main> -->
                             <!-- <default-roster-manager :config="config" v-model="model.defaultRosters" :rosterOptions="rosterDefinitions.definitions" /> -->
                 </flex-column-body>
             </tab>
@@ -34,7 +34,7 @@
 </template>
 <script>
 /////////////////////////////////
-import RosterMain from '../components/RosterMain.vue';
+// import RosterMain from '../components/RosterMain.vue';
 import ReminderEventManager from '../components/ReminderEventManager.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
 
