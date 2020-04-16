@@ -1,4 +1,4 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[65],{937:function(e,t,n){"use strict";n.d(t,"a",(function(){return R}));n(13),n(49),n(68),n(106),n(45),n(16),n(17),n(65),n(26),n(27),n(50),n(105),n(21),n(22),n(12),n(36),n(11);var r=n(6),i=(n(51),n(52),n(25)),u=n.n(i);
+(window.webpackJsonp=window.webpackJsonp||[]).push([[65],{937:function(e,t,n){"use strict";n.d(t,"a",(function(){return R}));n(13),n(53),n(68),n(106),n(50),n(16),n(17),n(65),n(26),n(27),n(54),n(105),n(21),n(24),n(12),n(36),n(11);var r=n(6),i=(n(55),n(56),n(25)),u=n.n(i);
 /*!
  * v-currency-field v3.0.7 
  * (c) 2020 Philipe Augusto <phiny1@gmail.com>
