@@ -1,9 +1,9 @@
 import { Node, Plugin } from 'tiptap'
 
-export default class Image extends Node {
+export default class Video extends Node {
 
     get name() {
-        return 'image'
+        return 'video'
     }
 
     get schema() {
@@ -15,12 +15,12 @@ export default class Image extends Node {
             group: 'inline',
             draggable: true,
             parseDOM: [{
-                tag: 'fluro-image[item]',
+                tag: 'fluro-video[item]',
                 getAttrs: dom => ({
                     item: dom.getAttribute('item'),
                 }),
             }, ],
-            toDOM: node => ['fluro-image', node.attrs],
+            toDOM: node => ['fluro-video', node.attrs],
         }
     }
 
@@ -40,8 +40,8 @@ export default class Image extends Node {
           computed: {
             item: {
               get() {
-                //return `https://api.fluro.io/get/${this.node.attrs.item}`
-                return this.$fluro.asset.imageUrl(this.node.attrs.item)
+                
+                return this.$fluro.asset.posterUrl(this.node.attrs.item)
               },
               set(item) {
                 this.updateAttrs({
