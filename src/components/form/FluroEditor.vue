@@ -163,11 +163,24 @@
                                 <v-list-tile-content><span style="margin:0 !important" :class="option.class">{{option.title}}</span></v-list-tile-content>
                             </v-list-tile>
                         </template>
+                    </v-list>
+                </v-menu>
+                <v-menu v-if="isEnabled('formats')" :fixed="true" transition="slide-y-transition" offset-y :disabled="showSource" >
+                    <template v-slot:activator="{ on }">
+                        <v-btn small icon :disabled="showSource" v-on="on">
+                            <!-- H1 -->
+                            <fluro-icon icon="plus" />
+                        </v-btn>
+                    </template>
+                    <v-list>
                         <v-list-tile :class="{ 'active': isActive.blockquote() }" @click.stop.prevent="commands.blockquote">
                             <v-list-tile-content><span style="margin:0 !important" ><fluro-icon icon="quote-right" />&nbsp;Blockquote</span></v-list-tile-content>
                         </v-list-tile>
                         <v-list-tile :class="{ 'active': isActive.code_block() }" @click.stop.prevent="commands.code_block">
                             <v-list-tile-content><span style="margin:0 !important" ><fluro-icon icon="code" />&nbsp;Code</span></v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile :class="{ 'active': isActive.horizontal_rule() }" @click.stop.prevent="commands.horizontal_rule">
+                            <v-list-tile-content><span style="margin:0 !important" ><fluro-icon icon="horizontal-rule" />&nbsp;Horizontal Rule</span></v-list-tile-content>
                         </v-list-tile>
                     </v-list>
                 </v-menu>
@@ -248,9 +261,6 @@
                         <fluro-icon icon="align-right" />
                     </v-btn>
                 </template>
-                <v-btn icon v-if="isEnabled('hr')" :disabled="showSource" small flat :class="{ 'active': isActive.horizontal_rule() }" @click.stop.prevent="commands.horizontal_rule">
-                    <fluro-icon icon="horizontal-rule" />
-                </v-btn>
                 <!--  -->
                 <!--  <v-btn icon class="hidden-xs-only" :disabled="showSource" small flat @click.stop.prevent="commands.undo">
                     <v-icon>undo</v-icon>
@@ -258,9 +268,9 @@
                 <v-btn icon class="hidden-xs-only" :disabled="showSource" small flat @click.stop.prevent="commands.redo">
                     <v-icon>redo</v-icon>
                 </v-btn> -->
-                <v-btn icon v-if="isEnabled('code')" :disabled="showSource" small flat :class="{ 'active': isActive.code_block() }" @click.stop.prevent="commands.code_block">
+                <!-- <v-btn icon v-if="isEnabled('code')" :disabled="showSource" small flat :class="{ 'active': isActive.code_block() }" @click.stop.prevent="commands.code_block">
                     <fluro-icon icon="file-code" />
-                </v-btn>
+                </v-btn> -->
                 <v-menu v-if="isEnabled('table')" :fixed="true" transition="slide-y-transition" offset-y>
                     <template v-slot:activator="{ on }">
                         <v-btn small class="hidden-xs-only" icon :disabled="showSource" v-on="on">
