@@ -34,50 +34,69 @@ export default class Image extends Node {
         }
     }
 
-    get plugins() {
-        return [
-            new Plugin({
-                props: {
-                    handleDOMEvents: {
-                        drop(view, event) {
-                            const hasFiles = event.dataTransfer &&
-                                event.dataTransfer.files &&
-                                event.dataTransfer.files.length
+    get view() {
+        return {
+          props: ['node', 'updateAttrs', 'view'],
+          computed: {
+            item: {
+              get() {
+                return `https://api.fluro.io/get/${this.node.attrs.item}`
+              },
+              set(item) {
+                this.updateAttrs({
+                  item,
+                })
+              },
+            },
+          },
+          template: `<div><img :src='item' /></div>`,
+        }
+      }
 
-                            if (!hasFiles) {
-                                return
-                            }
+    // get plugins() {
+    //     return [
+    //         new Plugin({
+    //             props: {
+    //                 handleDOMEvents: {
+    //                     drop(view, event) {
+    //                         const hasFiles = event.dataTransfer &&
+    //                             event.dataTransfer.files &&
+    //                             event.dataTransfer.files.length
 
-                            const images = Array
-                                .from(event.dataTransfer.files)
-                                .filter(file => (/image/i).test(file.type))
+    //                         if (!hasFiles) {
+    //                             return
+    //                         }
 
-                            if (images.length === 0) {
-                                return
-                            }
+    //                         const images = Array
+    //                             .from(event.dataTransfer.files)
+    //                             .filter(file => (/image/i).test(file.type))
 
-                            event.preventDefault()
+    //                         if (images.length === 0) {
+    //                             return
+    //                         }
 
-                            const { schema } = view.state
-                            const coordinates = view.posAtCoords({ left: event.clientX, top: event.clientY })
+    //                         event.preventDefault()
 
-                            images.forEach(image => {
-                                const reader = new FileReader()
+    //                         const { schema } = view.state
+    //                         const coordinates = view.posAtCoords({ left: event.clientX, top: event.clientY })
 
-                                reader.onload = readerEvent => {
-                                    const node = schema.nodes.image.create({
-                                        src: readerEvent.target.result,
-                                    })
-                                    const transaction = view.state.tr.insert(coordinates.pos, node)
-                                    view.dispatch(transaction)
-                                }
-                                reader.readAsDataURL(image)
-                            })
-                        },
-                    },
-                },
-            }),
-        ]
-    }
+    //                         images.forEach(image => {
+    //                             const reader = new FileReader()
+
+    //                             reader.onload = readerEvent => {
+    //                                 const node = schema.nodes.image.create({
+    //                                     src: readerEvent.target.result,
+    //                                 })
+    //                                 const transaction = view.state.tr.insert(coordinates.pos, node)
+    //                                 view.dispatch(transaction)
+    //                             }
+    //                             reader.readAsDataURL(image)
+    //                         })
+    //                     },
+    //                 },
+    //             },
+    //         }),
+    //     ]
+    // }
 
 }

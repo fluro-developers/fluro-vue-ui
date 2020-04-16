@@ -529,10 +529,29 @@ export default {
             this.model = input;
         },
         showImagePrompt(command) {
-            const src = prompt('Enter the url of your image here')
-            if (src !== null) {
-                command({ src })
-            }
+            var self = this;
+
+            self.$fluro.global.select('image', { 
+                title: 'Select an Image/Photo', 
+                minimum: 1, 
+                maximum: 1,
+                allDefinitions:true,
+                }, true)
+                .then(function(res) {
+                    if(res) {
+
+                        var first = _.first(res)
+
+                        command( {item: first._id} )
+                    }
+                }
+            )
+
+
+            // const src = prompt('Enter the url of your image here')
+            // if (src !== null) {
+            //     command({ src })
+            // }
         },
         addToken(command, key) {
             command(key)
