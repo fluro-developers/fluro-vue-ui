@@ -165,25 +165,6 @@
                         </template>
                     </v-list>
                 </v-menu>
-                <v-menu v-if="isEnabled('formats')" :fixed="true" transition="slide-y-transition" offset-y :disabled="showSource" >
-                    <template v-slot:activator="{ on }">
-                        <v-btn small icon :disabled="showSource" v-on="on">
-                            <!-- H1 -->
-                            <fluro-icon icon="plus" />
-                        </v-btn>
-                    </template>
-                    <v-list>
-                        <v-list-tile :class="{ 'active': isActive.blockquote() }" @click.stop.prevent="commands.blockquote">
-                            <v-list-tile-content><span style="margin:0 !important" ><fluro-icon icon="quote-right" />&nbsp;Blockquote</span></v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile :class="{ 'active': isActive.code_block() }" @click.stop.prevent="commands.code_block">
-                            <v-list-tile-content><span style="margin:0 !important" ><fluro-icon icon="code" />&nbsp;Code</span></v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile :class="{ 'active': isActive.horizontal_rule() }" @click.stop.prevent="commands.horizontal_rule">
-                            <v-list-tile-content><span style="margin:0 !important" ><fluro-icon icon="horizontal-rule" />&nbsp;Horizontal Rule</span></v-list-tile-content>
-                        </v-list-tile>
-                    </v-list>
-                </v-menu>
                 <v-btn v-if="isEnabled('bold')" icon :disabled="showSource" small flat :class="{ 'active': isActive.bold() }" @click.stop.prevent="commands.bold">
                     <fluro-icon icon="bold" />
                 </v-btn>
@@ -211,19 +192,27 @@
                 <v-menu v-if="isEnabled('image')" :fixed="true" transition="slide-y-transition" offset-y>
                     <template v-slot:activator="{ on }">
                         <v-btn small icon :disabled="showSource" v-on="on">
-                            <fluro-icon icon="images" />
+                            <fluro-icon icon="plus" />
                         </v-btn>
                     </template>
                     <v-list>
                         <v-list-tile @click.stop.prevent="showImagePrompt(commands.image)">
                             <v-list-tile-content><span style="margin:0 !important" ><fluro-icon icon="image" />&nbsp;Add Image</span></v-list-tile-content>
                         </v-list-tile>
-                    </v-list>
-                    <v-list>
                         <v-list-tile @click.stop.prevent="showVideoPrompt(commands.video)">
                             <v-list-tile-content><span style="margin:0 !important" ><fluro-icon icon="video" />&nbsp;Add Video</span></v-list-tile-content>
                         </v-list-tile>
-                    </v-list>
+                        <v-list-tile :class="{ 'active': isActive.blockquote() }" @click.stop.prevent="commands.blockquote">
+                            <v-list-tile-content><span style="margin:0 !important" ><fluro-icon icon="quote-right" />&nbsp;Blockquote</span></v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile :class="{ 'active': isActive.code_block() }" @click.stop.prevent="commands.code_block">
+                            <v-list-tile-content><span style="margin:0 !important" ><fluro-icon icon="code" />&nbsp;Code</span></v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile :class="{ 'active': isActive.horizontal_rule() }" @click.stop.prevent="commands.horizontal_rule">
+                            <v-list-tile-content><span style="margin:0 !important" ><fluro-icon icon="horizontal-rule" />&nbsp;Horizontal Rule</span></v-list-tile-content>
+                        </v-list-tile>
+                     </v-list>
+                   
                 </v-menu>
                 <!-- <pre>{{typographyOptions}}</pre> -->
                 <!-- <button class="menubar__button" :class="{ 'active': isActive.typography({ level: 'text-muted' }) }" @click="commands.typography({ level: 'text-muted' })">Muted</button> -->
