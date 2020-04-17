@@ -1,6 +1,6 @@
 {
   "name": "fluro-vue-ui",
-  "version": "2.0.76",
+  "version": "2.0.77",
   "description": "A package that contains helpful Fluro UI components and mixins",
   "main": "dist/index.js",
   "scripts": {
@@ -34,15 +34,15 @@
     "signature_pad": "^3.0.0-beta.3",
     "js-beautify": "^1.10.3",
     "vue2-ace-editor": "0.0.13",
-    "vuedraggable": "^2.20.0"
+    "vuedraggable": "^2.20.0",
+    "@google/markerclusterer": "*",
+    "tippy.js": "*",
+    "tiptap": "*",
+    "tiptap-extensions": "*"
   },
   "dependencies": {
-    "@google/markerclusterer": "^2.0.8",
     "expression-eval": "^2.0.0",
     "sass-resources-loader": "^2.0.1",
-    "tippy.js": "^4.3.0",
-    "tiptap": "^1.26.6",
-    "tiptap-extensions": "^1.28.6",
     "v-currency-field": "^3.0.6",
     "vue-vimeo-player": "0.0.9",
     "vue-youtube": "^1.3.4",
