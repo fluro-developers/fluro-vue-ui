@@ -29,7 +29,10 @@ module.exports = {
         
         "tippy.js":"tippy.js",
         "tiptap":"tiptap",
+        'tiptap-commands':'tiptap-commands',
+        'tiptap-utils':'tiptap-utils',
         "tiptap-extensions":"tiptap-extensions",
+        'prosemirror-commands':'prosemirror-commands',
 
         //Brace Stuff
         'brace/ext/language_tools': 'brace/ext/language_tools',
@@ -121,11 +124,14 @@ module.exports = {
     //       // }
     //       )
     //   ],
+    //   
+    /**
     optimization: {
         splitChunks: {
             chunks: 'all'
         }
     }
+    /**/
     // output: {
     //   filename: 'main.js',
     //   path: path.resolve(__dirname, 'dist')
