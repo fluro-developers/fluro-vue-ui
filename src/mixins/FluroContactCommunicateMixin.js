@@ -1,3 +1,6 @@
+
+console.log('Contact communicate mixin');
+
 export default {
     asyncComputed: {
         postable: {

@@ -156,12 +156,18 @@
                                         </v-container>
                                     </template>
                                 </fluro-content-form>
+
+
+
                                 <v-btn v-if="model._id && liveUrl" target="_blank" :href="liveUrl" block large color="primary">
                                     Watch on Fluro Live
                                 </v-btn>
 
-
+                                
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.streamIntegrations" v-model="model"/>
+
+                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.streamContent" v-model="model"/>
+
 
 
                                 <fluro-panel>
@@ -732,14 +738,26 @@ export default {
                 minimum: 0,
                 maximum: 1,
                 type: 'boolean',
-                defaultValues: [true]
+                // defaultValues: [true]
             });
 
 
 
             ///////////////////////////////////
 
-            addField('streamIntegrations', {
+            addField('streamContent', {
+                title: 'Pre-recorded Video',
+                description: 'Select or create a video to stream for this event',
+                minimum: 0,
+                maximum: 1,
+                type: 'reference',
+                params: {
+                    restrictType: 'video',
+                },
+                defaultValues: [true]
+            });
+
+             addField('streamIntegrations', {
                 title: 'Stream Integrations',
                 description: 'Broadcast to multiple endpoints',
                 minimum: 0,
@@ -1001,7 +1019,7 @@ export default {
             if (!this.streamKey) {
                 return 'Please save this event to generate your RTMP URL';
             }
-            return 'rtmp://52.63.92.162/live/';
+            return 'rtmp://rtmp.fluro.io/live/';
         },
         liveUrl() {
 
@@ -1017,7 +1035,7 @@ export default {
                 return 'Please save this event to generate your fluro live url';
             }
 
-            return `https://stream.fluro.live/live/${this.accountID}.${this.eventID}/index.m3u8`;
+            return `https://rtmp.fluro.io/live/${this.accountID}.${this.eventID}/index.m3u8`;
         },
         streamKey() {
 

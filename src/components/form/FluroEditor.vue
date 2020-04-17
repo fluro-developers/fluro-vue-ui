@@ -1065,6 +1065,16 @@ $color-white: #fff;
         text-rendering: optimizeLegibility;
     }
 
+
+    .fluro-image-preview {
+        max-width:100%;
+        img {
+            display:block;
+            width:100%;
+            height:auto;
+        }
+    }
+
     ul,
     ol {
         padding-left: 24px;

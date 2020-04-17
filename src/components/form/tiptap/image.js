@@ -50,7 +50,7 @@ export default class Image extends Node {
               },
             },
           },
-          template: `<div><img :src='item' /></div>`,
+          template: `<div class="fluro-image-preview"><img :src='item' /></div>`,
         }
       }
 
