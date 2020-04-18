@@ -95,11 +95,6 @@
     </flex-column>
 </template>
 <script>
-// import Vue from 'vue';
-
-// import CorrespondenceInfoModal from './CorrespondenceInfoModal.vue';
-// import MailoutPushModal from './MailoutPushModal.vue';
-// import { SearchInput, StatusCell, AvatarCell, FluroTable, MailoutRenderPreview, MailoutTestPanel, FluroContentFormField, FluroContentSelectButton } from 'fluro-vue-ui';
 
 import Vue from 'vue';
 

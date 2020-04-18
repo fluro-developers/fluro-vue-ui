@@ -80,7 +80,7 @@
                                     </v-btn>
                                 </v-flex>
                             </v-layout>
-                            <fluro-panel v-for="roster in model.rostered">
+                            <fluro-panel :key="roster._id" v-for="roster in model.rostered">
                                 <fluro-panel-title>
                                     <v-layout align-center>
                                         <v-flex>
@@ -95,10 +95,10 @@
                                 </fluro-panel-title>
                                 <fluro-panel-body>
                                     <v-layout row wrap>
-                                        <v-flex xs6 sm4 md3 v-for="slot in roster.slots" v-if="slot.assignments && slot.assignments.length">
+                                        <v-flex xs6 sm4 md3 :key="index" v-for="(slot, index) in roster.slots" v-if="slot.assignments && slot.assignments.length">
                                             <v-container class="mb-2 pa-2">
                                                 <h5>{{slot.title}}</h5>
-                                                <div class="assignment-item" @click="$actions.open([assignment])" :class="assignment.confirmationStatus" v-for="assignment in slot.assignments">
+                                                <div class="assignment-item" @click="$actions.open([assignment])" :class="assignment.confirmationStatus" :key="assignment._id" v-for="assignment in slot.assignments">
                                                     <v-layout>
                                                         <v-flex>
                                                             {{assignment.contact && assignment.contact.title ? assignment.contact.title : assignment.contactName}}

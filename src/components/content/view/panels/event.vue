@@ -29,7 +29,7 @@
                             </v-container>
                             <v-container grid-list-xl fluid pa-2 v-if="item.videos && item.videos.length">
                                 <v-layout row wrap>
-                                    <v-flex :xs12="item.videos.length == 1" :xs6="item.videos.length > 1" v-for="video in item.videos">
+                                    <v-flex :xs12="item.videos.length == 1" :xs6="item.videos.length > 1" :key="video._id" v-for="video in item.videos">
                                         <fluro-panel>
                                             <fluro-panel-title>
                                                 <v-layout align-center>

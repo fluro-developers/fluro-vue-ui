@@ -100,29 +100,30 @@ export default {
 
             var self = this;
 
-            // Promise.all([
-            //         () => import('brace/ext/language_tools'),
-            //         () => import('brace/mode/html'),
-            //         () => import('brace/mode/json'),
-            //         () => import('brace/mode/javascript'),
-            //         () => import('brace/mode/ejs'),
-            //         () => import('brace/mode/scss'),
-            //         () => import('brace/theme/tomorrow_night_eighties'),
-            //         () => import('brace/snippets/javascript'),
-            //     ])
-            //     .then(function() {
+            console.log('Editor import brace extras')
+            Promise.all([
+                    () => import('brace/ext/language_tools'),
+                    () => import('brace/mode/html'),
+                    () => import('brace/mode/json'),
+                    () => import('brace/mode/javascript'),
+                    () => import('brace/mode/ejs'),
+                    () => import('brace/mode/scss'),
+                    () => import('brace/theme/tomorrow_night_eighties'),
+                    () => import('brace/snippets/javascript'),
+                ])
+                .then(function() {
 
-            //         console.log('brace extras loaded');
+                    console.log('brace extras loaded');
 
 
-                    require('brace/ext/language_tools') //language extension prerequsite...
-                    require('brace/mode/html')
-                    require('brace/mode/json') //language
-                    require('brace/mode/javascript') //language
-                    require('brace/mode/ejs') //language
-                    require('brace/mode/scss')
-                    require('brace/theme/tomorrow_night_eighties')
-                    require('brace/snippets/javascript') //snippet
+                    // require('brace/ext/language_tools') //language extension prerequsite...
+                    // require('brace/mode/html')
+                    // require('brace/mode/json') //language
+                    // require('brace/mode/javascript') //language
+                    // require('brace/mode/ejs') //language
+                    // require('brace/mode/scss')
+                    // require('brace/theme/tomorrow_night_eighties')
+                    // require('brace/snippets/javascript') //snippet
                     self.editor = editor;
 
                     //             editor.setOptions({
@@ -162,7 +163,7 @@ export default {
                     // editor.setReadOnly(true);
                     // editor.setMode(this.computedSyntax);
                     // console.log('Initialize the editor', editor);
-                // })
+                })
 
         },
     },

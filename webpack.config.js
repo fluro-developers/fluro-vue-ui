@@ -11,22 +11,33 @@ module.exports = {
         filename: 'index.js',
         path: path.resolve(__dirname, 'dist')
     },
+    // output: {
+    //     path: path.join(__dirname, "dist"),
+    //     filename: "index.js",
+    //     // library: ["fluro-vue-ui"],
+    //     // libraryTarget: "umd"
+    // },
+
+    // output: {
+    //     path: path.join(__dirname, "dist"),
+    //     //library: 'fluro-vue-ui',
+
+    //     libraryTarget: 'umd',
+    //     // globalObject: 'this',
+    // },
+
     externals: {
+        'lodash':'lodash',
+        'fluro':'fluro',
         'vue': 'vue',
-        'lodash': 'lodash',
         'brace': 'brace',
-        'fluro': 'fluro',
         'vue-color': 'vue-color',
         'vuetify': 'vuetify',
         'signature_pad': 'signature_pad',
         'js-beautify': 'js-beautify',
         'vue2-ace-editor': 'vue2-ace-editor',
         'vuedraggable': 'vuedraggable',
-        'fluro-vue': 'fluro-vue',
         'vuex-map-fields': 'vuex-map-fields',
-
-
-
         "tippy.js": "tippy.js",
         "tiptap": "tiptap",
         'tiptap-commands': 'tiptap-commands',
@@ -54,6 +65,7 @@ module.exports = {
         //         },
         //     },
         // },
+
         rules: [
 
             {
@@ -69,22 +81,24 @@ module.exports = {
                         },
                     },
                 ],
-            }, {
+            },
+            {
                 test: /\.vue$/,
                 loader: 'vue-loader'
             },
             // this will apply to both plain `.js` files
             // AND `<script>` blocks in `.vue` files
-           
-/**
+
+            /**/
             {
                 test: /\.js$/,
-                exclude: /node_modules/,
+                //exclude: /node_modules/,
                 loader: 'babel-loader',
-                options: {
-                    presets: ['latest'],
-                    plugins: ['transform-runtime']
-                }
+                //options: {
+                    // presets: ['latest'],
+                  //  presets: ['@babel/preset-env'],
+                  //  plugins: ['@babel/plugin-transform-runtime']
+                //}
             }
             /**/
 
@@ -125,6 +139,14 @@ module.exports = {
         new VueLoaderPlugin(),
         // new VuetifyLoaderPlugin(),
     ],
+
+    // resolve: {
+    //     extensions: ['.js'],
+    //     alias: {
+    //         lodash: path.resolve('./node_modules/lodash/index.js'),
+    //     }
+    // },
+
     // plugins: [
     //       new JsDocPlugin(
     //       // {
@@ -133,12 +155,12 @@ module.exports = {
     //       )
     //   ],
     //   
-    /**
+    /**/
     optimization: {
         splitChunks: {
             chunks: 'all'
         }
-    }
+    },
     /**/
     // output: {
     //   filename: 'main.js',

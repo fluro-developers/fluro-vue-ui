@@ -12,7 +12,7 @@
                 <v-container class="pin-group" v-for="group in grouped">
                     <h4>{{group.title}}</h4>
                     <fluro-card>
-                        <fluro-list-item @click.native="clicked(item)" :bordered="true" :item="item" v-for="item in group.items">
+                        <fluro-list-item @click.native="clicked(item)" :key="item._id" :bordered="true" :item="item" v-for="item in group.items">
                             <!-- <template v-slot:actions> -->
                             <!-- <div class="item-actions"> -->
                             <!-- <v-btn class="ma-0" small icon v-tippy content="Remove Pin" @click.stop.prevent="pinStore.unset(item._id)"> -->

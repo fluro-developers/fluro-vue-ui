@@ -44,8 +44,6 @@
 <script>
 /////////////////////////////////
 
-// import { FluroAvatar, Layout, FluroContentForm, FluroContentFormField, FluroStatusSelect } from 'fluro-vue-ui';
-
 import FluroContentForm from '../../../form/FluroContentForm.vue';
 import FluroContentFormField from '../../../form/FluroContentFormField.vue';
 import FluroStatusSelect from '../../../form/FluroStatusSelect.vue';

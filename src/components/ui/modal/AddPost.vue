@@ -57,15 +57,9 @@
 </template>
 <script>
 import async from 'async';
-// import { FluroModalMixin } from 'fluro-vue-ui';
-// import { FluroRealmSelect, FluroContentForm, FluroModalMixin } from 'fluro-vue-ui';
 import FluroRealmSelect from '../../form/realmselect/FluroRealmSelect.vue';
 import FluroContentForm from '../../form/FluroContentForm.vue';
 import FluroModalMixin from '../../../mixins/ModalMixin';
-
-// , FluroContentForm, FluroModalMixin } from 'fluro-vue-ui';
-
-// console.log('ADD POST EXISTS NOW', FluroRealmSelect, FluroContentForm, FluroModalMixin)
 
 export default {
     props: {

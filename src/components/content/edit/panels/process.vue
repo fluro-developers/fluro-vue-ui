@@ -68,7 +68,7 @@
                                             <v-label>Received {{receivedForms.length}} Form Responses</v-label>
                                             <p class="help-block">These forms have not yet been submitted</p>
                                             <list-group>
-                                                <list-group-item v-for="form in receivedForms">
+                                                <list-group-item :key="index" v-for="(form, index) in receivedForms">
                                                     <strong>
                                                         <fluro-icon type="form" /> {{form.form.title}}
                                                     </strong>
@@ -236,11 +236,8 @@
 <script>
 /////////////////////////////////
 
-// import FluroAcademicSelect from '../../form/FluroAcademicSelect';
-// import FluroRealmSelect from '../../form/realmselect/FluroRealmSelect.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
 import FluroContentView from '../../view/FluroContentView.vue';
-// import { FluroAvatarUpdate } from 'fluro-vue-ui';
 import FluroTaskList from '../../../form/tasklist/FluroTaskList.vue';
 
 /////////////////////////////////

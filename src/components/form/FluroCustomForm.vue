@@ -34,7 +34,9 @@
 </template>
 <script>
 
-import { FluroContentForm, FluroContentFormField, FluroRealmSelect } from 'fluro-vue-ui'
+import FluroContentForm from './FluroContentForm.vue';
+import FluroContentFormField from './FluroContentFormField.vue';
+import FluroRealmSelect from './realmselect/FluroRealmSelect.vue';
 
 ////////////////////////////////////////////////
 

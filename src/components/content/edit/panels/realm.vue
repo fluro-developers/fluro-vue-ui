@@ -50,12 +50,6 @@ import FluroContentEditMixin from '../FluroContentEditMixin';
 import Vue from 'vue';
 
 
-
-// import FluroEditor from '../../../form/FluroEditor.vue';
-// import FluroContentEditMixin from '../FluroContentEditMixin';
-// import GradeManager from '../components/GradeManager.vue';
-// import { Layout } from 'fluro-vue-ui'
-
 /////////////////////////////////
 
 /////////////////////////////////

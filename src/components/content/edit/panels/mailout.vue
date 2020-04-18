@@ -345,12 +345,6 @@
 </template>
 <script>
 /////////////////////////////////
-
-// import FluroEditor from '../../../form/FluroEditor.vue';
-// import { MailoutRenderPreview, MailoutResultsPanel, MailoutPreflightPanel, MailoutTestPanel } from 'fluro-vue-ui'
-// import FluroContentEditMixin from '../FluroContentEditMixin';
-
-
 /////////////////////////////////
 
 import Vue from 'vue';

@@ -130,7 +130,6 @@
     </div>
 </template>
 <script>
-// import { FluroContentForm, Layout } from 'fluro-vue-ui';
 import FluroContentEditMixin from '../FluroContentEditMixin';
 import FluroContentForm from '../../../form/FluroContentForm.vue';
 

@@ -142,7 +142,6 @@
 import FluroEditor from '../../../form/FluroEditor.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
 import FluroAssetEditMixin from '../FluroAssetEditMixin';
-// import { Layout } from 'fluro-vue-ui'
 
 /////////////////////////////////
 

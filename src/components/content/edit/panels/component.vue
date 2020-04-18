@@ -65,11 +65,6 @@ import Vue from 'vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
 import FluroFieldEditor from '../../../fields/FluroFieldEditor.vue';
 import FluroCodeEditor from '../../../form/FluroCodeEditor.vue';
-// console.log('MIXIN', FluroContentEditMixin)
-// import FluroCodeEditor from '../../../form/FluroCodeEditor.vue';
-// import { FilterService } from 'fluro';
-// import { FluroFieldEditor, FluroCodeEditor } from 'fluro-vue-ui';
-
 /////////////////////////////////
 
 export default {

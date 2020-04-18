@@ -115,7 +115,6 @@ import FamilyMemberCard from '../components/FamilyMemberCard.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
 import AddressManager from '../components/AddressManager.vue';
 import FluroAcademicSelect from '../../../form/FluroAcademicSelect.vue';
-// import { FluroIcon, Layout, FluroAcademicSelect } from 'fluro-vue-ui'
 
 /////////////////////////////////
 

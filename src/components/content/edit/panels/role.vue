@@ -27,11 +27,11 @@
                                 <search-input placeholder="Search permissions" v-model="search" />
                             </div>
                         </template>
-                        <tab :heading="`${type.title} ${of(type)}`" :muted="!enabled(type).length" v-for="type in filteredBasic">
+                        <tab :heading="`${type.title} ${of(type)}`" :muted="!enabled(type).length" :key="type.title" v-for="type in filteredBasic">
                             <v-container>
                                 <h4 margin>{{type.title}}</h4>
                                 <list-group>
-                                    <fluro-toggle-item @click.native="togglePermission(permission)" v-for="permission in type.permissions" :inactive="!permissionSelected(permission)">
+                                    <fluro-toggle-item @click.native="togglePermission(permission)" :key="permission.title" v-for="permission in type.permissions" :inactive="!permissionSelected(permission)">
                                         <strong>{{permission.title}}</strong>
                                         <div class="sm muted">{{permission.description}}</div>
                                     </fluro-toggle-item>
@@ -87,10 +87,7 @@
 <script>
 /////////////////////////////////
 
-// import FluroEditor from '../../../form/FluroEditor.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin';
-// import { Layout, SearchInput, FluroToggleItem } from 'fluro-vue-ui'
-// import SearchInput from '../../../'
 import SearchInput from '../../../ui/SearchInput.vue';
 import FluroToggleItem from '../../../ui/FluroToggleItem.vue';
 

@@ -3,7 +3,7 @@
         <fluro-page-preloader v-if="loading" contain />
         <template v-else>
             <template v-if="sorted.length">
-                <contact-process-state @click.native="clicked(card)" :card="card" v-for="card in sorted" />
+                <contact-process-state @click.native="clicked(card)" :card="card" :key="card._id" v-for="card in sorted" />
             </template>
             <template v-else>
                 <em>No process information is available</em>

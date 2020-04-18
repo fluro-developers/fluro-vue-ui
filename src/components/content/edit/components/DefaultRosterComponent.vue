@@ -22,7 +22,6 @@
     </div>
 </template>
 <script>
-// import { FluroContentForm, Layout } from 'fluro-vue-ui';
 import FluroContentEditMixin from '../FluroContentEditMixin';
 import DefaultRosterSlot from './DefaultRosterSlot.vue';
 import FluroContentForm from '../../../form/FluroContentForm.vue';

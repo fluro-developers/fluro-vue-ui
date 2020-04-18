@@ -448,12 +448,6 @@
 <script>
 /////////////////////////////////
 
-// import FluroEditor from '../../../form/FluroEditor.vue';
-// import FluroContentEditMixin from '../FluroContentEditMixin';
-// import PaymentModifierEditor from '../components/PaymentModifierEditor.vue';
-// import { FluroContentSelectButton, FluroFieldEditor } from 'fluro-vue-ui';
-// import FieldTemplates from '../../../fields/FieldEditorTemplates';
-
 
 
 // import FluroEditor from '../../../form/FluroEditor.vue';

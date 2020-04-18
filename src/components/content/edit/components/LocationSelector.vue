@@ -32,9 +32,8 @@
     </v-layout>
 </template>
 <script>
+
 import _ from 'lodash';
-
-
 export default {
     props: {
         value: {
@@ -75,7 +74,7 @@ export default {
             var itemID = self.$fluro.utils.getStringID(item);
 
             //Find the index of the matching item
-            var index = _.findIndex(self.model[self.roomsPath], function(selectedItem) {
+            var index = (self.model[self.roomsPath] || []).findIndex(function(selectedItem) {
                 var selectedItemID = self.$fluro.utils.getStringID(selectedItem);
                 return itemID == selectedItemID;
             })
@@ -98,7 +97,7 @@ export default {
             var itemID = self.$fluro.utils.getStringID(item);
 
             //Check if the ID is already selected
-            var match = _.some(self.model[self.roomsPath], function(selectedItem) {
+            var match = (self.model[self.roomsPath] || []).some(function(selectedItem) {
                 var selectedItemID = self.$fluro.utils.getStringID(selectedItem);
                 return itemID == selectedItemID;
             })
@@ -126,13 +125,13 @@ export default {
             var itemID = self.$fluro.utils.getStringID(item);
 
             //Find the index of the matching item
-            var index = _.findIndex(self.model[self.locationsPath], function(selectedItem) {
+            var index = (self.model[self.locationsPath] || []).findIndex(function(selectedItem) {
                 var selectedItemID = self.$fluro.utils.getStringID(selectedItem);
                 return itemID == selectedItemID;
             })
 
             self.model[self.locationsPath].splice(index, 1);
-            _.forEach(item.rooms, function(room) {
+            (item.rooms || []).forEach(function(room) {
                 if (self.isSelectedRoom(room)) {
                     return self.deselectRoom(room)
                 }
@@ -154,7 +153,7 @@ export default {
             var itemID = self.$fluro.utils.getStringID(item);
 
             //Check if the ID is already selected
-            var match = _.some(self.model[self.locationsPath], function(selectedItem) {
+            var match = (self.model[self.locationsPath] || []).some(function(selectedItem) {
                 var selectedItemID = self.$fluro.utils.getStringID(selectedItem);
                 return itemID == selectedItemID;
             })
@@ -163,7 +162,7 @@ export default {
         },
         parentRealm(room) {
             var self = this;
-            var parent = _.find(self.locations, function(loc) {
+            var parent = (self.locations || []).find(function(loc) {
                 return room.locationName == loc.title;
             });
             if (parent) {
@@ -176,8 +175,10 @@ export default {
             var self = this;
             var itemID = self.$fluro.utils.getStringID(room);
 
-            var location = _.find(self.locations, function(loc) {
-                var locRoomIDs = _.map(loc.rooms, '_id');
+            var location = (self.locations || []).find(function(loc) {
+                var locRoomIDs = (loc.rooms || []).map(function(room) {
+                    return room ? room._id : null;
+                });
                 return locRoomIDs.includes(itemID);
             });
 

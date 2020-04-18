@@ -17,11 +17,8 @@
     </div>
 </template>
 <script>
-// import { FluroContentForm, Layout } from 'fluro-vue-ui';
 import FluroContentEditMixin from '../FluroContentEditMixin';
 import FluroExclusiveSelector from '../components/FluroExclusiveSelector.vue';
-// import FluroContentForm from '../../../form/FluroContentForm.vue';
-// import FluroContentFormField from '../../../form/FluroContentFormField.vue';
 
 
 

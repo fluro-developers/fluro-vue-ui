@@ -41,9 +41,7 @@
     </flex-column>
 </template>
 <script>
-// import { FluroModalMixin, FluroExpressionEditor } from 'fluro-vue-ui';
 import FluroModalMixin from '../../../../mixins/ModalMixin.js';
-// import FluroExpressionEditor from '../../../form/FluroExpressionEditor.vue';
 
 export default {
     components: {

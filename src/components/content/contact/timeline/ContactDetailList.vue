@@ -11,7 +11,7 @@
             </flex-column-header> -->
             <flex-column-body style="background: #eee;">
                 <v-container fluid >
-                    <fluro-panel class="sheet-panel" fluid v-for="sheet in orderedSheets" :class="sheet.status">
+                    <fluro-panel class="sheet-panel" fluid :key="sheet._id" v-for="sheet in orderedSheets" :class="sheet.status">
                         <fluro-panel-title>
                             <v-layout align-center>
                                 <v-flex shrink>

@@ -70,14 +70,6 @@
     </td>
 </template>
 <script>
-// import {
-//     NumberCell,
-//     BooleanCell,
-//     DateCell,
-//     RealmDotCell,
-//     TimeagoCell,
-// } from 'fluro-vue-ui';
-
 
 import NumberCell from './cells/NumberCell.vue';
 import BooleanCell from './cells/BooleanCell.vue';

@@ -10,9 +10,7 @@
     </div>
 </template>
 <script>
-import _ from 'lodash';
 
-// import { Layout, FluroIcon } from 'fluro-vue-ui';
 import FluroCheckbox from './FluroCheckbox.vue';
 
 /////////////////////////////////
@@ -119,7 +117,7 @@ export default {
             } else {
                 //console.log('CURRENT WORKING MODEL', self.workingModel, self.model[self.path]);
                 self.$set(self.model, self.path, []);
-                _.each(self.workingModel.slice(1), function(bool, ind) {
+                (self.workingModel.slice(1) || []).forEach(function(bool, ind) {
                     //console.log('UPDATE ACTUAL MODEL', ind, self.model[self.path])
                     if (bool) {
                         if ((self.allLabel == 'Default Channels') && (self.otherOptions[ind] == 'Push Notification')) {
