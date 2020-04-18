@@ -26,13 +26,13 @@ module.exports = {
         'vuex-map-fields': 'vuex-map-fields',
 
 
-        
-        "tippy.js":"tippy.js",
-        "tiptap":"tiptap",
-        'tiptap-commands':'tiptap-commands',
-        'tiptap-utils':'tiptap-utils',
-        "tiptap-extensions":"tiptap-extensions",
-        'prosemirror-commands':'prosemirror-commands',
+
+        "tippy.js": "tippy.js",
+        "tiptap": "tiptap",
+        'tiptap-commands': 'tiptap-commands',
+        'tiptap-utils': 'tiptap-utils',
+        "tiptap-extensions": "tiptap-extensions",
+        'prosemirror-commands': 'prosemirror-commands',
 
         //Brace Stuff
         'brace/ext/language_tools': 'brace/ext/language_tools',
@@ -75,10 +75,18 @@ module.exports = {
             },
             // this will apply to both plain `.js` files
             // AND `<script>` blocks in `.vue` files
+           
+/**
             {
                 test: /\.js$/,
+                exclude: /node_modules/,
                 loader: 'babel-loader',
-            },
+                options: {
+                    presets: ['latest'],
+                    plugins: ['transform-runtime']
+                }
+            }
+            /**/
 
 
         ]
