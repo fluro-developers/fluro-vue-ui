@@ -398,7 +398,8 @@
 <script>
 //Import validation options from vuelidate
 import { validationMixin } from 'vuelidate';
-import { required, minLength, maxLength, email, url } from 'vuelidate/lib/validators';
+import validators from 'vuelidate/lib/validators';
+const { required, minLength, maxLength, email, url } = validators;
 import _ from 'lodash';
 import Vue from 'vue';
 // import FluroCompileHtml from '../FluroCompileHtml.vue';
@@ -439,18 +440,9 @@ function mapDefaultDateValue(value) {
 export default {
     components: {
         'color-picker': Chrome,
-        // draggable,
         draggable: () => import('vuedraggable'),
-        // FluroCurrencyInput,
-        // FluroEditor,
-        // FluroCompileHtml,
-        // FluroCodeEditor,
-        // FluroSignatureField,
-        // FluroDateTimePicker,
-        // FluroContentSelect,
-        // FluroContentSelectButton,
-        // FluroRealmSelect,
-        // FluroTimeline: () => import('../../../ui/FluroTimeline.vue'),
+        FluroContentForm: () => import('src/components/form/FluroContentForm.vue'),
+        FluroContentFormField: () => import('src/components/form/FluroContentFormField.vue'),
         FluroCompileHtml: () => import('../FluroCompileHtml.vue'),
         FluroEditor: () => import('./FluroEditor.vue'),
         FluroCurrencyInput: () => import('./FluroCurrencyInput.vue'),
@@ -2521,10 +2513,10 @@ export default {
     },
 
     mixins: [validationMixin],
-    beforeCreate: function() {
-        this.$options.components.FluroContentForm = require('./FluroContentForm.vue').default;
-        this.$options.components.FluroContentFormField = require('./FluroContentFormField.vue').default;
-    },
+    // beforeCreate: function() {
+    //     this.$options.components.FluroContentForm = require('src/components/form/FluroContentForm.vue').default;
+    //     this.$options.components.FluroContentFormField = require('src/components/form/FluroContentFormField.vue').default;
+    // },
     validations: {
         model: {
             validateInput,
@@ -3009,7 +3001,7 @@ function checkValidInput(self, input) {
 
 
 
-    &.right-messages /deep/ {
+    &.right-messages >>> {
         .v-text-field__details {
             text-align: right;
         }

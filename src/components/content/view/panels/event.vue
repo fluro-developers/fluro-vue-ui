@@ -205,7 +205,6 @@ import Vue from 'vue';
 import FluroContentView from '../FluroContentView.vue';
 import LocationViewMapComponent from '../../event/LocationViewMapComponent.vue';
 import FluroContentViewMixin from '../FluroContentViewMixin';
-import FluroContentRender from '../../../FluroContentRender.vue';
 import GuestList from '../../event/GuestList.vue';
 // location-view-map-component
 
@@ -225,7 +224,6 @@ export default {
     components: {
         FluroContentView,
         GuestList,
-        FluroContentRender,
         LocationViewMapComponent,
     },
     mixins: [FluroContentViewMixin],

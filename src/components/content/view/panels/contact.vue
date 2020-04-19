@@ -45,7 +45,6 @@ import Vue from 'vue';
 
 import FluroContactCommunicateMixin from '../../../../mixins/FluroContactCommunicateMixin';
 import FluroContentViewMixin from '../FluroContentViewMixin';
-import FluroContentRender from '../../../FluroContentRender.vue';
 import FluroAvatar from '../../../FluroAvatar.vue';
 
 /////////////////////////////////
@@ -62,7 +61,6 @@ export default {
         },
     },
     components: {
-        FluroContentRender,
         FluroAvatar,
     },
     mixins: [FluroContentViewMixin, FluroContactCommunicateMixin],

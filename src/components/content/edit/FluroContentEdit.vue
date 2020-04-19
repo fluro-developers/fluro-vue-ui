@@ -184,11 +184,9 @@ import FluroTagSelect from '../../form/tagselect/FluroTagSelect.vue';
 import FluroRealmSelect from '../../form/realmselect/FluroRealmSelect.vue';
 import FluroStatusSelect from '../../form/FluroStatusSelect.vue';
 import FluroInlineEdit from '../../form/FluroInlineEdit.vue';
-import FluroContentFormField from '../../form/FluroContentFormField.vue';
+import FluroContentFormField from 'src/components/form/FluroContentFormField.vue';
 import Changelog from './components/Changelog.vue';
-// console.log('PRIBACY', FluroPrivacySelect)
-// import Contact from './panels/Contact.vue';
-// import Event from './panels/Event.vue';
+
 
 export default {
     props: {
@@ -876,7 +874,118 @@ export default {
                 return;
             }
 
-            var load = () => import(`./panels/${this.typeName}.vue`)
+            var load;
+            switch(self.typeName) {
+                case 'academic':
+                    load = () => import(`src/components/content/edit/panels/academic.vue`)
+                break;
+                case 'application':
+                    load = () => import(`src/components/content/edit/panels/application.vue`)
+                break;
+                case 'article':
+                    load = () => import(`src/components/content/edit/panels/article.vue`)
+                break;
+                case 'asset':
+                    load = () => import(`src/components/content/edit/panels/asset.vue`)
+                break;
+                case 'attendance':
+                    load = () => import(`src/components/content/edit/panels/attendance.vue`)
+                break;
+                case 'audio':
+                    load = () => import(`src/components/content/edit/panels/audio.vue`)
+                break;
+                case 'capability':
+                    load = () => import(`src/components/content/edit/panels/capability.vue`)
+                break;
+                case 'checkin':
+                    load = () => import(`src/components/content/edit/panels/checkin.vue`)
+                break;
+                case 'code':
+                    load = () => import(`src/components/content/edit/panels/code.vue`)
+                break;
+                case 'collection':
+                    load = () => import(`src/components/content/edit/panels/collection.vue`)
+                break;
+                case 'component':
+                    load = () => import(`src/components/content/edit/panels/component.vue`)
+                break;
+                case 'contact':
+                    load = () => import(`src/components/content/edit/panels/contact.vue`)
+                break;
+                case 'contactdetail':
+                    load = () => import(`src/components/content/edit/panels/contactdetail.vue`)
+                break;
+                case 'definition':
+                    load = () => import(`src/components/content/edit/panels/definition.vue`)
+                break;
+                case 'event':
+                    load = () => import(`src/components/content/edit/panels/event.vue`)
+                break;
+                case 'eventtrack':
+                    load = () => import(`src/components/content/edit/panels/eventtrack.vue`)
+                break;
+                case 'family':
+                    load = () => import(`src/components/content/edit/panels/family.vue`)
+                break;
+                case 'image':
+                    load = () => import(`src/components/content/edit/panels/image.vue`)
+                break;
+                case 'integration':
+                    load = () => import(`src/components/content/edit/panels/integration.vue`)
+                break;
+                case 'location':
+                    load = () => import(`src/components/content/edit/panels/location.vue`)
+                break;
+                case 'mailout':
+                    load = () => import(`src/components/content/edit/panels/mailout.vue`)
+                break;
+                case 'persona':
+                    load = () => import(`src/components/content/edit/panels/persona.vue`)
+                break;
+                case 'plan':
+                    load = () => import(`src/components/content/edit/panels/plan.vue`)
+                break;
+                case 'policy':
+                    load = () => import(`src/components/content/edit/panels/policy.vue`)
+                break;
+                case 'post':
+                    load = () => import(`src/components/content/edit/panels/post.vue`)
+                break;
+                case 'process':
+                    load = () => import(`src/components/content/edit/panels/process.vue`)
+                break;
+                case 'query':
+                    load = () => import(`src/components/content/edit/panels/query.vue`)
+                break;
+                case 'realm':
+                    load = () => import(`src/components/content/edit/panels/realm.vue`)
+                break;
+                case 'role':
+                    load = () => import(`src/components/content/edit/panels/role.vue`)
+                break;
+                case 'roster':
+                    load = () => import(`src/components/content/edit/panels/roster.vue`)
+                break;
+                case 'tag':
+                    load = () => import(`src/components/content/edit/panels/tag.vue`)
+                break;
+                case 'team':
+                    load = () => import(`src/components/content/edit/panels/team.vue`)
+                break;
+                case 'ticket':
+                    load = () => import(`src/components/content/edit/panels/ticket.vue`)
+                break;
+                case 'timetrigger':
+                    load = () => import(`src/components/content/edit/panels/timetrigger.vue`)
+                break;
+                case 'video':
+                    load = () => import(`src/components/content/edit/panels/video.vue`)
+                break;
+
+            }
+            // var load = () => import(`./panels/${this.typeName}.vue`)
+            // var load = () => import(`src/components/content/edit/panels/${this.typeName}.vue`)
+            // var load = () => import(`./components/content/edit/panels/${this.typeName}.vue`)
 
             // console.log('GET LOADED', load);
             return load;
@@ -1015,7 +1124,7 @@ export default {
 
     background: #fafafa;
 
-    & /deep/ .tabset-menu {
+    & >>> .tabset-menu {
         background: #fff;
 
         a.active {
@@ -1023,7 +1132,7 @@ export default {
         }
     }
 
-    & /deep/ .v-text-field--outline {
+    & >>> .v-text-field--outline {
         .v-input__control .v-input__slot {
             border-width: 1px !important;
             border-color: rgba(#000, 0.3);
@@ -1041,7 +1150,7 @@ export default {
         }
     }
 
-    & /deep/ .v-label {
+    & >>> .v-label {
         font-weight: 500;
     }
 

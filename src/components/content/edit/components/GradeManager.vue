@@ -52,7 +52,7 @@
 </template>
 <script>
 import FluroConfirmButton from "../../../ui/FluroConfirmButton.vue";
-import FluroContentForm from '../../../form/FluroContentForm.vue';
+import FluroContentForm from 'src/components/form/FluroContentForm.vue';
 
 
 export default {

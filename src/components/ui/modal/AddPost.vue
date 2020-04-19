@@ -58,7 +58,7 @@
 <script>
 import async from 'async';
 import FluroRealmSelect from '../../form/realmselect/FluroRealmSelect.vue';
-import FluroContentForm from '../../form/FluroContentForm.vue';
+import FluroContentForm from 'src/components/form/FluroContentForm.vue';
 import FluroModalMixin from '../../../mixins/ModalMixin';
 
 export default {
@@ -67,10 +67,6 @@ export default {
             type: Object
         }
     },
-    // beforeCreate: function() {
-    //     this.$options.components.FluroContentForm = require('../../form/FluroContentForm.vue').default;
-    //     this.$options.components.FluroRealmSelect = require('../../form/realmselect/FluroRealmSelect.vue').default;
-    // },
     components: {
         FluroRealmSelect,
         FluroContentForm,

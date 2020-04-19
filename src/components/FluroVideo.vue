@@ -25,7 +25,8 @@
 </template>
 <script>
 import { vueVimeoPlayer } from 'vue-vimeo-player'
-import { Youtube } from 'vue-youtube'
+// import { Youtube } from 'vue-youtube'
+import Youtube from 'vue-youtube'
 
 export default {
     components: {

@@ -17,7 +17,7 @@
 
 import Vue from 'vue';
 import FluroContentViewMixin from '../FluroContentViewMixin';
-import FluroContentRender from '../../../FluroContentRender.vue';
+import FluroContentRender from 'src/components/FluroContentRender.vue';
 
 /////////////////////////////////
 

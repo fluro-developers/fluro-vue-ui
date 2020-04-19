@@ -159,23 +159,6 @@ import ReminderEventManager from '../components/ReminderEventManager.vue';
 import DefaultRosterManager from '../components/DefaultRosterManager.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin.js';
 
-// import { JSONView } from "vue-json-component";
-
-
-// array.push({
-//     name: 'events.tracks',
-//     path: '/events/tracks',
-//     meta: {
-//         title: 'Event Tracks',
-//         requireUser: true,
-//     },
-//     component: () => import('./routes/List.vue'),
-//     props: (route) => ({
-//         type: 'eventtrack',
-//         initialSearch: route.query.keywords || '',
-
-//     }),
-// });
 
 
 

@@ -12,7 +12,7 @@
     </div>
 </template>
 <script>
-import FluroContentRenderField from './FluroContentRenderField.vue';
+import FluroContentRenderField from 'src/components/FluroContentRenderField.vue';
 import _ from 'lodash';
 
 //////////////////////////////////////////////////

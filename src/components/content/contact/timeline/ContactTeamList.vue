@@ -43,9 +43,6 @@
     </flex-column>
 </template>
 <script>
-// import PostCard from './cards/PostCard.vue';
-// import AddPost from '../../../ui/modal/AddPost.vue';
-
 export default {
     props: {
         contact: {
@@ -53,11 +50,7 @@ export default {
         }
     },
     components: {
-        // FluroContentRender: () => import('../../../FluroContentRender.vue'),
         ContactGroupManager: () => import('../../edit/components/ContactGroupManager.vue'),
-
-        // PostCard:() => import('./cards/PostCard.vue'),
-        // AddPost:() => import('../../../ui/modal/AddPost.vue'),
     },
     /**
     data() {

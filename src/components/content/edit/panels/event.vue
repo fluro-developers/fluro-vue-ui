@@ -577,10 +577,7 @@ export default {
         // },
     },
 
-    // beforeCreate: function() {
-    // this.$options.components.FluroContentForm = require('./FluroContentForm.vue').default;
-    // this.$options.components.FluroContentFormField = require('./FluroContentFormField.vue').default;
-    // },
+   
     watch: {
         'dateModel.startDate': function(value) {
             /**/
@@ -1280,7 +1277,7 @@ export default {
     border: 1px solid rgba(#000, 0.1);
     box-shadow: 0 2px 4px rgba(#000, 0.1);
 
-    & /deep/ .tabset-menu {
+    & >>> .tabset-menu {
         background: #eee;
     }
 }

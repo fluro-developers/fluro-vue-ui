@@ -154,7 +154,118 @@ export default {
                 return;
             }
 
-            return () => import(`./panels/${this.type}.vue`)
+            var load;
+            switch(self.typeName) {
+                case 'academic':
+                    //load = () => import(`src/components/content/view/panels/academic.vue`)
+                break;
+                case 'application':
+                    //load = () => import(`src/components/content/view/panels/application.vue`)
+                break;
+                case 'article':
+                    load = () => import(`src/components/content/view/panels/article.vue`)
+                break;
+                case 'asset':
+                    load = () => import(`src/components/content/view/panels/asset.vue`)
+                break;
+                case 'attendance':
+                    // load = () => import(`src/components/content/view/panels/attendance.vue`)
+                break;
+                case 'audio':
+                    // load = () => import(`src/components/content/view/panels/audio.vue`)
+                break;
+                case 'capability':
+                    // load = () => import(`src/components/content/view/panels/capability.vue`)
+                break;
+                case 'checkin':
+                    // load = () => import(`src/components/content/view/panels/checkin.vue`)
+                break;
+                case 'code':
+                    // load = () => import(`src/components/content/view/panels/code.vue`)
+                break;
+                case 'collection':
+                    load = () => import(`src/components/content/view/panels/collection.vue`)
+                break;
+                case 'component':
+                    // load = () => import(`src/components/content/view/panels/component.vue`)
+                break;
+                case 'contact':
+                    load = () => import(`src/components/content/view/panels/contact.vue`)
+                break;
+                case 'contactdetail':
+                    // load = () => import(`src/components/content/view/panels/contactdetail.vue`)
+                break;
+                case 'definition':
+                    // load = () => import(`src/components/content/view/panels/definition.vue`)
+                break;
+                case 'event':
+                    load = () => import(`src/components/content/view/panels/event.vue`)
+                break;
+                case 'eventtrack':
+                    // load = () => import(`src/components/content/view/panels/eventtrack.vue`)
+                break;
+                case 'family':
+                    // load = () => import(`src/components/content/view/panels/family.vue`)
+                break;
+                case 'image':
+                    // load = () => import(`src/components/content/view/panels/image.vue`)
+                break;
+                case 'integration':
+                    // load = () => import(`src/components/content/view/panels/integration.vue`)
+                break;
+                case 'location':
+                    // load = () => import(`src/components/content/view/panels/location.vue`)
+                break;
+                case 'mailout':
+                    load = () => import(`src/components/content/view/panels/mailout.vue`)
+                break;
+                case 'persona':
+                    // load = () => import(`src/components/content/view/panels/persona.vue`)
+                break;
+                case 'plan':
+                    // load = () => import(`src/components/content/view/panels/plan.vue`)
+                break;
+                case 'policy':
+                    // load = () => import(`src/components/content/view/panels/policy.vue`)
+                break;
+                case 'post':
+                    load = () => import(`src/components/content/view/panels/post.vue`)
+                break;
+                case 'process':
+                    // load = () => import(`src/components/content/view/panels/process.vue`)
+                break;
+                case 'query':
+                    // load = () => import(`src/components/content/view/panels/query.vue`)
+                break;
+                case 'realm':
+                    // load = () => import(`src/components/content/view/panels/realm.vue`)
+                break;
+                case 'role':
+                    // load = () => import(`src/components/content/view/panels/role.vue`)
+                break;
+                case 'roster':
+                    // load = () => import(`src/components/content/view/panels/roster.vue`)
+                break;
+                case 'tag':
+                    load = () => import(`src/components/content/view/panels/tag.vue`)
+                break;
+                case 'team':
+                    // load = () => import(`src/components/content/view/panels/team.vue`)
+                break;
+                case 'ticket':
+                    // load = () => import(`src/components/content/view/panels/ticket.vue`)
+                break;
+                case 'timetrigger':
+                    // load = () => import(`src/components/content/view/panels/timetrigger.vue`)
+                break;
+                case 'video':
+                    load = () => import(`src/components/content/view/panels/video.vue`)
+                break;
+
+            }
+
+            return load;
+            // var load = () => import(`src/components/content/view/panels/${this.typeName}.vue`)
         }
     },
     asyncComputed: {

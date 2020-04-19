@@ -1,0 +1,9 @@
+{
+	"presets": [
+		"vue"
+	],
+	"plugins": [
+		"@babel/plugin-proposal-object-rest-spread",
+		"@babel/plugin-external-helpers"
+	]
+}

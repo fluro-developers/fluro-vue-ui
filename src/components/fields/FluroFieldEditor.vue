@@ -266,7 +266,7 @@ export default {
         // FluroCompileHtml,
         FluroFieldEditorItem: () => import('./FluroFieldEditorItem.vue'),
         FluroFieldEdit: () => import('./FluroFieldEdit.vue'),
-        FluroContentForm: () => import('../form/FluroContentForm.vue'),
+        FluroContentForm: () => import('src/components/form/FluroContentForm.vue'),
         FluroInteractionForm: () => import('../form/FluroInteractionForm.vue'),
         FluroCompileHtml: () => import('../FluroCompileHtml.vue'),
     },

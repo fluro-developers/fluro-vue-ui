@@ -251,7 +251,7 @@
 /////////////////////////////////
 
 // import draggable from "vuedraggable";
-import PlanRow from "../components/PlanRow.vue";
+import PlanRow from "../components/PlanRowEdit.vue";
 import FluroContentEditMixin from "../FluroContentEditMixin";
 
 //////////////////////////////////////////////////////

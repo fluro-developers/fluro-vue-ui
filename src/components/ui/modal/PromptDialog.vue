@@ -32,7 +32,7 @@
 </template>
 <script>
 import ModalMixin from '../../../mixins/ModalMixin';
-import FluroContentForm from '../../form/FluroContentForm.vue';
+import FluroContentForm from 'src/components/form/FluroContentForm.vue';
 
 export default {
     components:{

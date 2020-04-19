@@ -60,7 +60,7 @@ export default {
         }
     },
     components: {
-        FluroContentForm: () => import('../../../form/FluroContentForm.vue'),
+        FluroContentForm: () => import('src/components/form/FluroContentForm.vue'),
         FluroConfirmButton: () => import('../../../ui/FluroConfirmButton.vue'),
         draggable: () => import('vuedraggable'),
         // FluroContentForm,

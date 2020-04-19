@@ -75,7 +75,7 @@ import ListGroupItem from '../../../ui/ListGroupItem.vue';
 // import FluroAvatarStack from '../../../FluroAvatarStack.vue';
 import FluroConfirmButton from '../../../ui/FluroConfirmButton.vue';
 import FluroContentSelectButton from '../../../form/contentselect/FluroContentSelectButton.vue';
-import FluroContentFormField from '../../../form/FluroContentFormField.vue';
+import FluroContentFormField from 'src/components/form/FluroContentFormField.vue';
 
 // import FluroContentSelectModal from '../../../form/contentselect/FluroContentSelectModal.vue';
 import FluroSelector from '../../../form/contentselect/FluroSelector.vue';

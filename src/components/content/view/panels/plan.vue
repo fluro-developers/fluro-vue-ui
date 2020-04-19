@@ -70,7 +70,7 @@
 <script>
 /////////////////////////////////
 
-import PlanRow from "../components/PlanRow.vue";
+import PlanRow from "../components/PlanRowView.vue";
 import FluroContentViewMixin from "../FluroContentViewMixin";
 
 //////////////////////////////////////////////////////

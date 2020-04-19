@@ -61,7 +61,7 @@
     </div>
 </template>
 <script>
-import FluroContentForm from './FluroContentForm.vue';
+import FluroContentForm from 'src/components/form/FluroContentForm.vue';
 import _ from 'lodash';
 import Vue from 'vue';
 

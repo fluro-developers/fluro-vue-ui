@@ -19,7 +19,7 @@
 </template>
 <script>
 import FluroContentEditMixin from '../FluroContentEditMixin';
-import FluroContentForm from '../../../form/FluroContentForm.vue';
+import FluroContentForm from 'src/components/form/FluroContentForm.vue';
 
 
 export default {

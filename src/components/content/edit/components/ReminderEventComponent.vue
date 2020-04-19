@@ -122,7 +122,7 @@
 <script>
 import FluroContentEditMixin from '../FluroContentEditMixin';
 import FluroExclusiveSelector from '../components/FluroExclusiveSelector.vue';
-import FluroContentForm from '../../../form/FluroContentForm.vue';
+import FluroContentForm from 'src/components/form/FluroContentForm.vue';
 
 
 export default {

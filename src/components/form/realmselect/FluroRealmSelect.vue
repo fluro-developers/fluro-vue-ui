@@ -11,7 +11,7 @@
 <script>
 import Vue from 'vue';
 import FluroRealmDots from '../../ui/FluroRealmDots.vue';
-import FluroRealmSelectItem from './FluroRealmSelectItem.vue';
+import FluroRealmSelectItem from 'src/components/form/realmselect/FluroRealmSelectItem.vue';
 import FluroSelectionMixin from '../../../mixins/FluroSelectionMixin';
 import Layout from '../../../mixins/Layout';
 

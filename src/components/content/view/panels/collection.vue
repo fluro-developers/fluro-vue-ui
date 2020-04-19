@@ -36,7 +36,6 @@
 
 import Vue from 'vue';
 import FluroContentViewMixin from '../FluroContentViewMixin';
-import FluroContentRender from '../../../FluroContentRender.vue';
 
 /////////////////////////////////
 
@@ -50,9 +49,6 @@ export default {
             type: Object,
             required: true,
         },
-    },
-    components: {
-        FluroContentRender,
     },
     mixins: [FluroContentViewMixin],
     methods: {},

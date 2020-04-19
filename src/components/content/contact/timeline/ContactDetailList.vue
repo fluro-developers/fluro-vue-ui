@@ -56,10 +56,7 @@ export default {
         }
     },
     components: {
-        FluroContentRender:() => import('../../../FluroContentRender.vue'),
-
-        // PostCard:() => import('./cards/PostCard.vue'),
-        // AddPost:() => import('../../../ui/modal/AddPost.vue'),
+        FluroContentRender:() => import('src/components/FluroContentRender.vue'),
     },
     data() {
         return {

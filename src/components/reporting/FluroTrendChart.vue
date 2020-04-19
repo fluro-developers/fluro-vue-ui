@@ -1467,7 +1467,7 @@ export default {
         .v-btn {
             margin: 10px;
 
-            & /deep/ .v-btn__content {
+            & >>> .v-btn__content {
                 padding: 10px 0;
                 height: 36px;
             }
@@ -1512,7 +1512,7 @@ export default {
         }
     }
 
-    & /deep/ {
+    & >>> {
         tr.inactive td {
             background: #efefef;
             color: #999;
@@ -1524,7 +1524,7 @@ export default {
         }
     }
 
-    & /deep/ .v-toolbar {
+    & >>> .v-toolbar {
         height: auto !important;
 
         .v-toolbar__content {
@@ -1533,7 +1533,7 @@ export default {
         }
     }
 
-    & /deep/ .chart-tooltip {
+    & >>> .chart-tooltip {
         // background: #ff0055;
         padding: 15px;
     }

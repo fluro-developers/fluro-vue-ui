@@ -55,7 +55,7 @@
 <script>
 import ModalMixin from '../../../mixins/ModalMixin';
 import Layout from '../../../mixins/Layout';
-import FluroRealmSelectItem from './FluroRealmSelectItem.vue';
+import FluroRealmSelectItem from 'src/components/form/realmselect/FluroRealmSelectItem.vue';
 import FluroTabset from '../../ui/tabset/FluroTabset.vue';
 import FluroTab from '../../ui/tabset/FluroTab.vue';
 

@@ -72,6 +72,7 @@ export default {
     components: {
         // draggable,
         draggable: () => import('vuedraggable'),
+        FluroFieldEditorItem: () => import('src/components/fields/FluroFieldEditorItem.vue'),
     },
     props: {
         parent: {
@@ -95,9 +96,9 @@ export default {
             type: Object,
         },
     },
-    beforeCreate: function() {
-        this.$options.components.FluroFieldEditorItem = require('./FluroFieldEditorItem.vue').default;
-    },
+    // beforeCreate: function() {
+    //     this.$options.components.FluroFieldEditorItem = require('src/components/fields/FluroFieldEditorItem.vue').default;
+    // },
 
 
     data() {

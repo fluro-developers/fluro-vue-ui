@@ -492,20 +492,20 @@ export default {
 
 .fluro-content-select {
 
-    & /deep/ .v-select__selections {
+    & >>> .v-select__selections {
         padding-top: 0 !important;
     }
 
-    & /deep/ .v-input__slot {
+    & >>> .v-input__slot {
         min-height: 48px !important;
     }
 
-    & /deep/ .v-input__prepend-inner,
-    & /deep/ .v-input__append-inner {
+    & >>> .v-input__prepend-inner,
+    & >>> .v-input__append-inner {
         margin-top: 11px !important;
     }
 
-    & /deep/ .v-text-field--box .v-input__slot {
+    & >>> .v-text-field--box .v-input__slot {
         background: rgba(#000, 0.03);
     }
 
@@ -536,12 +536,12 @@ export default {
 
 
     &.outlined {
-        & /deep/ .v-input__slot {
+        & >>> .v-input__slot {
             height: 60px;
         }
 
 
-        & /deep/ .v-input__prepend-inner {
+        & >>> .v-input__prepend-inner {
             margin-top: 16px !important;
         }
 

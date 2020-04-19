@@ -1,9 +1,8 @@
-import FluroContentRender from '../../FluroContentRender.vue';
-import FluroContentRenderField from '../../FluroContentRenderField.vue';
+import FluroContentRender from 'src/components/FluroContentRender.vue';
+import FluroContentRenderField from 'src/components/FluroContentRenderField.vue';
 import Layout from '../../../mixins/Layout';
 
 
-// import { JSONView } from "vue-json-component";
 
 
 export default {
@@ -24,7 +23,6 @@ export default {
     components: {
         FluroContentRender,
         FluroContentRenderField,
-        // "json-view": JSONView,
     },
     computed: {
         itemID() {

@@ -18,16 +18,13 @@
                     <div class="inline-tags">
                         <span class="inline-tag" @click="$fluro.global.edit(link, true)" v-for="link in links">{{link.startDate | formatDate('h:mma')}} {{link.title}}</span>
                     </div>
-                    <!-- <div class="summary">{{eventTitles}}</div> -->
+                     <div class="summary">{{eventTitles}}</div> -->
                 </v-container>
             </v-flex>
-        </v-layout> -->
+        </v-layout> 
     </div>
 </template>
 <script>
-// import FluroContentRender from '../../../../FluroContentRender.vue';
-// import FluroAvatar from '../../../../FluroAvatar.vue';
-
 export default {
     props: {
         item: {
@@ -36,8 +33,7 @@ export default {
         }
     },
     components: {
-        // FluroContentRender,
-        // FluroAvatar,
+       
         FluroRealmBar:() => import("../../../../ui/FluroRealmBar.vue"),
     },
     computed: {

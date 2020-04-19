@@ -20,10 +20,6 @@
     </div>
 </template>
 <script>
-// import FluroContentRender from '../../../../FluroContentRender.vue';
-// import FluroAvatar from '../../../../FluroAvatar.vue';
-// import FluroRealmBar from '../../../../ui/FluroRealmBar.vue';
-
 export default {
     props: {
         item: {
@@ -32,8 +28,7 @@ export default {
         }
     },
     components: {
-        // FluroContentRender,
-        // FluroAvatar,
+       
        
         FluroRealmBar:() => import('../../../../ui/FluroRealmBar.vue'),
     },

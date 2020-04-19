@@ -186,29 +186,33 @@
     </div>
 </template>
 <script>
-import _ from 'lodash';
-// import FluroCompileHtml from '../FluroCompileHtml.vue';
-// import FluroEditor from './FluroEditor.vue';
-import FluroCodeEditor from './form/FluroCodeEditor.vue';
-// import FluroListItem from './FluroListItem.vue';
-import ListGroup from './ui/ListGroup.vue';
-import ListGroupItem from './ui/ListGroupItem.vue';
-// import FluroSignatureField from './FluroSignatureField.vue';
-// import FluroDateTimePicker from './FluroDateTimePicker.vue';
-//Allow custom html to be injected at runtime
+// import _ from 'lodash';
+// // import FluroCompileHtml from '../FluroCompileHtml.vue';
+// // import FluroEditor from './FluroEditor.vue';
+// import FluroCodeEditor from './form/FluroCodeEditor.vue';
+// // import FluroListItem from './FluroListItem.vue';
+// import ListGroup from './ui/ListGroup.vue';
+// import ListGroupItem from './ui/ListGroupItem.vue';
+// // import FluroSignatureField from './FluroSignatureField.vue';
+// // import FluroDateTimePicker from './FluroDateTimePicker.vue';
+// //Allow custom html to be injected at runtime
+
+
+// beforeCreate: function() {
+//         this.$options.components.FluroContentRender = require('./components/FluroContentRender.vue').default;
+//         this.$options.components.FluroContentRenderField = require('./components/FluroContentRenderField.vue').default;
+//     },
 
 
 ////////////////////////////////////////////////////////
 
 export default {
     components: {
-        // FluroEditor,
-        // FluroCompileHtml,
-        FluroCodeEditor,
-        ListGroup,
-        ListGroupItem,
-        // FluroSignatureField,
-        // FluroDateTimePicker,
+        FluroCodeEditor:() => import("src/components/form/FluroCodeEditor.vue"),
+        ListGroup:() => import("src/components/ui/ListGroup.vue"),
+        ListGroupItem:() => import("src/components/ui/ListGroupItem.vue"),
+        FluroContentRender:() => import("src/components/FluroContentRender.vue"),
+        FluroContentRenderField:() => import("src/components/FluroContentRenderField.vue"),
     },
     data() {
         return {
@@ -473,10 +477,10 @@ export default {
             required: true,
         }
     },
-    beforeCreate: function() {
-        this.$options.components.FluroContentRender = require('./FluroContentRender.vue').default;
-        this.$options.components.FluroContentRenderField = require('./FluroContentRenderField.vue').default;
-    },
+    // beforeCreate: function() {
+    //     this.$options.components.FluroContentRender = require('./components/FluroContentRender.vue').default;
+    //     this.$options.components.FluroContentRenderField = require('./components/FluroContentRenderField.vue').default;
+    // },
 }
 </script>
 <style lang="scss">

@@ -8,6 +8,18 @@
 import CodeEditor from 'vue2-ace-editor';
 import js_beautify from 'js-beautify';
 
+
+// var mode1 = () => import('brace/ext/language_tools');
+// var mode2 = () => import('brace/mode/html');
+// var mode3 = () => import('brace/mode/json');
+// var mode4 = () => import('brace/mode/javascript');
+// var mode5 = () => import('brace/mode/ejs');
+// var mode6 = () => import('brace/mode/scss');
+// var mode7 = () => import('brace/theme/tomorrow_night_eighties');
+// var mode8 = () => import('brace/snippets/javascript');
+
+
+
 // console.log('BEAUTIFY', js_beautify.html);
 
 export default {
@@ -63,11 +75,14 @@ export default {
     methods: {
         beautify() {
 
-
-
             if (!this.autoformat) {
                 return;
             }
+
+            if (!this.editor) {
+                return;
+            }
+
             // console.log('Beautify!!!')
             //Get the current string
             var input = this.editor.session.getValue() || '';
@@ -101,69 +116,72 @@ export default {
             var self = this;
 
             console.log('Editor import brace extras')
-            Promise.all([
-                    () => import('brace/ext/language_tools'),
-                    () => import('brace/mode/html'),
-                    () => import('brace/mode/json'),
-                    () => import('brace/mode/javascript'),
-                    () => import('brace/mode/ejs'),
-                    () => import('brace/mode/scss'),
-                    () => import('brace/theme/tomorrow_night_eighties'),
-                    () => import('brace/snippets/javascript'),
-                ])
-                .then(function() {
+            // Promise.all([
+            //         () => import('brace/ext/language_tools'),
+            //         () => import('brace/mode/html'),
+            //         () => import('brace/mode/json'),
+            //         () => import('brace/mode/javascript'),
+            //         () => import('brace/mode/ejs'),
+            //         () => import('brace/mode/scss'),
+            //         () => import('brace/theme/tomorrow_night_eighties'),
+            //         () => import('brace/snippets/javascript'),
+            //     ])
+            //     .then(function(pieces) {
 
-                    console.log('brace extras loaded');
-
-
-                    // require('brace/ext/language_tools') //language extension prerequsite...
-                    // require('brace/mode/html')
-                    // require('brace/mode/json') //language
-                    // require('brace/mode/javascript') //language
-                    // require('brace/mode/ejs') //language
-                    // require('brace/mode/scss')
-                    // require('brace/theme/tomorrow_night_eighties')
-                    // require('brace/snippets/javascript') //snippet
-                    self.editor = editor;
-
-                    //             editor.setOptions({
-                    //     maxLines: Infinity
-                    // });
-
-                    var editorDiv = this.$refs.outer;
-                    var doc = editor.getSession().getDocument();
-                    editor.on("change", function() {
-                        var lineHeight = editor.renderer.lineHeight;
-                        editorDiv.style.height = lineHeight * doc.getLength() + "px";
-                        editor.resize();
-                    });
-
-                    //     var editor = ace.edit("editor");                   // the editor object
-                    // var editorDiv = document.getElementById("editor");     // its container
-                    // var doc = editor.getSession().getDocument();  // a reference to the doc
+            // console.log('brace extras loaded', pieces);
 
 
-                    ////////////////////////////////////////
+            require('brace/ext/language_tools') //language extension prerequsite...
+            require('brace/mode/html')
+            require('brace/mode/json') //language
+            require('brace/mode/javascript') //language
+            require('brace/mode/ejs') //language
+            require('brace/mode/scss')
+            require('brace/theme/tomorrow_night_eighties')
+            require('brace/snippets/javascript') //snippet
+            self.editor = editor;
 
-                    if (this.readonly) {
-                        editor.setReadOnly(true);
-                        editor.renderer.setShowGutter(false);
-                    } else {
-                        editor.on('blur', self.beautify);
-                    }
+            //             editor.setOptions({
+            //     maxLines: Infinity
+            // });
 
-                    ////////////////////////////////////////
+            var editorDiv = self.$refs.outer;
+            var doc = editor.getSession().getDocument();
+            editor.on("change", function() {
+                var lineHeight = editor.renderer.lineHeight;
+                editorDiv.style.height = lineHeight * doc.getLength() + "px";
+                editor.resize();
+            });
 
-                    // editor.setOptions({
+            //     var editor = ace.edit("editor");                   // the editor object
+            // var editorDiv = document.getElementById("editor");     // its container
+            // var doc = editor.getSession().getDocument();  // a reference to the doc
 
-                    //     // autoScrollEditorIntoView: true,
-                    //     // copyWithEmptySelection: true,
-                    // });
 
-                    // editor.setReadOnly(true);
-                    // editor.setMode(this.computedSyntax);
-                    // console.log('Initialize the editor', editor);
-                })
+            ////////////////////////////////////////
+
+            if (self.readonly) {
+                editor.setReadOnly(true);
+                editor.renderer.setShowGutter(false);
+            } else {
+                editor.on('blur', self.beautify);
+            }
+
+
+            self.beautify();
+
+            ////////////////////////////////////////
+
+            // editor.setOptions({
+
+            //     // autoScrollEditorIntoView: true,
+            //     // copyWithEmptySelection: true,
+            // });
+
+            // editor.setReadOnly(true);
+            // editor.setMode(this.computedSyntax);
+            // console.log('Initialize the editor', editor);
+            // })
 
         },
     },

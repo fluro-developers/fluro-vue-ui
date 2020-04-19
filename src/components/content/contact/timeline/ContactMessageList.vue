@@ -63,8 +63,8 @@ export default {
         }
     },
     components: {
-        MailoutCard: () => import('./cards/MailoutCard.vue'),
-        TextMessageCard: () => import('./cards/TextMessageCard.vue'),
+        MailoutCard: () => import('src/components/content/contact/timeline/cards/MailoutCard.vue'),
+        TextMessageCard: () => import('src/components/content/contact/timeline/cards/TextMessageCard.vue'),
     },
     data() {
         return {

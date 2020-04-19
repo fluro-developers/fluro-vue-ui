@@ -60,8 +60,7 @@ export default {
         }
     },
     components: {
-        // MailoutCard: () => import('./cards/MailoutCard.vue'),
-        // TextMessageCard: () => import('./cards/TextMessageCard.vue'),
+        
     },
     data() {
         return {

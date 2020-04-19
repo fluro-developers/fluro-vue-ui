@@ -170,7 +170,7 @@ export default {
 </script>
 <style scoped lang="scss">
 .access-pass-select {
-    & /deep/ .list-group-item-content {
+    & >>> .list-group-item-content {
         padding-left: 10px;
     }
 

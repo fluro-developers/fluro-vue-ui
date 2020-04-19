@@ -20,7 +20,7 @@
 </template>
 <script>
 // import {VContainer}
-import FluroContentFormField from './FluroContentFormField.vue';
+import FluroContentFormField from 'src/components/form/FluroContentFormField.vue';
 import _ from 'lodash';
 import Vue from 'vue';
 // import FluroUtils from 'fluro';

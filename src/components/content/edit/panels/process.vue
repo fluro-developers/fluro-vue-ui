@@ -659,7 +659,7 @@ export default {
     border: 1px solid rgba(#000, 0.1);
     box-shadow: 0 2px 4px rgba(#000, 0.1);
 
-    & /deep/ .tabset-menu {
+    & >>> .tabset-menu {
         background: #eee;
     }
 }

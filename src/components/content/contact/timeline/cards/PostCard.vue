@@ -39,10 +39,6 @@
     </div>
 </template>
 <script>
-// import FluroContentRender from '../../../../FluroContentRender.vue';
-// import FluroAvatar from '../../../../FluroAvatar.vue';
-// import FluroRealmBar from '../../../../ui/FluroRealmBar.vue';
-
 export default {
     props: {
         item: {
@@ -51,10 +47,8 @@ export default {
         }
     },
     components: {
-        // FluroContentRender,
-        // FluroAvatar,
-        // FluroRealmBar,
-        FluroContentRender:() => import('../../../../FluroContentRender.vue'),
+       
+        FluroContentRender:() => import('src/components/FluroContentRender.vue'),
         FluroAvatar:() => import('../../../../FluroAvatar.vue'),
         FluroRealmBar:() => import('../../../../ui/FluroRealmBar.vue'),
 
@@ -117,7 +111,7 @@ export default {
 }
 
 .timeline-post {
-    // & /deep/ {
+    // & >>> {
         .fluro-content-render-field {
             font-size: 0.9em;
             width:50%;

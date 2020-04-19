@@ -461,24 +461,14 @@
     </flex-column>
 </template>
 <script>
-// import FluroContentFormField from '../form/FluroContentFormField.vue';
-// import FluroContentForm from '../form/FluroContentForm.vue';
-// import OptionsManager from './FluroOptionsManager.vue';
-// import ExpressionFieldSelect from './ExpressionFieldSelect.vue';
-// import FluroExpressionEditor from '../form/FluroExpressionEditor.vue';
-// import FluroInlineEdit from '../form/FluroInlineEdit.vue';
+
 import FieldSelectModal from './FieldSelectModal.vue';
 
 export default {
     components: {
-        // FluroContentFormField,
-        // FluroContentForm,
-        // OptionsManager,
-        // FluroExpressionEditor,
-        // ExpressionFieldSelect,
-        // FluroInlineEdit,
-        FluroContentFormField:() => import('../form/FluroContentFormField.vue'),
-        FluroContentForm:() => import('../form/FluroContentForm.vue'),
+        
+        FluroContentFormField:() => import('src/components/form/FluroContentFormField.vue'),
+        FluroContentForm:() => import('src/components/form/FluroContentForm.vue'),
         OptionsManager:() => import('./FluroOptionsManager.vue'),
         ExpressionFieldSelect:() => import('./ExpressionFieldSelect.vue'),
         FluroExpressionEditor:() => import('../form/FluroExpressionEditor.vue'),

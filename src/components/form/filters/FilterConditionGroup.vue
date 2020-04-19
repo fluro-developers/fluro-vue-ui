@@ -132,7 +132,6 @@
 import Vue from 'vue';
 import { FilterService } from 'fluro';
 
-// import FilterConditionRow from './FilterConditionRow.vue';
 
 
 var indexIterator = 0;
@@ -292,10 +291,10 @@ export default {
             loadingKeys: false,
         }
     },
-    beforeCreate: function() {
-        this.$options.components.FilterConditionRow = require('./FilterConditionRow.vue').default;
-        this.$options.components.FilterConditionGroup = require('./FilterConditionGroup.vue').default;
-    },
+    // beforeCreate: function() {
+    //     this.$options.components.FilterConditionRow = require('src/components/form/filters/FilterConditionRow.vue').default;
+    //     this.$options.components.FilterConditionGroup = require('src/components/form/filters/FilterConditionGroup.vue').default;
+    // },
     created() {
 
         var self = this;
@@ -317,9 +316,10 @@ export default {
     },
 
 
-    // components: {
-    //     FilterConditionRow,
-    // },
+    components: {
+        FilterConditionRow: () => import('src/components/form/filters/FilterConditionRow.vue'),
+        FilterConditionGroup: () => import('src/components/form/filters/FilterConditionGroup.vue'),
+    },
     methods: {
         operatingWord(group, i) {
             if (i) {

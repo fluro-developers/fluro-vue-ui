@@ -1,10 +1,5 @@
-import FluroContentForm from '../../form/FluroContentForm.vue';
-// import FluroContentFormField from '../../form/FluroContentFormField.vue';
-// import Layout from '../../../mixins/Layout';
-// import FluroPrivacySelect from '../../form/FluroPrivacySelect.vue';
+import FluroContentForm from 'src/components/form/FluroContentForm.vue';
 
-
-// import { JSONView } from "vue-json-component";
 
 
 export default {
@@ -28,8 +23,7 @@ export default {
     },
     extends: FluroContentForm,
     components: {
-        FluroContentForm,
-        FluroContentFormField:() => import("../../form/FluroContentFormField.vue"),
+        FluroContentFormField:() => import("src/components/form/FluroContentFormField.vue"),
         FluroPrivacySelect:() => import("../../form/FluroPrivacySelect.vue"),
         // FluroContentForm,
         // FluroContentFormField,

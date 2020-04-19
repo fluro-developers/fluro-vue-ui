@@ -136,277 +136,373 @@ import FluroSelectionMixin from './mixins/FluroSelectionMixin';
 
 
 /**
-export {
-    VApp,
-    VToolbar,
-    VContainer,
-    VFlex,
-    VLayout,
-    VBtn,
-    VBtnToggle,
-    VCard,
-    VCardText,
-    VTab,
-    VTabs,
-    VCardActions,
-    VAlert,
-    VSelect,
-    VAutocomplete,
-    VTextField,
-    
-    VSpacer,
-    VMenu,
-    VList,
-    // VListTitle,
-    VToolbarTitle,
-    VToolbarItems,
-    VCheckbox,
-    VDatePicker,
-    VTextarea,
-    VTimePicker,
-    VInput,
-    VListTileTitle,
-    VListTileContent,
-    VHover,
-    VDialog,
-} from 'vuetify/lib';
+ * An install function.
+ *
+ * @param {any} Vue Vue API.
+ */
+function install(Vue, options) {
+				var fluro = Vue.prototype.$fluro;
 
-/**/
+				//Setup a modals array
+				fluro.global.modals = [];
 
+				/////////////////////////////////////////////
 
+				//Add a function to show modals
+				fluro.modal = function(modal) {
+								return new Promise(function(resolve, reject) {
+												modal.modalID = fluro.global.modals.length;
+												modal.resolve = resolve;
+												modal.reject = reject;
+												//Inject the modal into the stack
+												fluro.global.modals.splice(modal.modalID, 0, modal);
+								});
 
-/////////////////////////////////////////////////////
-const FluroVueUI = {
-    install: function(Vue, options) {
-        var fluro = Vue.prototype.$fluro;
+				}
 
-        //Setup a modals array
-        fluro.global.modals = [];
+				/////////////////////////////////////////////
 
-        /////////////////////////////////////////////
+				//Request the user to answer some questions
+				fluro.options = function(options, title, description) {
+								return fluro.modal({
+												component: FluroOptionsDialog,
+												options: {
+																title,
+																description,
+																options,
+												}
+								})
+				}
 
-        //Add a function to show modals
-        fluro.modal = function(modal) {
-            return new Promise(function(resolve, reject) {
-                modal.modalID = fluro.global.modals.length;
-                modal.resolve = resolve;
-                modal.reject = reject;
-                //Inject the modal into the stack
-                fluro.global.modals.splice(modal.modalID, 0, modal);
-            });
+				/////////////////////////////////////////////
 
-        }
-
-        /////////////////////////////////////////////
-
-        //Request the user to answer some questions
-        fluro.options = function(options, title, description) {
-            return fluro.modal({
-                component: FluroOptionsDialog,
-                options: {
-                    title,
-                    description,
-                    options,
-                }
-            })
-        }
-
-        /////////////////////////////////////////////
-
-        //Request the user to answer some questions
-        fluro.prompt = function(fields, title, model) {
-            return fluro.modal({
-                component: FluroPromptDialog,
-                options: {
-                    title,
-                    fields,
-                    model,
-                }
-            })
-        }
+				//Request the user to answer some questions
+				fluro.prompt = function(fields, title, model) {
+								return fluro.modal({
+												component: FluroPromptDialog,
+												options: {
+																title,
+																fields,
+																model,
+												}
+								})
+				}
 
 
 
-        /////////////////////////////////////////////
+				/////////////////////////////////////////////
 
-        fluro.confirm = function(title, description, options) {
+				fluro.confirm = function(title, description, options) {
 
-            if (!options) {
-                options = {};
-            }
+								if (!options) {
+												options = {};
+								}
 
-            options.title = title;
-            options.description = description;
+								options.title = title;
+								options.description = description;
 
-            return fluro.modal({
-                component: FluroConfirmDialog,
-                options,
-            })
-        }
+								return fluro.modal({
+												component: FluroConfirmDialog,
+												options,
+								})
+				}
 
-        /////////////////////////////////////////////
+				/////////////////////////////////////////////
 
-        fluro.closeModal = function(modalID) {
-            var modal = _.find(fluro.global.modals, { modalID });
-            var index = _.findIndex(fluro.global.modals, modal);
-            fluro.global.modals.splice(index, 1);
-        }
+				fluro.closeModal = function(modalID) {
+								var modal = _.find(fluro.global.modals, { modalID });
+								var index = _.findIndex(fluro.global.modals, modal);
+								fluro.global.modals.splice(index, 1);
+				}
 
-        /////////////////////////////////////////////////////
+				/////////////////////////////////////////////////////
 
-        Vue.mixin(Layout);
+				Vue.mixin(Layout);
 
-        //Add Fluro Components Globally
-        Vue.component('fluro-icon', FluroIcon);
-        Vue.component('fluro-realm-dots', FluroRealmDots);
-        Vue.component('fluro-realm-tags', FluroRealmTags);
-        Vue.component('fluro-realm-bar', FluroRealmBar);
-        Vue.component('fluro-status-label', FluroStatusLabel);
-        Vue.component('fluro-avatar', FluroAvatar);
-        Vue.component('fluro-image', FluroImage);
-        Vue.component('fluro-list-item', FluroListItem);
-        Vue.component('fluro-toggle-item', FluroToggleItem);
-        Vue.component('fluro-video', FluroVideo);
-        Vue.component('fluro-video-thumbnail', FluroVideoThumbnail);
-        Vue.component('fluro-page-preloader', FluroPagePreloader);
-        // Vue.component('fluro-html', FluroHTML);
-        Vue.component('flex-row', FlexRow);
-        Vue.component('flex-column', FlexColumn);
-        Vue.component('flex-column-body', FlexColumnBody);
-        Vue.component('flex-column-header', FlexColumnHeader);
-        Vue.component('flex-column-footer', FlexColumnFooter);
-    }
-
+				//Add Fluro Components Globally
+				Vue.component('fluro-icon', FluroIcon);
+				Vue.component('fluro-realm-dots', FluroRealmDots);
+				Vue.component('fluro-realm-tags', FluroRealmTags);
+				Vue.component('fluro-realm-bar', FluroRealmBar);
+				Vue.component('fluro-status-label', FluroStatusLabel);
+				Vue.component('fluro-avatar', FluroAvatar);
+				Vue.component('fluro-image', FluroImage);
+				Vue.component('fluro-list-item', FluroListItem);
+				Vue.component('fluro-toggle-item', FluroToggleItem);
+				Vue.component('fluro-video', FluroVideo);
+				Vue.component('fluro-video-thumbnail', FluroVideoThumbnail);
+				Vue.component('fluro-page-preloader', FluroPagePreloader);
+				// Vue.component('fluro-html', FluroHTML);
+				Vue.component('flex-row', FlexRow);
+				Vue.component('flex-column', FlexColumn);
+				Vue.component('flex-column-body', FlexColumnBody);
+				Vue.component('flex-column-header', FlexColumnHeader);
+				Vue.component('flex-column-footer', FlexColumnFooter);
 }
 
 
 
-export default FluroVueUI;
+/////////////////////////////////////////////////////
 
 
-export {FluroImage as FluroImage};
-export {FluroModalMixin as FluroModalMixin};
-export {FluroAvatar as FluroAvatar};
-export {FluroAvatarUpdate as FluroAvatarUpdate};
-export {FluroFieldEditor as FluroFieldEditor};
-export {FluroCompileHtml as FluroCompileHtml};
-export {FluroInfiniteScroll as FluroInfiniteScroll};
-export {FluroPagedContent as FluroPagedContent};
-export {FluroVideo as FluroVideo};
-export {FluroVideoThumbnail as FluroVideoThumbnail};
-export {FluroModal as FluroModal};
-export {FluroInlineEdit as FluroInlineEdit};
-export {FluroConfirmButton as FluroConfirmButton};
-export {FluroTrendChart as FluroTrendChart};
-export {FluroTable as FluroTable};
-export {TableCell as TableCell};
-export {SearchInput as SearchInput};
-export {FluroDynamicTable as FluroDynamicTable};
-export {DefinitionCell as DefinitionCell};
-export {TitleCell as TitleCell};
-export {TypeImageCell as TypeImageCell};
-export {FirstNameCell as FirstNameCell};
-export {BooleanCell as BooleanCell};
-export {LastNameCell as LastNameCell};
-export {StatusCell as StatusCell};
-export {DateCell as DateCell};
-export {TimeCell as TimeCell};
-export {ThumbnailCell as ThumbnailCell};
-export {EventThumbnailCell as EventThumbnailCell};
-export {NumberCell as NumberCell};
-export {RealmDotCell as RealmDotCell};
-export {PaymentStatusCell as PaymentStatusCell};
-export {CurrencyCell as CurrencyCell};
-export {TimeagoCell as TimeagoCell};
-export {PhoneNumberCell as PhoneNumberCell};
-export {EmailAddressCell as EmailAddressCell};
-export {FilesizeCell as FilesizeCell};
-export {DurationCell as DurationCell};
-export {DimensionsCell as DimensionsCell};
-export {AvatarCell as AvatarCell};
-export {PersonaAvatarCell as PersonaAvatarCell};
-export {ContactAvatarCell as ContactAvatarCell};
-export {ContactTimeline as ContactTimeline};
-export {ContactPostThread as ContactPostThread};
-export {ContactDetailList as ContactDetailList};
-export {ContactMessageList as ContactMessageList};
-export {ContactTransactionList as ContactTransactionList};
-export {ContactInteractionList as ContactInteractionList};
-export {ContactCheckinList as ContactCheckinList};
-export {ContactTeamList as ContactTeamList};
-export {PrivacyCell as PrivacyCell};
-export {JSONCell as JSONCell};
-export {TicketCollectCell as TicketCollectCell};
-export {FluroToggleItem as FluroToggleItem};
-export {FluroItemImage as FluroItemImage};
-export {FluroOptionsDialog as FluroOptionsDialog};
-export {FluroPromptDialog as FluroPromptDialog};
-export {FluroConfirmDialog as FluroConfirmDialog};
-export {FluroListItem as FluroListItem};
-export {FluroTimeline as FluroTimeline};
-export {FluroContentEdit as FluroContentEdit};
-export {FluroContentView as FluroContentView};
-export {FilterConditionGroup as FilterConditionGroup};
-export {FilterConditionRow as FilterConditionRow};
-export {FluroContentRender as FluroContentRender};
-export {FluroContentRenderField as FluroContentRenderField};
-export {FluroTaskList as FluroTaskList};
-export {FluroPagePreloader as FluroPagePreloader};
-export {FluroSearchBar as FluroSearchBar};
-export {FluroIcon as FluroIcon};
-export {FluroRealmDots as FluroRealmDots};
-export {FluroRealmTags as FluroRealmTags};
-export {FluroStatusLabel as FluroStatusLabel};
-export {FluroStatusSelect as FluroStatusSelect};
-export {FluroWrapper as FluroWrapper};
-export {FluroConstrain as FluroConstrain};
-export {FluroRealmBar as FluroRealmBar};
-export {FluroTabset as FluroTabset};
-export {FluroTab as FluroTab};
-export {FluroAccordion as FluroAccordion};
-export {FluroAccordionPanel as FluroAccordionPanel};
-export {FluroContentBrowser as FluroContentBrowser};
-export {FluroContentSelect as FluroContentSelect};
-export {FluroSelector as FluroSelector};
-export {AddPostModal as AddPostModal};
-export {FluroContentSelectModal as FluroContentSelectModal};
-export {FluroContentSelectButton as FluroContentSelectButton};
-export {FluroRealmSelect as FluroRealmSelect};
-export {FluroTagSelect as FluroTagSelect};
-export {FluroEditor as FluroEditor};
-export {FluroCodeEditor as FluroCodeEditor};
-export {FluroExpressionEditor as FluroExpressionEditor};
-export {FluroCodeHighlight as FluroCodeHighlight};
-export {FluroContentForm as FluroContentForm};
-export {FluroContentFormField as FluroContentFormField};
-export {FluroDateTimePicker as FluroDateTimePicker};
-export {FluroSignatureField as FluroSignatureField};
-export {FluroAcademicSelect as FluroAcademicSelect};
-export {FluroPostForm as FluroPostForm};
-export {FluroBasicForm as FluroBasicForm};
-export {FluroInteractionForm as FluroInteractionForm};
-export {FluroPostThread as FluroPostThread};
-export {FluroStatToggle as FluroStatToggle};
-export {FluroStatTotal as FluroStatTotal};
-export {FluroCard as FluroCard};
-export {FluroCardBody as FluroCardBody};
-export {FluroCardTitle as FluroCardTitle};
-export {FluroPanel as FluroPanel};
-export {FluroPanelBody as FluroPanelBody};
-export {FluroPanelTitle as FluroPanelTitle};
-export {FlexColumn as FlexColumn};
-export {FlexRow as FlexRow};
-export {FlexColumnHeader as FlexColumnHeader};
-export {FlexColumnBody as FlexColumnBody};
-export {FlexColumnFooter as FlexColumnFooter};
-export {ListGroup as ListGroup};
-export {ListGroupItem as ListGroupItem};
-export {MailoutRenderPreview as MailoutRenderPreview};
-export {MailoutTestPanel as MailoutTestPanel};
-export {MailoutPreflightPanel as MailoutPreflightPanel};
-export {MailoutResultsPanel as MailoutResultsPanel};
-export {Layout as Layout};
-export {DynamicListMixin as DynamicListMixin};
-export {DynamicPageMixin as DynamicPageMixin};
-export {FluroContactCommunicateMixin as FluroContactCommunicateMixin};
-export {FluroSelectionMixin as FluroSelectionMixin};
+if ((typeof window !== 'undefined') && window.Vue) {
+				install(window.Vue);
+}
+
+
+export default {
+				install,
+
+				FluroImage,
+
+				FluroModalMixin,
+
+				FluroAvatar,
+
+				FluroAvatarUpdate,
+
+				FluroFieldEditor,
+
+				FluroCompileHtml,
+
+				FluroInfiniteScroll,
+
+				FluroPagedContent,
+
+				FluroVideo,
+
+				FluroVideoThumbnail,
+
+				FluroModal,
+
+				FluroInlineEdit,
+
+				FluroConfirmButton,
+
+				FluroTrendChart,
+
+				FluroTable,
+
+				TableCell,
+
+				SearchInput,
+
+				FluroDynamicTable,
+
+				DefinitionCell,
+
+				TitleCell,
+
+				TypeImageCell,
+
+				FirstNameCell,
+
+				BooleanCell,
+
+				LastNameCell,
+
+				StatusCell,
+
+				DateCell,
+
+				TimeCell,
+
+				ThumbnailCell,
+
+				EventThumbnailCell,
+
+				NumberCell,
+
+				RealmDotCell,
+
+				PaymentStatusCell,
+
+				CurrencyCell,
+
+				TimeagoCell,
+
+				PhoneNumberCell,
+
+				EmailAddressCell,
+
+				FilesizeCell,
+
+				DurationCell,
+
+				DimensionsCell,
+
+				AvatarCell,
+
+				PersonaAvatarCell,
+
+				ContactAvatarCell,
+
+				ContactTimeline,
+
+				ContactPostThread,
+
+				ContactDetailList,
+
+				ContactMessageList,
+
+				ContactTransactionList,
+
+				ContactInteractionList,
+
+				ContactCheckinList,
+
+				ContactTeamList,
+
+				PrivacyCell,
+
+				JSONCell,
+
+				TicketCollectCell,
+
+				FluroToggleItem,
+
+				FluroItemImage,
+
+				FluroOptionsDialog,
+
+				FluroPromptDialog,
+
+				FluroConfirmDialog,
+
+				FluroListItem,
+
+				FluroTimeline,
+
+				FluroContentEdit,
+
+				FluroContentView,
+
+				FilterConditionGroup,
+
+				FilterConditionRow,
+
+				FluroContentRender,
+
+				FluroContentRenderField,
+
+				FluroTaskList,
+
+				FluroPagePreloader,
+
+				FluroSearchBar,
+
+				FluroIcon,
+
+				FluroRealmDots,
+
+				FluroRealmTags,
+
+				FluroStatusLabel,
+
+				FluroStatusSelect,
+
+				FluroWrapper,
+
+				FluroConstrain,
+
+				FluroRealmBar,
+
+				FluroTabset,
+
+				FluroTab,
+
+				FluroAccordion,
+
+				FluroAccordionPanel,
+
+				FluroContentBrowser,
+
+				FluroContentSelect,
+
+				FluroSelector,
+
+				AddPostModal,
+
+				FluroContentSelectModal,
+
+				FluroContentSelectButton,
+
+				FluroRealmSelect,
+
+				FluroTagSelect,
+
+				FluroEditor,
+
+				FluroCodeEditor,
+
+				FluroExpressionEditor,
+
+				FluroCodeHighlight,
+
+				FluroContentForm,
+
+				FluroContentFormField,
+
+				FluroDateTimePicker,
+
+				FluroSignatureField,
+
+				FluroAcademicSelect,
+
+				FluroPostForm,
+
+				FluroBasicForm,
+
+				FluroInteractionForm,
+
+				FluroPostThread,
+
+				FluroStatToggle,
+
+				FluroStatTotal,
+
+				FluroCard,
+
+				FluroCardBody,
+
+				FluroCardTitle,
+
+				FluroPanel,
+
+				FluroPanelBody,
+
+				FluroPanelTitle,
+
+				FlexColumn,
+
+				FlexRow,
+
+				FlexColumnHeader,
+
+				FlexColumnBody,
+
+				FlexColumnFooter,
+
+				ListGroup,
+
+				ListGroupItem,
+
+				MailoutRenderPreview,
+
+				MailoutTestPanel,
+
+				MailoutPreflightPanel,
+
+				MailoutResultsPanel,
+
+				Layout,
+
+				DynamicListMixin,
+
+				DynamicPageMixin,
+
+				FluroContactCommunicateMixin,
+
+				FluroSelectionMixin,
+
+};

@@ -57,7 +57,7 @@
 </template>
 <script>
 import ModalMixin from '../../../mixins/ModalMixin';
-import FluroContentForm from '../FluroContentForm.vue';
+import FluroContentForm from 'src/components/form/FluroContentForm.vue';
 import FluroTabset from '../../ui/tabset/FluroTabset.vue';
 import FluroTab from '../../ui/tabset/FluroTab.vue';
 

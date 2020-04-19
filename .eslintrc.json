@@ -1,0 +1,20 @@
+{
+	"root": true,
+	"parserOptions": {
+		"parser": "babel-eslint"
+	},
+	"env": {
+		"browser": true
+	},
+	"extends": [
+		"xo/esnext",
+		"plugin:vue/recommended"
+	],
+	"plugins": [
+		"vue"
+	],
+	"rules": {
+		"linebreak-style": "off",
+		"vue/html-indent": ["error", "tab"]
+	}
+}
