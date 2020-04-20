@@ -124,8 +124,8 @@
     </flex-column>
 </template>
 <script>
-import RosterSlotSuggestionListItem from './RosterSlotSuggestionListItem.vue';
-import RosterSlotAssignmentListItem from './RosterSlotAssignmentListItem.vue';
+import RosterSlotSuggestionListItem from 'src/components/content/edit/components/RosterSlotSuggestionListItem.vue';
+import RosterSlotAssignmentListItem from 'src/components/content/edit/components/RosterSlotAssignmentListItem.vue';
 
 export default {
     props: {

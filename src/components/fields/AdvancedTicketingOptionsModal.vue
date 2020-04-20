@@ -70,10 +70,10 @@
     </flex-column>
 </template>
 <script>
-import FluroModalMixin from '../../mixins/ModalMixin.js';
+import FluroModalMixin from 'src/mixins/ModalMixin.js';
 import FluroContentForm from 'src/components/form/FluroContentForm.vue';
 import FluroContentFormField from 'src/components/form/FluroContentFormField.vue';
-import FluroRealmDots from '../ui/FluroRealmDots.vue';
+import FluroRealmDots from 'src/components/ui/FluroRealmDots.vue';
 export default {
     props: {
         options: {

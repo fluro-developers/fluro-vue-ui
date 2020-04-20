@@ -59,7 +59,7 @@
     </div>
 </template>
 <script>
-import FluroSelectionMixin from '../../mixins/FluroSelectionMixin';
+import FluroSelectionMixin from 'src/mixins/FluroSelectionMixin.js';
 
 
 export default {

@@ -43,7 +43,7 @@
     <!-- </flex-column> -->
 </template>
 <script>
-import FluroInfiniteScroll from './FluroInfiniteScroll.vue';
+import FluroInfiniteScroll from 'src/components/ui/FluroInfiniteScroll.vue';
 
 export default {
     components: { FluroInfiniteScroll },

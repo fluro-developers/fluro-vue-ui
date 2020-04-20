@@ -236,9 +236,9 @@
 <script>
 /////////////////////////////////
 
-import FluroContentEditMixin from '../FluroContentEditMixin';
-import FluroContentView from '../../view/FluroContentView.vue';
-import FluroTaskList from '../../../form/tasklist/FluroTaskList.vue';
+import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
+import FluroContentView from 'src/components/content/view/FluroContentView.vue';
+import FluroTaskList from 'src/components/form/tasklist/FluroTaskList.vue';
 
 /////////////////////////////////
 

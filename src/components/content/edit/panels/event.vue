@@ -421,15 +421,12 @@
 /////////////////////////////////
 
 
-import MessagingEventManager from '../components/MessagingEventManager.vue';
-import LocationViewMapComponent from '../../event/LocationViewMapComponent.vue';
-import LocationSelector from '../components/LocationSelector.vue';
-import FluroContentEditMixin from '../FluroContentEditMixin';
-// import FluroContentEdit from '../FluroContentEdit';
-import GuestList from '../../event/GuestList.vue';
-// import { JSONView } from "vue-json-component";
-
-import FluroContentView from '../../view/FluroContentView.vue';
+import MessagingEventManager from 'src/components/content/edit/components/MessagingEventManager.vue';
+import LocationViewMapComponent from 'src/components/content/event/LocationViewMapComponent.vue';
+import LocationSelector from 'src/components/content/edit/components/LocationSelector.vue';
+import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
+import GuestList from 'src/components/content/event/GuestList.vue';
+import FluroContentView from 'src/components/content/view/FluroContentView.vue';
 
 /////////////////////////////////
 

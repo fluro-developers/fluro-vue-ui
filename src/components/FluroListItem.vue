@@ -54,12 +54,11 @@
         
         </div>
         </slot>
-        <!-- LIST ITEM -->
     </div>
 </template>
 <script>
 
-import FluroRealmBar from './ui/FluroRealmBar.vue';
+import FluroRealmBar from 'src/components/ui/FluroRealmBar.vue';
 
 export default {
     components:{

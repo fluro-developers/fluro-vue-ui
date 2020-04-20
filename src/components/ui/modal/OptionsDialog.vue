@@ -61,7 +61,7 @@
     </flex-column>
 </template>
 <script>
-import ModalMixin from '../../../mixins/ModalMixin';
+import ModalMixin from 'src/mixins/ModalMixin';
 
 export default {
     props: {

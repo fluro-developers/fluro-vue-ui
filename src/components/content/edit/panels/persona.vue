@@ -169,11 +169,11 @@
 <script>
 /////////////////////////////////
 
-import FluroRealmSelect from "../../../form/realmselect/FluroRealmSelect.vue";
-import FluroContentEditMixin from "../FluroContentEditMixin";
-import FluroAccessPassSelect from "../../../form/FluroAccessPassSelect.vue";
-import FluroPermissionSelect from "../../../form/FluroPermissionSelect.vue";
-import FluroAvatarUpdate from "../../../FluroAvatarUpdate.vue";
+import FluroRealmSelect from "src/components/form/realmselect/FluroRealmSelect.vue";
+import FluroContentEditMixin from "src/components/content/edit/FluroContentEditMixin.js";
+import FluroAccessPassSelect from "src/components/form/FluroAccessPassSelect.vue";
+import FluroPermissionSelect from "src/components/form/FluroPermissionSelect.vue";
+import FluroAvatarUpdate from "src/components/FluroAvatarUpdate.vue";
 
 /////////////////////////////////
 

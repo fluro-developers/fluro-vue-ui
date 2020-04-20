@@ -6,7 +6,8 @@
     </div>
 </template>
 <script>
-import FluroInfinitePage from './FluroInfiniteScrollPage.vue';
+    
+import FluroInfinitePage from 'src/components/ui/FluroInfiniteScrollPage.vue';
 
 export default {
     components: {

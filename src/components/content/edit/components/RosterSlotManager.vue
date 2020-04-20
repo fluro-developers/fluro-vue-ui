@@ -16,8 +16,8 @@
     </v-layout>
 </template>
 <script>
-import RosterSlotPlaceholderCell from './RosterSlotPlaceholderCell.vue';
-import RosterSlotCell from './RosterSlotCell.vue';
+import RosterSlotPlaceholderCell from 'src/components/content/edit/components/RosterSlotPlaceholderCell.vue';
+import RosterSlotCell from 'src/components/content/edit/components/RosterSlotCell.vue';
 export default {
     props: {
         selected: {

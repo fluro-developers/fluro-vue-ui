@@ -1,4 +1,5 @@
 
+import AddPost from 'src/components/ui/modal/AddPost.vue';
 console.log('Contact communicate mixin');
 
 export default {
@@ -120,7 +121,7 @@ export default {
                             ///////////////////////////
 
                             var promise = self.$fluro.modal({
-                                component: () => import('../components/ui/modal/AddPost.vue'),
+                                component:AddPost,
                                 options,
                             });
 

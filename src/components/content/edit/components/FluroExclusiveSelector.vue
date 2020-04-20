@@ -11,7 +11,8 @@
 </template>
 <script>
 
-import FluroCheckbox from './FluroCheckbox.vue';
+
+import FluroCheckbox from 'src/components/content/edit/components/FluroCheckbox.vue';
 
 /////////////////////////////////
 

@@ -51,10 +51,10 @@
 <script>
 /////////////////////////////////////////////
 
-import FluroTaskModal from './FluroTaskModal.vue';
-import FluroTaskEditModal from './FluroTaskEditModal.vue';
-import FluroInlineEdit from '../FluroInlineEdit.vue';
-import FluroEditor from '../FluroEditor.vue';
+import FluroTaskModal from 'src/components/form/tasklist/FluroTaskModal.vue';
+import FluroTaskEditModal from 'src/components/form/tasklist/FluroTaskEditModal.vue';
+import FluroInlineEdit from 'src/components/form/FluroInlineEdit.vue';
+import FluroEditor from 'src/components/form/FluroEditor.vue';
 
 /////////////////////////////////////////////
 

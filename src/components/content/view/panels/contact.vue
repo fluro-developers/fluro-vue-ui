@@ -43,9 +43,9 @@
 
 import Vue from 'vue';
 
-import FluroContactCommunicateMixin from '../../../../mixins/FluroContactCommunicateMixin';
-import FluroContentViewMixin from '../FluroContentViewMixin';
-import FluroAvatar from '../../../FluroAvatar.vue';
+import FluroContactCommunicateMixin from 'src/mixins/FluroContactCommunicateMixin';
+import FluroContentViewMixin from 'src/components/content/view/FluroContentViewMixin.js';
+import FluroAvatar from 'src/components/FluroAvatar.vue';
 
 /////////////////////////////////
 

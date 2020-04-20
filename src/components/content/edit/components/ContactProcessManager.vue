@@ -44,13 +44,10 @@
     </div>
 </template>
 <script>
-// import FluroContentSelectButton from '../../../form/contentselect/FluroContentSelectButton.vue';
-import ListGroup from '../../../ui/ListGroup.vue';
-import ListGroupItem from '../../../ui/ListGroupItem.vue';
-import ContactProcessState from './ContactProcessState.vue';
+import ListGroup from 'src/components/ui/ListGroup.vue';
+import ListGroupItem from 'src/components/ui/ListGroupItem.vue';
+import ContactProcessState from 'src/components/content/edit/components/ContactProcessState.vue';
 
-// import FluroContentSelectModal from '../../../form/contentselect/FluroContentSelectModal.vue';
-// import FluroSelector from '../../../form/contentselect/FluroSelector.vue';
 import Vue from 'vue';
 
 

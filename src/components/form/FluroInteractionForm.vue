@@ -919,10 +919,20 @@ export default {
             return canCreate || canSubmit;
         },
         user() {
-            console.log('FIND USER MATCH', Vue.$store)
+          
+            if(!Vue.$store || !Vue.$store.state) {
+            	console.log('vuex is not initiated')
+            	return;
+            }
+
             return Vue.$store.state.fluro.user;
         },
         application() {
+        	if(!Vue.$store || !Vue.$store.state) {
+        		console.log('vuex is not initiated')
+        		return;
+        	}
+
             return Vue.$store.state.fluro.application;
         },
 

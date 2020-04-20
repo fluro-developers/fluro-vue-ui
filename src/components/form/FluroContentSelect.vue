@@ -97,19 +97,15 @@
     </div>
 </template>
 <script>
-// import FluroContentBrowser from './FluroContentBrowser.vue';
-import FluroSelectionMixin from '../../mixins/FluroSelectionMixin';
-// import draggable from 'vuedraggable'
-
-import FluroContentSelectModal from './contentselect/FluroContentSelectModal.vue';
+import draggable from 'vuedraggable';
+import FluroSelectionMixin from 'src/mixins/FluroSelectionMixin.js';
+import FluroContentSelectModal from 'src/components/form/contentselect/FluroContentSelectModal.vue';
 
 
 
 export default {
     components: {
-        // draggable,
-        draggable: () => import('vuedraggable'),
-        // FluroContentBrowser,
+        draggable,
     },
     mixins: [FluroSelectionMixin],
     props: {

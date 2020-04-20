@@ -22,8 +22,8 @@
     </div>
 </template>
 <script>
-import FluroContentEditMixin from '../FluroContentEditMixin';
-import DefaultRosterSlot from './DefaultRosterSlot.vue';
+import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
+import DefaultRosterSlot from 'src/components/content/edit/components/DefaultRosterSlot.vue';
 import FluroContentForm from 'src/components/form/FluroContentForm.vue';
 
 

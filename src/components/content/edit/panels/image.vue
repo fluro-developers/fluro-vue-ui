@@ -139,9 +139,9 @@
 <script>
 /////////////////////////////////
 
-import FluroEditor from '../../../form/FluroEditor.vue';
-import FluroContentEditMixin from '../FluroContentEditMixin';
-import FluroAssetEditMixin from '../FluroAssetEditMixin';
+import FluroEditor from 'src/components/form/FluroEditor.vue';
+import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
+import FluroAssetEditMixin from 'src/components/content/edit/FluroAssetEditMixin';
 
 /////////////////////////////////
 

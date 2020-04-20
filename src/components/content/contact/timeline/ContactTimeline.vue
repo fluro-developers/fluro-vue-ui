@@ -1,58 +1,58 @@
 <template>
-    <flex-column class="contact-timeline">
-        <template v-if="loading">
-            <fluro-page-preloader contain />
-        </template>
-        <template v-else>
-            <!-- @clicked="clicked"  -->
-            <fluro-timeline v-model="array">
-                <template v-slot:card="{entry}">
-                    <template v-if="entry.grouped">
-                        <!-- <grouped-card :item="entry"/> -->
-                        <log-card :item="log" :key="log._id" v-for="log in entry.entries" />
-                    </template>
-                    <template v-else-if="!entry._type">
-                        <!-- <div class="timeline-card log-message"> -->
-                        <log-card :item="entry" />
-                        <!-- <fluro-icon type="log"/> {{entry.message}} <em class="muted">- {{entry.date | formatDate('hh:mma')}} ({{entry.date | timeago}})</em> -->
-                        <!-- </div> -->
-                        <!-- <pre>{{entry}}</pre> -->
-                    </template>
-                    <template v-else>
-                        <!-- <div class="timeline-card"> -->
-                        <template v-if="entry._type == 'mailout'">
-                            <mailout-card :item="entry" />
-                        </template>
-                        <template v-else-if="entry._type == 'post'">
-                            <post-card :item="entry" />
-                        </template>
-                        <template v-else-if="entry._type == 'interaction'">
-                            <interaction-card :item="entry" />
-                        </template>
-                        <template v-else-if="entry._type == 'checkin'">
-                            <checkin-card :item="entry" />
-                        </template>
-                        <template v-else-if="entry._type == 'assignment'">
-                            <roster-card :item="entry" />
-                        </template>
-                        <template v-else-if="entry._type == 'sms'">
-                            <text-message-card :item="entry" />
-                        </template>
-                        <template v-else>
-                            <div class="timeline-card">
-                                <pre>{{entry}}</pre>
-                            </div>
-                        </template>
-                        <!-- <fluro-realm-bar :realm="entry.realms"/> -->
-                        <!-- <label>{{entry.title}}</label> -->
-                        <!-- } -->
-                        <!-- </div> -->
-                    </template>
-                </template>
-            </fluro-timeline>
-        </template>
-    </flex-column>
-    <!-- <div class="process-state-card" :class="card.processStatus">
+                <flex-column class="contact-timeline">
+                                <template v-if="loading">
+                                                <fluro-page-preloader contain />
+                                </template>
+                                <template v-else>
+                                                <!-- @clicked="clicked"  -->
+                                                <fluro-timeline v-model="array">
+                                                                <template v-slot:card="{entry}">
+                                                                                <template v-if="entry.grouped">
+                                                                                                <!-- <grouped-card :item="entry"/> -->
+                                                                                                <log-card :item="log" :key="log._id" v-for="log in entry.entries" />
+                                                                                </template>
+                                                                                <template v-else-if="!entry._type">
+                                                                                                <!-- <div class="timeline-card log-message"> -->
+                                                                                                <log-card :item="entry" />
+                                                                                                <!-- <fluro-icon type="log"/> {{entry.message}} <em class="muted">- {{entry.date | formatDate('hh:mma')}} ({{entry.date | timeago}})</em> -->
+                                                                                                <!-- </div> -->
+                                                                                                <!-- <pre>{{entry}}</pre> -->
+                                                                                </template>
+                                                                                <template v-else>
+                                                                                                <!-- <div class="timeline-card"> -->
+                                                                                                <template v-if="entry._type == 'mailout'">
+                                                                                                                <mailout-card :item="entry" />
+                                                                                                </template>
+                                                                                                <template v-else-if="entry._type == 'post'">
+                                                                                                                <post-card :item="entry" />
+                                                                                                </template>
+                                                                                                <template v-else-if="entry._type == 'interaction'">
+                                                                                                                <interaction-card :item="entry" />
+                                                                                                </template>
+                                                                                                <template v-else-if="entry._type == 'checkin'">
+                                                                                                                <checkin-card :item="entry" />
+                                                                                                </template>
+                                                                                                <template v-else-if="entry._type == 'assignment'">
+                                                                                                                <roster-card :item="entry" />
+                                                                                                </template>
+                                                                                                <template v-else-if="entry._type == 'sms'">
+                                                                                                                <text-message-card :item="entry" />
+                                                                                                </template>
+                                                                                                <template v-else>
+                                                                                                                <div class="timeline-card">
+                                                                                                                                <pre>{{entry}}</pre>
+                                                                                                                </div>
+                                                                                                </template>
+                                                                                                <!-- <fluro-realm-bar :realm="entry.realms"/> -->
+                                                                                                <!-- <label>{{entry.title}}</label> -->
+                                                                                                <!-- } -->
+                                                                                                <!-- </div> -->
+                                                                                </template>
+                                                                </template>
+                                                </fluro-timeline>
+                                </template>
+                </flex-column>
+                <!-- <div class="process-state-card" :class="card.processStatus">
         <fluro-card>
             <div class="color-block" />
             <fluro-card-body>
@@ -73,121 +73,117 @@
     </div> -->
 </template>
 <script>
-// import FluroTimeline from '../../../ui/FluroTimeline.vue';
-// import MailoutCard from './cards/MailoutCard.vue';
-// import PostCard from './cards/PostCard.vue';
-// import InteractionCard from './cards/InteractionCard.vue';
-// import CheckinCard from './cards/CheckinCard.vue';
-// import LogCard from './cards/LogCard.vue';
-// import RosterCard from './cards/RosterCard.vue';
-// import TextMessageCard from './cards/TextMessageCard.vue';
-// import GroupedCard from './cards/GroupedCard.vue';
+import FluroTimeline from 'src/components/ui/FluroTimeline.vue';
+import MailoutCard from 'src/components/content/contact/timeline/cards/MailoutCard.vue';
+import PostCard from 'src/components/content/contact/timeline/cards/PostCard.vue';
+import InteractionCard from 'src/components/content/contact/timeline/cards/InteractionCard.vue';
+import CheckinCard from 'src/components/content/contact/timeline/cards/CheckinCard.vue';
+import LogCard from 'src/components/content/contact/timeline/cards/LogCard.vue';
+import RosterCard from 'src/components/content/contact/timeline/cards/RosterCard.vue';
+import TextMessageCard from 'src/components/content/contact/timeline/cards/TextMessageCard.vue';
+import GroupedCard from 'src/components/content/contact/timeline/cards/GroupedCard.vue';
+
+
+
 
 export default {
-    props: {
-        items: {
-            type: Array,
-        },
-        value: {
-            type: Object,
-        }
-    },
-    components: {
-        FluroTimeline: () => import('../../../ui/FluroTimeline.vue'),
-        MailoutCard: () => import('./cards/MailoutCard.vue'),
-        PostCard: () => import('./cards/PostCard.vue'),
-        InteractionCard: () => import('./cards/InteractionCard.vue'),
-        CheckinCard: () => import('./cards/CheckinCard.vue'),
-        LogCard: () => import('./cards/LogCard.vue'),
-        RosterCard: () => import('./cards/RosterCard.vue'),
-        TextMessageCard: () => import('./cards/TextMessageCard.vue'),
-        GroupedCard: () => import('./cards/GroupedCard.vue'),
+                props: {
+                                items: {
+                                                type: Array,
+                                },
+                                value: {
+                                                type: Object,
+                                }
+                },
+                components: {
+                                FluroTimeline,
+                                MailoutCard,
+                                PostCard,
+                                InteractionCard,
+                                CheckinCard,
+                                LogCard,
+                                RosterCard,
+                                TextMessageCard,
+                                GroupedCard,
+                },
+                data() {
+                                return {
+                                                loading: false,
+                                                model: this.value,
+                                }
+                },
+                asyncComputed: {
+                                array: {
+                                                default: [],
+                                                get() {
 
-        // FluroTimeline,
-        // GroupedCard,
-        // MailoutCard,
-        // PostCard,
-        // InteractionCard,
-        // CheckinCard,
-        // LogCard,
-        // RosterCard,
-        // TextMessageCard,
-    },
-    data() {
-        return {
-            loading: false,
-            model: this.value,
-        }
-    },
-    asyncComputed: {
-        array: {
-            default: [],
-            get() {
+                                                                var self = this;
+                                                                self.loading = true;
 
-                var self = this;
-                self.loading = true;
+                                                                var contactID = self.$fluro.utils.getStringID(self.model);
+                                                                if (!contactID) {
+                                                                                Promise.resolve([])
+                                                                                self.loading = false;
+                                                                }
 
-                var contactID = self.$fluro.utils.getStringID(self.model);
-                if (!contactID) {
-                    Promise.resolve([])
-                    self.loading = false;
+                                                                return new Promise(function(resolve, reject) {
+
+                                                                                self.$fluro.api.get(`/contact/${contactID}/timeline`).then(function(res) {
+
+                                                                                                                resolve(res.data);
+                                                                                                                self.loading = false;
+                                                                                                })
+                                                                                                .catch(function(err) {
+                                                                                                                reject(err);
+                                                                                                                self.loading = false;
+
+                                                                                                });
+                                                                                // https://api.staging.fluro.io/info/checkins?contact=592e50389d9129595a75cc4e
+                                                                })
+                                                }
+                                }
                 }
-
-                return new Promise(function(resolve, reject) {
-
-                    self.$fluro.api.get(`/contact/${contactID}/timeline`).then(function(res) {
-
-                            resolve(res.data);
-                            self.loading = false;
-                        })
-                        .catch(function(err) {
-                            reject(err);
-                            self.loading = false;
-
-                        });
-                    // https://api.staging.fluro.io/info/checkins?contact=592e50389d9129595a75cc4e
-                })
-            }
-        }
-    }
 }
+
 </script>
 <style lang="scss">
 .contact-timeline {
-    .timeline-wrapper {
-        max-width: 960px;
-        margin: auto;
-    }
+                .timeline-wrapper {
+                                max-width: 960px;
+                                margin: auto;
+                }
 }
 
 .log-message {
-    font-size: 0.8em;
-    opacity: 0.5;
-    padding: 5px;
-    font-style: italic;
+                font-size: 0.8em;
+                opacity: 0.5;
+                padding: 5px;
+                font-style: italic;
 }
 
 .timeline-entry {
-    @extend .border-top !optional;
-    padding: 5px;
-    position: relative;
-    overflow: hidden;
-    text-overflow: ellipsis;;
+                @extend .border-top !optional;
+                padding: 5px;
+                position: relative;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                ;
 
-    .summary {
-        font-size: 0.8em;
-        opacity: 0.5;
-    }
+                .summary {
+                                font-size: 0.8em;
+                                opacity: 0.5;
+                }
 }
 
 
 .timeline-icon {
-    text-align: center;
-    width: 34px;
-    line-height: 34px;
-    height: 34px;
-    background: rgba(#000, 0.1);
-    border-radius: 100%;
-    display: block;
+                text-align: center;
+                width: 34px;
+                line-height: 34px;
+                height: 34px;
+                background: rgba(#000, 0.1);
+                border-radius: 100%;
+                display: block;
 }
+
 </style>

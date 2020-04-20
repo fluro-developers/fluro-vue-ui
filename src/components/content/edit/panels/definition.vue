@@ -32,13 +32,16 @@
                                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.privacy" v-model="model" />
                                             </fluro-panel-body>
                                         </fluro-panel>
+                                        <!-- <pre>{{model.data}}</pre> -->
                                         <fluro-panel margin>
                                             <fluro-panel-title>
                                                 <strong>Contact Creation</strong>
                                             </fluro-panel-title>
                                             <fluro-panel-body>
                                                 <fluro-content-form v-model="model.data" :fields="dataFields">
+
                                                     <template v-slot:form="{formFields, fieldHash, model, update, options}">
+                                                    	<!-- <pre>{{model}}</pre> -->
                                                         <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.allowAnonymous" v-model="model" />
                                                         <template v-if="!model.allowAnonymous && !model.disableDefaultFields">
                                                             <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.identifier" v-model="model" />
@@ -450,12 +453,11 @@
 
 
 
-// import FluroEditor from '../../../form/FluroEditor.vue';
-import FluroContentEditMixin from '../FluroContentEditMixin';
-import PaymentModifierEditor from '../components/PaymentModifierEditor.vue';
-import FluroFieldEditor from '../../../fields/FluroFieldEditor.vue';
-import FluroContentSelectButton from '../../../form/contentselect/FluroContentSelectButton.vue';
-import FieldTemplates from '../../../fields/FieldEditorTemplates';
+import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
+import PaymentModifierEditor from 'src/components/content/edit/components/PaymentModifierEditor.vue';
+import FluroFieldEditor from 'src/components/fields/FluroFieldEditor.vue';
+import FluroContentSelectButton from 'src/components/form/contentselect/FluroContentSelectButton.vue';
+import FieldTemplates from 'src/components/fields/FieldEditorTemplates.js';
 
 
 
@@ -495,10 +497,10 @@ export default {
                         self.$set(self.model, 'data', {});
                     }
 
+
                     if (!self.model._id) {
                         //Start off with the basic fields
                         self.$set(self.model.data, 'allowAnonymous', true);
-
                     }
 
                     if (!self.model.fields || !self.model.fields.length) {

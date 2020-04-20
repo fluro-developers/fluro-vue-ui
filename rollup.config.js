@@ -12,6 +12,12 @@ import pkg from './package.json';
 
 
 
+
+
+
+
+
+
 const patterns = ['./src/variables.scss']
 
 
@@ -19,10 +25,18 @@ const LIBRARY_NAME = 'FluroVueUI';
 const FILE_NAME = 'fluro-vue-ui';
 
 const sourcemap = true;
+
+
+
+
+
+
+
 const plugins = [
 				alias({
 								entries: [
-												{ find: 'src', replacement:__dirname + '/src' },
+												{ find: 'src', replacement: __dirname + '/src' },
+												{ find: 'vue', replacement: require.resolve('vue/dist/vue.esm.js') },
 								]
 				}),
 
@@ -32,11 +46,13 @@ const plugins = [
 				// }),
 				globalStyles({ patterns }),
 				vue({
+								// template: { optimizeSSR: true },
 								css: `dist/${FILE_NAME}.css`,
 								postcss: {
 												plugins: require('./postcss.config')().plugins
 								}
 				}),
+
 				resolve({
 								browser: true
 				}),
@@ -105,6 +121,7 @@ if (process.env.NODE_ENV === 'development') {
 export default [
 				Object.assign({}, defaultConfig, {
 								output: [{
+
 																globals,
 																dir: 'dist/cjs',
 																// file: `dist/${FILE_NAME}.common.js`,
@@ -112,6 +129,7 @@ export default [
 																sourcemap
 												},
 												{
+
 																globals,
 																dir: 'dist/es',
 																// file: `dist/${FILE_NAME}.es.js`,

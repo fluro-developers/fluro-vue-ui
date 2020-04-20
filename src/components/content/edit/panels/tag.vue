@@ -40,9 +40,9 @@
 <script>
 /////////////////////////////////
 
-import FluroEditor from '../../../form/FluroEditor.vue';
-import FluroContentEditMixin from '../FluroContentEditMixin';
-import GradeManager from '../components/GradeManager.vue';
+import FluroEditor from 'src/components/form/FluroEditor.vue';
+import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
+import GradeManager from 'src/components/content/edit/components/GradeManager.vue';
 
 /////////////////////////////////
 

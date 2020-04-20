@@ -127,8 +127,8 @@
 </template>
 <script>
 import Vue from 'vue';
-import FluroRealmSelect from '../form/realmselect/FluroRealmSelect.vue';
-import FluroContentSelectButton from '../form/contentselect/FluroContentSelectButton.vue';
+import FluroRealmSelect from 'src/components/form/realmselect/FluroRealmSelect.vue';
+import FluroContentSelectButton from 'src/components/form/contentselect/FluroContentSelectButton.vue';
 
 ///////////////////////////////////////////////
 

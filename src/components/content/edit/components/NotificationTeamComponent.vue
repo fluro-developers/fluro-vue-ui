@@ -17,8 +17,10 @@
     </div>
 </template>
 <script>
-import FluroContentEditMixin from '../FluroContentEditMixin';
-import FluroExclusiveSelector from '../components/FluroExclusiveSelector.vue';
+
+    //TODO check whether this actually needs to be here
+import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
+import FluroExclusiveSelector from 'src/components/content/edit/components/FluroExclusiveSelector.vue';
 
 
 

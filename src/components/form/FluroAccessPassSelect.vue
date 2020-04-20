@@ -60,9 +60,9 @@
 </template>
 <script>
 import Vue from 'vue';
-import FluroRealmDots from '../ui/FluroRealmDots.vue';
-import FluroSelectionMixin from '../../mixins/FluroSelectionMixin';
-import FluroContentSelectButton from './contentselect/FluroContentSelectButton.vue';
+import FluroRealmDots from 'src/components/ui/FluroRealmDots.vue';
+import FluroSelectionMixin from 'src/mixins/FluroSelectionMixin.js';
+import FluroContentSelectButton from 'src/components/form/contentselect/FluroContentSelectButton.vue';
 
 ///////////////////////////////////////////////
 

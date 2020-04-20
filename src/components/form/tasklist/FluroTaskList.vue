@@ -89,15 +89,14 @@
     </div>
 </template>
 <script>
-// import draggable from 'vuedraggable';
-
-import FluroTaskItem from './FluroTaskItem.vue';
-import FluroInlineEdit from '../FluroInlineEdit.vue';
+import draggable from 'vuedraggable';
+import FluroTaskItem from 'src/components/form/tasklist/FluroTaskItem.vue';
+import FluroInlineEdit from 'src/components/form/FluroInlineEdit.vue';
 
 export default {
     components: {
         // draggable,
-        draggable: () => import('vuedraggable'),
+        draggable,
         FluroTaskItem,
         FluroInlineEdit,
     },

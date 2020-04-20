@@ -41,12 +41,12 @@
     </flex-column>
 </template>
 <script>
-import FluroModalMixin from '../../../../mixins/ModalMixin.js';
+import FluroModalMixin from 'src/mixins/ModalMixin.js';
+import FluroExpressionEditor from 'src/components/form/FluroExpressionEditor.vue';
 
 export default {
     components: {
-        FluroExpressionEditor: () => import('../../../form/FluroExpressionEditor.vue'),
-        // FluroExpressionEditor,
+        FluroExpressionEditor,
     },
     props: {
         options: {

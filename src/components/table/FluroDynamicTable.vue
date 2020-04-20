@@ -372,10 +372,10 @@
     </div>
 </template>
 <script>
-import TableHeaderCheckbox from './TableHeaderCheckbox.vue';
-import TableRowCheckbox from './TableRowCheckbox.vue';
-import TableCell from './TableCell.vue';
-import DynamicListMixin from '../../mixins/DynamicListMixin.js'
+import TableHeaderCheckbox from 'src/components/table/TableHeaderCheckbox.vue';
+import TableRowCheckbox from 'src/components/table/TableRowCheckbox.vue';
+import TableCell from 'src/components/table/TableCell.vue';
+import DynamicListMixin from 'src/mixins/DynamicListMixin.js'
 
 /////////////////////////////////
 

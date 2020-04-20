@@ -35,8 +35,9 @@
 <script>
 /////////////////////////////////
 
-import FluroContentEditMixin from '../FluroContentEditMixin';
-import AreaCountManager from '../components/AreaCountManager.vue';
+
+import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
+import AreaCountManager from 'src/components/content/edit/components/AreaCountManager.vue';
 
 
 /////////////////////////////////

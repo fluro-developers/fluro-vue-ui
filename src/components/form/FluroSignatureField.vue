@@ -66,12 +66,12 @@ export default {
         });
 
         this.pad.onBegin = function() {
-            console.log('Begin!')
+            // console.log('Begin!')
         }
         this.pad.onEnd = function() {
-            console.log('End!')
+            // console.log('End!')
         }
-        console.log('Mounted', canvas, this.pad);
+        // console.log('Mounted', canvas, this.pad);
         window.addEventListener("resize", this.resizeCanvas);
 
         this.resizeCanvas();

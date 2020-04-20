@@ -43,6 +43,8 @@
     </flex-column>
 </template>
 <script>
+
+import ContactGroupManager from 'src/components/content/edit/components/ContactGroupManager.vue';
 export default {
     props: {
         contact: {
@@ -50,7 +52,7 @@ export default {
         }
     },
     components: {
-        ContactGroupManager: () => import('../../edit/components/ContactGroupManager.vue'),
+        ContactGroupManager,
     },
     /**
     data() {

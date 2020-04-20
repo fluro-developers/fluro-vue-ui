@@ -57,9 +57,9 @@
 </template>
 <script>
 import async from 'async';
-import FluroRealmSelect from '../../form/realmselect/FluroRealmSelect.vue';
+import FluroRealmSelect from 'src/components/form/realmselect/FluroRealmSelect.vue';
 import FluroContentForm from 'src/components/form/FluroContentForm.vue';
-import FluroModalMixin from '../../../mixins/ModalMixin';
+import FluroModalMixin from 'src/mixins/ModalMixin';
 
 export default {
     props: {

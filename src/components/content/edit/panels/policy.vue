@@ -72,9 +72,8 @@
 <script>
 /////////////////////////////////
 
-// import FluroEditor from '../../../form/FluroEditor.vue';
-import FluroContentEditMixin from '../FluroContentEditMixin';
-import FluroPermissionSelect from '../../../form/FluroPermissionSelect.vue';
+import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
+import FluroPermissionSelect from 'src/components/form/FluroPermissionSelect.vue';
 
 /////////////////////////////////
 

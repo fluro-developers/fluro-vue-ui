@@ -30,7 +30,7 @@
     </div>
 </template>
 <script>
-import Layout from '../../mixins/Layout';
+import Layout from 'src/mixins/Layout';
 
 export default {
     mixins: [Layout],

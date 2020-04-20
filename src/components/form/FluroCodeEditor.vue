@@ -1,22 +1,13 @@
 <template>
-    <div ref="outer" class="fluro-code-editor">
-        <!-- <pre>{{model}}</pre> -->
-        <code-editor v-model="model" @init="editorInit" :lang="syntax" theme="tomorrow_night_eighties" :height="100"></code-editor>
-    </div>
+				<div ref="outer" class="fluro-code-editor">
+								<!-- <pre>{{model}}</pre> -->
+								<code-editor v-model="model" @init="editorInit" :lang="syntax" theme="tomorrow_night_eighties" :height="100"></code-editor>
+				</div>
 </template>
 <script>
 import CodeEditor from 'vue2-ace-editor';
 import js_beautify from 'js-beautify';
 
-
-// var mode1 = () => import('brace/ext/language_tools');
-// var mode2 = () => import('brace/mode/html');
-// var mode3 = () => import('brace/mode/json');
-// var mode4 = () => import('brace/mode/javascript');
-// var mode5 = () => import('brace/mode/ejs');
-// var mode6 = () => import('brace/mode/scss');
-// var mode7 = () => import('brace/theme/tomorrow_night_eighties');
-// var mode8 = () => import('brace/snippets/javascript');
 
 
 
@@ -24,211 +15,213 @@ import js_beautify from 'js-beautify';
 
 export default {
 
-    props: {
-        'autoformat': {
-            type: Boolean,
-            default: true,
-        },
-        'value': {
-            type: String,
-            default: '',
-        },
-        'lang': {
-            type: String,
-            default: 'html',
-        },
-        'height': {
-            default: 300,
-            type: Number,
-        },
-        'readonly': {
-            type: Boolean,
-        },
-    },
+				props: {
+								'autoformat': {
+												type: Boolean,
+												default: true,
+								},
+								'value': {
+												type: String,
+												default: '',
+								},
+								'lang': {
+												type: String,
+												default: 'html',
+								},
+								'height': {
+												default: 300,
+												type: Number,
+								},
+								'readonly': {
+												type: Boolean,
+								},
+				},
 
-    data() {
-        return {
-            editor: null,
-            model: this.value,
-        }
-    },
-    computed: {
-        syntax() {
-            switch (this.lang) {
-                case 'css':
-                case 'sass':
-                case 'scss':
-                    return 'scss';
-                    break;
-                case 'js':
-                    return 'javascript';
-                    break;
-                case 'html':
-                    return 'html';
-                    break;
-                default:
-                    return `${this.lang}`;
-                    break;
-            }
-        }
-    },
-    methods: {
-        beautify() {
+				data() {
+								return {
+												editor: null,
+												model: this.value,
+								}
+				},
+				computed: {
+								syntax() {
+												switch (this.lang) {
+																case 'css':
+																case 'sass':
+																case 'scss':
+																				return 'scss';
+																				break;
+																case 'js':
+																				return 'javascript';
+																				break;
+																case 'html':
+																				return 'html';
+																				break;
+																default:
+																				return `${this.lang}`;
+																				break;
+												}
+								}
+				},
+				methods: {
+								beautify() {
 
-            if (!this.autoformat) {
-                return;
-            }
+												if (!this.autoformat) {
+																return;
+												}
 
-            if (!this.editor) {
-                return;
-            }
+												if (!this.editor) {
+																return;
+												}
 
-            // console.log('Beautify!!!')
-            //Get the current string
-            var input = this.editor.session.getValue() || '';
+												// console.log('Beautify!!!')
+												//Get the current string
+												var input = this.editor.session.getValue() || '';
 
-            //Remove leading spaces
-            var array = input.split(/\n/);
-            array[0] = array[0].trim();
-            input = array.join("\n");
-
-
-            switch (this.syntax) {
-                case 'html':
-                    input = js_beautify.html(input); //, {extra_liners:'p, br'})
-                    break;
-                case 'json':
-                case 'javascript':
-                    input = js_beautify(input);
-                    break;
-                case 'scss':
-                    input = js_beautify.css(input)
-                    break;
-            }
-
-            // console.log('BEAUTIFIED')
-            // console.log('Set code editor with new input', input);
-            //Change current text to formatted text
-            this.editor.session.setValue(input);
-        },
-        editorInit: function(editor) {
-
-            var self = this;
-
-            console.log('Editor import brace extras')
-            // Promise.all([
-            //         () => import('brace/ext/language_tools'),
-            //         () => import('brace/mode/html'),
-            //         () => import('brace/mode/json'),
-            //         () => import('brace/mode/javascript'),
-            //         () => import('brace/mode/ejs'),
-            //         () => import('brace/mode/scss'),
-            //         () => import('brace/theme/tomorrow_night_eighties'),
-            //         () => import('brace/snippets/javascript'),
-            //     ])
-            //     .then(function(pieces) {
-
-            // console.log('brace extras loaded', pieces);
+												//Remove leading spaces
+												var array = input.split(/\n/);
+												array[0] = array[0].trim();
+												input = array.join("\n");
 
 
-            require('brace/ext/language_tools') //language extension prerequsite...
-            require('brace/mode/html')
-            require('brace/mode/json') //language
-            require('brace/mode/javascript') //language
-            require('brace/mode/ejs') //language
-            require('brace/mode/scss')
-            require('brace/theme/tomorrow_night_eighties')
-            require('brace/snippets/javascript') //snippet
-            self.editor = editor;
+												switch (this.syntax) {
+																case 'html':
+																				input = js_beautify.html(input); //, {extra_liners:'p, br'})
+																				break;
+																case 'json':
+																case 'javascript':
+																				input = js_beautify(input);
+																				break;
+																case 'scss':
+																				input = js_beautify.css(input)
+																				break;
+												}
 
-            //             editor.setOptions({
-            //     maxLines: Infinity
-            // });
+												// console.log('BEAUTIFIED')
+												// console.log('Set code editor with new input', input);
+												//Change current text to formatted text
+												this.editor.session.setValue(input);
+								},
+								editorInit: function(editor) {
 
-            var editorDiv = self.$refs.outer;
-            var doc = editor.getSession().getDocument();
-            editor.on("change", function() {
-                var lineHeight = editor.renderer.lineHeight;
-                editorDiv.style.height = lineHeight * doc.getLength() + "px";
-                editor.resize();
-            });
+												var self = this;
 
-            //     var editor = ace.edit("editor");                   // the editor object
-            // var editorDiv = document.getElementById("editor");     // its container
-            // var doc = editor.getSession().getDocument();  // a reference to the doc
+												console.log('Editor import brace extras')
+												// Promise.all([
+												// 								() => import('brace/ext/language_tools'),
+												// 								() => import('brace/mode/html'),
+												// 								() => import('brace/mode/json'),
+												// 								() => import('brace/mode/javascript'),
+												// 								() => import('brace/mode/ejs'),
+												// 								() => import('brace/mode/scss'),
+												// 								() => import('brace/theme/tomorrow_night_eighties'),
+												// 								() => import('brace/snippets/javascript'),
+												// 				])
+												// 				.then(function(pieces) {
+
+																				// console.log('brace extras loaded', pieces);
+
+																				require('brace/ext/searchbox');
+																				require('brace/ext/language_tools') //language extension prerequsite...
+																				require('brace/mode/html')
+																				require('brace/mode/json') //language
+																				require('brace/mode/javascript') //language
+																				require('brace/mode/ejs') //language
+																				require('brace/mode/scss')
+																				require('brace/theme/tomorrow_night_eighties')
+																				require('brace/snippets/javascript') //snippet
+																				self.editor = editor;
+
+																				//             editor.setOptions({
+																				//     maxLines: Infinity
+																				// });
+
+																				var editorDiv = self.$refs.outer;
+																				var doc = editor.getSession().getDocument();
+																				editor.on("change", function() {
+																								var lineHeight = editor.renderer.lineHeight;
+																								editorDiv.style.height = lineHeight * doc.getLength() + "px";
+																								editor.resize();
+																				});
+
+																				//     var editor = ace.edit("editor");                   // the editor object
+																				// var editorDiv = document.getElementById("editor");     // its container
+																				// var doc = editor.getSession().getDocument();  // a reference to the doc
 
 
-            ////////////////////////////////////////
+																				////////////////////////////////////////
 
-            if (self.readonly) {
-                editor.setReadOnly(true);
-                editor.renderer.setShowGutter(false);
-            } else {
-                editor.on('blur', self.beautify);
-            }
-
-
-            self.beautify();
-
-            ////////////////////////////////////////
-
-            // editor.setOptions({
-
-            //     // autoScrollEditorIntoView: true,
-            //     // copyWithEmptySelection: true,
-            // });
-
-            // editor.setReadOnly(true);
-            // editor.setMode(this.computedSyntax);
-            // console.log('Initialize the editor', editor);
-            // })
-
-        },
-    },
-    beforeDestroy() {
-        this.editor.off('blur', self.beautify);
-    },
-    mounted() {
+																				if (self.readonly) {
+																								editor.setReadOnly(true);
+																								editor.renderer.setShowGutter(false);
+																				} else {
+																								editor.on('blur', self.beautify);
+																				}
 
 
-        //Beautify when we first mount
-        this.beautify();
-    },
-    components: {
-        CodeEditor,
-    },
-    watch: {
-        value(value) {
+																				self.beautify();
 
-            var self = this;
-            // so cursor doesn't jump to start on typing
-            if (value !== this.model) {
-                this.editor.session.setValue(value);
-            }
-        },
-        model(value) {
+																				////////////////////////////////////////
 
-            // so cursor doesn't jump to start on typing
-            if (value != this.model) {
-                this.editor.setContent(this.model)
-            }
+																				// editor.setOptions({
 
-            // console.log('NEw Code', value)
-            this.$emit('input', this.model)
-        }
-    },
+																				//     // autoScrollEditorIntoView: true,
+																				//     // copyWithEmptySelection: true,
+																				// });
+
+																				// editor.setReadOnly(true);
+																				// editor.setMode(this.computedSyntax);
+																				// console.log('Initialize the editor', editor);
+																// })
+
+								},
+				},
+				beforeDestroy() {
+								this.editor.off('blur', self.beautify);
+				},
+				mounted() {
+
+
+								//Beautify when we first mount
+								this.beautify();
+				},
+				components: {
+								CodeEditor,
+				},
+				watch: {
+								value(value) {
+
+												var self = this;
+												// so cursor doesn't jump to start on typing
+												if (value !== this.model) {
+																this.editor.session.setValue(value);
+												}
+								},
+								model(value) {
+
+												// so cursor doesn't jump to start on typing
+												if (value != this.model) {
+																this.editor.setContent(this.model)
+												}
+
+												// console.log('NEw Code', value)
+												this.$emit('input', this.model)
+								}
+				},
 }
+
 </script>
 <style scoped lang="scss">
 .fluro-code-editor {
 
-    // border: 10px solid #ff0066;
-    min-height: 200px;
-    display: flex;
-    flex-direction: column;
+				// border: 10px solid #ff0066;
+				min-height: 200px;
+				display: flex;
+				flex-direction: column;
 
-    &>div {
-        flex: 1
-    }
+				&>div {
+								flex: 1
+				}
 }
+
 </style>

@@ -1,150 +1,152 @@
 <template>
-    <flex-column class="contact-post-thread">
-        <template v-if="loading">
-            <fluro-page-preloader contain />
-        </template>
-        <template v-else>
-            <flex-column-header>
-                <v-container fluid class="border-bottom text-xs-center" style="background: #fff;">
-                    <v-btn small @click="create(postType)" v-for="postType in postTypes">
-                        Add {{postType.title}}
-                        <fluro-icon right icon="plus" />
-                    </v-btn>
-                </v-container>
-            </flex-column-header>
-            <flex-column-body style="background: #eee;">
-                <v-container>
-                    <div class="card" v-for="post in items">
-                        <post-card :item="post" />
-                    </div>
-                </v-container>
-            </flex-column-body>
-        </template>
-    </flex-column>
+				<flex-column class="contact-post-thread">
+								<template v-if="loading">
+												<fluro-page-preloader contain />
+								</template>
+								<template v-else>
+												<flex-column-header>
+																<v-container fluid class="border-bottom text-xs-center" style="background: #fff;">
+																				<v-btn small @click="create(postType)" v-for="postType in postTypes">
+																								Add {{postType.title}}
+																								<fluro-icon right icon="plus" />
+																				</v-btn>
+																</v-container>
+												</flex-column-header>
+												<flex-column-body style="background: #eee;">
+																<v-container>
+																				<div class="card" v-for="post in items">
+																								<post-card :item="post" />
+																				</div>
+																</v-container>
+												</flex-column-body>
+								</template>
+				</flex-column>
 </template>
 <script>
-// import PostCard from './cards/PostCard.vue';
-// import AddPost from '../../../ui/modal/AddPost.vue';
+import PostCard from 'src/components/content/contact/timeline/cards/PostCard.vue';
+import AddPost from 'src/components/ui/modal/AddPost.vue';
 
 export default {
-    props: {
-        contact: {
-            type: Object,
-        }
-    },
-    components: {
-        PostCard:() => import('./cards/PostCard.vue'),
-        AddPost:() => import('../../../ui/modal/AddPost.vue'),
-    },
-    data() {
-        return {
-            loading: false,
-        }
-    },
-    methods: {
-        create(definition) {
+				props: {
+								contact: {
+												type: Object,
+								}
+				},
+				components: {
+								PostCard,
+								AddPost,
+				},
+				data() {
+								return {
+												loading: false,
+								}
+				},
+				methods: {
+								create(definition) {
 
-            var self = this;
-            var options = {
-                definition,
-                item: self.contact,
-            }
+												var self = this;
+												var options = {
+																definition,
+																item: self.contact,
+												}
 
-            ///////////////////////////
+												///////////////////////////
 
-            var promise = self.$fluro.modal({
-                    component: () => import('../../../ui/modal/AddPost.vue'),
-                    options,
-                })
-                .then(function() {
-                    self.$fluro.resetCache();
-                });
-
-
-        },
+												var promise = self.$fluro.modal({
+																				component:AddPost,
+																				options,
+																})
+																.then(function() {
+																				self.$fluro.resetCache();
+																});
 
 
-        // create(postType) {
-        //     var self = this;
-
-        //     self.$fluro.global.create = function() {
-
-        //     }
-        // }
-    },
-    asyncComputed: {
-        postTypes: {
-            default: [],
-            get() {
-                var self = this;
-
-                return new Promise(function(resolve, reject) {
+								},
 
 
-                    self.$fluro.types.subTypes('post')
-                        .then(function(res) {
+								// create(postType) {
+								//     var self = this;
 
-                            var filtered = _.filter(res, function(postType) {
+								//     self.$fluro.global.create = function() {
 
-                                var isCorrectType = _.chain(postType)
-                                    .get('data.postParentTypes')
-                                    .includes('contact')
-                                    .value();
+								//     }
+								// }
+				},
+				asyncComputed: {
+								postTypes: {
+												default: [],
+												get() {
+																var self = this;
+
+																return new Promise(function(resolve, reject) {
 
 
-                                if (!isCorrectType) {
-                                    return;
-                                }
+																				self.$fluro.types.subTypes('post')
+																								.then(function(res) {
+
+																												var filtered = _.filter(res, function(postType) {
+
+																																var isCorrectType = _.chain(postType)
+																																				.get('data.postParentTypes')
+																																				.includes('contact')
+																																				.value();
 
 
-                                var canSubmit = self.$fluro.access.can('submit', postType.definitionName, 'post');
-                                var canCreate = self.$fluro.access.can('create', postType.definitionName, 'post');
-                                return (canSubmit || canCreate);
-                            })
+																																if (!isCorrectType) {
+																																				return;
+																																}
 
-                            resolve(filtered);
-                        })
-                        .catch(reject);
-                })
-            },
-        },
-        items: {
-            default: [],
-            get() {
 
-                var self = this;
-                self.loading = true;
+																																var canSubmit = self.$fluro.access.can('submit', postType.definitionName, 'post');
+																																var canCreate = self.$fluro.access.can('create', postType.definitionName, 'post');
+																																return (canSubmit || canCreate);
+																												})
 
-                var contactID = self.$fluro.utils.getStringID(self.contact);
-                if (!contactID) {
-                    Promise.resolve([])
-                    self.loading = false;
-                }
+																												resolve(filtered);
+																								})
+																								.catch(reject);
+																})
+												},
+								},
+								items: {
+												default: [],
+												get() {
 
-                return new Promise(function(resolve, reject) {
+																var self = this;
+																self.loading = true;
 
-                    self.$fluro.api.get(`/info/posts?contact=${contactID}`).then(function(res) {
+																var contactID = self.$fluro.utils.getStringID(self.contact);
+																if (!contactID) {
+																				Promise.resolve([])
+																				self.loading = false;
+																}
 
-                            resolve(res.data);
-                            self.loading = false;
-                        })
-                        .catch(function(err) {
-                            reject(err);
-                            self.loading = false;
+																return new Promise(function(resolve, reject) {
 
-                        });
-                    // https://api.staging.fluro.io/info/checkins?contact=592e50389d9129595a75cc4e
-                })
-            }
-        }
-    }
+																				self.$fluro.api.get(`/info/posts?contact=${contactID}`).then(function(res) {
+
+																												resolve(res.data);
+																												self.loading = false;
+																								})
+																								.catch(function(err) {
+																												reject(err);
+																												self.loading = false;
+
+																								});
+																				// https://api.staging.fluro.io/info/checkins?contact=592e50389d9129595a75cc4e
+																})
+												}
+								}
+				}
 }
+
 </script>
 <style lang="scss">
 .card {
-    background: #fff;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    overflow: hidden;
+				background: #fff;
+				border-radius: 5px;
+				margin-bottom: 10px;
+				overflow: hidden;
 }
+
 </style>

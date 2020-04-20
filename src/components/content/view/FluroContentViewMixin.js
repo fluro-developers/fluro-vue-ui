@@ -1,6 +1,6 @@
 import FluroContentRender from 'src/components/FluroContentRender.vue';
-import FluroContentRenderField from 'src/components/FluroContentRenderField.vue';
-import Layout from '../../../mixins/Layout';
+// import FluroContentRenderField from 'src/components/FluroContentRenderField.vue';
+import Layout from 'src/mixins/Layout';
 
 
 
@@ -22,7 +22,7 @@ export default {
     // extends: FluroContentRender,
     components: {
         FluroContentRender,
-        FluroContentRenderField,
+        // FluroContentRenderField,
     },
     computed: {
         itemID() {

@@ -1,5 +1,5 @@
 import Vue from 'vue/dist/vue'; // Use Vue UMD version on dev server.
-import FluroVueUI from '../src/index';
+import FluroVueUI from '../dist/es/index';
 
 Vue.use(FluroVueUI);
 

@@ -31,7 +31,7 @@
     </flex-column>
 </template>
 <script>
-import ModalMixin from '../../../mixins/ModalMixin';
+import ModalMixin from 'src/mixins/ModalMixin';
 import FluroContentForm from 'src/components/form/FluroContentForm.vue';
 
 export default {

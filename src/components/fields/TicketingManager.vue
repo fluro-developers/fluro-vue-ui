@@ -8,7 +8,7 @@
 <script>
 
 
-import AdvancedTicketingOptionsModal from './AdvancedTicketingOptionsModal.vue';
+import AdvancedTicketingOptionsModal from 'src/components/fields/AdvancedTicketingOptionsModal.vue';
 
 export default {
     props: {

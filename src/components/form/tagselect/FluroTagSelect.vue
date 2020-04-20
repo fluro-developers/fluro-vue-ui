@@ -37,8 +37,8 @@ import Vue from 'vue';
 
 ///////////////////////////////////////////////
 
-import TagSelectModal from './TagSelectModal.vue';
-import FluroContentSelectButton from '../contentselect/FluroContentSelectButton.vue';
+import TagSelectModal from 'src/components/form/tagselect/TagSelectModal.vue';
+import FluroContentSelectButton from 'src/components/form/contentselect/FluroContentSelectButton.vue';
 
 ///////////////////////////////////////////////
 

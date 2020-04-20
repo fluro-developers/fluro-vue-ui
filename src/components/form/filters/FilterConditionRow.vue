@@ -284,7 +284,6 @@
 																				<v-layout v-for="(criteriaRow, index) in model.criteria">
 																								<v-flex>
 																												<filter-condition-row :type="type" :definition="definition" :fields="selector.subfields" :mini="mini" v-model="model.criteria[index]" />
-																												<!-- <pre>{{selector.subfields}}</pre> -->
 																								</v-flex>
 																								<v-flex shrink>
 																												<v-btn small flat color="error" class="ma-0" icon @click="removeCriteria(index)">
@@ -293,11 +292,6 @@
 																								</v-flex>
 																				</v-layout>
 																</v-input>
-																<!-- <pre>{{selector}}</pre> -->
-																<!-- <filter-condition-row type="model.subfieldType" :useSample="useSample" :fields="model.subfields" :mini="mini" v-model="model.criteria" /> -->
-																<!-- <filter-condition-group  :mini="true" v-model="model.criteria" :type="model.subfieldType"/> -->
-																<!-- :debounce="filterDebounce" /> -->
-																<!-- <filter-condition-group :type="type" :useSample="useSample" :rows="rows" :loadingKeys="loadingKeys" :definition="definition" :fields="availableKeys" :mini="mini" v-model="group.filters[index]" /> -->
 												</div>
 												<v-btn small class="ml-0" @click="addCriteriaRow()">
 																Add criteria
@@ -309,14 +303,19 @@
 </template>
 <script>
 import { FilterService } from 'fluro';
+import FluroRealmSelect from 'src/components/form/realmselect/FluroRealmSelect.vue';
+import FluroContentSelectButton from 'src/components/form/contentselect/FluroContentSelectButton.vue';
+// import FilterConditionRow from 'src/components/form/filters/FilterConditionRow.vue';
+// import FilterConditionGroup from 'src/components/form/filters/FilterConditionGroup.vue';
 
 
 export default {
+				name: 'filter-condition-row',
 				components: {
-								FluroRealmSelect: () => import('src/components/form/realmselect/FluroRealmSelect.vue'),
-								FluroContentSelectButton: () => import('src/components/form/contentselect/FluroContentSelectButton.vue'),
-								FilterConditionRow: () => import('src/components/form/filters/FilterConditionRow.vue'),
-								FilterConditionGroup: () => import('src/components/form/filters/FilterConditionGroup.vue'),
+								FluroRealmSelect,
+								FluroContentSelectButton,
+								// FilterConditionRow,
+								// FilterConditionGroup,
 				},
 				props: {
 								type: {

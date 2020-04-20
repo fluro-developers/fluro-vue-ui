@@ -8,12 +8,11 @@
 </template>
 <script>
 import Vue from 'vue';
-// import FluroSelectionMixin from '../../../mixins/FluroSelectionMixin';
 
 ///////////////////////////////////////////////
 
-import FluroContentSelectModal from './FluroContentSelectModal.vue';
-import FluroSelector from './FluroSelector.vue';
+import FluroContentSelectModal from 'src/components/form/contentselect/FluroContentSelectModal.vue';
+import FluroSelector from 'src/components/form/contentselect/FluroSelector.vue';
 
 ///////////////////////////////////////////////
 

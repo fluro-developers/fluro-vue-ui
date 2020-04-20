@@ -4,7 +4,9 @@
     </div>
 </template>
 <script>
-// import CodeEditor from 'vue2-ace-editor';
+
+	
+import CodeEditor from 'vue2-ace-editor';
 import js_beautify from 'js-beautify';
 
 // console.log('BEAUTIFY', js_beautify.html);
@@ -77,8 +79,8 @@ export default {
         },
     },
     components: {
-        CodeEditor: () => import('vue2-ace-editor'),
-        // CodeEditor,
+       
+        CodeEditor,
     },
     watch: {
         value(value) {

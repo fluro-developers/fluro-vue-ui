@@ -28,11 +28,11 @@
 /////////////////////////////////
 
 
-import FluroContentViewMixin from '../FluroContentViewMixin';
-import FluroTable from '../../../table/FluroTable.vue';
-import RealmDotCell from '../../../table/cells/RealmDotCell.vue';
-import TitleCell from '../../../table/cells/TitleCell.vue';
-import DefinitionCell from '../../../table/cells/DefinitionCell.vue';
+import FluroContentViewMixin from 'src/components/content/view/FluroContentViewMixin.js';
+import FluroTable from 'src/components/table/FluroTable.vue';
+import RealmDotCell from 'src/components/table/cells/RealmDotCell.vue';
+import TitleCell from 'src/components/table/cells/TitleCell.vue';
+import DefinitionCell from 'src/components/table/cells/DefinitionCell.vue';
 
 /////////////////////////////////
 

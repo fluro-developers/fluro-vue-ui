@@ -53,11 +53,11 @@
     <!-- </flex-column> -->
 </template>
 <script>
-import ModalMixin from '../../../mixins/ModalMixin';
-import Layout from '../../../mixins/Layout';
+import ModalMixin from 'src/mixins/ModalMixin';
+import Layout from 'src/mixins/Layout';
 import FluroRealmSelectItem from 'src/components/form/realmselect/FluroRealmSelectItem.vue';
-import FluroTabset from '../../ui/tabset/FluroTabset.vue';
-import FluroTab from '../../ui/tabset/FluroTab.vue';
+import FluroTabset from 'src/components/ui/tabset/FluroTabset.vue';
+import FluroTab from 'src/components/ui/tabset/FluroTab.vue';
 
 export default {
     props: {

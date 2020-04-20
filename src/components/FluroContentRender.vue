@@ -18,6 +18,7 @@ import _ from 'lodash';
 //////////////////////////////////////////////////
 
 export default {
+	name:'fluro-content-render',
     props: {
         'fields': {
             type: Array,

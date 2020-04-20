@@ -194,9 +194,9 @@
 </template>
 <script>
 import _ from 'lodash';
-import ReportingColorsMixin from './mixins/ReportingColorsMixin';
-import ChangeIndicator from './ChangeIndicator.vue'
-import Statbox from './StatBox.vue'
+import ReportingColorsMixin from 'src/components/reporting/mixins/ReportingColorsMixin.js';
+import ChangeIndicator from 'src/components/reporting/ChangeIndicator.vue'
+import Statbox from 'src/components/reporting/StatBox.vue'
 
 import {moment} from 'fluro';
 

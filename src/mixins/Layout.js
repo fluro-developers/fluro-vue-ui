@@ -1,18 +1,13 @@
+import Wrapper from 'src/components/ui/FluroWrapper.vue';
+import Constrain from 'src/components/ui/FluroConstrain.vue';
+import FluroRealmBar from 'src/components/ui/FluroRealmBar.vue';
 
-
-// import FluroWrapper from '../components/ui/FluroWrapper.vue';
-// import FluroConstrain from '../components/ui/FluroConstrain.vue';
-// import FluroRealmBar from '../components/ui/FluroRealmBar.vue';
 
 export default {
-    components: {
-    	'wrapper': () => import('../components/ui/FluroWrapper.vue'),
-    	'constrain': () => import('../components/ui/FluroConstrain.vue'),
-    	'fluro-realm-bar': () => import('../components/ui/FluroRealmBar.vue'),
-    	
+				components: {
+								Wrapper,
+								Constrain,
+								FluroRealmBar,
 
-        // 'wrapper':FluroWrapper,
-        // 'constrain':FluroConstrain,
-        // 'realmBar':FluroRealmBar,
-    }
+				}
 }

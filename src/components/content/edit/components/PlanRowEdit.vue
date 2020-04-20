@@ -114,18 +114,10 @@
 /////////////////////////////////
 
 import Vue from 'vue';
-import FluroInlineEdit from '../../../form/FluroInlineEdit.vue';
-import FluroEditor from '../../../form/FluroEditor.vue';
-import DurationPicker from './DurationPicker.vue';
+import FluroInlineEdit from 'src/components/form/FluroInlineEdit.vue';
+import FluroEditor from 'src/components/form/FluroEditor.vue';
+import DurationPicker from 'src/components/content/edit/components/DurationPicker.vue';
 
-// import draggable from 'vuedraggable';
-
-// import FluroEditor from '../../../form/FluroEditor.vue';
-// import FluroInlineEdit from '../../../form/FluroInlineEdit.vue';
-// import FluroContentEditMixin from '../FluroContentEditMixin';
-
-
-//////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////

@@ -48,6 +48,7 @@
 </template>
 <script>
 import FluroContentForm from 'src/components/form/FluroContentForm.vue';
+import draggable from 'vuedraggable';
 
 
 export default {
@@ -58,8 +59,7 @@ export default {
     },
     components: {
         FluroContentForm,
-        // draggable,
-        draggable: () => import('vuedraggable'),
+        draggable,
 
     },
     data() {

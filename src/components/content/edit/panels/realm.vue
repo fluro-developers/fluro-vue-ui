@@ -42,8 +42,7 @@
 /////////////////////////////////
 
 
-// import FluroEditor from '../../../form/FluroEditor.vue';
-import FluroContentEditMixin from '../FluroContentEditMixin';
+import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
 
 /////////////////////////////////
 

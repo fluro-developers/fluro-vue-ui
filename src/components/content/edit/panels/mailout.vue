@@ -351,11 +351,11 @@ import Vue from 'vue';
 
 /////////////////////////////////
 
-import MailoutRenderPreview from '../../../mailout/MailoutRenderPreview.vue';
-import MailoutResultsPanel from '../../../mailout/MailoutResultsPanel.vue';
-import MailoutPreflightPanel from '../../../mailout/MailoutPreflightPanel.vue';
-import MailoutTestPanel from '../../../mailout/MailoutTestPanel.vue';
-import FluroContentEditMixin from '../FluroContentEditMixin';
+import MailoutRenderPreview from 'src/components/mailout/MailoutRenderPreview.vue';
+import MailoutResultsPanel from 'src/components/mailout/MailoutResultsPanel.vue';
+import MailoutPreflightPanel from 'src/components/mailout/MailoutPreflightPanel.vue';
+import MailoutTestPanel from 'src/components/mailout/MailoutTestPanel.vue';
+import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
 
 
 /////////////////////////////////

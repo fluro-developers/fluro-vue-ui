@@ -202,11 +202,10 @@
 /////////////////////////////////
 
 import Vue from 'vue';
-import FluroContentView from '../FluroContentView.vue';
-import LocationViewMapComponent from '../../event/LocationViewMapComponent.vue';
-import FluroContentViewMixin from '../FluroContentViewMixin';
-import GuestList from '../../event/GuestList.vue';
-// location-view-map-component
+import FluroContentView from 'src/components/content/view/FluroContentView.vue';
+import LocationViewMapComponent from 'src/components/content/event/LocationViewMapComponent.vue';
+import FluroContentViewMixin from 'src/components/content/view/FluroContentViewMixin.js';
+import GuestList from 'src/components/content/event/GuestList.vue';
 
 /////////////////////////////////
 

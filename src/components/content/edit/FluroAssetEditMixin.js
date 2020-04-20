@@ -1,7 +1,7 @@
 
 
 
-import AssetReplaceUpload from './components/AssetReplaceUpload.vue';
+import AssetReplaceUpload from 'src/components/content/edit/components/AssetReplaceUpload.vue';
 
 
 

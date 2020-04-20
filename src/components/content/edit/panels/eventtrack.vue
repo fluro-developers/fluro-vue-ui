@@ -153,11 +153,11 @@
 import Vue from 'vue';
 
 /////////////////////////////////
-import LocationSelector from '../components/LocationSelector.vue';
-import MessagingEventManager from '../components/MessagingEventManager.vue';
-import ReminderEventManager from '../components/ReminderEventManager.vue';
-import DefaultRosterManager from '../components/DefaultRosterManager.vue';
-import FluroContentEditMixin from '../FluroContentEditMixin.js';
+import LocationSelector from 'src/components/content/edit/components/LocationSelector.vue';
+import MessagingEventManager from 'src/components/content/edit/components/MessagingEventManager.vue';
+import ReminderEventManager from 'src/components/content/edit/components/ReminderEventManager.vue';
+import DefaultRosterManager from 'src/components/content/edit/components/DefaultRosterManager.vue';
+import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
 
 
 

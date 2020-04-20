@@ -461,18 +461,27 @@
     </flex-column>
 </template>
 <script>
+import FieldSelectModal from 'src/components/fields/FieldSelectModal.vue';
+import FluroContentFormField from 'src/components/form/FluroContentFormField.vue';
+import FluroContentForm from 'src/components/form/FluroContentForm.vue';
+import OptionsManager from 'src/components/fields/FluroOptionsManager.vue';
+import ExpressionFieldSelect from 'src/components/fields/ExpressionFieldSelect.vue';
+import FluroExpressionEditor from 'src/components/form/FluroExpressionEditor.vue';
+import FluroInlineEdit from 'src/components/form/FluroInlineEdit.vue';
+import TicketingManager from 'src/components/fields/TicketingManager.vue';
 
-import FieldSelectModal from './FieldSelectModal.vue';
+
+
 
 export default {
     components: {
-        
-        FluroContentFormField:() => import('src/components/form/FluroContentFormField.vue'),
-        FluroContentForm:() => import('src/components/form/FluroContentForm.vue'),
-        OptionsManager:() => import('./FluroOptionsManager.vue'),
-        ExpressionFieldSelect:() => import('./ExpressionFieldSelect.vue'),
-        FluroExpressionEditor:() => import('../form/FluroExpressionEditor.vue'),
-        FluroInlineEdit:() => import('../form/FluroInlineEdit.vue'),
+        FieldSelectModal,
+        FluroContentFormField,
+        FluroContentForm,
+        OptionsManager,
+        ExpressionFieldSelect,
+        FluroExpressionEditor,
+        FluroInlineEdit,
     },
     props: {
         value: {
@@ -872,9 +881,8 @@ export default {
         },
         ticketingManager() {
             if (this.model.type == 'reference' && this.restrictType == 'contact' && this.ticketingEnabled) {
-                var load = () => import(`./TicketingManager.vue`)
-                // console.log('GET LOADED', load);
-                return load;
+                return TicketingManager;
+
             }
         },
 
@@ -1774,6 +1782,7 @@ export default {
         }
     }
 }
+
 </script>
 <style lang="scss">
 .key-name {
@@ -1836,4 +1845,5 @@ export default {
     font-size: 0.8em;
     opacity: 0.5;
 }
+
 </style>

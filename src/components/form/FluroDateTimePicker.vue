@@ -62,8 +62,8 @@
 </template>
 <script>
 
-import FluroTab from '../ui/tabset/FluroTab.vue'
-import FluroTabset from '../ui/tabset/FluroTabset.vue'
+import FluroTab from 'src/components/ui/tabset/FluroTab.vue'
+import FluroTabset from 'src/components/ui/tabset/FluroTabset.vue'
 
 const DEFAULT_DATE_FORMAT = 'YYYY-MM-DD'
 const DEFAULT_TIME_FORMAT = 'HH:mm'

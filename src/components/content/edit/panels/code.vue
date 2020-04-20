@@ -64,8 +64,8 @@
 <script>
 /////////////////////////////////
 
-import FluroCodeEditor from '../../../form/FluroCodeEditor.vue';
-import FluroContentEditMixin from '../FluroContentEditMixin';
+import FluroCodeEditor from 'src/components/form/FluroCodeEditor.vue';
+import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
 
 /////////////////////////////////
 

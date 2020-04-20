@@ -45,8 +45,8 @@
     </div>
 </template>
 <script>
-import FluroConfirmButton from '../../../ui/FluroConfirmButton.vue';
-import NotificationTeamComponent from './NotificationTeamComponent.vue';
+import FluroConfirmButton from 'src/components/ui/FluroConfirmButton.vue';
+import NotificationTeamComponent from 'src/components/content/edit/components/NotificationTeamComponent.vue';
 
 
 export default {

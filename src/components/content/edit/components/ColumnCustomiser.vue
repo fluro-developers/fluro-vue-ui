@@ -58,9 +58,9 @@
     </div>
 </template>
 <script>
-import FluroConfirmButton from "../../../ui/FluroConfirmButton.vue";
-import FluroContentEditMixin from "../FluroContentEditMixin";
-import PathSelector from "./PathSelector.vue";
+import FluroConfirmButton from "src/components/ui/FluroConfirmButton.vue";
+import FluroContentEditMixin from "src/components/content/edit/FluroContentEditMixin.js";
+import PathSelector from "src/components/content/edit/components/PathSelector.vue";
 export default {
     mixins: [FluroContentEditMixin],
     props: {

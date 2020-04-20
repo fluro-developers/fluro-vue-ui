@@ -34,9 +34,8 @@
 </template>
 <script>
 /////////////////////////////////
-// import RosterMain from '../components/RosterMain.vue';
-import ReminderEventManager from '../components/ReminderEventManager.vue';
-import FluroContentEditMixin from '../FluroContentEditMixin';
+import ReminderEventManager from 'src/components/content/edit/components/ReminderEventManager.vue';
+import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
 
 /////////////////////////////////
 

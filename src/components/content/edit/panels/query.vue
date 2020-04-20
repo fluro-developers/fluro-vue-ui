@@ -115,9 +115,9 @@
 <script>
 /////////////////////////////////
 
-import FluroContentEditMixin from '../FluroContentEditMixin';
-import FilterConditionGroup from '../../../form/filters/FilterConditionGroup.vue';
-import ColumnCustomiser from '../components/ColumnCustomiser.vue';
+import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
+import FilterConditionGroup from 'src/components/form/filters/FilterConditionGroup.vue';
+import ColumnCustomiser from 'src/components/content/edit/components/ColumnCustomiser.vue';
 
 /////////////////////////////////
 

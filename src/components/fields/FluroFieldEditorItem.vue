@@ -66,13 +66,13 @@
     </li>
 </template>
 <script>
-// import draggable from 'vuedraggable';
+import draggable from 'vuedraggable';
+// import FluroFieldEditorItem from 'src/components/fields/FluroFieldEditorItem.vue';
 
 export default {
+	name:'fluro-field-editor-item',
     components: {
-        // draggable,
-        draggable: () => import('vuedraggable'),
-        FluroFieldEditorItem: () => import('src/components/fields/FluroFieldEditorItem.vue'),
+        draggable,
     },
     props: {
         parent: {
@@ -96,11 +96,6 @@ export default {
             type: Object,
         },
     },
-    // beforeCreate: function() {
-    //     this.$options.components.FluroFieldEditorItem = require('src/components/fields/FluroFieldEditorItem.vue').default;
-    // },
-
-
     data() {
         return {
             showActions: false,

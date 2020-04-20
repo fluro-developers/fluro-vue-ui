@@ -36,7 +36,7 @@
 
 import FluroContentForm from 'src/components/form/FluroContentForm.vue';
 import FluroContentFormField from 'src/components/form/FluroContentFormField.vue';
-import FluroRealmSelect from './realmselect/FluroRealmSelect.vue';
+import FluroRealmSelect from 'src/components/form/realmselect/FluroRealmSelect.vue';
 
 ////////////////////////////////////////////////
 

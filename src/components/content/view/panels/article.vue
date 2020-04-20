@@ -3,7 +3,7 @@
     <v-container fluid>
         <constrain sm>
             <h1>{{item.title}}</h1>
-            <!-- <pre>{{item}}</pre> -->
+            
             <fluro-content-render :fields="definedFields" v-model="item.data" />
             <template v-if="item.body && item.body.length">
                 <div v-html="item.body"></div>
@@ -16,8 +16,8 @@
 /////////////////////////////////
 
 import Vue from 'vue';
-import FluroContentViewMixin from '../FluroContentViewMixin';
-import FluroContentRender from 'src/components/FluroContentRender.vue';
+import FluroContentViewMixin from 'src/components/content/view/FluroContentViewMixin.js';
+// import FluroContentRender from 'src/components/FluroContentRender.vue';
 
 /////////////////////////////////
 
@@ -32,9 +32,9 @@ export default {
             required: true,
         },
     },
-    components: {
-        FluroContentRender,
-    },
+    // components: {
+    //     FluroContentRender,
+    // },
     mixins: [FluroContentViewMixin],
     methods: {},
     computed: {

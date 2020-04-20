@@ -14,9 +14,9 @@
     </v-layout>
 </template>
 <script>
-import RosterSlotPlaceholderCell from './RosterSlotPlaceholderCell.vue';
-import RosterSlotAssignmentCell from './RosterSlotAssignmentCell.vue';
-import MultiPlannerService from '../services/MultiPlannerService.js';
+import RosterSlotPlaceholderCell from 'src/components/content/edit/components/RosterSlotPlaceholderCell.vue';
+import RosterSlotAssignmentCell from 'src/components/content/edit/components/RosterSlotAssignmentCell.vue';
+import MultiPlannerService from 'src/components/content/edit/services/MultiPlannerService.js';
 import draggable from 'vuedraggable';
 
 export default {

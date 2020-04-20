@@ -29,9 +29,9 @@
     </div>
 </template>
 <script>
-import SearchInput from '../../ui/SearchInput.vue';
-import AvatarCell from '../../table/cells/AvatarCell.vue';
-import FluroTable from '../../table/FluroTable.vue';
+import SearchInput from 'src/components/ui/SearchInput.vue';
+import AvatarCell from 'src/components/table/cells/AvatarCell.vue';
+import FluroTable from 'src/components/table/FluroTable.vue';
 
 export default {
     components: {

@@ -71,9 +71,9 @@
 <script>
 /////////////////////////////////
 
-import GroupRoleManager from '../components/GroupRoleManager.vue';
-import NotificationTeamManager from '../components/NotificationTeamManager.vue';
-import FluroContentEditMixin from '../FluroContentEditMixin.js';
+import GroupRoleManager from 'src/components/content/edit/components/GroupRoleManager.vue';
+import NotificationTeamManager from 'src/components/content/edit/components/NotificationTeamManager.vue';
+import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
 
 // import { JSONView } from "vue-json-component";
 

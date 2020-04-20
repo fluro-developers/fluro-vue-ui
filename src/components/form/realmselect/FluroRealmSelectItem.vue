@@ -31,6 +31,7 @@
 </template>
 <script>
 export default {
+				name: 'fluro-realm-select-item',
 				props: {
 								'item': {
 												type: Object,
@@ -45,9 +46,7 @@ export default {
 												required: true,
 								}
 				},
-				components: {
-								FluroRealmSelect: () => import('src/components/form/realmselect/FluroRealmSelectItem.vue'),
-				},
+
 				computed: {
 								isSelected: {
 												get() {

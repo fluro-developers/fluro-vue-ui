@@ -26,6 +26,10 @@
 </template>
 <script>
 
+
+import FluroRealmBar from 'src/components/ui/FluroRealmBar.vue';
+
+
 export default {
     props: {
         item: {
@@ -34,8 +38,7 @@ export default {
         }
     },
     components: {
-        
-        FluroRealmBar:() => import("../../../../ui/FluroRealmBar.vue"),
+        FluroRealmBar,
     },
     computed: {
         checkinTime() {

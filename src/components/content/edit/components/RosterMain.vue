@@ -51,13 +51,13 @@
 <script>
 /////////////////////////////////////////
 
-import RosterSlotManager from './RosterSlotManager.vue';
-import RosterSidebar from './RosterSidebar.vue';
+import RosterSlotManager from 'src/components/content/edit/components/RosterSlotManager.vue';
+import RosterSidebar from 'src/components/content/edit/components/RosterSidebar.vue';
 
 import draggable from 'vuedraggable';
 
 import Vue from 'vue';
-import MultiPlannerService from '../services/MultiPlannerService.js';
+import MultiPlannerService from 'src/components/content/edit/services/MultiPlannerService.js';
 
 
 export default {

@@ -1,6 +1,6 @@
 <script>
 import Vue from 'vue';
-import FluroSelectionMixin from '../../../mixins/FluroSelectionMixin';
+import FluroSelectionMixin from 'src/mixins/FluroSelectionMixin.js';
 
 ///////////////////////////////////////////////
 

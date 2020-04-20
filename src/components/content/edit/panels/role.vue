@@ -87,9 +87,9 @@
 <script>
 /////////////////////////////////
 
-import FluroContentEditMixin from '../FluroContentEditMixin';
-import SearchInput from '../../../ui/SearchInput.vue';
-import FluroToggleItem from '../../../ui/FluroToggleItem.vue';
+import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
+import SearchInput from 'src/components/ui/SearchInput.vue';
+import FluroToggleItem from 'src/components/ui/FluroToggleItem.vue';
 
 
 

@@ -445,22 +445,21 @@
 <script>
 /////////////////////////////////
 
-import FluroAcademicSelect from '../../../form/FluroAcademicSelect.vue';
-import FluroRealmSelect from '../../../form/realmselect/FluroRealmSelect.vue';
-import FluroContentEditMixin from '../FluroContentEditMixin';
-import FluroContactCommunicateMixin from '../../../../mixins/FluroContactCommunicateMixin';
+import FluroAcademicSelect from 'src/components/form/FluroAcademicSelect.vue';
+import FluroRealmSelect from 'src/components/form/realmselect/FluroRealmSelect.vue';
+import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
+import FluroContactCommunicateMixin from 'src/mixins/FluroContactCommunicateMixin';
 
 
 
-import FluroAvatarUpdate from '../../../FluroAvatarUpdate.vue';
-import ContactTimeline from '../../contact/timeline/ContactTimeline.vue';
-import ContactGroupManager from '../components/ContactGroupManager.vue';
-import ContactProcessManager from '../components/ContactProcessManager.vue';
-import ContactCapabilityManager from '../components/ContactCapabilityManager.vue';
-import ContactRelationshipManager from '../components/ContactRelationshipManager.vue';
-import ContactUnavailabilityManager from '../components/ContactUnavailabilityManager.vue';
-// import ContactEngagementChart from '../components/ContactEngagementChart.vue';
-import AddPost from '../../../ui/modal/AddPost.vue';
+import FluroAvatarUpdate from 'src/components/FluroAvatarUpdate.vue';
+import ContactTimeline from 'src/components/content/contact/timeline/ContactTimeline.vue';
+import ContactGroupManager from 'src/components/content/edit/components/ContactGroupManager.vue';
+import ContactProcessManager from 'src/components/content/edit/components/ContactProcessManager.vue';
+import ContactCapabilityManager from 'src/components/content/edit/components/ContactCapabilityManager.vue';
+import ContactRelationshipManager from 'src/components/content/edit/components/ContactRelationshipManager.vue';
+import ContactUnavailabilityManager from 'src/components/content/edit/components/ContactUnavailabilityManager.vue';
+import AddPost from 'src/components/ui/modal/AddPost.vue';
 
 
 /////////////////////////////////

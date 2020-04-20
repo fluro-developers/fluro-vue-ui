@@ -73,9 +73,9 @@
     </flex-column>
 </template>
 <script>
-import ModalMixin from '../../../mixins/ModalMixin';
-import AddPostModal from '../../../components/ui/modal/AddPost.vue';
-import FluroOptionsDialog from '../../../components/ui/modal/OptionsDialog.vue';
+import ModalMixin from 'src/mixins/ModalMixin';
+import AddPostModal from 'src/components/ui/modal/AddPost.vue';
+import FluroOptionsDialog from 'src/components/ui/modal/OptionsDialog.vue';
 
 
 
