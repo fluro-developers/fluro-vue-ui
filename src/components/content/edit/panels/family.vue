@@ -6,18 +6,7 @@
         <template v-else>
             <!-- :vertical="true" -->
             <tabset :justified="true" :vertical="true">
-                <!--  <template v-slot:menuprefix>
-                    <template v-if="context == 'edit' && $vuetify.breakpoint.mdAndUp">
-                        <flex-column-header style="text-align:center">
-                            <div style="padding: 10px; max-width:200px; margin: auto;">
-                                <fluro-image  :height="200" :image-height="450" contain :item="model" :cacheKey="imageCacheKey" :spinner="true"></fluro-image>
-                            </div>
-                            <div>
-                                {{model.width}}x{{model.height}}
-                            </div>
-                        </flex-column-header>
-                    </template>
-                </template> -->
+               
                 <tab heading="Details">
                     <flex-column-body style="background: #fafafa;">
                         <v-container fluid grid-list-lg>
@@ -25,18 +14,18 @@
                                 <v-layout row wrap>
                                     <!--  -->
                                     <v-flex xs12 sm12>
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
+                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"/>
                                     </v-flex>
                                     <v-flex xs12 sm12 v-if="!model._id">
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.items" v-model="model"></fluro-content-form-field>
+                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.items" v-model="model"/>
                                     </v-flex>
                                     <!--  -->
                                     <v-flex xs12 sm6>
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.emails" v-model="model"></fluro-content-form-field>
+                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.emails" v-model="model"/>
                                     </v-flex>
                                     <!--  -->
                                     <v-flex xs12 sm6>
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.phoneNumbers" v-model="model"></fluro-content-form-field>
+                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.phoneNumbers" v-model="model"/>
                                     </v-flex>
                                     <!-- -->
                                     <!--  -->
@@ -157,6 +146,9 @@ export default {
                 minimum: 1,
                 maximum: 1,
                 type: 'string',
+                params:{
+                	autofocus:!self.model._id,
+                }
             });
 
             ///////////////////////////////////
@@ -222,7 +214,10 @@ export default {
                     options: self.contactDefinitionOptions,
                     expressions: {
                         hide() {
-                            return !self.contactDefinitions || !self.contactDefinitions.length;
+
+                        	var number = (!self.contactDefinitions || !self.contactDefinitions.length);
+                        	// console.log('NUMBER?', number, self.contactDefinitions)
+                        	return number;
                         }
                     }
 
@@ -436,7 +431,7 @@ export default {
 
             var self = this;
 
-            var options = self.contactDefinitions;
+            var options = self.contactDefinitions.slice();
             options.unshift({
                 name: 'None',
                 value: '',
@@ -484,7 +479,6 @@ export default {
 
 
                 return new Promise(function(resolve, reject) {
-
                         return self.$fluro.types.subTypes('contact')
                             .catch(reject)
                             .then(resolve)

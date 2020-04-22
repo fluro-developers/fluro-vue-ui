@@ -1,4 +1,4 @@
-console.log('fluro-vue-ui 2.0.85')
+console.log('fluro-vue-ui 2.1.0')
 
 /////////////////////////////////////////////////////
 
@@ -19,6 +19,8 @@ import FluroInlineEdit from './components/form/FluroInlineEdit.vue';
 import FluroConfirmButton from './components/ui/FluroConfirmButton.vue';
 import FluroTrendChart from './components/reporting/FluroTrendChart.vue';
 import FluroTable from './components/table/FluroTable.vue';
+import TableRowCheckbox from './components/table/TableRowCheckbox.vue';
+import TableHeaderCheckbox from './components/table/TableHeaderCheckbox.vue';
 import TableCell from './components/table/TableCell.vue';
 import SearchInput from './components/ui/SearchInput.vue';
 import FluroDynamicTable from './components/table/FluroDynamicTable.vue';
@@ -528,6 +530,10 @@ export {FluroInlineEdit as FluroInlineEdit};
 export {FluroConfirmButton as FluroConfirmButton};
 export {FluroTrendChart as FluroTrendChart};
 export {FluroTable as FluroTable};
+
+export {TableHeaderCheckbox as TableHeaderCheckbox};
+export {TableRowCheckbox as TableRowCheckbox};
+
 export {TableCell as TableCell};
 export {SearchInput as SearchInput};
 export {FluroDynamicTable as FluroDynamicTable};

@@ -13,14 +13,14 @@ service.load = function(path, generatePromise) {
 
 								//If we haven't then run the promise generate function
 								if (!alreadyImported) {
-									console.log('Create promise!', path);
+									// console.log('Create promise!', path);
 												alreadyImported = lookup[path] = generatePromise();
 								}
 
 								//////////////////////////////
 								alreadyImported
 												.then(function(module) {
-													console.log('Resolve Default Module', path);
+													// console.log('Resolve Default Module', path);
 																return resolve(module.default);
 												})
 												.catch(reject);

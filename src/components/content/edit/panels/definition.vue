@@ -598,9 +598,6 @@ export default {
             self.$set(self.model, 'fields', []);
         }
 
-        console.log('HERE WE GO', self.model)
-
-
     },
     watch: {
         'model.parentType': 'setParentType',

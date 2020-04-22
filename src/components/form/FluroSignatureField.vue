@@ -9,6 +9,7 @@
                 </v-btn>
             </div>
         </v-input>
+        
     </div>
 </template>
 <script>
@@ -52,8 +53,10 @@ export default {
     },
 
     mounted() {
+
+    	var self = this;
         var canvas = this.$refs.canvas;
-        this.pad = new SignaturePad(canvas, {
+        self.pad = new SignaturePad(canvas, {
             dotSize: (0.5 + 2.5) / 2,
             minWidth: 0.5,
             maxWidth: 2.5,
@@ -65,16 +68,18 @@ export default {
 
         });
 
-        this.pad.onBegin = function() {
-            // console.log('Begin!')
+        self.pad.onBegin = function() {
+            console.log('Begin!')
         }
-        this.pad.onEnd = function() {
-            // console.log('End!')
+        self.pad.onEnd = function() {
+            console.log('End!')
+            self.model = self.pad.toDataURL();
+            self.save();
         }
-        // console.log('Mounted', canvas, this.pad);
-        window.addEventListener("resize", this.resizeCanvas);
+        // console.log('Mounted', canvas, self.pad);
+        window.addEventListener("resize", self.resizeCanvas);
 
-        this.resizeCanvas();
+        self.resizeCanvas();
     },
 
     data() {
@@ -113,7 +118,9 @@ export default {
         //     this.pad.fromData(data);
         // },
         clear() {
-            return this.pad.clear();
+            this.pad.clear();
+            this.model = '';
+            this.save();
         },
         save() {
 

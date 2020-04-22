@@ -89,7 +89,7 @@ export default {
     },
     methods: {
         select(option) {
-            console.log('SELECTED OPTION FROM DIALOG', option);
+            // console.log('SELECTED OPTION FROM DIALOG', option);
             var self = this;
             self.close(option);
 

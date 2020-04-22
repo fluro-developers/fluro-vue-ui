@@ -1,5 +1,5 @@
 <template>
-    <div class="checkin-timeline-entry border-top" @click="$fluro.global.edit(item, true)">
+    <div class="checkin-timeline-entry border-top" @click="$fluro.global.edit(item.event, true)">
         <fluro-realm-bar :realm="item.realms" />
         <!-- <v-layout> -->
             <!-- <v-flex shrink> -->

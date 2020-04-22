@@ -1,6 +1,6 @@
 <template>
 				<!-- grid-list-lg -->
-				<v-container class="filter-condition-row grid-list-sm" :class="{mini:mini}" pa-0>
+				<v-container class="filter-condition-row grid-list-sm" v-if="ready" :class="{mini:mini}" pa-0>
 								<!-- <pre>{{useBasicReferenceSelect}} {{referenceSelectField}}</pre> -->
 								<v-layout row wrap>
 												<v-flex xs12 sm4>
@@ -303,8 +303,11 @@
 </template>
 <script>
 import { FilterService } from 'fluro';
+
+import DynamicImportService from 'src/DynamicImportService';
+
 import FluroRealmSelect from 'src/components/form/realmselect/FluroRealmSelect.vue';
-import FluroContentSelectButton from 'src/components/form/contentselect/FluroContentSelectButton.vue';
+// import FluroContentSelectButton from 'src/components/form/contentselect/FluroContentSelectButton.vue';
 // import FilterConditionRow from 'src/components/form/filters/FilterConditionRow.vue';
 // import FilterConditionGroup from 'src/components/form/filters/FilterConditionGroup.vue';
 
@@ -313,7 +316,7 @@ export default {
 				name: 'filter-condition-row',
 				components: {
 								FluroRealmSelect,
-								FluroContentSelectButton,
+								// FluroContentSelectButton,
 								// FilterConditionRow,
 								// FilterConditionGroup,
 				},
@@ -355,6 +358,34 @@ export default {
 								mini: {
 												type: Boolean,
 								}
+				},
+				beforeCreate() {
+								var self = this;
+
+
+								Promise.all([
+																DynamicImportService.load('src/components/form/filters/FilterConditionGroup.vue', function() {
+																				return import('src/components/form/filters/FilterConditionGroup.vue')
+																}),
+																DynamicImportService.load('src/components/form/filters/FilterConditionRow.vue', function() {
+																				return import('src/components/form/filters/FilterConditionRow.vue')
+																}),
+																DynamicImportService.load('src/components/form/contentselect/FluroContentSelectButton.vue', function() {
+																				return import('src/components/form/contentselect/FluroContentSelectButton.vue')
+																}),
+
+
+																
+												])
+												.then(function(results) {
+																self.$options.components.FilterConditionGroup = results[0];
+																self.$options.components.FilterConditionRow = results[1];
+																self.$options.components.FluroContentSelectButton = results[2];
+
+
+																self.ready = true;
+												})
+
 				},
 				// beforeCreate: function() {
 				//     this.$options.components.FilterConditionRow = require('src/components/form/filters/FilterConditionRow.vue').default;
@@ -421,6 +452,7 @@ export default {
 								// console.log('MODEL START IS', parsedModel)
 
 								return {
+									ready:false,
 												sampleRefreshKey: this.$fluro.utils.guid(),
 												//Date Select Stuff
 												datePeriodOptions,
@@ -904,7 +936,7 @@ export default {
 
 												var self = this;
 												var key = self.model.key;
-												console.log('RETRIEVE VALUES', key);
+												// console.log('RETRIEVE VALUES', key);
 
 												////////////////////////////////////
 

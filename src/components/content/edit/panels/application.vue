@@ -77,6 +77,16 @@
                     </v-container>
                 </flex-column-body>
             </tab>
+            <tab heading="Redirects">
+                <flex-column-body style="background: #fafafa;">
+                    <v-container>
+                        <constrain sm>
+                            <h5 margin>Redirects</h5>
+                            <redirect-manager v-model="model.pathForwards"/>
+                        </constrain>
+                    </v-container>
+                </flex-column-body>
+            </tab>
         </template>
         </tabset>
     </flex-column>
@@ -86,6 +96,7 @@
 
 import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
 import FluroPermissionSelect from "src/components/form/FluroPermissionSelect.vue";
+import RedirectManager from 'src/components/content/edit/components/RedirectManager.vue';
 
 /////////////////////////////////
 
@@ -99,6 +110,7 @@ export default {
     mixins: [FluroContentEditMixin],
     components: {
         FluroPermissionSelect,
+        RedirectManager,
     },
     asyncComputed: {
 

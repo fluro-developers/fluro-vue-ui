@@ -1,25 +1,30 @@
 <template>
-				<div class="fluro-content-form" v-if="ready">
-								<!-- <pre>{{fields}}</pre> -->
+				<div class="fluro-content-form">
+
+								<pre>Form: {{model}}</pre>
+
 								<slot name="form" :parent="formModel" :context="context" :form-fields="formFields" :field-hash="fieldHash" :model="model" :update="update" :options="options">
-												<!-- 	<fluro-content-form-field :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="fields[0]" @input="update" v-model="model" />
-												<fluro-content-form-field :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="fields[1]" @input="update" v-model="model" />
-												<fluro-content-form-field :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="fields[2]" @input="update" v-model="model" />
-												<fluro-content-form-field :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="fields[3]" @input="update" v-model="model" />
-												 -->
-												<v-container fluid class="grid-list-lg" pa-0 v-for="(field, index) in fields">
-																<fluro-content-form-field :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="fields[index]" @input="update" v-model="model" />
-												</v-container>
+											
+
+												<!-- <template > -->
+															
+																<!-- <fluro-code-editor v-model="model[field.key]" @input="valueChange" :height="200"></fluro-code-editor> -->
+																<v-container fluid class="grid-list-lg" :key="field.key" pa-0 v-for="field in fields">
+																				<!-- :parent="model[key]"  -->
+																				<!-- <pre>{{field.title}} {{field.key}}</pre> -->
+																				<!-- <div v-if="field.key == 'campusOversight'"> -->
+																				<fluro-content-form-field :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="field" @input="update" v-model="model"/>
+																				<!-- </div> -->
+																</v-container>
+												<!-- </template> -->
 								</slot>
-								<!-- <pre>{{model}}</pre> -->
 				</div>
 </template>
 <script>
 // import {VContainer}
-// import FluroContentFormField from 'src/components/form/FluroContentFormField.vue ';
+import FluroContentFormField from 'src/components/form/FluroContentFormField.vue';
 import _ from 'lodash';
 import Vue from 'vue';
-import DynamicImportService from 'src/DynamicImportService';
 // import FluroUtils from 'fluro';
 
 
@@ -128,7 +133,11 @@ import DynamicImportService from 'src/DynamicImportService';
 var debouncer;
 
 export default {
-				name: 'fluro-content-form',
+				// name: 'fluro-content-form',
+				components: {
+								FluroContentFormField,
+				},
+				
 				props: {
 								'contextField': {
 												type: Object,
@@ -148,7 +157,6 @@ export default {
 								//that have been cleared by the user (mainly for website builder)
 								'disableDefaults': {
 												type: Boolean,
-												default: false,
 								},
 								'dynamic': {
 												type: Boolean,
@@ -168,7 +176,6 @@ export default {
 								},
 								'value': {
 												type: Object,
-
 								},
 								'formFields': {
 												default () {
@@ -226,89 +233,34 @@ export default {
 				},
 				data() {
 								return {
-												ready: false,
-												model: this.value,
+												// model: this.value,
+												model: JSON.parse(JSON.stringify(this.value)),
 								}
 				},
-				components: {
-								// FluroContentFormField,
-				},
+				// components: {
+				//     FluroContentFormField,
+				// },
 				watch: {
-								// model(m) {
-
-
-								// 				console.log('form model changed');
-								// 				this.$emit('input', this.model);
-
+								// model() {
+								//     var self = this;
+								//     if (self.debounce) {
+								//         return self.$emit('input', self.model);
+								//     }
 								// },
-								value(v) {
-												console.log('value changed');
-												this.model = v
-												this.reset();
-
-												// console.log('Form value set', val)
-												// 		// var newModel = Object.assign({}, val) //input;
-												// 		this.$set(this, 'model', val);
-												// 		this.reset();
+								value(val) {
+												// console.log('value has changed', val)
+												this.$set(this, 'model', val);
+												return this.reset();
 								},
-								// fields(val) {
-								// 				console.log('FIELDS CHANGED needs reset')
-								// 				return this.reset();
-								// },
+								fields(val) {
+												// console.log('FIELDS CHANGED')
+												return this.reset();
+								},
 								errorMessages(messages) {
 												this.$emit('errorMessages', messages);
 								}
 				},
-				beforeCreate: function() {
-
-								var self = this;
-
-								Promise.all([
-																DynamicImportService.load('src/components/form/FluroContentForm.vue', function() {
-																				return import('src/components/form/FluroContentForm.vue')
-																}),
-																DynamicImportService.load('src/components/form/FluroContentFormField.vue', function() {
-																				return import('src/components/form/FluroContentFormField.vue')
-																}),
-												])
-												.then(function(results) {
-
-																// console.log('Set Components', results);
-																self.$options.components.FluroContentForm = results[0];
-																self.$options.components.FluroContentFormField = results[1];
-																self.ready = true;
-												})
-
-
-								// Promise.all([
-								// 								import('src/components/form/FluroContentForm.vue'),
-								// 								import('src/components/form/FluroContentFormField.vue'),
-								// 				])
-								// 				.then(function(results) {
-								// 								self.$options.components.FluroContentForm = results[0].default
-								// 								self.$options.components.FluroContentFormField = results[1].default
-								// 								self.ready = true;
-								// 								//console.log('Imported Components Dynamically', results)
-								// 				})
-								// Promise.all([
-								// 								DynamicImportService.load('src/components/form/FluroContentForm.vue', function() {
-								// 												return import('src/components/form/FluroContentForm.vue')
-								// 								}),
-								// 								DynamicImportService.load('src/components/form/FluroContentFormField.vue', function() {
-								// 												return import('src/components/form/FluroContentFormField.vue')
-								// 								}),
-								// 				])
-								// 				.then(function(results) {
-
-								// 								// console.log('Set Components', results);
-								// self.$options.components.FluroContentForm = results[0];
-								// self.$options.components.FluroContentFormField = results[1];
-								// 								self.ready = true;
-								// 				})
-
-				},
 				created() {
-								console.log('Reset on creation')
 								this.reset();
 				},
 				methods: {
@@ -321,7 +273,6 @@ export default {
 								},
 								reset() {
 												var self = this;
-												console.log('Form reset()')
 
 												/////////////////////////////////////////////////
 
@@ -330,21 +281,13 @@ export default {
 																component.reset();
 												});
 
-
-												return;
-
-
-
 												/////////////////////////////////////////////////
 
 												//For each field reset the model
+
 												if (!self.disableDefaults) {
 																(self.fieldsOutput || []).forEach(createDefaults);
 												}
-
-
-
-
 
 												// self.$nextTick(function() {
 												self.$emit('default');
@@ -355,15 +298,6 @@ export default {
 												//Recursively create all the default keys for nested fields
 												function createDefaults(field) {
 
-
-																//Check if it's just a display group
-																if (field.type == 'group' && !field.asObject) {
-																				(field.fieldsOutput || []).forEach(createDefaults);
-																				return;
-																}
-
-
-																// console.log('CREATE DEFAULTS FOR', field.title)
 																var existingValue = _.get(self.model, field.key);
 
 																//We already have a value in this field
@@ -380,20 +314,21 @@ export default {
 																				blankValue = new Date();
 																}
 
+																//Check if it's just a display group
+																if (field.type == 'group' && !field.asObject) {
+																				(field.fieldsOutput || []).forEach(createDefaults);
+																}
 
-
-																console.log('Set Default value', field.key, blankValue);
 																Vue.set(self.model, field.key, blankValue);
-
-
-
 												}
 								},
 
 
 								update(input, valueThatWasChanged) {
-											console.log('form model changed');
+												this.model = input;
 												this.$emit('input', this.model);
+												console.log('Model updated', this.model)
+												this.$forceUpdate();
 												// JSON.parse(JSON.stringify(this.model)));
 
 								},
@@ -418,11 +353,11 @@ export default {
 								//     //Start a new debouncer
 								//     debouncer = setTimeout(() => self.dispatch(), self.debounce);
 								// },
-								// dispatch() {
+								dispatch() {
 
-								// 				// console.log('Update -> dispatch')
-								// 				this.$emit('input', this.model);
-								// }
+												// console.log('Update -> dispatch')
+												this.$emit('input', this.model);
+								}
 				}
 }
 

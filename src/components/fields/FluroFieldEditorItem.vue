@@ -309,7 +309,7 @@ export default {
         var self = this;
 
         if (self.model.isNew) {
-            console.log('SCROLL ITEM INTO VIEW')
+            // console.log('SCROLL ITEM INTO VIEW')
             self.$nextTick(function() {
 
                 self.$nextTick(function() {

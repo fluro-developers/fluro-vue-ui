@@ -91,6 +91,7 @@ const globals = {
 				'prosemirror-commands': 'prosemirror-commands',
 
 				//Brace Stuff
+				'brace/ext/searchbox': 'brace/ext/searchbox',
 				'brace/ext/language_tools': 'brace/ext/language_tools',
 				'brace/mode/html': 'brace/mode/html',
 				'brace/mode/json': 'brace/mode/json',
@@ -121,7 +122,7 @@ if (process.env.NODE_ENV === 'development') {
 export default [
 				Object.assign({}, defaultConfig, {
 								output: [{
-
+																// exports: 'named',
 																globals,
 																dir: 'dist/cjs',
 																// file: `dist/${FILE_NAME}.common.js`,
@@ -129,7 +130,7 @@ export default [
 																sourcemap
 												},
 												{
-
+																// exports: 'named',
 																globals,
 																dir: 'dist/es',
 																// file: `dist/${FILE_NAME}.es.js`,

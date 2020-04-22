@@ -1,61 +1,96 @@
 <template>
 				<div @click="clicked($event)" :data-field-key="key" class="fluro-content-form-field" v-if="isVisible" v-bind="attributes" :class="fieldClass">
-								<!-- <pre>FieldModel: {{key}}: - {{getFieldModel()}} - {{fieldModel}} - {{model[key]}}</pre> -->
-								<template v-if="ready">
-												<template v-if="officeUseOnly">
+								<pre>{{model}}</pre>
+								<pre>FIELD IS {{fieldModel}} -> {{model[key]}}</pre>
+								<template v-if="officeUseOnly">
+								</template>
+								<template v-else-if="customComponent">
+												<component v-model="model" v-bind:is="customComponent" />
+								</template>
+								<template v-else-if="renderer == 'dynamicdate'">
+												<v-input :label="displayLabel" :persistent-hint="true" :hint="dynamicDateHint" class="no-flex">
+																<div style="margin: 10px 0 ;">
+																				<v-btn-toggle v-model="fieldModel">
+																								<v-btn flat :value="null">
+																												None
+																								</v-btn>
+																								<v-btn flat value="DATE_NOW">
+																												Dynamic Date
+																								</v-btn>
+																								<v-menu :fixed="true" v-model="modal" min-width="290px" :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
+																												<template v-slot:activator="{ on }">
+																																<v-btn flat :value="currentDateOrToday" v-on="on">
+																																				Specific Date
+																																</v-btn>
+																												</template>
+																												<v-card>
+																																<v-date-picker attach @change="modal = false" v-model="fieldModel" no-title scrollable>
+																																				<v-spacer></v-spacer>
+																																				<v-btn flat color="primary" @click="modal = false">Done</v-btn>
+																																</v-date-picker>
+																												</v-card>
+																								</v-menu>
+																				</v-btn-toggle>
+																</div>
+												</v-input>
+								</template>
+								<template v-else-if="renderer == 'custom'">
+												<fluro-compile-html :template="customTemplate" :context="customContext" />
+								</template>
+								<template v-else-if="renderer == 'embedded'">
+												<template v-if="field.maximum == 1">
+																<fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel" @input="valueChange" :fields="fields" />
 												</template>
-												<template v-else-if="customComponent">
-																<component v-model="model" v-bind:is="customComponent" />
-												</template>
-												<template v-else-if="renderer == 'dynamicdate'">
-																<v-input :label="displayLabel" :persistent-hint="true" :hint="dynamicDateHint" class="no-flex">
-																				<div style="margin: 10px 0 ;">
-																								<v-btn-toggle v-model="fieldModel">
-																												<v-btn flat :value="null">
-																																None
-																												</v-btn>
-																												<v-btn flat value="DATE_NOW">
-																																Dynamic Date
-																												</v-btn>
-																												<v-menu :fixed="true" v-model="modal" min-width="290px" :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
-																																<template v-slot:activator="{ on }">
-																																				<v-btn flat :value="currentDateOrToday" v-on="on">
-																																								Specific Date
-																																				</v-btn>
-																																</template>
-																																<v-card>
-																																				<v-date-picker attach @change="modal = false" v-model="fieldModel" no-title scrollable>
-																																								<v-spacer></v-spacer>
-																																								<v-btn flat color="primary" @click="modal = false">Done</v-btn>
-																																				</v-date-picker>
-																																</v-card>
-																												</v-menu>
-																								</v-btn-toggle>
-																				</div>
-																</v-input>
-												</template>
-												<template v-else-if="renderer == 'custom'">
-																<fluro-compile-html :template="customTemplate" :context="customContext" />
-												</template>
-												<template v-else-if="renderer == 'embedded'">
-																<template v-if="field.maximum == 1">
-																				<fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel" @input="elementValueChanged" :fields="fields" />
+												<template v-if="field.maximum != 1">
+																<template v-for="(object, index) in fieldModel">
+																				<v-card>
+																								<v-toolbar class="elevation-0">
+																												<v-toolbar-title class="hidden-xs">{{groupTitle(object, index)}}</v-toolbar-title>
+																												<v-spacer></v-spacer>
+																												<v-toolbar-items>
+																																<v-btn icon small flat color="error" @click="removeValue(index)" v-if="canRemoveValue">
+																																				<fluro-icon icon="times" />
+																																</v-btn>
+																												</v-toolbar-items>
+																								</v-toolbar>
+																								</v-toolbar>
+																								<v-card-text>
+																												<fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel[index]" @input="valueChange" :fields="fields" />
+																								</v-card-text>
+																				</v-card>
 																</template>
-																<template v-if="field.maximum != 1">
+																<template v-if="!fieldModel || !fieldModel.length">
+																				<v-btn class="ml-0" block large color="primary" @click="addValue({})" v-if="canAddValue">
+																								{{addLabel}}
+																				</v-btn>
+																</template>
+																<template v-else>
+																				<v-btn class="ml-0" color="primary" @click="addValue({})" v-if="canAddValue">
+																								{{addLabel}}
+																				</v-btn>
+																</template>
+												</template>
+								</template>
+								<template v-else-if="renderer == 'group'">
+												<template v-if="asObject">
+																<template v-if="field.maximum == 1">
+																				<fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel" @input="valueChange" :fields="fields" />
+																</template>
+																<template v-else>
 																				<template v-for="(object, index) in fieldModel">
 																								<v-card>
 																												<v-toolbar class="elevation-0">
 																																<v-toolbar-title class="hidden-xs">{{groupTitle(object, index)}}</v-toolbar-title>
 																																<v-spacer></v-spacer>
 																																<v-toolbar-items>
-																																				<v-btn icon small flat color="error" @click="removeValue(index)" v-if="canRemoveValue">
+																																				<v-btn small icon flat color="error" @click="removeValue(index)" v-if="canRemoveValue">
 																																								<fluro-icon icon="times" />
 																																				</v-btn>
 																																</v-toolbar-items>
 																												</v-toolbar>
 																												</v-toolbar>
 																												<v-card-text>
-																																<fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel[index]" @input="elementValueChanged" :fields="fields" />
+																																<fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel[index]" @input="valueChange" :fields="fields" />
 																												</v-card-text>
 																								</v-card>
 																				</template>
@@ -71,354 +106,293 @@
 																				</template>
 																</template>
 												</template>
-												<template v-else-if="renderer == 'group'">
-																<template v-if="asObject">
-																				<template v-if="field.maximum == 1">
-																								<fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel" @input="elementValueChanged" :fields="fields" />
-																				</template>
-																				<template v-else>
-																								<v-card :key="object.guid" v-for="(object, index) in fieldModel">
-																												<v-toolbar class="elevation-0">
-																																<v-toolbar-title class="hidden-xs">{{groupTitle(object, index)}}</v-toolbar-title>
-																																<v-spacer></v-spacer>
-																																<v-toolbar-items>
-																																				<v-btn small icon flat color="error" @click="removeValue(index)" v-if="canRemoveValue">
-																																								<fluro-icon icon="times" />
-																																				</v-btn>
-																																</v-toolbar-items>
-																												</v-toolbar>
-																												</v-toolbar>
-																												<v-card-text>
-																																<fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel[index]" @input="elementValueChanged" :fields="fields" />
-																												</v-card-text>
-																								</v-card>
-																								<template v-if="!fieldModel || !fieldModel.length">
-																												<v-btn class="ml-0" block large color="primary" @click="addValue({})" v-if="canAddValue">
-																																{{addLabel}}
-																												</v-btn>
-																								</template>
-																								<template v-else>
-																												<v-btn class="ml-0" color="primary" @click="addValue({})" v-if="canAddValue">
-																																{{addLabel}}
-																												</v-btn>
-																								</template>
-																				</template>
-																</template>
-																<template v-else>
-																				<!-- <fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="model" @input="elementValueChanged" :fields="fields" /> -->
-																				<template v-if="field.sameLine">
-																								<v-layout class="same-line" row>
-																												<template v-for="subfield in fields">
-																																<fluro-content-form-field :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" class="flex" :field="subfield" @input="elementValueChanged" v-model="model" />
-																												</template>
-																								</v-layout>
-																				</template>
-																				<template v-else>
+												<template v-else>
+																<!-- <fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="model" @input="valueChange" :fields="fields" /> -->
+																<template v-if="field.sameLine">
+																				<v-layout class="same-line" row>
 																								<template v-for="subfield in fields">
-																												<!-- <pre>{{subfield.title}} {{subfield.key}}</pre> -->
-																												<fluro-content-form-field :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" class="flex" :field="subfield" @input="elementValueChanged" v-model="model" />
-																												<!-- <fluro-content-form-field :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" class="flex" :field="subfield" @input="elementValueChanged" v-model="fieldModel" /> -->
+																												<fluro-content-form-field :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" class="flex" :field="subfield" @input="valueChange" v-model="model" />
 																								</template>
-																				</template>
-																</template>
-												</template>
-												<template v-else-if="renderer == 'checkbox'">
-																<div class="terms" :class="{'has-error':errorMessages.length}" v-if="savedTerms">
-																				<v-checkbox :outline="showOutline" :success="success" :mandatory="required" :persistent-hint="true" :label="displayLabel" v-model="fieldModel" @change="elementValueChanged(event, true)" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
-																				<div class="conditions">{{field.params.storeData}}</div>
-																</div>
-																<template v-else>
-																				<v-checkbox :outline="showOutline" :success="success" :mandatory="required" :persistent-hint="true" :label="displayLabel" v-model="fieldModel" @change="elementValueChanged(event, true)" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
-																</template>
-												</template>
-												<template v-else-if="renderer == 'number'">
-																<!-- type="number" -->
-																<v-text-field :persistent-hint="persistentDescription" :suffix="suffix" :prefix="prefix" :outline="showOutline" :success="success" :required="required" pattern="^-?(\d*\.)?\d+$;" :label="displayLabel" v-model="fieldModel" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
-												</template>
-												<template v-else-if="renderer == 'realmselect'">
-																<v-input class="no-flex" :persistent-hint="true" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
-																				<fluro-realm-select block type="collection" v-model="fieldModel" />
-																</v-input>
-												</template>
-												<template v-else-if="renderer == 'datepicker'">
-																<v-menu :fixed="true" v-model="modal" min-width="290px" :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
-																				<template v-slot:activator="{ on }">
-																								<v-text-field @blur="touch()" @focus="focussed()" :outline="showOutline" :success="success" :value="formattedDate" :persistent-hint="true" :hint="dateHint" :label="displayLabel" prepend-inner-icon="event" readonly v-on="on"></v-text-field>
-																				</template>
-																				<v-card>
-																								<v-date-picker @blur="touch()" @focus="focussed()" attach @change="modal = false" v-model="dateStringModel" no-title scrollable>
-																												<v-spacer></v-spacer>
-																												<v-btn flat color="primary" @click="modal = false">Done</v-btn>
-																								</v-date-picker>
-																				</v-card>
-																</v-menu>
-												</template>
-												<template v-else-if="renderer == 'timepicker'">
-																<v-dialog ref="dialog" v-model="modal" persistent :return-value.sync="fieldModel" lazy full-width width="290px">
-																				<template v-slot:activator="{ on }">
-																								<v-text-field :outline="showOutline" :success="success" v-model="fieldModel" :label="displayLabel" prepend-inner-icon="access_time" readonly v-on="on" @blur="touch()" @focus="modalFocussed();"></v-text-field>
-																				</template>
-																				<v-card v-if="modal">
-																								<v-toolbar color="primary" dark>
-																												<v-toolbar-title>{{displayLabel}}</v-toolbar-title>
-																								</v-toolbar>
-																								<v-time-picker attach v-model="pseudoModel" full-width>
-																												<v-spacer></v-spacer>
-																												<v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
-																												<v-btn flat color="primary" @click="$refs.dialog.save(pseudoModel)">OK</v-btn>
-																								</v-time-picker>
-																				</v-card>
-																</v-dialog>
-												</template>
-												<template v-else-if="renderer == 'datetimepicker'">
-																<fluro-date-time-picker :outline="showOutline" :min="minDate" :max="maxDate" :success="success" format="ddd D MMM - h:mma " timePickerFormat="ampm" :label="displayLabel" :placeholder="field.placeholder" :hint="field.description" v-model="fieldModel" @blur="touch()" @focus="modalFocussed();" />
-												</template>
-												<template v-else-if="renderer == 'timezoneselect'">
-																<template v-if="mobile">
-																				<v-select :persistent-hint="true" :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="timezoneOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+																				</v-layout>
 																</template>
 																<template v-else>
-																				<v-autocomplete :persistent-hint="true" :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="timezoneOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+																				<template v-for="subfield in fields">
+																								<!-- <pre>{{subfield.title}} {{subfield.key}}</pre> -->
+																								<fluro-content-form-field :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" class="flex" :field="subfield" @input="valueChange" v-model="model" />
+																								<!-- <fluro-content-form-field :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" class="flex" :field="subfield" @input="valueChange" v-model="fieldModel" /> -->
+																				</template>
 																</template>
 												</template>
-												<template v-else-if="renderer == 'countrycodeselect'">
-																<template v-if="mobile">
-																				<v-select :persistent-hint="true" dense :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryCodeOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+								</template>
+								<template v-else-if="renderer == 'checkbox'">
+												<div class="terms" :class="{'has-error':errorMessages.length}" v-if="savedTerms">
+																<v-checkbox :outline="showOutline" :success="success" :mandatory="required" :persistent-hint="true" :label="displayLabel" v-model="fieldModel" @change="valueChange($event, true)" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+																<div class="conditions">{{field.params.storeData}}</div>
+												</div>
+												<template v-else>
+																<v-checkbox :outline="showOutline" :success="success" :mandatory="required" :persistent-hint="true" :label="displayLabel" v-model="fieldModel" @change="valueChange($event, true)" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+												</template>
+								</template>
+								<template v-else-if="renderer == 'number'">
+												<!-- type="number" -->
+												<v-text-field :persistent-hint="persistentDescription" :suffix="suffix" :prefix="prefix" :outline="showOutline" :success="success" :required="required" pattern="^-?(\d*\.)?\d+$;" :label="displayLabel" v-model="fieldModel" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+								</template>
+								<template v-else-if="renderer == 'realmselect'">
+												<v-input class="no-flex" :persistent-hint="true" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
+																<fluro-realm-select block type="collection" v-model="fieldModel" />
+												</v-input>
+								</template>
+								<template v-else-if="renderer == 'datepicker'">
+												<v-menu :fixed="true" v-model="modal" min-width="290px" :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
+																<template v-slot:activator="{ on }">
+																				<v-text-field @blur="touch()" @focus="focussed()" :outline="showOutline" :success="success" :value="formattedDate" :persistent-hint="true" :hint="dateHint" :label="displayLabel" prepend-inner-icon="event" readonly v-on="on"></v-text-field>
 																</template>
-																<template v-else>
-																				<v-autocomplete :persistent-hint="true" dense :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryCodeOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+																<v-card>
+																				<v-date-picker @blur="touch()" @focus="focussed()" attach @change="modal = false" v-model="dateStringModel" no-title scrollable>
+																								<v-spacer></v-spacer>
+																								<v-btn flat color="primary" @click="modal = false">Done</v-btn>
+																				</v-date-picker>
+																</v-card>
+												</v-menu>
+								</template>
+								<template v-else-if="renderer == 'timepicker'">
+												<v-dialog ref="dialog" v-model="modal" persistent :return-value.sync="fieldModel" lazy full-width width="290px">
+																<template v-slot:activator="{ on }">
+																				<v-text-field :outline="showOutline" :success="success" v-model="fieldModel" :label="displayLabel" prepend-inner-icon="access_time" readonly v-on="on" @blur="touch()" @focus="modalFocussed();"></v-text-field>
 																</template>
-												</template>
-												<template v-else-if="renderer == 'countryselect'">
-																<template v-if="mobile">
-																				<v-autocomplete :persistent-hint="true" :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
-																</template>
-																<template v-else>
-																				<v-select :persistent-hint="true" :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
-																</template>
-												</template>
-												<template v-else-if="renderer == 'select'">
-																<template v-if="mobile || params.dropdown">
-																				<v-select :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
-																</template>
-																<template v-else>
-																				<v-autocomplete :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
-																</template>
-												</template>
-												<template v-else-if="renderer == 'content-select-button'">
-																<v-input class="no-flex" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
-																				<fluro-content-select-button :context="context" :debugMode="debugMode" :contextField="contextField" block :recursiveClick="recursiveClick" :type="restrictType" :minimum="minimum" :maximum="maximum" :searchInheritable="searchInheritable" :allDefinitions="allDefinitions" v-model="fieldModel" />
-																</v-input>
-												</template>
-												<template v-else-if="renderer == 'content-select'">
-																<v-input class="no-flex" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
-																				<!--  -->
-																				<fluro-content-select :context="context" :template="params.template" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :success="success" :required="required" :error-messages="errorMessages" :label="displayLabel" :outline="showOutline" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" :minimum="minimum" @blur="touch()" @focus="focussed();" :type="restrictType" :lockFilter="referenceFilter" @input="elementValueChanged" :searchInheritable="searchInheritable" :maximum="maximum" v-model="fieldModel" />
-																</v-input>
-												</template>
-												<template v-else-if="renderer == 'search-select'">
-																<v-autocomplete :persistent-hint="true" :outline="showOutline" :success="success" :deletable-chips="true" :hide-selected="true" prepend-inner-icon="search" :error-messages="errorMessages" :cache-items="!defaultReferences || !defaultReferences.length" :chips="multipleInput" :clearable="!required" :return-object="true" item-text="title" v-model="fieldModel" @blur="touch()" @focus="focussed()" @change="elementValueChanged($event, true)" :multiple="multipleInput" :loading="loading" :items="searchResults" :search-input.sync="keywords" flat hide-no-data :label="displayLabel">
-																				<template v-slot:item="{ item }">
-																								<fluro-avatar class="xs" :id="item._id" type="contact"></fluro-avatar>    
-																								<v-list-tile-content>
-																												<v-list-tile-title v-text="item.title"></v-list-tile-title>
-																								</v-list-tile-content>
-																				</template>
-																</v-autocomplete>
-												</template>
-												<template v-else-if="renderer == 'signature'">
-																<fluro-signature-field @blur="touch()" @focus="focussed();" :outline="showOutline" :success="success" :label="displayLabel" v-model="fieldModel" :required="required" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" />
-												</template>
-												<template v-else-if="renderer == 'code'">
-																<v-input class="no-flex" :hint="field.description" :persistent-hint="true">
-																				<template v-if="multipleInput">
-																								<template v-if="fieldModel && fieldModel.length">
-																												<template v-for="(entry, index) in fieldModel">
-																																<fluro-code-editor :autoformat="autoformat" @blur="touch()" @focus="focussed();" :outline="showOutline" :success="success" v-model="fieldModel[index]" :lang="syntax" :height="200"></fluro-code-editor>
-																												</template>
-																								</template>
-																								<template v-if="canAddValue">
-																												<v-btn color="primary" class="ml-0" @click="addValue('')">
-																																{{multiLabel}}
-																																<fluro-icon icon="plus" />
-																												</v-btn>
-																								</template>
-																				</template>
-																				<template v-else>
-																								<v-label>{{displayLabel}}</v-label>
-																								<v-card class="no-flex">
-																												<fluro-code-editor :autoformat="autoformat" @blur="touch()" @focus="focussed();" :outline="showOutline" :success="success" v-model="fieldModel" :lang="syntax" :height="200"></fluro-code-editor>
-																								</v-card>
-																				</template>
-																</v-input>
-												</template>
-												<template v-else-if="renderer == 'textarea'">
-																<v-input class="no-flex" :outline="showOutline" :success="success" :required="required" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description">
-																				<template v-if="multipleInput">
-																								<template v-if="fieldModel && fieldModel.length">
-																												<template v-for="(entry, index) in fieldModel">
-																																<v-layout wrap row>
-																																				<v-flex class="vertical-center">
-																																								<v-label>{{groupTitle(entry, index)}}</v-label>
-																																				</v-flex>
-																																				<v-spacer></v-spacer>
-																																				<v-btn icon flat color="error" v-if="canRemoveValue" @click="removeValue(index, true)">
-																																								<fluro-icon icon="times" />
-																																				</v-btn>
-																																</v-layout>
-																																<v-textarea :outline="showOutline" :success="success" :required="required" v-model="fieldModel[index]" @blur="touch()" @focus="focussed()" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" />
-																																<!-- <fluro-editor @blur="touch()" @focus="focussed();" v-model="fieldModel[index]" :options="multiEditorOptions" @input="elementValueChanged" :placeholder="field.placeholder" /> -->
-																												</template>
-																								</template>
-																								<template v-if="canAddValue">
-																												<v-btn color="primary" class="ml-0" @click="addValue('')">
-																																{{multiLabel}}
-																																<fluro-icon icon="plus" />
-																												</v-btn>
-																								</template>
-																				</template>
-																				<template v-if="!multipleInput">
-																								<v-textarea :outline="showOutline" :success="success" :required="required" :label="displayLabel" v-model="fieldModel" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" />
-																				</template>
-																</v-input>
-												</template>
-												<template v-else-if="renderer == 'wysiwyg'">
-																<v-input class="no-flex" :outline="showOutline" :success="success" :required="required" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description">
-																				<template v-if="multipleInput">
-																								<template v-if="fieldModel && fieldModel.length">
-																												<template v-for="(entry, index) in fieldModel">
-																																<v-layout wrap row>
-																																				<v-flex class="vertical-center">
-																																								<v-label>{{groupTitle(entry, index)}}</v-label>
-																																				</v-flex>
-																																				<v-spacer></v-spacer>
-																																				<v-btn icon flat color="error" v-if="canRemoveValue" @click="removeValue(index, true)">
-																																								<fluro-icon icon="times" />
-																																				</v-btn>
-																																</v-layout>
-																																<fluro-editor @blur="touch()" @focus="focussed();" v-model="fieldModel[index]" :options="multiEditorOptions" @input="elementValueChanged" :placeholder="field.placeholder" />
-																												</template>
-																								</template>
-																								<template v-if="canAddValue">
-																												<v-btn color="primary" class="ml-0" @click="addValue('')">
-																																{{multiLabel}}
-																																<fluro-icon icon="plus" />
-																												</v-btn>
-																								</template>
-																				</template>
-																				<template v-if="!multipleInput">
-																								<v-label>{{displayLabel}}</v-label>
-																								<fluro-editor v-model="fieldModel" :options="editorOptions" @blur="touch()" @focus="focussed()" :placeholder="field.placeholder" />
-																				</template>
-																</v-input>
-												</template>
-												<template v-else-if="renderer == 'upload'">
-																<v-input class="no-flex" :outline="showOutline" :success="success" :label="displayLabel" :required="required" :error-messages="errorMessages" :persistent-hint="true" :hint="fileHint">
-																				<div class="file-items" v-if="files && files.length">
-																								<div class="file-item" v-for="file in files">
-																												<v-layout row wrap>
-																																<v-flex grow>
-																																				<strong>{{file.name}}</strong>
-																																				<div class="small"><span v-if="file.state == 'progress'">Uploaded {{file.progress}}% of </span><span class="muted">{{file.size | filesize}}</span></div>
-																																</v-flex>
-																																<v-flex shrink>
-																																				<template v-if="file.state == 'error'">
-																																								<v-btn icon>
-																																												<fluro-icon icon="exclamation" />
-																																								</v-btn>
-																																				</template>
-																																				<template v-else-if="file.state == 'complete'">
-																																								<v-hover>
-																																												<v-btn icon @click="removeFile(file)" slot-scope="{ hover }">
-																																																<fluro-icon v-if="hover" icon="times" />
-																																																<fluro-icon v-else icon="check" />
-																																												</v-btn>
-																																								</v-hover>
-																																				</template>
-																																				<template v-else-if="file.state == 'uploading'">
-																																								<v-hover>
-																																												<v-btn icon @click="removeFile(file)" slot-scope="{ hover }">
-																																																<v-progress-circular v-if="!hover" :value="file.progress"></v-progress-circular>
-																																																<fluro-icon v-if="hover" icon="times" />
-																																												</v-btn>
-																																								</v-hover>
-																																				</template>
-																																				<template v-else>
-																																								<v-btn icon @click="removeFile(file)">
-																																												<fluro-icon icon="times" />
-																																								</v-btn>
-																																				</template>
-																																</v-flex>
-																												</v-layout>
-																								</div>
-																				</div>
-																				<label class="file-drop" v-if="canAddFile">
-																								<input ref="file" type="file" :multiple="multipleInput" @change="filesSelected($event.target.files)">
-																								Drag and drop or click here to select {{multipleInput ? 'files' : 'a file'}}
-																				</label>
-																</v-input>
-												</template>
-												<template v-else-if="renderer == 'currency' && !multipleInput">
-																<fluro-currency-input :currency="params.currency" :hideSuffix="params.hideSuffix" :min="minValue" :max="maxValue" :label="displayLabel" :required="required" v-model="fieldModel" :autofocus="shouldAutofocus" :outline="showOutline" :success="success" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" />
-												</template>
-												<template v-else-if="renderer == 'app-menu-select'">
-																<fluro-app-menu-select v-model="fieldModel" :options="options" :label="displayLabel" />
-												</template>
-												<template v-else-if="renderer == 'app-block-select'">
-																<fluro-app-block-select v-model="fieldModel" :options="options" :label="displayLabel" />
-												</template>
-												<template v-else-if="renderer == 'app-font-select'">
-																<fluro-app-font-select v-model="fieldModel" :options="options" :label="displayLabel" />
-												</template>
-												<template v-else-if="renderer == 'app-page-select'">
-																<fluro-app-page-select v-model="fieldModel" :options="options" :label="displayLabel" />
-												</template>
-												<template v-else-if="renderer == 'app-size-select'">
-																<fluro-app-size-select v-model="fieldModel" :options="options" :label="displayLabel" />
-												</template>
-												<template v-else-if="renderer == 'app-theme-select'">
-																<fluro-app-theme-select v-model="fieldModel" :options="options" :label="displayLabel" />
-												</template>
-												<template v-else-if="renderer == 'color' && !multipleInput">
-																<!-- COLOR COLOR -->
-																<v-menu :fixed="true" v-model="modal" min-width="290px" :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
-																				<template v-slot:activator="{ on }">
-																								<v-input :label="displayLabel" :persistent-hint="true" class="no-flex">
-																												<div class="color-swatch" v-on="on">
-																																<div class="swatch" :style="{backgroundColor:colorModel.hex8}"><span>{{colorModel.hex8 ? colorModel.hex8 : 'transparent'}}</span></div>
-																												</div>
-																								</v-input>
-																				</template>
-																				<div>
-																								<color-picker @blur="touch()" @focus="focussed();" v-model="colorModel" />
-																				</div>
-																</v-menu>
+																<v-card v-if="modal">
+																				<v-toolbar color="primary" dark>
+																								<v-toolbar-title>{{displayLabel}}</v-toolbar-title>
+																				</v-toolbar>
+																				<v-time-picker attach v-model="sudoModel" full-width>
+																								<v-spacer></v-spacer>
+																								<v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
+																								<v-btn flat color="primary" @click="$refs.dialog.save(sudoModel)">OK</v-btn>
+																				</v-time-picker>
+																</v-card>
+												</v-dialog>
+								</template>
+								<template v-else-if="renderer == 'datetimepicker'">
+												<fluro-date-time-picker :outline="showOutline" :min="minDate" :max="maxDate" :success="success" format="ddd D MMM - h:mma " timePickerFormat="ampm" :label="displayLabel" :placeholder="field.placeholder" :hint="field.description" v-model="fieldModel" @blur="touch()" @focus="modalFocussed();" />
+								</template>
+								<template v-else-if="renderer == 'timezoneselect'">
+												<template v-if="mobile">
+																<v-select :persistent-hint="true" :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="timezoneOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
 												</template>
 												<template v-else>
+																<v-autocomplete :persistent-hint="true" :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="timezoneOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+												</template>
+								</template>
+								<template v-else-if="renderer == 'countrycodeselect'">
+												<template v-if="mobile">
+																<v-select :persistent-hint="true" dense :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryCodeOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+												</template>
+												<template v-else>
+																<v-autocomplete :persistent-hint="true" dense :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryCodeOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+												</template>
+								</template>
+								<template v-else-if="renderer == 'countryselect'">
+												<template v-if="mobile">
+																<v-autocomplete :persistent-hint="true" :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+												</template>
+												<template v-else>
+																<v-select :persistent-hint="true" :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+												</template>
+								</template>
+								<template v-else-if="renderer == 'textarea'">
+												<v-textarea :outline="showOutline" :success="success" :required="required" :label="displayLabel" v-model="fieldModel" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" />
+								</template>
+								<template v-else-if="renderer == 'select'">
+												<template v-if="mobile || params.dropdown">
+																<v-select :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+												</template>
+												<template v-else>
+																<v-autocomplete :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="field.placeholder" />
+												</template>
+								</template>
+								<template v-else-if="renderer == 'content-select-button'">
+												<v-input class="no-flex" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
+																<fluro-content-select-button :context="context" :debugMode="debugMode" :contextField="contextField" block :recursiveClick="recursiveClick" :type="restrictType" :minimum="minimum" :maximum="maximum" :searchInheritable="searchInheritable" :allDefinitions="allDefinitions" v-model="fieldModel" />
+												</v-input>
+								</template>
+								<template v-else-if="renderer == 'content-select'">
+												<v-input class="no-flex" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
+																<!-- <fluro-content-select :context="context" :template="params.template" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :success="success" :required="required" :error-messages="errorMessages" :label="displayLabel" :outline="showOutline" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" :minimum="minimum" @input="valueChange" @blur="touch()" @focus="focussed();" :type="restrictType" :lockFilter="referenceFilter" :searchInheritable="searchInheritable" :maximum="maximum" v-model="model[field.key]" /> -->
+																<fluro-content-select :context="context" :template="params.template" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :success="success" :required="required" :error-messages="errorMessages" :label="displayLabel" :outline="showOutline" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" :minimum="minimum" @input="valueChange" @blur="touch()" @focus="focussed();" :type="restrictType" :lockFilter="referenceFilter" :searchInheritable="searchInheritable" :maximum="maximum" v-model="fieldModel" />
+												</v-input>
+								</template>
+								<template v-else-if="renderer == 'search-select'">
+												<v-autocomplete :persistent-hint="true" :outline="showOutline" :success="success" :deletable-chips="true" :hide-selected="true" prepend-inner-icon="search" :error-messages="errorMessages" :cache-items="!defaultReferences || !defaultReferences.length" :chips="multipleInput" :clearable="!required" :return-object="true" item-text="title" v-model="fieldModel" @blur="touch()" @focus="focussed()" @change="valueChange" :multiple="multipleInput" :loading="loading" :items="searchResults" :search-input.sync="keywords" flat hide-no-data :label="displayLabel">
+																<template v-slot:item="{ item }">
+																				<fluro-avatar class="xs" :id="item._id" type="contact"></fluro-avatar>    
+																				<v-list-tile-content>
+																								<v-list-tile-title v-text="item.title"></v-list-tile-title>
+																				</v-list-tile-content>
+																</template>
+												</v-autocomplete>
+								</template>
+								<template v-else-if="renderer == 'signature'">
+												<fluro-signature-field @blur="touch()" @focus="focussed();" :outline="showOutline" :success="success" :label="displayLabel" v-model="fieldModel" :required="required" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" />
+								</template>
+								<template v-else-if="renderer == 'code'">
+												<v-input class="no-flex" :hint="field.description" :persistent-hint="true">
 																<template v-if="multipleInput">
-																				<v-input :outline="showOutline" :label="displayLabel" :success="success" class="no-flex">
-																								<template v-if="fieldModel && fieldModel.length">
-																												<draggable v-model="fieldModel" v-bind="dragOptions" @start="drag=true" @end="drag=false">
-																																<!-- <transition-group type="transition" :name="!drag ? 'flip-list' : null"> -->
+																				<template v-if="fieldModel && fieldModel.length">
+																								<template v-for="(entry, index) in fieldModel">
+																												<fluro-code-editor :autoformat="autoformat" @blur="touch()" @focus="focussed();" :outline="showOutline" :success="success" v-model="fieldModel[index]" :lang="syntax" :height="200"></fluro-code-editor>
+																								</template>
+																				</template>
+																				<template v-if="canAddValue">
+																								<v-btn color="primary" @click="addValue('')">
+																												{{multiLabel}}
+																												<fluro-icon icon="plus" />
+																								</v-btn>
+																				</template>
+																</template>
+																<template v-else>
+																				<v-label>{{displayLabel}}</v-label>
+																				<v-card class="no-flex">
+																								<fluro-code-editor :autoformat="autoformat" @blur="touch()" @focus="focussed();" :outline="showOutline" :success="success" v-model="fieldModel" :lang="syntax" :height="200"></fluro-code-editor>
+																				</v-card>
+																</template>
+												</v-input>
+								</template>
+								<template v-else-if="renderer == 'wysiwyg'">
+												<v-input class="no-flex" :outline="showOutline" :success="success" :required="required" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description">
+																<template v-if="multipleInput">
+																				<template v-if="fieldModel && fieldModel.length">
+																								<template v-for="(entry, index) in fieldModel">
+																												<v-layout wrap row>
+																																<v-flex class="vertical-center">
+																																				<v-label>{{groupTitle(entry, index)}}</v-label>
+																																</v-flex>
+																																<v-spacer></v-spacer>
+																																<v-btn icon flat color="error" v-if="canRemoveValue" @click="removeValue(index, true)">
+																																				<fluro-icon icon="times" />
+																																</v-btn>
+																												</v-layout>
+																												<fluro-editor @blur="touch()" @focus="focussed();" v-model="fieldModel[index]" :options="multiEditorOptions" @input="valueChange" :placeholder="field.placeholder" />
+																								</template>
+																				</template>
+																				<template v-if="canAddValue">
+																								<v-btn color="primary" @click="addValue('')">
+																												{{multiLabel}}
+																												<fluro-icon icon="plus" />
+																								</v-btn>
+																				</template>
+																</template>
+																<template v-if="!multipleInput">
+																				<v-label>{{displayLabel}}</v-label>
+																				<fluro-editor v-model="fieldModel" :options="editorOptions" @blur="touch()" @focus="focussed()" :placeholder="field.placeholder" />
+																</template>
+												</v-input>
+								</template>
+								<template v-else-if="renderer == 'upload'">
+												<v-input class="no-flex" :outline="showOutline" :success="success" :label="displayLabel" :required="required" :error-messages="errorMessages" :persistent-hint="true" :hint="fileHint">
+																<div class="file-items" v-if="files && files.length">
+																				<div class="file-item" v-for="file in files">
+																								<v-layout row wrap>
+																												<v-flex grow>
+																																<strong>{{file.name}}</strong>
+																																<div class="small"><span v-if="file.state == 'progress'">Uploaded {{file.progress}}% of </span><span class="muted">{{file.size | filesize}}</span></div>
+																												</v-flex>
+																												<v-flex shrink>
+																																<template v-if="file.state == 'error'">
+																																				<v-btn icon>
+																																								<fluro-icon icon="exclamation" />
+																																				</v-btn>
+																																</template>
+																																<template v-else-if="file.state == 'complete'">
+																																				<v-hover>
+																																								<v-btn icon @click="removeFile(file)" slot-scope="{ hover }">
+																																												<fluro-icon v-if="hover" icon="times" />
+																																												<fluro-icon v-else icon="check" />
+																																								</v-btn>
+																																				</v-hover>
+																																</template>
+																																<template v-else-if="file.state == 'uploading'">
+																																				<v-hover>
+																																								<v-btn icon @click="removeFile(file)" slot-scope="{ hover }">
+																																												<v-progress-circular v-if="!hover" :value="file.progress"></v-progress-circular>
+																																												<fluro-icon v-if="hover" icon="times" />
+																																								</v-btn>
+																																				</v-hover>
+																																</template>
+																																<template v-else>
+																																				<v-btn icon @click="removeFile(file)">
+																																								<fluro-icon icon="times" />
+																																				</v-btn>
+																																</template>
+																												</v-flex>
+																								</v-layout>
+																				</div>
+																</div>
+																<label class="file-drop" v-if="canAddFile">
+																				<input ref="file" type="file" :multiple="multipleInput" @change="filesSelected($event.target.files)">
+																				Drag and drop or click here to select {{multipleInput ? 'files' : 'a file'}}
+																</label>
+												</v-input>
+								</template>
+								<template v-else-if="renderer == 'currency' && !multipleInput">
+												<fluro-currency-input :currency="params.currency" :hideSuffix="params.hideSuffix" :min="minValue" :max="maxValue" :label="displayLabel" :required="required" v-model="fieldModel" :autofocus="shouldAutofocus" :outline="showOutline" :success="success" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" />
+								</template>
+								<template v-else-if="renderer == 'app-menu-select'">
+												<fluro-app-menu-select v-model="fieldModel" :options="options" :label="displayLabel" />
+								</template>
+								<template v-else-if="renderer == 'app-block-select'">
+												<fluro-app-block-select v-model="fieldModel" :options="options" :label="displayLabel" />
+								</template>
+								<template v-else-if="renderer == 'app-font-select'">
+												<fluro-app-font-select v-model="fieldModel" :options="options" :label="displayLabel" />
+								</template>
+								<template v-else-if="renderer == 'app-page-select'">
+												<fluro-app-page-select v-model="fieldModel" :options="options" :label="displayLabel" />
+								</template>
+								<template v-else-if="renderer == 'app-size-select'">
+												<fluro-app-size-select v-model="fieldModel" :options="options" :label="displayLabel" />
+								</template>
+								<template v-else-if="renderer == 'app-theme-select'">
+												<fluro-app-theme-select v-model="fieldModel" :options="options" :label="displayLabel" />
+								</template>
+								<template v-else-if="renderer == 'color' && !multipleInput">
+												<!-- COLOR COLOR -->
+												<v-menu :fixed="true" v-model="modal" min-width="290px" :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
+																<template v-slot:activator="{ on }">
+																				<v-input :label="displayLabel" :persistent-hint="true" class="no-flex">
+																								<div class="color-swatch" v-on="on">
+																												<div class="swatch" :style="{backgroundColor:colorModel.hex8}"><span>{{colorModel.hex8 ? colorModel.hex8 : 'transparent'}}</span></div>
+																								</div>
+																				</v-input>
+																</template>
+																<div>
+																				<color-picker @blur="touch()" @focus="focussed();" v-model="colorModel" />
+																</div>
+												</v-menu>
+								</template>
+								<template v-else>
+												<template v-if="multipleInput">
+																<v-input :outline="showOutline" :label="displayLabel" :success="success" class="no-flex">
+																				<template v-if="fieldModel && fieldModel.length">
+																								<draggable v-model="fieldModel" v-bind="dragOptions" @start="drag=true" @end="drag=false">
+																												<transition-group type="transition" :name="!drag ? 'flip-list' : null">
 																																<div class="multi-input-row" :key="entry" v-for="(entry, index) in fieldModel">
 																																				<v-flex style="padding:0 !important;">{{entry}}</v-flex>
 																																				<span @click="removeValue(index, true)">Remove</span>
 																																</div>
-																																<!-- </transition-group> -->
-																												</draggable>
-																								</template>
-																								<template v-if="canAddValue">
-																												<v-text-field @focus="focussed();" :mask="params.mask" :autofocus="shouldAutofocus" class="faint" @input="elementValueChanged" append-inner-icon="plus" :outline="showOutline" :success="success" browser-autocomplete="off" append-icon="plus" :required="required" :label="multiLabel" v-model="proposedValue" @keyup.enter.native.stop.prevent="addProposedValue()" @blur="addProposedValue()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="hint" :placeholder="field.placeholder" />
-																								</template>
-																				</v-input>
-																</template>
-																<template v-if="!multipleInput">
-																				<!-- <pre>Field Model: {{fieldModel}}</pre> -->
-																				<v-text-field :mask="params.mask" :autofocus="shouldAutofocus" :outline="showOutline" :success="success" browser-autocomplete="off" :required="required" :label="displayLabel" @input="elementValueChanged" v-model="fieldModel" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" />
-																</template>
+																												</transition-group>
+																								</draggable>
+																				</template>
+																				<template v-if="canAddValue">
+																								<v-text-field @focus="focussed();" :mask="params.mask" :autofocus="shouldAutofocus" class="faint" @input="valueChange" append-inner-icon="plus" :outline="showOutline" :success="success" browser-autocomplete="off" append-icon="plus" :required="required" :label="multiLabel" v-model="proposedValue" @keyup.enter.native.stop.prevent="addProposedValue()" @blur="addProposedValue()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="hint" :placeholder="field.placeholder" />
+																				</template>
+																</v-input>
+												</template>
+												<template v-if="!multipleInput">
+																<pre>What is the model?? {{fieldModel}} -- {{model[key]}}</pre>
+																<!-- @input="valueChange"  -->
+																<v-text-field :mask="params.mask" :autofocus="shouldAutofocus" :outline="showOutline" :success="success" browser-autocomplete="off" :required="required" :label="displayLabel" v-model="fieldModel" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" />
 												</template>
 								</template>
-								<!-- <pre>{{field.title}} is dirty? {{$v.model.$dirty}} {{hasInitialValue}}</pre> -->
 				</div>
 </template>
 <script>
@@ -454,9 +428,6 @@ import FluroContentSelectButton from 'src/components/form/contentselect/FluroCon
 import FluroRealmSelect from 'src/components/form/realmselect/FluroRealmSelect.vue';
 import DynamicImportService from 'src/DynamicImportService.js';
 
-
-
-
 ////////////////////////////////////////////////////////
 
 function mapDefaultDateValue(value) {
@@ -471,7 +442,26 @@ function mapDefaultDateValue(value) {
 ////////////////////////////////////////////////////////
 
 export default {
-				name: 'fluro-content-form-field',
+				// name: 'fluro-content-form-field',
+				beforeCreate() {
+								var self = this;
+
+
+								Promise.all([
+																DynamicImportService.load('src/components/form/FluroContentForm.vue', function() {
+																				return import('src/components/form/FluroContentForm.vue')
+																}),
+																DynamicImportService.load('src/components/form/FluroContentFormField.vue', function() {
+																				return import('src/components/form/FluroContentFormField.vue')
+																}),
+												])
+												.then(function(results) {
+																self.$options.components.FluroContentForm = results[0];
+																self.$options.components.FluroContentFormField = results[1];
+																self.ready = true;
+												})
+
+				},
 				components: {
 								'color-picker': Chrome,
 								draggable,
@@ -488,9 +478,6 @@ export default {
 								FluroRealmSelect,
 				},
 				data() {
-
-
-
 								return {
 												ready: false,
 												hasInitialValue: false,
@@ -498,10 +485,11 @@ export default {
 												drag: false,
 												test: null,
 												modal: false,
-												model: this.value, // this.value, // this.value, // Vue.observable(this.value), //JSON.parse(JSON.stringify(this.value)),
+												model: this.value, //JSON.parse(JSON.stringify(this.value)),
+												// model:JSON.parse(JSON.stringify(this.value)),
 												// model: this.value,
 												proposedValue: null,
-												pseudoModel: null,
+												sudoModel: null,
 												color: null,
 
 												//Async searching
@@ -519,6 +507,10 @@ export default {
 								}
 				},
 				watch: {
+								model: 'checkInitialValue',
+								// field:'checkInitialValue',
+								// value:'checkInitialValue',
+
 								'keywords': _.debounce(function() {
 
 												var self = this;
@@ -585,26 +577,22 @@ export default {
 												//If the user has entered data into here
 												//Don't make any change
 												if (this.$v.model.$dirty || this.hasInitialValue) {
-																// console.log('Field is dirty', this.$v.model.$dirty, this.hasInitialValue)
+																console.log('Field is dirty')
 																return;
 												}
 
 												//If there is a default value expression
-												if (!this.expressions || !this.expressions.defaultValue) {
-																return;
+												if (this.expressions && this.expressions.defaultValue) {
+																this.fieldModel = v;
+																console.log('Updated default value according to expression!', this.expressions.defaultValue, v);
 												}
-
-												console.log('Set from default expression', this.field.title, v);
-
-												this.fieldModel = v;
-
 								},
 								expressionValue(v) {
 
 
 												if (this.expressions && this.expressions.value) {
 																this.fieldModel = v;
-																// console.log('Expression Updated value', v)
+																console.log('Expression Updated value', v)
 												}
 
 
@@ -612,25 +600,14 @@ export default {
 												// this.model[this.key] = v[this.key];
 								},
 								value(val) {
+												this.$set(this, 'model', val);
 
-												// val = this.fixCorruptedData(val);
-												// console.log('SET VALUE OF THING', val);
-												//Set the new model
-												this.model = val;
-
-												//Clean up any bad input
-												this.fieldModel = this.fixCorruptedData(this.fieldModel);
-
-												// this.$set(this, 'model', val);
-												//And reset
-												this.reset();
-												this.checkInitialValue();
-
+												console.log('Set a new value outside', val);
+												return this.reset();
 								},
 								// 'isNew':'checkNew',
 				},
 				computed: {
-
 								autoformat() {
 												return this.params.autoformat != false;
 								},
@@ -742,7 +719,6 @@ export default {
 
 
 								},
-
 								dateStringModel: {
 												get() {
 
@@ -986,8 +962,7 @@ export default {
 																return [];
 												}
 
-
-												return this.field.type == 'reference' ? this.defaultReferences : this.field.defaultValues;
+												return this.field.defaultValues;
 								},
 								defaultReferences() {
 
@@ -1054,48 +1029,189 @@ export default {
 												},
 												set(object) {
 																this.color = object;
+																console.log('Set color', object)
 																this.fieldModel = object ? object.hex8 : '';
 												}
 								},
-
 								fieldModel: {
 												get() {
+
 																var self = this;
+																var value = self.model[self.key];
+																return value;
 
-																//Get the value for this field
-																var value = self.model[self.field.key];
+																console.log('GET THE VALUE', self.key, value, self.model)
 
-																return self.cleanOutput(value);
+																///////////////////////////////////////
 
+																if (self.expressions && self.expressions.transform && typeof self.expressions.transform.set == 'function') {
+																				var transformed = self.expressions.transform.get(value);
+																				// console.log('Transforming value from', transformed);
+																				return transformed;
+																}
+
+																if (self.dynamic && self.renderer == 'dynamicdate') {
+																				if (value == 'DATE_NOW') {
+																								return value;
+																				}
+
+																				if (!value) {
+																								return;
+																				}
+
+																				return new Date(value).toISOString();
+																}
+
+
+																//////////////////////////////////
+
+																switch (self.field.type) {
+																				// case 'date':
+																				// if(String(value).toLowerCase() == 'now') {
+																				// return new Date(value).toISOString();
+																				// }
+																				// break;
+																				case 'boolean':
+																								if (self.field.inverse) {
+																												return !!(!value);
+																								} else {
+																												if (value) {
+																																return true;
+																												} else {
+																																return false;
+																												}
+																								}
+																								break;
+																}
+
+																//////////////////////////////////
+
+																return value;
 												},
 												set(value) {
 
+
 																var self = this;
 
-																//Clean the input
-																value = self.cleanInput(value);
-
 																//////////////////////////////////
-																//If there is a change
-																if (self.model[self.field.key] != value) {
-																				self.$set(self.model, self.field.key, value);
-																				self.$emit('input', self.model);
+																//////////////////////////////////
+																//////////////////////////////////
+
+																if (self.expressions && self.expressions.transform) {
+																				if (typeof self.expressions.transform.set == 'function') {
+																								var transformed = self.expressions.transform.set(value);
+																								// console.log('Transforming value to', transformed);
+																								value = transformed;
+																				}
 																}
-																//////////////////////////////////
-
-																return;
-																//////////////////////////////////
-
-
 
 																//////////////////////////////////
+																//////////////////////////////////
+																//////////////////////////////////
+																//////////////////////////////////
+																//////////////////////////////////
 
-																// self.model[self.field.key] = value;
-																self.$set(self.model, self.field.key, value);
+																if (self.dynamic && self.renderer == 'dynamicdate') {
+																				if (value == 'DATE_NOW') {
+																								self.$set(self.model, self.key, value);
+																								return self.valueChange();
+																				}
 
-																console.log('VALUE TEST CHANGED', self.field.key, self.fieldModel == value, self.model[self.field.key] == value, self.fieldModel)
+																				if (!value) {
+																								self.$set(self.model, self.key, null);
+																								return self.valueChange();
+																				}
 
+
+																				self.$set(self.model, self.key, new Date(value).toISOString());
+																				return self.valueChange();
+																}
+
+																//////////////////////////////////
+
+
+																// /this.model[this.key] = value;
+																switch (self.type) {
+																				case 'date':
+																								if (String(value).toLowerCase() == 'now') {
+																												value = new Date();
+																								}
+																								break;
+																				case 'integer':
+
+
+
+																								if (value != undefined && value != null) {
+																												if (String(value).length) {
+																																value = parseInt(value);
+																												} else {
+																																value = null;
+																												}
+																								}
+
+
+																								break;
+																				case 'number':
+																								if (value != undefined && value != null && !isNaN(value)) {
+
+																												var changeValue;
+
+																												if (String(value).length) {
+																																changeValue = Number(value); //parseInt(parseFloat(value).toFixed(2)) / 100;
+																												} else {
+																																changeValue = null;
+																												}
+
+																												//If we have to transform the data
+																												if (parseFloat(value) != parseFloat(changeValue)) {
+																																value = changeValue;
+																												}
+																								}
+																								break;
+																				case 'float':
+																				case 'decimal':
+																								if (value != undefined && value != null) {
+																												if (String(value).length) {
+																																value = Number(value); //parseInt(parseFloat(value).toFixed(2)) / 100;
+																												} else {
+																																value = null;
+																												}
+																								}
+																								break;
+																				case 'boolean':
+																								if (self.field.inverse) {
+																												value = !value;
+																								}
+
+
+																								// console.log('SET BOOLEANS', value);
+																								if (!value) {
+																												// value = false;
+																												// return self.$nextTick(function() {
+																												self.$set(self.model, self.key, false);
+																												return self.valueChange();
+																												// })
+																								} else {
+																												// return self.$nextTick(function() {
+																												self.$set(self.model, self.key, true);
+																												return self.valueChange();
+																												// })
+																								}
+																								break;
+																}
+
+
+
+																self.$set(self.model, self.key, value);
+																//This shouldn't need to be done but vue will not update without it
+																self.$forceUpdate();
+
+																// self.model[self.key] = value;
+
+																
+																console.log('UPDATE MODEL', self.key, self.fieldModel);
 																self.valueChange();
+
 
 												}
 								},
@@ -1544,343 +1660,55 @@ export default {
 								}
 				},
 				methods: {
-								// fieldManualUpdate(data) {
-								// 				// console.log('FIELD UPDATED', this.field.title, data);
-								// 				this.$emit('input', this.model);
-								// },
-								cleanOutput(value) {
-
+								fixCorruptedData() {
 												var self = this;
-												/////////////////////////////////////
 
-												//If there are transform expressions
-												if (self.expressions && self.expressions.transform && typeof self.expressions.transform.get == 'function') {
-																var transformed = self.expressions.transform.get(value);
-																value = transformed;
-												}
+												// console.log('Fix corrupted data!')
+												if (self.multipleInput) {
+																switch (self.type) {
 
-												/////////////////////////////////////
+																				case 'string':
 
-												if (self.dynamic && self.renderer == 'dynamicdate') {
-																if (value == 'DATE_NOW') {
-																				return value;
-																}
-
-																if (!value) {
-																				return;
-																}
-
-																return new Date(value).toISOString();
-												}
-
-												//////////////////////////////////
-
-												//If we have started with a negative number
-												//don't transform until we have the actual number
-												if (String(value) == '-') {
-																switch (self.field.type) {
-																				case 'number':
-																				case 'decimal':
-																				case 'float':
-																				case 'integer':
-																								return value;
+																								//Clean up in case a string has been added instead of an array of strings
+																								if (!_.isArray(self.fieldModel)) {
+																												self.fieldModel = [self.fieldModel];
+																												console.log(self.field.title, 'Transformed to multiple value')
+																								}
 																								break;
-
-																}
-												}
-
-												/////////////////////////////////////
-
-												switch (self.field.type) {
-																case 'date':
-																				if (String(value).toLowerCase() == 'now') {
-																								return new Date(value).toISOString();
-																				}
-																				break;
-																case 'integer':
-																				if (value != undefined && value != null) {
-																								if (String(value).length) {
-																												value = parseInt(value);
-																								} else {
-																												value = null;
-																								}
-																				}
-																				break;
-																case 'number':
-																				if (value != undefined && value != null && !isNaN(value)) {
-
-																								var changeValue;
-
-																								if (String(value).length) {
-																												changeValue = Number(value); //parseInt(parseFloat(value).toFixed(2)) / 100;
-																								} else {
-																												changeValue = null;
-																								}
-
-																								//If we have to transform the data
-																								if (parseFloat(value) != parseFloat(changeValue)) {
-																												value = changeValue;
-																								}
-																				}
-																				break;
-																case 'float':
-																case 'decimal':
-																				if (value != undefined && value != null) {
-																								if (String(value).length) {
-																												value = Number(value); //parseInt(parseFloat(value).toFixed(2)) / 100;
-																								} else {
-																												value = null;
-																								}
-																				}
-																				break;
-																case 'boolean':
-																				if (self.field.inverse) {
-																								value = !!!value;
-																				}
-
-																				if (!value) {
-																								value = false;
-																				}
-																				break;
-												}
-
-												/////////////////////////////////////
-
-												return value;
-								},
-								cleanInput(value) {
-
-												var self = this;
-
-
-
-												//////////////////////////////////
-
-												if (self.expressions && self.expressions.transform) {
-																if (typeof self.expressions.transform.set == 'function') {
-																				var transformed = self.expressions.transform.set(value);
-																				value = transformed;
-																}
-												}
-
-												//////////////////////////////////
-
-												if (self.dynamic && self.renderer == 'dynamicdate') {
-																if (value == 'DATE_NOW') {
-																				return value;
-																}
-
-																if (!value) {
-																				return;
-																}
-
-																return new Date(value).toISOString();
-												}
-
-												//////////////////////////////////
-
-												//If we have started with a negative number
-												//don't transform until we have the actual number
-												if (String(value) == '-') {
-																switch (self.field.type) {
-																				case 'number':
-																				case 'decimal':
-																				case 'float':
-																				case 'integer':
-																								return value;
+																				case 'reference':
+																								// console.log('Fix up corruptions', self.defaultReferences, self.results)
+																								self.results = (self.defaultReferences || []).slice();
 																								break;
-
-																}
-												}
-
-												//////////////////////////////////
-
-												switch (self.field.type) {
-																case 'date':
-																				if (String(value).toLowerCase() == 'now') {
-																								value = new Date();
-																				}
-																				break;
-																case 'integer':
-																				if (value != undefined && value != null) {
-																								if (String(value).length) {
-																												value = parseInt(value);
-																								} else {
-																												value = null;
-																								}
-																				}
-																				break;
-																case 'number':
-																				if (value != undefined && value != null && !isNaN(value)) {
-
-																								var changeValue;
-
-																								if (String(value).length) {
-																												changeValue = Number(value); //parseInt(parseFloat(value).toFixed(2)) / 100;
-																								} else {
-																												changeValue = null;
-																								}
-
-																								//If we have to transform the data
-																								if (parseFloat(value) != parseFloat(changeValue)) {
-																												value = changeValue;
-																								}
-																				}
-																				break;
-																case 'float':
-																case 'decimal':
-																				if (value != undefined && value != null) {
-																								if (String(value).length) {
-																												value = Number(value); //parseInt(parseFloat(value).toFixed(2)) / 100;
-																								} else {
-																												value = null;
-																								}
-																				}
-																				break;
-																case 'boolean':
-																				if (self.field.inverse) {
-																								value = !value;
-																				}
-
-																				if (!value) {
-																								value = false;
-																				}
-
-																				break;
-												}
-
-												return value;
-								},
-								fixCorruptedData(input) {
-												var self = this;
-
-												var output;
-
-												////////////////////////////////////////////
-
-												function getPlaceholders() {
-																//We need to create an empty array
-																var array = [];
-
-																//Find out our minimum
-																var minimumToAsk = Math.max(self.field.minimum || 0, self.field.askCount || 0);
-																for (var i = 0; i < minimumToAsk; i++) {
-																				array.push({})
-																}
-
-																/////////////////////
-
-																//Restrict the maximum limit
-																if (self.field.maximum && array.length > self.field.maximum) {
-																				array.length = self.field.maximum;
-																}
-
-																/////////////////////
-
-																return array;
-												}
-
-												////////////////////////////////////////////
-
-												var multipleInput = self.multipleInput;
-												var singleInput = !multipleInput;
-												var isArray = _.isArray(input);
-
-												//We're expecting multiple answers
-												if (multipleInput) {
-
-																//But the existing value is not an array
-																if (!isArray) {
-																				switch (self.field.type) {
-
-																								case 'reference':
-																												if (input) {
-																																//We are an object so insert the object into the array
-																																output = [input];
-																												} else {
-																																if (self.field.directive == 'embedded') {
-																																				output = getPlaceholders();
-																																}
-																												}
-																												break;
-																								case 'group':
-																												//We aren't an array but we should be
-																												if (self.field.asObject) {
-																																if (input) {
-																																				//We are an object so insert the object into the array
-																																				output = [input];
-
+																				case 'group':
+																								if (self.field.asObject) {
+																												if (!_.isArray(self.fieldModel)) {
+																																if (self.fieldModel) {
+																																				self.fieldModel = [self.fieldModel];
 																																} else {
-																																				output = getPlaceholders();
+																																				self.fieldModel = [];
 																																}
 																												}
-																												break;
-																								case 'void':
-																												break;
-																								case 'email':
-																								case 'url':
-																								case 'string':
-																								default:
-																												//Clean up in case a string has been added instead of an array of strings
-																												if (input) {
-																																output = [input];
-																												} else {
-																																output = [];
-																												}
-																												break;
-																				}
+																								}
+																								break;
+																				case 'void':
+																								break;
+																				default:
+																								self.results = (self.defaultValues || []).slice();
+																								break;
 																}
 												} else {
 
-																//If this field is a group and it's set to be
-																//an object literal
-																if ((self.field.type == 'group' && self.field.asObject) || self.field.directive == 'embedded') {
-																				//If we are an array of objects
-																				if (isArray && input[0] && _.isObject(input[0])) {
-																								//Return the first object in the array
-																								output = input[0]
-																				} else if (!input) {
-																								//Create an empty object
-																								output = {};
-																				} else {
-																								//Data is already a group
-																				}
+																if (_.isArray(self.fieldModel)) {
+																				switch (self.type) {
 
-																} else {
+																								case 'string':
+																												self.fieldModel = _.first(self.fieldModel);
+																												console.log(self.field.title, 'Transformed array to single value')
 
-																				//We're expecting a single answer but the current value is an array
-																				if (isArray) {
-																								switch (self.field.type) {
-
-																												case 'string':
-																												case 'url':
-																												case 'email':
-																																output = _.chain(input)
-																																				.compact()
-																																				.first()
-																																				.value();
-																																break;
-																												default:
-																																//Get the first item in the array
-																																output = _.first(input);
-																																break;
-																								}
+																												break;
 																				}
 																}
 												}
-
-												//////////////////////////
-												//If we had to make adjustments
-												if (output) {
-																console.log('fixed corrupted data set', self.field.title, 'from', input, 'to', output);
-																//return the cleaned up value
-																return output;
-												}
-
-												//////////////////////////
-
-												//Otherwise return the original input
-												return input;
 								},
 								debugSelect($event) {
 												var self = this;
@@ -1894,10 +1722,11 @@ export default {
 												}
 								},
 								checkInitialValue() {
-												return;
+
+
 												var self = this;
 
-												if (typeof self.fieldModel == 'undefined' || self.fieldModel == null || self.fieldModel == '') {
+												if (self.fieldModel == undefined || self.fieldModel === null || self.fieldModel == '') {
 																self.hasInitialValue = false;
 												} else {
 																self.hasInitialValue = true;
@@ -2158,7 +1987,6 @@ export default {
 								mapFilesToValues() {
 												var self = this;
 
-
 												var mapField = 'result'; //'attachmentID';
 
 												if (self.multipleInput) {
@@ -2170,13 +1998,13 @@ export default {
 																				.value();
 												}
 
-												console.log('MAP FILES TO VALUES', self.field.key, self.field.type);
-
 												self.$forceUpdate();
 								},
 
 
 								resolveExpression(expression) {
+
+												console.log('Resolve expression!', expression);
 
 												var self = this;
 
@@ -2310,7 +2138,6 @@ export default {
 								},
 								clicked($event) {
 												this.debugSelect($event);
-												this.touch();
 								},
 								focussed() {
 												this.debugSelect();
@@ -2319,18 +2146,6 @@ export default {
 												this.focussed();
 												this.modal = true;
 								},
-								//CADESEARCHBACKHERE
-
-								elementValueChanged(event, setTouched) {
-												var self = this;
-
-												if (setTouched) {
-																self.touch()
-												}
-
-												// console.log('ELEMENT VALUE CHANGED', self.field.title, self.field.key)
-								},
-
 								valueChange(event, setTouched) {
 
 												var self = this;
@@ -2339,31 +2154,27 @@ export default {
 																self.touch()
 												}
 
-												return;
 
-
-												// self.model= Object.assign({}, self.model);
-
-												//If it's a group and not an object then end here so we don't have a recurring loop
-												// if(self.field.type == 'group' && !self.field.asObject) {
-												// 	console.log('No change', event)
-												// 	return;
+												// if(self.multipleInput) {
+												//     //We need to update reactivity
+												//     _.each(self.fieldModel, function(entry, index) {
+												//         Vue.set(self.model, `${this.key}[${index}]`, entry);
+												//     });
 												// }
 
-												////////////////////////////////////////////
-
-												// if (self.field.type == 'reference') {
-												// 				console.log('EMIT REFERENCE CHANGE', event, self.field.maximum, self.field.directive, self.field.key);
-												// 				//return;
+												// if(event) {
+												//     self.fieldModel = event;
 												// }
 
+												// var clone = JSON.parse(JSON.stringify(self.model));
+												// if(self.type == 'boolean') {
 
-												// console.log('FIELD VALUE CHANGED', self.field.title, self.field.key, '>>', self.model[self.field.key], self.fieldModel);
-												console.log('valueChange()', self.field.title, self.model[self.field.key]);
-												self.$emit('input', self.model, self.fieldModel);
-												self.$forceUpdate();
+												//     clone[self.key] = self.fieldModel;
+												//     console.log('tESITNG', self.type, clone[self.key], self.fieldModel);
+												// }
 
-
+												console.log('INPUT FROM Why is this undefined?', event, self.fieldModel, '-', self.model[self.key]);
+												self.$emit('input', self.model, self.model[self.key]); //JSON.parse(JSON.stringify(self.model))); //[self.key])
 								}
 				},
 
@@ -2395,93 +2206,89 @@ export default {
 
 								var self = this;
 
-								////////////////////////////////////////////
+								///////////////////////////////////////////////
 
-								//Clean up any bad input
-								// 
-								var cleaned = self.fixCorruptedData(self.model[self.field.key]);
-								if (typeof cleaned != typeof self.model[self.field.key] || cleaned != self.model[self.field.key]) {
-												console.log('CLEANED', self.field.title, self.field.type, cleaned)
-												self.$set(self.model, self.field.key, cleaned);
-								}
-
-								////////////////////////////////////////////
-
-								//If we are contained inside a fluro-content-form then
-								//add this component to the array
-								if (self.formFields) {
-												//Add to the form fields
-												self.$set(self.formFields, self.formFields.length, self);
-								}
+								self.fixCorruptedData();
 
 								///////////////////////////////////////////////
 
-								// self.checkInitialValue();
+								if (!self.multipleInput) {
 
-								///////////////////////////////////////////////
+												//IF it's an array
+												if (_.isArray(self.fieldModel)) {
 
-								var value = self.model[self.field.key];
-								var hasExistingValue = (value !== undefined && value !== null && value !== '');
+																//Convert it to a single value
+																switch (self.type) {
+																				case 'string':
+																								self.fieldModel = _.first(self.fieldModel);
+																								console.log(self.field.title, 'Transformed array to single value')
+																								break;
+																}
+												} else {
 
-								//We already have a value
-								if (hasExistingValue) {
-												// console.log(self.field.key, 'ALREADY HAS A VALUE', value)
-												return;
-								}
+																//We are a single value
+																//If there is nothing in the field model
+																if (!self.fieldModel) {
+																				//If there is default values set
+																				if (self.defaultValues && self.defaultValues.length) {
+																								var defaultValue = _.first(self.defaultValues);
 
-								///////////////////////////////////////////////
+																								if (defaultValue) {
 
-								var multipleInput = self.multipleInput;
-								var singleInput = !multipleInput;
+																												switch (self.type) {
+																																case 'date':
+																																				if (String(defaultValue).toLowerCase() == 'now') {
+																																								defaultValue = new Date();
+																																				}
+																																				break;
+																																case 'number':
+																																				defaultValue = Number(defaultValue);
+																																				break;
+																																case 'integer':
+																																				defaultValue = parseInt(defaultValue);
+																																				break;
+																																case 'decimal':
+																																case 'float':
+																																				defaultValue = parseFloat(defaultValue);
+																																				break;
+																																default:
+																																				//Nothing
+																																				break;
+																												}
 
-								////////////////////////////////////////////
+																												self.fieldModel = defaultValue;
+																								}
 
-								//If we are a group then the fixCorruptedData function
-								//will already have created our defaults
-								if (self.type == 'group') {
-												return;
-								}
-
-								///////////////////////////////////////////////
-								///////////////////////////////////////////////
-								///////////////////////////////////////////////
-								///////////////////////////////////////////////
-
-								//There are no defaults set for this field
-								if (!self.defaultValues || !self.defaultValues.length) {
-												return;
-								}
-
-								////////////////////////////////////////////
-
-								console.log('Update defaults', self.field.title, self.defaultValues);
-
-								////////////////////////////////////////////
-
-								if (singleInput) {
-												//Get the first default value
-												var defaultValue = _.first(self.defaultValues);
-
-												if (defaultValue) {
-																//Set our field model default value
-																self.$set(self.model, self.field.key, self.cleanInput(defaultValue));
+																				}
+																}
 												}
-								} else {
-
-												//Add all our default values
-												self.$set(self.model, self.field.key, _.map(defaultValues, self.cleanInput));
 								}
 
 								////////////////////////////////////////////
 
+								switch (self.type) {
+												case 'group':
 
-								// 								//If there is form fields
-								// 								if (self.formFields) {
-								// 												//Add to the form fields
-								// 												self.$set(self.formFields, self.formFields.length, self);
-								// 								}
-								// 								break;
-								// }
+																if (self.asObject) {
+																				if (!self.fieldModel) {
+																								if (self.multipleInput) {
+																												self.fieldModel = [];
+																								} else {
+																												self.fieldModel = {};
+																								}
+																				}
+																} else {
+																				//Do nothing
+																}
+																break;
+												default:
+																//If there is form fields
+																if (self.formFields) {
+																				//Add to the form fields
+																				self.$set(self.formFields, self.formFields.length, self);
+																}
+																break;
+								}
 
 
 								// if (self.type == 'group' && !self.asObject) {
@@ -2498,13 +2305,11 @@ export default {
 								//         self.$set(self.formFields, self.formFields.length, self);
 								//     }
 								// }
-								/**/
-
-
 
 								////////////////////////////////////////////
-								//Emit itself being created
 
+								//Emit itself being created
+								self.checkInitialValue();
 								self.$emit('created', self);
 
 
@@ -2527,7 +2332,6 @@ export default {
 								},
 								'disableDefaults': {
 												type: Boolean,
-												default: false,
 								},
 								'context': {
 												type: String,
@@ -2632,6 +2436,10 @@ export default {
 								isVisible: {
 												get() {
 
+																if (!this.ready) {
+																				return Promise.resolve(false);
+																}
+
 																var isHidden = this.renderer == 'value' || this.expressionHideGroup || this.expressionHide;
 																return Promise.resolve(!isHidden);
 												}
@@ -2640,16 +2448,8 @@ export default {
 												get() {
 																var self = this;
 																//There is no hidden expression
-																if (!self.expressions || !self.expressions.value) {
+																if (!self.expressions || !self.expressions.value || !self.expressions.value.length) {
 																				return Promise.resolve();
-																}
-
-																if (typeof self.expressions.value == 'function') {
-																				return self.expressions.value();
-																} else {
-																				if (!String(self.expressions.value).length) {
-																								return Promise.resolve();
-																				}
 																}
 
 																var value = this.resolveExpression(self.expressions.value);
@@ -2661,13 +2461,21 @@ export default {
 								expressionDefaultValue: {
 												get() {
 																var self = this;
+
+
 																//There is no hidden expression
 																if (!self.expressions || !self.expressions.defaultValue) {
 																				return Promise.resolve();
 																}
 
+																console.log('Check out expression!', self.expressions.defaultValue)
+
 																if (typeof self.expressions.defaultValue == 'function') {
-																				return self.expressions.defaultValue();
+
+																				var v = self.expressions.defaultValue();
+																				console.log('GET DEFAULT VALUE', v);
+
+																				return v;
 																} else {
 																				if (!String(self.expressions.defaultValue).length) {
 																								return Promise.resolve();
@@ -2676,6 +2484,7 @@ export default {
 
 
 																var value = this.resolveExpression(self.expressions.defaultValue);
+																console.log('Resolve value', value)
 																return Promise.resolve(value);
 												}
 
@@ -2724,13 +2533,7 @@ export default {
 																}
 
 																if (typeof self.expressions.hide == 'function') {
-
-
-																				var shouldHide = self.expressions.hide();
-
-																				// console.log('SHOULD WE HIDE?', self.field.title, shouldHide)
-
-																				return Promise.resolve(shouldHide);
+																				return self.expressions.hide();
 																} else {
 																				if (!String(self.expressions.hide).length) {
 																								return Promise.resolve(false);
@@ -2773,30 +2576,10 @@ export default {
 				},
 
 				mixins: [validationMixin],
-				beforeCreate: function() {
-
-
-								var self = this;
-
-
-
-
-								Promise.all([
-																DynamicImportService.load('src/components/form/FluroContentForm.vue', function() {
-																				return import('src/components/form/FluroContentForm.vue')
-																}),
-																DynamicImportService.load('src/components/form/FluroContentFormField.vue', function() {
-																				return import('src/components/form/FluroContentFormField.vue')
-																}),
-												])
-												.then(function(results) {
-
-																// console.log('Set Components', results);
-																self.$options.components.FluroContentForm = results[0];
-																self.$options.components.FluroContentFormField = results[1];
-																self.ready = true;
-												})
-				},
+				// beforeCreate: function() {
+				//     this.$options.components.FluroContentForm = require('src/components/form/FluroContentForm.vue').default;
+				//     this.$options.components.FluroContentFormField = require('src/components/form/FluroContentFormField.vue').default;
+				// },
 				validations: {
 								model: {
 												validateInput,

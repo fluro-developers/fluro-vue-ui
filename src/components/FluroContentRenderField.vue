@@ -2,7 +2,6 @@
 				<div class="fluro-content-render-field" v-if="ready">
 								<!-- <pre>{{field}}</pre> -->
 								<!-- <pre>{{field.title}} {{field.key}} {{renderer}} {{fieldModel}}</pre> -->
-							
 								<template v-if="renderer == 'embedded' && raw">
 												<template v-if="!multiple">
 																<!-- <pre>{{field.title}}</pre> -->
@@ -184,7 +183,6 @@
 																</template>
 												</template>
 								</template>
-								
 				</div>
 </template>
 <script>
@@ -227,7 +225,7 @@ export default {
 
 				data() {
 								return {
-									ready:false,
+												ready: false,
 												model: this.value,
 								}
 				},

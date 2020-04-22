@@ -118,6 +118,9 @@
 																								</v-layout>
 																				</div>
 																</flex-column-header>
+																	<!-- <flex-column-body> -->
+																	<!-- <pre>{{model}}</pre> -->
+																<!-- </flex-column-body> -->
 																<flex-column-body>
 																				<v-container v-if="resetting">
 																								<fluro-page-preloader contain />
@@ -130,7 +133,8 @@
 																												<v-container fluid>
 																																<wrapper sm>
 																																				<constrain sm>
-																																								<fluro-interaction-form @state="stateChanged" :contextField="contextField" :defaultState="previewState" context="builder" :prefill="false" @debug="debugField" :title="item.title" :definition="fauxDefinition" :paymentIntegration="paymentIntegration" :debugMode="true" v-model="previewModel" ref="previewForm" :fields="model">
+																																								<!-- :fields="model" -->
+																																								<fluro-interaction-form @state="stateChanged" :contextField="contextField" :defaultState="previewState" context="builder" :prefill="false" @debug="debugField" :title="item.title" :definition="fauxDefinition" :paymentIntegration="paymentIntegration" :debugMode="true" v-model="previewModel" ref="previewForm">
 																																												<template v-slot:info>
 																																																<h1 margin v-if="!hideDisplayTitle">{{displayTitle}}</h1>
 																																																<fluro-compile-html class="form-body" :template="publicData.body" :context="item" />
@@ -251,6 +255,7 @@
 				</flex-column>
 </template>
 <script>
+	import Vue from 'vue';
 import FieldTemplates from 'src/components/fields/FieldEditorTemplates';
 import ComponentFieldTemplates from 'src/components/fields/FieldEditorComponentTemplates';
 import draggable from 'vuedraggable';
@@ -541,6 +546,10 @@ export default {
 												var self = this;
 												self.$emit('input', self.model)
 								},
+								// fieldsChanged() {
+								// 				console.log('Fields have been changed', this.model);
+								// 				// self.model = (self.model || []).slice();
+								// },
 								expandAll() {
 												var self = this;
 
@@ -753,13 +762,17 @@ export default {
 																//If we have the form configuration bit selected
 																if (self.configureDefaults) {
 																				//We want to add the field to the top of the list
+																				console.log('Add new field to top')
 																				self.model.unshift(newField)
 																} else {
 																				//Add to the bottom of the list
+																				console.log('Add new field to bottom')
 																				self.model.push(newField)
+
 																}
 
 																self.field = newField;
+																// self.$emit('input', self.model)
 																return;
 												}
 
@@ -778,9 +791,11 @@ export default {
 																				}
 
 																				//Add the new field into this container
+																				console.log('Add new field in to group')
 																				self.field.fields.push(newField);
 																				//And select the field
 																				self.field = newField;
+																				// self.fieldsChanged();
 																				return;
 																}
 												}
@@ -789,23 +804,30 @@ export default {
 
 												//Here we want to find where the current selected field is
 												//so we can add it in underneath the current selected field
-												console.log('CHECK TO GET PARENT?')
+												// console.log('CHECK TO GET PARENT?')
 												var { parent, index } = self.findSelectedParent();
-												console.log('GOT PARENT?', parent);
+												// console.log('GOT PARENT?', parent);
 
 												if (!parent) {
 																parent = self.model;
 												}
 
 												if (index == -1) {
+																console.log('push into parent', parent)
 																parent.push(newField)
+
 												} else {
+																console.log('splice into parent', parent)
 																parent.splice(index + 1, 0, newField)
+																// self.fieldsChanged();
+																// parent.push(newField)
 												}
 
 												///////////////////////////////////////
 
 												self.field = newField;
+
+
 								},
 								injectField(field, parent) {
 												var self = this;
@@ -814,9 +836,11 @@ export default {
 												var index = parent.indexOf(field);
 
 
-												console.log('Inject at', index, parent)
+												console.log('Splice into parent at', index, parent)
+												// parent.push(newField);
 												parent.splice(index + 1, 0, newField);
 												self.field = newField;
+												// self.fieldsChanged();
 								},
 								clicked(item) {
 												// console.log('Select', item);
@@ -940,7 +964,7 @@ export default {
 												previewState: 'ready',
 												configurePayment: false,
 												configureDefaults: false,
-												model: this.value,
+												model: Vue.observable(this.value),
 												resetting: false,
 												previewModel: {},
 												field: null,

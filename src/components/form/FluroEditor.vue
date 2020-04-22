@@ -183,7 +183,7 @@
                             Tokens
                         </v-btn>
                     </template>
-                    <v-list>
+                    <v-list dense>
                         <v-list-tile @click="commands.token(token.key)" :key="token.key" v-for="token in tokens">
                             <v-list-tile-content><span style="margin:0 !important">{{token.title}}</span></v-list-tile-content>
                         </v-list-tile>
@@ -195,12 +195,15 @@
                             <fluro-icon icon="plus" />
                         </v-btn>
                     </template>
-                    <v-list>
+                    <v-list dense>
+                    	<!-- <v-list-tile @click.stop.prevent="showAssetPrompt(commands.asset)">
+                            <v-list-tile-content><span style="margin:0 !important" ><fluro-icon type="asset" />&nbsp;Add Asset Link</span></v-list-tile-content>
+                        </v-list-tile> -->
                         <v-list-tile @click.stop.prevent="showImagePrompt(commands.image)">
-                            <v-list-tile-content><span style="margin:0 !important" ><fluro-icon icon="image" />&nbsp;Add Image</span></v-list-tile-content>
+                            <v-list-tile-content><span style="margin:0 !important" ><fluro-icon type="image" />&nbsp;Add Image</span></v-list-tile-content>
                         </v-list-tile>
                         <v-list-tile @click.stop.prevent="showVideoPrompt(commands.video)">
-                            <v-list-tile-content><span style="margin:0 !important" ><fluro-icon icon="video" />&nbsp;Add Video</span></v-list-tile-content>
+                            <v-list-tile-content><span style="margin:0 !important" ><fluro-icon type="video" />&nbsp;Add Video</span></v-list-tile-content>
                         </v-list-tile>
                         <v-list-tile :class="{ 'active': isActive.blockquote() }" @click.stop.prevent="commands.blockquote">
                             <v-list-tile-content><span style="margin:0 !important" ><fluro-icon icon="quote-right" />&nbsp;Blockquote</span></v-list-tile-content>
@@ -359,6 +362,7 @@ import FluroCodeEditor from 'src/components/form/FluroCodeEditor.vue';
 import Mention from 'src/components/form/tiptap/mentions.js';
 import FluroNode from 'src/components/form/tiptap/fluroNode';
 import FluroMark from 'src/components/form/tiptap/fluroMark';
+import Asset from 'src/components/form/tiptap/asset';
 import Image from 'src/components/form/tiptap/image';
 import Video from 'src/components/form/tiptap/video';
 import Token from 'src/components/form/tiptap/token';
@@ -520,6 +524,33 @@ export default {
 
         sourceChange(input) {
             this.model = input;
+        },
+        showAssetPrompt(command) {
+            var self = this;
+
+            self.$fluro.global.select('asset', { 
+                title: 'Select assets', 
+                minimum: 0, 
+                maximum: 0,
+                allDefinitions:true,
+                }, true)
+                .then(function(res) {
+                    if(res) {
+
+                        // var first = _.first(res)
+                        _.each(res, function(item) {
+                        	command( {item} )
+                        })
+                        
+                    }
+                }
+            )
+
+
+            // const src = prompt('Enter the url of your image here')
+            // if (src !== null) {
+            //     command({ src })
+            // }
         },
         showImagePrompt(command) {
             var self = this;
@@ -800,6 +831,7 @@ export default {
             new OrderedList(),
             new ListItem(),
             new Image(),
+            new Asset(),
             new Video(),
             new Code(),
             new History(),
