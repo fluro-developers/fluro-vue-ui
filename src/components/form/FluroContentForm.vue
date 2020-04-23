@@ -8,8 +8,7 @@
 												<fluro-content-form-field :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="fields[2]" @input="update" v-model="model" />
 												<fluro-content-form-field :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="fields[3]" @input="update" v-model="model" />
 												 -->
-												<v-container fluid class="grid-list-lg" pa-0 :key="field.guid" v-for="(field, index) in fields">
-													<pre>{{field.guid}}</pre>
+												<v-container fluid class="grid-list-lg" pa-0 :key="`${field.guid}${field.key}`" v-for="(field, index) in fields">
 																<fluro-content-form-field :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="fields[index]" @input="update" v-model="model" />
 												</v-container>
 								</slot>
@@ -235,18 +234,22 @@ export default {
 								// FluroContentFormField,
 				},
 				watch: {
-								model(m) {
+								model(newModel, oldModel) {
 
 
 												console.log('form model changed');
 												this.$emit('input', this.model);
 
+
+
 								},
 								value(v) {
 
+
+
 												//If the model has been changed
 												if (this.model != v) {
-																// console.log('value changed');
+																console.log('FORM MODEL IS NOW SOMETHING DIFFERENT VALUE', v);
 																this.model = v
 																this.reset();
 
@@ -314,7 +317,7 @@ export default {
 
 				},
 				created() {
-								console.log('Reset on creation')
+								console.log('Reset on creation!')
 								this.reset();
 				},
 				methods: {
@@ -327,7 +330,7 @@ export default {
 								},
 								reset() {
 												var self = this;
-												console.log('Form reset() THIS SHOULD ONLY HAPPEN IF THE ORIGINAL PROP IS CHANGED')
+												// console.log('Form reset() THIS SHOULD ONLY HAPPEN IF THE ORIGINAL PROP IS CHANGED')
 
 												/////////////////////////////////////////////////
 
@@ -398,7 +401,7 @@ export default {
 
 
 								update(input, valueThatWasChanged) {
-												console.log('form model changed from update callback');
+												// console.log('form model changed from update callback');
 												// this.$forceUpdate();
 
 												// this.$emit('input', this.model);

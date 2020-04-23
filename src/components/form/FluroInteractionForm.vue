@@ -3,127 +3,132 @@
 								<!-- <pre>Form Options: {{formOptions}}</pre> -->
 								<!-- <pre>Email: {{askEmail}} {{requireEmail}}</pre> -->
 								<!-- <pre>Phone: {{askPhone}} {{requirePhone}}</pre> -->
-								<template v-if="renderable">
-												<template v-if="!allowed">
-																<template v-if="user">
-																				<slot name="authenticated">
-																								You do not have permission to submit this form
-																				</slot>
-																</template>
-																<template v-if="!user">
-																				<slot name="unauthenticated">
-																								You must be signed in to submit this form
-																				</slot>
-																</template>
-												</template>
-												<template v-if="allowed">
-																<slot name="success" :reset="reset" :result="result" v-if="state == 'success'">
-																				<div class="text-xs-center">
-																								<h3>Submission Successful</h3>
-																								<div>Thank you for your submission</div>
-																								<v-btn class="mx-0" @click="reset()">
-																												Back to form
-																								</v-btn>
-																				</div>
-																</slot>
-																<template v-else>
-																				<slot name="info"></slot>
-																				<form @submit.prevent="submit" :disabled="state == 'processing'">
-																								<!-- <pre>{{allowAnonymous}}</pre> -->
-																								<!-- <pre>{{fields}}</pre> -->
-																								<!-- <pre>{{options}}</pre> -->
-																								<!-- <pre>{{errorMessages}}</pre> -->
-																								<fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" @errorMessages="validate" @input="modelChanged" ref="form" :options="options" v-model="dataModel" :fields="fields" />
-																								<div class="payment" v-if="showPaymentForm">
-																												<v-container>
-																																<h2>Payment Summary</h2>
-																																<v-layout align-center>
-																																				<v-flex class="modifier-title">
-																																								<strong>Amount</strong>
-																																				</v-flex>
-																																				<v-flex shrink v-if="baseAmount">
-																																								<strong>{{
-																																												formattedBaseAmount
-																																												}}</strong>
-																																				</v-flex>
-																																</v-layout>
-																																<div class="modifier" v-for="modifier in activeModifiers">
-																																				<v-layout align-center>
-																																								<v-flex class="modifier-title">
-																																												{{ modifier.title }}
-																																								</v-flex>
-																																								<v-flex shrink>
-																																												{{ modifier.description }}
-																																								</v-flex>
-																																								<v-flex shrink>
-																																												{{ modifier.formattedTotal }}
-																																								</v-flex>
-																																				</v-layout>
-																																</div>
-																																<div>
-																																				<v-layout align-center>
-																																								<v-flex>
-																																												<h3>Total</h3>
-																																								</v-flex>
-																																								<v-flex shrink>
-																																												<h3>
-																																																{{ formattedTotal }}
-																																																<span class="muted">{{
-																																																				currency.toUpperCase()
-																																																				}}</span>
-																																												</h3>
-																																								</v-flex>
-																																				</v-layout>
-																																</div>
-																												</v-container>
-																												<v-container style="background: #fafafa" class="border-top">
-																																<h4>Card Details</h4>
-																																<fluro-content-form @errorMessages="validate" @input="modelChanged" ref="payment" :options="options" v-model="dataModel" :fields="paymentFields" />
-																												</v-container>
-																												<v-container v-if="definition.data.enableReceipt" style="background: #fafafa" class="border-top">
-																																<!-- <h5>Would you like an email receipt?</h5> -->
-																																<fluro-content-form-field @input="modelChanged" :options="options" :field="receiptInput" v-model="dataModel" />
-																												</v-container>
-																								</div>
-																								<div class="actions">
-																												<template v-if="state == 'processing'">
-																																<v-btn :block="mobile" :large="mobile" class="mx-0" :disabled="true">
-																																				Processing
-																																				<v-progress-circular indeterminate></v-progress-circular>
+							<!-- 	<v-layout>
+												<v-flex> -->
+																<template v-if="renderable">
+																				<template v-if="!allowed">
+																								<template v-if="user">
+																												<slot name="authenticated">
+																																You do not have permission to submit this form
+																												</slot>
+																								</template>
+																								<template v-if="!user">
+																												<slot name="unauthenticated">
+																																You must be signed in to submit this form
+																												</slot>
+																								</template>
+																				</template>
+																				<template v-if="allowed">
+																								<slot name="success" :reset="reset" :result="result" v-if="state == 'success'">
+																												<div class="text-xs-center">
+																																<h3>Submission Successful</h3>
+																																<div>Thank you for your submission</div>
+																																<v-btn class="mx-0" @click="reset()">
+																																				Back to form
 																																</v-btn>
-																												</template>
-																												<template v-else-if="state == 'error'">
-																																<v-alert :value="true" type="error" outline>
-																																				{{ serverErrors }}
-																																</v-alert>
-																																<v-btn :block="mobile" :large="mobile" class="mx-0" @click.prevent.native="state = 'ready'">
-																																				Try Again
-																																</v-btn>
-																												</template>
-																												<template v-else>
-																																<v-alert :value="true" type="error" outline v-if="hasErrors">
-																																				Please check the following issues before
-																																				submitting
-																																				<div v-for="error in errorMessages">
-																																								<strong>{{ error.title }}</strong>: {{ error.messages[0] }}
-																																				</div>
-																																</v-alert>
-																																<v-layout>
-																																				<v-btn :block="mobile" :large="mobile" class="mx-0" :disabled="hasErrors" type="submit" color="primary">
-																																								Submit
-																																				</v-btn>
-																																				<v-spacer />
-																																				<slot name="submit"></slot>
-																																</v-layout>
-																												</template>
-																								</div>
-																				</form>
+																												</div>
+																								</slot>
+																								<template v-else>
+																												<slot name="info"></slot>
+																												<form @submit.prevent="submit" :disabled="state == 'processing'">
+																																<!-- <pre>{{allowAnonymous}}</pre> -->
+																																<!-- <pre>{{fields}}</pre> -->
+																																<!-- <pre>{{options}}</pre> -->
+																																<!-- <pre>{{errorMessages}}</pre> -->
+																																<fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" @errorMessages="validate" @input="modelChanged" ref="form" :options="options" v-model="dataModel" :fields="fields" />
+																																<div class="payment" v-if="showPaymentForm">
+																																				<v-container>
+																																								<h2>Payment Summary</h2>
+																																								<v-layout align-center>
+																																												<v-flex class="modifier-title">
+																																																<strong>Amount</strong>
+																																												</v-flex>
+																																												<v-flex shrink v-if="baseAmount">
+																																																<strong>{{
+																																																				formattedBaseAmount
+																																																				}}</strong>
+																																												</v-flex>
+																																								</v-layout>
+																																								<div class="modifier" v-for="modifier in activeModifiers">
+																																												<v-layout align-center>
+																																																<v-flex class="modifier-title">
+																																																				{{ modifier.title }}
+																																																</v-flex>
+																																																<v-flex shrink>
+																																																				{{ modifier.description }}
+																																																</v-flex>
+																																																<v-flex shrink>
+																																																				{{ modifier.formattedTotal }}
+																																																</v-flex>
+																																												</v-layout>
+																																								</div>
+																																								<div>
+																																												<v-layout align-center>
+																																																<v-flex>
+																																																				<h3>Total</h3>
+																																																</v-flex>
+																																																<v-flex shrink>
+																																																				<h3>
+																																																								{{ formattedTotal }}
+																																																								<span class="muted">{{
+																																																												currency.toUpperCase()
+																																																												}}</span>
+																																																				</h3>
+																																																</v-flex>
+																																												</v-layout>
+																																								</div>
+																																				</v-container>
+																																				<v-container style="background: #fafafa" class="border-top">
+																																								<h4>Card Details</h4>
+																																								<fluro-content-form @errorMessages="validate" @input="modelChanged" ref="payment" :options="options" v-model="dataModel" :fields="paymentFields" />
+																																				</v-container>
+																																				<v-container v-if="definition.data.enableReceipt" style="background: #fafafa" class="border-top">
+																																								<!-- <h5>Would you like an email receipt?</h5> -->
+																																								<fluro-content-form-field @input="modelChanged" :options="options" :field="receiptInput" v-model="dataModel" />
+																																				</v-container>
+																																</div>
+																																<div class="actions">
+																																				<template v-if="state == 'processing'">
+																																								<v-btn :block="mobile" :large="mobile" class="mx-0" :disabled="true">
+																																												Processing
+																																												<v-progress-circular indeterminate></v-progress-circular>
+																																								</v-btn>
+																																				</template>
+																																				<template v-else-if="state == 'error'">
+																																								<v-alert :value="true" type="error" outline>
+																																												{{ serverErrors }}
+																																								</v-alert>
+																																								<v-btn :block="mobile" :large="mobile" class="mx-0" @click.prevent.native="state = 'ready'">
+																																												Try Again
+																																								</v-btn>
+																																				</template>
+																																				<template v-else>
+																																								<v-alert :value="true" type="error" outline v-if="hasErrors">
+																																												Please check the following issues before
+																																												submitting
+																																												<div v-for="error in errorMessages">
+																																																<strong>{{ error.title }}</strong>: {{ error.messages[0] }}
+																																												</div>
+																																								</v-alert>
+																																								<v-layout>
+																																												<v-btn :block="mobile" :large="mobile" class="mx-0" :disabled="hasErrors" type="submit" color="primary">
+																																																Submit
+																																												</v-btn>
+																																												<v-spacer />
+																																												<slot name="submit"></slot>
+																																								</v-layout>
+																																				</template>
+																																</div>
+																												</form>
+																								</template>
+																				</template>
+																				<!-- <pre>ERRORS {{errorMessages}}</pre> -->
 																</template>
-												</template>
-												<!-- <pre>ERRORS {{errorMessages}}</pre> -->
-								</template>
-
-								<pre>{{dataModel}}</pre>
+												<!-- </v-flex>
+												<v-flex>
+																<pre>{{dataModel}}</pre>
+												</v-flex>
+								</v-layout> -->
 				</div>
 </template>
 <script>
@@ -291,9 +296,9 @@ export default {
 								paymentIntegration: "initializePayment"
 				},
 				computed: {
-					renderable() {
-						return this.definition;// && this.ready;
-					},
+								renderable() {
+												return this.definition; // && this.ready;
+								},
 								recursiveClick() {
 												var self = this;
 												if (!self.debugMode) {

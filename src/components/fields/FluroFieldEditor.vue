@@ -118,8 +118,8 @@
 																								</v-layout>
 																				</div>
 																</flex-column-header>
-																	<!-- <flex-column-body> -->
-																	<!-- <pre>{{model}}</pre> -->
+																<!-- <flex-column-body> -->
+																<!-- <pre>{{model}}</pre> -->
 																<!-- </flex-column-body> -->
 																<flex-column-body>
 																				<v-container v-if="resetting">
@@ -255,7 +255,7 @@
 				</flex-column>
 </template>
 <script>
-	import Vue from 'vue';
+import Vue from 'vue';
 import FieldTemplates from 'src/components/fields/FieldEditorTemplates';
 import ComponentFieldTemplates from 'src/components/fields/FieldEditorComponentTemplates';
 import draggable from 'vuedraggable';
@@ -748,9 +748,17 @@ export default {
 																newField = self.getNewField(type);
 												}
 
+
+
 												///////////////////////////////////////
 
 												newField.isNew = true;
+
+												//Just in case we switch to an embedded field
+												newField.collapsed = false;
+												if (!newField.fields) {
+																newField.fields = [];
+												}
 
 												///////////////////////////////////////
 
@@ -833,10 +841,29 @@ export default {
 												var self = this;
 
 												var newField = self.getNewField();
+
+												if (!parent) {
+													return console.log('no parent!');
+																// if (field) {
+																// 	console.log('but there is a field')
+																// 		if(!field.fields) {
+																// 					field.fields = [];
+																// 					console.log('Create sub fields array as needed')
+																// 		} 
+
+																// 		parent = field.fields;
+																// 		console.log('parent is now', parent)
+																// } else {
+																// 				return console.log('Can not inject here!')
+																// }
+												}
+
+												
 												var index = parent.indexOf(field);
+												
 
 
-												console.log('Splice into parent at', index, parent)
+
 												// parent.push(newField);
 												parent.splice(index + 1, 0, newField);
 												self.field = newField;

@@ -222,7 +222,8 @@ export default {
                     title: `Add Field Inside`,
                     icon: 'plus',
                     click() {
-                        self.$emit('injected', self.model, self.model);
+                    	console.log('INJECT INSIDE', self.model, self.model.fields)
+                        self.$emit('injected', self.model, self.model.fields);
                     }
                 })
             }
