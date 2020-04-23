@@ -121,7 +121,9 @@ if (process.env.NODE_ENV === 'development') {
 
 export default [
 				Object.assign({}, defaultConfig, {
-								output: [{
+								output: [
+								/**
+									{
 																// exports: 'named',
 																globals,
 																dir: 'dist/cjs',
@@ -129,6 +131,7 @@ export default [
 																format: 'cjs',
 																sourcemap
 												},
+												/**/
 												{
 																// exports: 'named',
 																globals,

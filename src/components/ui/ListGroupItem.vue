@@ -116,7 +116,7 @@ export default {
     color:inherit;
     position: relative;
     padding: 7px 10px;
-    background: #fff;
+    background:  #fff;
     border-bottom: 1px solid rgba(#000, 0.1);
     display: flex;
     align-items: center;
@@ -139,7 +139,7 @@ export default {
     }
 
     .fluro-item-image {
-        margin-right: 10px;
+        margin-right: 10px !important;
     }
 
     .list-group-item-content {
