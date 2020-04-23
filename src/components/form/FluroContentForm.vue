@@ -206,8 +206,8 @@ export default {
 																})
 																.map(function(field) {
 
-																				// console.log('ERROR MESSAGES', field);
-																				// console.log('ERROR MESSAGE', field);
+																				// ///console.log('ERROR MESSAGES', field);
+																				// ///console.log('ERROR MESSAGE', field);
 																				return {
 																								title: field.errorTitle,
 																								messages: field.errorMessages,
@@ -237,7 +237,7 @@ export default {
 								model(newModel, oldModel) {
 
 
-												console.log('form model changed');
+												// ///console.log('form model changed');
 												this.$emit('input', this.model);
 
 
@@ -249,19 +249,19 @@ export default {
 
 												//If the model has been changed
 												if (this.model != v) {
-																console.log('FORM MODEL IS NOW SOMETHING DIFFERENT VALUE', v);
+																///console.log('FORM MODEL IS NOW SOMETHING DIFFERENT VALUE', v);
 																this.model = v
 																this.reset();
 
 												}
 
-												// console.log('Form value set', val)
+												// ///console.log('Form value set', val)
 												// 		// var newModel = Object.assign({}, val) //input;
 												// 		this.$set(this, 'model', val);
 												// 		this.reset();
 								},
 								// fields(val) {
-								// 				console.log('FIELDS CHANGED needs reset')
+								// 				///console.log('FIELDS CHANGED needs reset')
 								// 				return this.reset();
 								// },
 								errorMessages(messages) {
@@ -282,7 +282,7 @@ export default {
 												])
 												.then(function(results) {
 
-																// console.log('Set Components', results);
+																// ///console.log('Set Components', results);
 																self.$options.components.FluroContentForm = results[0];
 																self.$options.components.FluroContentFormField = results[1];
 																self.ready = true;
@@ -297,7 +297,7 @@ export default {
 								// 								self.$options.components.FluroContentForm = results[0].default
 								// 								self.$options.components.FluroContentFormField = results[1].default
 								// 								self.ready = true;
-								// 								//console.log('Imported Components Dynamically', results)
+								// 								/////console.log('Imported Components Dynamically', results)
 								// 				})
 								// Promise.all([
 								// 								DynamicImportService.load('src/components/form/FluroContentForm.vue', function() {
@@ -309,7 +309,7 @@ export default {
 								// 				])
 								// 				.then(function(results) {
 
-								// 								// console.log('Set Components', results);
+								// 								// ///console.log('Set Components', results);
 								// self.$options.components.FluroContentForm = results[0];
 								// self.$options.components.FluroContentFormField = results[1];
 								// 								self.ready = true;
@@ -317,7 +317,7 @@ export default {
 
 				},
 				created() {
-								console.log('Reset on creation!')
+								///console.log('Reset on creation!')
 								this.reset();
 				},
 				methods: {
@@ -330,7 +330,7 @@ export default {
 								},
 								reset() {
 												var self = this;
-												// console.log('Form reset() THIS SHOULD ONLY HAPPEN IF THE ORIGINAL PROP IS CHANGED')
+												// ///console.log('Form reset() THIS SHOULD ONLY HAPPEN IF THE ORIGINAL PROP IS CHANGED')
 
 												/////////////////////////////////////////////////
 
@@ -372,17 +372,17 @@ export default {
 																}
 
 
-																// console.log('CREATE DEFAULTS FOR', field.title)
+																// ///console.log('CREATE DEFAULTS FOR', field.title)
 																var existingValue = _.get(self.model, field.key);
 
 																//We already have a value in this field
 																if (existingValue) {
-																				// console.log('Has existing value', field.key, existingValue);
+																				// ///console.log('Has existing value', field.key, existingValue);
 																				Vue.set(self.model, field.key, existingValue);
 																				return;
 																}
 
-																// console.log('Create Defaults', self);
+																// ///console.log('Create Defaults', self);
 																var blankValue = self.$fluro.utils.getDefaultValueForField(field);
 
 																if (field.type == 'date' && blankValue == 'now') {
@@ -391,7 +391,7 @@ export default {
 
 
 
-																console.log('Set Default value', field.key, blankValue);
+																///console.log('Set Default value', field.key, blankValue);
 																Vue.set(self.model, field.key, blankValue);
 
 
@@ -401,11 +401,11 @@ export default {
 
 
 								update(input, valueThatWasChanged) {
-												// console.log('form model changed from update callback');
+												// ///console.log('form model changed from update callback');
 												// this.$forceUpdate();
 
 												// this.$emit('input', this.model);
-												// console.log('form model changed');
+												// ///console.log('form model changed');
 												// this.$emit('input', this.model);
 												// JSON.parse(JSON.stringify(this.model)));
 
@@ -415,7 +415,7 @@ export default {
 
 								//     var self = this;
 								//     self.model = input;
-								//     // console.log('Update -> model')
+								//     // ///console.log('Update -> model')
 
 								//     //If there is already a debouncer
 								//     if (debouncer) {
@@ -424,7 +424,7 @@ export default {
 								//     }
 
 								//     if (!self.debounce) {
-								//         console.log('')
+								//         ///console.log('')
 								//         return self.$emit('input', this.model);
 								//     }
 
@@ -433,7 +433,7 @@ export default {
 								// },
 								// dispatch() {
 
-								// 				// console.log('Update -> dispatch')
+								// 				// ///console.log('Update -> dispatch')
 								// 				this.$emit('input', this.model);
 								// }
 				}

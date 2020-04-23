@@ -38,17 +38,6 @@ export default {
     mounted() {
         this.render();
     },
-    // render(h) {
-    //     // render(h) {
-    //         if (!this.templateRender) {
-    //             return h('div', 'loading...');
-    //         } else { // If there is a template, I'll show it
-
-    //         console.log('RENDERED', this.rendered);
-    //             return this.rendered;//this.templateRender();
-    //         }
-    //     // },
-    // },
     created() {
         this.render();
     },

@@ -2,7 +2,7 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var index = require('./index-e9d34d7f.js');
+var index = require('./index-cd3809e4.js');
 require('vuedraggable');
 require('vue-color');
 require('tippy.js');

@@ -7,6 +7,7 @@
 <script>
 
 export default {
+	name:'fluro-icon',
     props:{
         'type':{
             type:String,
