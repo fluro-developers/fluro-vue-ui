@@ -1,6 +1,6 @@
 <template>
 				<div @click="clicked($event)" :data-field-key="key" class="fluro-content-form-field" v-if="isVisible" v-bind="attributes" :class="fieldClass">
-								<!-- <pre>FieldModel: {{key}}: - {{getFieldModel()}} - {{fieldModel}} - {{model[key]}}</pre> -->
+								<pre>{{key}}: {{fieldModel}}</pre>
 								<template v-if="ready">
 												<template v-if="officeUseOnly">
 												</template>
@@ -171,6 +171,7 @@
 																</v-dialog>
 												</template>
 												<template v-else-if="renderer == 'datetimepicker'">
+																<!-- <pre>{{fieldModel}}</pre> -->
 																<fluro-date-time-picker :outline="showOutline" :min="minDate" :max="maxDate" :success="success" format="ddd D MMM - h:mma " timePickerFormat="ampm" :label="displayLabel" :placeholder="field.placeholder" :hint="field.description" v-model="fieldModel" @blur="touch()" @focus="modalFocussed();" />
 												</template>
 												<template v-else-if="renderer == 'timezoneselect'">
@@ -413,7 +414,7 @@
 																				</v-input>
 																</template>
 																<template v-if="!multipleInput">
-																				<!-- <pre>Field Model: {{fieldModel}}</pre> -->
+																				<pre>Field Model: {{fieldModel}}</pre>
 																				<v-text-field :mask="params.mask" :autofocus="shouldAutofocus" :outline="showOutline" :success="success" browser-autocomplete="off" :required="required" :label="displayLabel" @input="elementValueChanged" v-model="fieldModel" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="field.placeholder" />
 																</template>
 												</template>
@@ -620,6 +621,9 @@ export default {
 
 												//Clean up any bad input
 												this.fieldModel = this.fixCorruptedData(this.fieldModel);
+
+												//Set the defaults
+												this.createDefaults();
 
 												// this.$set(this, 'model', val);
 												//And reset
@@ -987,7 +991,7 @@ export default {
 												}
 
 
-												return this.field.type == 'reference' ? this.defaultReferences : this.field.defaultValues;
+												return _.compact(this.field.type == 'reference' ? this.defaultReferences : this.field.defaultValues);
 								},
 								defaultReferences() {
 
@@ -996,7 +1000,7 @@ export default {
 												}
 
 
-												return this.field.defaultReferences;
+												return _.compact(this.field.defaultReferences);
 								},
 								attributes() {
 												return this.field.attributes
@@ -1078,9 +1082,15 @@ export default {
 																//////////////////////////////////
 																//If there is a change
 																if (self.model[self.field.key] != value) {
+																				console.log('Set a new value on the field model', value)
 																				self.$set(self.model, self.field.key, value);
 																				self.$emit('input', self.model);
+																				//self.$forceUpdate();
 																}
+																//  else {
+																// 				console.log('Value is already same thing!')
+																// 				self.$emit('input', self.model);
+																// }
 																//////////////////////////////////
 
 																return;
@@ -1088,14 +1098,14 @@ export default {
 
 
 
-																//////////////////////////////////
+																// //////////////////////////////////
 
-																// self.model[self.field.key] = value;
-																self.$set(self.model, self.field.key, value);
+																// // self.model[self.field.key] = value;
+																// self.$set(self.model, self.field.key, value);
 
-																console.log('VALUE TEST CHANGED', self.field.key, self.fieldModel == value, self.model[self.field.key] == value, self.fieldModel)
+																// console.log('VALUE TEST CHANGED', self.field.key, self.fieldModel == value, self.model[self.field.key] == value, self.fieldModel)
 
-																self.valueChange();
+																// self.valueChange();
 
 												}
 								},
@@ -1548,6 +1558,70 @@ export default {
 								// 				// console.log('FIELD UPDATED', this.field.title, data);
 								// 				this.$emit('input', this.model);
 								// },
+								createDefaults() {
+
+												var self = this;
+
+
+
+
+												///////////////////////////////////////////////
+
+												var value = self.model[self.field.key];
+												// console.log('Create defaults for', self.field.title, value);
+												var hasExistingValue = (value !== undefined && value !== null && value !== '');
+
+												//We already have a value
+												if (hasExistingValue) {
+																// console.log(self.field.title, 'ALREADY HAS A VALUE', value)
+																return;
+												}
+
+												///////////////////////////////////////////////
+
+												var multipleInput = self.multipleInput;
+												var singleInput = !multipleInput;
+
+												////////////////////////////////////////////
+
+												//If we are a group then the fixCorruptedData function
+												//will already have created our defaults
+												if (self.type == 'group') {
+																return;
+												}
+
+												///////////////////////////////////////////////
+												///////////////////////////////////////////////
+												///////////////////////////////////////////////
+												///////////////////////////////////////////////
+
+												//There are no defaults set for this field
+												if (!self.defaultValues || !self.defaultValues.length) {
+																// console.log('NO DEFAULT VALUES FOR', self.field.title)
+																return;
+												}
+
+												////////////////////////////////////////////
+
+												console.log('Update defaults', self.field.title, self.defaultValues);
+
+												////////////////////////////////////////////
+
+												if (singleInput) {
+																//Get the first default value
+																var defaultValue = _.first(self.defaultValues);
+
+																if (defaultValue) {
+																				//Set our field model default value
+																				console.log('GET DEFAULT VALUE', self.field.key, defaultValue);
+																				self.$set(self.model, self.field.key, self.cleanInput(defaultValue));
+																}
+												} else {
+
+																//Add all our default values
+																self.$set(self.model, self.field.key, _.map(defaultValues, self.cleanInput));
+												}
+								},
 								cleanOutput(value) {
 
 												var self = this;
@@ -1593,8 +1667,12 @@ export default {
 
 												switch (self.field.type) {
 																case 'date':
-																				if (String(value).toLowerCase() == 'now') {
-																								return new Date(value).toISOString();
+																				if (value) {
+																								if (String(value).toLowerCase() == 'now') {
+																												return new Date().toISOString();
+																								} else {
+																												return new Date(value);
+																								}
 																				}
 																				break;
 																case 'integer':
@@ -1646,6 +1724,7 @@ export default {
 
 												/////////////////////////////////////
 
+												console.log('CLEANED OUTPUT', self.field.title, value)
 												return value;
 								},
 								cleanInput(value) {
@@ -1697,9 +1776,16 @@ export default {
 
 												switch (self.field.type) {
 																case 'date':
-																				if (String(value).toLowerCase() == 'now') {
-																								value = new Date();
+																				if (value) {
+																								if (String(value).toLowerCase() == 'now') {
+																												value = new Date();
+																								} else {
+																												value = new Date(value); //.toISOString();
+																								}
 																				}
+
+
+
 																				break;
 																case 'integer':
 																				if (value != undefined && value != null) {
@@ -1749,6 +1835,7 @@ export default {
 																				break;
 												}
 
+												console.log('CLEANED INPUT', self.field.title, value)
 												return value;
 								},
 								fixCorruptedData(input) {
@@ -1817,9 +1904,17 @@ export default {
 																												break;
 																								case 'void':
 																												break;
+																								case 'date':
+																												// if (input) {
+																												// 				output = input;
+																												// } else {
+																												// 				return;
+																												// }
+																												break;
 																								case 'email':
 																								case 'url':
 																								case 'string':
+
 																								default:
 																												//Clean up in case a string has been added instead of an array of strings
 																												if (input) {
@@ -1831,6 +1926,31 @@ export default {
 																				}
 																}
 												} else {
+
+																/////////////////////////////////////////////
+
+																//If it's a date field
+																if (self.field.type == 'date') {
+
+																				//And we have a value
+																				if (input) {
+
+																								if (_.isDate(input)) {
+																												output = input;
+																								} else {
+																												//Convert the value to a date
+
+																												output = new Date(input);
+																												console.log('convert to date', typeof input, input)
+																								}
+																				}
+
+
+																				return output || input;
+
+																}
+
+																/////////////////////////////////////////////
 
 																//If this field is a group and it's set to be
 																//an object literal
@@ -1852,18 +1972,20 @@ export default {
 																				if (isArray) {
 																								switch (self.field.type) {
 
+
+																												case 'date':
+																																output = new Date(_.first(input));
+																																break;
 																												case 'string':
 																												case 'url':
 																												case 'email':
+																												default:
 																																output = _.chain(input)
 																																				.compact()
 																																				.first()
 																																				.value();
 																																break;
-																												default:
-																																//Get the first item in the array
-																																output = _.first(input);
-																																break;
+
 																								}
 																				}
 																}
@@ -1911,6 +2033,8 @@ export default {
 												//Clear files
 												this.files = [];
 												this.$v.$reset();
+
+
 								},
 								removeFile(file) {
 
@@ -2401,7 +2525,6 @@ export default {
 								// 
 								var cleaned = self.fixCorruptedData(self.model[self.field.key]);
 								if (typeof cleaned != typeof self.model[self.field.key] || cleaned != self.model[self.field.key]) {
-												console.log('CLEANED', self.field.title, self.field.type, cleaned)
 												self.$set(self.model, self.field.key, cleaned);
 								}
 
@@ -2418,59 +2541,13 @@ export default {
 
 								// self.checkInitialValue();
 
-								///////////////////////////////////////////////
 
-								var value = self.model[self.field.key];
-								var hasExistingValue = (value !== undefined && value !== null && value !== '');
-
-								//We already have a value
-								if (hasExistingValue) {
-												// console.log(self.field.key, 'ALREADY HAS A VALUE', value)
-												return;
-								}
 
 								///////////////////////////////////////////////
 
-								var multipleInput = self.multipleInput;
-								var singleInput = !multipleInput;
+								return self.createDefaults();
 
-								////////////////////////////////////////////
 
-								//If we are a group then the fixCorruptedData function
-								//will already have created our defaults
-								if (self.type == 'group') {
-												return;
-								}
-
-								///////////////////////////////////////////////
-								///////////////////////////////////////////////
-								///////////////////////////////////////////////
-								///////////////////////////////////////////////
-
-								//There are no defaults set for this field
-								if (!self.defaultValues || !self.defaultValues.length) {
-												return;
-								}
-
-								////////////////////////////////////////////
-
-								console.log('Update defaults', self.field.title, self.defaultValues);
-
-								////////////////////////////////////////////
-
-								if (singleInput) {
-												//Get the first default value
-												var defaultValue = _.first(self.defaultValues);
-
-												if (defaultValue) {
-																//Set our field model default value
-																self.$set(self.model, self.field.key, self.cleanInput(defaultValue));
-												}
-								} else {
-
-												//Add all our default values
-												self.$set(self.model, self.field.key, _.map(defaultValues, self.cleanInput));
-								}
 
 								////////////////////////////////////////////
 

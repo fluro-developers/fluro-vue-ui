@@ -1,17 +1,18 @@
 <template>
 				<div class="fluro-content-form" v-if="ready">
 								<!-- <pre>{{fields}}</pre> -->
+								<!-- <pre>{{model}}</pre> -->
 								<slot name="form" :parent="formModel" :context="context" :form-fields="formFields" :field-hash="fieldHash" :model="model" :update="update" :options="options">
 												<!-- 	<fluro-content-form-field :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="fields[0]" @input="update" v-model="model" />
 												<fluro-content-form-field :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="fields[1]" @input="update" v-model="model" />
 												<fluro-content-form-field :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="fields[2]" @input="update" v-model="model" />
 												<fluro-content-form-field :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="fields[3]" @input="update" v-model="model" />
 												 -->
-												<v-container fluid class="grid-list-lg" pa-0 v-for="(field, index) in fields">
+												<v-container fluid class="grid-list-lg" pa-0 :key="field.guid" v-for="(field, index) in fields">
+													<pre>{{field.guid}}</pre>
 																<fluro-content-form-field :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="fields[index]" @input="update" v-model="model" />
 												</v-container>
 								</slot>
-								<!-- <pre>{{model}}</pre> -->
 				</div>
 </template>
 <script>
@@ -234,17 +235,22 @@ export default {
 								// FluroContentFormField,
 				},
 				watch: {
-								// model(m) {
+								model(m) {
 
 
-								// 				console.log('form model changed');
-								// 				this.$emit('input', this.model);
+												console.log('form model changed');
+												this.$emit('input', this.model);
 
-								// },
+								},
 								value(v) {
-												console.log('value changed');
-												this.model = v
-												this.reset();
+
+												//If the model has been changed
+												if (this.model != v) {
+																// console.log('value changed');
+																this.model = v
+																this.reset();
+
+												}
 
 												// console.log('Form value set', val)
 												// 		// var newModel = Object.assign({}, val) //input;
@@ -321,7 +327,7 @@ export default {
 								},
 								reset() {
 												var self = this;
-												console.log('Form reset()')
+												console.log('Form reset() THIS SHOULD ONLY HAPPEN IF THE ORIGINAL PROP IS CHANGED')
 
 												/////////////////////////////////////////////////
 
@@ -392,8 +398,12 @@ export default {
 
 
 								update(input, valueThatWasChanged) {
-											console.log('form model changed');
-												this.$emit('input', this.model);
+												console.log('form model changed from update callback');
+												// this.$forceUpdate();
+
+												// this.$emit('input', this.model);
+												// console.log('form model changed');
+												// this.$emit('input', this.model);
 												// JSON.parse(JSON.stringify(this.model)));
 
 								},

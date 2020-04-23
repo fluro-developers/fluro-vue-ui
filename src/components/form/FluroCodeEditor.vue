@@ -106,7 +106,7 @@ export default {
 
 												var self = this;
 
-												console.log('Editor import brace extras')
+												// console.log('Editor import brace extras')
 												// Promise.all([
 												// 								() => import('brace/ext/language_tools'),
 												// 								() => import('brace/mode/html'),

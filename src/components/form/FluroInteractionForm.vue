@@ -3,9 +3,7 @@
 								<!-- <pre>Form Options: {{formOptions}}</pre> -->
 								<!-- <pre>Email: {{askEmail}} {{requireEmail}}</pre> -->
 								<!-- <pre>Phone: {{askPhone}} {{requirePhone}}</pre> -->
-								<template v-if="definition">
-												<!-- <pre>{{definition.fields.length}}</pre> -->
-												<!-- <pre>{{allFields.length}}</pre> -->
+								<template v-if="renderable">
 												<template v-if="!allowed">
 																<template v-if="user">
 																				<slot name="authenticated">
@@ -32,8 +30,7 @@
 																				<slot name="info"></slot>
 																				<form @submit.prevent="submit" :disabled="state == 'processing'">
 																								<!-- <pre>{{allowAnonymous}}</pre> -->
-																								
-																								<!-- <pre>{{allFields.length}}</pre> -->
+																								<!-- <pre>{{fields}}</pre> -->
 																								<!-- <pre>{{options}}</pre> -->
 																								<!-- <pre>{{errorMessages}}</pre> -->
 																								<fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" @errorMessages="validate" @input="modelChanged" ref="form" :options="options" v-model="dataModel" :fields="fields" />
@@ -125,19 +122,21 @@
 												</template>
 												<!-- <pre>ERRORS {{errorMessages}}</pre> -->
 								</template>
+
+								<pre>{{dataModel}}</pre>
 				</div>
 </template>
 <script>
-import FluroContentForm from "src/components/form/FluroContentForm.vue";
-import FluroContentFormField from "src/components/form/FluroContentFormField.vue";
-
 import _ from "lodash";
 import Vue from "vue";
 import Expressions from "expression-eval";
 import { mapFields } from "vuex-map-fields";
 var hasBeenReset;
 
+//////////////////////////////////////////////////
 
+import FluroContentForm from 'src/components/form/FluroContentForm.vue';
+import FluroContentFormField from 'src/components/form/FluroContentFormField.vue';
 //////////////////////////////////////////////////
 
 var injectedScripts = {};
@@ -251,17 +250,32 @@ export default {
 												state: this.defaultState
 								};
 				},
+				// beforeCreate: function() {
+
+				// 				var self = this;
+
+				// 				Promise.all([
+				// 												DynamicImportService.load('src/components/form/FluroContentForm.vue', function() {
+				// 																return import('src/components/form/FluroContentForm.vue')
+				// 												}),
+				// 												DynamicImportService.load('src/components/form/FluroContentFormField.vue', function() {
+				// 																return import('src/components/form/FluroContentFormField.vue')
+				// 												}),
+				// 								])
+				// 								.then(function(results) {
+
+				// 												// console.log('Set Components', results);
+				// 												self.$options.components.FluroContentForm = results[0];
+				// 												self.$options.components.FluroContentFormField = results[1];
+				// 												self.ready = true;
+				// 								})
+
+				// },
 				created() {
 
 								// console.log('INTERACTION FORM VUE', Vue.$store._modulesNamespaceMap);
 
-								var self = this;
-
-								// if (self.debugMode) {
-								// 				self.$watch('definition.fields', self.fieldsChanged, {deep:true})
-								// }
-								// self.fieldsChanged();
-								self.reset();
+								this.reset();
 				},
 				mounted() {
 								this.validate();
@@ -277,6 +291,9 @@ export default {
 								paymentIntegration: "initializePayment"
 				},
 				computed: {
+					renderable() {
+						return this.definition;// && this.ready;
+					},
 								recursiveClick() {
 												var self = this;
 												if (!self.debugMode) {
@@ -608,8 +625,6 @@ export default {
 
 												var allFields = [];
 
-
-
 												//////////////////////////////////////////
 
 												var nameFields = {
@@ -712,35 +727,15 @@ export default {
 																});
 												}
 
-
+												//Get the form fields
+												var formFields = self.definition.fields;
 
 												//Combine them together
-												allFields = allFields.concat(self.definition.fields);
+												allFields = allFields.concat(formFields);
 												// console.log('ALL FIELDS', allFields);
 
 												return allFields;
 								},
-
-								// allFields() {
-
-								// 		var defaultFields = this.fields;
-
-
-								// 		var all = [].concat(defaultFields, this.definedFields);
-
-								// 		console.log('All fields!!', all)
-								// 		return all;
-
-								// 		// //////////////////////////////////////////
-
-								// 		// 		//Get the form fields
-								// 		// 		var formFields = self.definedFields; //definition.fields;
-								// 		// 		console.log('fIELDS CHANGED', formFields)
-
-
-
-								// 		// 	allFields.concat(formFields);
-								// },
 
 								// if (!interactionFormSettings.allowAnonymous && !interactionFormSettings.disableDefaultFields) {
 								//     interactionFormSettings.requireFirstName = true;
@@ -950,20 +945,10 @@ export default {
 												return canCreate || canSubmit;
 								},
 								user() {
-
-												if (!Vue.$store || !Vue.$store.state) {
-																console.log('vuex is not initiated')
-																return;
-												}
-
+												console.log('FIND USER MATCH', Vue.$store)
 												return Vue.$store.state.fluro.user;
 								},
 								application() {
-												if (!Vue.$store || !Vue.$store.state) {
-																console.log('vuex is not initiated')
-																return;
-												}
-
 												return Vue.$store.state.fluro.application;
 								},
 
@@ -977,7 +962,6 @@ export default {
 								FluroContentForm
 				},
 				methods: {
-
 								createEwayToken(done) {
 												var self = this;
 												//Get the Public Encryption Key
