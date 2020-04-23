@@ -620,7 +620,7 @@ export default {
 												this.model = val;
 
 												//Clean up any bad input
-												this.fieldModel = this.fixCorruptedData(this.fieldModel);
+												this.fieldModel = this.fixCorruptedData(this.model[this.field.key]);
 
 												//Set the defaults
 												this.createDefaults();
