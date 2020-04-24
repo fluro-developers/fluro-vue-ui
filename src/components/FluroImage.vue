@@ -1,5 +1,5 @@
 <template>
-    <div class="fluro-image" :class="{loaded:loaded}" :style="style">
+    <div class="fluro-image" :class="{loaded:loaded, cover:cover, contain:contain}" :style="style">
         <img v-if="longpress" class="holder" :src="url"/>
         <div :style="spacer"></div>
         <!-- <transition name="fade"> -->
@@ -16,6 +16,12 @@ export default {
     props: {
         longpress:{
             type:Boolean,
+        },
+        contain:{
+        	type:Boolean,
+        },
+        cover:{
+        	type:Boolean,
         },
         spinner: {
             type: Boolean,
@@ -266,7 +272,8 @@ export default {
         // filter:blur(5px);
     }
 
-    &[contain] {
+    &[contain],
+    &.contain {
 
         &,
         .placeholder {
@@ -274,7 +281,8 @@ export default {
         }
     }
 
-    &[cover] {
+    &[cover],
+    &.cover {
 
         &,
         .placeholder {

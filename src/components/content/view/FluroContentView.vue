@@ -238,6 +238,11 @@ export default {
 																				case 'location':
 
 																								break;
+																				case 'interaction':
+																								return DynamicImportService.load('src/components/content/view/panels/interaction.vue', function() {
+																												return import('src/components/content/view/panels/interaction.vue')
+																								})
+																								break;
 																				case 'mailout':
 																								return DynamicImportService.load('src/components/content/view/panels/mailout.vue', function() {
 																												return import('src/components/content/view/panels/mailout.vue')

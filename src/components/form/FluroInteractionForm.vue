@@ -950,11 +950,13 @@ export default {
 												return canCreate || canSubmit;
 								},
 								user() {
-												console.log('FIND USER MATCH', Vue.$store)
-												return Vue.$store.state.fluro.user;
+											
+												var storeObject = (Vue.$store || this.$store)
+												return storeObject ? storeObject.state.fluro.user : null;
 								},
 								application() {
-												return Vue.$store.state.fluro.application;
+												var storeObject = (Vue.$store || this.$store)
+												return storeObject ? storeObject.state.fluro.application : null;
 								},
 
 								//  ...mapFields('fluro', ['user', 'application']),

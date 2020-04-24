@@ -47,7 +47,6 @@ export default {
                 return;
             }
 
-            console.log('Get components from existing thing', self)
             let DynamicComponent = Vue.extend({
                 template: `<div>${self.template}</div>`,
                 data() {

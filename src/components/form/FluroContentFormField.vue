@@ -378,6 +378,9 @@
 												<template v-else-if="renderer == 'app-theme-select'">
 																<fluro-app-theme-select v-model="fieldModel" :options="options" :label="displayLabel" />
 												</template>
+												<template v-else-if="renderer == 'app-font-select'">
+																<fluro-app-font-select v-model="fieldModel" :options="options" :label="displayLabel" />
+												</template>
 												<template v-else-if="renderer == 'color' && !multipleInput">
 																<!-- COLOR COLOR -->
 																<v-menu :fixed="true" v-model="modal" min-width="290px" :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>

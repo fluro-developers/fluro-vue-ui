@@ -110,7 +110,7 @@ import FluroTab from 'src/components/ui/tabset/FluroTab.vue';
 
 import FluroDynamicTable from 'src/components/table/FluroDynamicTable.vue';
 
-//Filter Stuff
+//Filter columns
 import FilterConditionGroup from 'src/components/form/filters/FilterConditionGroup.vue';
 
 
@@ -123,6 +123,7 @@ import StatusCell from 'src/components/table/cells/StatusCell.vue';
 import DefinitionCell from 'src/components/table/cells/DefinitionCell.vue';
 import ThumbnailCell from 'src/components/table/cells/ThumbnailCell.vue';
 import TypeImageCell from 'src/components/table/cells/TypeImageCell.vue';
+import EventTitleCell from 'src/components/table/cells/EventTitleCell.vue';
 
 /////////////////////////////////////////
 
@@ -130,32 +131,6 @@ import { FilterService } from 'fluro';
 
 
 /////////////////////////////////////////
-
-import Vue from 'vue';
-let EventTitleCell = Vue.extend({
-    props: {
-        'row': {
-            type: Object,
-        },
-        'column': {
-            type: Object,
-        },
-        'data': {
-            // type: Object,
-        },
-    },
-    template: `
-    <div >
-        <strong>{{row.title}}</strong>
-        <div>
-            <em class="text-muted small">{{row | readableEventDate}}</em>
-            <div v-if="row.firstLine" ><em class="text-muted small">{{row.firstLine | limit(100)}}</em> </div>
-            <div v-if="row.rooms && row.rooms.length"  class="text-muted small" ><strong>Rooms:</strong> <em>{{row.rooms | comma('title')}}</em></div>
-        </div>
-
-       
-    </div>`,
-});
 
 
 /////////////////////////////////////////
@@ -178,6 +153,7 @@ export default {
         DefinitionCell,
         ThumbnailCell,
         TypeImageCell,
+        EventTitleCell,
     },
     mixins: [ModalMixin, Layout],
     data() {
@@ -253,6 +229,7 @@ export default {
         },
     },
     computed: {
+
         retrieveAllDefinitions() {
             return this.options.allDefinitions || this.selector.allDefinitions
         },

@@ -2,9 +2,8 @@
     <!-- <div> -->
         <!-- <pre>{{mediaID}}</pre> -->
         <div class="fluro-video" :class="classes" :style="style">
-
             <div class="fluro-video-embed" v-if="provider == 'youtube'">
-                <youtube-embed :video-id="mediaID"></youtube-embed>
+                <youtube-embed :video-id="mediaID"/>
             </div>
             <div class="fluro-video-embed" v-if="provider == 'upload'">
                 <video class="embed-responsive-item" :poster="posterUrl" controls>
@@ -26,7 +25,9 @@
 <script>
 import { vueVimeoPlayer } from 'vue-vimeo-player'
 // import { Youtube } from 'vue-youtube'
+import Vue from 'vue';
 import Youtube from 'vue-youtube'
+// Vue.use(Youtube);
 
 export default {
     components: {
