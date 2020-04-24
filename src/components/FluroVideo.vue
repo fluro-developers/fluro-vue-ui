@@ -26,8 +26,11 @@
 import { vueVimeoPlayer } from 'vue-vimeo-player'
 // import { Youtube } from 'vue-youtube'
 import Vue from 'vue';
-import Youtube from 'vue-youtube'
-// Vue.use(Youtube);
+// import { Youtube } from 'vue-youtube';// Vue.use(Youtube);
+import {Youtube} from 'vue-youtube';// Vue.use(Youtube);
+
+
+console.log('YOUTUBE', Youtube)
 
 export default {
     components: {

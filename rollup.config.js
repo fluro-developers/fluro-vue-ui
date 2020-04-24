@@ -36,6 +36,7 @@ const plugins = [
 				alias({
 								entries: [
 												{ find: 'src', replacement: __dirname + '/src' },
+												{ find: 'vue-youtube', replacement: __dirname + '/node_modules/vue-youtube/dist/vue-youtube.esm.js' },
 												{ find: 'vue', replacement: require.resolve('vue/dist/vue.esm.js') },
 								]
 				}),
@@ -122,16 +123,16 @@ if (process.env.NODE_ENV === 'development') {
 export default [
 				Object.assign({}, defaultConfig, {
 								output: [
-								/**
-									{
-																// exports: 'named',
-																globals,
-																dir: 'dist/cjs',
-																// file: `dist/${FILE_NAME}.common.js`,
-																format: 'cjs',
-																sourcemap
-												},
-												/**/
+												/**
+													{
+																				// exports: 'named',
+																				globals,
+																				dir: 'dist/cjs',
+																				// file: `dist/${FILE_NAME}.common.js`,
+																				format: 'cjs',
+																				sourcemap
+																},
+																/**/
 												{
 																// exports: 'named',
 																globals,
