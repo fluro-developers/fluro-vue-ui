@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <!-- <div> -->
         <!-- <pre>{{mediaID}}</pre> -->
         <div class="fluro-video" :class="classes" :style="style">
 
@@ -21,7 +21,7 @@
         </div>
         <!-- <pre>{{mediaID}}</pre> -->
         <!-- <pre>{{item}}</pre> -->
-    </div>
+    <!-- </div> -->
 </template>
 <script>
 import { vueVimeoPlayer } from 'vue-vimeo-player'
@@ -42,6 +42,12 @@ export default {
             type: Number,
         },
         cacheKey: [String, Number],
+        options:{
+        	type:Object,
+        	default() {
+        		return {}
+        	}
+        }
     },
     // data() {
     //     return {

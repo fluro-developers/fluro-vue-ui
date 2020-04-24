@@ -1,5 +1,5 @@
 <template>
-    <component :is="component"></component>
+    <component :is="component"/>
     <!-- <component :is="component" v-if="component"></component> -->
 <!-- </div> -->
 </template>
@@ -28,16 +28,12 @@ export default {
     },
 
     watch: {
-        'template': function(value) {
-            this.render();
-        },
-        'context': function(value) {
-            this.render();
-        }
+        'template':'render',
+        'context':'render',
     },
-    mounted() {
-        this.render();
-    },
+    // mounted() {
+    //     this.render();
+    // },
     created() {
         this.render();
     },
@@ -51,6 +47,7 @@ export default {
                 return;
             }
 
+            console.log('Get components from existing thing', self)
             let DynamicComponent = Vue.extend({
                 template: `<div>${self.template}</div>`,
                 data() {
