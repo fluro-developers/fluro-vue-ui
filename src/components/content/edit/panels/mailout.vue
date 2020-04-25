@@ -312,9 +312,10 @@
                         </flex-column-body>
                     </tab>
                 </template>
-                <template v-if="model._id">
+                <template v-if="model._id && definition">
                     <tab heading="Preview">
-                        <mailout-render-preview :mailout="model._id" :definition="definition.definitionName" />
+
+                        <!-- <mailout-render-preview :mailout="model._id" :definition="definition.definitionName" /> -->
                     </tab>
                     <tab heading="Testing" v-if="model.state != 'sent'">
                         <mailout-test-panel v-model="model" />
@@ -329,7 +330,7 @@
             </tabset>
         </template>
         <!-- <flex-column-body> -->
-        <!-- // <pre>{{model}}</pre> -->
+        <!-- <pre>{{model}}</pre> -->
         <!-- </flex-column-body> -->
         <!-- <flex-column-body> -->
         <!-- WOOOT -->

@@ -201,8 +201,13 @@ export default {
 																.filter(function(field) {
 
 
+																				var errorMessages = field.errorMessages;
+																				if (!errorMessages) {
+																								console.log('this field has no error messages!', field)
+																								return;
+																				}
 
-																				return field.errorMessages.length;
+																				return errorMessages.length;
 																})
 																.map(function(field) {
 
@@ -334,23 +339,49 @@ export default {
 
 												/////////////////////////////////////////////////
 
-												//Reset the components too
-												self.formFields.forEach(function(component) {
-																component.reset();
-												});
-
-
-												return;
-
-
-
-												/////////////////////////////////////////////////
-
 												//For each field reset the model
 												if (!self.disableDefaults) {
 																(self.fieldsOutput || []).forEach(createDefaults);
 												}
 
+												function createDefaults(field) {
+																if (field.type == 'group' && !field.asObject) {
+																				(field.fields || []).forEach(createDefaults);
+																				return;
+																}
+
+																var existingValue = _.get(self.model, field.key);
+																//We already have a value in this field
+																if (existingValue) {
+																				return;
+																}
+
+																////////////////////////////////
+
+																//Create an empty array
+																if (field.maximum != 1) {
+
+																			var startingValueCount = Math.max(field.askCount, field.minimum);
+																			var array = [];
+
+																			for(var i =0; i < startingValueCount; i++) {
+																					array.push({});
+																				
+																			}
+
+																			console.log('Add and create array')
+																			Vue.set(self.model, field.key, array);
+																}
+												}
+
+
+
+												/////////////////////////////////////////////////
+
+												//Reset the components too
+												self.formFields.forEach(function(component) {
+																component.reset();
+												});
 
 
 
@@ -359,44 +390,44 @@ export default {
 												self.$emit('default');
 												// })
 
-												/////////////////////////////////////////////////
+												// /////////////////////////////////////////////////
 
-												//Recursively create all the default keys for nested fields
-												function createDefaults(field) {
-
-
-																//Check if it's just a display group
-																if (field.type == 'group' && !field.asObject) {
-																				(field.fieldsOutput || []).forEach(createDefaults);
-																				return;
-																}
+												// //Recursively create all the default keys for nested fields
+												// function createDefaults(field) {
 
 
-																// ///console.log('CREATE DEFAULTS FOR', field.title)
-																var existingValue = _.get(self.model, field.key);
-
-																//We already have a value in this field
-																if (existingValue) {
-																				// ///console.log('Has existing value', field.key, existingValue);
-																				Vue.set(self.model, field.key, existingValue);
-																				return;
-																}
-
-																// ///console.log('Create Defaults', self);
-																var blankValue = self.$fluro.utils.getDefaultValueForField(field);
-
-																if (field.type == 'date' && blankValue == 'now') {
-																				blankValue = new Date();
-																}
+												// 				//Check if it's just a display group
+												// 				if (field.type == 'group' && !field.asObject) {
+												// 								(field.fieldsOutput || []).forEach(createDefaults);
+												// 								return;
+												// 				}
 
 
+												// 				// ///console.log('CREATE DEFAULTS FOR', field.title)
+												// 				var existingValue = _.get(self.model, field.key);
 
-																///console.log('Set Default value', field.key, blankValue);
-																Vue.set(self.model, field.key, blankValue);
+												// 				//We already have a value in this field
+												// 				if (existingValue) {
+												// 								// ///console.log('Has existing value', field.key, existingValue);
+												// 								Vue.set(self.model, field.key, existingValue);
+												// 								return;
+												// 				}
+
+												// 				// ///console.log('Create Defaults', self);
+												// 				var blankValue = self.$fluro.utils.getDefaultValueForField(field);
+
+												// 				if (field.type == 'date' && blankValue == 'now') {
+												// 								blankValue = new Date();
+												// 				}
 
 
 
-												}
+												// 				///console.log('Set Default value', field.key, blankValue);
+												// 				Vue.set(self.model, field.key, blankValue);
+
+
+
+												// }
 								},
 
 
