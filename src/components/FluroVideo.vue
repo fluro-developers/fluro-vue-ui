@@ -30,7 +30,6 @@ import Vue from 'vue';
 import {Youtube} from 'vue-youtube';// Vue.use(Youtube);
 
 
-console.log('YOUTUBE', Youtube)
 
 export default {
     components: {

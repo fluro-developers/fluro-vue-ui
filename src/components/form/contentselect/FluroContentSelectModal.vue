@@ -136,6 +136,9 @@ import { FilterService } from 'fluro';
 /////////////////////////////////////////
 
 export default {
+	created() {
+		console.log('MODAL THIS', this)
+	},
     props: {
         options: {
             type: Object
@@ -168,7 +171,7 @@ export default {
                 break;
         }
 
-        console.log('PLAN STATUSES', basicType, statuses)
+        // console.log('PLAN STATUSES', basicType, statuses)
 
         var initialFilter = this.options.filter || {
             operator: 'and',
@@ -184,7 +187,8 @@ export default {
 
         /////////////////////////////////////////////
 
-        console.log('INITIAL FILTER', this.options.filter, initialFilter);
+       
+        // console.log('INITIAL FILTER', this.options.filter, initialFilter);
 
         var defaultFilter = JSON.parse(JSON.stringify(initialFilter));
 
@@ -263,6 +267,7 @@ export default {
             }
         },
         modalTitle() {
+        	// console.log('SELECTION MANAGER', this.selectionManager)
             var count = this.selectionManager.selection.length;
 
             if (!count) {

@@ -1,3 +1,5 @@
+
+
 export default {
     data() {
         return {
@@ -108,6 +110,9 @@ export default {
         },
         isSelected(item) {
             var self = this;
+
+            // console.log('SHOULD BE FLURO', !!self.$fluro)
+
             var itemID = self.$fluro.utils.getStringID(item);
 
             //Check if the ID is already selected

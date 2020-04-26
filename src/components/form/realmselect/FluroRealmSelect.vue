@@ -177,7 +177,7 @@ export default {
                             if (initialIDs && initialIDs.length) {
                                 // console.log('Convert', self.value, res);
 
-                                // console.log('SET INITIAL', initialIDs)
+                                // console.log('SET INITIAL', initialIDs, self)
                                 self.setSelection(initialIDs);
                             } else {
                                 if (flattenedIDs.length == 1) {
@@ -235,7 +235,6 @@ export default {
             // promise.then(function(res) {}, function(err) {})
         },
         toggleRealm(realm) {
-            console.log('TOGGLE REALM');
             this.toggle(realm);
         }
     }

@@ -323,7 +323,7 @@ export default {
 																});
 								},
 								showModal() {
-												console.log('SHOW MODAL', self)
+												
 												var self = this;
 												//////////////////////////////////////
 

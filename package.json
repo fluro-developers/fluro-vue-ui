@@ -21,6 +21,7 @@
 		"extends browserslist-config-vue"
 	],
 	"peerDependencies": {
+		"vue": "*",
 		"fluro": "*",
 		"lodash": "^4.17.15",
 		"brace": "*",
@@ -72,7 +73,6 @@
 		"rollup-plugin-serve": "^1.0.1",
 		"rollup-plugin-vue": "^5.1.6",
 		"rollup-plugin-vue-global-styles": "^0.1.0",
-		"vue": "^2.6.11",
 		"vue-template-compiler": "^2.6.11"
 	}
 }

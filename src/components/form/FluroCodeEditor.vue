@@ -106,30 +106,39 @@ export default {
 
 												var self = this;
 
-												// console.log('Editor import brace extras')
-												// Promise.all([
-												// 								() => import('brace/ext/language_tools'),
-												// 								() => import('brace/mode/html'),
-												// 								() => import('brace/mode/json'),
-												// 								() => import('brace/mode/javascript'),
-												// 								() => import('brace/mode/ejs'),
-												// 								() => import('brace/mode/scss'),
-												// 								() => import('brace/theme/tomorrow_night_eighties'),
-												// 								() => import('brace/snippets/javascript'),
-												// 				])
-												// 				.then(function(pieces) {
 
-																				// console.log('brace extras loaded', pieces);
 
-																				require('brace/ext/searchbox');
-																				require('brace/ext/language_tools') //language extension prerequsite...
-																				require('brace/mode/html')
-																				require('brace/mode/json') //language
-																				require('brace/mode/javascript') //language
-																				require('brace/mode/ejs') //language
-																				require('brace/mode/scss')
-																				require('brace/theme/tomorrow_night_eighties')
-																				require('brace/snippets/javascript') //snippet
+
+												/**
+												require('brace/ext/searchbox');
+												require('brace/ext/language_tools')
+												require('brace/mode/html')
+												require('brace/mode/json') 
+												require('brace/mode/javascript')
+												require('brace/mode/ejs')
+												require('brace/mode/scss')
+												require('brace/theme/tomorrow_night_eighties')
+												require('brace/snippets/javascript')
+												/**/
+												Promise.all([
+																				import('brace/ext/searchbox'),
+																				import('brace/ext/language_tools'),
+																				import('brace/mode/html'),
+																				import('brace/mode/json'),
+																				import('brace/mode/javascript'),
+																				import('brace/mode/ejs'),
+																				import('brace/mode/scss'),
+																				import('brace/theme/tomorrow_night_eighties'),
+																				import('brace/snippets/javascript'),
+																])
+																.then(function() {
+
+
+																				console.log('Loaded brace extras')
+
+
+
+
 																				self.editor = editor;
 
 																				//             editor.setOptions({
@@ -161,18 +170,20 @@ export default {
 
 																				self.beautify();
 
-																				////////////////////////////////////////
+																})
 
-																				// editor.setOptions({
+												////////////////////////////////////////
 
-																				//     // autoScrollEditorIntoView: true,
-																				//     // copyWithEmptySelection: true,
-																				// });
+												// editor.setOptions({
 
-																				// editor.setReadOnly(true);
-																				// editor.setMode(this.computedSyntax);
-																				// console.log('Initialize the editor', editor);
-																// })
+												//     // autoScrollEditorIntoView: true,
+												//     // copyWithEmptySelection: true,
+												// });
+
+												// editor.setReadOnly(true);
+												// editor.setMode(this.computedSyntax);
+												// console.log('Initialize the editor', editor);
+												// })
 
 								},
 				},

@@ -379,7 +379,6 @@ import scss from 'highlight.js/lib/languages/scss';
 import javascript from 'highlight.js/lib/languages/javascript';
 import json from 'highlight.js/lib/languages/json';
 /**/
-// require('brace/theme/tomorrow_night_eighties')
 
 
 import { Editor, EditorContent, EditorMenuBubble, EditorMenuBar, EditorFloatingMenu, Mark } from 'tiptap'

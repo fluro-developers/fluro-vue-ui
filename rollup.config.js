@@ -37,7 +37,7 @@ const plugins = [
 								entries: [
 												{ find: 'src', replacement: __dirname + '/src' },
 												{ find: 'vue-youtube', replacement: __dirname + '/node_modules/vue-youtube/dist/vue-youtube.esm.js' },
-												{ find: 'vue', replacement: require.resolve('vue/dist/vue.esm.js') },
+												//{ find: 'vue', replacement: require.resolve('vue/dist/vue.esm.js') },
 								]
 				}),
 

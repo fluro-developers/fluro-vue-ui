@@ -97,7 +97,7 @@ export default {
             }, 500)
         },
     },
-
+    
     methods: {
         updateCacheKey() {
             this.cacheKey = this.$fluro.global.CACHE_KEY;

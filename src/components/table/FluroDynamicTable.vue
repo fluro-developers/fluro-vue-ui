@@ -964,7 +964,11 @@ export default {
         },
     },
     // created() {
-    //     this.$fluro.addEventListener('cache.reset', this.updateCacheKey);
+    // 	console.log('DynamicTable - Created', this.$fluro)
+    // //     this.$fluro.addEventListener('cache.reset', this.updateCacheKey);
+    // },
+    // mounted() {
+    // 	console.log('DynamicTable - Mounted', this.$fluro)
     // },
     // beforeDestroy() {
     //     this.$fluro.removeEventListener('cache.reset', this.updateCacheKey);
@@ -1146,7 +1150,6 @@ export default {
         toggleColumnGrouping(column) {
             var self = this;
 
-            console.log('GROUPING COLUMN', column)
             self.groupingColumn = column;
 
         },

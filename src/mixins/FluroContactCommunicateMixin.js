@@ -1,6 +1,5 @@
 
 import AddPost from 'src/components/ui/modal/AddPost.vue';
-console.log('Contact communicate mixin');
 
 export default {
     asyncComputed: {
