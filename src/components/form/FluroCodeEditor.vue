@@ -1,7 +1,6 @@
 <template>
 				<div ref="outer" class="fluro-code-editor">
-								<!-- <pre>{{model}}</pre> -->
-								<code-editor v-model="model" @init="editorInit" :lang="syntax" theme="tomorrow_night_eighties" :height="100"></code-editor>
+								<code-editor v-if="ready" v-model="model" @init="editorInit" :lang="syntax" theme="tomorrow_night_eighties" :height="100"></code-editor>
 				</div>
 </template>
 <script>
@@ -39,6 +38,7 @@ export default {
 
 				data() {
 								return {
+												ready: false,
 												editor: null,
 												model: this.value,
 								}
@@ -120,57 +120,46 @@ export default {
 												require('brace/theme/tomorrow_night_eighties')
 												require('brace/snippets/javascript')
 												/**/
-												Promise.all([
-																				import('brace/ext/searchbox'),
-																				import('brace/ext/language_tools'),
-																				import('brace/mode/html'),
-																				import('brace/mode/json'),
-																				import('brace/mode/javascript'),
-																				import('brace/mode/ejs'),
-																				import('brace/mode/scss'),
-																				import('brace/theme/tomorrow_night_eighties'),
-																				import('brace/snippets/javascript'),
-																])
-																.then(function() {
-
-
-																				console.log('Loaded brace extras')
 
 
 
 
-																				self.editor = editor;
-
-																				//             editor.setOptions({
-																				//     maxLines: Infinity
-																				// });
-
-																				var editorDiv = self.$refs.outer;
-																				var doc = editor.getSession().getDocument();
-																				editor.on("change", function() {
-																								var lineHeight = editor.renderer.lineHeight;
-																								editorDiv.style.height = lineHeight * doc.getLength() + "px";
-																								editor.resize();
-																				});
-
-																				//     var editor = ace.edit("editor");                   // the editor object
-																				// var editorDiv = document.getElementById("editor");     // its container
-																				// var doc = editor.getSession().getDocument();  // a reference to the doc
 
 
-																				////////////////////////////////////////
-
-																				if (self.readonly) {
-																								editor.setReadOnly(true);
-																								editor.renderer.setShowGutter(false);
-																				} else {
-																								editor.on('blur', self.beautify);
-																				}
 
 
-																				self.beautify();
+												self.editor = editor;
 
-																})
+												//             editor.setOptions({
+												//     maxLines: Infinity
+												// });
+
+												var editorDiv = self.$refs.outer;
+												var doc = editor.getSession().getDocument();
+												editor.on("change", function() {
+																var lineHeight = editor.renderer.lineHeight;
+																editorDiv.style.height = lineHeight * doc.getLength() + "px";
+																editor.resize();
+												});
+
+												//     var editor = ace.edit("editor");                   // the editor object
+												// var editorDiv = document.getElementById("editor");     // its container
+												// var doc = editor.getSession().getDocument();  // a reference to the doc
+
+
+												////////////////////////////////////////
+
+												if (self.readonly) {
+																editor.setReadOnly(true);
+																editor.renderer.setShowGutter(false);
+												} else {
+																editor.on('blur', self.beautify);
+												}
+
+
+												self.beautify();
+
+
 
 												////////////////////////////////////////
 
@@ -186,6 +175,26 @@ export default {
 												// })
 
 								},
+				},
+				created() {
+								var self = this;
+								Promise.all([
+																import('brace/ext/searchbox'),
+																import('brace/ext/language_tools'),
+																import('brace/mode/html'),
+																import('brace/mode/json'),
+																import('brace/mode/javascript'),
+																import('brace/mode/ejs'),
+																import('brace/mode/scss'),
+																import('brace/theme/tomorrow_night_eighties'),
+																import('brace/snippets/javascript'),
+												])
+												.then(function() {
+																console.log('Loaded brace extras')
+																self.ready = true;
+												}, function(err) {
+																self.ready = true;
+												});
 				},
 				beforeDestroy() {
 								this.editor.off('blur', self.beautify);

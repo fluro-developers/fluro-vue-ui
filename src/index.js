@@ -1,4 +1,4 @@
-console.log('fluro-vue-ui 2.1.10')
+console.log('fluro-vue-ui 2.1.11')
 
 /////////////////////////////////////////////////////
 
@@ -256,7 +256,6 @@ if ((typeof window !== 'undefined') && window.Vue) {
 
 export default {
 				install,
-
 }
 
 

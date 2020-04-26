@@ -228,12 +228,12 @@
 												<template v-else-if="renderer == 'signature'">
 																<fluro-signature-field @blur="touch()" @focus="focussed();" :outline="showOutline" :success="success" :label="displayLabel" v-model="fieldModel" :required="required" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" />
 												</template>
-												<template v-else-if="renderer == 'code'">
+												<client-only v-else-if="renderer == 'code'" style="display:block">
 																<v-input class="no-flex" :hint="field.description" :persistent-hint="true">
 																				<template v-if="multipleInput">
 																								<template v-if="fieldModel && fieldModel.length">
 																												<template v-for="(entry, index) in fieldModel">
-																																<fluro-code-editor :autoformat="autoformat" @blur="touch()" @focus="focussed();" :outline="showOutline" :success="success" v-model="fieldModel[index]" :lang="syntax" :height="200"></fluro-code-editor>
+																																<fluro-code-editor :autoformat="autoformat" @blur="touch()" @focus="focussed();" :outline="showOutline" :success="success" v-model="fieldModel[index]" :lang="syntax" :height="200" />
 																												</template>
 																								</template>
 																								<template v-if="canAddValue">
@@ -246,11 +246,11 @@
 																				<template v-else>
 																								<v-label>{{displayLabel}}</v-label>
 																								<v-card class="no-flex">
-																												<fluro-code-editor :autoformat="autoformat" @blur="touch()" @focus="focussed();" :outline="showOutline" :success="success" v-model="fieldModel" :lang="syntax" :height="200"></fluro-code-editor>
+																												<fluro-code-editor :autoformat="autoformat" @blur="touch()" @focus="focussed();" :outline="showOutline" :success="success" v-model="fieldModel" :lang="syntax" :height="200" />
 																								</v-card>
 																				</template>
 																</v-input>
-												</template>
+												</client-only>
 												<template v-else-if="renderer == 'textarea'">
 																<v-input class="no-flex" :outline="showOutline" :success="success" :required="required" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description">
 																				<template v-if="multipleInput">
@@ -445,9 +445,9 @@ import draggable from 'vuedraggable';
 // import FluroContentForm from 'src/components/form/FluroContentForm.vue';
 // import FluroContentFormField from 'src/components/form/FluroContentFormField.vue';
 import FluroCompileHtml from 'src/components/FluroCompileHtml.vue';
-import FluroEditor from 'src/components/form/FluroEditor.vue';
+// import FluroEditor from 'src/components/form/FluroEditor.vue';
 import FluroCurrencyInput from 'src/components/form/FluroCurrencyInput.vue';
-import FluroCodeEditor from 'src/components/form/FluroCodeEditor.vue';
+// import FluroCodeEditor from 'src/components/form/FluroCodeEditor.vue';
 import FluroSignatureField from 'src/components/form/FluroSignatureField.vue';
 import FluroDateTimePicker from 'src/components/form/FluroDateTimePicker.vue';
 import FluroContentSelect from 'src/components/form/FluroContentSelect.vue';
@@ -456,6 +456,8 @@ import FluroRealmSelect from 'src/components/form/realmselect/FluroRealmSelect.v
 import DynamicImportService from 'src/DynamicImportService.js';
 
 
+// let FluroEditor = import('src/components/form/FluroEditor.vue');
+// let FluroCodeEditor = import('src/components/form/FluroCodeEditor.vue');
 
 
 ////////////////////////////////////////////////////////
@@ -479,9 +481,9 @@ export default {
 								// FluroContentForm,
 								// FluroContentFormField,
 								FluroCompileHtml,
-								FluroEditor,
 								FluroCurrencyInput,
-								FluroCodeEditor,
+								// FluroEditor,
+								// FluroCodeEditor,
 								FluroSignatureField,
 								FluroDateTimePicker,
 								FluroContentSelect,
@@ -2978,12 +2980,20 @@ export default {
 																DynamicImportService.load('src/components/form/FluroContentFormField.vue', function() {
 																				return import('src/components/form/FluroContentFormField.vue')
 																}),
+																DynamicImportService.load('src/components/form/FluroEditor.vue', function() {
+																				return import('src/components/form/FluroEditor.vue')
+																}),
+																DynamicImportService.load('src/components/form/FluroCodeEditor.vue', function() {
+																				return import('src/components/form/FluroCodeEditor.vue')
+																}),
 												])
 												.then(function(results) {
 
 																// //console.log('Set Components', results);
 																self.$options.components.FluroContentForm = results[0];
 																self.$options.components.FluroContentFormField = results[1];
+																self.$options.components.FluroEditor = results[2];
+																self.$options.components.FluroCodeEditor = results[3];
 																self.ready = true;
 												})
 				},

@@ -1,5 +1,5 @@
 <template>
-				<div class="fluro-expression-editor">
+				<div class="fluro-expression-editor" v-if="ready">
 								<code-editor v-model="model" @init="editorInit" lang="javascript" :height="30"></code-editor>
 				</div>
 </template>
@@ -22,9 +22,22 @@ export default {
 
 				data() {
 								return {
+												ready: false,
 												editor: null,
 												model: this.value,
 								}
+				},
+				created() {
+								var self = this;
+								Promise.all([
+																import('brace/mode/javascript'),
+												])
+												.then(function() {
+																console.log('Loaded brace extras')
+																self.ready = true;
+												}, function(err) {
+																self.ready = true;
+												});
 				},
 				methods: {
 								editorInit: function(editor) {
@@ -46,42 +59,36 @@ export default {
 
 												var self = this;
 
-												Promise.all([
-																import('brace/mode/javascript'),
-												]).then(function() {
+												// require('brace/theme/tomorrow_night_eighties')
+												self.editor = editor;
 
 
 
-																// require('brace/theme/tomorrow_night_eighties')
-																self.editor = editor;
+												editor.on("paste", function(e) {
+																e.text = e.text.replace(/[\r\n]+/g, " ");
+												});
 
 
+												// make mouse position clipping nicer
+												editor.renderer.screenToTextCoordinates = function(x, y) {
+																var pos = this.pixelToScreenCoordinates(x, y);
+																return this.session.screenToDocumentPosition(
+																				Math.min(this.session.getScreenLength() - 1, Math.max(pos.row, 0)),
+																				Math.max(pos.column, 0)
+																);
+												};
 
-																editor.on("paste", function(e) {
-																				e.text = e.text.replace(/[\r\n]+/g, " ");
-																});
+												editor.commands.bindKey("Enter|Shift-Enter", "null")
+
+												////////////////////////////////////////
+
+												editor.renderer.setShowGutter(false);
+
+												if (this.readonly) {
+																editor.setReadOnly(true);
+												}
 
 
-																// make mouse position clipping nicer
-																editor.renderer.screenToTextCoordinates = function(x, y) {
-																				var pos = this.pixelToScreenCoordinates(x, y);
-																				return this.session.screenToDocumentPosition(
-																								Math.min(this.session.getScreenLength() - 1, Math.max(pos.row, 0)),
-																								Math.max(pos.column, 0)
-																				);
-																};
-
-																editor.commands.bindKey("Enter|Shift-Enter", "null")
-
-																////////////////////////////////////////
-
-																editor.renderer.setShowGutter(false);
-
-																if (this.readonly) {
-																				editor.setReadOnly(true);
-																}
-
-												})
 								},
 				},
 				components: {
