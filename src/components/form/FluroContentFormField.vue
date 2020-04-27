@@ -1365,9 +1365,18 @@ export default {
 
 												// return ['Errors on purpose'];
 
+												
+
 												if (self.type == 'void') {
 																return errors;
 												}
+
+
+												if (self.type == 'group' && !self.asObject) {
+																return errors;
+												}
+
+												console.log('ERRORS THINGS', self.field.title, self);
 
 												if (!self.isVisible) {
 																// //console.log('No errors', this.field.title);

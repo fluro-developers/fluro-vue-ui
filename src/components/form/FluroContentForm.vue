@@ -361,16 +361,16 @@ export default {
 																//Create an empty array
 																if (field.maximum != 1) {
 
-																			var startingValueCount = Math.max(field.askCount, field.minimum);
-																			var array = [];
+																				var startingValueCount = Math.max(field.askCount, field.minimum);
+																				var array = [];
 
-																			for(var i =0; i < startingValueCount; i++) {
-																					array.push({});
-																				
-																			}
+																				for (var i = 0; i < startingValueCount; i++) {
+																								array.push({});
 
-																			console.log('Add and create array')
-																			Vue.set(self.model, field.key, array);
+																				}
+
+																				console.log('Add and create array')
+																				Vue.set(self.model, field.key, array);
 																}
 												}
 

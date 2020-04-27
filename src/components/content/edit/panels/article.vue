@@ -12,6 +12,7 @@
 																				<flex-column-body style="background: #fafafa;">
 																								<v-container fluid>
 																												<constrain sm>
+																													<pre>{{definition}}</pre>
 																																<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />
 																																<h3 margin>{{definition.title}} Details</h3>
 																																<fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
@@ -52,13 +53,13 @@ export default {
 
 
 												///////////////////////////////////
-
+												
 												addField('title', {
-																title: 'Event Title',
+																title: 'Title',
 																minimum: 1,
 																maximum: 1,
 																type: 'string',
-																placeholder: 'Event title',
+																placeholder: 'title',
 												})
 
 												function addField(key, details) {

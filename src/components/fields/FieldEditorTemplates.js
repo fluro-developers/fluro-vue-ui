@@ -323,7 +323,7 @@ templates.push({
     field: {
         title: 'My Heading',
         description: 'This is the description',
-        minimum: 1,
+        minimum: 0,
         maximum: 1,
         type: 'void',
         directive: 'custom',
@@ -340,7 +340,7 @@ templates.push({
     field: {
         title: 'My Video',
         description: 'This is a video',
-        minimum: 1,
+        minimum: 0,
         maximum: 1,
         type: 'void',
         directive: 'custom',
@@ -392,7 +392,7 @@ templates.push({
     description: `Add a link to an external URL`,
     field: {
         title: 'External Link',
-        minimum: 1,
+        minimum: 0,
         maximum: 1,
         type: 'void',
         directive: 'custom',
