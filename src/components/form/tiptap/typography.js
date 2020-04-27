@@ -57,7 +57,7 @@ export default class Typography extends Mark {
                 // tag: "span.typography",
                 tag: "span",
                 getAttrs(dom) {
-                    console.log(dom.classList[1]);
+                    // console.log(dom.classList[1]);
                     return { level: dom.classList[1] };
                 }
             }],
