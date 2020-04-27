@@ -1376,8 +1376,6 @@ export default {
 																return errors;
 												}
 
-												console.log('ERRORS THINGS', self.field.title, self);
-
 												if (!self.isVisible) {
 																// //console.log('No errors', this.field.title);
 																return errors;

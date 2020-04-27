@@ -12,12 +12,15 @@
 																				<flex-column-body style="background: #fafafa;">
 																								<v-container fluid>
 																												<constrain sm>
-																													<pre>{{definition}}</pre>
-																																<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />
+																																<!-- <pre>{{definition}}</pre> -->
+																																<template v-if="showTitleField">
+																																				<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />
+																																</template>
 																																<h3 margin>{{definition.title}} Details</h3>
 																																<fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
 																																<template v-if="!hideBody && !fullBody">
-																																				<fluro-editor v-model="model.body" :options="editorOptions" placeholder="Type your text in here"></fluro-editor>
+<v-label>{{bodyLabel}}</v-label>
+																																				<fluro-editor  v-model="model.body" :options="editorOptions" placeholder="Type your text in here"></fluro-editor>
 																																</template>
 																												</constrain>
 																								</v-container>
@@ -45,6 +48,14 @@ export default {
 				},
 				mixins: [FluroContentEditMixin],
 				computed: {
+
+
+								showTitleField() {
+												if (this.definition && this.definition.data && this.definition.data.titleGeneration == 'force') {
+																return;
+												}
+												return true;
+								},
 								fieldsOutput() {
 
 
@@ -53,13 +64,16 @@ export default {
 
 
 												///////////////////////////////////
-												
+
 												addField('title', {
-																title: 'Title',
+																title: self.titleLabel,
 																minimum: 1,
 																maximum: 1,
 																type: 'string',
-																placeholder: 'title',
+																params:{
+																	autofocus:!self.model._id,
+																}
+																// placeholder: self.titleLabel,
 												})
 
 												function addField(key, details) {
@@ -76,11 +90,13 @@ export default {
 												return this.definition && this.definition.data && this.definition.data.hideBody;
 								},
 								titleLabel() {
-												return 'Title';
+
+												return _.get(this.definition, 'data.titleLabel') || 'Title';
 								},
 								bodyLabel() {
-												return 'Body';
-								}
+												return _.get(this.definition, 'data.bodyLabel') || 'Body';
+								},
+
 				},
 				data() {
 								return {

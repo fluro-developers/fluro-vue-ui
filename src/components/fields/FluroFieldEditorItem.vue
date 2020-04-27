@@ -217,12 +217,11 @@ export default {
                 }
             }, ];
 
-            if (type == 'group' || self.model.directive == 'embedded') {
+            if (self.model.type == 'group' || self.model.directive == 'embedded') {
                 actions.push({
                     title: `Add Field Inside`,
                     icon: 'plus',
                     click() {
-                    	console.log('INJECT INSIDE', self.model, self.model.fields)
                         self.$emit('injected', self.model, self.model.fields);
                     }
                 })
