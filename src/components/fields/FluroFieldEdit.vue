@@ -72,7 +72,31 @@
                     </v-container>
                     <v-container>
                         <!-- <template v-if="model.hideExpression && model.hideExpression.length"> -->
-                        <template v-if="true">
+                        <!-- <template v-if="true"> -->
+                            
+							<div class="expression-group" :class="{active:model.expressions.show}">
+                                <v-input label="Show group if" hint="Show this group only if this expression returns true " :persistent-hint="true" class="no-flex">
+                                    <v-layout>
+                                        <v-flex>
+                                            <fluro-expression-editor v-model="model.expressions.show" />
+                                        </v-flex>
+                                        <v-flex shrink>
+                                            <v-menu :left="true" v-model="popup.show" :top="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
+                                                <template v-slot:activator="{ on }">
+                                                    <v-btn icon small class="ma-0 ml-1" v-on="on">
+                                                        <fluro-icon icon="bullseye" />
+                                                    </v-btn>
+                                                </template>
+                                                <div>
+                                                    <expression-field-select :context="model" @click="injectExpression($event, 'show')" v-model="expressionFields" />
+                                                </div>
+                                            </v-menu>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-input>
+                            </div>
+
+                            
                             <div class="expression-group" :class="{active:model.hideExpression}">
                                 <v-input label="Hide group if" hint="Hide this group if this expression returns true " :persistent-hint="true" class="no-flex">
                                     <v-layout>
@@ -94,9 +118,9 @@
                                     </v-layout>
                                 </v-input>
                             </div>
-                        </template>
-                        <template v-else>
-                            <div class="expression-group" :class="{active:model.expressions.hide}">
+                       <!--  </template>
+                        <template v-else> -->
+                            <!-- <div class="expression-group" :class="{active:model.expressions.hide}">
                                 <v-input label="Hide field if" hint="Hide this group if this expression returns true " :persistent-hint="true" class="no-flex">
                                     <v-layout>
                                         <v-flex>
@@ -116,29 +140,9 @@
                                         </v-flex>
                                     </v-layout>
                                 </v-input>
-                            </div>
-                            <div class="expression-group" :class="{active:model.expressions.show}">
-                                <v-input label="Show field if" hint="Show this group only if this expression returns true " :persistent-hint="true" class="no-flex">
-                                    <v-layout>
-                                        <v-flex>
-                                            <fluro-expression-editor v-model="model.expressions.show" />
-                                        </v-flex>
-                                        <v-flex shrink>
-                                            <v-menu :left="true" v-model="popup.show" :top="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
-                                                <template v-slot:activator="{ on }">
-                                                    <v-btn icon small class="ma-0 ml-1" v-on="on">
-                                                        <fluro-icon icon="bullseye" />
-                                                    </v-btn>
-                                                </template>
-                                                <div>
-                                                    <expression-field-select :context="model" @click="injectExpression($event, 'show')" v-model="expressionFields" />
-                                                </div>
-                                            </v-menu>
-                                        </v-flex>
-                                    </v-layout>
-                                </v-input>
-                            </div>
-                        </template>
+                            </div> -->
+                            
+                        <!-- </template> -->
                         <!-- <pre>{{model}}</pre> -->
                     </v-container>
                 </flex-column-body>

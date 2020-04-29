@@ -15,7 +15,7 @@
                         <td>
                             <!-- @click="$actions.open([role])" -->
                             <div v-for="role in entry.roles">
-                                <fluro-icon type="role" left /> <strong>{{role.title}}</strong>
+                                <fluro-icon type="role" left /> <strong>{{role.title}}</strong> <v-btn icon small v-if="canEditRoles" @click="editRole(role)"><fluro-icon icon="pencil"/></v-btn>
                             </div>
                         </td>
                         <td>
@@ -157,6 +157,9 @@ export default {
         }
     },
     computed: {
+    	canEditRoles() {
+    		return this.$fluro.access.can('edit', 'role');
+    	},
         valid() {
             if (!this.proposed.roles || !this.proposed.roles.length) {
                 return;
@@ -205,6 +208,12 @@ export default {
         }
     },
     methods: {
+    	editRole(role) {
+    		this.$fluro.global.edit(role, true)
+    		.then(function(res) {
+    			_.assign(res, role);
+    		})
+    	},
         add() {
             console.log('ADD')
             var copy = JSON.parse(JSON.stringify(this.proposed));

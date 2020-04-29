@@ -887,6 +887,21 @@ export default {
 																}))
 
 
+																injectFields.push({
+																				title: 'Email Address (Primary)',
+																				key: 'emails[0]',
+																				maximum: 1,
+																				minimum: 0,
+																				type: 'email',
+																});
+
+																injectFields.push({
+																				title: 'Phone Number (Primary)',
+																				key: 'phoneNumbers[0]',
+																				maximum: 1,
+																				minimum: 0,
+																				type: 'string',
+																});
 
 																injectFields.push({
 																				title: 'Total number of groups',

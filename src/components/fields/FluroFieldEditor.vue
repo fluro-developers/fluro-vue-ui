@@ -843,7 +843,7 @@ export default {
 												var newField = self.getNewField();
 
 												if (!parent) {
-													return console.log('no parent!');
+																return console.log('no parent!');
 																// if (field) {
 																// 	console.log('but there is a field')
 																// 		if(!field.fields) {
@@ -858,9 +858,9 @@ export default {
 																// }
 												}
 
-												
+
 												var index = parent.indexOf(field);
-												
+
 
 
 

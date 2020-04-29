@@ -80,7 +80,7 @@
                                             @click="resetPassword"
                                             :loading="resetting"
                                         >
-                                            Send Reset Request
+                                            Send Password Reset Request
                                             <fluro-icon
                                                 right
                                                 icon="paper-plane"
@@ -123,6 +123,20 @@
                                         :field="fieldHash.collectionEmail"
                                         v-model="model"
                                     ></fluro-content-form-field>
+
+
+                                    <v-btn v-if="model._id"
+                                            class="mx-0"
+                                            color="primary"
+                                            @click="resetPassword"
+                                            :loading="resetting"
+                                        >
+                                            Resend invitation
+                                            <fluro-icon
+                                                right
+                                                icon="paper-plane"
+                                            />
+                                        </v-btn>
                                 </template>
                             </constrain>
                         </v-container>

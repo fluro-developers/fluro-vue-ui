@@ -12,10 +12,12 @@
             <v-container class="pa-2">
                 <constrain xs>
                     <v-layout>
+                    	<template v-if="!options.noCancel">
                         <v-btn block @click="dismiss()">
                             Cancel
                         </v-btn>
                         <v-spacer />
+                    </template>
                         <v-btn block :color="confirmColor" @click="close()">
                             {{confirmText}}
                         </v-btn>

@@ -1,6 +1,5 @@
 <template>
 				<div @click="clicked($event)" :data-field-key="key" class="fluro-content-form-field" v-if="isVisible" v-bind="attributes" :class="fieldClass">
-								<!-- <pre>{{key}}: {{fieldModel}}</pre> -->
 								<template v-if="ready">
 												<template v-if="officeUseOnly">
 												</template>
@@ -757,7 +756,9 @@ export default {
 																switch (this.field.key) {
 																				case 'dob':
 																				case '_dob':
-																								var years = parseInt(self.$fluro.date.moment().format('YYYY')) - parseInt(self.$fluro.date.moment(this.fieldModel).format('YYYY'))
+																								var years = this.$fluro.date.moment().diff(this.fieldModel, 'years');
+
+																								// parseInt(self.$fluro.date.moment().format('YYYY')) - parseInt(self.$fluro.date.moment(this.fieldModel).format('YYYY'))
 
 																								if (this.model.dobVerified) {
 																												return `${years} Years old`;
@@ -817,7 +818,7 @@ export default {
 
 												var self = this;
 
-												switch (self.renderer) {
+												switch (self.directive) {
 																case 'countryselect':
 																case 'countrycodeselect':
 																				return '/system/countries'
@@ -1365,7 +1366,7 @@ export default {
 
 												// return ['Errors on purpose'];
 
-												
+
 
 												if (self.type == 'void') {
 																return errors;
@@ -1502,14 +1503,22 @@ export default {
 								suffix() {
 												return this.field.suffix;
 								},
+								directive() {
+												switch (this.field.directive) {
+																default:
+																				return this.field.directive;
+																				break;
+												}
+								},
 								renderer() {
 
 												var self = this;
 
 												//Get the widget defined on the data object
 												var dataType = self.type;
-												var directive = self.field.directive;
+												var directive = self.directive;
 
+												// console.log(this.field.title, directive);
 												/////////////////////////////////
 
 												if (self.dynamic) {
@@ -1518,6 +1527,39 @@ export default {
 																}
 												}
 
+
+
+
+												/////////////////////////////////
+
+
+												if (self.context == 'admin') {
+																// If we are in the admin panel
+																//And we are a reference field
+																if (dataType == 'reference') {
+																				switch (directive) {
+																								case 'content-select-button':
+																												return directive;
+																												break;
+																								case 'select':
+																												if (self.asyncOptionsURL || (self.allowedReferences && self.allowedReferences.length)) {
+																																return 'select';
+																												} else {
+																																return 'content-select';
+																												}
+																												break;
+																								default:
+																												return 'content-select';
+																												break;
+
+																				}
+
+																}
+												}
+
+
+												/////////////////////////////////
+												/////////////////////////////////
 												/////////////////////////////////
 
 												switch (directive) {
@@ -1543,7 +1585,7 @@ export default {
 																				directive = 'realmselect';
 																				break;
 																case 'content-select-button':
-																				directive == 'content-select-button';
+																				directive = 'content-select-button';
 																				break;
 																case 'dob-select':
 																case 'date-select':
@@ -1574,6 +1616,7 @@ export default {
 
 																case 'embedded':
 																				break;
+
 																case 'upload':
 																				switch (self.context) {
 																								case 'admin':
@@ -1610,15 +1653,18 @@ export default {
 																								case 'reference':
 																												directive = 'content-select';
 																												break;
-																												// default:
-																												//     directive = 'input';
-																												//     break;
+
 																				}
 																				break;
 
 
 												}
 
+												////////////////////////////////
+												if (!directive) {
+																directive = 'input';
+												}
+												////////////////////////////////
 
 												//Return the basic data type by default
 												return directive;
@@ -1904,6 +1950,9 @@ export default {
 																				if (!value) {
 																								value = false;
 																				}
+
+																				//Ensure it's a boolean
+																				(value = !!value);
 
 																				break;
 												}

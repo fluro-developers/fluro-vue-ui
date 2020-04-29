@@ -1304,7 +1304,9 @@ export default {
                             // appendContactDetails.push(definitionName);
                         }
 
-                        return key;
+                        return key.split('[')[0];
+
+                        // return key;
                     })
                     .value()
                 );

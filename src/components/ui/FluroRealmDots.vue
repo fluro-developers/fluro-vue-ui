@@ -1,8 +1,7 @@
 <template>
     <div class="dots">
-        <!-- <pre>{{filtered}}</pre> -->
-        <!-- <pre>{{realms.length}}</pre> -->
-        <!-- {{colouredRealms}} {{filtered}} -->
+       
+       
         <span class="dot" :style="{backgroundColor:realm.bgColor || '#000'}" :content="realm.title" v-tippy small v-for="realm in filtered"/>
     </div>
 </template>
@@ -23,14 +22,19 @@ export default {
                 return;
             }
 
-            if(this.realms.length) {
-                return this.realms;
+            if(_.isArray(this.realms)) {
+            	return this.realms;
             }
 
-            return [this.realms];
+            if(this.realms.length) {
+            	return [this.realms];
+            }
+
+            return [];
         },
         filtered() {
-            var filtered = _.filter(this.actualRealms, function(realm) {
+            var filtered = _.chain(this.actualRealms)
+            .filter(function(realm) {
                 if(!realm) {
                     return;
                 }
@@ -41,15 +45,23 @@ export default {
                 }
 
                 return true;
-            });
+            })
+            .value();
 
 
-            var coloured = _.filter(filtered, 'bgColor');
+            if(!filtered || !filtered.length) {
+            	return;
+            }
+
+            var coloured = _.filter(filtered, function(realm) {
+            	return !!realm.bgColor;
+            })
+
 
             if(coloured.length) {
                 return coloured;
             } else {
-                return filtered.slice(0,1);
+                return filtered.length ? filtered.slice(0,1) : null;
             }
         },
         // colouredRealms() {
