@@ -1,10 +1,10 @@
-console.log('fluro-vue-ui 2.1.20')
+console.log('fluro-vue-ui 2.1.21')
 
 /////////////////////////////////////////////////////
 
 
 
-import FluroConversationBox from './components/conversation/FluroConversationBox.vue';
+import FluroChatbox from './components/conversation/FluroChatbox.vue';
 import FluroLiveVideo from './components/FluroLiveVideo.vue';
 import FluroImage from './components/FluroImage.vue';
 import FluroModalMixin from './mixins/ModalMixin';
@@ -266,6 +266,7 @@ export default {
 
 
 export { FluroImage as FluroImage };
+export { FluroChatbox as FluroChatbox };
 export { FluroModalMixin as FluroModalMixin };
 export { FluroAvatar as FluroAvatar };
 export { FluroAvatarUpdate as FluroAvatarUpdate };

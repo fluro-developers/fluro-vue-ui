@@ -16,6 +16,45 @@ templates.push({
 				}
 });
 
+
+templates.push({
+				title: 'Background',
+				description: `Add a background with tint option`,
+				field: {
+								title: 'Background',
+								minimum: 1,
+								maximum: 1,
+								askCount: 1,
+								type: 'group',
+								asObject: true,
+								key: 'background',
+								fields: [
+								{
+												title: 'Image',
+												key: 'image',
+												type: 'reference',
+												minimum:0,
+												maximum:1,
+												params: {
+																restrictType: 'image',
+												}
+								},
+								{
+												title: 'Tint',
+												key: 'tint',
+												type: 'string',
+												directive:'color',
+												minimum:0,
+												maximum:1,
+												defaultValues:['#00000055'],
+												expressions:{
+													hide:'!model.image',
+												}
+								},
+								]
+				}
+});
+
 templates.push({
 				title: 'Button',
 				description: `Add a set of buttons/links`,
@@ -104,14 +143,13 @@ templates.push({
 																asObject: true,
 																type: 'group',
 																key: 'style',
-																
+
 																fields: [{
-																	title:'Button Style Options',
-																	type:'group',
-																	key:'styleOptions',
-																	sameLine:true,
-																				fields: [
-																								{
+																				title: 'Button Style Options',
+																				type: 'group',
+																				key: 'styleOptions',
+																				sameLine: true,
+																				fields: [{
 																												title: 'Size',
 																												minimum: 0,
 																												maximum: 1,
@@ -147,9 +185,8 @@ templates.push({
 																												type: 'string',
 																												key: 'style',
 																												directive: 'select',
-																												defaultValues:['default'],
-																												options: [
-																																{
+																												defaultValues: ['default'],
+																												options: [{
 																																				title: 'Default',
 																																				value: 'default',
 																																},
@@ -163,7 +200,7 @@ templates.push({
 																																},
 																												],
 																								},
-																							
+
 																				],
 																}],
 
@@ -179,10 +216,10 @@ templates.push({
 																key: 'icon',
 																sameLine: true,
 																fields: [{
-																	title:'Icon Options',
-																	type:'group',
-																	key:'iconOptions',
-																	sameLine:true,
+																				title: 'Icon Options',
+																				type: 'group',
+																				key: 'iconOptions',
+																				sameLine: true,
 																				fields: [{
 																												title: 'Icon',
 																												minimum: 0,
@@ -225,8 +262,7 @@ templates.push({
 																												type: 'string',
 																												key: 'position',
 																												directive: 'select',
-																												options: [
-																													{
+																												options: [{
 																																				title: 'Left',
 																																				value: 'left',
 																																},

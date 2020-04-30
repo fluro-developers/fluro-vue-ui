@@ -788,7 +788,7 @@ export default {
                 title: 'Base Amount',
                 minimum: 0,
                 maximum: 1,
-                type: 'integer',
+                type: 'number',
                 directive: 'currency',
                 params: {
                     currency: paymentDetails.currency || '',
@@ -846,7 +846,7 @@ export default {
                 title: 'Minimum Amount',
                 minimum: 0,
                 maximum: 1,
-                type: 'integer',
+                type: 'number',
                 params: {
                     persistentDescription: true,
                 },
@@ -864,7 +864,7 @@ export default {
                 title: 'Maximum Amount',
                 minimum: 0,
                 maximum: 1,
-                type: 'integer',
+                type: 'number',
                 params: {
                     persistentDescription: true,
                 },

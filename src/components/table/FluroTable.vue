@@ -194,11 +194,8 @@ import TableCell from 'src/components/table/TableCell.vue';
 
 /////////////////////////////////
 
-
-
 import { FilterService } from 'fluro';
 
-/////////////////////////////////
 /////////////////////////////////
 
 var currentRawRequest;

@@ -35,6 +35,9 @@
 																																<!-- <pre>{{fields}}</pre> -->
 																																<!-- <pre>{{options}}</pre> -->
 																																<!-- <pre>{{errorMessages}}</pre> -->
+
+																																<!-- <pre>{{showPaymentForm}}</pre> -->
+																																
 																																<fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" @errorMessages="validate" @input="modelChanged" ref="form" :options="options" v-model="dataModel" :fields="fields" />
 																																<div class="payment" v-if="showPaymentForm">
 																																				<v-container>

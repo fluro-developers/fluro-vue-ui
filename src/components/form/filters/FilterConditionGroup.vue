@@ -227,6 +227,12 @@ function getFlattenedFields(array, trail, titles) {
 
 export default {
 				props: {
+								filterFields: {
+												type: Array,
+												default () {
+																return [];
+												}
+								},
 								useSample: {
 												type: Boolean,
 								},
@@ -765,11 +771,7 @@ export default {
 
 												var self = this;
 
-
-
-
-												var injectFields = [];
-
+												var injectFields = self.filterFields;
 
 												/////////////////////////////////////////////
 
