@@ -1,11 +1,12 @@
 <template>
     <td :class="{wrap:shouldWrap, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}">
         <!-- {{rawValue.length}} {{shouldWrap}} -->
-
+<!-- <pre>{{column.key}}</pre> -->
         
         <div :class="{'wrap-limit':shouldWrap}">
         <component v-if="renderer" :data="preValue" :is="renderer" :row="row" :column="column" />
         <template v-else-if="simpleArray">
+        	<!-- Simple Array -->
             <template v-for="entry in formattedArray">
                 <component v-if="renderer" :data="entry" :is="renderer" :row="row" :column="column" />
                 <div v-else>
@@ -16,26 +17,27 @@
             </template>
         </template>
         <div v-else-if="formattedArray" style="max-width: 600px; white-space: normal;">
+        	
             <template v-for="entry in formattedArray">
                 <a class="inline-tag" v-if="entry._id" @click.stop.prevent="clicked(entry)" :style="{color:entry.color, backgroundColor:entry.bgColor}">
                    
                     <template v-if="entry._type == 'event'">
                         <fluro-icon type="event" /> {{entry.title}} <span class="text-muted">// {{entry | readableEventDate}}</span>
                     </template>
-                    <template v-if="entry._type == 'post'">
+                    <template v-else-if="entry._type == 'post'">
                         <fluro-icon type="post" /> {{entry.title}} <span class="text-muted">// {{entry.managedAuthor ? entry.managedAuthor.title : ''}} {{entry.created | timeago}}</span>
                     </template>
                     <template v-else-if="entry._type == 'ticket'">
                         <fluro-icon type="ticket" /> {{entry.title}} - {{entry.event.title}}<span class="text-muted">// {{entry.event | readableEventDate}}</span>
                     </template>
-                    <template :content="entry.title" v-tippy v-else-if="entry._type == 'team' && entry.position">
+                    <template v-else-if="entry._type == 'team' && entry.position" :content="entry.title" v-tippy >
                         
                         <!-- <fluro-icon type="team" />  -->
                         {{entry.position}}
                         <!-- <fluro-icon type="team" /> {{entry.title}} <span class="text-muted" v-if="entry.position">{{entry.position}}</span> -->
                     </template>
                     <template v-else>
-                        
+                    	
                         <fluro-icon v-if="entry._type" :type="entry._type" /> {{entry.title}} <template v-if="entry.appendage"> - {{entry.appendage}}</template>
                     </template>
                 </a>
@@ -47,6 +49,7 @@
             <!-- <template>{{formattedArray.length}} in total</template> -->
         </div>
         <div v-else-if="complexObject">
+
             <template v-if="preValue._type == 'event'">
                 <a class="inline-tag" @click.stop.prevent="clicked(preValue)">
                     <fluro-icon type="event" /> {{preValue.title}} <span class="text-muted">// {{preValue | readableEventDate}}</span>
@@ -191,12 +194,15 @@ export default {
 
                 return _.chain(self.preValue)
                     .map(function(entry) {
+
+
                         if (!entry) {
                             return;
                         }
 
                         //If it's not an object but a simple number or string
                         if (!_.isObject(entry)) {
+
                             return entry;
                         }
 
@@ -246,7 +252,9 @@ export default {
 
                         return entry;
                     })
-                    .compact()
+                    .filter(function(entry) {
+                    	return entry == 0 || entry;
+                    })
 
                     .value();
             }
@@ -255,7 +263,11 @@ export default {
         },
         simpleArray() {
             return _.some(this.formattedArray, function(e) {
-                return !(e._id || e.title || e.name || e.id)
+                var match = !(e._id || e.title || e.name || e.id)
+                // if(match) {
+                // 	console.log('Thing is missing', e);
+                // }
+                return match;
             })
             //_.isArray(this.preValue) && this.preValue[0] && (!this.preValue[0].title && !this.preValue[0].name);
         },
@@ -484,6 +496,7 @@ export default {
             var self = this;
             var val = this.rawValue;
 
+            // console.log('RAW VAL', val);
             ///////////////////////////////
 
             var definitionDiscriminator = (this.column.key || '').split('|')[1];
@@ -498,7 +511,7 @@ export default {
                 var array = _.chain(val)
                     // .compact()
                     .filter(function(v) {
-                        if (!v) {
+                        if (v == undefined || v == '' || v == null) {
                             return;
                         }
 
@@ -520,9 +533,11 @@ export default {
 
                         return object;
                     })
-                    .compact()
+                    .filter(function(v) {
+                    	return (v == 0) || v;
+                    })
                     .uniqBy(function(v) {
-                        return v._id || v;
+                        return (v._id || v.id || v);
                     })
                     .orderBy(function(entry) {
                         if(entry.startDate) {

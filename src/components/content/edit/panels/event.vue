@@ -459,7 +459,10 @@ export default {
 
 												/* unselect the range */
 												testingCodeToCopy.setAttribute('type', 'hidden')
-												window.getSelection().removeAllRanges()
+												if (process.browser) {
+																window.getSelection().removeAllRanges()
+												}
+
 								},
 								closePlan() {
 
@@ -584,7 +587,7 @@ export default {
 
 
 																if (endDate) {
-																	//If the end date is less than the start date, update it to the start date
+																				//If the end date is less than the start date, update it to the start date
 																				if (endDate < date) {
 																								this.dateModel.endDate = new Date(date);
 																				}

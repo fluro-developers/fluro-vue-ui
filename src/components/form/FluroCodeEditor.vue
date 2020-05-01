@@ -105,29 +105,6 @@ export default {
 								editorInit: function(editor) {
 
 												var self = this;
-
-
-
-
-												/**
-												require('brace/ext/searchbox');
-												require('brace/ext/language_tools')
-												require('brace/mode/html')
-												require('brace/mode/json') 
-												require('brace/mode/javascript')
-												require('brace/mode/ejs')
-												require('brace/mode/scss')
-												require('brace/theme/tomorrow_night_eighties')
-												require('brace/snippets/javascript')
-												/**/
-
-
-
-
-
-
-
-
 												self.editor = editor;
 
 												//             editor.setOptions({
@@ -176,7 +153,12 @@ export default {
 
 								},
 				},
-				created() {
+
+				beforeDestroy() {
+								this.editor.off('blur', self.beautify);
+				},
+				mounted() {
+
 								var self = this;
 								Promise.all([
 																import('brace/ext/searchbox'),
@@ -192,18 +174,14 @@ export default {
 												.then(function() {
 																console.log('Loaded brace extras')
 																self.ready = true;
+
+																this.beautify();
 												}, function(err) {
 																self.ready = true;
+																this.beautify();
 												});
-				},
-				beforeDestroy() {
-								this.editor.off('blur', self.beautify);
-				},
-				mounted() {
 
 
-								//Beautify when we first mount
-								this.beautify();
 				},
 				components: {
 								CodeEditor,

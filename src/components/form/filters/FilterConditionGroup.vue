@@ -372,7 +372,7 @@ export default {
 
 												var length = group.filters.length;
 												if (length < 2) {
-																console.log('Set to AND')
+																// console.log('Set to AND')
 																this.$set(group, 'operator', 'and');
 												}
 
@@ -453,13 +453,13 @@ export default {
 												//When the request is complete
 												valueCache.then(function(res) {
 
-																console.log('Keys!!', res);
+																// console.log('Keys!!', res);
 
 																self.asyncKeys = res;
 																self.loadingKeys = false;
 												}, function(err) {
 
-																console.log('Error', err);
+																// console.log('Error', err);
 
 																self.asyncKeys = [];
 																self.loadingKeys = false;
@@ -510,6 +510,8 @@ export default {
 																				return Promise.resolve([]);
 																}
 
+																////////////////////////////////////////////////////////
+
 																return new Promise(function(resolve, reject) {
 
 																				self.$fluro.api.get('/content/eventtrack', {
@@ -524,8 +526,10 @@ export default {
 																																.map(function(track) {
 
 																																				if (track.status != 'active') {
+
 																																								return;
 																																				}
+
 																																				track.definitionTitle = self.$fluro.types.readable(track.definition);
 
 																																				return track;
@@ -594,11 +598,27 @@ export default {
 																var self = this;
 
 																if (!self.isContactType) {
+																				// console.log('Not a contact type')
 																				return Promise.resolve([]);
 																}
 																// return new Promise(function(resolve, reject) {
 
 																return self.$fluro.types.subTypes('event')
+																// .then(resolve)
+																// .catch(reject);
+																// })
+												},
+								},
+								contactTypes: {
+												get() {
+																var self = this;
+
+																if (!self.isContactType) {
+																				return Promise.resolve([]);
+																}
+																// return new Promise(function(resolve, reject) {
+
+																return self.$fluro.types.subTypes('contact')
 																// .then(resolve)
 																// .catch(reject);
 																// })
@@ -771,7 +791,7 @@ export default {
 
 												var self = this;
 
-												var injectFields = self.filterFields;
+												var injectFields = self.filterFields.slice();
 
 												/////////////////////////////////////////////
 
@@ -817,7 +837,7 @@ export default {
 																				{
 																								title: 'Post Type',
 																								key: 'definition',
-																								maximum: 0,
+																								maximum: 1,
 																								minimum: 0,
 																								type: 'string',
 																								directive: 'select',
@@ -831,13 +851,12 @@ export default {
 
 												if (self.isContactType) {
 
-																/////////////////////////////////////////////
-
 																var eventDefinitionOptions = [];
 																var eventTrackOptions = [];
 																var rosterDefinitionOptions = [];
 																var interactionDefinitionOptions = [];
 																var teamDefinitionOptions = [];
+																var contactDefinitionOptions = [];
 
 																var groupNameOptions = [];
 
@@ -864,13 +883,21 @@ export default {
 
 																eventTrackOptions = eventTrackOptions.concat(_.map(self.eventTracks, function(track) {
 																				return {
-																								title: track.title,
-																								_id: track._id,
+																								text: track.title,
+																								value: track._id,
 																				}
 																}))
 
-																// console.log('EVENT DEFINITIONS', self.eventTypes);
 																eventDefinitionOptions = eventDefinitionOptions.concat(_.map(self.eventTypes, function(definition) {
+																				return {
+																								name: definition.title,
+																								title: definition.title,
+																								text: definition.title,
+																								value: definition.definitionName,
+																				}
+																}))
+
+																contactDefinitionOptions = contactDefinitionOptions.concat(_.map(self.contactTypes, function(definition) {
 																				return {
 																								title: definition.title,
 																								text: definition.title,
@@ -878,8 +905,6 @@ export default {
 																				}
 																}))
 
-
-																// console.log('EVENT DEFINITIONS', self.eventTypes);
 																teamDefinitionOptions = teamDefinitionOptions.concat(_.map(self.teamTypes, function(definition) {
 																				return {
 																								title: definition.title,
@@ -888,6 +913,7 @@ export default {
 																				}
 																}))
 
+																////////////////////////////////////////////////////////
 
 																injectFields.push({
 																				title: 'Email Address (Primary)',
@@ -974,7 +1000,7 @@ export default {
 																								},
 
 																								{
-																												title: 'Event Type',
+																												title: 'Event Type (Definition)',
 																												key: 'eventDefinition',
 																												maximum: 1,
 																												minimum: 0,
@@ -989,6 +1015,7 @@ export default {
 																												maximum: 1,
 																												minimum: 0,
 																												type: 'reference',
+																												// directive:'select',
 																												typeSelect: 'eventtrack',
 																								},
 
@@ -1077,22 +1104,35 @@ export default {
 																								},
 
 
+																								// {
+																								// 				title: 'Event Track',
+																								// 				key: 'track',
+																								// 				maximum: 0,
+																								// 				minimum: 0,
+																								// 				type: 'reference',
+																								// 				directive: 'select',
+																								// 				options: eventTrackOptions,
+																								// },
 																								{
 																												title: 'Event Track',
 																												key: 'track',
-																												maximum: 0,
+																												maximum: 1,
 																												minimum: 0,
 																												type: 'reference',
-																												directive: 'select',
-																												options: eventTrackOptions,
+																												// directive:'select',
+																												typeSelect: 'eventtrack',
 																								},
 																								{
-																												title: 'Event Type',
+																												title: 'Event Type (Definition)',
 																												key: 'definition',
-																												maximum: 0,
+																												maximum: 1,
 																												minimum: 0,
 																												type: 'string',
 																												directive: 'select',
+																												// options:[{
+																												// 	name:'Hello',
+																												// 	value:'there',
+																												// }],
 																												options: eventDefinitionOptions,
 																								},
 																								// {
@@ -1106,6 +1146,7 @@ export default {
 																								// },
 																				],
 																});
+
 
 																injectFields.push({
 																				title: 'Rostered Assignments > Total times rostered',
@@ -1217,7 +1258,7 @@ export default {
 																								{
 																												title: 'Form',
 																												key: 'definition',
-																												maximum: 0,
+																												maximum: 1,
 																												minimum: 0,
 																												type: 'string',
 																												directive: 'select',
@@ -1366,7 +1407,7 @@ export default {
 																								{
 																												title: 'Post Type',
 																												key: 'definition',
-																												maximum: 0,
+																												maximum: 1,
 																												minimum: 0,
 																												type: 'string',
 																												directive: 'select',
@@ -1376,14 +1417,139 @@ export default {
 																});
 
 
+																/////////////////////////////////////////////////////
+
+
+																var familyMemberFilters = [{
+																								title: 'Household Role',
+																								key: 'householdRole',
+																								maximum: 1,
+																								minimum: 0,
+																								type: 'string',
+																				},
+																				{
+																								title: 'Age',
+																								key: 'age',
+																								maximum: 1,
+																								minimum: 0,
+																								type: 'integer',
+																				},
+																				{
+																								title: 'Gender',
+																								key: 'gender',
+																								maximum: 1,
+																								minimum: 0,
+																								type: 'string',
+																				},
+																				{
+																								title: 'Realms',
+																								key: 'realms',
+																								maximum: 0,
+																								minimum: 0,
+																								type: 'reference',
+																								directive: 'select',
+																								_discriminatorDefinition: 'realm',
+																				},
+
+																				// {
+																				// 				title: 'Tags',
+																				// 				key: 'tags',
+																				// 				maximum: 0,
+																				// 				minimum: 0,
+																				// 				type: 'reference',
+																				// 				directive: 'select',
+																				// 				_discriminatorDefinition: 'tag',
+																				// },
+
+																				{
+																								title: 'Academic Calendar',
+																								key: 'academicCalendar',
+																								maximum: 1,
+																								minimum: 0,
+																								type: 'reference',
+																								typeSelect: 'academic',
+																				},
+
+																				{
+																								title: 'Academic Grade',
+																								key: 'academicGrade',
+																								maximum: 1,
+																								minimum: 0,
+																								type: 'string',
+																								directive: 'select',
+																								// typeSelect: 'academicCalendar',
+																				},
+																				{
+																								title: 'Status',
+																								key: 'status',
+																								maximum: 1,
+																								minimum: 0,
+																								type: 'string',
+																								directive: 'select',
+																								options: [{
+																																name: 'active',
+																																value: 'active',
+																												},
+																												{
+																																name: 'archived',
+																																value: 'archived',
+																												},
+																												{
+																																name: 'draft',
+																																value: 'draft',
+																												},
+																								]
+																				},
+																				{
+																								title: 'Definition',
+																								key: 'definition',
+																								maximum: 1,
+																								minimum: 0,
+																								type: 'string',
+																								directive: 'select',
+																								options: contactDefinitionOptions,
+																				},
+																]
+
+																////////////////////////////////////////////////////////
+
+																_.each(self.tagTypes, function(tagType) {
+																				familyMemberFilters.push({
+																								title: `${tagType.plural} (Tag)`,
+																								key: `tags|${tagType.definitionName}`,
+																								maximum: 0,
+																								minimum: 0,
+																								type: 'reference',
+																								typeSelect: tagType.definitionName,
+																				});
+																})
+
+
+
 
 																injectFields.push({
-																				title: 'Family Members > Number of Family Members',
-																				key: 'family.items.length',
+																				title: 'Family Household > Total Number of Family Members',
+																				key: '_familyMembers.all.length',
 																				maximum: 1,
 																				minimum: 0,
 																				type: 'integer',
+																				subfieldTitle: 'Where family member matches...',
+																				subfields: familyMemberFilters,
+
 																});
+
+
+
+
+
+
+																// injectFields.push({
+																// 				title: 'Family Members > Number of Family Members',
+																// 				key: 'family.items.length',
+																// 				maximum: 1,
+																// 				minimum: 0,
+																// 				type: 'integer',
+																// });
 
 																injectFields.push({
 																				title: 'Family Parents > Number of Parents',
@@ -2024,7 +2190,6 @@ export default {
 
 
 												injectFields = injectFields.concat(self.asyncKeys);
-
 
 
 												var fields = FilterService.allKeys(injectFields, self.definition);

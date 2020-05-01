@@ -871,7 +871,7 @@ export default {
         ///////////////////////////////////
 
 
-        if (!(typeof window === 'undefined')) {
+        if (process.browser) {
 
             if (window.hljs) {
 

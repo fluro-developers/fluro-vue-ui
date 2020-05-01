@@ -25,11 +25,9 @@ export default {
             contentStringModel: [false, false],
         }
     },
-    created() {
-        window.openEditModal = this.openEditModal;
-        window.openViewModal = this.openViewModal;
-    },
     mounted() {
+    	window.openEditModal = this.openEditModal;
+        window.openViewModal = this.openViewModal;
         this.initMaps();
     },
     computed: {

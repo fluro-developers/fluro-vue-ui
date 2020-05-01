@@ -1347,9 +1347,19 @@ export default {
                                 }
                                 entry._pageIndex = i;
 
+                                //Add all the keys of the original object
+
+                                //Merge the information we already know about the family
+                                if(rawRow.family && entry.family) {
+                                	if(rawRow.family.items) {
+                                		delete entry.family.items;
+                                	}
+                                	entry.family = Object.assign({}, rawRow.family, entry.family);
+                                }
+
                                 entry = Object.assign({}, rawRow, entry);
                                 // _.merge(rawRow, entry);
-                                // console.log('MERGE');
+                                // console.log('MERGED',  entry);
                                 return entry
 
                             })

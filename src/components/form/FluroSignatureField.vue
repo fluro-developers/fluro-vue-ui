@@ -139,7 +139,9 @@ export default {
         }
     },
     beforeDestroy() {
-        window.removeEventListener("resize", this.resizeCanvas);
+    	if(process.browser) {
+        	window.removeEventListener("resize", this.resizeCanvas);
+    	}
 
         //Destroy the Pad?
     },

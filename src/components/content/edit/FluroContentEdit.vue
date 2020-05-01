@@ -287,19 +287,22 @@ export default {
 
 												/* unselect the range */
 												inputField.setAttribute('type', 'hidden')
-												window.getSelection().removeAllRanges()
+												if(process.browser) {
+													window.getSelection().removeAllRanges()
+												}
+												
 								},
 								addListeners() {
 												// console.log('ADD LISTENERS')
 												var self = this;
-												if (document) {
+												if (process.browser) {
 																document.addEventListener("keydown", self.keypress, false);
 												}
 								},
 								removeListeners() {
 												// console.log('REMOVE LISTENERS')
 												var self = this;
-												if (document) {
+												if (process.browser) {
 																document.removeEventListener("keydown", self.keypress);
 												}
 								},

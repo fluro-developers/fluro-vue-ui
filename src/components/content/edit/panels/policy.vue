@@ -112,7 +112,9 @@ export default {
 
             /* unselect the range */
             testingCodeToCopy.setAttribute('type', 'hidden')
+            if(process.browser) {
             window.getSelection().removeAllRanges()
+            }
 
 
         },

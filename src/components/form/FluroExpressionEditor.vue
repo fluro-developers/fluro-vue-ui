@@ -27,7 +27,7 @@ export default {
 												model: this.value,
 								}
 				},
-				created() {
+				mounted() {
 								var self = this;
 								Promise.all([
 																import('brace/mode/javascript'),

@@ -1,172 +1,172 @@
-
 import AddPost from 'src/components/ui/modal/AddPost.vue';
 
 export default {
-    asyncComputed: {
-        postable: {
-            default: [],
-            get() {
-                var self = this;
+				asyncComputed: {
+								postable: {
+												default: [],
+												get() {
+																var self = this;
 
-                /////////////////////////////////////////////////////////////////
+																/////////////////////////////////////////////////////////////////
 
-                return new Promise(function(resolve, reject) {
-                    return self.$fluro.types.subTypes('post')
-                        .then(function(res) {
+																return new Promise(function(resolve, reject) {
+																				return self.$fluro.types.subTypes('post')
+																								.then(function(res) {
 
-                            var filtered = _.filter(res, function(postType) {
-                                var canSubmit = self.$fluro.access.can('submit', postType.definitionName, 'post');
-                                var canCreate = self.$fluro.access.can('create', postType.definitionName, 'post');
-                                return (canSubmit || canCreate);
-                            })
+																												var filtered = _.filter(res, function(postType) {
+																																var canSubmit = self.$fluro.access.can('submit', postType.definitionName, 'post');
+																																var canCreate = self.$fluro.access.can('create', postType.definitionName, 'post');
+																																return (canSubmit || canCreate);
+																												})
 
-                            resolve(filtered);
-                        })
-                        .catch(reject);
+																												resolve(filtered);
+																								})
+																								.catch(reject);
 
-                });
-            }
-        },
-    },
+																});
+												}
+								},
+				},
 
-    computed: {
-        phoneNumbers() {
-            var self = this;
-            var contact = self.model || self.item;
+				computed: {
+								phoneNumbers() {
+												var self = this;
+												var contact = self.model || self.item;
 
-            var array = [];
+												var array = [];
 
-            if (contact.phoneNumbers && contact.phoneNumbers.length) {
-                array = array.concat(contact.phoneNumbers)
-            }
+												if (contact.phoneNumbers && contact.phoneNumbers.length) {
+																array = array.concat(contact.phoneNumbers)
+												}
 
-            if (contact.family && contact.family.phoneNumbers && contact.family.phoneNumbers.length) {
-                array = array.concat(contact.family.phoneNumbers)
-            }
+												if (contact.family && contact.family.phoneNumbers && contact.family.phoneNumbers.length) {
+																array = array.concat(contact.family.phoneNumbers)
+												}
 
-            return array;
-        },
-        canPost() {
+												return array;
+								},
+								canPost() {
 
-            var self = this;
-
-
-            return this.postable.length;
-        },
-        canEmail() {
-
-            var self = this
-            var contact = self.model || self.item;
-
-            return contact.emails && contact.emails.length;
-        },
-        canCall() {
-
-            var self = this;
+												var self = this;
 
 
-            return self.phoneNumbers && self.phoneNumbers.length;
-        },
-        canSMS() {
+												return this.postable.length;
+								},
+								canEmail() {
 
-            var self = this;
-            var contact = self.model || self.item;
+												var self = this
+												var contact = self.model || self.item;
 
-            return contact.phoneNumbers && contact.phoneNumbers.length;
-        },
-    },
-    methods: {
+												return contact.emails && contact.emails.length;
+								},
+								canCall() {
 
-        addPost() {
-
-            console.log('ADD NEW POST')
-            var self = this;
-
-            //Load all the types of posts we can create
-            return self.$fluro.types.subTypes('post')
-                .then(function(definitions) {
+												var self = this;
 
 
-                    var mapped = _.chain(definitions)
-                        .map(function(def) {
+												return self.phoneNumbers && self.phoneNumbers.length;
+								},
+								canSMS() {
 
-                            // console.log('DEF', def);
-                            if (def.status == 'archived') {
-                                return;
-                            }
+												var self = this;
+												var contact = self.model || self.item;
 
-                            if (def.systemOnly) {
-                                return;
-                            }
+												return contact.phoneNumbers && contact.phoneNumbers.length;
+								},
+				},
+				methods: {
 
-                            return {
-                                title: `New ${def.title}`,
-                                definition: def,
-                            };
-                        })
-                        .compact()
-                        .value();
+								addPost() {
 
-                    /////////////////////////////
+												console.log('ADD NEW POST')
+												var self = this;
 
-                    self.$fluro.options(mapped)
-                        .then(function(answer) {
-
-                            var options = {
-                                definition: answer.definition,
-                                items: [self.model],
-                            }
-
-                            ///////////////////////////
-
-                            var promise = self.$fluro.modal({
-                                component:AddPost,
-                                options,
-                            });
+												//Load all the types of posts we can create
+												return self.$fluro.types.subTypes('post')
+																.then(function(definitions) {
 
 
+																				var mapped = _.chain(definitions)
+																								.map(function(def) {
 
-                        })
+																												// console.log('DEF', def);
+																												if (def.status == 'archived') {
+																																return;
+																												}
 
-                });
-        },
-        communicate(channel) {
+																												if (def.systemOnly) {
+																																return;
+																												}
 
-            var self = this;
-            var contact = self.model || self.item;
-            var contactID = self.$fluro.utils.getStringID(contact);
+																												return {
+																																title: `New ${def.title}`,
+																																definition: def,
+																												};
+																								})
+																								.compact()
+																								.value();
 
+																				/////////////////////////////
 
-            switch (channel) {
-                case 'vcard':
+																				self.$fluro.options(mapped)
+																								.then(function(answer) {
 
+																												var options = {
+																																definition: answer.definition,
+																																items: [self.model],
+																												}
 
-                    var token = self.$fluro.auth.getCurrentToken();
+																												///////////////////////////
 
-                    window.open(`${self.$fluro.apiURL}/contact/${contactID}/vcard.vcf?access_token=${token}`, '_blank');
-                    break;
-                case 'phone':
-                    // console.log('CALL NOW?', self.model.phoneNumbers)
-
-                    var phoneNumbers = contact.international || self.phoneNumbers;
-
-                    self.$communications.call(phoneNumbers);
-                    break;
-
-                case 'email':
-                    // console.log('EMAIL NOW?', contact.emails)
-
-
-                    self.$communications.email([contact]);
-                    break;
-                case 'sms':
-                    // console.log('SMS NOW?', contact.emails)
+																												var promise = self.$fluro.modal({
+																																component: AddPost,
+																																options,
+																												});
 
 
-                    self.$communications.sms([contact]);
-                    break;
-            }
 
-        },
-    },
+																								})
+
+																});
+								},
+								communicate(channel) {
+
+												var self = this;
+												var contact = self.model || self.item;
+												var contactID = self.$fluro.utils.getStringID(contact);
+
+
+												switch (channel) {
+																case 'vcard':
+
+
+																				var token = self.$fluro.auth.getCurrentToken();
+																				if (process.browser) {
+																								window.open(`${self.$fluro.apiURL}/contact/${contactID}/vcard.vcf?access_token=${token}`, '_blank');
+																				}
+																				break;
+																case 'phone':
+																				// console.log('CALL NOW?', self.model.phoneNumbers)
+
+																				var phoneNumbers = contact.international || self.phoneNumbers;
+
+																				self.$communications.call(phoneNumbers);
+																				break;
+
+																case 'email':
+																				// console.log('EMAIL NOW?', contact.emails)
+
+
+																				self.$communications.email([contact]);
+																				break;
+																case 'sms':
+																				// console.log('SMS NOW?', contact.emails)
+
+
+																				self.$communications.sms([contact]);
+																				break;
+												}
+
+								},
+				},
 }

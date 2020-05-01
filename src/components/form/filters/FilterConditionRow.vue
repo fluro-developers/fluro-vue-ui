@@ -6,15 +6,10 @@
 												<v-flex xs12 sm4>
 																<template v-if="fields.length">
 																				<template v-if="$vuetify.breakpoint.xsOnly">
-																								<!-- <v-select single-line dense :loading="loadingKeys" v-model="model.key" item-text="title" item-value="key" :items="fields" /> -->
 																								<v-select single-line dense :loading="loadingKeys" :return-object="true" v-model="selectedKey" item-text="title" item-value="key" :items="fields" />
 																				</template>
 																				<template v-else>
 																								<div v-tippy :content="keyCaption">
-																												<!-- <pre>{{selectedKey}}</pre> -->
-																												<!-- TESTING -->
-																												<!-- <v-autocomplete single-line dense :loading="loadingKeys" v-model="model.key" item-text="title" item-value="key" :items="fields" /> -->
-																												<!-- <v-autocomplete single-line dense :loading="loadingKeys" :return-object="true" v-model="model.test" item-text="title" item-value="key" :items="fields" /> -->
 																												<v-autocomplete ref="inputKey" single-line dense :loading="loadingKeys" :return-object="true" v-model="selectedKey" item-text="title" item-value="key" :items="groupedFields">
 																																<template v-slot:item="data">
 																																				<template v-if="typeof data.item !== 'object'">
@@ -55,8 +50,6 @@
 																<!-- <pre>{{model.comparator}}</pre> -->
 												</v-flex>
 												<template v-if="comparator && inputType != 'none'">
-																<!-- <template v-if="inputType == 'none'">
-				</template> -->
 																<v-flex xs12 sm5 v-if="inputType == 'daterange'">
 																				<v-menu :fixed="true" :right="true" ref="dateSelection" :close-on-content-click="false" transition="slide-y-transition" offset-y>
 																								<template v-slot:activator="{ on }">
@@ -87,32 +80,6 @@
 																												</v-layout>
 																								</v-card>
 																				</v-menu>
-																				<!-- <v-layout>
-						<v-flex xs6>
-							<v-menu ref="daterange1" v-model="date1" :close-on-content-click="false" :nudge-right="40" lazy transition="scale-transition" offset-y full-width min-width="290px">
-								<template v-slot:activator="{ on }">
-									<v-text-field v-model="model.value" class="small-input" single-line label="From" v-on="on" />
-								</template>
-								<v-date-picker v-model="model.value" no-title scrollable>
-									<v-spacer></v-spacer>
-									<v-btn flat color="primary" @click="date1 = false">Cancel</v-btn>
-									<v-btn flat color="primary" @click="$refs.daterange1.save(model.value)">OK</v-btn>
-								</v-date-picker>
-							</v-menu>
-						</v-flex>
-						<v-flex xs6>
-							<v-menu ref="daterange2" v-model="date2" :close-on-content-click="false" :nudge-right="40" lazy transition="scale-transition" offset-y full-width min-width="290px">
-								<template v-slot:activator="{ on }">
-									<v-text-field v-model="model.value2" class="small-input" single-line label="To" v-on="on" />
-								</template>
-								<v-date-picker v-model="model.value2" no-title scrollable>
-									<v-spacer></v-spacer>
-									<v-btn flat color="primary" @click="date2 = false">Cancel</v-btn>
-									<v-btn flat color="primary" @click="$refs.daterange2.save(model.value2)">OK</v-btn>
-								</v-date-picker>
-							</v-menu>
-						</v-flex>
-					</v-layout> -->
 																</v-flex>
 																<v-flex xs12 sm5 v-else-if="inputType == 'datemeasure'">
 																				<v-layout>
@@ -135,9 +102,7 @@
 																				</v-layout>
 																</v-flex>
 																<v-flex xs12 sm5 v-else-if="inputType == 'array' && dataType != 'date'">
-																				<!-- <pre>{{simpleKey}} {{discriminator}}</pre> -->
 																				<template v-if="simpleKeyIsRealms">
-																								<!-- REALM SELECT -->
 																								<fluro-realm-select action="view any" :filterDiscriminator="discriminator" block small v-model="model.values" />
 																				</template>
 																				<template v-else-if="useBasicReferenceSelect">
@@ -274,6 +239,7 @@
 																</v-flex>
 												</template>
 								</v-layout>
+								<!-- HERE {{possibleValues}} -->
 								<!-- <pre>{{model}}</pre> -->
 								<template v-if="hasSubFields">
 												<div class="subfields" v-if="model.criteria && model.criteria.length">
@@ -375,7 +341,7 @@ export default {
 																}),
 
 
-																
+
 												])
 												.then(function(results) {
 																self.$options.components.FilterConditionGroup = results[0];
@@ -452,7 +418,7 @@ export default {
 								// console.log('MODEL START IS', parsedModel)
 
 								return {
-									ready:false,
+												ready: false,
 												sampleRefreshKey: this.$fluro.utils.guid(),
 												//Date Select Stuff
 												datePeriodOptions,
@@ -772,14 +738,12 @@ export default {
 												if (self.useSample) {
 																return `${self.sampleRefreshKey}-${self.type}-${self.model.key}`;
 												} else {
-																// //console.log('CHANGE STRING!', this.model.key, this.rows.length)
-																return `${this.discriminatorDefinition}-${this.discriminatorType}${this.discriminator}-${this.model.key}-${_.orderBy(this.$fluro.utils.arrayIDs(this.rows), function(r) {
-					return r;
-				}).toString()}`;
+																var rowIDs = _.orderBy(this.$fluro.utils.arrayIDs(this.rows), function(r) {
+																				return r;
+																}).join(' ')
+
+																return `${this.discriminatorDefinition}-${this.discriminatorType}${this.discriminator}-${this.model.key}-${rowIDs}`;
 												}
-
-												console.log('ROW CHANGE STRING!')
-
 								},
 								selector() {
 												var key = this.model.key;
@@ -788,7 +752,10 @@ export default {
 																return;
 												}
 
-												return _.find(this.fields, { key });
+												var match =  _.find(this.fields, { key });
+
+												// console.log('MATCHING SELECTOR', match)
+												return match;
 								},
 
 								valid() {
@@ -944,7 +911,7 @@ export default {
 																//Just show a normal reference selector
 																self.possibleValues = [];
 																self.loadingValues = false;
-																console.log('Use basic reference select')
+																// console.log('CADE > Use basic reference select')
 																return;
 												}
 
@@ -957,7 +924,7 @@ export default {
 																// console.log('Values > No key so clear values');
 																self.possibleValues = [];
 																self.loadingValues = false;
-																console.log('No key')
+																// console.log('CADE > No key so no values', self.model)
 																return;
 												}
 
@@ -979,11 +946,15 @@ export default {
 												if (self.selector && self.selector.options && self.selector.options.length) {
 																self.possibleValues = self.selector.options;
 																self.loadingValues = false;
+
 																// console.log('SELECTOR POSSIBLE VALUES', key, self.possibleValues)
-																console.log('has options')
+																// console.log('CADE > has options from selector')
 																return;
+												} else {
+																// console.log('SELECTOR?', self.selector)
 												}
 
+												console.log('No values known yet')
 
 												////////////////////////////////
 
@@ -1040,6 +1011,7 @@ export default {
 																				break
 												}
 
+
 												////////////////////////////////////
 
 												if (!self.useSample) {
@@ -1047,16 +1019,18 @@ export default {
 																if (!self.rows || !self.rows.length) {
 																				//console.log('Values > No rows')
 																				self.possibleValues = [];
-																				this.loadingValues = false;
+																				self.loadingValues = false;
+																					console.log('No sample and no rows')
 																				return;
 																}
 												}
+
 
 												////////////////////////////////////
 
 												//Show feedback to the user that we are loading
 												//the values for them
-												this.loadingValues = true;
+												self.loadingValues = true;
 
 												////////////////////////////////////
 
@@ -1071,8 +1045,7 @@ export default {
 
 
 												////////////////////////////////////
-												////////////////////////////////////
-												////////////////////////////////////
+												
 
 												//If we haven't already got the values for this request
 												if (!valueCache) {
@@ -1189,9 +1162,10 @@ export default {
 																				valueCache = valueStorageCache[self.rowChangeString] = self.$fluro.content.values(subSetIDs, key, options);
 																}
 												} else {
-																// console.log('Values Cache exists', valueCache)
+																console.log('Values Cache exists', valueCache)
 												}
 
+													console.log('Load from server')
 												/////////////////////////////////////////////////////////////////
 
 												//When the request is complete
