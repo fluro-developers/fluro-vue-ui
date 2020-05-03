@@ -1,12 +1,13 @@
 <template>
-				<div ref="outer" class="fluro-code-editor">
-								<code-editor v-if="ready" v-model="model" @init="editorInit" :lang="syntax" theme="tomorrow_night_eighties" :height="100"></code-editor>
+				<div ref="outer" class="fluro-code-editor" v-if="ready">
+								<code-editor v-model="model" @init="editorInit" :lang="syntax" theme="tomorrow_night_eighties" :height="100"></code-editor>
 				</div>
 </template>
 <script>
-import CodeEditor from 'vue2-ace-editor';
-import js_beautify from 'js-beautify';
+// import CodeEditor from 'vue2-ace-editor';
+// import js_beautify from 'js-beautify';
 
+import DynamicImportService from 'src/DynamicImportService.js';
 
 
 
@@ -41,6 +42,7 @@ export default {
 												ready: false,
 												editor: null,
 												model: this.value,
+												beautifier: null,
 								}
 				},
 				computed: {
@@ -66,41 +68,57 @@ export default {
 				methods: {
 								beautify() {
 
-												if (!this.autoformat) {
+												var self = this;
+
+												if (!self.autoformat) {
 																return;
 												}
 
-												if (!this.editor) {
+												if (!self.editor) {
 																return;
 												}
 
-												// console.log('Beautify!!!')
-												//Get the current string
-												var input = this.editor.session.getValue() || '';
+												if (self.beautifier) {
+																runBeautify();
+												} else {
 
-												//Remove leading spaces
-												var array = input.split(/\n/);
-												array[0] = array[0].trim();
-												input = array.join("\n");
-
-
-												switch (this.syntax) {
-																case 'html':
-																				input = js_beautify.html(input); //, {extra_liners:'p, br'})
-																				break;
-																case 'json':
-																case 'javascript':
-																				input = js_beautify(input);
-																				break;
-																case 'scss':
-																				input = js_beautify.css(input)
-																				break;
+																return import('js-beautify')
+																				.then(function(res) {
+																								self.beautifier = res;
+																								runBeautify();
+																				})
 												}
 
-												// console.log('BEAUTIFIED')
-												// console.log('Set code editor with new input', input);
-												//Change current text to formatted text
-												this.editor.session.setValue(input);
+												function runBeautify() {
+																console.log('Beautify!!!')
+																//Get the current string
+																var input = self.editor.session.getValue() || '';
+
+																//Remove leading spaces
+																var array = input.split(/\n/);
+																array[0] = array[0].trim();
+																input = array.join("\n");
+
+
+																switch (self.syntax) {
+																				case 'html':
+																								input = self.beautifier.html(input); //, {extra_liners:'p, br'})
+																								break;
+																				case 'json':
+																				case 'javascript':
+																								console.log('TESTING', self.beautifier)
+																								// input = self.beautifier.js(input);
+																								break;
+																				case 'scss':
+																								input = self.beautifier.css(input)
+																								break;
+																}
+
+																// console.log('BEAUTIFIED')
+																// console.log('Set code editor with new input', input);
+																//Change current text to formatted text
+																self.editor.session.setValue(input);
+												}
 								},
 								editorInit: function(editor) {
 
@@ -159,32 +177,43 @@ export default {
 				},
 				mounted() {
 
-								var self = this;
-								Promise.all([
-																import('brace/ext/searchbox'),
-																import('brace/ext/language_tools'),
-																import('brace/mode/html'),
-																import('brace/mode/json'),
-																import('brace/mode/javascript'),
-																import('brace/mode/ejs'),
-																import('brace/mode/scss'),
-																import('brace/theme/tomorrow_night_eighties'),
-																import('brace/snippets/javascript'),
-												])
-												.then(function() {
-																console.log('Loaded brace extras')
-																self.ready = true;
+								// import CodeEditor from 'vue2-ace-editor';
 
-																this.beautify();
-												}, function(err) {
-																self.ready = true;
-																this.beautify();
-												});
+								var self = this;
+
+								DynamicImportService.load('vue2-ace-editor', function() {
+												return import('vue2-ace-editor')
+								}).then(function(imported) {
+												self.$options.components.CodeEditor = imported;
+												console.log('Loaded code editor')
+
+												Promise.all([
+
+																				import('brace/ext/searchbox'),
+																				import('brace/ext/language_tools'),
+																				import('brace/mode/html'),
+																				import('brace/mode/json'),
+																				import('brace/mode/javascript'),
+																				import('brace/mode/ejs'),
+																				import('brace/mode/scss'),
+																				import('brace/theme/tomorrow_night_eighties'),
+																				import('brace/snippets/javascript'),
+																])
+																.then(function(results) {
+																				console.log('Loaded code editor extras')
+																				self.ready = true;
+																				self.beautify();
+																}, function(err) {
+																				self.ready = true;
+																				self.beautify();
+																});
+
+								});
 
 
 				},
 				components: {
-								CodeEditor,
+								// CodeEditor,
 				},
 				watch: {
 								value(value) {

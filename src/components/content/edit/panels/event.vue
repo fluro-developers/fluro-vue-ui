@@ -421,6 +421,8 @@ import FluroContentView from 'src/components/content/view/FluroContentView.vue';
 
 /////////////////////////////////
 
+import _ from 'lodash';
+
 import Vue from 'vue';
 
 /////////////////////////////////

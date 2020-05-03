@@ -9,6 +9,10 @@
     </div>
 </template>
 <script>
+
+import _ from 'lodash';
+
+
 function mapDate(entry) {
     if(!entry) {
         return;
@@ -22,6 +26,7 @@ function mapDate(entry) {
         return `Invalid date ${entry}`
     }
 }
+
 
 
 export default {

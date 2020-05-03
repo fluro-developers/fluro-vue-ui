@@ -192,6 +192,7 @@ import FluroAvatarUpdate from "src/components/FluroAvatarUpdate.vue";
 /////////////////////////////////
 
 import Vue from "vue";
+import _ from 'lodash';
 
 /////////////////////////////////
 

@@ -40,6 +40,7 @@ import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditM
 /////////////////////////////////
 
 import Vue from 'vue';
+import _ from 'lodash';
 
 /////////////////////////////////
 

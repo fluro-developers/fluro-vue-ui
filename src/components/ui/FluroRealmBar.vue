@@ -2,6 +2,9 @@
     <span class="realm-bar" :style="style"/>
 </template>
 <script>
+
+import _ from 'lodash';
+
 export default {
     props: {
         'realm': {

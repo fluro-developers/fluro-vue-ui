@@ -1,4 +1,4 @@
-console.log('fluro-vue-ui 2.1.30')
+console.log('fluro-vue-ui 2.1.31')
 
 /////////////////////////////////////////////////////
 
@@ -138,6 +138,8 @@ import FluroSelectionMixin from './mixins/FluroSelectionMixin';
 
 /////////////////////////////////////////////////////
 
+
+import _ from 'lodash';
 
 /**
  * An install function.

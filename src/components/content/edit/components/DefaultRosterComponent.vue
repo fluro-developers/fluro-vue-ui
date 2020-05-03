@@ -26,6 +26,7 @@ import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditM
 import DefaultRosterSlot from 'src/components/content/edit/components/DefaultRosterSlot.vue';
 import FluroContentForm from 'src/components/form/FluroContentForm.vue';
 
+import _ from 'lodash';
 
 
 export default {

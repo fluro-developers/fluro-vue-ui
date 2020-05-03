@@ -18,6 +18,7 @@ import RosterSlotPlaceholderCell from 'src/components/content/edit/components/Ro
 import RosterSlotAssignmentCell from 'src/components/content/edit/components/RosterSlotAssignmentCell.vue';
 import MultiPlannerService from 'src/components/content/edit/services/MultiPlannerService.js';
 import draggable from 'vuedraggable';
+import _ from 'lodash';
 
 export default {
     components: {

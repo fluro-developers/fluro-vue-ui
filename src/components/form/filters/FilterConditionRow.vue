@@ -269,6 +269,7 @@
 </template>
 <script>
 import { FilterService } from 'fluro';
+import _ from 'lodash';
 
 import DynamicImportService from 'src/DynamicImportService';
 

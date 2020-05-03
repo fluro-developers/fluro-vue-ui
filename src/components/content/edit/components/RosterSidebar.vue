@@ -126,6 +126,7 @@
 <script>
 import RosterSlotSuggestionListItem from 'src/components/content/edit/components/RosterSlotSuggestionListItem.vue';
 import RosterSlotAssignmentListItem from 'src/components/content/edit/components/RosterSlotAssignmentListItem.vue';
+import _ from 'lodash';
 
 export default {
     props: {

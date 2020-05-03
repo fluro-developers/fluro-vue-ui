@@ -4,7 +4,7 @@ const lookup = {};
 
 /////////////////////////////
 
-service.load = function(path, generatePromise) {
+service.load = function(path, generatePromise, fullModule) {
 
 				return new Promise(function(resolve, reject) {
 
@@ -13,14 +13,18 @@ service.load = function(path, generatePromise) {
 
 								//If we haven't then run the promise generate function
 								if (!alreadyImported) {
-									// console.log('Create promise!', path);
+												// console.log('Create promise!', path);
 												alreadyImported = lookup[path] = generatePromise();
 								}
 
 								//////////////////////////////
 								alreadyImported
 												.then(function(module) {
-													// console.log('Resolve Default Module', path);
+
+																if (fullModule) {
+																				resolve(module);
+																}
+																// console.log('Resolve Default Module', path);
 																return resolve(module.default);
 												})
 												.catch(reject);

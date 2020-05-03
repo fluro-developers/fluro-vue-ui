@@ -151,6 +151,8 @@
 /////////////////////////////////
 
 import Vue from 'vue';
+import _ from 'lodash';
+
 
 /////////////////////////////////
 import LocationSelector from 'src/components/content/edit/components/LocationSelector.vue';

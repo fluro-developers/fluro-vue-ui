@@ -23,6 +23,7 @@
 				</flex-column>
 </template>
 <script>
+import _ from 'lodash';
 import PostCard from 'src/components/content/contact/timeline/cards/PostCard.vue';
 import AddPost from 'src/components/ui/modal/AddPost.vue';
 

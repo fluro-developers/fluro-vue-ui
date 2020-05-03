@@ -74,6 +74,8 @@
 </template>
 <script>
 
+import _ from 'lodash';
+
 import NumberCell from 'src/components/table/cells/NumberCell.vue';
 import BooleanCell from 'src/components/table/cells/BooleanCell.vue';
 import DateCell from 'src/components/table/cells/DateCell.vue';

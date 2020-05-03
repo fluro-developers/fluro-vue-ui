@@ -124,6 +124,7 @@ import FluroContentFormField from 'src/components/form/FluroContentFormField.vue
 
 import FluroSelector from 'src/components/form/contentselect/FluroSelector.vue';
 import Vue from 'vue';
+import _ from 'lodash';
 
 export default {
                 props: {

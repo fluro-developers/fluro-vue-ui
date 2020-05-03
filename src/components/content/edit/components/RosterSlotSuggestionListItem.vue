@@ -78,6 +78,7 @@
 </template>
 <script>
 import moment from 'moment';
+import _ from 'lodash';
 
 export default {
     props: {

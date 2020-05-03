@@ -96,6 +96,8 @@ import FluroToggleItem from 'src/components/ui/FluroToggleItem.vue';
 /////////////////////////////////
 
 import Vue from 'vue';
+import _ from 'lodash';
+
 
 /////////////////////////////////
 

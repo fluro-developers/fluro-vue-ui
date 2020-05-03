@@ -43,6 +43,7 @@
 <script>
 import Vue from 'vue';
 import DynamicImportService from 'src/DynamicImportService.js';
+import _ from 'lodash';
 
 
 

@@ -67,6 +67,9 @@
 </template>
 <script>
 import draggable from 'vuedraggable';
+import _ from 'lodash';
+
+
 // import FluroFieldEditorItem from 'src/components/fields/FluroFieldEditorItem.vue';
 
 export default {

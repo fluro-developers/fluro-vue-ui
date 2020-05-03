@@ -51,6 +51,8 @@
 </template>
 <script>
 import draggable from 'vuedraggable';
+import _ from 'lodash';
+
 
 export default {
     components: {

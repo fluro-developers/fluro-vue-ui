@@ -48,6 +48,7 @@ import FluroContentForm from 'src/components/form/FluroContentForm.vue';
 import FluroContentFormField from 'src/components/form/FluroContentFormField.vue';
 import FluroStatusSelect from 'src/components/form/FluroStatusSelect.vue';
 import FluroAvatar from 'src/components/FluroAvatar.vue';
+import _ from 'lodash';
 
 
 /////////////////////////////////

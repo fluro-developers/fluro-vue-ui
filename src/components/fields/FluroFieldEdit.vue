@@ -473,6 +473,7 @@ import ExpressionFieldSelect from 'src/components/fields/ExpressionFieldSelect.v
 import FluroExpressionEditor from 'src/components/form/FluroExpressionEditor.vue';
 import FluroInlineEdit from 'src/components/form/FluroInlineEdit.vue';
 import TicketingManager from 'src/components/fields/TicketingManager.vue';
+import _ from 'lodash';
 
 
 

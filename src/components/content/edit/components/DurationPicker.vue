@@ -2,6 +2,9 @@
     <input @focus="$emit('focus')" @blur="blur" @keyup.enter="blur" pattern="[0-9]*" placeholder="Duration (mins)" inputmode="numeric" v-model.lazy="number" />
 </template>
 <script>
+
+	import _ from 'lodash';
+
 export default {
     props: {
         'value': {

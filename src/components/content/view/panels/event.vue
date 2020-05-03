@@ -202,6 +202,9 @@
 /////////////////////////////////
 
 import Vue from 'vue';
+import _ from 'lodash';
+
+
 import FluroContentView from 'src/components/content/view/FluroContentView.vue';
 import LocationViewMapComponent from 'src/components/content/event/LocationViewMapComponent.vue';
 import FluroContentViewMixin from 'src/components/content/view/FluroContentViewMixin.js';

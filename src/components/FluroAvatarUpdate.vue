@@ -11,6 +11,8 @@
 </template>
 <script>
 import FluroAvatar from 'src/components/FluroAvatar.vue';
+import _ from 'lodash';
+
 
 export default {
     components: {

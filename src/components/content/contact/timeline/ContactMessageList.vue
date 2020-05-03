@@ -56,6 +56,8 @@
                 </flex-column>
 </template>
 <script>
+
+import _ from 'lodash';
 import MailoutCard from 'src/components/content/contact/timeline/cards/MailoutCard.vue';
 import TextMessageCard from 'src/components/content/contact/timeline/cards/TextMessageCard.vue';
 

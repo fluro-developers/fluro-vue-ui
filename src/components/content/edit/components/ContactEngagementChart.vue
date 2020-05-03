@@ -12,6 +12,7 @@
 </template>
 <script>
 import TrendChart from 'src/components/reporting/FluroTrendChart.vue';
+import _ from 'lodash';
 
 
 

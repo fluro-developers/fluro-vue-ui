@@ -47,6 +47,7 @@
 <script>
 import FluroConfirmButton from 'src/components/ui/FluroConfirmButton.vue';
 import NotificationTeamComponent from 'src/components/content/edit/components/NotificationTeamComponent.vue';
+import _ from 'lodash';
 
 
 export default {

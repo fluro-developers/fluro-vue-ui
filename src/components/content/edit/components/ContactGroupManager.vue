@@ -51,6 +51,8 @@ import ListGroupItem from 'src/components/ui/ListGroupItem.vue';
 import FluroContentSelectModal from 'src/components/form/contentselect/FluroContentSelectModal.vue';
 import FluroSelector from 'src/components/form/contentselect/FluroSelector.vue';
 import Vue from 'vue';
+import _ from 'lodash';
+
 
 export default {
     props: {

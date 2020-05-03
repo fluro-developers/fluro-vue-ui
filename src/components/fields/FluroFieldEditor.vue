@@ -256,6 +256,10 @@
 </template>
 <script>
 import Vue from 'vue';
+import _ from 'lodash';
+
+
+
 import FieldTemplates from 'src/components/fields/FieldEditorTemplates';
 import ComponentFieldTemplates from 'src/components/fields/FieldEditorComponentTemplates';
 import draggable from 'vuedraggable';

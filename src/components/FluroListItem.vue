@@ -53,6 +53,10 @@
 				</div>
 </template>
 <script>
+
+import _ from 'lodash';
+
+
 import FluroRealmBar from 'src/components/ui/FluroRealmBar.vue';
 
 export default {

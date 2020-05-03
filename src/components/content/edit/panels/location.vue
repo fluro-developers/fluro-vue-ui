@@ -116,6 +116,7 @@ import KeyContactLocationManager from 'src/components/content/edit/components/Ke
 /////////////////////////////////
 
 import Vue from 'vue';
+import _ from 'lodash';
 
 
 

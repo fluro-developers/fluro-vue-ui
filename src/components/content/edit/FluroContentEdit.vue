@@ -173,6 +173,7 @@
 </template>
 <script>
 import Vue from 'vue';
+import _ from 'lodash';
 
 
 import FluroTagSelect from 'src/components/form/tagselect/FluroTagSelect.vue';

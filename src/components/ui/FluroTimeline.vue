@@ -43,6 +43,9 @@
     <!-- </flex-column> -->
 </template>
 <script>
+
+import _ from 'lodash';
+
 import FluroInfiniteScroll from 'src/components/ui/FluroInfiniteScroll.vue';
 
 export default {

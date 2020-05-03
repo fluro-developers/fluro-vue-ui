@@ -130,6 +130,9 @@
 </template>
 <script>
 import Vue from 'vue';
+import _ from 'lodash';
+
+
 import { FilterService } from 'fluro';
 import FilterConditionRow from 'src/components/form/filters/FilterConditionRow.vue';
 // import FilterConditionGroup from 'src/components/form/filters/FilterConditionGroup.vue';

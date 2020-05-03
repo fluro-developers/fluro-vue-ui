@@ -13,6 +13,8 @@
 <script>
 //////////////////////////////////
 
+import _ from 'lodash';
+
 import DateComponentMixin from '@/mixins/DateComponentMixin';
 
 //////////////////////////////////

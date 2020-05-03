@@ -53,6 +53,7 @@
 import FluroConfirmButton from "src/components/ui/FluroConfirmButton.vue";
 import FluroContentForm from 'src/components/form/FluroContentForm.vue';
 import draggable from 'vuedraggable';
+import _ from 'lodash';
 
 
 export default {

@@ -12,6 +12,10 @@
     <!-- <span class="inline-tag" :content="data | timeago" v-tippy>{{data | formatDate('MMM D, YYYY')}}</span> -->
 </template>
 <script>
+
+import _ from 'lodash';
+
+
 export default {
     props: {
         'context': {

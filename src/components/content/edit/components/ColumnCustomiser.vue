@@ -61,6 +61,8 @@
 import FluroConfirmButton from "src/components/ui/FluroConfirmButton.vue";
 import FluroContentEditMixin from "src/components/content/edit/FluroContentEditMixin.js";
 import PathSelector from "src/components/content/edit/components/PathSelector.vue";
+import _ from 'lodash';
+
 export default {
     mixins: [FluroContentEditMixin],
     props: {

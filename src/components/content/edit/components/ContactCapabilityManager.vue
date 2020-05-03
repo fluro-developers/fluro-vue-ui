@@ -55,6 +55,10 @@ import FluroContentSelectModal from 'src/components/form/contentselect/FluroCont
 import FluroSelector from 'src/components/form/contentselect/FluroSelector.vue';
 import Vue from 'vue';
 
+import _ from 'lodash';
+
+
+
 export default {
     props: {
         'value': {

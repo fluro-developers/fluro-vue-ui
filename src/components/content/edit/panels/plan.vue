@@ -249,6 +249,7 @@
 </template>
 <script>
 /////////////////////////////////
+import _ from 'lodash';
 
 import draggable from "vuedraggable";
 import PlanRow from "src/components/content/edit/components/PlanRowEdit.vue";

@@ -78,6 +78,7 @@ import FluroPermissionSelect from 'src/components/form/FluroPermissionSelect.vue
 /////////////////////////////////
 
 import Vue from 'vue';
+import _ from 'lodash';
 
 /////////////////////////////////
 

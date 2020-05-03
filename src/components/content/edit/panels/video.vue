@@ -112,6 +112,7 @@ import FluroAssetEditMixin from 'src/components/content/edit/FluroAssetEditMixin
 /////////////////////////////////
 
 import Vue from 'vue';
+import _ from 'lodash';
 
 /////////////////////////////////
 

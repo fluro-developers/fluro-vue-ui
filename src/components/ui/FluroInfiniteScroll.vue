@@ -6,7 +6,8 @@
     </div>
 </template>
 <script>
-    
+    import _ from 'lodash';
+
 import FluroInfinitePage from 'src/components/ui/FluroInfiniteScrollPage.vue';
 
 export default {

@@ -458,6 +458,7 @@ import PaymentModifierEditor from 'src/components/content/edit/components/Paymen
 import FluroFieldEditor from 'src/components/fields/FluroFieldEditor.vue';
 import FluroContentSelectButton from 'src/components/form/contentselect/FluroContentSelectButton.vue';
 import FieldTemplates from 'src/components/fields/FieldEditorTemplates.js';
+import _ from 'lodash';
 
 
 

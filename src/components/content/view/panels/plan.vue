@@ -69,6 +69,7 @@
 </template>
 <script>
 /////////////////////////////////
+import _ from 'lodash';
 
 import PlanRow from "src/components/content/view/components/PlanRowView.vue";
 import FluroContentViewMixin from 'src/components/content/view/FluroContentViewMixin.js';

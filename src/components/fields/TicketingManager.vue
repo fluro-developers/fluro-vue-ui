@@ -7,6 +7,7 @@
 </template>
 <script>
 
+import _ from 'lodash';
 
 import AdvancedTicketingOptionsModal from 'src/components/fields/AdvancedTicketingOptionsModal.vue';
 

@@ -97,6 +97,8 @@
 <script>
 
 import Vue from 'vue';
+import _ from 'lodash';
+
 
 import CorrespondenceInfoModal from 'src/components/mailout/CorrespondenceInfoModal.vue';
 import MailoutPushModal from 'src/components/mailout/MailoutPushModal.vue';

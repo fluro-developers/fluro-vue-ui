@@ -60,6 +60,7 @@
 </template>
 <script>
 import FluroSelectionMixin from 'src/mixins/FluroSelectionMixin.js';
+import _ from 'lodash';
 
 
 export default {

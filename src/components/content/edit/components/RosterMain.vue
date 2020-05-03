@@ -58,6 +58,7 @@ import draggable from 'vuedraggable';
 
 import Vue from 'vue';
 import MultiPlannerService from 'src/components/content/edit/services/MultiPlannerService.js';
+import _ from 'lodash';
 
 
 export default {

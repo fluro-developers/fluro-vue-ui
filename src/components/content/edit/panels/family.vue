@@ -108,6 +108,7 @@ import FluroAcademicSelect from 'src/components/form/FluroAcademicSelect.vue';
 /////////////////////////////////
 
 import Vue from 'vue';
+import _ from 'lodash';
 
 /////////////////////////////////
 

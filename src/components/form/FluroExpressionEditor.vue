@@ -4,8 +4,11 @@
 				</div>
 </template>
 <script>
-import CodeEditor from 'vue2-ace-editor';
-import js_beautify from 'js-beautify';
+import DynamicImportService from 'src/DynamicImportService.js';
+
+
+// import CodeEditor from 'vue2-ace-editor';
+// import js_beautify from 'js-beautify';
 
 // console.log('BEAUTIFY', js_beautify.html);
 
@@ -29,11 +32,20 @@ export default {
 				},
 				mounted() {
 								var self = this;
+
+
+
+
+
 								Promise.all([
+																DynamicImportService.load('vue2-ace-editor', function() {
+																				return import('vue2-ace-editor')
+																}),
 																import('brace/mode/javascript'),
 												])
-												.then(function() {
+												.then(function(results) {
 																console.log('Loaded brace extras')
+																self.$options.components.CodeEditor = results[0];
 																self.ready = true;
 												}, function(err) {
 																self.ready = true;
@@ -93,7 +105,7 @@ export default {
 				},
 				components: {
 
-								CodeEditor,
+								// CodeEditor,
 				},
 				watch: {
 								value(value) {

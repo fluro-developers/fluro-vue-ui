@@ -372,6 +372,10 @@
     </div>
 </template>
 <script>
+
+import _ from 'lodash';
+
+
 import TableHeaderCheckbox from 'src/components/table/TableHeaderCheckbox.vue';
 import TableRowCheckbox from 'src/components/table/TableRowCheckbox.vue';
 import TableCell from 'src/components/table/TableCell.vue';

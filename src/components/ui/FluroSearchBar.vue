@@ -30,6 +30,8 @@
     </div>
 </template>
 <script>
+import _ from 'lodash';
+
 import Layout from 'src/mixins/Layout';
 
 export default {

@@ -29,6 +29,7 @@
 </template>
 <script>
 import FluroConfirmButton from 'src/components/ui/FluroConfirmButton.vue';
+import _ from 'lodash';
 
 export default {
     components: {

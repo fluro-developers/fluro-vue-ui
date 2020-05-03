@@ -476,6 +476,7 @@ import ContactCapabilityManager from 'src/components/content/edit/components/Con
 import ContactRelationshipManager from 'src/components/content/edit/components/ContactRelationshipManager.vue';
 import ContactUnavailabilityManager from 'src/components/content/edit/components/ContactUnavailabilityManager.vue';
 import AddPost from 'src/components/ui/modal/AddPost.vue';
+import _ from 'lodash';
 
 
 /////////////////////////////////

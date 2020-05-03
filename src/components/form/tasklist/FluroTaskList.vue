@@ -89,6 +89,9 @@
     </div>
 </template>
 <script>
+
+	import _ from 'lodash';
+
 import draggable from 'vuedraggable';
 import FluroTaskItem from 'src/components/form/tasklist/FluroTaskItem.vue';
 import FluroInlineEdit from 'src/components/form/FluroInlineEdit.vue';

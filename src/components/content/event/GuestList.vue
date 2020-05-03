@@ -32,6 +32,8 @@
 import SearchInput from 'src/components/ui/SearchInput.vue';
 import AvatarCell from 'src/components/table/cells/AvatarCell.vue';
 import FluroTable from 'src/components/table/FluroTable.vue';
+import _ from 'lodash';
+
 
 export default {
     components: {

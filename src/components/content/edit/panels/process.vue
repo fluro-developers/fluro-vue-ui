@@ -243,6 +243,7 @@ import FluroTaskList from 'src/components/form/tasklist/FluroTaskList.vue';
 /////////////////////////////////
 
 import Vue from 'vue';
+import _ from 'lodash';
 
 
 import { mapFields } from 'vuex-map-fields';

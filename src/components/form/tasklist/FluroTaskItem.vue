@@ -49,6 +49,9 @@
     </div>
 </template>
 <script>
+
+import _ from 'lodash';
+
 /////////////////////////////////////////////
 
 import FluroTaskModal from 'src/components/form/tasklist/FluroTaskModal.vue';

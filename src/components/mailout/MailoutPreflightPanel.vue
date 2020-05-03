@@ -127,6 +127,8 @@
 </template>
 <script>
 
+import _ from 'lodash';
+
 import FluroContentFormField from 'src/components/form/FluroContentFormField.vue';
 
 export default {

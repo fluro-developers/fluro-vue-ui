@@ -122,6 +122,8 @@ import ColumnCustomiser from 'src/components/content/edit/components/ColumnCusto
 /////////////////////////////////
 
 import Vue from 'vue';
+import _ from 'lodash';
+
 import { FilterService } from 'fluro';
 
 /////////////////////////////////

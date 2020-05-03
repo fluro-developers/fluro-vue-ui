@@ -1,3 +1,6 @@
+import _ from 'lodash';
+
+
 export default {
     props: {
         initPage: {

@@ -2,6 +2,11 @@
     <div class="google-map" ref="map"></div>
 </template>
 <script>
+
+
+import _ from 'lodash';
+
+
 export default {
     name: 'google-map',
     props: {

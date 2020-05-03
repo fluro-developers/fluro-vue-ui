@@ -56,6 +56,10 @@
     </flex-column>
 </template>
 <script>
+
+	import _ from 'lodash';
+
+
 import ModalMixin from 'src/mixins/ModalMixin';
 import FluroContentForm from 'src/components/form/FluroContentForm.vue';
 import FluroTabset from 'src/components/ui/tabset/FluroTabset.vue';

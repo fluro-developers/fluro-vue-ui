@@ -56,6 +56,9 @@
     </form>
 </template>
 <script>
+
+import _ from 'lodash';
+
 import async from 'async';
 import FluroRealmSelect from 'src/components/form/realmselect/FluroRealmSelect.vue';
 import FluroContentForm from 'src/components/form/FluroContentForm.vue';
