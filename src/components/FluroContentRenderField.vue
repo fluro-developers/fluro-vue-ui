@@ -1,6 +1,6 @@
 <template>
 				<div class="fluro-content-render-field" v-if="ready">
-								<!-- <pre>{{field}}</pre> -->
+								<!-- <pre>{{renderer}}</pre> -->
 								<!-- <pre>{{field.title}} {{field.key}} {{renderer}} {{fieldModel}}</pre> -->
 								<template v-if="renderer == 'embedded' && raw">
 												<template v-if="!multiple">
@@ -127,6 +127,38 @@
 																				</div>
 																</template>
 												</template>
+												<template v-else-if="renderer == 'custom'">
+																<template v-if="multiple">
+																				<div class="field-group">
+																								<label>{{label}}</label>
+																								<template v-for="(entry, key) in fieldModel">
+																												<div v-html="entry"></div>
+																								</template>
+																				</div>
+																</template>
+																<template v-if="!multiple">
+																				<div class="field-group">
+																								<label>{{label}}</label>
+																								<div v-html="fieldModel"></div>
+																				</div>
+																</template>
+												</template>
+												<template v-else-if="renderer == 'signature'">
+																<template v-if="multiple">
+																				<div class="field-group">
+																								<label>{{label}}</label>
+																								<template v-for="(entry, key) in fieldModel">
+																												<img class="signature-image" :src="fieldModel">
+																								</template>
+																				</div>
+																</template>
+																<template v-if="!multiple">
+																				<div class="field-group">
+																								<label>{{label}}</label>
+																								<img class="signature-image" :src="fieldModel">
+																				</div>
+																</template>
+												</template>
 												<template v-else-if="renderer == 'code'">
 																<template v-if="multiple">
 																				<div class="field-group">
@@ -140,6 +172,38 @@
 																				<div class="field-group">
 																								<label>{{label}}</label>
 																								<fluro-code-editor v-model="fieldModel" :lang="syntax" :readonly="true" :height="200"></fluro-code-editor>
+																				</div>
+																</template>
+												</template>
+												<template v-else-if="renderer == 'url'">
+																<template v-if="multiple">
+																				<div class="field-group">
+																								<label>{{label}}</label>
+																								<template v-for="(entry, key) in fieldModel">
+																												<a target="_blank" :href="entry">{{entry}}</a>
+																								</template>
+																				</div>
+																</template>
+																<template v-if="!multiple">
+																				<div class="field-group">
+																								<label>{{label}}</label>
+																									<a target="_blank" :href="fieldModel">{{fieldModel}}</a>
+																				</div>
+																</template>
+												</template>
+												<template v-else-if="renderer == 'email'">
+																<template v-if="multiple">
+																				<div class="field-group">
+																								<label>{{label}}</label>
+																								<template v-for="(entry, key) in fieldModel">
+																												<a target="_blank" :href="`mailto:` + entry">{{entry}}</a>
+																								</template>
+																				</div>
+																</template>
+																<template v-if="!multiple">
+																				<div class="field-group">
+																								<label>{{label}}</label>
+																									<a target="_blank" :href="`mailto:` + fieldModel">{{fieldModel}}</a>
 																				</div>
 																</template>
 												</template>
@@ -415,6 +479,12 @@ export default {
 																								case 'group':
 																												directive = 'group';
 																												break;
+																									case 'email':
+																												directive = 'email';
+																												break;
+																										case 'url':
+																												directive = 'url';
+																												break;
 																								case 'boolean':
 																												directive = 'checkbox';
 																												break;
@@ -499,6 +569,11 @@ export default {
 <style lang="scss">
 .fluro-content-render-field {
 
+	.signature-image {
+		width:100%;
+		height:auto;
+		border:5px solid #eee;
+	}
 
 				.field-group {
 								display: block;

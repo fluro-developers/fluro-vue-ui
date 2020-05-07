@@ -10,15 +10,15 @@
                 </tr>
             </thead>
             <draggable class="options-manager-items" @sort="sorted" element="tbody" handle=".handle" v-model="model">
-                <tr class="option" :key="option.name" v-for="option in model">
+                <tr class="option" :key="option.name" v-for="(option, index) in model">
                     <td class="handle">
                         <fluro-icon icon="arrows" />
                     </td>
                     <td>
-                        <input v-model="option.name" placeholder="Name" />
+                        <input @change="commit($event, option, 'name')" :value="option.name" placeholder="Name" />
                     </td>
                     <td>
-                        <input v-model="option.value" placeholder="Value" />
+                        <input @change="commit($event, option, 'value')" :value="option.value" placeholder="Value" />
                     </td>
                     <td>
                         <v-btn class="ma-0" @click="remove(option)" icon small>
@@ -91,6 +91,11 @@ export default {
         }
     },
     methods: {
+    	commit($event, option, key) {
+
+    		this.$set(option, key, $event.target.value);
+    		// console.log('COMMIT', $event, option, key);
+    	},
         sorted() {
             var self = this;
             self.$emit('input', self.model);

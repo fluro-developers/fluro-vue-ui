@@ -763,7 +763,7 @@ export default {
 																								if (this.model.dobVerified) {
 																												return `${years} Years old`;
 																								} else {
-																												return `${years} Years old (estimated)`;
+																												return `${years} Years old`;
 																								}
 
 																								break;
@@ -1133,7 +1133,7 @@ export default {
 																if (self.model[self.field.key] != value) {
 
 																				self.$set(self.model, self.field.key, value);
-																				//console.log('Set a new value on the field model', self.fieldModel, value, self.model[self.field.key])
+																				// console.log('Set a new value on the field model', self.fieldModel, value, self.model[self.field.key])
 																				self.$emit('input', self.model);
 																				//self.$forceUpdate();
 																}

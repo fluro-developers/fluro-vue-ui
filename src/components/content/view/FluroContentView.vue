@@ -269,7 +269,9 @@ export default {
 
 																								break;
 																				case 'query':
-
+																						return DynamicImportService.load('src/components/content/view/panels/query.vue', function() {
+																												return import('src/components/content/view/panels/query.vue')
+																								})
 																								break;
 																				case 'realm':
 

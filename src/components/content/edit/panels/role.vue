@@ -28,6 +28,7 @@
                             </div>
                         </template>
                         <tab :heading="`${type.title} ${of(type)}`" :muted="!enabled(type).length" :key="type.title" v-for="type in filteredBasic">
+                            <flex-column-body>
                             <v-container>
                                 <h4 margin>{{type.title}}</h4>
                                 <list-group>
@@ -37,6 +38,7 @@
                                     </fluro-toggle-item>
                                 </list-group>
                             </v-container>
+                        </flex-column-body>
                         </tab>
                     </tabset>
                 </tab>
@@ -48,6 +50,7 @@
                             </div>
                         </template>
                         <tab :heading="`${type.title} ${of(type)}`" :muted="!enabled(type).length" v-for="type in filteredDefined">
+                            <flex-column-body>
                             <v-container>
                                 <h4 margin>{{type.title}}</h4>
                                 <list-group>
@@ -57,11 +60,13 @@
                                     </fluro-toggle-item>
                                 </list-group>
                             </v-container>
+                        </flex-column-body>
                         </tab>
                     </tabset>
                 </tab>
                 <tab :heading="informationPanelTitle">
                     <flex-column-body style="background: #fafafa;">
+                    	
                         <v-container fluid>
                             <constrain sm>
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />

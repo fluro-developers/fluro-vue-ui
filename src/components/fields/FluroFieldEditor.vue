@@ -26,7 +26,7 @@
 																																<div class="pseudo-field" :class="{active:configureDefaults && !field}" @click="showDefaultFieldOptions()">Form Configuration</div>
 																												</template>
 																												<draggable class="field-editor-children" handle=".handle" element="ul" @sort="sorted" v-model="model" :options="treeOptions">
-																																<fluro-field-editor-item :mouseover="mouseover" :mouseleave="mouseleave" :parent="model" :leaf="model[index]" :selected="field" :select="clicked" @duplicate="duplicateField" @injected="injectField" @deleted="deleteField" v-for="(leaf, index) in model" :key="leaf.guid" />
+																																<fluro-field-editor-item :top="model" :mouseover="mouseover" :mouseleave="mouseleave" :parent="model" :leaf="model[index]" :selected="field" :select="clicked" @duplicate="duplicateField" @injected="injectField" @deleted="deleteField" v-for="(leaf, index) in model" :key="leaf.guid" />
 																												</draggable>
 																												<template v-if="formMode">
 																																<div class="pseudo-field" :class="{active:configurePayment && !field}" @click="showPaymentOptions()">Payment Options</div>

@@ -28,7 +28,7 @@ export default {
             	return this.realms;
             }
 
-            if(this.realms.length) {
+             if(_.isObject(this.realms)) {
             	return [this.realms];
             }
 

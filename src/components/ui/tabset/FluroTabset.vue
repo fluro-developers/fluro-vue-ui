@@ -9,7 +9,7 @@
                             Test {{tab.$slots.title}} <slot name="title"/>
                         </div> -->
                         <!-- v-else  -->
-                        <a flat v-tippy :content="tab.tooltip" :class="{active:index == activeTabIndex, muted:tab.muted}" @click="selectTab(index)">
+                        <a flat :v-tippy="tab.tooltip && tab.tooltip.length" :content="tab.tooltip" :class="{active:index == activeTabIndex, muted:tab.muted}" @click="selectTab(index)">
                             {{tab.heading}} 
                             <template v-if="tab.icon">
                             <fluro-icon v-if="tab.icon.icon" :icon="tab.icon.icon" :library="tab.icon.library" :style="{ color: tab.icon.color }"/>

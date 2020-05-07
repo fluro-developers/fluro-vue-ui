@@ -1,5 +1,7 @@
 <template>
 				<div class="filter-group-outer" :class="{mini:mini, large:!mini}">
+
+				
 								<v-container ref="element" :class="[{'pa-2': mini}, model.operator]">
 												<v-layout row v-if="model.filters.length > 1">
 																<v-flex d-flex align-center>
@@ -2195,8 +2197,10 @@ export default {
 												injectFields = injectFields.concat(self.asyncKeys);
 
 
+												// console.log('ALL INJECTED', injectFields);
 												var fields = FilterService.allKeys(injectFields, self.definition);
 
+												// console.log('ALL KEY FIELDS', fields);
 												return _.orderBy(fields, 'title')
 
 								},

@@ -22,7 +22,10 @@ export default {
             type: String
         },
         tooltip: {
-            type: String
+            type: String,
+            default() {
+            	return null;
+            }
         },
         iconType: {
             type: String
