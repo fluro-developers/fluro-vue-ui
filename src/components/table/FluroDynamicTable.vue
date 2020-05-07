@@ -305,41 +305,6 @@
                                         <option :value="index+1" v-for="(page, index) in availablePages">{{index+1}}</option>
                                     </select>
                                 </div>
-                                <!-- <v-menu style="display:inline-block;" @click.native.stop offset-y>
-                                    <template v-slot:activator="{ on }">
-                                        <span v-on="on"  v-if="$vuetify.breakpoint.smAndUp" class="text-muted">Page {{currentPage}} of {{totalPages}}</span>
-                                    </template>
-                                    <v-card tile>
-                                        <v-text-field></v-text-field>
-                                        <v-list dense>
-                                            <v-list-tile @click="currentPage = index" v-for="(page, index) in availablePages">
-                                                <v-list-tile-content>
-                                                    <v-list-tile-title>
-                                                        {{index+1}}
-                                                    </v-list-tile-title>
-                                                </v-list-tile-content>
-                                            </v-list-tile>
-                                        </v-list>
-                                    </v-card>
-                                </v-menu> -->
-                                <!-- <v-menu style="display:inline-block;" @click.native.stop offset-y>
-                                    <template v-slot:activator="{ on }">
-                                        <span v-on="on"  v-if="$vuetify.breakpoint.smAndUp" class="text-muted">Page {{currentPage}} of {{totalPages}}</span>
-                                    </template>
-                                    <v-card tile>
-                                        <v-text-field autofocus small type="number" v-model="currentPage" />
-                                        <v-text-field></v-text-field>
-                                        <v-list dense>
-                                            <v-list-tile @click="currentPage = index" v-for="(page, index) in availablePages">
-                                                <v-list-tile-content>
-                                                    <v-list-tile-title>
-                                                        {{index+1}}
-                                                    </v-list-tile-title>
-                                                </v-list-tile-content>
-                                            </v-list-tile>
-                                        </v-list>
-                                    </v-card>
-                                </v-menu> -->
                                 <span class="ml-3">
                                     <template>
                                         <v-btn class="ma-0" :disabled="previousPageDisabled" icon @click="firstPage()">

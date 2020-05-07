@@ -149,13 +149,74 @@
 																								</v-flex>
 																				</template>
 																				<template v-else>
+																								<!-- <v-flex xs6 align-center d-flex class="text-muted"> -->
+																												<!-- {{startOffset + 1 | numberWithCommas}} to {{endOffset | numberWithCommas}} of {{filteredTotal | numberWithCommas}} matches -->
+																								<!-- </v-flex> -->
+
 																								<v-flex xs6 align-center d-flex class="text-muted">
-																												{{startOffset + 1 | numberWithCommas}} to {{endOffset | numberWithCommas}} of {{filteredTotal | numberWithCommas}} matches
-																												<!-- </div> -->
-																								</v-flex>
+                            <v-menu @click.native.stop offset-y>
+                                <template v-slot:activator="{ on }">
+                                    <div v-on="on">
+                                        <div v-if="groupingColumn">
+                                            {{totalGroups}} groups - Showing {{startOffset + 1 | numberWithCommas}} to {{endOffset | numberWithCommas}} of {{filteredTotal | numberWithCommas}} rows
+                                        </div>
+                                        <div v-else>
+                                            {{startOffset + 1 | numberWithCommas}} to {{endOffset | numberWithCommas}} of {{filteredTotal | numberWithCommas}} {{plural}}
+                                        </div>
+                                    </div>
+                                </template>
+                                <v-card tile>
+                                    <v-list dense>
+                                        <v-list-tile @click="perPage = 25">
+                                            <v-list-tile-content>
+                                                <v-list-tile-title>
+                                                    Show 25 per page
+                                                </v-list-tile-title>
+                                            </v-list-tile-content>
+                                        </v-list-tile>
+                                        <v-list-tile @click="perPage = 50">
+                                            <v-list-tile-content>
+                                                <v-list-tile-title>
+                                                    Show 50 per page
+                                                </v-list-tile-title>
+                                            </v-list-tile-content>
+                                        </v-list-tile>
+                                        <v-list-tile @click="perPage = 100">
+                                            <v-list-tile-content>
+                                                <v-list-tile-title>
+                                                    Show 100 per page
+                                                </v-list-tile-title>
+                                            </v-list-tile-content>
+                                        </v-list-tile>
+                                        <v-list-tile @click="perPage = 200">
+                                            <v-list-tile-content>
+                                                <v-list-tile-title>
+                                                    Show 250 per page
+                                                </v-list-tile-title>
+                                            </v-list-tile-content>
+                                        </v-list-tile>
+                                        <v-list-tile @click="perPage = 500">
+                                            <v-list-tile-content>
+                                                <v-list-tile-title>
+                                                    Show 500 per page
+                                                </v-list-tile-title>
+                                            </v-list-tile-content>
+                                        </v-list-tile>
+                                    </v-list>
+                                </v-card>
+                            </v-menu>
+                        </v-flex>
+
+
 																								<v-flex xs6 align-center d-flex class="text-xs-right" style="white-space: nowrap">
 																												<div>
-																																<span v-if="$vuetify.breakpoint.smAndUp" class="text-muted">Page {{currentPage}} of {{totalPages}}</span>
+																																<div class="pagenumber-select">
+																																				<span v-if="$vuetify.breakpoint.smAndUp" class="text-muted">Page {{currentPage}} of {{totalPages}}</span>
+																																				<select v-model="currentPage">
+																																								<option :value="index+1" v-for="(page, index) in availablePages">{{index+1}}</option>
+																																				</select>
+																																</div>
+																																<!-- <span v-if="$vuetify.breakpoint.smAndUp" class="text-muted">Page {{currentPage}} of {{totalPages}}</span> -->
 																																<span class="ml-3">
 																																				<template>
 																																								<v-btn class="ma-0" :disabled="previousPageDisabled" icon @click="firstPage()">
@@ -1179,9 +1240,7 @@ export default {
 								}, 500),
 				},
 				methods: {
-								refilter:_.debounce(function() {
-
-												console.log('Refilter now')
+								refilter: _.debounce(function() {
 
 												//Refilter the page
 												var self = this;
@@ -1203,7 +1262,7 @@ export default {
 																//console.log('has valid filters', rows.length)
 																// var filtered = filterGroupMatch(self.filterConfig, rows);
 																rows = _.filter(rows, function(row) {
-																	// //console.log('CHECK MATCH FOR ROW', row);
+																				// //console.log('CHECK MATCH FOR ROW', row);
 																				var match = FilterService.filterGroupMatch(self.filterConfig, null, row);
 																				//console.log('MATCH?', match, row);
 																				return match;
@@ -1946,6 +2005,26 @@ export default {
 								padding: 5px 10px;
 								font-size: 0.9em;
 				}
+
+
+				.pagenumber-select {
+        display: inline-block;
+        position: relative;
+
+        select {
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            appearance: none;
+            display: block;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: 0;
+        }
+    }
+
 
 
 				.flex-center {
