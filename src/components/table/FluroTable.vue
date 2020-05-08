@@ -150,64 +150,61 @@
 																				</template>
 																				<template v-else>
 																								<!-- <v-flex xs6 align-center d-flex class="text-muted"> -->
-																												<!-- {{startOffset + 1 | numberWithCommas}} to {{endOffset | numberWithCommas}} of {{filteredTotal | numberWithCommas}} matches -->
+																								<!-- {{startOffset + 1 | numberWithCommas}} to {{endOffset | numberWithCommas}} of {{filteredTotal | numberWithCommas}} matches -->
 																								<!-- </v-flex> -->
-
 																								<v-flex xs6 align-center d-flex class="text-muted">
-                            <v-menu @click.native.stop offset-y>
-                                <template v-slot:activator="{ on }">
-                                    <div v-on="on">
-                                        <div v-if="groupingColumn">
-                                            {{totalGroups}} groups - Showing {{startOffset + 1 | numberWithCommas}} to {{endOffset | numberWithCommas}} of {{filteredTotal | numberWithCommas}} rows
-                                        </div>
-                                        <div v-else>
-                                            {{startOffset + 1 | numberWithCommas}} to {{endOffset | numberWithCommas}} of {{filteredTotal | numberWithCommas}} {{plural}}
-                                        </div>
-                                    </div>
-                                </template>
-                                <v-card tile>
-                                    <v-list dense>
-                                        <v-list-tile @click="perPage = 25">
-                                            <v-list-tile-content>
-                                                <v-list-tile-title>
-                                                    Show 25 per page
-                                                </v-list-tile-title>
-                                            </v-list-tile-content>
-                                        </v-list-tile>
-                                        <v-list-tile @click="perPage = 50">
-                                            <v-list-tile-content>
-                                                <v-list-tile-title>
-                                                    Show 50 per page
-                                                </v-list-tile-title>
-                                            </v-list-tile-content>
-                                        </v-list-tile>
-                                        <v-list-tile @click="perPage = 100">
-                                            <v-list-tile-content>
-                                                <v-list-tile-title>
-                                                    Show 100 per page
-                                                </v-list-tile-title>
-                                            </v-list-tile-content>
-                                        </v-list-tile>
-                                        <v-list-tile @click="perPage = 200">
-                                            <v-list-tile-content>
-                                                <v-list-tile-title>
-                                                    Show 250 per page
-                                                </v-list-tile-title>
-                                            </v-list-tile-content>
-                                        </v-list-tile>
-                                        <v-list-tile @click="perPage = 500">
-                                            <v-list-tile-content>
-                                                <v-list-tile-title>
-                                                    Show 500 per page
-                                                </v-list-tile-title>
-                                            </v-list-tile-content>
-                                        </v-list-tile>
-                                    </v-list>
-                                </v-card>
-                            </v-menu>
-                        </v-flex>
-
-
+																												<v-menu @click.native.stop offset-y>
+																																<template v-slot:activator="{ on }">
+																																				<div v-on="on">
+																																								<div v-if="groupingColumn">
+																																												{{totalGroups}} groups - Showing {{startOffset + 1 | numberWithCommas}} to {{endOffset | numberWithCommas}} of {{filteredTotal | numberWithCommas}} rows
+																																								</div>
+																																								<div v-else>
+																																												{{startOffset + 1 | numberWithCommas}} to {{endOffset | numberWithCommas}} of {{filteredTotal | numberWithCommas}} {{plural}}
+																																								</div>
+																																				</div>
+																																</template>
+																																<v-card tile>
+																																				<v-list dense>
+																																								<v-list-tile @click="perPage = 25">
+																																												<v-list-tile-content>
+																																																<v-list-tile-title>
+																																																				Show 25 per page
+																																																</v-list-tile-title>
+																																												</v-list-tile-content>
+																																								</v-list-tile>
+																																								<v-list-tile @click="perPage = 50">
+																																												<v-list-tile-content>
+																																																<v-list-tile-title>
+																																																				Show 50 per page
+																																																</v-list-tile-title>
+																																												</v-list-tile-content>
+																																								</v-list-tile>
+																																								<v-list-tile @click="perPage = 100">
+																																												<v-list-tile-content>
+																																																<v-list-tile-title>
+																																																				Show 100 per page
+																																																</v-list-tile-title>
+																																												</v-list-tile-content>
+																																								</v-list-tile>
+																																								<v-list-tile @click="perPage = 200">
+																																												<v-list-tile-content>
+																																																<v-list-tile-title>
+																																																				Show 250 per page
+																																																</v-list-tile-title>
+																																												</v-list-tile-content>
+																																								</v-list-tile>
+																																								<v-list-tile @click="perPage = 500">
+																																												<v-list-tile-content>
+																																																<v-list-tile-title>
+																																																				Show 500 per page
+																																																</v-list-tile-title>
+																																												</v-list-tile-content>
+																																								</v-list-tile>
+																																				</v-list>
+																																</v-card>
+																												</v-menu>
+																								</v-flex>
 																								<v-flex xs6 align-center d-flex class="text-xs-right" style="white-space: nowrap">
 																												<div>
 																																<div class="pagenumber-select">
@@ -2008,22 +2005,22 @@ export default {
 
 
 				.pagenumber-select {
-        display: inline-block;
-        position: relative;
+								display: inline-block;
+								position: relative;
 
-        select {
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            appearance: none;
-            display: block;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            top: 0;
-        }
-    }
+								select {
+												opacity: 0;
+												width: 100%;
+												height: 100%;
+												position: absolute;
+												appearance: none;
+												display: block;
+												left: 0;
+												right: 0;
+												bottom: 0;
+												top: 0;
+								}
+				}
 
 
 

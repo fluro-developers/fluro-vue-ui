@@ -115,9 +115,9 @@ export default {
     watch:{
         model(v) {
 
-            v = parseInt(v);
+            v = parseFloat(v);
             v = Math.max(v, 0);
-            v = v * 100;
+            v = parseInt(v * 100);
             console.log('Input changed', v)
             this.$emit('input', v);
         }
