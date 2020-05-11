@@ -543,7 +543,7 @@ export default {
 
             var self = this;
 
-            // console.log('FIELD OPTIONS', this.definition)
+            
 
             var processTypes = _.chain(this.definition)
                 .get('data.processTypes')
@@ -552,7 +552,7 @@ export default {
                 })
                 .value();
 
-
+               
             return {
                 key: 'item',
                 title: 'Referenced Item',

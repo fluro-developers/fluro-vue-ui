@@ -1199,7 +1199,7 @@ export default {
 												return this.field.type;
 								},
 								expressions() {
-												return this.field.expressions;
+												return this.field ? this.field.expressions || {} : {};
 								},
 								errorTitle() {
 												return this.field.title;
@@ -1541,7 +1541,7 @@ export default {
 																								case 'content-select-button':
 																												return directive;
 																												break;
-																								case 'select':
+																								case 'reference-select':
 																												if (self.asyncOptionsURL || (self.allowedReferences && self.allowedReferences.length)) {
 																																return 'select';
 																												} else {
@@ -1651,7 +1651,18 @@ export default {
 																												directive = 'number';
 																												break;
 																								case 'reference':
-																												directive = 'content-select';
+																												switch (self.context) {
+																																case 'admin':
+																																				directive = 'content-select';
+																																				break;
+																																				// case 'builder':
+																																default:
+																																				directive = 'select';
+																																				break;
+
+																												}
+
+
 																												break;
 
 																				}

@@ -1381,9 +1381,18 @@ export default {
 																case 'reference':
 
 																				inputOptions.push({
+																								title: 'Select Dropdown',
+																								value: 'select',
+																				})
+
+
+																				inputOptions.push({
 																								title: 'Reference Select',
 																								value: 'reference-select',
 																				})
+
+
+																				
 
 																				inputOptions.push({
 																								title: 'Embedded Form',

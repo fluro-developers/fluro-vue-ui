@@ -1,7 +1,5 @@
 <template>
 				<div class="filter-group-outer" :class="{mini:mini, large:!mini}">
-
-				
 								<v-container ref="element" :class="[{'pa-2': mini}, model.operator]">
 												<v-layout row v-if="model.filters.length > 1">
 																<v-flex d-flex align-center>
@@ -244,6 +242,7 @@ export default {
 								type: {
 												type: String,
 								},
+
 								fields: {
 												type: Array,
 												default () {
@@ -791,8 +790,21 @@ export default {
 																return true;
 												}
 								},
+								retrievedBasicType() {
+												var self = this;
+
+												if (!self.$fluro || !self.$fluro.types) {
+																return self.type;
+												}
+
+												return self.$fluro.types.parentType(self.type)
+								},
+								basicType() {
+												return this.retrievedBasicType;
+								},
 
 								availableKeys() {
+
 
 												var self = this;
 
@@ -854,6 +866,8 @@ export default {
 												/////////////////////////////////////////////
 
 
+
+
 												if (self.isContactType) {
 
 																var eventDefinitionOptions = [];
@@ -862,7 +876,6 @@ export default {
 																var interactionDefinitionOptions = [];
 																var teamDefinitionOptions = [];
 																var contactDefinitionOptions = [];
-
 																var groupNameOptions = [];
 
 																groupNameOptions = groupNameOptions.concat(_.map(self.groupNames, function(group) {
@@ -1377,6 +1390,7 @@ export default {
 																});
 
 																/////////////////////////////////////////////////////
+
 
 
 																injectFields.push({
@@ -1955,8 +1969,14 @@ export default {
 																//Add the ability to simply check if a definition has values
 												} else {
 
+
+
+
 																// var definitionName = _.get(self.definition, 'definitionName');
-																switch (self.type) {
+																switch (self.basicType) {
+																				case 'process':
+																								//Extra filters for process cards
+																								break;
 																				case 'family':
 
 																								injectFields.push({
@@ -2160,32 +2180,36 @@ export default {
 
 
 																								break;
-																				case 'photo':
+																				default:
+																								switch (self.type) {
+																												case 'photo':
 
-																								injectFields.push({
-																												title: `EXIF > Copyright`,
-																												key: `data.exif.tags.Copyright`,
-																												maximum: 0,
-																												minimum: 0,
-																												type: 'string',
-																								});
+																																injectFields.push({
+																																				title: `EXIF > Copyright`,
+																																				key: `data.exif.tags.Copyright`,
+																																				maximum: 0,
+																																				minimum: 0,
+																																				type: 'string',
+																																});
 
-																								injectFields.push({
-																												title: `EXIF > Camera Make`,
-																												key: `data.exif.tags.Make`,
-																												maximum: 0,
-																												minimum: 0,
-																												type: 'string',
-																								});
+																																injectFields.push({
+																																				title: `EXIF > Camera Make`,
+																																				key: `data.exif.tags.Make`,
+																																				maximum: 0,
+																																				minimum: 0,
+																																				type: 'string',
+																																});
 
-																								injectFields.push({
-																												title: `EXIF > Camera Model`,
-																												key: `data.exif.tags.Model`,
-																												maximum: 0,
-																												minimum: 0,
-																												type: 'string',
-																								});
-																								break;
+																																injectFields.push({
+																																				title: `EXIF > Camera Model`,
+																																				key: `data.exif.tags.Model`,
+																																				maximum: 0,
+																																				minimum: 0,
+																																				type: 'string',
+																																});
+																																break;
+																								}
+																								break
 																}
 
 												}

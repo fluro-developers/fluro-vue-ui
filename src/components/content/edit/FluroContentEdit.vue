@@ -26,11 +26,15 @@
 																												</fluro-inline-edit>
 																								</template>
 																								<template v-slot:right>
+																												<help title="Realm Selector" :body="`Everything in Fluro needs to be kept somewhere, choose one or more realms for this ${definitionTitle}. This will affect who has access to view and edit this ${definitionTitle}`" />
 																												<fluro-realm-select v-tippy :content="`Select where this ${definitionTitle} should be stored`" v-if="typeName != 'realm'" v-model="model.realms" :type="typeName" :definition="definitionName" />
-																												<fluro-tag-select class="mx-0 ml-2" v-if="typeName != 'tag'" v-model="model.tags" />
+																												<fluro-tag-select class="mx-0 ml-2" v-if="typeName != 'tag'" v-model="model.tags">
+																																<help title="Tag Selector" :body="`Add tags to describe and make it easier to find this ${definitionTitle} when searching later`" />
+																												</fluro-tag-select>
 																												<!-- <pre>{{model.tags}}</pre> -->
 																												<v-btn v-if="model._id" class="mx-0 ml-2" @click="$actions.open([model])">
 																																<fluro-icon icon="ellipsis-h" />
+																																<help title="More Actions" :body="`View more actions that are relevant to this ${definitionTitle}`" />
 																												</v-btn>
 																												<v-btn class="mx-0 ml-2" @click="cancel" v-if="!embedded">
 																																Close
@@ -88,6 +92,7 @@
 																																												<v-menu :close-on-content-click="false" @click.native.stop offset-y>
 																																																<template v-slot:activator="{ on }">
 																																																				<v-btn v-tippy content="Metadata Options" class="my-0" small icon flat v-on="on">
+																																																								<help title="Metadata Options" :body="`View system and database data for this  ${definitionTitle}`" />
 																																																								<fluro-icon library="fas" icon="info" />
 																																																				</v-btn>
 																																																</template>
@@ -123,6 +128,7 @@
 																																																<template v-slot:activator="{ on }">
 																																																				<v-btn v-tippy content="Publish/Archive Dates" class="my-0" small icon flat v-on="on">
 																																																								<fluro-icon icon="clock" />
+																																																								<help title="Date Automation" :body="`Set automatic publish and archiving dates`" />
 																																																				</v-btn>
 																																																</template>
 																																																<v-container style="background:#fff;" grid-list-xl>
@@ -148,6 +154,7 @@
 																																				<v-spacer />
 																																				<v-flex shrink>
 																																								<template v-if="model._id"><em class="muted sm">Last updated {{model.updated | timeago}}</em></template>
+																																								<help title="Status Selector" :body="`Update and change the status of this ${definitionTitle}`" />
 																																								<fluro-status-select v-if="canChangeStatus" v-model="model.status" :type="model._type" />
 																																				</v-flex>
 																																				<v-flex shrink v-if="model._id">
@@ -160,6 +167,7 @@
 																																												<template v-slot:activator="{ on }">
 																																																<v-btn v-tippy content="History and Change log" class="my-0" small icon flat v-on="on">
 																																																				<fluro-icon library="fas" icon="history" />
+																																																				<help title="Change log" :body="`View the system change log for this ${definitionTitle}. And rollback to previous versions.`" />
 																																																</v-btn>
 																																												</template>
 																																												<div style="min-width:320px;">

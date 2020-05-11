@@ -5,6 +5,7 @@
                 <!-- @click.native="showModal" -->
                 <v-btn v-on="on" :small="small" :block="block" class="pill mx-0">
                     {{model.length ? model.length : null}}<fluro-icon :right="model.length > 0" type="tag" />
+                    	<slot></slot>
                 </v-btn>
             </template>
             <v-card tile>
