@@ -39,6 +39,11 @@
 																																{{saveText}}
 																												</v-btn>
 																								</template>
+																								<template v-slot:rightmobile>
+																												<v-btn small icon v-if="model._id" class="ma-0" @click="$actions.open([model])">
+																																<fluro-icon icon="ellipsis-h" />
+																												</v-btn>
+																								</template>
 																				</page-header>
 																</flex-column-header>
 																<component @errorMessages="validate" ref="form" :context="context" @input="updateModel" v-bind:is="component" :type="typeConfig" :config="config" v-model="model" @file="fileChanged" :definition="definition" v-if="component"></component>
@@ -288,10 +293,10 @@ export default {
 
 												/* unselect the range */
 												inputField.setAttribute('type', 'hidden')
-												if(process.browser) {
-													window.getSelection().removeAllRanges()
+												if (process.browser) {
+																window.getSelection().removeAllRanges()
 												}
-												
+
 								},
 								addListeners() {
 												// console.log('ADD LISTENERS')
@@ -890,13 +895,13 @@ export default {
 																				return Promise.resolve();
 																}
 
-															
+
 																switch (self.typeName) {
 																				case 'academic':
 																								return DynamicImportService.load('src/components/content/edit/panels/academic.vue', function() {
 																												return import('src/components/content/edit/panels/academic.vue')
 																								})
-																								
+
 																								break;
 																				case 'application':
 																								return DynamicImportService.load('src/components/content/edit/panels/application.vue', function() {
@@ -974,7 +979,7 @@ export default {
 																								})
 																								break;
 																				case 'family':
-																							return DynamicImportService.load('src/components/content/edit/panels/family.vue', function() {
+																								return DynamicImportService.load('src/components/content/edit/panels/family.vue', function() {
 																												return import('src/components/content/edit/panels/family.vue')
 																								})
 																								break;
@@ -1014,7 +1019,7 @@ export default {
 																								})
 																								break;
 																				case 'post':
-																							return DynamicImportService.load('src/components/content/edit/panels/post.vue', function() {
+																								return DynamicImportService.load('src/components/content/edit/panels/post.vue', function() {
 																												return import('src/components/content/edit/panels/post.vue')
 																								})
 																								break;
@@ -1167,7 +1172,7 @@ export default {
 								width: 100%;
 								// max-width: 1200px;
 								min-width: 80vw;
-								min-height:80vh;
+								min-height: 80vh;
 				}
 }
 

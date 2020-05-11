@@ -46,7 +46,8 @@
 												</v-flex>
 												<!-- v-if="!hasSubFields" -->
 												<v-flex xs12 sm3>
-																<v-select single-line dense ref="inputComparator" v-model="model.comparator" item-text="title" item-value="operator" :items="comparators" />
+														
+																<v-select single-line dense ref="inputComparator" v-model="modelComparator" item-text="title" item-value="operator" :items="comparators" />
 																<!-- <pre>{{model.comparator}}</pre> -->
 												</v-flex>
 												<template v-if="comparator && inputType != 'none'">
@@ -362,7 +363,6 @@ export default {
 
 								var self = this;
 
-
 								// if(!self.model.values) {
 								//     self.model.values = [];
 								// }
@@ -437,6 +437,16 @@ export default {
 								}
 				},
 				computed: {
+								modelComparator: {
+												get() {
+																return this.model.comparator;
+												},
+												set(val) {
+
+																console.log('SET COMPARATOR TO', val, this.model)
+																this.model.comparator = val;
+												}
+								},
 								dateMeasures() {
 												return [{
 																				title: 'Hours',
@@ -753,7 +763,7 @@ export default {
 																return;
 												}
 
-												var match =  _.find(this.fields, { key });
+												var match = _.find(this.fields, { key });
 
 												// console.log('MATCHING SELECTOR', match)
 												return match;
@@ -763,14 +773,25 @@ export default {
 												return FilterService.isValidFilter(this.model);
 								},
 								comparator() {
-												return FilterService.comparatorLookup[this.model.comparator];
+
+												var matchedComparator = FilterService.comparatorLookup[this.model.comparator];
+												// if (!matchedComparator) {
+												// 				console.log('COMPARE', matchedComparator, this.model)
+												// } else {
+												// 				console.log('we matched it', this.model.key, this.model.comparator, matchedComparator)
+												// }
+												return matchedComparator; //FilterService.comparatorLookup[this.model.comparator];
 								},
 								inputType() {
 												return this.comparator ? this.comparator.inputType : null;
 								},
 								dataType() {
+
+
 												if (this.selector) {
 																return this.selector.type || 'string';
+												} else if (this.model.dataType) {
+																return this.model.dataType;
 												} else {
 																return 'string';
 												}
@@ -802,7 +823,10 @@ export default {
 												if (this.selector) {
 																type = this.selector.type || 'string';
 												}
-												return FilterService.getComparatorsForType(type);
+												var comparators = FilterService.getComparatorsForType(type);
+
+												// console.log('Updated comparators', type, comparators);
+												return comparators;
 
 
 
@@ -818,6 +842,7 @@ export default {
 
 												///////////////////////////////////////////
 
+												// console.log('Clear everything because data type is', val);
 												//Reset the values and the selector
 												this.$set(this.model, 'comparator', null);
 												this.$set(this.model, 'value', null);
@@ -1021,7 +1046,7 @@ export default {
 																				//console.log('Values > No rows')
 																				self.possibleValues = [];
 																				self.loadingValues = false;
-																					console.log('No sample and no rows')
+																				console.log('No sample and no rows')
 																				return;
 																}
 												}
@@ -1046,12 +1071,12 @@ export default {
 
 
 												////////////////////////////////////
-												
+
 
 												//If we haven't already got the values for this request
 												if (!valueCache) {
 
-																console.log('No value cache! Load it now')
+																// console.log('No value cache! Load it now')
 																//Check to see if the rows we know about already have the data
 																//we are wanting to search on, because if so we can just use those
 																//values instead of having to request from the server
@@ -1096,7 +1121,7 @@ export default {
 																				valueCache = valueStorageCache[self.rowChangeString] = Promise.resolve(self.possibleValues);
 
 
-																				console.log('We Already have the key of', key);
+																				// console.log('We Already have the key of', key);
 																} else {
 
 																				// console.log('No rows have the key', key, self.rows);
@@ -1163,10 +1188,10 @@ export default {
 																				valueCache = valueStorageCache[self.rowChangeString] = self.$fluro.content.values(subSetIDs, key, options);
 																}
 												} else {
-																console.log('Values Cache exists', valueCache)
+																// console.log('Values Cache exists', valueCache)
 												}
 
-													console.log('Load from server')
+												// console.log('Load from server')
 												/////////////////////////////////////////////////////////////////
 
 												//When the request is complete

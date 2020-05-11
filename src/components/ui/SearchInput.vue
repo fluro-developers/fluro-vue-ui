@@ -2,8 +2,8 @@
     <div class="search-input" :class="{active:searchFocussed || model.length}">
         <input ref="input" @focus="searchFocussed = true" @blur="searchFocussed = false" :placeholder="placeholder" v-model="model" />
         <div class="search-icon" @click="reset()">
-            <fluro-icon icon="times" v-if="model.length" />
-            <fluro-icon icon="search" v-else />
+            <fluro-icon :icon="icon" :spin="processing" />
+            <!-- <fluro-icon icon="search" v-else /> -->
         </div>
     </div>
 </template>
@@ -25,7 +25,26 @@ export default {
         debounce:{
             type:Number,
             default:300,
-        }
+        },
+        processing:{
+        	type:Boolean,
+        },
+        // autofocus:{
+        // 	type:Boolean,
+        // }
+    },
+    computed:{
+    	icon() {
+    		if(this.processing) {
+    			return 'spinner-thirds';
+    		}
+
+    		if(this.model.length) {
+    			return 'times';
+    		}
+
+    		return 'search';
+    	}
     },
     data() {
         return {

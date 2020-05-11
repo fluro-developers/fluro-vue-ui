@@ -166,8 +166,8 @@
                         <template v-if="grouped">
                             <template v-for="group in grouped">
                                 <tr class="breaker">
-                                    <!-- <th></th> -->
-                                    <th class="first" is="table-row-checkbox" @click.native="toggleSet(group.items)" :checked="allInGroupSelected(group.items)" />
+                                    <th v-if="!selectionEnabled"></th>
+                                    <th v-else class="first" is="table-row-checkbox" @click.native="toggleSet(group.items)" :checked="allInGroupSelected(group.items)" />
                                     <!-- <td></td> -->
                                     <!-- <th is="table-row-checkbox" :checked="selectionController.allSelected(group)"/> -->
                                     <td :colspan="1 + renderColumns.length">{{group.title || 'No value'}} <span class="sm muted">({{group.items.length}})</span></td>

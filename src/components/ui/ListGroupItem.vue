@@ -1,5 +1,5 @@
 <template>
-<component :is="componentType" tag="a" class="list-group-item" :to="to" @click="clicked" :class="isSelected ? 'active selected' : ''">
+<component :is="componentType" class="list-group-item" :href="href" :target="target" :to="to" @click="clicked" :class="isSelected ? 'active selected' : ''">
         <div>
             <fluro-realm-bar v-if="item" :realm="item.realms" />
             <slot name="left">
@@ -36,6 +36,12 @@ export default {
         to:{
             type:[String,Object]
         },
+        href:{
+            type:String,
+        },
+        target:{
+            type:String,
+        },
         item: {
             type: Object
         },
@@ -60,9 +66,12 @@ export default {
     created() {
         if(this.to) {
             this.componentType = 'router-link';
+        } else if(this.href){
+        	this.componentType = 'a';
         } else {
             this.componentType = 'div';
         }
+        
     },
     computed: {
         title() {

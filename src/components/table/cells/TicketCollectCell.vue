@@ -50,5 +50,13 @@ export default {
 }
 </script>
 <style lang="scss">
+.boolean-cell  {
+&.true {
+    color: $success;
+}
 
+&.false {
+    opacity: 0.3;
+}
+}
 </style>

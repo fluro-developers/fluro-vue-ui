@@ -264,6 +264,14 @@ export default {
     background: #fff;
 
 
+input[block] {
+	display: block;
+    padding: 5px;
+    background: #fff;
+    border: 1px solid #2ad4b9;
+    width: 100%;
+}
+
 
     // margin-bottom: 10px;
     // padding-top: 10px;

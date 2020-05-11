@@ -22,7 +22,7 @@
 																<fluro-icon :type="item._type"></fluro-icon>
 												</template>
 								</div>
-								<component :is="linkType" :to="to" :target="target" :href="href" class="item-text">
+								<component :is="tagType" :to="to" :target="target" :href="href" class="item-text">
 												<!-- <router-link :to="to" class="item-text"> -->
 												<div>
 																<div class="item-title">{{title}}</div>
@@ -248,12 +248,13 @@ export default {
 
 												return this.availableActions.length;
 								},
-								linkType() {
+								tagType() {
 												if (this.to) {
 																return 'router-link'
 												}
 
 												if (this.href) {
+																console.log('HREF', this.href);
 																return 'a';
 												}
 

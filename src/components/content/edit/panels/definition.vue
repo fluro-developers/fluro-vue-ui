@@ -18,7 +18,7 @@
                                             <fluro-panel-body>
                                                 <v-layout>
                                                     <v-flex xs12 sm6>
-                                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />
+                                                        <fluro-content-form-field  :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />
                                                     </v-flex>
                                                     <v-flex xs12 sm6>
                                                         <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.plural" v-model="model" />
@@ -1387,12 +1387,14 @@ export default {
 
             ///////////////////////////////////
 
+            // console.log('AUTOFOCUS', self.model._id)
             addField('title', {
                 title: 'Title',
                 minimum: 1,
                 maximum: 1,
                 type: 'string',
                 params: {
+                	autofocus:!self.model._id,
                     persistentDescription: true
                 },
                 description: `What do you call this ${self.readableContentType}?. eg. '${exampleSingle}'`,

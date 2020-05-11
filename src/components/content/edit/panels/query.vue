@@ -27,6 +27,7 @@
                                         </template>
                                     </fluro-panel-title>
                                     <fluro-panel-body>
+                                    	<!-- <pre>{{model.filterConfiguration}}</pre> -->
                                         <filter-condition-group :rows="rows" :useSample="true" :mini="true" v-model="model.filterConfiguration" :type="model.filterType" :debounce="filterDebounce" />
                                     </fluro-panel-body>
                                 </fluro-panel>
@@ -334,8 +335,8 @@ export default {
             }
             var filterString = FilterService.getFilterChangeString(self.model.filterConfiguration);
 
-            console.log('Filter configuration changed', filterString)
-            return `${filterString}`;
+            // console.log('Filter configuration changed', filterString)
+            return filterString;
         },
     },
     data() {
