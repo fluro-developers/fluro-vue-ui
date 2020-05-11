@@ -46,7 +46,6 @@
 												</v-flex>
 												<!-- v-if="!hasSubFields" -->
 												<v-flex xs12 sm3>
-														
 																<v-select single-line dense ref="inputComparator" v-model="modelComparator" item-text="title" item-value="operator" :items="comparators" />
 																<!-- <pre>{{model.comparator}}</pre> -->
 												</v-flex>
@@ -969,18 +968,23 @@ export default {
 
 												////////////////////////////////////
 
-												if (self.selector && self.selector.options && self.selector.options.length) {
-																self.possibleValues = self.selector.options;
-																self.loadingValues = false;
+												var selectableOptions = [];
 
-																// console.log('SELECTOR POSSIBLE VALUES', key, self.possibleValues)
-																// console.log('CADE > has options from selector')
+												if (self.selector) {
+
+																if (self.selector.allowedValues && self.selector.allowedValues.length) {
+																				selectableOptions = self.selector.allowedValues;
+																} else if (self.selector.options && self.selector.options.length) {
+																				selectableOptions = self.selector.options;
+																}
+
+																if (selectableOptions.length) {
+																				self.possibleValues = selectableOptions
+																				self.loadingValues = false;
+																}
 																return;
-												} else {
-																// console.log('SELECTOR?', self.selector)
-												}
 
-												// console.log('No values known yet')
+												}
 
 												////////////////////////////////
 
