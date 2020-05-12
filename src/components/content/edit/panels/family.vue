@@ -336,7 +336,7 @@ export default {
 
             var row4 = {
                 title: 'Comms',
-                key: 'comms',
+                key: 'realmsandstuff',
                 type: 'group',
                 sameLine: true,
                 fields: [],
@@ -433,10 +433,14 @@ export default {
             var self = this;
 
             var options = self.contactDefinitions.slice();
-            options.unshift({
+
+            if(options.length) {
+            	options.unshift({
                 name: 'None',
                 value: '',
             })
+            }
+            
 
             return options;
         }
@@ -482,7 +486,11 @@ export default {
                 return new Promise(function(resolve, reject) {
                         return self.$fluro.types.subTypes('contact')
                             .catch(reject)
-                            .then(resolve)
+                            .then(function(res) {
+
+                            	
+                            	return resolve(res);
+                            })
                     })
                     .catch(function(err) {
                         console.log(err);

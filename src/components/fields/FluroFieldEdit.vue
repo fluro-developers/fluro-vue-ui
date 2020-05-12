@@ -240,15 +240,18 @@
 																								</template>
 																								<template v-else>
 																												<template v-if="requiresOptions">
-																																<template v-if="advancedOptions">
+																																
+																																<template v-if="!advancedOptions">
+																																				<fluro-content-form-field :field="fields.allowedValues" v-model="model" />
+																																				<div class="sm muted" @click="showAdvancedOptions = true">Show advanced labelling options</div>
+																																</template>
+																																<template v-else>
 																																				<v-input label="Selectable Options" class="no-flex">
 																																								<options-manager v-model="model.options" />
 																																				</v-input>
 																																</template>
-																																<template v-else>
-																																				<fluro-content-form-field :field="fields.allowedValues" v-model="model" />
-																																				<div class="sm muted" @click="showAdvancedOptions = true">Show advanced labelling options</div>
-																																</template>
+
+																																<pre>{{model.options}}</pre>
 																												</template>
 																												<template v-if="model.directive != 'embedded'">
 																																<template v-if="model.type == 'reference'">
@@ -1041,7 +1044,7 @@ export default {
 
 												addField('allowedValues', {
 																title: 'Allowed Options',
-																description: 'Add each option that the user may select',
+																description: 'Add each option that the user may select.',
 																minimum: 0,
 																maximum: 0,
 																type: 'string',
