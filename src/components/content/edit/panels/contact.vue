@@ -1,7 +1,4 @@
 <template>
-
-
-	
 				<flex-column>
 								<template v-if="loading">
 												<fluro-page-preloader contain />
@@ -1149,8 +1146,8 @@ export default {
 																								value: 'widowed',
 																				},
 																				{
-																								name: 'Seperated',
-																								value: 'seperated',
+																								name: 'Separated',
+																								value: 'separated',
 																				},
 																				{
 																								name: 'Divorced',

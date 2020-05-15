@@ -4,7 +4,7 @@
 												<v-container v-if="item">
 																<!-- <pre>{{item}}</pre> -->
 																<!-- TEST WOOT WOOT -->
-																<fluro-content-render :fields="fields" :raw="true" v-model="item" />
+																<fluro-content-render :fields="interactionFields" :raw="true" v-model="item" />
 																<fluro-panel v-if="item.event">
 																				<fluro-panel-body>
 																								<v-input class="no-flex">
@@ -96,7 +96,7 @@
 																								</div>
 																				</div>
 																</div> -->
-																<fluro-content-render :fields="definedFields" :raw="true" v-model="item.rawData" />
+																<fluro-content-render :fields="fields" :raw="true" v-model="item.rawData" />
 																<!-- <fluro-content-render :fields="fields" v-model="item.data" /> -->
 																<!-- <pre>{{fields}}</pre> -->
 												</v-container>
@@ -136,7 +136,7 @@ export default {
 								data() {
 												return this.item.data || {}
 								},
-								fields() {
+								interactionFields() {
 
 												var array = [];
 
@@ -150,9 +150,6 @@ export default {
 
 												return array;
 								},
-								definedFields() {
-												return this.config.definition.fields;
-								}
 				},
 				data() {
 								return {}

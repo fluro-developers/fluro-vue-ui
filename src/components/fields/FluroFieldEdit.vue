@@ -7,7 +7,6 @@
 												<tab heading="Group Settings">
 																<flex-column-body>
 																				<v-container>
-
 																								<fluro-content-form-field ref="grouptitle" :field="fields.title" v-model="model" />
 																								<div v-show="showKey">
 																												<fluro-content-form-field :field="fields.key" v-model="model" />
@@ -34,8 +33,7 @@
 																												</v-flex>
 																								</v-layout>
 																								<fluro-content-form-field :field="fields.className" v-model="model" />
-
-																									<!-- <pre>{{model}}</pre> -->
+																								<!-- <pre>{{model}}</pre> -->
 																				</v-container>
 																</flex-column-body>
 																<!-- <flex-column-footer class="border-top">
@@ -240,7 +238,6 @@
 																								</template>
 																								<template v-else>
 																												<template v-if="requiresOptions">
-																																
 																																<template v-if="!advancedOptions">
 																																				<fluro-content-form-field :field="fields.allowedValues" v-model="model" />
 																																				<div class="sm muted" @click="showAdvancedOptions = true">Show advanced labelling options</div>
@@ -250,8 +247,6 @@
 																																								<options-manager v-model="model.options" />
 																																				</v-input>
 																																</template>
-
-																																<pre>{{model.options}}</pre>
 																												</template>
 																												<template v-if="model.directive != 'embedded'">
 																																<template v-if="model.type == 'reference'">
@@ -986,6 +981,11 @@ export default {
 												return this.model && this.model.params && this.model.params.restrictType;
 								},
 								requiresOptions() {
+
+												if (this.model.type == 'reference') {
+																return;
+												}
+
 												switch (this.model.directive) {
 																case 'select':
 																case 'button-select':
@@ -1395,7 +1395,7 @@ export default {
 																				})
 
 
-																				
+
 
 																				inputOptions.push({
 																								title: 'Embedded Form',

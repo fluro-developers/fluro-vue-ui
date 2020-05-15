@@ -928,7 +928,7 @@ export default {
 
 												var self = this;
 												var key = self.model.key;
-												// console.log('RETRIEVE VALUES', key);
+												console.log('RETRIEVE VALUES', key);
 
 												////////////////////////////////////
 
@@ -936,6 +936,7 @@ export default {
 																//Just show a normal reference selector
 																self.possibleValues = [];
 																self.loadingValues = false;
+																console.log('Values > use basic reference select')
 																// console.log('CADE > Use basic reference select')
 																return;
 												}
@@ -946,7 +947,7 @@ export default {
 
 												//If we have no key then there are no possible values
 												if (!key || !key.length) {
-																// console.log('Values > No key so clear values');
+																console.log('Values > No key so clear values');
 																self.possibleValues = [];
 																self.loadingValues = false;
 																// console.log('CADE > No key so no values', self.model)
@@ -965,26 +966,6 @@ export default {
 												//     key = splitParameters;
 												// }
 
-
-												////////////////////////////////////
-
-												var selectableOptions = [];
-
-												if (self.selector) {
-
-																if (self.selector.allowedValues && self.selector.allowedValues.length) {
-																				selectableOptions = self.selector.allowedValues;
-																} else if (self.selector.options && self.selector.options.length) {
-																				selectableOptions = self.selector.options;
-																}
-
-																if (selectableOptions.length) {
-																				self.possibleValues = selectableOptions
-																				self.loadingValues = false;
-																}
-																return;
-
-												}
 
 												////////////////////////////////
 
@@ -1040,6 +1021,32 @@ export default {
 																				}
 																				break
 												}
+
+
+												////////////////////////////////////
+
+												var selectableOptions = [];
+
+												if (self.selector) {
+
+																if (self.selector.allowedValues && self.selector.allowedValues.length) {
+																				selectableOptions = self.selector.allowedValues;
+																} else if (self.selector.options && self.selector.options.length) {
+																				selectableOptions = self.selector.options;
+																}
+
+																if (selectableOptions.length) {
+																				self.possibleValues = selectableOptions
+																				self.loadingValues = false;
+																				console.log('Return selectable options', selectableOptions, self.selector)
+																				return;
+																}
+
+
+
+												}
+
+
 
 
 												////////////////////////////////////

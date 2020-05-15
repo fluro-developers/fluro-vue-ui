@@ -235,6 +235,7 @@ export default {
 								return {
 												ready: false,
 												model: this.value,
+												watchEnabled: true,
 								}
 				},
 				components: {
@@ -243,22 +244,30 @@ export default {
 				watch: {
 								model(newModel, oldModel) {
 
-
-												// ///console.log('form model changed');
-												this.$emit('input', this.model);
-
-
+												if (this.watchEnabled) {
+																// console.log('emit change for', this)
+																this.$emit('input', this.model);
+												}
 
 								},
 								value(v) {
 
+												var self = this;
 
 
 												//If the model has been changed
-												if (this.model != v) {
-																///console.log('FORM MODEL IS NOW SOMETHING DIFFERENT VALUE', v);
-																this.model = v
-																this.reset();
+												if (self.model != v) {
+																// console.log('new value is set', self)
+
+																self.watchEnabled = false;
+																self.model = v
+																self.reset();
+
+
+																self.$nextTick(function() {
+																				self.watchEnabled = true;
+																})
+
 
 												}
 
@@ -324,6 +333,8 @@ export default {
 
 				},
 				created() {
+
+								// console.log('CONTENT FORM WAS CREATED')
 								///console.log('Reset on creation!')
 								this.reset();
 				},

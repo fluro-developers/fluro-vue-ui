@@ -15,17 +15,12 @@
 																								<v-btn v-if="model._id" icon class="mr-0" small @click="$actions.open([model])">
 																												<fluro-icon icon="ellipsis-h" />
 																								</v-btn>
-																								<v-btn icon v-if="canEdit" @click="edit">
-																												<fluro-icon icon="pencil" />
+																								<v-btn @click="cancel">
+																												Close
 																								</v-btn>
-																								<template v-else>
-																												<v-btn @click="cancel">
-																																Close
-																												</v-btn>
-																												<v-btn class="mx-0" v-if="canEdit" @click="edit" color="primary">
-																																Edit
-																												</v-btn>
-																								</template>
+																								<v-btn icon v-if="canEdit" @click="edit">
+																									Edit <fluro-icon icon="pencil" />
+																								</v-btn>
 																				</template>
 																</page-header>
 												</flex-column-header>
@@ -226,7 +221,9 @@ export default {
 
 																								break;
 																				case 'family':
-
+																								return DynamicImportService.load('src/components/content/view/panels/family.vue', function() {
+																												return import('src/components/content/view/panels/family.vue')
+																								})
 																								break;
 																				case 'image':
 

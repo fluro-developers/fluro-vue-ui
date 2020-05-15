@@ -26,6 +26,10 @@
 																												</fluro-inline-edit>
 																								</template>
 																								<template v-slot:right>
+																												<template v-if="isAssetType">
+																																<help title="Privacy Selector" body="Allows you to disable security for this content. By default websites apps and users need permission to access content in Fluro, clicking here can turn that off so that this content can be viewed on the web publicly without authentication" />
+																																<fluro-quick-privacy v-model="model" />
+																												</template>
 																												<help title="Realm Selector" :body="`Everything in Fluro needs to be kept somewhere, choose one or more realms for this ${definitionTitle}. This will affect who has access to view and edit this ${definitionTitle}`" />
 																												<fluro-realm-select v-tippy :content="`Select where this ${definitionTitle} should be stored`" v-if="typeName != 'realm'" v-model="model.realms" :type="typeName" :definition="definitionName" />
 																												<fluro-tag-select class="mx-0 ml-2" v-if="typeName != 'tag'" v-model="model.tags">
@@ -190,6 +194,7 @@ import _ from 'lodash';
 
 
 import FluroTagSelect from 'src/components/form/tagselect/FluroTagSelect.vue';
+import FluroQuickPrivacy from 'src/components/form/FluroQuickPrivacy.vue';
 import FluroRealmSelect from 'src/components/form/realmselect/FluroRealmSelect.vue';
 import FluroStatusSelect from 'src/components/form/FluroStatusSelect.vue';
 import FluroInlineEdit from 'src/components/form/FluroInlineEdit.vue';
@@ -665,6 +670,16 @@ export default {
 								}
 				},
 				computed: {
+								isAssetType() {
+												switch (this.typeName) {
+														case 'asset':
+														case 'audio':
+														case 'video':
+														case 'image':
+															return true;
+														break;
+												}
+								},
 								canChangeStatus() {
 												switch (this.typeName) {
 																case 'persona':
@@ -886,6 +901,7 @@ export default {
 				},
 				components: {
 								// Contact,
+								FluroQuickPrivacy,
 								FluroTagSelect,
 								FluroRealmSelect,
 								FluroStatusSelect,

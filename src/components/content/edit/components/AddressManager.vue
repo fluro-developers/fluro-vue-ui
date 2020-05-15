@@ -50,6 +50,17 @@ export default {
             proposed: {},
         }
     },
+    watch:{
+    	value(v) {
+    		if(this.model != v) {
+    			this.model = v;
+    		}
+    	},
+    	model(v) {
+    		console.log('update address')
+    		this.$emit('input', v);
+    	}
+    },
     methods: {},
     computed: {
         fields() {

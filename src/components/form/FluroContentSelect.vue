@@ -4,7 +4,7 @@
 												<div class="fluro-content-list" v-if="model.length <= listLimit">
 																<list-group>
 																				<draggable v-model="model" v-bind="dragOptions" @start="drag=true" @end="drag=false">
-																								<list-group-item @click="$fluro.global.view(item, true)" :item="item" v-for="(item, index) in model">
+																								<list-group-item @click="viewItem(item)" :item="item" v-for="(item, index) in model">
 																												<template v-slot:right>
 																																<v-menu :left="true" v-model="actionIndexes[index]" :fixed="true" transition="slide-y-transition" offset-y>
 																																				<template v-slot:activator="{ on }">
@@ -257,6 +257,9 @@ export default {
 								},
 				},
 				methods: {
+								viewItem(item) {
+												this.$fluro.global.view(item, true)
+								},
 								editInPlaceEnabled(item) {
 												return this.$fluro.access.canEditItem(item) && this.$fluro.global.edit;
 								},
@@ -323,7 +326,7 @@ export default {
 																});
 								},
 								showModal() {
-												
+
 												var self = this;
 												//////////////////////////////////////
 
@@ -489,20 +492,20 @@ export default {
 
 .fluro-content-select {
 
-				& >>> .v-select__selections {
+				&>>>.v-select__selections {
 								padding-top: 0 !important;
 				}
 
-				& >>> .v-input__slot {
+				&>>>.v-input__slot {
 								min-height: 48px !important;
 				}
 
-				& >>> .v-input__prepend-inner,
-				& >>> .v-input__append-inner {
+				&>>>.v-input__prepend-inner,
+				&>>>.v-input__append-inner {
 								margin-top: 11px !important;
 				}
 
-				& >>> .v-text-field--box .v-input__slot {
+				&>>>.v-text-field--box .v-input__slot {
 								background: rgba(#000, 0.03);
 				}
 
@@ -533,12 +536,12 @@ export default {
 
 
 				&.outlined {
-								& >>> .v-input__slot {
+								&>>>.v-input__slot {
 												height: 60px;
 								}
 
 
-								& >>> .v-input__prepend-inner {
+								&>>>.v-input__prepend-inner {
 												margin-top: 16px !important;
 								}
 

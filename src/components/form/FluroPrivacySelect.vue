@@ -3,7 +3,7 @@
         <!-- <div class="privacy-select btn-group btn-group-justified"> -->
             <a class="privacy-select-button" @click="select('secure')" :class="{'active':model == 'secure'}">
                 <div>
-                <fluro-icon class="icn" icon="lock"/><br/>
+                <fluro-icon class="icn" icon="lock-alt"/><br/>
                 <strong>Secure</strong><br />
                 <em>Only users and applications with correct permissions can view</em>
             </div>
@@ -32,6 +32,11 @@ export default {
 		return {
 			model:this.value,
 		}
+	},
+	watch:{
+		value() {
+			this.model = this.value;
+		},
 	},
 	methods:{
 		select(value) {
