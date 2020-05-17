@@ -424,8 +424,6 @@
 																																												<fluro-realm-select v-model="model.restrictRealms" />
 																																								</fluro-panel-body>
 																																				</fluro-panel>
-
-
 																																				<!-- <fluro-panel>
 																																								<fluro-panel-title>
 																																												<h5>Display Columns</h5>
@@ -445,8 +443,6 @@
 																																												<fluro-column-select v-model="model.filters"/>
 																																								</fluro-panel-body>
 																																				</fluro-panel> -->
-
-
 																																				<!-- <fluro-panel v-if="model.parentType == 'process'">
 																																								<fluro-panel-title>
 																																												<h5>Reference Item Filters</h5>
@@ -1196,14 +1192,14 @@ export default {
 												///////////////////////////////////
 
 												addField('askLastName', {
-																title: 'Ask Last Name',
+																title: 'Ask',
 																minimum: 0,
 																maximum: 1,
 																type: 'boolean',
 												})
 
 												addField('requireLastName', {
-																title: 'Require Last Name',
+																title: 'Require',
 																minimum: 0,
 																maximum: 1,
 																type: 'boolean',
@@ -1212,14 +1208,14 @@ export default {
 												///////////////////////////////////
 
 												addField('askFirstName', {
-																title: 'Ask First Name',
+																title: 'Ask',
 																minimum: 0,
 																maximum: 1,
 																type: 'boolean',
 												})
 
 												addField('requireFirstName', {
-																title: 'Require First Name',
+																title: 'Require',
 																minimum: 0,
 																maximum: 1,
 																type: 'boolean',
@@ -1228,14 +1224,14 @@ export default {
 												///////////////////////////////////
 
 												addField('askEmail', {
-																title: 'Ask Email',
+																title: 'Ask',
 																minimum: 0,
 																maximum: 1,
 																type: 'boolean',
 												})
 
 												addField('requireEmail', {
-																title: 'Require Email',
+																title: 'Require',
 																minimum: 0,
 																maximum: 1,
 																type: 'boolean',
@@ -1244,14 +1240,14 @@ export default {
 												///////////////////////////////////
 
 												addField('askPhone', {
-																title: 'Ask Phone Number',
+																title: 'Ask',
 																minimum: 0,
 																maximum: 1,
 																type: 'boolean',
 												})
 
 												addField('requirePhone', {
-																title: 'Require Phone Number',
+																title: 'Require',
 																minimum: 0,
 																maximum: 1,
 																type: 'boolean',
@@ -1260,14 +1256,14 @@ export default {
 												///////////////////////////////////
 
 												addField('askGender', {
-																title: 'Ask Gender',
+																title: 'Ask',
 																minimum: 0,
 																maximum: 1,
 																type: 'boolean',
 												})
 
 												addField('requireGender', {
-																title: 'Require Gender',
+																title: 'Require',
 																minimum: 0,
 																maximum: 1,
 																type: 'boolean',
@@ -1276,14 +1272,14 @@ export default {
 												///////////////////////////////////
 
 												addField('askDOB', {
-																title: 'Ask Date of Birth',
+																title: 'Ask',
 																minimum: 0,
 																maximum: 1,
 																type: 'boolean',
 												})
 
 												addField('requireDOB', {
-																title: 'Require Date of Birth',
+																title: 'Require',
 																minimum: 0,
 																maximum: 1,
 																type: 'boolean',

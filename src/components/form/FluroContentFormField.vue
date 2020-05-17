@@ -196,11 +196,23 @@
 																</template>
 												</template>
 												<template v-else-if="renderer == 'select'">
-																<template v-if="mobile || params.dropdown">
-																				<v-select :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
+																<!-- <v-menu :fixed="true" v-model="modal" min-width="290px" transition="slide-y-transition" offset-y> -->
+																<!-- <template v-slot:activator="{ on }"> -->
+																<!-- <v-input :label="displayLabel" :persistent-hint="true" class="no-flex"> -->
+																<!-- <v-text-field @blur="touch()" @focus="focussed()" :outline="showOutline" :success="success" :persistent-hint="true" :hint="field.description" :label="displayLabel" v-on="on"></v-text-field> -->
+																<!-- </v-input> -->
+																<!-- </template> -->
+																<!-- <div> -->
+																<!-- <pre>{{selectOptions}}</pre> -->
+																<!-- </div> -->
+																<!-- </v-menu> -->
+																<template v-if="useBasicDropdown">
+																				<!-- :fixed="true"  -->
+																				<v-select  :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
 																</template>
 																<template v-else>
-																				<v-autocomplete :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
+																				<!-- :fixed="true"  -->
+																				<v-autocomplete  :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
 																</template>
 												</template>
 												<template v-else-if="renderer == 'content-select-button'">
@@ -654,6 +666,9 @@ export default {
 								// 'isNew':'checkNew',
 				},
 				computed: {
+								useBasicDropdown() {
+												return this.selectOptions.length < 5 || this.mobile || this.params.dropdown;
+								},
 								placeholder() {
 												var placeholder = this.field.placeholder;
 												if (placeholder == undefined || placeholder == null || placeholder == '') {
@@ -1300,18 +1315,19 @@ export default {
 																return [];
 												}
 
-
-
 												////////////////////////////////////////
 
+												var actualOptions = [];
+
+
 												if (self.field.options && self.field.options.length) {
-																return _.map(self.field.options, function(option) {
+																actualOptions = _.map(self.field.options, function(option) {
 																				option.title = option.title ? option.title : option.name;
 																				return option;
 																});
 												} else {
 																if (self.allowedValues && self.allowedValues.length) {
-																				return _.chain(self.allowedValues)
+																				actualOptions = _.chain(self.allowedValues)
 																								.compact()
 																								.map(function(option) {
 																												return {
@@ -1327,7 +1343,7 @@ export default {
 												////////////////////////////////////////
 
 												if (self.allowedReferences) {
-																return self.allowedReferences;
+																actualOptions = self.allowedReferences;
 												}
 
 
@@ -1335,12 +1351,12 @@ export default {
 												////////////////////////////////////////
 
 												if (self.asyncOptions && self.asyncOptions.length) {
-																return self.asyncOptions;
+																actualOptions = self.asyncOptions;
 												}
 
 												////////////////////////////////////////
 
-												return [];
+												return actualOptions;
 								},
 								minimum() {
 												return Math.max(parseInt(this.field.minimum), 0);
