@@ -8,7 +8,7 @@
                         <v-layout wrap align-center ma-0>
                             <v-flex sm10 xs12 px-4>
                                 <strong>{{unavailability.description}}</strong>
-                                <p class="muted mb-0">{{unavailability | readableDate}}</p>
+                                <p class="muted mb-0">{{unavailability | readableEventDate}}</p>
                             </v-flex>
                             <v-flex sm2 xs12>
                                 <fluro-confirm-button @click="remove(index)" content="Remove">
@@ -257,18 +257,18 @@ export default {
         capitalize(str) {
             return _.startCase(str);
         },
-        readableDate(obj) {
-            var self = this;
+        // readableDate(obj) {
+        //     var self = this;
 
-            var start = self.$fluro.date.moment(obj.startDate).format('dddd, MMMM Do YYYY');
-            var end = self.$fluro.date.moment(obj.endDate).format('dddd, MMMM Do YYYY');
-            //console.log(start, end, obj.startDate, obj.endDate);
-            if (start == end) {
-                return self.$fluro.date.moment(obj.startDate).format('dddd, MMMM Do YYYY');
-            } else {
-                return self.$fluro.date.moment(obj.startDate).format('dddd, MMMM Do YYYY') + ' - ' + self.$fluro.date.moment(obj.endDate).format('dddd, MMMM Do YYYY')
-            }
-        }
+        //     var start = self.$fluro.date.moment(obj.startDate).format('dddd, MMMM Do YYYY');
+        //     var end = self.$fluro.date.moment(obj.endDate).format('dddd, MMMM Do YYYY');
+        //     //console.log(start, end, obj.startDate, obj.endDate);
+        //     if (start == end) {
+        //         return self.$fluro.date.moment(obj.startDate).format('dddd, MMMM Do YYYY');
+        //     } else {
+        //         return self.$fluro.date.moment(obj.startDate).format('dddd, MMMM Do YYYY') + ' - ' + self.$fluro.date.moment(obj.endDate).format('dddd, MMMM Do YYYY')
+        //     }
+        // }
     }
 }
 </script>

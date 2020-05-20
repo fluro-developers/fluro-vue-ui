@@ -92,6 +92,7 @@ const globals = {
 				'prosemirror-commands': 'prosemirror-commands',
 
 				//Brace Stuff
+				'brace/theme/chrome':'brace/theme/chrome',
 				'brace/ext/searchbox': 'brace/ext/searchbox',
 				'brace/ext/language_tools': 'brace/ext/language_tools',
 				'brace/mode/html': 'brace/mode/html',

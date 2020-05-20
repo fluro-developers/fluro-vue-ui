@@ -145,6 +145,9 @@
 																				<v-card>
 																								<v-date-picker @blur="touch()" @focus="focussed()" attach @change="modal = false" v-model="dateStringModel" no-title scrollable>
 																												<v-spacer></v-spacer>
+																												<template v-if="!minimum">
+																																<v-btn color="" flat @click.native="clear">Clear</v-btn>
+																												</template>
 																												<v-btn flat color="primary" @click="modal = false">Done</v-btn>
 																								</v-date-picker>
 																				</v-card>
@@ -155,16 +158,18 @@
 																				<template v-slot:activator="{ on }">
 																								<v-text-field :outline="showOutline" :success="success" v-model="fieldModel" :label="displayLabel" prepend-inner-icon="access_time" readonly v-on="on" @blur="touch()" @focus="modalFocussed();"></v-text-field>
 																				</template>
-																				<v-card v-if="modal">
-																								<v-toolbar color="primary" dark>
-																												<v-toolbar-title>{{displayLabel}}</v-toolbar-title>
-																								</v-toolbar>
-																								<v-time-picker attach v-model="pseudoModel" full-width>
-																												<v-spacer></v-spacer>
-																												<v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
-																												<v-btn flat color="primary" @click="$refs.dialog.save(pseudoModel)">OK</v-btn>
-																								</v-time-picker>
-																				</v-card>
+																				<flex-column v-if="modal">
+																								<v-card>
+																												<v-toolbar color="primary" dark>
+																																<v-toolbar-title>{{displayLabel}}</v-toolbar-title>
+																												</v-toolbar>
+																												<v-time-picker attach v-model="pseudoModel" full-width>
+																																<v-spacer></v-spacer>
+																																<v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
+																																<v-btn flat color="primary" @click="$refs.dialog.save(pseudoModel)">OK</v-btn>
+																												</v-time-picker>
+																								</v-card>
+																				</flex-column>
 																</v-dialog>
 												</template>
 												<template v-else-if="renderer == 'datetimepicker'">
@@ -195,6 +200,9 @@
 																				<v-select :persistent-hint="true" :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="countryOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
 																</template>
 												</template>
+												<template v-else-if="renderer == 'definitionselect'">
+																<v-select :persistent-hint="true" :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="definitionOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
+												</template>
 												<template v-else-if="renderer == 'select'">
 																<!-- <v-menu :fixed="true" v-model="modal" min-width="290px" transition="slide-y-transition" offset-y> -->
 																<!-- <template v-slot:activator="{ on }"> -->
@@ -208,11 +216,11 @@
 																<!-- </v-menu> -->
 																<template v-if="useBasicDropdown">
 																				<!-- :fixed="true"  -->
-																				<v-select  :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
+																				<v-select :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
 																</template>
 																<template v-else>
 																				<!-- :fixed="true"  -->
-																				<v-autocomplete  :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
+																				<v-autocomplete :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
 																</template>
 												</template>
 												<template v-else-if="renderer == 'content-select-button'">
@@ -385,6 +393,12 @@
 												</template>
 												<template v-else-if="renderer == 'app-size-select'">
 																<fluro-app-size-select :field="field" v-model="fieldModel" :options="options" :label="displayLabel" />
+												</template>
+												<template v-else-if="renderer == 'app-field-select'">
+																<fluro-app-field-select :field="field" v-model="fieldModel" :options="options" :label="displayLabel" />
+												</template>
+												<template v-else-if="renderer == 'app-field-key-select'">
+																<fluro-app-field-key-select :field="field" v-model="fieldModel" :options="options" :label="displayLabel" />
 												</template>
 												<template v-else-if="renderer == 'app-theme-select'">
 																<fluro-app-theme-select :field="field" v-model="fieldModel" :options="options" :label="displayLabel" />
@@ -643,6 +657,7 @@ export default {
 								value(val) {
 
 												if (this.model != val) {
+													// console.log('New value for field', val, this)
 																// val = this.fixCorruptedData(val);
 																// //console.log('SET VALUE OF THING', val);
 																//Set the new model
@@ -1305,6 +1320,8 @@ export default {
 
 												return timezones;
 								},
+
+
 								selectOptions() {
 
 												var self = this;
@@ -1342,11 +1359,9 @@ export default {
 
 												////////////////////////////////////////
 
-												if (self.allowedReferences) {
+												if (self.field.type == 'reference' && self.allowedReferences && self.allowedReferences.length) {
 																actualOptions = self.allowedReferences;
 												}
-
-
 
 												////////////////////////////////////////
 
@@ -2218,6 +2233,7 @@ export default {
 								},
 								clear() {
 												this.fieldModel = null;
+												this.modal = false;
 												//console.log('RESET INSIDE CLEAR()')
 												this.reset()
 								},
@@ -2832,6 +2848,7 @@ export default {
 								},
 								'field': {
 												type: Object,
+												required: true,
 								},
 								'value': {
 												required: true,

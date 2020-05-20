@@ -118,7 +118,7 @@ export default {
 
 																				pieces.push(self.item.firstLine);
 																				if (self.item.address) {
-																					pieces.push('•');
+																								pieces.push('•');
 																								pieces.push(self.item.address.addressLine1);
 																								pieces.push(self.item.address.addressLine2);
 																								pieces.push(self.item.address.suburb);

@@ -157,7 +157,7 @@ export default {
 
 																								resolve(options);
 
-																								console.log('GET GRADES')
+
 																								// self.grades = self.selectedCalendar.grades;
 																				}, reject);
 																})
@@ -168,6 +168,4 @@ export default {
 
 </script>
 <style lang="scss">
-
-
 </style>

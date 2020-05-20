@@ -1337,6 +1337,10 @@ export default {
 																								title: 'No value',
 																								value: 'void',
 																				},
+																				{
+																								title: 'Generic Object',
+																								value: 'object',
+																				},
 
 																]
 												})
@@ -1553,9 +1557,23 @@ export default {
 																								value: 'app-size-select',
 																				})
 
+
+
+																				inputOptions.push({
+																								title: 'Website Builder Field Key Select',
+																								value: 'app-field-key-select',
+																				})
+
 																				inputOptions.push({
 																								title: 'Website Builder Theme Select',
 																								value: 'app-theme-select',
+																				})
+																}
+
+																if (self.model.type == 'object') {
+																				inputOptions.push({
+																								title: 'Website Builder Field Select',
+																								value: 'app-field-select',
 																				})
 																}
 												}

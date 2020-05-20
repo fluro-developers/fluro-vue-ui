@@ -63,6 +63,7 @@ export default {
             self.$emit('input', self.model);
         },
         remove(modifier) {
+        	var self = this;
             console.log('REMOVE', modifier);
             var index = this.model.indexOf(modifier);
             this.model.splice(index, 1)
@@ -74,6 +75,7 @@ export default {
                 component: PaymentModifierModal,
                 options: {
                     item,
+                    form:self.form,
                     cancelEnabled,
                 }
             })

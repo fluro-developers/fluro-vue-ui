@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h4>{{model.length}} scheduled notification{{model.length == 1 ? '' : 's'}}</h4>
+        <h4>{{model.length}} notification trigger{{model.length == 1 ? '' : 's'}}</h4>
         <p class="muted">Add notifications for when events happen within this group</p>
         <list-group>
             <list-group-item v-for="(notification, index) in model" v-bind:key="JSON.stringify(notification)">

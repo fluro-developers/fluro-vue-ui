@@ -13,7 +13,11 @@
                             <v-flex xs12 sm12>
                                 <h4>Realm Colors</h4>
                                 <p class="muted mb-0">Select colors for the realm below</p>
-                                <v-chip label small disabled class="chip" :color="model.bgColor" :text-color="model.color">{{model.title || 'Realm Title'}}</v-chip>
+                                <span class="inline-tag" :style="{color:model.color, backgroundColor:model.bgColor}">
+                                		{{model.title}}
+                                	</span>
+
+                                <!-- <v-chip label small disabled class="chip" :color="model.bgColor" :text-color="model.color">{{model.title || 'Realm Title'}}</v-chip> -->
                             </v-flex>
                             <v-flex xs6 sm3>
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.color" v-model="model" />
@@ -23,7 +27,12 @@
                             </v-flex>
                             <v-flex xs12 sm6>
                                 <h4>Example Colors</h4>
-                                <v-chip label small class="chip" v-for="eg in exampleColors" :color="eg.bgColor" :text-color="eg.color" @click="setColor(eg)">{{eg.title}}</v-chip>
+                                <div class="inline-tags">
+                                	<span class="inline-tag" @click="selectExample(tag)" :style="{color:tag.color, backgroundColor:tag.bgColor}" v-for="tag in exampleColors">
+                                		{{tag.title}}
+                                	</span>
+                                </div>
+                                <!-- <v-chip label small class="chip" v-for="eg in exampleColors" :color="eg.bgColor" :text-color="eg.color" @click="setColor(eg)">{{eg.title}}</v-chip> -->
                             </v-flex>
                         </v-layout>
                         <template v-if="definition && definition.fields && definition.fields.length">
@@ -132,11 +141,20 @@ export default {
         }
     },
     methods: {
-        setColor(obj) {
-            var self = this;
-            self.model.color = obj.color;
-            self.model.bgColor = obj.bgColor;
-        }
+    	selectExample(tag) {
+    		var self = this;
+
+    		self.$set(self.model, 'color', tag.color);
+    		self.$set(self.model, 'bgColor', tag.bgColor);
+    	},
+        // setColor(obj) {
+        //     var self = this;
+        //     self.$set(self, 'model', {
+        //     	color:obj.color,
+        //     	bgColor:obj.bgColor,
+        //     })
+
+        // }
     },
     data() {
         return {

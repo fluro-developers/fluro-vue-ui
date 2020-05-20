@@ -18,8 +18,8 @@
 																								<v-btn @click="cancel">
 																												Close
 																								</v-btn>
-																								<v-btn icon v-if="canEdit" @click="edit">
-																									Edit <fluro-icon icon="pencil" />
+																								<v-btn v-if="canEdit" @click="edit">
+																									Edit <fluro-icon right icon="pencil" />
 																								</v-btn>
 																				</template>
 																</page-header>

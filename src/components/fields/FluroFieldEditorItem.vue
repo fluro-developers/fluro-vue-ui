@@ -58,7 +58,7 @@
 								<template v-if="hasSubFields ">
 												<draggable class="field-editor-children" v-if="showSubFields" v-model="model.fields" handle=".handle" element="ul" :options="treeOptions" :move="onPageMove">
 																<!-- @click="select(leaf)" -->
-																<fluro-field-editor-item :top="top" :selected="selected" :parent="model.fields" :leaf="model.fields[index]" :select="select" :mouseover="mouseover" :mouseleave="mouseleave" @duplicate="duplicate" @injected="injected" @deleted="deleted" v-for="(leaf, index) in model.fields" :key="leaf.guid" />
+																<fluro-field-editor-item :top="top" :selected="selected" :parent="model.fields" :leaf="model.fields[index]" :select="select" :mouseover="mouseover" :mouseleave="mouseleave" @duplicate="duplicate" @injected="injected" @copypath="copypath" @deleted="deleted" v-for="(leaf, index) in model.fields" :key="leaf.guid" />
 												</draggable>
 								</template>
 				</li>
@@ -313,6 +313,15 @@ export default {
 												})
 
 												actions.push({
+																title: `Copy Field Path`,
+																icon: 'code',
+																click() {
+																	console.log('emit copy event');
+																				self.$emit('copypath', self.fieldPath, self.model, self.parent);
+																}
+												})
+
+												actions.push({
 																title: `Delete ${type}`,
 																icon: 'trash-alt',
 																click() {
@@ -435,6 +444,9 @@ export default {
 								injected(field, parent) {
 
 												this.$emit('injected', field, parent);
+								},
+								copypath(path, field, parent) {
+									this.$emit('copypath', path, field, parent);
 								},
 								deleted(field, parent) {
 												this.$emit('deleted', field, parent);

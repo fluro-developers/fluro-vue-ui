@@ -454,17 +454,17 @@ export default {
             });
 
 
-            addField('defaultOwners', {
-                title: 'Default Owners',
-                description: "Set the owners of events created in this track",
-                minimum: 0,
-                maximum: 0,
-                type: 'reference',
-                directive: 'reference-select',
-                params: {
-                    restrictType: 'persona',
-                }
-            });
+            // addField('defaultOwners', {
+            //     title: 'Default Owners',
+            //     description: "Set the owners of events created in this track",
+            //     minimum: 0,
+            //     maximum: 0,
+            //     type: 'reference',
+            //     directive: 'reference-select',
+            //     params: {
+            //         restrictType: 'persona',
+            //     }
+            // });
 
 
             ///////////////////////////////////

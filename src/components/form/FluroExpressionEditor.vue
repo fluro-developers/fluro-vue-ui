@@ -35,21 +35,28 @@ export default {
 
 
 
+								DynamicImportService.load('vue2-ace-editor', function() {
+												return import('vue2-ace-editor')
+								}).then(function(editor) {
+												self.$options.components.CodeEditor = editor;
+
+												Promise.all([
+																				import('brace/mode/javascript'),
+																				import('brace/theme/chrome'),
+																])
+																.then(function(results) {
+																				console.log('Loaded brace extras')
+																				self.ready = true;
+																}, function(err) {
+																				console.log('ERROR', err);
+																				self.ready = true;
+																});
 
 
-								Promise.all([
-																DynamicImportService.load('vue2-ace-editor', function() {
-																				return import('vue2-ace-editor')
-																}),
-																import('brace/mode/javascript'),
-												])
-												.then(function(results) {
-																console.log('Loaded brace extras')
-																self.$options.components.CodeEditor = results[0];
-																self.ready = true;
-												}, function(err) {
-																self.ready = true;
-												});
+								})
+
+
+
 				},
 				methods: {
 								editorInit: function(editor) {

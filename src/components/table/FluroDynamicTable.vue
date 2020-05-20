@@ -195,7 +195,7 @@
                                             <fluro-icon icon="pencil" />
                                         </v-btn> -->
 																																																<v-btn class="ma-0" small icon @click.stop.prevent="$actions.open([item])">
-																																																<fluro-help uid="tablerow" title="More Actions" body="View more actions related to this item" />
+																																																				<fluro-help uid="tablerow" title="More Actions" body="View more actions related to this item" />
 																																																				<fluro-icon icon="ellipsis-h" />
 																																																</v-btn>
 																																																<!--  <v-btn class="ma-0" v-if="$vuetify.breakpoint.mdAndUp" small icon>
@@ -251,58 +251,58 @@
 																								<v-flex xs6 align-center d-flex>
 																												<fluro-help title="Item count" body="Shows how many items are displayed in the table, clicking here will allow you to change the amount of rows displayed per page" />
 																												<div class="text-muted">
-																												<v-menu @click.native.stop offset-y>
-																																<template v-slot:activator="{ on }">
-																																				<div v-on="on">
-																																								<div v-if="groupingColumn">
-																																												{{totalGroups}} groups - Showing {{startOffset + 1 | numberWithCommas}} to {{endOffset | numberWithCommas}} of {{filteredTotal | numberWithCommas}} rows
+																																<v-menu @click.native.stop offset-y>
+																																				<template v-slot:activator="{ on }">
+																																								<div v-on="on">
+																																												<div v-if="groupingColumn">
+																																																{{totalGroups}} groups - Showing {{startOffset + 1 | numberWithCommas}} to {{endOffset | numberWithCommas}} of {{filteredTotal | numberWithCommas}} rows
+																																												</div>
+																																												<div v-else>
+																																																{{startOffset + 1 | numberWithCommas}} to {{endOffset | numberWithCommas}} of {{filteredTotal | numberWithCommas}} {{plural}}
+																																												</div>
 																																								</div>
-																																								<div v-else>
-																																												{{startOffset + 1 | numberWithCommas}} to {{endOffset | numberWithCommas}} of {{filteredTotal | numberWithCommas}} {{plural}}
-																																								</div>
-																																				</div>
-																																</template>
-																																<v-card tile>
-																																				<v-list dense>
-																																								<v-list-tile @click="perPage = 25">
-																																												<v-list-tile-content>
-																																																<v-list-tile-title>
-																																																				Show 25 per page
-																																																</v-list-tile-title>
-																																												</v-list-tile-content>
-																																								</v-list-tile>
-																																								<v-list-tile @click="perPage = 50">
-																																												<v-list-tile-content>
-																																																<v-list-tile-title>
-																																																				Show 50 per page
-																																																</v-list-tile-title>
-																																												</v-list-tile-content>
-																																								</v-list-tile>
-																																								<v-list-tile @click="perPage = 100">
-																																												<v-list-tile-content>
-																																																<v-list-tile-title>
-																																																				Show 100 per page
-																																																</v-list-tile-title>
-																																												</v-list-tile-content>
-																																								</v-list-tile>
-																																								<v-list-tile @click="perPage = 200">
-																																												<v-list-tile-content>
-																																																<v-list-tile-title>
-																																																				Show 250 per page
-																																																</v-list-tile-title>
-																																												</v-list-tile-content>
-																																								</v-list-tile>
-																																								<v-list-tile @click="perPage = 500">
-																																												<v-list-tile-content>
-																																																<v-list-tile-title>
-																																																				Show 500 per page
-																																																</v-list-tile-title>
-																																												</v-list-tile-content>
-																																								</v-list-tile>
-																																				</v-list>
-																																</v-card>
-																												</v-menu>
-																											</div>
+																																				</template>
+																																				<v-card tile>
+																																								<v-list dense>
+																																												<v-list-tile @click="perPage = 25">
+																																																<v-list-tile-content>
+																																																				<v-list-tile-title>
+																																																								Show 25 per page
+																																																				</v-list-tile-title>
+																																																</v-list-tile-content>
+																																												</v-list-tile>
+																																												<v-list-tile @click="perPage = 50">
+																																																<v-list-tile-content>
+																																																				<v-list-tile-title>
+																																																								Show 50 per page
+																																																				</v-list-tile-title>
+																																																</v-list-tile-content>
+																																												</v-list-tile>
+																																												<v-list-tile @click="perPage = 100">
+																																																<v-list-tile-content>
+																																																				<v-list-tile-title>
+																																																								Show 100 per page
+																																																				</v-list-tile-title>
+																																																</v-list-tile-content>
+																																												</v-list-tile>
+																																												<v-list-tile @click="perPage = 200">
+																																																<v-list-tile-content>
+																																																				<v-list-tile-title>
+																																																								Show 250 per page
+																																																				</v-list-tile-title>
+																																																</v-list-tile-content>
+																																												</v-list-tile>
+																																												<v-list-tile @click="perPage = 500">
+																																																<v-list-tile-content>
+																																																				<v-list-tile-title>
+																																																								Show 500 per page
+																																																				</v-list-tile-title>
+																																																</v-list-tile-content>
+																																												</v-list-tile>
+																																								</v-list>
+																																				</v-card>
+																																</v-menu>
+																												</div>
 																								</v-flex>
 																								<v-flex xs6 align-center d-flex class="text-xs-right" style="white-space: nowrap">
 																												<div>
