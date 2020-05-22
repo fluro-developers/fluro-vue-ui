@@ -17,7 +17,6 @@ import pkg from './package.json';
 
 
 
-
 const patterns = ['./src/variables.scss']
 
 
@@ -46,9 +45,11 @@ const plugins = [
 				// 				'src': __dirname + '/src'
 				// }),
 				globalStyles({ patterns }),
+				//css(),
 				vue({
 								// template: { optimizeSSR: true },
-								css: `dist/${FILE_NAME}.css`,
+								//css: `dist/${FILE_NAME}.css`,
+								css: false,
 								postcss: {
 												plugins: require('./postcss.config')().plugins
 								}
@@ -61,7 +62,10 @@ const plugins = [
 				babel({
 								exclude: 'node_modules/**'
 				}),
-				postcss()
+				postcss({
+					//modules: true,
+					extract: true,
+				})
 ];
 const pluginsWithMinify = plugins.slice(0);
 
@@ -92,7 +96,7 @@ const globals = {
 				'prosemirror-commands': 'prosemirror-commands',
 
 				//Brace Stuff
-				'brace/theme/chrome':'brace/theme/chrome',
+				'brace/theme/chrome': 'brace/theme/chrome',
 				'brace/ext/searchbox': 'brace/ext/searchbox',
 				'brace/ext/language_tools': 'brace/ext/language_tools',
 				'brace/mode/html': 'brace/mode/html',
