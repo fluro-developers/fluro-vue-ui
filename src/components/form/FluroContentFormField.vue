@@ -1,6 +1,6 @@
 <template>
 				<div @click="clicked($event)" :data-field-key="key" class="fluro-content-form-field" v-if="isVisible" v-bind="attributes" :class="fieldClass">
-								<template v-if="ready">
+								<template v-if="ready && model">
 												<template v-if="officeUseOnly">
 												</template>
 												<template v-else-if="customComponent">
@@ -657,24 +657,27 @@ export default {
 								value(val) {
 
 												if (this.model != val) {
-													// console.log('New value for field', val, this)
+																// console.log('New value for field', val, this)
 																// val = this.fixCorruptedData(val);
 																// //console.log('SET VALUE OF THING', val);
 																//Set the new model
 																this.model = val;
 																// this.model = Object.assign({}, val);
 
-																//Clean up any bad input
-																this.model[this.field.key] = this.fixCorruptedData(this.model[this.field.key]);
+																if (this.model) {
+																				//Clean up any bad input
+																				this.model[this.field.key] = this.fixCorruptedData(this.model[this.field.key]);
 
-																//Set the defaults
-																this.createDefaults();
+																				//Set the defaults
+																				this.createDefaults();
 
-																// this.$set(this, 'model', val);
-																//And reset
-																// //console.log('RESET INSIDE VALUE()', this.model != val, this.model, val)
-																this.reset();
-																this.checkInitialValue();
+
+																				// this.$set(this, 'model', val);
+																				//And reset
+																				// //console.log('RESET INSIDE VALUE()', this.model != val, this.model, val)
+																				this.reset();
+																				this.checkInitialValue();
+																}
 												}
 
 								},
@@ -1053,6 +1056,21 @@ export default {
 
 
 												return _.compact(this.field.type == 'reference' ? this.defaultReferences : this.field.defaultValues);
+
+
+												// .filter(function(entry) {
+
+												// 	if(!entry) {
+												// 		return;
+												// 	}
+
+												// 	if(_.isObject(entry) && !Object.keys(entry).length ) {
+												// 		return;
+												// 	}
+
+												// 	return true;
+												// })
+												// .value();
 								},
 								defaultReferences() {
 
@@ -2016,6 +2034,7 @@ export default {
 																//Find out our minimum
 																var minimumToAsk = Math.max(self.field.minimum || 0, self.field.askCount || 0);
 																for (var i = 0; i < minimumToAsk; i++) {
+																	console.log('PUSH EMPTY', self.field.title, self.field.type, self.field.directive);
 																				array.push({})
 																}
 
@@ -2734,11 +2753,16 @@ export default {
 								////////////////////////////////////////////
 
 								//Clean up any bad input
-								// 
+
+
+
 								var cleaned = self.fixCorruptedData(self.model[self.field.key]);
 								if (typeof cleaned != typeof self.model[self.field.key] || cleaned != self.model[self.field.key]) {
 												self.$set(self.model, self.field.key, cleaned);
 								}
+
+
+
 
 								////////////////////////////////////////////
 

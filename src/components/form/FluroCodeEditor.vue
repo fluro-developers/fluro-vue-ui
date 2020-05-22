@@ -90,7 +90,7 @@ export default {
 												}
 
 												function runBeautify() {
-																console.log('Beautify!!!')
+																// console.log('Beautify!!!')
 																//Get the current string
 																var input = self.editor.session.getValue() || '';
 
@@ -185,7 +185,7 @@ export default {
 												return import('vue2-ace-editor')
 								}).then(function(imported) {
 												self.$options.components.CodeEditor = imported;
-												console.log('Loaded code editor')
+												// console.log('Loaded code editor')
 
 												Promise.all([
 
@@ -200,7 +200,7 @@ export default {
 																				import('brace/snippets/javascript'),
 																])
 																.then(function(results) {
-																				console.log('Loaded code editor extras')
+																				// console.log('Loaded code editor extras')
 																				self.ready = true;
 																				self.beautify();
 																}, function(err) {

@@ -1,129 +1,128 @@
 <template>
-    <flex-column class="expression-field-select">
-        <flex-column-body>
-            <!-- <pre>{{contextField.contextual}}</pre> -->
-            <!-- <pre>{{fields.length}}</pre> -->
-            <!-- Expression Select -->
-            <!-- <pre>{{model}}</pre> -->
-            <div class="accordion">
-                <div class="accordion-panel" :class="{expanded:field == selected}" v-for="field in fields">
-                    <div class="accordion-panel-title" @click="toggle(field)">
-                        <v-layout>
-                            <v-flex>
-                                {{field.absoluteTitle}}
-                            </v-flex>
-                            <v-flex shrink>
-                                <fluro-icon :icon="field == selected ? `angle-up` : `angle-down`" />
-                            </v-flex>
-                        </v-layout>
-                    </div>
-                    <div class="accordion-panel-content" v-if="field == selected">
-                        <!-- <pre>TESTING: {{field.isArray}} {{field.type}}</pre> -->
-                        <!-- <v-container> -->
-                        <!-- <pre>{{field.examples}}</pre> -->
-                        <div class="example" @click="selectExample(example, field)" v-for="example in field.examples">
-                            <div class="example-code">{{example.path}}</div>
-                            <div class="example-description">{{example.description}}</div>
-                        </div>
-                        <!-- <pre>{{field.indentedTitle}} - {{field.path}}</pre> -->
-                        <!-- <pre>{{field}}</pre> -->
-                        <!-- </v-container> -->
-                    </div>
-                </div>
-            </div>
-        </flex-column-body>
-    </flex-column>
+				<flex-column class="expression-field-select">
+								<flex-column-body>
+												<!-- <pre>{{contextField.contextual}}</pre> -->
+												<!-- <pre>{{fields.length}}</pre> -->
+												<!-- Expression Select -->
+												<!-- <pre>{{model}}</pre> -->
+												<div class="accordion">
+																<div class="accordion-panel" :class="{expanded:field == selected}" v-for="field in fields">
+																				<div class="accordion-panel-title" @click="toggle(field)">
+																								<v-layout>
+																												<v-flex>
+																																{{field.absoluteTitle}}
+																												</v-flex>
+																												<v-flex shrink>
+																																<fluro-icon :icon="field == selected ? `angle-up` : `angle-down`" />
+																												</v-flex>
+																								</v-layout>
+																				</div>
+																				<div class="accordion-panel-content" v-if="field == selected">
+																								<!-- <pre>TESTING: {{field.isArray}} {{field.type}}</pre> -->
+																								<!-- <v-container> -->
+																								<!-- <pre>{{field.examples}}</pre> -->
+																								<div class="example" @click="selectExample(example, field)" v-for="example in field.examples">
+																												<div class="example-code">{{example.path}}</div>
+																												<div class="example-description">{{example.description}}</div>
+																								</div>
+																								<!-- <pre>{{field.indentedTitle}} - {{field.path}}</pre> -->
+																								<!-- <pre>{{field}}</pre> -->
+																								<!-- </v-container> -->
+																				</div>
+																</div>
+												</div>
+								</flex-column-body>
+				</flex-column>
 </template>
 <script>
-
-	import _ from 'lodash';
+import _ from 'lodash';
 
 export default {
-    props: {
-        value: {
-            type: Array,
-        },
-        context: {
-            type: Object,
-        },
-    },
-    data() {
-        return {
-            contextField: this.context,
-            model: this.value,
-            fields: [],
-            selected: null,
-        }
-    },
+				props: {
+								value: {
+												type: Array,
+								},
+								context: {
+												type: Object,
+								},
+				},
+				data() {
+								return {
+												contextField: this.context,
+												model: this.value,
+												fields: [],
+												selected: null,
+								}
+				},
 
-    watch: {
-        value(v) {
-            this.model = v;
-        },
-        contextField: 'map',
-        model: 'map',
-    },
-    created() {
-        this.map();
-    },
-    computed: {
-        currentTrail() {
+				watch: {
+								value(v) {
+												this.model = v;
+								},
+								contextField: 'map',
+								model: 'map',
+				},
+				created() {
+								this.map();
+				},
+				computed: {
+								currentTrail() {
 
-            var self = this;
+												var self = this;
 
-            var context = self.contextField;
+												var context = self.contextField;
 
-            if (!context) {
-                return;
-            }
-
-
-            var field = _.find(self.trails, { guid: context.guid })
+												if (!context) {
+																return;
+												}
 
 
+												var field = _.find(self.trails, { guid: context.guid })
 
-            return simplify(field);
-        },
-        trails() {
-            return _.map(this.fields, simplify)
-        },
-    },
-    methods: {
-        selectExample(example, field) {
-            this.$emit('click', example, field);
-        },
-        toggle(panel) {
 
-            var self = this;
-            self.selected = panel;
-            // self.$set(panel, '_expressionExpanded', !panel._expressionExpanded);
 
-        },
+												return simplify(field);
+								},
+								trails() {
+												return _.map(this.fields, simplify)
+								},
+				},
+				methods: {
+								selectExample(example, field) {
+												this.$emit('click', example, field);
+								},
+								toggle(panel) {
 
-        map() {
-            var self = this;
+												var self = this;
+												self.selected = panel;
+												// self.$set(panel, '_expressionExpanded', !panel._expressionExpanded);
 
-            if (!self.contextField) {
-                return;
-            }
+								},
 
-            self.fields = getFieldDescriptions(self.contextField, self.model);
+								map() {
+												var self = this;
 
-            // extractFieldsFromDefinitionFields(self.contextField, self.model, '0', true);
-        }
-    },
+												if (!self.contextField) {
+																return;
+												}
+
+												self.fields = getFieldDescriptions(self.contextField, self.model);
+
+												// extractFieldsFromDefinitionFields(self.contextField, self.model, '0', true);
+								}
+				},
 }
 
 function simplify(f) {
 
-    if (!f) {
-        return;
-    }
-    return {
-        title: f.title,
-        path: f.path,
-        guid: f.guid || 'nope',
-    }
+				if (!f) {
+								return;
+				}
+				return {
+								title: f.title,
+								path: f.path,
+								guid: f.guid || 'nope',
+				}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -131,454 +130,486 @@ function simplify(f) {
 
 function getFieldDescriptions(contextField, fields) {
 
-    var trail = [];
-    var titles = [];
-    var results = [];
+				var trail = [];
+				var titles = [];
+				var results = [];
 
 
-    ///////////////////////////////////////////
+				///////////////////////////////////////////
 
-    function recurMap(array, trail, titles) {
-        _.each(array, function(field) {
+				function recurMap(array, trail, titles) {
+								_.each(array, function(field) {
 
-            var output = {
-                title: field.title,
-                key: field.key,
-                type: field.type,
-                guid: field.guid,
-            }; //JSON.parse(JSON.stringify(originalField));
-            // field.originalField = originalField;
+												var output = {
+																title: field.title,
+																key: field.key,
+																type: field.type,
+																guid: field.guid,
+												}; //JSON.parse(JSON.stringify(originalField));
+												// field.originalField = originalField;
 
-            /////////////////////////////////////////////
+												/////////////////////////////////////////////
 
-            //We need to add the field to our results
-            output.trail = trail.slice();
-            output.titles = titles.slice();
-            output.context = contextField == field;
+												//We need to add the field to our results
+												output.trail = trail.slice();
+												output.titles = titles.slice();
+												output.context = contextField == field;
 
-            /////////////////////////////////////////////
+												/////////////////////////////////////////////
 
-            output.absoluteTitle = output.titles.concat([field.title]).join(' > ');
-            output.parentTitle = _.last(titles);
-            output.parentTrail = trail.slice().join('.');
-            output.path = output.trail.concat([field.key]).join('.');
-            output.isArray = field.maximum != 1;
+												output.absoluteTitle = output.titles.concat([field.title]).join(' > ');
+												output.parentTitle = _.last(titles);
+												output.parentTrail = trail.slice().join('.');
+												output.path = output.trail.concat([field.key]).join('.');
+												output.isArray = field.maximum != 1;
 
-            /////////////////////////////////////////////
+												/////////////////////////////////////////////
 
-            if (field.allowedValues && field.allowedValues.length) {
-                output.options = _.map(field.allowedValues, function(value) {
-                    return {
-                        name: value,
-                        value: value,
-                    }
-                });
-            } else {
-                output.options = field.options || [];
-            }
+												if (field.allowedValues && field.allowedValues.length) {
+																output.options = _.map(field.allowedValues, function(value) {
+																				return {
+																								name: value,
+																								value: value,
+																				}
+																});
+												} else {
+																output.options = field.options || [];
+												}
 
-            /////////////////////////////////////////////
+												/////////////////////////////////////////////
 
-            results.push(output);
+												results.push(output);
 
-            /////////////////////////////////////////////
+												/////////////////////////////////////////////
 
-            if (field.asObject || field.directive == 'embedded') {
-                if (field.maximum == 1) {
-                    trail.push(field.key);
-                    titles.push(field.title);
-                } else {
-                    trail.push(field.key + '[0]');
-                    titles.push(field.title);
-                }
-            }
+												if (field.asObject || field.directive == 'embedded') {
+																if (field.maximum == 1) {
+																				trail.push(field.key);
+																				titles.push(field.title);
+																} else {
+																				trail.push(field.key + '[0]');
+																				titles.push(field.title);
+																}
+												}
 
-            if (field.fields && field.fields.length) {
+												if (field.fields && field.fields.length) {
 
-                //Go down one level deeper
-                recurMap(field.fields, trail, titles);
-            }
+																//Go down one level deeper
+																recurMap(field.fields, trail, titles);
+												}
 
-            if (field.asObject || field.directive == 'embedded') {
-                trail.pop();
-                titles.pop();
-            }
-        });
-    }
+												if (field.asObject || field.directive == 'embedded') {
+																trail.pop();
+																titles.pop();
+												}
+								});
+				}
 
-    //Loop through and get a flat list of all our fields and their paths
-    recurMap(fields, trail, titles);
+				//Loop through and get a flat list of all our fields and their paths
+				recurMap(fields, trail, titles);
 
-    ///////////////////////////////////////////
+				///////////////////////////////////////////
 
-    var withDescriptions = true;
+				var withDescriptions = true;
 
-    if (!withDescriptions) {
-        return results;
-    }
+				if (!withDescriptions) {
+								return results;
+				}
 
-    ///////////////////////////////////////////
+				///////////////////////////////////////////
 
-    //Find the current 
-    var thisField = _.find(results, { guid: contextField.guid });
-    var currentTrail = thisField ? thisField.parentTrail : '';
+				//Find the current 
+				var thisField = _.find(results, { guid: contextField.guid });
+				var currentTrail = thisField ? thisField.parentTrail : '';
 
-    ///////////////////////////////////////////
+				///////////////////////////////////////////
 
-    return _.chain(results)
-        .map(function(field) {
+				return _.chain(results)
+								.map(function(field) {
 
-            //Find the contextual path to this field
+												//Find the contextual path to this field
 
-            field.contextualPath = currentTrail.length ? field.path.replace(currentTrail, 'model') : field.path;
+												field.contextualPath = currentTrail.length ? field.path.replace(currentTrail, 'model') : field.path;
 
-            if (field.contextualPath == field.path) {
-                field.contextualPath = `data.${field.path}`;
-            }
+												if (field.contextualPath == field.path) {
+																field.contextualPath = `data.${field.path}`;
+												}
 
 
-            //Now we add our examples
-            field.examples = [];
+												//Now we add our examples
+												field.examples = [];
 
-            //////////////////////////////////////////////////
+												//////////////////////////////////////////////////
 
-            var exampleTitle;
-            var exampleValue;
+												var exampleTitle;
+												var exampleValue;
 
-            //////////////////////////////////////////////////
+												//////////////////////////////////////////////////
 
-            var sampleOptions = field.options ? field.options.slice(0, 5) : [];
+												var sampleOptions = field.options ? field.options.slice(0, 5) : [];
 
-            //////////////////////////////////////////////////
+												//////////////////////////////////////////////////
 
-            switch (field.type) {
-                case 'group':
-                    if (!field.asObject) {
-                        return;
-                    }
-                    break;
-                case 'void':
-                    return;
-                    break;
-                case 'number':
-                    exampleTitle = exampleValue = 18;
-                    break;
-                case 'integer':
-                    exampleTitle = exampleValue = 12;
-                    break;
-                case 'decimal':
-                case 'float':
-                    exampleTitle = exampleValue = 3.56;
-                    break;
-                case 'boolean':
-                    exampleTitle = exampleValue = 'true';
-                    break;
-                case 'email':
-                    exampleTitle = exampleValue = 'example@fluro.io';
-                    break;
-                case 'url':
-                    exampleTitle = exampleValue = 'https://www.fluro.io';
-                    break;
-                case 'date':
-                    exampleTitle = 'Date';
-                    exampleValue = Date.now();
-                    break;
-                case 'string':
-                    if (field.isArray) {
+												switch (field.type) {
+																case 'group':
+																				if (!field.asObject) {
+																								return;
+																				}
+																				break;
+																case 'void':
+																				return;
+																				break;
+																case 'number':
+																				exampleTitle = exampleValue = 18;
+																				break;
+																case 'integer':
+																				exampleTitle = exampleValue = 12;
+																				break;
+																case 'decimal':
+																case 'float':
+																				exampleTitle = exampleValue = 3.56;
+																				break;
+																case 'boolean':
+																				exampleTitle = exampleValue = 'true';
+																				break;
+																case 'email':
+																				exampleTitle = exampleValue = 'example@fluro.io';
+																				break;
+																case 'url':
+																				exampleTitle = exampleValue = 'https://www.fluro.io';
+																				break;
+																case 'date':
+																				exampleTitle = 'Date';
+																				exampleValue = Date.now();
+																				break;
+																case 'string':
+																				if (field.isArray) {
 
-                        //If there are options specified already
-                        if (sampleOptions && sampleOptions.length) {
-                            exampleTitle = `[${_.map(sampleOptions, function(value) {
+																								//If there are options specified already
+																								if (sampleOptions && sampleOptions.length) {
+																												exampleTitle = `[${_.map(sampleOptions, function(value) {
                                 return `'${value}'`;
                             }).join(', ')}]`;
 
-                            exampleValue = _.map(sampleOptions, 'value');
-                        } else {
+																												exampleValue = _.map(sampleOptions, 'value');
+																								} else {
 
-                            exampleValue = ['Michael', 'Susan', 'Jerry'];
-                            exampleTitle = exampleValue.join(', ')
-                        }
+																												exampleValue = ['Michael', 'Susan', 'Jerry'];
+																												exampleTitle = exampleValue.join(', ')
+																								}
 
-                    } else {
-                        //It's a single value
-                        if (sampleOptions && sampleOptions.length) {
-                            exampleTitle = _.first(sampleOptions).name;
-                            exampleValue = `'${_.first(sampleOptions).value}'`;
-                        } else {
-                            exampleTitle = exampleValue = `'Michael'`;
-                        }
-                    }
-                    break;
-                case 'reference':
-                    if (field.isArray) {
-                        exampleTitle =
-                            exampleValue = ['Object', 'Object', 'Object'];
-                    } else {
-                        exampleTitle =
-                            exampleValue = {};
-                    }
-                    break;
-                default:
-                    break;
-            }
+																				} else {
+																								//It's a single value
+																								if (sampleOptions && sampleOptions.length) {
+																												exampleTitle = _.first(sampleOptions).name;
+																												exampleValue = `'${_.first(sampleOptions).value}'`;
+																								} else {
+																												exampleTitle = exampleValue = `'Michael'`;
+																								}
+																				}
+																				break;
+																case 'reference':
+																				if (field.isArray) {
+																								exampleTitle =
+																												exampleValue = ['Object', 'Object', 'Object'];
+																				} else {
+																								exampleTitle =
+																												exampleValue = {};
+																				}
+																				break;
+																default:
+																				break;
+												}
 
-            //////////////////////////////////////////////////
+												//////////////////////////////////////////////////
 
-            var examples = [];
+												var examples = [];
 
-            //////////////////////////////////////////////////
+												//////////////////////////////////////////////////
 
-            var delimiter = '[0]';
-            var fieldPath = field.contextualPath;
-            var delimiterIndex = fieldPath.lastIndexOf(delimiter);
+												var delimiter = '[0]';
+												var fieldPath = field.contextualPath;
+												var delimiterIndex = fieldPath.lastIndexOf(delimiter);
 
-            var subFieldOfNested = (delimiterIndex != -1);
-            var parentPath = fieldPath.slice(0, delimiterIndex);
-            var sliceIndex = delimiterIndex == -1 ? 0 : delimiterIndex;
-            var childPath = fieldPath.slice(sliceIndex + delimiter.length + 1);
-            var isArray = field.isArray;
+												var subFieldOfNested = (delimiterIndex != -1);
+												var parentPath = fieldPath.slice(0, delimiterIndex);
+												var sliceIndex = delimiterIndex == -1 ? 0 : delimiterIndex;
+												var childPath = fieldPath.slice(sliceIndex + delimiter.length + 1);
+												var isArray = field.isArray;
 
-            //////////////////////////////////////////////////
+												//////////////////////////////////////////////////
 
-            if (isArray) {
-                switch (field.type) {
-                    case 'reference':
-                    case 'group':
-                        break;
-                    case 'number':
-                    case 'integer':
-                    case 'decimal':
-                    case 'float':
-                        if (sampleOptions.length) {
-                            _.each(sampleOptions, function(option) {
-                                examples.push({
-                                    path: `${field.contextualPath}.includes(${option.value})`,
-                                    description: `Returns if '${option.name}' has been selected as a value`,
-                                })
-                            });
+												if (isArray) {
+																switch (field.type) {
+																				case 'reference':
+																				case 'group':
+																				case 'object':
 
+																								// examples.push({
+																								// 				path: `${field.contextualPath}.length`,
+																								// 				description: `Returns the number of '${field.title}' values that have been input`,
+																								// })
 
-                        } else {
-                            _.each(exampleValue, function(option) {
-                                examples.push({
-                                    path: `${field.contextualPath}.includes(${option})`,
-                                    description: `Returns if '${field.path}' has been selected as a value`,
-                                })
-                            })
-                        }
-                        break;
-                    default:
-                        if (sampleOptions.length) {
-                            _.each(sampleOptions, function(option) {
-                                examples.push({
-                                    path: `${field.contextualPath}.includes('${option.value}')`,
-                                    description: `Returns if '${option.name}' has been selected`,
-                                })
-                            });
+																								examples.push({
+																															path: `matchInArray(${field.contextualPath}, '_id', '12345').length`,
+																															description: `Returns the total number of '${field.path}' items where the '_id' field is '12345'`,
+																											})
+
+																								examples.push({
+																															path: `matchInArray(${field.contextualPath}, 'title', 'Example Title').length`,
+																															description: `Returns the total number of '${field.path}' items where the 'title' field is equal to 'Example Title'`,
+																											})
+
+																								examples.push({
+																															path: `matchInArray(${field.contextualPath}, '_id', '12345', '!=').length`,
+																															description: `Returns the total number of '${field.path}' items where the '_id' field is not equal to '12345'`,
+																											})
+
+																								examples.push({
+																															path: `matchInArray(${field.contextualPath}, 'title', 'Example Title', '!=').length`,
+																															description: `Returns the total number of '${field.path}' items where the 'title' field is not equal to 'Example Title'`,
+																											})
+
+																								
 
 
-                        } else {
-                            _.each(exampleValue, function(option) {
-                                examples.push({
-                                    path: `${field.contextualPath}.includes('${option}')`,
-                                    description: `Returns if '${field.path}' has been selected`,
-                                })
-                            })
-                        }
-                        break;
-                }
+																								break;
+																				case 'number':
+																				case 'integer':
+																				case 'decimal':
+																				case 'float':
+																								if (sampleOptions.length) {
+																												_.each(sampleOptions, function(option) {
+																																examples.push({
+																																				path: `${field.contextualPath}.includes(${option.value})`,
+																																				description: `Returns if '${option.name}' has been selected as a value`,
+																																})
+																												});
 
 
-                ////////////////////////////////////////////////
-
-                examples.push({
-                    path: `${field.contextualPath}.length`,
-                    description: `Returns the number of '${field.title}' values that have been input`,
-                })
-
-                examples.push({
-                    path: `${field.contextualPath}.length > 1`,
-                    description: `Returns true if more than 1 '${field.title}' value has been input`,
-                })
-
-                examples.push({
-                    path: `${field.contextualPath}.length < 4`,
-                    description: `Returns true if less than 4 '${field.title}' values have been input`,
-                })
-            } else {
-
-
-                if (sampleOptions.length) {
-
-                    switch (field.type) {
-                        case 'reference':
-                        case 'group':
-                            break;
-                        case 'number':
-                        case 'integer':
-                        case 'decimal':
-                        case 'float':
-                            _.each(sampleOptions, function(option) {
-                                examples.push({
-                                    path: `${field.contextualPath} == ${option.value}`,
-                                    description: `Returns if '${option.name}' has been selected`,
-                                });
-                            });
-                            break;
-                        default:
-                            _.each(sampleOptions, function(option) {
-                                examples.push({
-                                    path: `${field.contextualPath} == '${option.value}'`,
-                                    description: `Returns if '${option.name}' has been selected`,
-                                });
-                            });
-
-                            break;
-                    }
+																								} else {
+																												_.each(exampleValue, function(option) {
+																																examples.push({
+																																				path: `${field.contextualPath}.includes(${option})`,
+																																				description: `Returns if '${field.path}' has been selected as a value`,
+																																})
+																												})
+																								}
+																								break;
+																				default:
+																								if (sampleOptions.length) {
+																												_.each(sampleOptions, function(option) {
+																																examples.push({
+																																				path: `${field.contextualPath}.includes('${option.value}')`,
+																																				description: `Returns if '${option.name}' has been selected`,
+																																})
+																												});
 
 
-                } else {
+																								} else {
+																												_.each(exampleValue, function(option) {
+																																examples.push({
+																																				path: `${field.contextualPath}.includes('${option}')`,
+																																				description: `Returns if '${field.path}' has been selected`,
+																																})
+																												})
+																								}
+																								break;
+																}
 
-                    examples.push({
-                        path: `${field.contextualPath}`,
-                        description: `Returns the value of '${field.title}'`,
-                    })
-                }
-            }
+
+																////////////////////////////////////////////////
+
+																examples.push({
+																				path: `${field.contextualPath}.length`,
+																				description: `Returns the number of '${field.title}' values that have been input`,
+																})
+
+																examples.push({
+																				path: `${field.contextualPath}.length > 1`,
+																				description: `Returns true if more than 1 '${field.title}' value has been input`,
+																})
+
+																examples.push({
+																				path: `${field.contextualPath}.length < 4`,
+																				description: `Returns true if less than 4 '${field.title}' values have been input`,
+																})
+												} else {
+
+
+																if (sampleOptions.length) {
+
+																				switch (field.type) {
+																								case 'reference':
+																								case 'group':
+																												break;
+																								case 'number':
+																								case 'integer':
+																								case 'decimal':
+																								case 'float':
+																												_.each(sampleOptions, function(option) {
+																																examples.push({
+																																				path: `${field.contextualPath} == ${option.value}`,
+																																				description: `Returns if '${option.name}' has been selected`,
+																																});
+																												});
+																												break;
+																								default:
+																												_.each(sampleOptions, function(option) {
+																																examples.push({
+																																				path: `${field.contextualPath} == '${option.value}'`,
+																																				description: `Returns if '${option.name}' has been selected`,
+																																});
+																												});
+
+																												break;
+																				}
+
+
+																} else {
+
+																				examples.push({
+																								path: `${field.contextualPath}`,
+																								description: `Returns the value of '${field.title}'`,
+																				})
+																}
+												}
 
 
 
 
-            //////////////////////////////////////////////////
+												//////////////////////////////////////////////////
 
-            //Now we add the absolute paths
+												//Now we add the absolute paths
 
-            if (subFieldOfNested) {
+												if (subFieldOfNested) {
 
-                // console.log('CONTEXTUAL', field.contextualPath, '--', currentTrail, '--', field.path)
+																// console.log('CONTEXTUAL', field.contextualPath, '--', currentTrail, '--', field.path)
 
-                // console.log('SUBFIELD',subFieldOfNested, field.contextualPath, '--', currentTrail, '--', field.path )
-                if (field.isArray) {
-                    if (sampleOptions.length) {
-                        _.each(sampleOptions, function(option) {
-                            examples.push({
-                                path: `matchInArray(${field.contextualPath}, '${childPath}', '${option.value}', 'in').length`,
-                                description: `Returns the total number of '${field.parentTitle}' where '${field.title}' includes'${option.name}'`,
-                            })
-                        });
-                    } else {
-                        examples.push({
-                            path: `matchInArray(data.${parentPath}, '${childPath}', '${exampleValue}', 'in').length`,
-                            description: `Returns the total number of '${field.parentTitle}' where '${field.title}' includes'${exampleTitle}'`,
-                        })
-                    }
-                } else {
-                    if (sampleOptions.length) {
-                        _.each(sampleOptions, function(option) {
-                            examples.push({
-                                path: `matchInArray(${parentPath}, '${childPath}', '${option.value}').length`,
-                                description: `Returns the total number of '${field.parentTitle}' where ${field.title} is equal to '${option.name}'`,
-                            })
-                        })
-                    } else {
+																// console.log('SUBFIELD',subFieldOfNested, field.contextualPath, '--', currentTrail, '--', field.path )
+																if (field.isArray) {
+																				if (sampleOptions.length) {
+																								_.each(sampleOptions, function(option) {
+																												examples.push({
+																																path: `matchInArray(${field.contextualPath}, '${childPath}', '${option.value}', 'in').length`,
+																																description: `Returns the total number of '${field.parentTitle}' where '${field.title}' includes'${option.name}'`,
+																												})
+																								});
+																				} else {
+																								examples.push({
+																												path: `matchInArray(data.${parentPath}, '${childPath}', '${exampleValue}', 'in').length`,
+																												description: `Returns the total number of '${field.parentTitle}' where '${field.title}' includes'${exampleTitle}'`,
+																								})
+																				}
+																} else {
+																				if (sampleOptions.length) {
+																								_.each(sampleOptions, function(option) {
+																												examples.push({
+																																path: `matchInArray(${parentPath}, '${childPath}', '${option.value}').length`,
+																																description: `Returns the total number of '${field.parentTitle}' where ${field.title} is equal to '${option.name}'`,
+																												})
+																								})
+																				} else {
 
-                        switch (field.type) {
-                            case 'number':
-                            case 'float':
-                            case 'decimal':
-                            case 'integer':
-                                examples.push({
-                                    path: `matchInArray(${parentPath}, '${childPath}', ${exampleValue}).length`,
-                                    description: `Returns the total number of '${field.parentTitle}' where ${field.title} is equal to ${exampleTitle}`,
-                                })
+																								switch (field.type) {
+																												case 'number':
+																												case 'float':
+																												case 'decimal':
+																												case 'integer':
+																																examples.push({
+																																				path: `matchInArray(${parentPath}, '${childPath}', ${exampleValue}).length`,
+																																				description: `Returns the total number of '${field.parentTitle}' where ${field.title} is equal to ${exampleTitle}`,
+																																})
 
-                                examples.push({
-                                    path: `matchInArray(${parentPath}, '${childPath}', ${exampleValue}, '>=').length`,
-                                    description: `Returns the total number of '${field.parentTitle}' where ${field.title} is greater than or equal to ${exampleTitle}`,
-                                })
+																																examples.push({
+																																				path: `matchInArray(${parentPath}, '${childPath}', ${exampleValue}, '>=').length`,
+																																				description: `Returns the total number of '${field.parentTitle}' where ${field.title} is greater than or equal to ${exampleTitle}`,
+																																})
 
-                                examples.push({
-                                    path: `matchInArray(${parentPath}, '${childPath}', ${exampleValue}, '<').length`,
-                                    description: `Returns the total number of '${field.parentTitle}' where ${field.title} is less than ${exampleTitle}`,
-                                })
+																																examples.push({
+																																				path: `matchInArray(${parentPath}, '${childPath}', ${exampleValue}, '<').length`,
+																																				description: `Returns the total number of '${field.parentTitle}' where ${field.title} is less than ${exampleTitle}`,
+																																})
 
-                                break;
-                            case 'boolean':
-                                break;
-                            default:
-                                examples.push({
-                                    path: `matchInArray(${parentPath}, '${childPath}', ${exampleValue}).length`,
-                                    description: `Returns the total number of '${field.parentTitle}' where ${field.title} is equal to ${exampleTitle}`,
-                                })
-                                break;
+																																break;
+																												case 'boolean':
+																																break;
+																												default:
+																																examples.push({
+																																				path: `matchInArray(${parentPath}, '${childPath}', ${exampleValue}).length`,
+																																				description: `Returns the total number of '${field.parentTitle}' where ${field.title} is equal to ${exampleTitle}`,
+																																})
+																																break;
 
-                        }
+																								}
 
-                    }
-                }
-            }
+																				}
+																}
+												}
 
-            //////////////////////////////////////////////////
+												//////////////////////////////////////////////////
 
-            field.examples = examples;
+												field.examples = examples;
 
-            return field;
-        })
-        .compact()
-        .value();
+												return field;
+								})
+								.compact()
+								.value();
 
-    ///////////////////////////////////////////
+				///////////////////////////////////////////
 
 }
+
 </script>
 <style lang="scss" scoped>
 .expression-field-select {
-    width: 400px;
-    height: 100%;
-    max-height: 50vh;
-    background: #fff;
+				width: 400px;
+				height: 100%;
+				max-height: 50vh;
+				background: #fff;
 
-    .example {
-        font-size: 12px;
-        margin-bottom: 5px;
+				.example {
+								font-size: 12px;
+								margin-bottom: 5px;
 
-        .example-code {
-            font-weight: bold;
-            background: rgba($primary, 0.3);
-            color: darken($primary, 50%);
-            display: inline-block;
-            padding: 3px;
-            border-radius: 3px;
-        }
+								.example-code {
+												font-weight: bold;
+												background: rgba($primary, 0.3);
+												color: darken($primary, 50%);
+												display: inline-block;
+												padding: 3px;
+												border-radius: 3px;
+								}
 
-        .example-description {
-            font-size: 0.8em;
-        }
-    }
+								.example-description {
+												font-size: 0.8em;
+								}
+				}
 
-    .accordion {
-        .accordion-panel {
-            margin: 0;
-            @extend .border-bottom !optional;
+				.accordion {
+								.accordion-panel {
+												margin: 0;
+												@extend .border-bottom !optional;
 
-            .accordion-panel-title {
-                padding: 5px;
-                font-weight: 600;
-                font-weight: 500;
-                background: #eee;
-            }
+												.accordion-panel-title {
+																padding: 5px;
+																font-weight: 600;
+																font-weight: 500;
+																background: #eee;
+												}
 
-            &.expanded {
-                .accordion-panel-title {
-                    background: #fff;
-                }
-            }
+												&.expanded {
+																.accordion-panel-title {
+																				background: #fff;
+																}
+												}
 
-            .accordion-panel-content {
-                background: #fff;
-                padding: 5px;
-            }
-        }
-    }
+												.accordion-panel-content {
+																background: #fff;
+																padding: 5px;
+												}
+								}
+				}
 }
+
 </style>

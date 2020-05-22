@@ -1,5 +1,5 @@
 <template>
-				<div class="fluro-content-form" v-if="ready">
+				<div class="fluro-content-form" v-if="ready && model">
 								<!-- <pre>{{fields}}</pre> -->
 								<!-- <pre>{{model}}</pre> -->
 								<slot name="form" :parent="formModel" :context="context" :form-fields="formFields" :field-hash="fieldHash" :model="model" :update="update" :options="options">
@@ -363,9 +363,14 @@ export default {
 																				return;
 																}
 
+
 																var existingValue = _.get(self.model, field.key);
 																//We already have a value in this field
 																if (existingValue) {
+																				return;
+																}
+
+																if (field.directive != 'embedded' && field.type != 'group') {
 																				return;
 																}
 
@@ -382,7 +387,7 @@ export default {
 
 																				}
 
-																				console.log('Add and create array')
+																				// console.log('Add and create array', field.title, field.key, field.type, field.directive, array)
 																				Vue.set(self.model, field.key, array);
 																}
 												}

@@ -79,7 +79,7 @@
 																																<v-menu :fixed="true" transition="slide-y-transition" offset-y>
 																																				<template v-slot:activator="{ on }">
 																																								<span class="state-link" v-tippy content="Change Preview State" v-on="on">
-																																												State: {{readablePreviewState}}
+																																												{{readablePreviewState}}
 																																												<fluro-icon icon="angle-down" />
 																																								</span>
 																																								<!-- <v-btn class="ma-0" small flat >Preview: {{previewState}}</v-btn> -->
@@ -89,14 +89,21 @@
 																																												<v-list-tile @click="previewState = 'ready'">
 																																																<v-list-tile-content>
 																																																				<v-list-tile-title>
-																																																								Ready for input
+																																																								View 'Ready for input' state
 																																																				</v-list-tile-title>
 																																																</v-list-tile-content>
 																																												</v-list-tile>
 																																												<v-list-tile @click="previewState = 'success'">
 																																																<v-list-tile-content>
 																																																				<v-list-tile-title>
-																																																								Success / Thank you message
+																																																								View 'Success' state
+																																																				</v-list-tile-title>
+																																																</v-list-tile-content>
+																																												</v-list-tile>
+																																												<v-list-tile @click="toggleDataModel()">
+																																																<v-list-tile-content>
+																																																				<v-list-tile-title>
+																																																								{{dataModelEnabled ? 'Hide' : 'Show'}} Data Model
 																																																				</v-list-tile-title>
 																																																</v-list-tile-content>
 																																												</v-list-tile>
@@ -167,6 +174,26 @@
 																								</v-container>
 																				</template>
 																</flex-column-body>
+																<flex-column class="border-top" v-if="dataModelEnabled">
+																				<flex-column-header>
+																								<div class="palette-title">
+																												<v-layout align-center>
+																																<v-flex>
+																																				<strong label>Data Model Preview</strong>
+																																</v-flex>
+																																<v-spacer />
+																																<v-flex shrink>
+																																				<v-btn class="ma-0" small icon @click="dataModelEnabled = false">
+																																								<fluro-icon icon="times" />
+																																				</v-btn>
+																																</v-flex>
+																												</v-layout>
+																								</div>
+																				</flex-column-header>
+																				<flex-column-body class="model-preview">
+																								<json-view :highlightMouseoverNode="true" :highlightSelectedNode="true" :selectOnClickNode="true" :showLength="true" :data="previewModel" />
+																				</flex-column-body>
+																</flex-column>
 																<flex-column-footer class="border-top" v-if="false">
 																				<v-container class="pa-2" style="background: #fff">
 																								<v-layout>
@@ -539,6 +566,9 @@ export default {
 				//     }
 				// },
 				methods: {
+								toggleDataModel() {
+												this.dataModelEnabled = !this.dataModelEnabled;
+								},
 								fieldPath() {
 
 								},
@@ -844,10 +874,10 @@ export default {
 								copyFieldPath(path, field, parent) {
 												//Copy to clipboard
 												if (this.$fluro.global.copyToClipBoard) {
-													console.log('copy to clipboard please')
+																console.log('copy to clipboard please')
 																this.$fluro.global.copyToClipBoard(path);
 												} else {
-													console.log('copyToClipBoard is not a function')
+																console.log('copyToClipBoard is not a function')
 												}
 								},
 								injectField(field, parent) {
@@ -1001,6 +1031,7 @@ export default {
 																// disabled: !this.editable,
 																ghostClass: 'ghost'
 												},
+												dataModelEnabled: false,
 												previewState: 'ready',
 												configurePayment: false,
 												configureDefaults: false,
@@ -1100,6 +1131,13 @@ export default {
 				color: rgba(#000, 0.5);
 }
 
+
+.model-preview {
+				font-size: 0.8em;
+				background: #eee;
+				padding: 10px;
+
+}
 
 .mini-switch {
 				border-radius: 100px;
