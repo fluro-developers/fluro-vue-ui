@@ -23,14 +23,17 @@
 																				<div class="text-xs-center">
 																								<h3>Submission Successful</h3>
 																								<div>Thank you for your submission</div>
-																								<v-btn class="mx-0" @click="reset()">
+																								<fluro-button @click="reset()">
 																												Back to form
-																								</v-btn>
+																								</fluro-button>
+																								<!-- <v-btn class="mx-0" @click="reset()">
+																												Back to form
+																								</v-btn> -->
 																				</div>
 																</slot>
 																<template v-else>
 																				<slot name="info"></slot>
-																				<form @submit.prevent="submit" :disabled="state == 'processing'">
+																				<form @submit.stop.prevent="submit" :disabled="state == 'processing'">
 																								<!-- <pre>{{allowAnonymous}}</pre> -->
 																								<!-- <pre>{{fields}}</pre> -->
 																								<!-- <pre>{{options}}</pre> -->
@@ -90,18 +93,32 @@
 																								</div>
 																								<div class="actions">
 																												<template v-if="state == 'processing'">
-																																<v-btn :block="mobile" :large="mobile" class="mx-0" :disabled="true">
-																																				Processing
-																																				<v-progress-circular indeterminate></v-progress-circular>
-																																</v-btn>
+																																<template v-if="webMode">
+																																				<fluro-button :loading="true" :block="mobile" :large="mobile" :disabled="true">
+																																								{{submitText}}
+																																				</fluro-button>
+																																</template>
+																																<template v-else>
+																																				<v-btn :block="mobile" :large="mobile" class="mx-0" :disabled="true">
+																																								{{submitText}}
+																																								<v-progress-circular indeterminate></v-progress-circular>
+																																				</v-btn>
+																																</template>
 																												</template>
 																												<template v-else-if="state == 'error'">
 																																<v-alert :value="true" type="error" outline>
 																																				{{ serverErrors }}
 																																</v-alert>
-																																<v-btn :block="mobile" :large="mobile" class="mx-0" @click.prevent.native="state = 'ready'">
-																																				Try Again
-																																</v-btn>
+																																<template v-if="webMode">
+																																				<fluro-button :block="mobile" :large="mobile" @click.prevent.native="state = 'ready'">
+																																								Try Again
+																																				</fluro-button>
+																																</template>
+																																<template v-else>
+																																				<v-btn :block="mobile" :large="mobile" class="mx-0" @click.prevent.native="state = 'ready'">
+																																								Try Again
+																																				</v-btn>
+																																</template>
 																												</template>
 																												<template v-else>
 																																<v-alert :value="true" type="error" outline v-if="hasErrors">
@@ -112,9 +129,17 @@
 																																				</div>
 																																</v-alert>
 																																<v-layout>
-																																				<v-btn :block="mobile" :large="mobile" class="mx-0" :disabled="hasErrors" type="submit" color="primary">
-																																								Submit
-																																				</v-btn>
+																																				<template v-if="webMode">
+																																								<fluro-button @click.native.prevent="submit" :block="mobile" :large="mobile" :disabled="hasErrors" type="submit">
+																																												{{submitText}}
+																																								</fluro-button>
+																																				</template>
+																																				<template v-else>
+																																								<v-btn :block="mobile" :large="mobile" class="mx-0" :disabled="hasErrors" type="submit" color="primary">
+																																												{{submitText}}
+																																								</v-btn>
+																																				</template>
+																																				<!--  -->
 																																				<v-spacer />
 																																				<slot name="submit"></slot>
 																																</v-layout>
@@ -141,6 +166,7 @@ var hasBeenReset;
 
 //////////////////////////////////////////////////
 
+import FluroButton from 'src/components/ui/FluroButton.vue';
 import FluroContentForm from 'src/components/form/FluroContentForm.vue';
 import FluroContentFormField from 'src/components/form/FluroContentFormField.vue';
 //////////////////////////////////////////////////
@@ -214,6 +240,10 @@ export default {
 												default () {
 																return {};
 												}
+								},
+								submitText: {
+												type: String,
+												default: 'Submit',
 								},
 								value: {
 												type: Object,
@@ -297,6 +327,9 @@ export default {
 								paymentIntegration: "initializePayment"
 				},
 				computed: {
+								webMode() {
+												return this.$fluro.app;
+								},
 								renderable() {
 												return this.definition; // && this.ready;
 								},
@@ -966,6 +999,7 @@ export default {
 
 				},
 				components: {
+								FluroButton,
 								FluroContentFormField,
 								FluroContentForm
 				},
@@ -1169,6 +1203,8 @@ export default {
 												self.$emit("reset");
 								},
 								submit() {
+
+												console.log('Submit!!!!')
 												var self = this;
 												self.validateAllFields();
 

@@ -3,18 +3,31 @@
 								<fluro-content-form ref="form" v-model="model" :fields="fields" />
 								<div class="actions">
 												<template v-if="state == 'processing'">
-																<v-btn class="mx-0" :disabled="true">
-																				Processing
-																				<v-progress-circular indeterminate></v-progress-circular>
-																</v-btn>
+																<template v-if="webMode">
+																				<fluro-button :loading="true" :disabled="true">
+																								{{submitButtonText}}
+																				</fluro-button>
+																</template>
+																<template v-else>
+																				<v-btn class="mx-0" :loading="true" :disabled="true">
+																								{{submitButtonText}}
+																				</v-btn>
+																</template>
 												</template>
 												<template v-else-if="state == 'error'">
 																<v-alert :value="true" type="error" outline>
 																				{{serverErrors}}
 																</v-alert>
-																<v-btn class="mx-0" color="primary" @click.prevent.native="state = 'ready'">
-																				Try Again
-																</v-btn>
+																<template v-if="webMode">
+																				<fluro-button @click.prevent.native="state = 'ready'">
+																								Try Again
+																				</fluro-button>
+																</template>
+																<template v-else>
+																				<v-btn class="mx-0" color="primary" @click.prevent.native="state = 'ready'">
+																								Try Again
+																				</v-btn>
+																</template>
 												</template>
 												<template v-else>
 																<v-alert :value="true" type="error" outline v-if="hasErrors">
@@ -24,9 +37,16 @@
 																				</div>
 																</v-alert>
 																<slot name="submit" :hasErrors="hasErrors">
-																				<v-btn class="mx-0" :disabled="hasErrors" type="submit" color="primary">
-																								{{submitButtonText}}
-																				</v-btn>
+																				<template v-if="webMode">
+																								<fluro-button type="submit" :disabled="hasErrors">
+																												{{submitButtonText}}
+																								</fluro-button>
+																				</template>
+																				<template v-else>
+																								<v-btn class="mx-0" :disabled="hasErrors" type="submit" color="primary">
+																												{{submitButtonText}}
+																								</v-btn>
+																				</template>
 																</slot>
 												</template>
 								</div>
@@ -34,6 +54,7 @@
 </template>
 <script>
 import _ from 'lodash';
+import FluroButton from 'src/components/ui/FluroButton.vue';
 import FluroContentForm from 'src/components/form/FluroContentForm.vue';
 
 
@@ -71,6 +92,7 @@ export default {
 								}
 				},
 				components: {
+								FluroButton,
 								FluroContentForm,
 				},
 				mounted() {
@@ -81,6 +103,9 @@ export default {
 								self.validate();
 				},
 				computed: {
+								webMode() {
+												return this.$fluro.app;
+								},
 								submitButtonText() {
 												return this.submitText
 								},

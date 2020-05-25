@@ -54,7 +54,7 @@ export default {
 												///////////////////////////
 
 												var promise = self.$fluro.modal({
-																				component:AddPost,
+																				component: AddPost,
 																				options,
 																})
 																.then(function() {
@@ -142,7 +142,7 @@ export default {
 }
 
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .card {
 				background: #fff;
 				border-radius: 5px;

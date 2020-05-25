@@ -57,14 +57,28 @@
 																								</v-card-text>
 																				</v-card>
 																				<template v-if="!fieldModel || !fieldModel.length">
-																								<v-btn class="ml-0" block large color="primary" @click="addValue({})" v-if="canAddValue">
-																												{{addLabel}}
-																								</v-btn>
+																								<template v-if="webMode">
+																												<fluro-button block size="lg" @click="addValue({})" v-if="canAddValue">
+																																{{addLabel}}
+																												</fluro-button>
+																								</template>
+																								<template v-else>
+																												<v-btn class="ml-0" block large color="primary" @click="addValue({})" v-if="canAddValue">
+																																{{addLabel}}
+																												</v-btn>
+																								</template>
 																				</template>
 																				<template v-else>
-																								<v-btn class="ml-0" color="primary" @click="addValue({})" v-if="canAddValue">
-																												{{addLabel}}
-																								</v-btn>
+																								<template v-if="webMode">
+																												<fluro-button @click="addValue({})" v-if="canAddValue">
+																																{{addLabel}}
+																												</fluro-button>
+																								</template>
+																								<template v-else>
+																												<v-btn class="ml-0" color="primary" @click="addValue({})" v-if="canAddValue">
+																																{{addLabel}}
+																												</v-btn>
+																								</template>
 																				</template>
 																</template>
 												</template>
@@ -90,14 +104,28 @@
 																												</v-card-text>
 																								</v-card>
 																								<template v-if="!fieldModel || !fieldModel.length">
-																												<v-btn class="ml-0" block large color="primary" @click="addValue({})" v-if="canAddValue">
-																																{{addLabel}}
-																												</v-btn>
+																												<template v-if="webMode">
+																																<fluro-button block size="lg" @click="addValue({})" v-if="canAddValue">
+																																				{{addLabel}}
+																																</fluro-button>
+																												</template>
+																												<template v-else>
+																																<v-btn class="ml-0" block large color="primary" @click="addValue({})" v-if="canAddValue">
+																																				{{addLabel}}
+																																</v-btn>
+																												</template>
 																								</template>
 																								<template v-else>
-																												<v-btn class="ml-0" color="primary" @click="addValue({})" v-if="canAddValue">
-																																{{addLabel}}
-																												</v-btn>
+																												<template v-if="webMode">
+																																<fluro-button @click="addValue({})" v-if="canAddValue">
+																																				{{addLabel}}
+																																</fluro-button>
+																												</template>
+																												<template v-else>
+																																<v-btn class="ml-0" color="primary" @click="addValue({})" v-if="canAddValue">
+																																				{{addLabel}}
+																																</v-btn>
+																												</template>
 																								</template>
 																				</template>
 																</template>
@@ -256,10 +284,18 @@
 																												</template>
 																								</template>
 																								<template v-if="canAddValue">
-																												<v-btn color="primary" class="ml-0" @click="addValue('')">
-																																{{multiLabel}}
-																																<fluro-icon icon="plus" />
-																												</v-btn>
+																												<template v-if="webMode">
+																																<fluro-button @click="addValue('')">
+																																				{{multiLabel}}
+																																				<fluro-icon icon="plus" />
+																																</fluro-button>
+																												</template>
+																												<template v-else>
+																																<v-btn color="primary" class="ml-0" @click="addValue('')">
+																																				{{multiLabel}}
+																																				<fluro-icon icon="plus" />
+																																</v-btn>
+																												</template>
 																								</template>
 																				</template>
 																				<template v-else>
@@ -289,10 +325,18 @@
 																												</template>
 																								</template>
 																								<template v-if="canAddValue">
-																												<v-btn color="primary" class="ml-0" @click="addValue('')">
-																																{{multiLabel}}
-																																<fluro-icon icon="plus" />
-																												</v-btn>
+																												<template v-if="webMode">
+																																<fluro-button @click="addValue('')">
+																																				{{multiLabel}}
+																																				<fluro-icon icon="plus" />
+																																</fluro-button>
+																												</template>
+																												<template v-else>
+																																<v-btn color="primary" class="ml-0" @click="addValue('')">
+																																				{{multiLabel}}
+																																				<fluro-icon icon="plus" />
+																																</v-btn>
+																												</template>
 																								</template>
 																				</template>
 																				<template v-if="!multipleInput">
@@ -318,10 +362,18 @@
 																												</template>
 																								</template>
 																								<template v-if="canAddValue">
-																												<v-btn color="primary" class="ml-0" @click="addValue('')">
-																																{{multiLabel}}
-																																<fluro-icon icon="plus" />
-																												</v-btn>
+																												<template v-if="webMode">
+																																<fluro-button @click="addValue('')">
+																																				{{multiLabel}}
+																																				<fluro-icon icon="plus" />
+																																</fluro-button>
+																												</template>
+																												<template v-else>
+																																<v-btn color="primary" class="ml-0" @click="addValue('')">
+																																				{{multiLabel}}
+																																				<fluro-icon icon="plus" />
+																																</v-btn>
+																												</template>
 																								</template>
 																				</template>
 																				<template v-if="!multipleInput">
@@ -684,6 +736,9 @@ export default {
 								// 'isNew':'checkNew',
 				},
 				computed: {
+								webMode() {
+												return this.$fluro.app;
+								},
 								useBasicDropdown() {
 												return this.selectOptions.length < 5 || this.mobile || this.params.dropdown;
 								},
@@ -2034,7 +2089,7 @@ export default {
 																//Find out our minimum
 																var minimumToAsk = Math.max(self.field.minimum || 0, self.field.askCount || 0);
 																for (var i = 0; i < minimumToAsk; i++) {
-																	console.log('PUSH EMPTY', self.field.title, self.field.type, self.field.directive);
+																				console.log('PUSH EMPTY', self.field.title, self.field.type, self.field.directive);
 																				array.push({})
 																}
 
