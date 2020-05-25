@@ -672,12 +672,12 @@ export default {
 				computed: {
 								isAssetType() {
 												switch (this.typeName) {
-														case 'asset':
-														case 'audio':
-														case 'video':
-														case 'image':
-															return true;
-														break;
+																case 'asset':
+																case 'audio':
+																case 'video':
+																case 'image':
+																				return true;
+																				break;
 												}
 								},
 								canChangeStatus() {
@@ -895,7 +895,7 @@ export default {
 												return this.definition ? this.definition.definitionName : ''; //this.typeConfig.definitionName;
 								},
 								hasErrors() {
-												return this.errorMessages.length ? true : false;
+												return (this.errorMessages || []).length ? true : false;
 								},
 
 				},

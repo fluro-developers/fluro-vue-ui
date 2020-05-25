@@ -1850,8 +1850,11 @@ export default {
 																}
 												} else {
 
+													var defaultArray = _.map(defaultValues, self.cleanInput);
+													// console.log('CREATE DEFAULTS', defaultArray);
+
 																//Add all our default values
-																self.$set(self.model, self.field.key, _.map(defaultValues, self.cleanInput));
+																self.$set(self.model, self.field.key, defaultArray);
 												}
 								},
 								cleanOutput(value) {
@@ -2089,7 +2092,7 @@ export default {
 																//Find out our minimum
 																var minimumToAsk = Math.max(self.field.minimum || 0, self.field.askCount || 0);
 																for (var i = 0; i < minimumToAsk; i++) {
-																				console.log('PUSH EMPTY', self.field.title, self.field.type, self.field.directive);
+																				//console.log('PUSH EMPTY', self.field.title, self.field.type, self.field.directive);
 																				array.push({})
 																}
 
@@ -2133,7 +2136,6 @@ export default {
 																																if (input) {
 																																				//We are an object so insert the object into the array
 																																				output = [input];
-
 																																} else {
 																																				output = getPlaceholders();
 																																}

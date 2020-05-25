@@ -70,7 +70,7 @@
                                         <fluro-panel-title :class="{collapsed:!expanded.contacts}" @click.native="toggleExpand('contacts')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{model.contacts.length}} Contacts</h6>
+                                                    <h6>{{contacts.length}} Contacts</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -86,7 +86,7 @@
                                         <fluro-panel-title :class="{collapsed:!expanded.teams}" @click.native="toggleExpand('teams')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{model.teams.length}} Groups and Teams</h6>
+                                                    <h6>{{teams.length}} Groups and Teams</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -102,7 +102,7 @@
                                         <fluro-panel-title :class="{collapsed:!expanded.tickets}" @click.native="toggleExpand('tickets')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{model.tickets.length}} Tickets</h6>
+                                                    <h6>{{tickets.length}} Tickets</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -118,7 +118,7 @@
                                         <fluro-panel-title :class="{collapsed:!expanded.events}" @click.native="toggleExpand('events')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{model.events.length}} Events</h6>
+                                                    <h6>{{events.length}} Events</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -135,7 +135,7 @@
                                         <fluro-panel-title :class="{collapsed:!expanded.interactions}" @click.native="toggleExpand('interactions')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{model.interactions.length}} Interactions</h6>
+                                                    <h6>{{interactions.length}} Interactions</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -151,7 +151,7 @@
                                         <fluro-panel-title :class="{collapsed:!expanded.checkins}" @click.native="toggleExpand('checkins')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{model.checkins.length}} Checkins</h6>
+                                                    <h6>{{checkins.length}} Checkins</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -167,7 +167,7 @@
                                         <fluro-panel-title :class="{collapsed:!expanded.details}" @click.native="toggleExpand('details')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{model.details.length}} Detail Sheets</h6>
+                                                    <h6>{{details.length}} Detail Sheets</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -183,7 +183,7 @@
                                         <fluro-panel-title :class="{collapsed:!expanded.families}" @click.native="toggleExpand('families')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{model.families.length}} Households</h6>
+                                                    <h6>{{families.length}} Households</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -199,7 +199,7 @@
                                         <fluro-panel-title :class="{collapsed:!expanded.personas}" @click.native="toggleExpand('personas')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{model.personas.length}} User Personas</h6>
+                                                    <h6>{{personas.length}} User Personas</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -215,7 +215,7 @@
                                         <fluro-panel-title :class="{collapsed:!expanded.collections}" @click.native="toggleExpand('collections')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{model.collections.length}} Collections</h6>
+                                                    <h6>{{collections.length}} Collections</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -231,7 +231,7 @@
                                         <fluro-panel-title :class="{collapsed:!expanded.tags}" @click.native="toggleExpand('tags')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{model.tags.length}} Tags</h6>
+                                                    <h6>{{tags.length}} Tags</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -247,7 +247,7 @@
                                         <fluro-panel-title :class="{collapsed:!expanded.realms}" @click.native="toggleExpand('realms')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{model.realms.length}} Realms</h6>
+                                                    <h6>{{realms.length}} Realms</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -279,7 +279,7 @@
                                         <fluro-panel-title :class="{collapsed:!expanded.cards}" @click.native="toggleExpand('cards')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{model.cards.length}} Process Cards</h6>
+                                                    <h6>{{cards.length}} Process Cards</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -381,6 +381,122 @@ export default {
         },
     },
     computed: {
+    	contacts:{
+    		get() {
+    			return this.model.contacts || [];
+    		},
+    		set(array) {
+    			this.model.contacts = array;
+    		}
+    	},
+    	teams:{
+    		get() {
+    			return this.model.teams || [];
+    		},
+    		set(array) {
+    			this.model.teams = array;
+    		}
+    	},
+    	tickets:{
+    		get() {
+    			return this.model.tickets || [];
+    		},
+    		set(array) {
+    			this.model.tickets = array;
+    		}
+    	},
+    	events:{
+    		get() {
+    			return this.model.events || [];
+    		},
+    		set(array) {
+    			this.model.events = array;
+    		}
+    	},
+    	interactions:{
+    		get() {
+    			return this.model.interactions || [];
+    		},
+    		set(array) {
+    			this.model.interactions = array;
+    		}
+    	},
+    	cards:{
+    		get() {
+    			return this.model.cards || [];
+    		},
+    		set(array) {
+    			this.model.cards = array;
+    		}
+    	},
+    	checkins:{
+    		get() {
+    			return this.model.checkins || [];
+    		},
+    		set(array) {
+    			this.model.checkins = array;
+    		}
+    	},
+    	details:{
+    		get() {
+    			return this.model.details || [];
+    		},
+    		set(array) {
+    			this.model.details = array;
+    		}
+    	},
+    	families:{
+    		get() {
+    			return this.model.families || [];
+    		},
+    		set(array) {
+    			this.model.families = array;
+    		}
+    	},
+    	personas:{
+    		get() {
+    			return this.model.personas || [];
+    		},
+    		set(array) {
+    			this.model.personas = array;
+    		}
+    	},
+
+    	collections:{
+    		get() {
+    			return this.model.collections || [];
+    		},
+    		set(array) {
+    			this.model.collections = array;
+    		}
+    	},
+
+    	tags:{
+    		get() {
+    			return this.model.tags || [];
+    		},
+    		set(array) {
+    			this.model.tags = array;
+    		}
+    	},
+
+    	realms:{
+    		get() {
+    			return this.model.realms || [];
+    		},
+    		set(array) {
+    			this.model.realms = array;
+    		}
+    	},
+
+    	definitions:{
+    		get() {
+    			return this.model.definitions || [];
+    		},
+    		set(array) {
+    			this.model.definitions = array;
+    		}
+    	},
         resultsEnabled() {
 
             var self = this;

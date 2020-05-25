@@ -1,129 +1,18 @@
 <template>
 				<div class="fluro-content-form" v-if="ready && model">
-								<!-- <pre>{{fields}}</pre> -->
-								<!-- <pre>{{model}}</pre> -->
+
 								<slot name="form" :parent="formModel" :context="context" :form-fields="formFields" :field-hash="fieldHash" :model="model" :update="update" :options="options">
-												<!-- 	<fluro-content-form-field :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="fields[0]" @input="update" v-model="model" />
-												<fluro-content-form-field :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="fields[1]" @input="update" v-model="model" />
-												<fluro-content-form-field :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="fields[2]" @input="update" v-model="model" />
-												<fluro-content-form-field :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="fields[3]" @input="update" v-model="model" />
-												 -->
 												<v-container fluid class="grid-list-lg" pa-0 :key="`${field.guid}${field.key}`" v-for="(field, index) in fields">
 																<fluro-content-form-field :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="fields[index]" @input="update" v-model="model" />
 												</v-container>
 								</slot>
+					
 				</div>
 </template>
 <script>
-// import {VContainer}
-// import FluroContentFormField from 'src/components/form/FluroContentFormField.vue ';
 import _ from 'lodash';
 import Vue from 'vue';
 import DynamicImportService from 'src/DynamicImportService';
-// import FluroUtils from 'fluro';
-
-
-
-// //////////////////////////////////////////////////
-
-// function getDefaultValueForField(field) {
-
-//     var blankValue;
-//     var multiple = field.maximum != 1;
-
-//     //Check if it's a nested subgroup or embedded form
-//     var nested = ((field.type == 'group' && field.asObject) || field.directive == 'embedded');
-
-//     ///////////////////////////////////////
-
-//     if (multiple) {
-//         blankValue = [];
-//     }
-
-//     ///////////////////////////////////////
-
-//     switch (field.type) {
-//         case 'reference':
-//             if (field.defaultReferences && field.defaultReferences.length) {
-//                 if (multiple) {
-//                     blankValue = blankValue.concat(field.defaultReferences);
-
-//                 } else {
-//                     blankValue = _.first(field.defaultReferences);
-//                 }
-//             }
-//             break;
-//         default:
-//             if (field.defaultValues && field.defaultValues.length) {
-//                 if (multiple) {
-//                     blankValue = blankValue.concat(field.defaultValues);
-
-//                 } else {
-//                     blankValue = _.first(field.defaultValues);
-//                 }
-//             }
-//             break;
-//     }
-
-//     ///////////////////////////////////////
-
-
-//     if (multiple) {
-
-//         var askCount = Math.max(field.askCount, field.minimum);
-//         var additionalRequired = Math.max((askCount - blankValue.length), 0);
-
-//         //If we need some entries by default
-//         if (additionalRequired) {
-
-//             switch (field.directive) {
-//                 case 'wysiwyg':
-//                 case 'textarea':
-//                 case 'code':
-//                     _.times(additionalRequired, function() {
-//                         blankValue.push('');
-//                     })
-//                     break;
-//                 default:
-//                     //We need to add objects
-//                     if (nested) {
-//                         _.times(additionalRequired, function() {
-//                             blankValue.push({});
-//                         })
-//                     }
-//                     break;
-//             }
-
-//         }
-//     } else {
-
-//         if (!blankValue) {
-//             switch (field.directive) {
-//                 case 'wysiwyg':
-//                 case 'textarea':
-//                 case 'code':
-//                     // case 'select':
-//                     blankValue = '';
-//                     break;
-//                 default:
-//                     //We need to add objects
-//                     if (nested) {
-//                         blankValue = {};
-//                     }
-//                     //  else {
-//                     //     blankValue =  null;
-//                     // }
-//                     break;
-//             }
-//         }
-//     }
-
-//     ///////////////////////////////////////
-
-//     return blankValue;
-// }
-
-
 
 //////////////////////////////////////////////////
 
@@ -205,7 +94,7 @@ export default {
 
 																				var errorMessages = field.errorMessages;
 																				if (!errorMessages) {
-																								console.log('this field has no error messages!', field)
+																								// console.log('this field has no error messages!', field)
 																								return;
 																				}
 
