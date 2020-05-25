@@ -63,8 +63,7 @@ const plugins = [
 								exclude: 'node_modules/**'
 				}),
 				postcss({
-					//modules: true,
-					extract: true,
+					//extract: true, //This needs to be true for the website builder
 				})
 ];
 const pluginsWithMinify = plugins.slice(0);

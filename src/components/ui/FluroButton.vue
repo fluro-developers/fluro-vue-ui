@@ -171,27 +171,29 @@ export default {
 }
 
 </script>
-<style scoped lang="scss">
+<style lang="scss" scoped>
 
 .disabled {
-	pointer-events: none !important;
+				pointer-events: none !important;
 }
+
 .processing {
-	position:relative;
-	pointer-events: none !important;
+				position: relative;
+				pointer-events: none !important;
+
 				.btn-interior {
 								opacity: 0;
 				}
 
 				.spinner {
 								display: flex;
-								position:absolute;
-								left:0;
-								right:0;
-								bottom:0;
-								top:0;
-								width:100%;
-								height:100%;
+								position: absolute;
+								left: 0;
+								right: 0;
+								bottom: 0;
+								top: 0;
+								width: 100%;
+								height: 100%;
 								align-items: center;
 								justify-content: center;
 								opacity: 1 !important;
