@@ -8,6 +8,7 @@ import FluroButton from './components/ui/FluroButton.vue';
 import FluroHelp from './components/FluroHelp.vue';
 import FluroChatbox from './components/conversation/FluroChatbox.vue';
 import FluroLiveVideo from './components/FluroLiveVideo.vue';
+import FluroStreamPlayer from './components/FluroStreamPlayer.vue';
 import FluroImage from './components/FluroImage.vue';
 import FluroModalMixin from './mixins/ModalMixin';
 import FluroAvatar from './components/FluroAvatar.vue';
@@ -271,6 +272,7 @@ export default {
 
 export { FluroImage as FluroImage };
 export { FluroChatbox as FluroChatbox };
+export { FluroStreamPlayer as FluroStreamPlayer };
 export { FluroHelp as FluroHelp };
 export { FluroButton as FluroButton };
 
