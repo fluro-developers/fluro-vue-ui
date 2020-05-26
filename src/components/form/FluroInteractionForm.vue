@@ -23,9 +23,16 @@
 																				<div class="text-xs-center">
 																								<h3>Submission Successful</h3>
 																								<div>Thank you for your submission</div>
-																								<fluro-button @click="reset()">
-																												Back to form
-																								</fluro-button>
+																								<template v-if="webMode">
+																												<fluro-button @click="reset()">
+																																Back to form
+																												</fluro-button>
+																								</template>
+																								<template v-else>
+																												<v-btn @click="reset()">
+																																Back to form
+																												</v-btn>
+																								</template>
 																								<!-- <v-btn class="mx-0" @click="reset()">
 																												Back to form
 																								</v-btn> -->
@@ -33,7 +40,7 @@
 																</slot>
 																<template v-else>
 																				<slot name="info"></slot>
-																				<form @submit.stop.prevent="submit" :disabled="state == 'processing'">
+																				<form @submit.stop.prevent="submit" novalidate :disabled="state == 'processing'">
 																								<!-- <pre>{{allowAnonymous}}</pre> -->
 																								<!-- <pre>{{fields}}</pre> -->
 																								<!-- <pre>{{options}}</pre> -->

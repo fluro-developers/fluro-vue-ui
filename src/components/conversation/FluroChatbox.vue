@@ -53,9 +53,7 @@
 				</flex-column>
 </template>
 <script>
-
-
-	import _ from 'lodash';
+import _ from 'lodash';
 
 export default {
 				props: {
@@ -104,6 +102,7 @@ export default {
 												proposed: {},
 												timer: null,
 												loadingConversation: false,
+												conversationJoined:false,
 								}
 				},
 				watch: {
@@ -600,6 +599,10 @@ $message-radius: 20px;
 				}
 
 
+}
+
+.chatbox-body {
+	width:100%;
 }
 
 

@@ -447,7 +447,12 @@ export default {
 												}
 								},
 								dateMeasures() {
-												return [{
+												return [
+												{
+																				title: 'Minutes',
+																				value: 'minute',
+																},
+															{
 																				title: 'Hours',
 																				value: 'hour',
 																},

@@ -1,12 +1,12 @@
 <template>
-    <div class="log-timeline-entry border-top">
+    <div class="log-timeline-entry border-top" @click="viewDetail">
         <!-- <fluro-realm-bar :realm="item.realms" /> -->
         <!-- <fluro-icon type="log"/> -->
 
         <v-layout align-center>
             
            
-            <v-flex>
+            <v-flex >
                 <template v-if="author">{{author.title}} -</template> {{item.message}} <em class="muted">- {{item.date | formatDate('h:mma')}} ({{item.date | timeago}})</em>
             </v-flex>
             <!--  <v-flex shrink v-if="author">
@@ -36,6 +36,13 @@ export default {
     components: {
        
         FluroRealmBar,
+    },
+    methods:{
+    	viewDetail() {
+    		if(this.$fluro.global.json) {
+    			this.$fluro.global.json(this.item);
+    		}
+    	}
     },
     computed: {
         author() {

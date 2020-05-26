@@ -167,7 +167,7 @@
                                             <fluro-icon icon="cog" />
                                         </v-btn>
                                     </template> -->
-																																								<v-menu lazy :close-on-content-click="false" @click.native.stop offset-y>
+																																								<v-menu top :close-on-content-click="false" @click.native.stop offset-y>
 																																												<template v-slot:activator="{ on }">
 																																																<v-btn v-tippy content="History and Change log" class="my-0" small icon flat v-on="on">
 																																																				<fluro-icon library="fas" icon="history" />

@@ -17,7 +17,7 @@
                         <div class="day" v-for="day in month.days">
                             <div class="day-label">{{day.date | formatDate('ddd D')}}</div>
                             <div class="entries">
-                                <div @click="$fluro.global.json(entry.data, {title:entry.message, depth:5})" class="entry" v-for="entry in day.items" :key="entry._id">
+                                <div @click="$fluro.global.json(entry, {title:entry.message, depth:5})" class="entry" v-for="entry in day.items" :key="entry._id">
                                     <v-layout>
                                         <v-flex shrink class="pr-1">
                                             <fluro-avatar v-if="entry.managedUser" :id="entry.managedUser" type="persona" />
@@ -91,6 +91,7 @@ export default {
 .log-viewer {
     max-width: 500px;
     max-height: 70vh;
+    height:100%;
 
 
     .timeline {
