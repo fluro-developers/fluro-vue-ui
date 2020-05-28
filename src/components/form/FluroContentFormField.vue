@@ -273,7 +273,31 @@
 																</v-autocomplete>
 												</template>
 												<template v-else-if="renderer == 'signature'">
-																<fluro-signature-field @blur="touch()" @focus="focussed();" :outline="showOutline" :success="success" :label="displayLabel" v-model="fieldModel" :required="required" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" />
+																<template v-if="multipleInput">
+																				<template v-if="fieldModel && fieldModel.length">
+																								<template v-for="(entry, index) in fieldModel">
+																												<fluro-signature-field @blur="touch()" @focus="focussed();" :outline="showOutline" :success="success" :label="displayLabel" v-model="fieldModel[index]" :required="required" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" />
+		
+																								</template>
+																				</template>
+																				<template v-if="canAddValue">
+																								<template v-if="webMode">
+																												<fluro-button @click="addValue('')">
+																																{{multiLabel}}
+																																<fluro-icon icon="plus" />
+																												</fluro-button>
+																								</template>
+																								<template v-else>
+																												<v-btn color="primary" class="ml-0" @click="addValue('')">
+																																{{multiLabel}}
+																																<fluro-icon icon="plus" />
+																												</v-btn>
+																								</template>
+																				</template>
+																</template>
+																<template v-else>
+																				<fluro-signature-field @blur="touch()" @focus="focussed();" :outline="showOutline" :success="success" :label="displayLabel" v-model="fieldModel" :required="required" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" />
+																</template>
 												</template>
 												<client-only v-else-if="renderer == 'code'" style="display:block">
 																<v-input class="no-flex" :hint="field.description" :persistent-hint="true">
@@ -1850,8 +1874,8 @@ export default {
 																}
 												} else {
 
-													var defaultArray = _.map(defaultValues, self.cleanInput);
-													// console.log('CREATE DEFAULTS', defaultArray);
+																var defaultArray = _.map(defaultValues, self.cleanInput);
+																// console.log('CREATE DEFAULTS', defaultArray);
 
 																//Add all our default values
 																self.$set(self.model, self.field.key, defaultArray);
@@ -2119,7 +2143,6 @@ export default {
 																//But the existing value is not an array
 																if (!isArray) {
 																				switch (self.field.type) {
-
 																								case 'reference':
 																												if (input) {
 																																//We are an object so insert the object into the array

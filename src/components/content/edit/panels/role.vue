@@ -24,7 +24,10 @@
                     <tabset :justified="true" :vertical="true" :persist="true">
                         <template v-slot:menuprefix>
                             <div class="search-box">
+                            	
                                 <search-input placeholder="Search permissions" v-model="search" />
+                                <!-- <pre>{{search}} {{filtered.length}}</pre> -->
+                            	
                             </div>
                         </template>
                         <tab :heading="`${type.title} ${of(type)}`" :muted="!enabled(type).length" :key="type.title" v-for="type in filteredBasic">

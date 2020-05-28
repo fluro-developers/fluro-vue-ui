@@ -14,7 +14,7 @@
 																								<div class="key-preview" v-if="!editingKey" @click="editingKey = true">
 																												<fluro-icon icon="pencil" /> key: {{model.key}}
 																								</div>
-																								<fluro-content-form-field :field="fields.asObject" v-model="model" />
+																								<fluro-content-form-field @input="resetRequired(fields.asObject)" :field="fields.asObject" v-model="model" />
 																								<template v-if="!model.asObject">
 																												<fluro-content-form-field :field="fields.sameLine" v-model="model" />
 																								</template>
@@ -189,7 +189,7 @@
 																								<fluro-content-form-field :field="fields.directive" v-model="model" />
 																								<fluro-content-form-field v-if="model.directive == 'app-size-select'" :field="fields.sizeAxis" v-model="model.params" />
 																								<template v-if="model.directive == 'app-field-key-select' || model.directive == 'app-field-select'">
-																								<fluro-content-form-field :field="fields.referenceType" v-model="model.params" />
+																												<fluro-content-form-field :field="fields.referenceType" v-model="model.params" />
 																								</template>
 																								<fluro-content-form-field v-if="model.directive == 'currency'" :field="fields.currency" v-model="model.params" />
 																								<v-container class="grid-list-xl" pa-0 fluid v-if="model.type != 'void'">
@@ -1384,22 +1384,21 @@ export default {
 																maximum: 1,
 																type: 'string',
 																directive: 'select',
-																options: [
-																{
-																				name: 'None',
-																				title: 'None',
-																				value: '',
-																},
-																{
-																				name: 'Horizontal / Width',
-																				title: 'Horizontal / Width',
-																				value: 'width',
-																},
-																{
-																				name: 'Vertical / Height',
-																				title: 'Vertical / Height',
-																				value: 'height',
-																},
+																options: [{
+																								name: 'None',
+																								title: 'None',
+																								value: '',
+																				},
+																				{
+																								name: 'Horizontal / Width',
+																								title: 'Horizontal / Width',
+																								value: 'width',
+																				},
+																				{
+																								name: 'Vertical / Height',
+																								title: 'Vertical / Height',
+																								value: 'height',
+																				},
 																],
 												})
 

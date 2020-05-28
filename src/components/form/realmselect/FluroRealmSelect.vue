@@ -174,6 +174,9 @@ export default {
 
                             resolve(filtered);
 
+
+                            // console.log('FILTERED AVAILABLE', initialIDs, flattenedIDs, filtered, allRealms);
+
                             //////////////////////////////////////
 
                             var singleOption = false;

@@ -31,7 +31,7 @@
 																																<fluro-quick-privacy v-model="model" />
 																												</template>
 																												<help title="Realm Selector" :body="`Everything in Fluro needs to be kept somewhere, choose one or more realms for this ${definitionTitle}. This will affect who has access to view and edit this ${definitionTitle}`" />
-																												<fluro-realm-select v-tippy :content="`Select where this ${definitionTitle} should be stored`" v-if="typeName != 'realm'" v-model="model.realms" :type="typeName" :definition="definitionName" />
+																												<fluro-realm-select ref="realmSelector" v-tippy :content="`Select where this ${definitionTitle} should be stored`" v-if="typeName != 'realm'" v-model="model.realms" :type="typeName" :definition="definitionName" />
 																												<fluro-tag-select class="mx-0 ml-2" v-if="typeName != 'tag'" v-model="model.tags">
 																																<help title="Tag Selector" :body="`Add tags to describe and make it easier to find this ${definitionTitle} when searching later`" />
 																												</fluro-tag-select>
@@ -66,7 +66,7 @@
 																								</flex-column-footer>
 																								<flex-column-footer class="border-top">
 																												<v-container py-0 px-1>
-																																<fluro-realm-select block v-model="model.realms" :type="typeName" :definition="definitionName" />
+																																<fluro-realm-select ref="realmSelector" block v-model="model.realms" :type="typeName" :definition="definitionName" />
 																												</v-container>
 																								</flex-column-footer>
 																								<flex-column-footer class="border-top">
@@ -285,6 +285,21 @@ export default {
 								self.removeListeners();
 				},
 				methods: {
+					showRealmsPopup() {
+				
+
+						var realmSelector = this.$refs.realmSelector;
+
+						console.log('Show Realms?', realmSelector);
+
+						if(!realmSelector) {
+							return;
+						}
+						if(realmSelector.showModal) {
+							realmSelector.showModal();
+						}
+						// this.$refs.realmSelector.$emit('click');
+					},
 								copyToClipboard(string) {
 
 												var self = this;
@@ -523,6 +538,10 @@ export default {
 																// self.$notify()
 																//Gotta finish the stuff first!
 																return;
+												}
+
+												if(!self.model.realms || !self.model.realms.length) {
+													return self.showRealmsPopup();
 												}
 
 												self.state = 'processing';

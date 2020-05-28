@@ -307,15 +307,24 @@
 																				</v-container>
 																</flex-column-body>
 												</tab>
-												<tab :heading="`Guests / Ticketing`">
+												<tab :heading="`Guest List`">
 																<flex-column-body style="background: #fafafa;">
 																				<v-container>
 																								<!-- <constrain sm> -->
-																								<h3 margin>Registrations &amp; Ticketing</h3>
-																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.forms" v-model="model"></fluro-content-form-field>
 																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.expectTeams" v-model="model"></fluro-content-form-field>
 																								<!-- </constrain> -->
 																								<guest-list :event="model" />
+																				</v-container>
+																</flex-column-body>
+												</tab>
+												<tab :heading="`Tickets`">
+																<flex-column-body style="background: #fafafa;">
+																				<v-container>
+																								<!-- <constrain sm> -->
+																								<h3 margin>Registrations &amp; Tickets</h3>
+																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.forms" v-model="model"></fluro-content-form-field>
+																								<!-- </constrain> -->
+																								<ticket-list :event="model" />
 																				</v-container>
 																</flex-column-body>
 												</tab>
@@ -417,6 +426,7 @@ import LocationViewMapComponent from 'src/components/content/event/LocationViewM
 import LocationSelector from 'src/components/content/edit/components/LocationSelector.vue';
 import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
 import GuestList from 'src/components/content/event/GuestList.vue';
+import TicketList from 'src/components/content/event/TicketList.vue';
 import FluroContentView from 'src/components/content/view/FluroContentView.vue';
 
 /////////////////////////////////
@@ -430,6 +440,7 @@ import Vue from 'vue';
 export default {
 				components: {
 								GuestList,
+								TicketList,
 								// FluroContentEdit,
 								FluroContentView,
 								MessagingEventManager,
@@ -659,6 +670,7 @@ export default {
 								}
 				},
 				asyncComputed: {
+								
 								rosterTypes: {
 												default: [],
 												get() {
@@ -707,6 +719,9 @@ export default {
 								},
 				},
 				computed: {
+								filteredTickets() {
+
+								},
 								fieldsOutput() {
 
 

@@ -72,7 +72,8 @@ export default {
     computed: {
         enabledTabs() {
             var self = this;
-            return self.tabs; //_.filter(self.tabs, {enabled:true});
+            // return self.tabs; //_.filter(self.tabs, {enabled:true});
+            return _.filter(self.tabs, {enabled:true});
         },
     },
     methods: {

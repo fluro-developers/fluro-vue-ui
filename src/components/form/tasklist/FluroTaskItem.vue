@@ -86,9 +86,9 @@ export default {
         },
     },
     mounted() {
-        if (this.value.immediateModal) {
-            this.edit();
-        }
+        // if (this.value.immediateModal) {
+        //     this.edit();
+        // }
     },
     data() {
 

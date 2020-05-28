@@ -59,8 +59,14 @@ export default {
             console.log('INIT TOGGLE');
             var self = this;
             if (!self.model.collected) {
+
+
+            	var currentUserName = self.user ? `${self.user.firstName} ${self.user.lastName}` : '';
+
                 console.log('COLLECTED IS FALSY', self.model.collected);
-                return self.$set(self.model, 'collected', true);
+                self.$set(self.model, 'collected', true);
+                self.$set(self.model, 'collectedBy',currentUserName);
+                self.$set(self.model, 'collectionDate', new Date());
             } else {
                 console.log('COLLECTED IS TRUTHY', self.model.collected);
                 return self.$set(self.model, 'collected', false);

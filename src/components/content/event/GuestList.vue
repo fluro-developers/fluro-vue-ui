@@ -147,7 +147,7 @@ export default {
                         contacts: []
                     },
                     ticket: {
-                        title: 'Tickets',
+                        title: 'Ticket Holders',
                         contacts: []
                     },
                     checkin: {

@@ -12,15 +12,26 @@
 																								</div>
 																				</template>
 																				<template v-slot:right>
-																								<v-btn v-if="model._id" icon class="mr-0" small @click="$actions.open([model])">
-																												<fluro-icon icon="ellipsis-h" />
-																								</v-btn>
-																								<v-btn @click="cancel">
-																												Close
-																								</v-btn>
-																								<v-btn v-if="canEdit" @click="edit">
-																									Edit <fluro-icon right icon="pencil" />
-																								</v-btn>
+																								<template v-if="embedded">
+																												<v-btn v-if="model._id" icon class="mr-0" small @click="$actions.open([model])">
+																																<fluro-icon icon="ellipsis-h" />
+																												</v-btn>
+																												<v-btn v-if="canEdit" icon small @click="edit">
+																																<fluro-icon icon="pencil" />
+																												</v-btn>
+																								</template>
+																								<template v-else>
+																												<v-btn v-if="model._id" icon class="mr-0" small @click="$actions.open([model])">
+																																<fluro-icon icon="ellipsis-h" />
+																												</v-btn>
+																												<v-btn @click="cancel">
+																																Close
+																												</v-btn>
+																												<v-btn v-if="canEdit" @click="edit">
+																																Edit
+																																<fluro-icon right icon="pencil" />
+																												</v-btn>
+																								</template>
 																				</template>
 																</page-header>
 												</flex-column-header>
@@ -286,7 +297,9 @@ export default {
 
 																								break;
 																				case 'ticket':
-
+																					return DynamicImportService.load('src/components/content/view/panels/ticket.vue', function() {
+																												return import('src/components/content/view/panels/ticket.vue')
+																								})
 																								break;
 																				case 'timetrigger':
 
@@ -334,6 +347,7 @@ export default {
 																				self.$fluro.content.get(self.itemID, {
 																												appendContactDetail: 'all',
 																												appendAssignments: 'all',
+																												type:self.type,
 																								})
 																								.then(function(res) {
 

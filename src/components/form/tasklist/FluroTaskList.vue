@@ -149,7 +149,7 @@ export default {
             var self = this;
             
             self.model.tasks.push({
-                immediateModal:true,
+                // immediateModal:true,
                 name: self.proposedTaskName,
                 required: true,
                 state: self.state,

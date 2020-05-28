@@ -186,6 +186,18 @@
                     </v-container>
                 </flex-column-body>
             </tab>
+            <tab heading="Tickets">
+                <flex-column-body>
+                    <v-container>
+                        <constrain sm>
+                            <ticket-list :event="item" />
+                        </constrain>
+                    </v-container>
+                </flex-column-body>
+            </tab>
+
+
+            
             <!--  <tab heading="Photos" :v-if="showPhotos">
                 <flex-column-body>
                     <v-container>
@@ -209,6 +221,7 @@ import FluroContentView from 'src/components/content/view/FluroContentView.vue';
 import LocationViewMapComponent from 'src/components/content/event/LocationViewMapComponent.vue';
 import FluroContentViewMixin from 'src/components/content/view/FluroContentViewMixin.js';
 import GuestList from 'src/components/content/event/GuestList.vue';
+import TicketList from 'src/components/content/event/TicketList.vue';
 
 /////////////////////////////////
 
@@ -226,6 +239,7 @@ export default {
     components: {
         FluroContentView,
         GuestList,
+        TicketList,
         LocationViewMapComponent,
     },
     mixins: [FluroContentViewMixin],
