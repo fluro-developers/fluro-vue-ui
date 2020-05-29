@@ -1,5 +1,5 @@
 <template>
-				<component :is="tagType" :disabled="disabled" :loading="loading" :type="type" :to="to" :href="href" @click="click" class="btn" :style="style" :class="classes">
+				<component :is="tagType" :disabled="disabled" :loading="loading" :type="type" :to="to" :href="href" :target="target" @click="click" class="btn" :style="style" :class="classes">
 								<div class="spinner" v-if="loading">
 												<fluro-icon icon="spinner-third" spin />
 								</div>
@@ -17,6 +17,9 @@ export default {
 												type: [String, Object],
 								},
 								href: {
+												type: String,
+								},
+								target: {
 												type: String,
 								},
 								loading: {
@@ -60,6 +63,9 @@ export default {
 				computed: {
 								tagType() {
 												switch (this.type) {
+																case 'span':
+																				return 'span';
+																				break;
 																case 'submit':
 																case 'button':
 																				return 'button';
@@ -172,7 +178,6 @@ export default {
 
 </script>
 <style lang="scss" scoped>
-
 .disabled {
 				pointer-events: none !important;
 }
