@@ -137,7 +137,8 @@
 																																</v-alert>
 																																<v-layout>
 																																				<template v-if="webMode">
-																																								<fluro-button @click.native.prevent="submit" :block="mobile" :large="mobile" :disabled="hasErrors" type="submit">
+																																					<!-- type="submit" -->
+																																								<fluro-button @click.native.prevent="submit" :block="mobile" :large="mobile" :disabled="hasErrors" >
 																																												{{submitText}}
 																																								</fluro-button>
 																																				</template>

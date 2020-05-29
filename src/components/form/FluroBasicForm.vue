@@ -38,12 +38,14 @@
 																</v-alert>
 																<slot name="submit" :hasErrors="hasErrors">
 																				<template v-if="webMode">
-																								<fluro-button type="submit" :disabled="hasErrors">
+																					<!-- type="submit" -->
+																								<fluro-button  :disabled="hasErrors">
 																												{{submitButtonText}}
 																								</fluro-button>
 																				</template>
 																				<template v-else>
-																								<v-btn class="mx-0" :disabled="hasErrors" type="submit" color="primary">
+																					<!--  -->
+																								<v-btn class="mx-0" type="submit" :disabled="hasErrors"  color="primary">
 																												{{submitButtonText}}
 																								</v-btn>
 																				</template>

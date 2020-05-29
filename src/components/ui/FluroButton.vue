@@ -44,9 +44,6 @@ export default {
 								link: {
 												type: Boolean,
 								},
-								type: {
-												type: String,
-								},
 								round: {
 												type: Number,
 								},
@@ -56,13 +53,16 @@ export default {
 																return {}
 												}
 								},
+								tag: {
+												type: String,
+								},
 								type: {
 												type: String,
 								},
 				},
 				computed: {
 								tagType() {
-												switch (this.type) {
+												switch (this.tag) {
 																case 'span':
 																				return 'span';
 																				break;
