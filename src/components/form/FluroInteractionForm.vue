@@ -101,7 +101,7 @@
 																								<div class="actions">
 																												<template v-if="state == 'processing'">
 																																<template v-if="webMode">
-																																				<fluro-button :loading="true" :block="mobile" :large="mobile" :disabled="true">
+																																				<fluro-button :loading="true"  :block="mobile" :large="mobile" :disabled="true">
 																																								{{submitText}}
 																																				</fluro-button>
 																																</template>
@@ -138,7 +138,7 @@
 																																<v-layout>
 																																				<template v-if="webMode">
 																																					<!-- type="submit" -->
-																																								<fluro-button @click.native.prevent="submit" :block="mobile" :large="mobile" :disabled="hasErrors" >
+																																								<fluro-button @click.native.prevent="submit" tag="button" type="submit" :block="mobile" :large="mobile" :disabled="hasErrors" >
 																																												{{submitText}}
 																																								</fluro-button>
 																																				</template>

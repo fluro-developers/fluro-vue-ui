@@ -39,7 +39,7 @@
 																<slot name="submit" :hasErrors="hasErrors">
 																				<template v-if="webMode">
 																					<!-- type="submit" -->
-																								<fluro-button  :disabled="hasErrors">
+																								<fluro-button tag="button" @click.native.prevent="submit" type="submit" :disabled="hasErrors">
 																												{{submitButtonText}}
 																								</fluro-button>
 																				</template>
