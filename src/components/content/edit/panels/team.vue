@@ -71,13 +71,6 @@
 																								<template v-for="(eventtrack, index) in tracks">
 																												<team-track-teaser v-model="tracks[index]" />
 																								</template>
-																								<!-- <fluro-panel>
-																												<tabset :justified="true">
-																																<tab :heading="eventtrack.title" v-for="(eventtrack, index) in tracks">
-																																				<fluro-content-edit :id="tracks[index]" :embedded="true" type="eventtrack" /> 
-																																</tab>
-																												</tabset>
-																								</fluro-panel> -->
 																				</v-container>
 																</flex-column-body>
 												</tab>

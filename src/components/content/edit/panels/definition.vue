@@ -346,7 +346,27 @@
 																																																				<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.plural" v-model="model" />
 																																																</v-flex>
 																																												</v-layout>
-																																												<template v-if="!model._id">
+																																												<template v-if="model._id">
+																																																<fluro-panel>
+																																																				<fluro-panel-body>
+																																																								<v-layout>
+																																																												<v-flex xs12 sm6>
+																																																																<div class="form-group">
+																																																																				<label>Definition Name</label>
+																																																																				<div>{{model.definitionName}}</div>
+																																																																</div>
+																																																												</v-flex>
+																																																												<v-flex xs12 sm6>
+																																																																<div class="form-group">
+																																																																				<label>Extends type</label>
+																																																																				<div>{{model.parentType | definitionTitle}}</div>
+																																																																</div>
+																																																												</v-flex>
+																																																								</v-layout>
+																																																				</fluro-panel-body>
+																																																</fluro-panel>
+																																												</template>
+																																												<template v-else>
 																																																<div v-show="showDefinitionName">
 																																																				<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.definitionName" v-model="model" />
 																																																</div>
@@ -384,11 +404,41 @@
 																																												<fluro-content-form v-model="model.data" :fields="processFields" />
 																																								</fluro-panel-body>
 																																				</fluro-panel>
+																																				<fluro-panel v-if="model.parentType == 'roster'">
+																																								<tabset justified>
+																																												<tab heading="Roster Settings">
+																																																<fluro-panel-body>
+																																																				<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.weight" v-model="model" />
+																																																				<fluro-content-form v-model="model.data" :fields="rosterFields" />
+																																																</fluro-panel-body>
+																																												</tab>
+																																												<tab heading="Default Slots">
+																																																<roster-slot-manager v-model="model.data.slots" />
+																																												</tab>
+																																												<tab heading="Reminders">
+																																																<!-- <roster-slot-manager v-model="model.data.slots" /> -->
+																																												</tab>
+																																												<tab heading="Roster Restrictions">
+																																																<fluro-panel-body>
+																																																				<fluro-content-form v-model="model.data" :fields="restrictionFields" />
+																																																</fluro-panel-body>
+																																												</tab>
+																																								</tabset>
+																																								<!-- <fluro-panel-body> -->
+																																								<!-- <h4 margin>Roster Options</h4> -->
+																																								<!-- <div class="form-group">
+																																																<label>Notifications</label>
+																																																<p class="help-block">Select contacts who should be notified when volunteers decline/swap positions on rosters of this type </p>
+																																																<content-select ng-params="{type:'contact'}" ng-model="item.data.notifyContacts"></content-select>
+																																												</div> -->
+																																								<!-- </fluro-panel-body> -->
+																																				</fluro-panel>
+																																				<!-- <roster-slot-manager v-model="slots" /> -->
 																																</constrain>
 																												</v-container>
 																								</flex-column-body>
 																				</tab>
-																				<tab heading="Manage Fields">
+																				<tab heading="Manage Fields" v-if="fieldsMakeSense">
 																								<!-- <pre>MANAGE {{model.fields}}</pre> -->
 																								<fluro-field-editor v-model="model.fields" :item="model" />
 																				</tab>
@@ -467,8 +517,6 @@
 <script>
 /////////////////////////////////
 
-
-
 import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
 import PaymentModifierEditor from 'src/components/content/edit/components/PaymentModifierEditor.vue';
 import FluroColumnSelect from 'src/components/content/edit/components/FluroColumnSelect.vue';
@@ -491,6 +539,7 @@ export default {
 								FluroContentSelectButton,
 								PaymentModifierEditor,
 								FluroColumnSelect,
+								//RosterSlotManager,
 								// FluroEditor,
 				},
 				mixins: [FluroContentEditMixin],
@@ -609,12 +658,18 @@ export default {
 												self.setParentType(self.model.parentType);
 								}
 
-								if (self.model._id && !self.isForm) {
-												self.tabIndex = 1;
+								if (self.fieldsMakeSense) {
+												if (self.model._id && !self.isForm) {
+																self.tabIndex = 1;
+												}
 								}
 
 								if (!self.model.fields) {
 												self.$set(self.model, 'fields', []);
+								}
+
+								if (!self.model.data) {
+												self.$set(self.model, 'data', {});
 								}
 
 				},
@@ -644,6 +699,36 @@ export default {
 																																})
 																																.orderBy('title')
 																																.value();
+
+																												resolve(cleaned);
+																								});
+
+																})
+												}
+								},
+								eventTypeOptions: {
+												default: [],
+												get() {
+																var self = this;
+																return new Promise(function(resolve, reject) {
+
+
+
+
+																				self.$fluro.types.subTypes('event', true)
+																								.then(function(values) {
+																												var cleaned = _.chain(values)
+																																.compact()
+																																.map(function(type) {
+																																				return {
+																																								title: type.title,
+																																								value: type.definitionName,
+																																				}
+																																})
+																																.orderBy('title')
+																																.value();
+
+																																console.log('TYPES LOADED', cleaned, values)
 
 																												resolve(cleaned);
 																								});
@@ -687,6 +772,113 @@ export default {
 				},
 				computed: {
 
+								rosterFields() {
+												var array = [];
+
+
+											
+
+												///////////////////////////////
+
+												array.push({
+																title: 'Notifications',
+																key: 'notifyContacts',
+																minimum: 0,
+																maximum: 0,
+																type: 'reference',
+																description: `Select contacts who should be notified when volunteers decline/swap positions on ${this.model.plural} rosters`,
+																params: {
+																				restrictType: 'contact',
+																				allDefinitions: true,
+																				persistentDescription: true,
+																},
+																//placeholder: `Eg. 'Bank Transfer', 'Cash', 'Cheque', 'Payment Plan'...`,
+												})
+
+
+
+
+												///////////////////////////////
+
+												return array;
+								},
+
+								restrictionFields() {
+												var array = [];
+
+												var self = this;
+
+
+												///////////////////////////////
+
+												array.push({
+																title: 'Relevant Definitions',
+																key: 'rosterDefinitions',
+																minimum: 0,
+																maximum: 0,
+																type: 'string',
+																directive:'select',
+																options: self.eventTypeOptions,
+																description: `Select event definitions that these rosters are relevant for. Eg. If ${this.model.plural} are only relevant for specific types of events then select them here, otherwise ${this.model.plural} will appear in the planner for events on any kind`,
+																// params: {
+																// 				restrictType: 'eventtrack',
+																// 				allDefinitions: true,
+																// 				persistentDescription: true,
+																// },
+												});
+
+												array.push({
+																title: 'Relevant Event Tracks',
+																key: 'rosterEventTracks',
+																minimum: 0,
+																maximum: 0,
+																type: 'reference',
+																description: `Select event tracks that these rosters are relevant for. Eg. If ${this.model.plural} are only relevant for specific tracks then select those tracks here, otherwise ${this.model.plural} will appear in the planner for events on any track`,
+																params: {
+																				restrictType: 'eventtrack',
+																				allDefinitions: true,
+																				persistentDescription: true,
+																},
+												});
+
+
+													array.push({
+																title: 'Relevant Realms',
+																key: 'rosterRealms',
+																minimum: 0,
+																maximum: 0,
+																type: 'reference',
+																description: `Select realms that these rosters are relevant for. Eg. If ${this.model.plural} are only relevant for realms then select those realms here`,
+																params: {
+																				restrictType: 'realm',
+																				allDefinitions: true,
+																				persistentDescription: true,
+																},
+												});
+												
+
+
+
+
+												///////////////////////////////
+
+												return array;
+								},
+
+
+								fieldsMakeSense() {
+												var self = this;
+												switch (self.model.parentType) {
+																case 'roster':
+																case 'contact':
+																case 'ticket':
+
+																				return false;
+																				break;
+												}
+
+												return true;
+								},
 								isForm() {
 												return this.definition && this.definition.definitionName == 'form'
 								},
@@ -1492,6 +1684,22 @@ export default {
 																				}
 																},
 												})
+
+
+
+												array.push({
+																title: 'Weight',
+																key: 'weight',
+																minimum: 0,
+																maximum: 0,
+																type: 'integer',
+																description: 'Set the weight of this roster, this will determine the ordering when shown in the multi planner, (Lighter weight rosters will be shown at the top, Heavier weight rosters will be shown toward the bottom)',
+																params: {
+																				persistentDescription: true,
+																},
+																//placeholder: `Eg. 'Bank Transfer', 'Cash', 'Cheque', 'Payment Plan'...`,
+												})
+
 
 
 

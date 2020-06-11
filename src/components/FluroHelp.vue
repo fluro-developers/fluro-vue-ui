@@ -1,5 +1,5 @@
 <template>
-    <span v-if="enabled">
+    <span v-if="enabled" :class="{absolute}">
         <!-- <v-menu  > -->
         <!-- :fixed="true"  -->
         <v-menu offset-y :open-on-hover="true" @click.native.stop.prevent>
@@ -25,6 +25,9 @@ export default {
         body: {
             type: String,
         },
+        absolute:{
+        	type:Boolean,
+        }
     },
     mounted() {
         this.mount();
@@ -101,6 +104,12 @@ span {
 
     position: fixed;
     z-index: 9999; // 2147483647 9999999999999999;
+
+    &.absolute,
+    &.absolute .dot {
+    	position: absolute !important;
+
+    }
 
     .dot {
         content: '';

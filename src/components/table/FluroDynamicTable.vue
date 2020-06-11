@@ -195,13 +195,13 @@
                                             <fluro-icon icon="pencil" />
                                         </v-btn> -->
 																																																<v-btn class="ma-0" small icon @click.stop.prevent="$actions.open([item])">
-																																																				<fluro-help uid="tablerow" title="More Actions" body="View more actions related to this item" />
 																																																				<fluro-icon icon="ellipsis-h" />
 																																																</v-btn>
 																																																<!--  <v-btn class="ma-0" v-if="$vuetify.breakpoint.mdAndUp" small icon>
                                             <fluro-icon icon="trash-alt" />
                                         </v-btn> -->
 																																												</div>
+																																												<fluro-help uid="tablerow" title="More Actions" body="View more actions related to this item" />
 																																								</th>
 																																				</template>
 																																</tr>
@@ -1537,6 +1537,11 @@ export default {
 																classes.push('process-status-' + item.processStatus);
 												}
 
+
+												if (item.collected) {
+																classes.push('ticket-status-collected');
+												}
+
 												//////////////////////////////////
 												//If it's a mailout
 												switch (item.state) {
@@ -1774,7 +1779,7 @@ export default {
 
 												&.status-cancelled,
 												&.status-archived,
-												&.status-archived,
+												&.ticket-status-collected,
 												&.payment-status-refund,
 												// &.payment-status-partial_refund,
 												&.status-deceased {

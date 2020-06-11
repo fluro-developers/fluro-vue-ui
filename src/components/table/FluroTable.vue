@@ -1592,6 +1592,9 @@ export default {
 												}
 
 
+												if(item.collected) {
+													classes.push('ticket-status-collected')
+												}
 
 												if (this.$selection.isSelected(item)) {
 																classes.push('selected');
@@ -1804,6 +1807,7 @@ export default {
 																}
 												}
 
+												&.ticket-status-collected,
 												&.status-archived,
 												&.status-deceased {
 

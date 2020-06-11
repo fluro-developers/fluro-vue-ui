@@ -259,7 +259,7 @@ export default {
 
             &.active {
                 opacity: 1;
-                background: #fff;
+                //background: #fff;
                 border-left: 1px solid rgba(#000, 0.05);
                 border-right: 1px solid rgba(#000, 0.05);
                 border-top: 3px solid $primary;

@@ -42,6 +42,11 @@ export default {
                 //(Campuses)
                 return tree[0].definition || tree[0]._type;
             } else {
+
+            	if(this.filterDiscriminator) {
+            		return this.filterDiscriminator;
+            	}
+            	
                 return 'realm';
             }
         },
@@ -139,6 +144,11 @@ export default {
                             var filtered = _.filter(allRealms, function(realmType) {
                                 if (!self.filterDiscriminator || !self.filterDiscriminator.length) {
                                     return true;
+                                }
+
+                                //Include any kind of team
+                                if(self.filterDiscriminator == 'team') {
+                                	return (realmType._discriminatorType == 'team');
                                 }
 
                                 return (realmType.definition == self.filterDiscriminator)

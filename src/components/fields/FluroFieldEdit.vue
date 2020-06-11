@@ -61,15 +61,24 @@
 																								</v-btn>
 																				</v-container>
 																				<v-container class="border-bottom" style="background: #fff;">
-																								<label><strong>Variables</strong></label>
-																								<v-layout>
-																												<v-flex xs3><strong>data</strong></v-flex>
-																												<v-flex xs9 class="sm muted">The root level model for the entire form, useful for absolute paths.</v-flex>
-																								</v-layout>
-																								<v-layout>
-																												<v-flex xs3><strong>model</strong></v-flex>
-																												<v-flex xs9 class="sm muted">The immediate model this field is attached to. Useful for relative paths</v-flex>
-																								</v-layout>
+																								<fluro-panel>
+																												<fluro-panel-title>
+																																<strong>Variables</strong>
+																												</fluro-panel-title>
+																												<fluro-panel-body class="border-top">
+																																<v-layout>
+																																				<v-flex xs3><strong>model</strong></v-flex>
+																																				<v-flex xs9 class="sm muted">The immediate model this field is attached to. Useful for relative paths to sibling fields</v-flex>
+																																</v-layout>
+																												</fluro-panel-body>
+																												<fluro-panel-body class="border-top">
+																																<v-layout>
+																																				<v-flex xs3><strong>data</strong></v-flex>
+																																				<v-flex xs9 class="sm muted">The root level model for the entire form, useful for absolute paths to other fields.</v-flex>
+																																</v-layout>
+																												</fluro-panel-body>
+																								</fluro-panel>
+																								<!-- <label><strong>Variables</strong></label> -->
 																				</v-container>
 																				<v-container>
 																								<!-- <template v-if="model.hideExpression && model.hideExpression.length"> -->
@@ -476,11 +485,13 @@ import FluroInlineEdit from 'src/components/form/FluroInlineEdit.vue';
 import TicketingManager from 'src/components/fields/TicketingManager.vue';
 import _ from 'lodash';
 
+import FluroHelp from 'src/components/FluroHelp.vue';
 
 
 
 export default {
 				components: {
+								FluroHelp,
 								FieldSelectModal,
 								FluroContentFormField,
 								FluroContentForm,

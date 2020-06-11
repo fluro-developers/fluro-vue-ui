@@ -8,12 +8,11 @@
 																								<h5>{{total}} Tickets</h5>
 																				</v-flex>
 																				<v-flex shrink>
-																								<v-btn small color="primary" :loading="exporting" @click="exportItems()">
+																								<v-btn class="ma-0" small color="primary" :loading="exporting" @click="exportItems()">
 																												Export
-																												<fluro-icon right icon="share" />
+																												<fluro-icon right library="fas" icon="share" />
 																								</v-btn>
 																				</v-flex>
-																				
 																</v-layout>
 												</fluro-panel-title>
 												<fluro-panel-body class="border-bottom">
@@ -29,12 +28,12 @@
 																</v-layout>
 												</fluro-panel-body>
 												<!-- <tabset :justified="true"> -->
-																<!-- <tab :heading="`${segment.contacts.length} ${segment.title}`" v-for="segment in segments"> -->
-																				<!-- <v-container pa2 class="border-bottom" v-if="segments.length <= 1"> -->
-																								<!-- <h3 margin>{{segment.contacts.length}} {{segment.title}}</h3> -->
-																				<!-- </v-container> -->
-																				<fluro-table trackingKey="_id" :clicked="clicked" defaultSort="firstName" :pageSize="50" style="max-height:50vh;" :items="filtered" :columns="columns" />
-																<!-- </tab> -->
+												<!-- <tab :heading="`${segment.contacts.length} ${segment.title}`" v-for="segment in segments"> -->
+												<!-- <v-container pa2 class="border-bottom" v-if="segments.length <= 1"> -->
+												<!-- <h3 margin>{{segment.contacts.length}} {{segment.title}}</h3> -->
+												<!-- </v-container> -->
+												<fluro-table trackingKey="_id" :clicked="clicked" defaultSort="firstName" :pageSize="50" style="max-height:50vh;" :items="filtered" :columns="columns" />
+												<!-- </tab> -->
 												<!-- </tabset> -->
 								</fluro-panel>
 				</div>
@@ -55,20 +54,33 @@ export default {
 				props: {
 								event: {
 												type: [Object, String],
+								},
+								interaction: {
+												type: [Object, String],
 								}
 				},
 				methods: {
-					clicked(item) {
-						console.log('Clicked item', item);
-						item._type = 'ticket';
-							this.$fluro.global.view(item, true);
-					},
-								exportItems () {
+								clicked(item) {
+												console.log('Clicked item', item);
+												item._type = 'ticket';
+												this.$fluro.global.view(item, true);
+								},
+								exportItems() {
 
 												var self = this;
 												self.exporting = true;
 
-												self.$fluro.api.get(`/tickets/event/${this.eventID}/csv`)
+
+												var url;
+
+												if (this.eventID) {
+																url = `/tickets/event/${this.eventID}/csv`;
+												} else {
+																url = `/tickets/interaction/${this.interactionID}/csv`;
+												}
+
+
+												self.$fluro.api.get(url)
 																.then(function(res) {
 																				self.$fluro.notify('Your popup blocker may stop this file from downloading');
 
@@ -170,6 +182,9 @@ export default {
 								eventID() {
 												return this.$fluro.utils.getStringID(this.event);
 								},
+								interactionID() {
+												return this.$fluro.utils.getStringID(this.interaction);
+								},
 				},
 				asyncComputed: {
 								tickets: {
@@ -181,12 +196,22 @@ export default {
 
 																///////////////////////////////////
 
+																var url;
+
+																if (self.interactionID) {
+																				url = `/tickets/interaction/${self.interactionID}`;
+																} else {
+																				url = `/tickets/event/${self.eventID}`;
+																}
+
+																///////////////////////////////////
+
 																return new Promise(function(resolve, reject) {
-																				return self.$fluro.api.get(`/tickets/event/${self.eventID}`)
+																				return self.$fluro.api.get(url)
 																								.then(function(res) {
 
 																												var results = _.map(res.data, function(ticket) {
-																													ticket._type = 'ticket';
+																																ticket._type = 'ticket';
 																																ticket.searchString = `${ticket.firstName} ${ticket.lastName} ${ticket.title} ${ticket.email}`.toLowerCase()
 																																return ticket;
 																												});

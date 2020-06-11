@@ -82,12 +82,19 @@ templates.push({
 																key: 'type',
 																directive: 'select',
 																options: [{
+																								name:'Page',
 																								title: 'Page',
 																								value: 'page',
 																				},
 																				{
+																								name:'External URL',
 																								title: 'External URL',
 																								value: 'url',
+																				},
+																				{
+																								name:'Popup',
+																								title: 'Popup',
+																								value: 'popup',
 																				},
 																],
 																defaultValues: ['page']
@@ -100,7 +107,7 @@ templates.push({
 																key: 'page',
 																directive: 'app-page-select',
 																expressions: {
-																				hide: `model.type != 'page'`,
+																				hide: `model.type != 'page' && model.type != 'popup'`,
 																}
 												},
 												{
@@ -121,10 +128,12 @@ templates.push({
 																key: 'window',
 																directive: 'select',
 																options: [{
+																		name:'Same Window',
 																								title: 'Same Window',
 																								value: '',
 																				},
 																				{
+																					name:'New Window',
 																								title: 'New Window',
 																								value: '_blank',
 																				},

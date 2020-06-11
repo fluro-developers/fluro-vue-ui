@@ -8,6 +8,7 @@
 																												<v-layout align-center>
 																																<v-flex>
 																																				<strong label>Field Tree</strong>
+																																				<fluro-help title="Field Tree" body="This shows you a list of all fields that are defined on your form and shows the depth at which they are nested. Click a field to modify it. Hover over it to highlight it in the form preview." />
 																																</v-flex>
 																																<v-flex shrink>
 																																				<span class="state-link" @click="expandAll()">
@@ -38,6 +39,7 @@
 																												<v-layout row>
 																																<v-flex v-if="formMode">
 																																				<v-btn small class="ma-1" color="primary" block @click="addNewTemplate()">
+																																								<fluro-help title="Add a Field" body="Click here to add a new field to your form" />
 																																								Add Field
 																																								<fluro-icon icon="plus" right />
 																																				</v-btn>
@@ -45,12 +47,14 @@
 																																<v-flex v-else-if="componentMode">
 																																				<v-btn small class="ma-1" color="primary" block @click="addNewComponentTemplate()">
 																																								Add Field
+																																								<fluro-help title="Add a Field" body="Click here to add a new field to your component" />
 																																								<fluro-icon icon="plus" right />
 																																				</v-btn>
 																																</v-flex>
 																																<v-flex v-else>
 																																				<v-btn small class="ma-1" color="primary" block @click="addNewField()">
 																																								Add Field
+																																								<fluro-help title="Add a Field" body="Click here to add a new field" />
 																																								<fluro-icon icon="plus" right />
 																																				</v-btn>
 																																</v-flex>
@@ -58,6 +62,7 @@
 																																<v-flex>
 																																				<v-btn small class="ma-1" block @click="addNewField('group')">
 																																								Add Group
+																																								<fluro-help title="Add a Group" body="Click here to add a new field group. Field groups can be used to group fields together visually or to allow for repeating subsets of fields." />
 																																								<fluro-icon icon="folder" right />
 																																				</v-btn>
 																																</v-flex>
@@ -73,6 +78,7 @@
 																								<v-layout align-center>
 																												<v-flex>
 																																<strong label>{{formMode ? 'Form' : ''}} Preview</strong>
+																																<fluro-help title="Preview" body="View a realtime preview of how the form will look and behave when presented to the user" />
 																												</v-flex>
 																												<v-spacer />
 																												<v-flex shrink v-if="formMode">
@@ -81,11 +87,13 @@
 																																								<span class="state-link" v-tippy content="Change Preview State" v-on="on">
 																																												{{readablePreviewState}}
 																																												<fluro-icon icon="angle-down" />
+																																												<fluro-help title="State Selector" body="Preview the state of the form after it's been submitted. Or view the data model as you input information into the form." />
 																																								</span>
 																																								<!-- <v-btn class="ma-0" small flat >Preview: {{previewState}}</v-btn> -->
 																																				</template>
 																																				<v-card tile>
 																																								<v-list dense>
+
 																																												<v-list-tile @click="previewState = 'ready'">
 																																																<v-list-tile-content>
 																																																				<v-list-tile-title>
@@ -113,6 +121,7 @@
 																												</v-flex>
 																												<v-flex shrink>
 																																<span class="state-link" @click="resetPreview()">
+																																	<fluro-help title="Reset Form" body="After changing your form, you sometimes may want to reset the preview window manually. To do so click here." />
 																																				Reset {{formMode ? 'Form' : 'Preview'}}
 																																				<fluro-icon icon="undo" />
 																																</span>
@@ -135,6 +144,7 @@
 																				<template v-else>
 																								<template sm v-if="formMode">
 																												<div class="form-image" v-if="image">
+																													<fluro-help title="Form Image" body="Forms by default can have a hero image that will be displayed above the form when presented to the user" />
 																																<fluro-image cover :from="item" :imageWidth="1000" :imageHeight="300" :spinner="true" :item="image" />
 																												</div>
 																												<v-container fluid>
@@ -295,6 +305,8 @@ import FluroFieldEdit from 'src/components/fields/FluroFieldEdit.vue';
 import FluroContentForm from 'src/components/form/FluroContentForm.vue';
 import FluroInteractionForm from 'src/components/form/FluroInteractionForm.vue';
 import FluroCompileHtml from 'src/components/FluroCompileHtml.vue';
+import FluroHelp from 'src/components/FluroHelp.vue';
+
 
 export default {
 				components: {
@@ -304,6 +316,7 @@ export default {
 								FluroContentForm,
 								FluroInteractionForm,
 								FluroCompileHtml,
+								FluroHelp,
 				},
 				props: {
 								'value': {

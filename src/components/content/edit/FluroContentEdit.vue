@@ -54,7 +54,7 @@
 																								</template>
 																				</page-header>
 																</flex-column-header>
-																<component @errorMessages="validate" ref="form" :context="context" @input="updateModel" v-bind:is="component" :type="typeConfig" :config="config" v-model="model" @file="fileChanged" :definition="definition" v-if="component"></component>
+																<component @errorMessages="validate" ref="form" :context="context" @refresh="refresh" @input="updateModel" v-bind:is="component" :type="typeConfig" :config="config" v-model="model" @file="fileChanged" :definition="definition" v-if="component"></component>
 																<template v-if="showFooter">
 																				<template v-if="$vuetify.breakpoint.xsOnly">
 																								<flex-column-footer>
@@ -285,21 +285,21 @@ export default {
 								self.removeListeners();
 				},
 				methods: {
-					showRealmsPopup() {
-				
+								showRealmsPopup() {
 
-						var realmSelector = this.$refs.realmSelector;
 
-						console.log('Show Realms?', realmSelector);
+												var realmSelector = this.$refs.realmSelector;
 
-						if(!realmSelector) {
-							return;
-						}
-						if(realmSelector.showModal) {
-							realmSelector.showModal();
-						}
-						// this.$refs.realmSelector.$emit('click');
-					},
+												console.log('Show Realms?', realmSelector);
+
+												if (!realmSelector) {
+																return;
+												}
+												if (realmSelector.showModal) {
+																realmSelector.showModal();
+												}
+												// this.$refs.realmSelector.$emit('click');
+								},
 								copyToClipboard(string) {
 
 												var self = this;
@@ -434,6 +434,12 @@ export default {
 								cancel() {
 												this.$emit('cancel');
 								},
+								refresh() {
+												//Force a reload
+												// this.$emit('cancel');
+
+												this.$emit('success', this.model);
+								},
 								touch() {
 												_.each(this.formFields, function(component) {
 																component.touch();
@@ -540,8 +546,12 @@ export default {
 																return;
 												}
 
-												if(!self.model.realms || !self.model.realms.length) {
-													return self.showRealmsPopup();
+												if (self.typeName == 'realm') {
+
+												} else {
+																if (!self.model.realms || !self.model.realms.length) {
+																				return self.showRealmsPopup();
+																}
 												}
 
 												self.state = 'processing';
@@ -1034,6 +1044,11 @@ export default {
 																				case 'integration':
 																								return DynamicImportService.load('src/components/content/edit/panels/integration.vue', function() {
 																												return import('src/components/content/edit/panels/integration.vue')
+																								})
+																								break;
+																				case 'interaction':
+																								return DynamicImportService.load('src/components/content/edit/panels/interaction.vue', function() {
+																												return import('src/components/content/edit/panels/interaction.vue')
 																								})
 																								break;
 																				case 'location':

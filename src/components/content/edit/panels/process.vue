@@ -76,6 +76,10 @@
 																																																												<fluro-icon icon="clock" /> Awaiting form response</span>
 																																																				</div>
 																																																				<template v-slot:right>
+																																																								<!--  -->
+																																																								<v-btn small icon @click="manualLink(form)" :loading="linking[form.form._id]" v-tippy content="Link to an existing form submission">
+																																																												<fluro-icon icon="link" />
+																																																								</v-btn>
 																																																								<v-btn small color="primary" @click="resend(form)" :loading="resending[form.form._id]">
 																																																												Resend
 																																																												<fluro-icon right icon="paper-plane" />
@@ -313,6 +317,41 @@ export default {
 								// FluroAcademicSelect,
 				},
 				methods: {
+								manualLink(form) {
+												console.log('FORM', form);
+
+												var self = this;
+
+												self.$fluro.global.select(form.form.definitionName, { maximum: 1 })
+																.then(function(interactions) {
+
+																				var cardID = self.$fluro.utils.getStringID(self.model);
+																				var interactionID = self.$fluro.utils.getStringID(interactions[0]);
+																				var formID = self.$fluro.utils.getStringID(form.form);
+
+
+																				console.log('LINK', cardID, interactionID, formID)
+
+																				self.$set(self.linking, formID, true);
+
+																				self.$fluro.api.put(`/process/${cardID}/link`, {
+																												interaction: interactionID,
+																												definition: formID,
+																								})
+																								.then(function(result) {
+																											self.$emit('refresh');
+																											self.$set(self.linking, formID, false);
+																								})
+																								.catch(function(err) {
+																												self.$fluro.error(err);
+																												self.$set(self.linking, formID, false);
+																								})
+
+
+
+
+																})
+								},
 								removeTaskList(index) {
 
 												var self = this;
@@ -632,6 +671,7 @@ export default {
 
 				data() {
 								return {
+										linking:{},
 												resending: {},
 								}
 				},

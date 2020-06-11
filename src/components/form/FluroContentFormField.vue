@@ -1,5 +1,6 @@
 <template>
 				<div @click="clicked($event)" :data-field-key="key" class="fluro-content-form-field" v-if="isVisible" v-bind="attributes" :class="fieldClass">
+								<pre v-if="!field">FATAL - NO FIELD SPECIFIED</pre>
 								<template v-if="ready && model">
 												<template v-if="officeUseOnly">
 												</template>
@@ -158,7 +159,7 @@
 												</template>
 												<template v-else-if="renderer == 'number'">
 																<!-- type="number" -->
-																<v-text-field :persistent-hint="persistentDescription" :suffix="suffix" :prefix="prefix" :outline="showOutline" :success="success" :required="required" pattern="^-?(\d*\.)?\d+$;" :label="displayLabel" v-model="fieldModel" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
+																<v-text-field :persistent-hint="persistentDescription" :suffix="suffix" :prefix="prefix" :outline="showOutline" :success="success" :required="required" :novalidate="true" pattern="^[+-]?[0-9]+(?:\.[0-9]+)?$" :label="displayLabel" v-model="fieldModel" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
 												</template>
 												<template v-else-if="renderer == 'realmselect'">
 																<v-input class="no-flex" :persistent-hint="true" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
@@ -277,7 +278,6 @@
 																				<template v-if="fieldModel && fieldModel.length">
 																								<template v-for="(entry, index) in fieldModel">
 																												<fluro-signature-field @blur="touch()" @focus="focussed();" :outline="showOutline" :success="success" :label="displayLabel" v-model="fieldModel[index]" :required="required" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" />
-		
 																								</template>
 																				</template>
 																				<template v-if="canAddValue">
@@ -761,6 +761,11 @@ export default {
 				},
 				computed: {
 								webMode() {
+												if (typeof window !== 'undefined') {
+														if(window.adminPanelMode) {
+															return false;
+														}
+												}
 												return this.$fluro.app;
 								},
 								useBasicDropdown() {
@@ -3024,6 +3029,10 @@ export default {
 								},
 								isVisible: {
 												get() {
+
+																if (!this.field) {
+																				return true;
+																}
 
 																var isHidden = this.renderer == 'value' || this.expressionHideGroup || this.expressionHide;
 																return Promise.resolve(!isHidden);

@@ -63,6 +63,24 @@ export default {
             if(row.description) {
                 return row.description;
             }
+
+            if(row._type == 'interaction') {
+
+            	var contactNames = _.chain(row.contacts)
+            	.map(function(contact) {
+            		return contact.title;
+            	})
+            	.compact()
+            	.value()
+            	.join(', ');
+
+
+
+
+
+
+            	return `${row.primaryEmail || ''} ${contactNames}`
+            }
         }
     }
 }

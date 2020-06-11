@@ -1,35 +1,19 @@
 <template>
 				<flex-column>
-								<flex-column-body>
-												<v-container v-if="item">
-																<!-- <pre>{{item}}</pre> -->
-																<!-- TEST WOOT WOOT -->
-																<fluro-content-render :fields="interactionFields" :raw="true" v-model="item" />
-																<fluro-panel v-if="item.event">
-																				<fluro-panel-body>
-																								<v-input class="no-flex">
-																												<v-label>Event</v-label>
-																												<list-group>
-																																<list-group-item @click="$fluro.global.view(item.event, true)" :item="item.event">
-																																				<template v-slot:right>
-																																								<v-btn class="ma-0" small icon @click.stop.prevent="$actions.open([item.event])">
-																																												<fluro-icon icon="ellipsis-h" />
-																																								</v-btn>
-																																				</template>
-																																</list-group-item>
-																												</list-group>
-																								</v-input>
-																				</fluro-panel-body>
-																</fluro-panel>
-																<fluro-panel v-if="paymentExists">
-																				<fluro-panel-body>
-																								<v-input class="no-flex" v-if="paymentMethod">
-																												<v-label>Selected Payment Method</v-label>
-																												<h3>{{paymentMethod.title || paymentMethod}}</h3>
-																								</v-input>
-
-
-																								<!-- <v-layout>
+								<tabset :justified="true">
+												<tab heading="Submission">
+																<flex-column-body>
+																				<v-container v-if="item">
+																								<fluro-content-render :fields="defaultFields" :raw="true" v-model="item.rawData">
+																								</fluro-content-render>
+																								<fluro-content-render :fields="interactionFields" :raw="true" v-model="item" />
+																								<fluro-panel v-if="paymentExists">
+																												<fluro-panel-body>
+																																<v-input class="no-flex" v-if="paymentMethod">
+																																				<v-label>Selected Payment Method</v-label>
+																																				<h3>{{paymentMethod.title || paymentMethod}}</h3>
+																																</v-input>
+																																<!-- <v-layout>
 																									<v-flex>
 																										<v-input class="no-flex" v-if="paymentMethod">
 																												<v-label>Total Payable</v-label>
@@ -37,9 +21,7 @@
 																								</v-input>
 																									</v-flex>
 																								</v-layout> -->
-
-
-																								<!-- <div class="row">
+																																<!-- <div class="row">
 																												<div class="form-group col-xs-12 col-sm-4">
 																																<label>Total Payable</label>
 																																<h3 ng-class="{'brand-danger':amountDue(), 'text-muted':!amountDue()}">{{item.amount / 100 | currency}} <em class="text-muted small text-uppercase">{{item.currency}}</em></h3>
@@ -53,12 +35,9 @@
 																																<h3 ng-class="{'text-danger':amountDue() > 0, 'text-success':amountDue() <= 0}">{{amountDue() / 100 | currency}} <em class="text-muted small text-uppercase">{{item.currency}}</em></h3>
 																												</div>
 																								</div> -->
-
-
-
-																				</fluro-panel-body>
-																</fluro-panel>
-																<!-- <div class="panel panel-default" ng-if="definition.paymentDetails.required || definition.paymentDetails.allow">
+																												</fluro-panel-body>
+																								</fluro-panel>
+																								<!-- <div class="panel panel-default" ng-if="definition.paymentDetails.required || definition.paymentDetails.allow">
 																				<div class="panel-body">
 																								<div class="form-group" ng-if="item.paymentMethod">
 																												<label>Selected Payment Method</label>
@@ -96,11 +75,21 @@
 																								</div>
 																				</div>
 																</div> -->
-																<fluro-content-render :fields="fields" :raw="true" v-model="item.rawData" />
-																<!-- <fluro-content-render :fields="fields" v-model="item.data" /> -->
-																<!-- <pre>{{fields}}</pre> -->
-												</v-container>
-								</flex-column-body>
+																								<fluro-content-render :fields="fields" :raw="true" v-model="item.rawData" />
+																				</v-container>
+																</flex-column-body>
+												</tab>
+												<tab :heading="`${tickets.length} Tickets`" v-if="tickets.length">
+																<flex-column-body style="background: #fafafa;">
+																				<v-container fluid style="background: #fff;" class="border-bottom">
+																								<img class="qrcode"  :src="qrCodeURL" />
+																				</v-container>
+																				<v-container>
+																								<ticket-list :interaction="item" />
+																				</v-container>
+																</flex-column-body>
+												</tab>
+								</tabset>
 				</flex-column>
 </template>
 <script>
@@ -109,6 +98,7 @@
 import Vue from 'vue';
 
 import FluroContentViewMixin from 'src/components/content/view/FluroContentViewMixin.js';
+import TicketList from 'src/components/content/event/TicketList.vue';
 
 /////////////////////////////////
 
@@ -123,10 +113,49 @@ export default {
 												required: true,
 								},
 				},
-				components: {},
+				components: {
+								TicketList,
+
+				},
+				asyncComputed: {
+								tickets: {
+												default: [],
+												get() {
+																var self = this;
+
+																self.loading = true;
+
+																///////////////////////////////////
+
+																var url = `/tickets/interaction/${self.item._id}`;
+
+																///////////////////////////////////
+
+																return new Promise(function(resolve, reject) {
+																				return self.$fluro.api.get(url)
+																								.then(function(res) {
+																												resolve(res.data);
+																												self.loading = false;
+
+																								})
+																								.catch(function(err) {
+																												reject(err);
+																												self.loading = false;
+																								});
+
+																});
+
+												}
+								},
+				},
 				mixins: [FluroContentViewMixin],
 				methods: {},
 				computed: {
+								qrCodeURL() {
+												var self = this;
+												var interactionID = self.$fluro.utils.getStringID(self.item);
+												return `${self.$fluro.api.defaults.baseURL}/system/qr?input=http://tickets.fluro.io/interaction/${interactionID}`;
+								},
 								paymentMethod() {
 												return this.item.paymentMethod
 								},
@@ -136,23 +165,205 @@ export default {
 								data() {
 												return this.item.data || {}
 								},
+								defaultFields() {
+												var array = [];
+
+												var self = this;
+
+
+
+												var fields = [{
+																				title: 'Names',
+																				type: 'group',
+																				key: 'names',
+																				sameLine: true,
+																				fields: [{
+																												title: 'First Name',
+																												key: '_firstName',
+																												minimum: 0,
+																												maximum: 1,
+																												type: 'string',
+																								},
+																								{
+																												title: 'Last Name',
+																												key: '_lastName',
+																												minimum: 0,
+																												maximum: 1,
+																												type: 'string',
+																								},
+																				],
+
+																},
+																{
+																				title: 'Extras',
+																				type: 'group',
+																				key: 'extras',
+																				sameLine: true,
+																				fields: [{
+																												title: 'Gender',
+																												key: '_gender',
+																												minimum: 0,
+																												maximum: 1,
+																												type: 'string',
+																												directive: 'select',
+																												options: [{
+																																				name: 'Male',
+																																				value: 'male',
+																																},
+																																{
+																																				name: 'Female',
+																																				value: 'female',
+																																},
+																																{
+																																				name: 'Unknown',
+																																				value: 'unknown',
+																																},
+																												]
+																								},
+																								{
+																												title: 'Date of Birth',
+																												key: '_dob',
+																												minimum: 0,
+																												maximum: 1,
+																												type: 'date',
+																												directive: 'datepicker',
+																								},
+																				]
+																},
+																{
+																				title: 'Communication',
+																				type: 'group',
+																				key: 'communication',
+																				sameLine: true,
+																				fields: [{
+																												title: 'Email Address',
+																												key: '_email',
+																												minimum: 0,
+																												maximum: 1,
+																												type: 'email',
+																								},
+																								{
+																												title: 'Phone Number',
+																												key: '_phoneNumber',
+																												minimum: 0,
+																												maximum: 1,
+																												type: 'string',
+																								},
+																				],
+
+																},
+												]
+
+												addField('contactDetails', {
+																title: 'Contact Details',
+																type: 'group',
+																key: 'contactDetails',
+																// expressions: {
+																// 				show() {
+																// 						return self.
+																// 				},
+																// },
+																fields,
+
+												})
+
+
+												function addField(key, details) {
+																details.key = key;
+																array.push(details)
+												}
+
+												return array;
+
+								},
 								interactionFields() {
 
 												var array = [];
 
-												array.push({
-																title: 'Linked Contacts',
-																key: 'contacts',
+												///////////////////////////////////
+
+												addField('contact', {
+																title: 'Primary Contact',
+																description: 'The primary contact for this interaction',
+																minimum: 0,
+																maximum: 1,
 																type: 'reference',
+																params: {
+																				restrictType: 'contact',
+																				allDefinitions: true,
+																},
+
+												})
+
+												addField('contacts', {
+																title: 'Linked Contacts',
+																description: 'All contacts referenced for this interaction',
 																minimum: 0,
 																maximum: 0,
+																type: 'reference',
+																params: {
+																				restrictType: 'contact',
+																				allDefinitions: true,
+																},
+
 												})
+
+												addField('event', {
+																title: 'Linked Event',
+																description: 'Attach this interaction to a specific event',
+																minimum: 0,
+																maximum: 1,
+																type: 'reference',
+																params: {
+																				restrictType: 'event',
+																				allDefinitions: true,
+																},
+
+												})
+
+
+												///////////////////////////////////
+
+												addField('emails', {
+																type: 'group',
+																sameLine: true,
+																fields: [{
+																								title: 'Primary Email Address',
+																								key: 'primaryEmail',
+																								description: 'The primary email address relevant to this interaction',
+																								minimum: 0,
+																								maximum: 1,
+																								type: 'email',
+																				}, {
+																								title: 'Transaction Email Address',
+																								key: 'transactionEmail',
+																								description: 'The primary email address relevant to this interaction',
+																								minimum: 0,
+																								maximum: 1,
+																								type: 'email',
+																								expressions: {
+																												defaultValue: `data.primaryEmail`,
+																								},
+																				}
+
+
+																]
+												})
+
+
+
+												function addField(key, details) {
+																details.key = key;
+																array.push(details)
+												}
 
 												return array;
 								},
 				},
 				data() {
-								return {}
+								return {
+												loading: true,
+								}
 				},
 				created() {
 								console.log('THIS RENDERER', this)
@@ -161,4 +372,11 @@ export default {
 
 </script>
 <style scoped lang="scss">
+
+.qrcode {
+	display: block;
+	border:5px solid #000;
+	background: #000;
+	margin:auto;
+}
 </style>

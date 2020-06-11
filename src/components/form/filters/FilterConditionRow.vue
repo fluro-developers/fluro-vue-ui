@@ -104,6 +104,7 @@
 																<v-flex xs12 sm5 v-else-if="inputType == 'array' && dataType != 'date'">
 																				<template v-if="simpleKeyIsRealms">
 																								<fluro-realm-select action="view any" :filterDiscriminator="discriminator" block small v-model="model.values" />
+																								<!-- <pre>{{discriminator}} - {{discriminatorType}} - {{discriminatorDefinition}}</pre> -->
 																				</template>
 																				<template v-else-if="useBasicReferenceSelect">
 																								<fluro-content-select-button small block :allDefinitions="true" :type="useBasicReferenceSelect" v-model="model.values" />

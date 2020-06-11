@@ -193,7 +193,9 @@ export default {
 
 																								break;
 																				case 'audio':
-
+																								return DynamicImportService.load('src/components/content/view/panels/audio.vue', function() {
+																												return import('src/components/content/view/panels/audio.vue')
+																								})
 																								break;
 																				case 'capability':
 
@@ -218,7 +220,9 @@ export default {
 																								})
 																								break;
 																				case 'contactdetail':
-
+																								return DynamicImportService.load('src/components/content/view/panels/contactdetail.vue', function() {
+																												return import('src/components/content/view/panels/contactdetail.vue')
+																								})
 																								break;
 																				case 'definition':
 
@@ -238,6 +242,9 @@ export default {
 																								break;
 																				case 'image':
 
+																								return DynamicImportService.load('src/components/content/view/panels/image.vue', function() {
+																												return import('src/components/content/view/panels/image.vue')
+																								})
 																								break;
 																				case 'integration':
 
@@ -297,7 +304,7 @@ export default {
 
 																								break;
 																				case 'ticket':
-																					return DynamicImportService.load('src/components/content/view/panels/ticket.vue', function() {
+																								return DynamicImportService.load('src/components/content/view/panels/ticket.vue', function() {
 																												return import('src/components/content/view/panels/ticket.vue')
 																								})
 																								break;
@@ -347,7 +354,7 @@ export default {
 																				self.$fluro.content.get(self.itemID, {
 																												appendContactDetail: 'all',
 																												appendAssignments: 'all',
-																												type:self.type,
+																												type: self.type,
 																								})
 																								.then(function(res) {
 

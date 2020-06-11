@@ -4,7 +4,7 @@
     	<constrain sm>
     		<v-layout>
     			<v-flex>
-    					<img :src="qrCodeURL"/>
+    					<img class="qrcode" :src="qrCodeURL"/>
     			</v-flex>
     			<!-- <v-flex v-else> -->
     					<!-- <img :src="ticketCodeURL"/> -->
@@ -121,4 +121,11 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+
+.qrcode {
+	display: block;
+	border:5px solid #000;
+	background: #000;
+	margin:auto;
+}
 </style>

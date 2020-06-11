@@ -1,27 +1,34 @@
 <template>
 				<li class="field-editor-item" :class="classes">
-								<div class="field-editor-item-field" v-tippy :content="fieldPath" @click="select(model)" @mouseover="mouseover(model)" @mouseleave="mouseleave(model)">
+
+					<!-- v-tippy="{placement:'right'}" :content="fieldPath" -->
+								<div class="field-editor-item-field"  @click="select(model)" @mouseover="mouseover(model)" @mouseleave="mouseleave(model)">
 												<!--  -->
 												<fluro-realm-bar :realm="targetRealms" v-if="targetRealms" />
 												<v-layout align-center>
 																<!-- :click="clickedRoute" -->
+																<fluro-help absolute uid="field.editor.item.drag" title="Drag to reorder" body="Click and drag to move or reorder fields within your form" />
 																<v-flex shrink class="handle grab">
+																				
 																				<div class="icon">
 																								<!-- <fluro-icon :icon="icon" /> -->
 																								<fluro-icon icon="arrows" />
 																				</div>
 																</v-flex>
 																<v-flex shrink v-if="ticketed" v-tippy content="Ticketing Enabled">
+																				<fluro-help absolute uid="field.editor.item.ticket" title="Ticketed Contact" body="Contacts created here have ticketing enabled. This means that tickets will be created upon submission of this form" />
 																				<div class="icon ticket">
 																								<fluro-icon library="fas" icon="ticket" />
 																				</div>
 																</v-flex>
 																<v-flex shrink v-if="hasExpressions">
+																				<fluro-help absolute uid="field.editor.item.expressions" title="Expressions" body="This field has advanced logic and expressions that change how this field is displayed and behaves based on the input of the user" />
 																				<div class="symbol expression" v-tippy content="Has Expressions">
 																								<fluro-icon icon="brackets-curly" />
 																				</div>
 																</v-flex>
 																<v-flex shrink v-if="officeUseOnly">
+																				<fluro-help absolute uid="field.editor.item.officeuse" title="Office Use Only" body="This field is only visible for administrators" />
 																				<div class="symbol" v-tippy content="Office Use Only">
 																								<fluro-icon icon="eye-slash" />
 																				</div>
@@ -39,6 +46,7 @@
 																								<v-menu v-model="showActions" :fixed="true" transition="slide-y-transition" offset-y>
 																												<template v-slot:activator="{ on }">
 																																<span v-on="on">
+
 																																				<fluro-icon :icon="showActions ? `times` : `ellipsis-v`" />
 																																</span>
 																												</template>
@@ -51,6 +59,8 @@
 																												</div>
 																								</v-menu>
 																				</div>
+																																																																									<fluro-help absolute uid="field.editor.item.actions" title="More Options" body="More options for this field. Including deleting, duplicating and other useful actions." />
+
 																</v-flex>
 												</v-layout>
 								</div>
@@ -70,10 +80,14 @@ import _ from 'lodash';
 
 // import FluroFieldEditorItem from 'src/components/fields/FluroFieldEditorItem.vue';
 
+import FluroHelp from 'src/components/FluroHelp.vue';
+
+
 export default {
 				name: 'fluro-field-editor-item',
 				components: {
 								draggable,
+								FluroHelp,
 				},
 				props: {
 								top: {
@@ -316,7 +330,7 @@ export default {
 																title: `Copy Field Path`,
 																icon: 'code',
 																click() {
-																	console.log('emit copy event');
+																				console.log('emit copy event');
 																				self.$emit('copypath', self.fieldPath, self.model, self.parent);
 																}
 												})
@@ -446,7 +460,7 @@ export default {
 												this.$emit('injected', field, parent);
 								},
 								copypath(path, field, parent) {
-									this.$emit('copypath', path, field, parent);
+												this.$emit('copypath', path, field, parent);
 								},
 								deleted(field, parent) {
 												this.$emit('deleted', field, parent);
@@ -513,6 +527,7 @@ export default {
 				margin: 0 0 4px;
 				list-style-type: none;
 				list-style: none;
+				position:relative;
 
 				.summary {
 								font-size: 0.8em;

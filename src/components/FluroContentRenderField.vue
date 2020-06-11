@@ -1,10 +1,7 @@
 <template>
 				<div class="fluro-content-render-field" v-if="ready">
-								<!-- <pre>{{renderer}}</pre> -->
-								<!-- <pre>{{field.title}} {{field.key}} {{renderer}} {{fieldModel}}</pre> -->
 								<template v-if="renderer == 'embedded' && raw">
 												<template v-if="!multiple">
-																<!-- <pre>{{field.title}}</pre> -->
 																<fluro-panel>
 																				<fluro-panel-title class="border-bottom">
 																								{{field.title}}
@@ -24,26 +21,12 @@
 																												<fluro-content-render :raw="raw" :fields="fields" v-model="fieldModel[index]" />
 																								</fluro-panel-body>
 																				</fluro-panel>
-																				<!-- <v-card class="panel">
-																								<div class="panel-title">
-																												<h5 title>{{groupTitle(object, index)}}</h5>
-																								</div>
-																								<v-card-text class="panel-body">
-																												<fluro-content-render :raw="raw" :fields="fields" v-model="fieldModel[index]" />
-																								</v-card-text>
-																				</v-card> -->
 																</template>
 												</template>
-												<!-- <template v-else>
-																<template v-for="field in fields">
-																				<fluro-content-render :raw="raw"-field :field="field" v-model="model"></fluro-content-render-field>
-																</template>
-												</template> -->
 								</template>
 								<template v-else-if="renderer == 'group'">
 												<template v-if="asObject">
 																<template v-if="!multiple">
-																				<!-- <pre>{{field.title}}</pre> -->
 																				<fluro-content-render :raw="raw" :fields="fields" v-model="fieldModel" />
 																</template>
 																<template v-if="multiple">
@@ -70,11 +53,11 @@
 																				</v-layout>
 																</template>
 																<template v-else>
-																				<v-layout row wrap>
+																				<!-- <v-layout row wrap> -->
 																								<template v-for="subField in fields">
 																												<fluro-content-render-field :raw="raw" :field="subField" v-model="model" />
 																								</template>
-																				</v-layout>
+																				<!-- </v-layout> -->
 																</template>
 												</template>
 								</template>
@@ -187,7 +170,7 @@
 																<template v-if="!multiple">
 																				<div class="field-group">
 																								<label>{{label}}</label>
-																									<a target="_blank" :href="fieldModel">{{fieldModel}}</a>
+																								<a target="_blank" :href="fieldModel">{{fieldModel}}</a>
 																				</div>
 																</template>
 												</template>
@@ -203,7 +186,7 @@
 																<template v-if="!multiple">
 																				<div class="field-group">
 																								<label>{{label}}</label>
-																									<a target="_blank" :href="`mailto:` + fieldModel">{{fieldModel}}</a>
+																								<a target="_blank" :href="`mailto:` + fieldModel">{{fieldModel}}</a>
 																				</div>
 																</template>
 												</template>
@@ -250,8 +233,6 @@
 				</div>
 </template>
 <script>
-
-
 import _ from 'lodash';
 
 
@@ -479,10 +460,10 @@ export default {
 																								case 'group':
 																												directive = 'group';
 																												break;
-																									case 'email':
+																								case 'email':
 																												directive = 'email';
 																												break;
-																										case 'url':
+																								case 'url':
 																												directive = 'url';
 																												break;
 																								case 'boolean':
@@ -569,11 +550,11 @@ export default {
 <style lang="scss">
 .fluro-content-render-field {
 
-	.signature-image {
-		width:100%;
-		height:auto;
-		border:5px solid #eee;
-	}
+				.signature-image {
+								width: 100%;
+								height: auto;
+								border: 5px solid #eee;
+				}
 
 				.field-group {
 								display: block;

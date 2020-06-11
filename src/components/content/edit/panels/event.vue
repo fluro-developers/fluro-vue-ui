@@ -324,6 +324,18 @@
 																								<h3 margin>Registrations &amp; Tickets</h3>
 																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.forms" v-model="model"></fluro-content-form-field>
 																								<!-- </constrain> -->
+																								
+
+																								<ticket-type-manager v-model="model"></ticket-type-manager>
+																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.publicTicketingEnabled" v-model="model"></fluro-content-form-field>
+
+
+																								<!-- <pre>{{model.ticketTypes}}</pre> -->
+																								<!-- <pre>{{model.ticketLimit}}</pre> -->
+
+				
+
+
 																								<ticket-list :event="model" />
 																				</v-container>
 																</flex-column-body>
@@ -427,6 +439,7 @@ import LocationSelector from 'src/components/content/edit/components/LocationSel
 import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
 import GuestList from 'src/components/content/event/GuestList.vue';
 import TicketList from 'src/components/content/event/TicketList.vue';
+import TicketTypeManager from 'src/components/content/event/TicketTypeManager.vue';
 import FluroContentView from 'src/components/content/view/FluroContentView.vue';
 
 /////////////////////////////////
@@ -441,6 +454,7 @@ export default {
 				components: {
 								GuestList,
 								TicketList,
+								TicketTypeManager,
 								// FluroContentEdit,
 								FluroContentView,
 								MessagingEventManager,
@@ -670,7 +684,7 @@ export default {
 								}
 				},
 				asyncComputed: {
-								
+
 								rosterTypes: {
 												default: [],
 												get() {
@@ -980,6 +994,19 @@ export default {
 												///////////////////////////////////
 												///////////////////////////////////
 
+												
+
+
+												addField('publicTicketingEnabled', {
+																title: 'Enable Public Ticketing',
+																description: 'Enable ticketing for the public to register for this event',
+																minimum: 0,
+																maximum: 1,
+																type: 'boolean',
+
+												})
+
+
 												addField('forms', {
 																title: 'Registration Forms',
 																description: 'Manage registration forms that can be used to register for this event',
@@ -1202,8 +1229,8 @@ export default {
 
 								return {
 												dateModel: {
-																startDate: existingModel.startDate ? new Date(existingModel.startDate) : null,
-																endDate: existingModel.endDate ? new Date(existingModel.endDate) : null,
+																startDate: existingModel.startDate ? new Date(existingModel.startDate) : new Date(),
+																endDate: existingModel.endDate ? new Date(existingModel.endDate) : new Date(),
 												}
 								}
 				},

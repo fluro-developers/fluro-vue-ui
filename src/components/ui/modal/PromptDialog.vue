@@ -67,6 +67,14 @@ export default {
     // max-width: 500px;
     text-align: center;
 
+
+    form {
+    	display:flex;
+    	flex:1;
+    	overflow: hidden;
+    	flex-direction: column;
+    }
+
     .v-list__tile__title {
         font-size: 0.9em;
         font-weight: 500;
