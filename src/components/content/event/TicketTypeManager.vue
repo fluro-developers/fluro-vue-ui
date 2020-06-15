@@ -30,8 +30,8 @@
 																												<th>Any</th>
 																												<td><input v-model="model.ticketLimit" type="number" min="0" /></td>
 																												<td>{{model.tickets.value}}</td>
-																												<td>{{getAvailable(model.tickets.value, model.ticketLimit)}}</td>
-																												<td>{{getPercent(model.tickets.value, model.ticketLimit)}}%</td>
+																												<td>{{model.tickets.value ? getAvailable(model.tickets.value, model.ticketLimit) : ''}}</td>
+																												<td>{{model.tickets.value ? getPercent(model.tickets.value, model.ticketLimit) : ''}}%</td>
 																								</tr>
 																								<tr v-for="entry in model.ticketTypes">
 																												<th> <input v-model="entry.title" /></th>
@@ -117,7 +117,7 @@ export default {
 																return 0;
 												}
 
-													console.log('Available', value, limit)
+												console.log('Available', value, limit)
 												return Math.max(limit - value, 0);
 								},
 								getPercent(value, limit) {

@@ -958,6 +958,9 @@ export default {
 								},
 				},
 				watch: {
+					columns(columns) {
+						 this.structureColumns = _.compact(columns)
+					},
 								extraColumns() {
 												this.$emit('additionalColumns', this.extraColumns);
 								},
@@ -1920,6 +1923,10 @@ export default {
 																				font-weight: 600;
 																				letter-spacing: 0.03em;
 																				padding: 4px $padding-h;
+
+																				&.checkbox-cell {
+																					padding:0;
+																				}
 																}
 												}
 								}

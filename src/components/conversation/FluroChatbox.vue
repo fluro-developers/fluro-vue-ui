@@ -1,7 +1,8 @@
 <template>
 				<flex-column class="chatbox">
 								<div class="notconnected" v-if="notConnected">
-												<slot name="notconnected">
+												<v-progress-circular v-if="joining" indeterminate color="rgba(180,180,180,0.5)" />
+												<slot name="notconnected" v-else>
 												</slot>
 								</div>
 								<flex-column-header class="chatbox-header">
@@ -27,8 +28,17 @@
 																																<div class="chat-time">{{paragraph.date | timeago}}</div>
 																												</div>
 																												<div class="messages">
-																																<div class="message-entry" :key="message._id" v-for="message in paragraph.messages">
-																																				<div class="message">{{message.message}}</div>
+																																<div class="message-entry" :class="{deleted:message.deleted, internal:message.internal}" :key="message._id" v-for="message in paragraph.messages">
+																																				<v-layout align-center v-if="options.moderator">
+																																								<v-flex>
+																																												<div class="message">{{message.message}}</div>
+																																								</v-flex>
+																																								<v-flex shrink>
+																																												<a class="message-link" @click="toggleApproval(message)">{{message.approved ? 'Disapprove' : 'Approve'}}</a>
+																																												<a class="message-link" @click="deleteMessage(message)">Delete</a>
+																																								</v-flex>
+																																				</v-layout>
+																																				<div class="message" v-else>{{message.message}}</div>
 																																</div>
 																												</div>
 																								</div>
@@ -36,10 +46,25 @@
 																</div>
 												</flex-column-body>
 								</flex-column>
-								<flex-column-footer class="chatbox-footer" v-if="conversationID">
+								<template v-if="conversationID">
+									<!-- <flex-column-footer class="chatbox-footer" v-if="options.moderator">
+										<tabset>
+											<tab></tab>
+										</tabset>
+									</flex-column-footer> -->
+								<flex-column-footer class="chatbox-footer" :class="mode">
+												<div class="mode-links" v-if="options.moderator">
+																<a @click="mode = 'message'" :class="{active:mode == 'message'}">Reply</a>
+																<a @click="mode = 'internal'" :class="{active:mode == 'internal'}">Note</a>
+												</div>
 												<v-layout align-center>
 																<v-flex>
 																				<textarea ref="textarea" @input="updateTextAreaSize" @keyup.enter="sendMessage($event)" v-model="proposed.message" placeholder="Type your message and press enter..."></textarea>
+																</v-flex>
+																<v-flex shrink style="padding-left:10px" v-if="internalEnabled">
+																				<v-btn icon class="ma-0" @click="sendInternal($event)" style="margin-left:10px;">
+																								<fluro-icon :icon="sending ?  'spinner-thirds' : `paper-plane`" :spin="sending" />
+																				</v-btn>
 																</v-flex>
 																<v-flex shrink style="padding-left:10px">
 																				<v-btn icon class="ma-0" @click="sendMessage($event)" style="margin-left:10px;">
@@ -50,6 +75,7 @@
 												<slot name="footer">
 												</slot>
 								</flex-column-footer>
+							</template>
 				</flex-column>
 </template>
 <script>
@@ -57,6 +83,12 @@ import _ from 'lodash';
 
 export default {
 				props: {
+								options: {
+												type: Object,
+												default () {
+																return {};
+												}
+								},
 								value: {
 												type: Object,
 												default () {
@@ -94,6 +126,8 @@ export default {
 				},
 				data() {
 								return {
+												mode: 'message',
+												joining: false,
 												sending: false,
 												empty: true,
 												feed: [],
@@ -102,7 +136,7 @@ export default {
 												proposed: {},
 												timer: null,
 												loadingConversation: false,
-												conversationJoined:false,
+												conversationJoined: false,
 								}
 				},
 				watch: {
@@ -110,6 +144,9 @@ export default {
 								conversationCheckString: 'init',
 				},
 				computed: {
+								internalEnabled() {
+												return this.options.internalEnabled;
+								},
 								notConnected() {
 												return !this.conversationJoined;
 								},
@@ -128,6 +165,49 @@ export default {
 								}
 				},
 				methods: {
+								toggleApproval(message) {
+												if (message.approved) {
+																this.removeApproval(message);
+												} else {
+																this.approveMessage(message);
+												}
+								},
+								removeApproval(message) {
+												console.log('UNAPPROVE MESSAGE', message);
+
+
+												var self = this;
+												self.$fluro.api.put(`/chat/${this.conversationID}/${message._id}`, {
+																				approved: false,
+																})
+																.then(function() {
+																				self.$set(message, 'approved', false);
+																})
+								},
+								approveMessage(message) {
+												console.log('APPROVE MESSAGE', message);
+
+
+												var self = this;
+												self.$fluro.api.put(`/chat/${this.conversationID}/${message._id}`, {
+																				approved: true,
+																})
+																.then(function() {
+																				self.$set(message, 'approved', true);
+																})
+								},
+								deleteMessage(message) {
+												console.log('DELETE MESSAGE', message);
+
+
+												var self = this;
+												self.$fluro.api.put(`/chat/${this.conversationID}/${message._id}`, {
+																				deleted: true,
+																})
+																.then(function() {
+																				self.$set(message, 'deleted', true);
+																})
+								},
 								mount() {
 												this.init();
 								},
@@ -332,6 +412,8 @@ export default {
 																return;
 												}
 
+												self.joining = true;
+
 												///////////////////////////////////////
 
 												return self.$fluro.api.post(`${self.conversationUrl}/join`, {
@@ -341,6 +423,10 @@ export default {
 																				//console.log('Joined the conversation!', res);
 																				self.conversationJoined = true;
 																				self.subscribe();
+																				self.joining = false;
+																})
+																.catch(function(err) {
+																				self.joining = false;
 																})
 
 								},
@@ -357,6 +443,34 @@ export default {
 												} else {
 																target.style.minHeight = 0;
 												}
+								},
+								sendInternal() {
+												var self = this;
+												self.sending = true;
+												var message = self.proposed.message;
+
+												self.proposed.message = ''
+												self.updateTextAreaSize();
+
+												//Mark as internal
+												message.internal = true;
+
+												self.$fluro.api.post(`${self.conversationUrl}`, {
+																				message,
+																}).then(function(res) {
+																				console.log('Posted!', res.data);
+																				self.chatCache++;
+																				self.scrollToBottom();
+																				self.proposed.message = ''
+																				self.updateTextAreaSize();
+																				self.sending = false;
+
+
+																})
+																.catch(function(err) {
+																				self.sending = false;
+																})
+
 								},
 								sendMessage($event) {
 
@@ -419,6 +533,32 @@ export default {
 								top: 0;
 								backdrop-filter: blur(4px);
 								z-index: 6;
+				}
+}
+
+.message-entry {
+				.message-link {
+								opacity: 0;
+								font-size: 9px;
+								display: inline-block;
+								margin: 0 2px;
+								color: inherit;
+				}
+
+				&:hover .message-link {
+								opacity: 0.5;
+				}
+
+				.message-link:hover {
+								opacity: 1;
+				}
+
+				&.deleted {
+								opacity: 0.5;
+								text-decoration: line-through;
+								font-size: 10px;
+								font-style: italic;
+								;
 				}
 }
 
@@ -602,14 +742,32 @@ $message-radius: 20px;
 }
 
 .chatbox-body {
-	width:100%;
+				width: 100%;
 }
+
+
 
 
 .chatbox-footer {
 				border-top: 1px solid rgba(#000, 0.1);
 				padding: 10px;
 
+
+	.mode-links {
+		display: block;
+
+		a {
+			display: inline-block;
+			opacity: 0.5;
+			padding:5px;
+			color:inherit;
+			
+			&.active {
+				opacity: 1;
+				font-weight: bold;
+			}
+		}
+	}
 
 
 				textarea {

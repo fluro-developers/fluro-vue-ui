@@ -122,7 +122,7 @@ export default {
 }
 
 </script>
-<style lang="scss">
+<style scoped lang="scss">
 .toggle-switch {
 				flex: none;
 				background: #E2E7EE;
