@@ -156,9 +156,9 @@
 																																								</v-container>
 																																				</template>
 																																</fluro-content-form>
-																																<v-btn v-if="model._id && liveUrl" target="_blank" :href="liveUrl" block large color="primary">
+																																<!-- <v-btn v-if="model._id && liveUrl" target="_blank" :href="liveUrl" block large color="primary">
 																																				Watch on Fluro Live
-																																</v-btn>
+																																</v-btn> -->
 																																<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.streamIntegrations" v-model="model" />
 																																<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.streamContent" v-model="model" />
 																																<fluro-panel>
@@ -185,12 +185,10 @@
 																																																<input type="hidden" ref="streamKey" :value="streamKey">
 																																												</div>
 																																								</v-input>
-																																								<v-input class="no-flex" label="Fluro Live URL">
+																																								<!-- <v-input class="no-flex" label="Fluro Live URL">
 																																												<div v-tippy content="Click to copy to clipboard" @click.stop.prevent="copyToClipboard('liveUrl')">
 																																																<v-layout align-center>
-																																																				<!-- <v-flex shrink>
-                                                        <fluro-icon icon="copy" />
-                                                    </v-flex> -->
+																																																				
 																																																				<v-flex class="copystring">{{liveUrl}}</v-flex>
 																																																</v-layout>
 																																																<input type="hidden" ref="liveUrl" :value="liveUrl">
@@ -199,14 +197,12 @@
 																																								<v-input class="no-flex" label="Video Stream URL">
 																																												<div v-tippy content="Click to copy to clipboard" @click.stop.prevent="copyToClipboard('streamUrl')">
 																																																<v-layout align-center>
-																																																				<!-- <v-flex shrink>
-                                                        <fluro-icon icon="copy" />
-                                                    </v-flex> -->
+																																																				
 																																																				<v-flex class="copystring">{{streamUrl}}</v-flex>
 																																																</v-layout>
 																																																<input type="hidden" ref="streamUrl" :value="streamUrl">
 																																												</div>
-																																								</v-input>
+																																								</v-input> -->
 																																				</fluro-panel-body>
 																																</fluro-panel>
 																												</template>
@@ -324,18 +320,10 @@
 																								<h3 margin>Registrations &amp; Tickets</h3>
 																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.forms" v-model="model"></fluro-content-form-field>
 																								<!-- </constrain> -->
-																								
-
 																								<ticket-type-manager v-model="model"></ticket-type-manager>
 																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.publicTicketingEnabled" v-model="model"></fluro-content-form-field>
-
-
 																								<!-- <pre>{{model.ticketTypes}}</pre> -->
 																								<!-- <pre>{{model.ticketLimit}}</pre> -->
-
-				
-
-
 																								<ticket-list :event="model" />
 																				</v-container>
 																</flex-column-body>
@@ -994,7 +982,7 @@ export default {
 												///////////////////////////////////
 												///////////////////////////////////
 
-												
+
 
 
 												addField('publicTicketingEnabled', {

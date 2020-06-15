@@ -39,17 +39,10 @@ const plugins = [
 												//{ find: 'vue', replacement: require.resolve('vue/dist/vue.esm.js') },
 								]
 				}),
-
-
-				// alias({
-				// 				'src': __dirname + '/src'
-				// }),
 				globalStyles({ patterns }),
 				//css(),
 				vue({
-								// template: { optimizeSSR: true },
-								//css: `dist/${FILE_NAME}.css`,
-								css: false,
+
 								postcss: {
 												plugins: require('./postcss.config')().plugins
 								}
@@ -63,7 +56,7 @@ const plugins = [
 								exclude: 'node_modules/**'
 				}),
 				postcss({
-					//extract: true, //This needs to be true for the website builder
+								//extract: true, //This needs to be true for the website builder
 				})
 ];
 const pluginsWithMinify = plugins.slice(0);
