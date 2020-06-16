@@ -14,7 +14,7 @@
 												</div>
 												<flex-column-body v-else class="chatbox-body" ref="body">
 																<div class="message-container">
-																				<div class="paragraph" :class="{self:paragraph.self}" :key="paragraph._id" v-for="paragraph in feed">
+																				<div class="paragraph" :class="[{self:paragraph.self}, paragraph.context]" :key="paragraph._id" v-for="paragraph in feed">
 																								<!-- <pre>{{paragraph}}</pre> -->
 																								<div class="avatar-column">
 																												<div class="avatar">
@@ -28,14 +28,20 @@
 																																<div class="chat-time">{{paragraph.date | timeago}}</div>
 																												</div>
 																												<div class="messages">
-																																<div class="message-entry" :class="{deleted:message.deleted, internal:message.internal}" :key="message._id" v-for="message in paragraph.messages">
+																																<div class="message-entry" :class="{deleted:message.deleted, approved:message.approved, highlight:message.highlight, internal:message.internal}" :key="message._id" v-for="message in paragraph.messages">
 																																				<v-layout align-center v-if="options.moderator">
 																																								<v-flex>
 																																												<div class="message">{{message.message}}</div>
 																																								</v-flex>
 																																								<v-flex shrink>
-																																												<a class="message-link" @click="toggleApproval(message)">{{message.approved ? 'Disapprove' : 'Approve'}}</a>
-																																												<a class="message-link" @click="deleteMessage(message)">Delete</a>
+																																												<div class="buttons">
+																																																<a class="message-link" :class="{active:message.approved}" @click="toggleApproval(message)">
+																																																				<fluro-icon :library="message.approved ? 'fas' : 'far'" icon="check-circle" /></a>
+																																																<a class="message-link" :class="{active:message.highlight}" @click="toggleAttribute(message, 'highlight')">
+																																																				<fluro-icon :library="message.highlight ? 'fas' : 'far'" icon="star" /></a>
+																																																<a class="message-link" @click="deleteMessage(message)">
+																																																				<fluro-icon icon="trash-alt" /></a>
+																																												</div>
 																																								</v-flex>
 																																				</v-layout>
 																																				<div class="message" v-else>{{message.message}}</div>
@@ -47,35 +53,35 @@
 												</flex-column-body>
 								</flex-column>
 								<template v-if="conversationID">
-									<!-- <flex-column-footer class="chatbox-footer" v-if="options.moderator">
+												<!-- <flex-column-footer class="chatbox-footer" v-if="options.moderator">
 										<tabset>
 											<tab></tab>
 										</tabset>
 									</flex-column-footer> -->
-								<flex-column-footer class="chatbox-footer" :class="mode">
-												<div class="mode-links" v-if="options.moderator">
-																<a @click="mode = 'message'" :class="{active:mode == 'message'}">Reply</a>
-																<a @click="mode = 'internal'" :class="{active:mode == 'internal'}">Note</a>
-												</div>
-												<v-layout align-center>
-																<v-flex>
-																				<textarea ref="textarea" @input="updateTextAreaSize" @keyup.enter="sendMessage($event)" v-model="proposed.message" placeholder="Type your message and press enter..."></textarea>
-																</v-flex>
-																<v-flex shrink style="padding-left:10px" v-if="internalEnabled">
-																				<v-btn icon class="ma-0" @click="sendInternal($event)" style="margin-left:10px;">
-																								<fluro-icon :icon="sending ?  'spinner-thirds' : `paper-plane`" :spin="sending" />
-																				</v-btn>
-																</v-flex>
-																<v-flex shrink style="padding-left:10px">
-																				<v-btn icon class="ma-0" @click="sendMessage($event)" style="margin-left:10px;">
-																								<fluro-icon :icon="sending ?  'spinner-thirds' : `paper-plane`" :spin="sending" />
-																				</v-btn>
-																</v-flex>
-												</v-layout>
-												<slot name="footer">
-												</slot>
-								</flex-column-footer>
-							</template>
+												<flex-column-footer class="chatbox-footer" :class="mode">
+																<div class="mode-links" v-if="options.moderator">
+																				<a @click="mode = 'message'" :class="{active:mode == 'message'}">Reply</a>
+																				<a @click="mode = 'internal'" :class="{active:mode == 'internal'}">Note</a>
+																</div>
+																<v-layout align-center>
+																				<v-flex>
+																								<textarea ref="textarea" @input="updateTextAreaSize" @keyup.enter="sendMessage($event)" v-model="proposed.message" placeholder="Type your message and press enter..."></textarea>
+																				</v-flex>
+																				<v-flex shrink style="padding-left:10px" v-if="internalEnabled">
+																								<v-btn icon class="ma-0" @click="sendInternal($event)" style="margin-left:10px;">
+																												<fluro-icon :icon="sending ?  'spinner-thirds' : `paper-plane`" :spin="sending" />
+																								</v-btn>
+																				</v-flex>
+																				<v-flex shrink style="padding-left:10px">
+																								<v-btn icon class="ma-0" @click="sendMessage($event)" style="margin-left:10px;">
+																												<fluro-icon :icon="sending ?  'spinner-thirds' : `paper-plane`" :spin="sending" />
+																								</v-btn>
+																				</v-flex>
+																</v-layout>
+																<slot name="footer">
+																</slot>
+												</flex-column-footer>
+								</template>
 				</flex-column>
 </template>
 <script>
@@ -83,6 +89,9 @@ import _ from 'lodash';
 
 export default {
 				props: {
+								filter: {
+												type: Function,
+								},
 								options: {
 												type: Object,
 												default () {
@@ -126,6 +135,9 @@ export default {
 				},
 				data() {
 								return {
+												messageFilter:this.filter,
+												thread: {},
+												socketChannel: null,
 												mode: 'message',
 												joining: false,
 												sending: false,
@@ -140,6 +152,11 @@ export default {
 								}
 				},
 				watch: {
+								filter(f) {
+												this.messageFilter = f;
+												this.mapConversation(this.thread);
+								},
+
 								chatCache: 'reloadConversation',
 								conversationCheckString: 'init',
 				},
@@ -162,42 +179,53 @@ export default {
 								},
 								conversationID() {
 												return this.$fluro.utils.getStringID(this.conversation);
-								}
+								},
 				},
 				methods: {
 								toggleApproval(message) {
-												if (message.approved) {
-																this.removeApproval(message);
+												this.toggleAttribute(message, 'approved');
+								},
+								toggleAttribute(message, attribute) {
+												if (message[attribute]) {
+																this.removeAttribute(message, attribute);
 												} else {
-																this.approveMessage(message);
+																this.addAttribute(message, attribute);
 												}
 								},
-								removeApproval(message) {
-												console.log('UNAPPROVE MESSAGE', message);
-
+								removeAttribute(message, attribute) {
 
 												var self = this;
-												self.$fluro.api.put(`/chat/${this.conversationID}/${message._id}`, {
-																				approved: false,
-																})
+
+												var change = {}
+												change[attribute] = false;
+												self.$fluro.api.put(`/chat/${this.conversationID}/${message._id}`, change)
 																.then(function() {
-																				self.$set(message, 'approved', false);
+																				self.$set(message, attribute, false);
 																})
 								},
-								approveMessage(message) {
-												console.log('APPROVE MESSAGE', message);
+								addAttribute(message, attribute) {
+												var self = this;
+												var change = {}
+												change[attribute] = true;
+												self.$fluro.api.put(`/chat/${this.conversationID}/${message._id}`, change)
+																.then(function() {
+																				self.$set(message, attribute, true);
+																})
+								},
+								highlightMessage(message) {
+												console.log('Highlight MESSAGE', message);
 
 
 												var self = this;
 												self.$fluro.api.put(`/chat/${this.conversationID}/${message._id}`, {
-																				approved: true,
+																				highlight: true,
 																})
 																.then(function() {
-																				self.$set(message, 'approved', true);
+																				self.$set(message, 'highlight', true);
 																})
 								},
 								deleteMessage(message) {
-												console.log('DELETE MESSAGE', message);
+												// console.log('DELETE MESSAGE', message);
 
 
 												var self = this;
@@ -209,6 +237,17 @@ export default {
 																})
 								},
 								mount() {
+
+
+												var self = this;
+
+
+
+
+
+
+
+
 												this.init();
 								},
 								unmount() {
@@ -224,7 +263,7 @@ export default {
 																this.leaveConversation();
 												}
 								},
-								reloadConversation() {
+								reloadConversation: _.debounce(function(forceScroll) {
 
 												var self = this;
 
@@ -246,12 +285,22 @@ export default {
 
 												promise.then(function(res) {
 																				self.loadingConversation = false;
-																				var thread = res.data;
-																				if (!thread || !thread.users) {
+																				self.thread = res.data;
+																				if (!self.thread || !self.thread.users) {
 																								return;
 																				}
 
-																				self.mapConversation(thread);
+																				self.mapConversation(self.thread);
+
+																				if (forceScroll) {
+																								self.$nextTick(function() {
+
+
+																												console.log('Force scroll to bottom')
+																												self.scrollToBottom(true);
+
+																								})
+																				}
 																})
 																.catch(function(err) {
 																				self.loadingConversation = false;
@@ -259,22 +308,82 @@ export default {
 																})
 
 												return promise;
+								}, 400),
+
+								socketUpdate(event) {
+												this.reloadConversation();
 								},
 								poll() {
+												// console.log('poll')
 												this.reloadConversation();
 								},
 
 								subscribe() {
-												if (this.timer) {
+
+												var self = this;
+
+
+												////////////////////////////
+
+												self.reloadConversation(true);
+
+												////////////////////////////
+
+												var POLL_FREQUENCY = 3000;
+
+
+
+												if (self.$socket) {
+
+																self.socketChannel = self.$socket.channel(self.conversationID);
+																self.socketChannel.on('message.create', self.socketUpdate)
+																self.socketChannel.on('message.update', self.socketUpdate)
+																POLL_FREQUENCY = 10000;
+
+
+
+																// console.log('subscribe > $socket', self)
+																// 5e96df4bcd657984f80d1649
+																// self.$socket.client.emit("subscribe", {
+																// 				room: self.conversationID,
+																// });
+
+																// // console.log('SOCKET SUBSCRIBE', self.$socket, self.conversationID)
+
+																// // self.$socket.$subscribe(self.conversationID, self.socketUpdate);
+																// self.$socket.$subscribe('message.update', self.socketUpdate);
+																// self.$socket.$subscribe('message.create', self.socketUpdate);
+
+												}
+
+												////////////////////////////
+
+												if (self.timer) {
+
 																return;
 												}
 
-												this.timer = setInterval(this.poll, 3000);
+
+												self.timer = setInterval(self.poll, POLL_FREQUENCY);
+
 								},
 								unsubscribe() {
-												if (this.timer) {
-																clearInterval(this.timer);
-																this.timer = null;
+
+												var self = this;
+
+												if (self.$socket) {
+																self.socketChannel.disconnect();
+												}
+
+												// if (self.$socket) {
+												// 				self.$socket.$unsubscribe('message.update');
+												// 				self.$socket.$unsubscribe('message.create');
+												// }
+
+
+												if (self.timer) {
+																clearInterval(self.timer);
+																self.timer = null;
 												}
 								},
 								scrollToBottom(force) {
@@ -340,8 +449,16 @@ export default {
 												var lookup = thread.users;
 												var selfID = thread.authorID;
 
-												var array = _.chain(thread.messages)
+												var messages = thread.messages;
+
+												if (self.messageFilter) {
+																messages = self.messageFilter(messages);
+												}
+
+												var array = _.chain(messages)
 																.reduce(function(set, message) {
+
+																				var context = message.internal ? 'internal' : 'default';
 																				var authorID = message.authorID;
 
 																				//Get the last item in the set
@@ -349,8 +466,13 @@ export default {
 
 																				if (previousParagraph) {
 																								if (previousParagraph.authorID == authorID) {
-																												previousParagraph.messages.push(message);
-																												return set;
+
+																												if (previousParagraph.context == context) {
+																																previousParagraph.messages.push(message);
+																																return set;
+																												}
+
+
 																								}
 																				}
 
@@ -361,6 +483,7 @@ export default {
 																				var paragraph = {
 																								_id: message._id, //use the first message
 																								authorID,
+																								context,
 																								date: message.created,
 																								author: lookup[authorID],
 																								messages: [message],
@@ -380,6 +503,7 @@ export default {
 
 												//console.log('Feed updated', array[array.length - 1]);
 												self.feed = array;
+												self.$emit('thread', thread)
 												self.scrollToBottom();
 								},
 								leaveConversation() {
@@ -420,7 +544,7 @@ export default {
 																				nickName: self.nickName,
 																})
 																.then(function(res) {
-																				//console.log('Joined the conversation!', res);
+																				// console.log('Joined the conversation!', res);
 																				self.conversationJoined = true;
 																				self.subscribe();
 																				self.joining = false;
@@ -458,7 +582,7 @@ export default {
 												self.$fluro.api.post(`${self.conversationUrl}`, {
 																				message,
 																}).then(function(res) {
-																				console.log('Posted!', res.data);
+																				//	console.log('Posted!', res.data);
 																				self.chatCache++;
 																				self.scrollToBottom();
 																				self.proposed.message = ''
@@ -476,7 +600,7 @@ export default {
 
 												var self = this;
 
-												console.log('Send MEssage!!!', $event);
+
 
 												if ($event) {
 																if ($event.shiftKey) {
@@ -500,7 +624,7 @@ export default {
 												self.$fluro.api.post(`${self.conversationUrl}`, {
 																				message,
 																}).then(function(res) {
-																				console.log('Posted!', res.data);
+																				//console.log('Posted!', res.data);
 																				self.chatCache++;
 																				self.scrollToBottom();
 																				self.proposed.message = ''
@@ -537,10 +661,20 @@ export default {
 }
 
 .message-entry {
+
+				.buttons {
+								display: flex;
+								white-space: nowrap;
+								overflow: hidden;
+				}
+
 				.message-link {
-								opacity: 0;
-								font-size: 9px;
-								display: inline-block;
+								opacity: 0.2;
+								font-size: 10px;
+								display: block;
+								flex: 1;
+								text-align: center;
+								;
 								margin: 0 2px;
 								color: inherit;
 				}
@@ -549,8 +683,9 @@ export default {
 								opacity: 0.5;
 				}
 
-				.message-link:hover {
-								opacity: 1;
+				.message-link:hover,
+				.message-link.active {
+								opacity: 1 !important;
 				}
 
 				&.deleted {
@@ -558,7 +693,6 @@ export default {
 								text-decoration: line-through;
 								font-size: 10px;
 								font-style: italic;
-								;
 				}
 }
 
@@ -570,6 +704,12 @@ export default {
 				//margin:5px;
 				//background: #eee;
 				display: flex;
+
+
+				&.internal {
+								background: #fbe593;
+								color: #7d5415;
+				}
 
 				.chat-name {
 								display: flex;
@@ -633,8 +773,10 @@ export default {
 								flex: 1;
 				}
 
-				.messages {
-								padding-right: 10px;
+				@media(max-width: 600px) {
+								.messages {
+												padding-right: 10px;
+								}
 				}
 
 				.message {
@@ -753,21 +895,21 @@ $message-radius: 20px;
 				padding: 10px;
 
 
-	.mode-links {
-		display: block;
+				.mode-links {
+								display: block;
 
-		a {
-			display: inline-block;
-			opacity: 0.5;
-			padding:5px;
-			color:inherit;
-			
-			&.active {
-				opacity: 1;
-				font-weight: bold;
-			}
-		}
-	}
+								a {
+												display: inline-block;
+												opacity: 0.5;
+												padding: 5px;
+												color: inherit;
+
+												&.active {
+																opacity: 1;
+																font-weight: bold;
+												}
+								}
+				}
 
 
 				textarea {

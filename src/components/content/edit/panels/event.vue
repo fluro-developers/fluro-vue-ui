@@ -57,9 +57,9 @@
                         <v-container>
                             <constrain sm>
                                 <h3 margin>{{definition.title}}</h3>
-
-                                    <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields">
-                                    </fluro-content-form>
+                               
+                                <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields">
+                                </fluro-content-form>
                             </constrain>
                         </v-container>
                     </flex-column-body>
@@ -74,7 +74,8 @@
                                     <h3>Team Members</h3>
                                 </v-flex>
                                 <v-flex shrink>
-                                    <v-btn color="primary" :to="{name:'events.multi', query:{ids:[model._id]}}"> Open in Multi Planner
+                                    <v-btn color="primary" :to="{name:'events.multi', query:{ids:[model._id]}}">
+                                        Open in Multi Planner
                                         <fluro-icon right icon="game-board" />
                                     </v-btn>
                                 </v-flex>
@@ -99,7 +100,9 @@
                                                 <h5>{{slot.title}}</h5>
                                                 <div class="assignment-item" @click="$actions.open([assignment])" :class="assignment.confirmationStatus" :key="assignment._id" v-for="assignment in slot.assignments">
                                                     <v-layout>
-                                                        <v-flex> {{assignment.contact && assignment.contact.title ? assignment.contact.title : assignment.contactName}} </v-flex>
+                                                        <v-flex>
+                                                            {{assignment.contact && assignment.contact.title ? assignment.contact.title : assignment.contactName}}
+                                                        </v-flex>
                                                         <v-flex shrink>
                                                             <fluro-icon right :icon="confirmationIcon(assignment)" />
                                                         </v-flex>
@@ -111,7 +114,9 @@
                                     <!-- <pre>{{roster}}</pre> -->
                                 </fluro-panel-body>
                             </fluro-panel>
-                            <v-btn block @click="createRoster(rosterType)" class="btn-ghost" v-for="rosterType in rosterTypes"> Add {{rosterType.title}} </v-btn>
+                            <v-btn block @click="createRoster(rosterType)" class="btn-ghost" v-for="rosterType in rosterTypes">
+                                Add {{rosterType.title}}
+                            </v-btn>
                         </constrain>
                     </v-container>
                 </flex-column-body>
@@ -132,7 +137,9 @@
                                                         <v-label>Stream Starts</v-label>
                                                         <p class="help-block">How many minutes earlier should the stream be available?</p>
                                                         <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.streamStartOffset" v-model="model" />
-                                                        <p class="lead"> {{streamStartDate | formatDate('h:mma dddd D MMM', model.timezone)}} </p>
+                                                        <p class="lead">
+                                                            {{streamStartDate | formatDate('h:mma dddd D MMM', model.timezone)}}
+                                                        </p>
                                                     </v-input>
                                                 </v-flex>
                                                 <v-flex xs12 sm6>
@@ -140,14 +147,18 @@
                                                         <v-label>Stream Ends</v-label>
                                                         <p class="help-block">How many minutes after this event's end time should the stream be available?</p>
                                                         <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.streamEndOffset" v-model="model" />
-                                                        <p class="lead"> {{streamEndDate | formatDate('h:mma dddd D MMM', model.timezone)}} </p>
+                                                        <p class="lead">
+                                                            {{streamEndDate | formatDate('h:mma dddd D MMM', model.timezone)}}
+                                                        </p>
                                                     </v-input>
                                                 </v-flex>
                                             </v-layout>
                                         </v-container>
                                     </template>
                                 </fluro-content-form>
-                                <v-btn v-if="model._id && liveUrl" target="_blank" :href="liveUrl" block large color="primary"> Watch on Fluro Live </v-btn>
+                                <!-- <v-btn v-if="model._id && liveUrl" target="_blank" :href="liveUrl" block large color="primary">
+                                                                                                                                                Watch on Fluro Live
+                                                                                                                                </v-btn> -->
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.streamIntegrations" v-model="model" />
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.streamContent" v-model="model" />
                                 <fluro-panel>
@@ -156,8 +167,8 @@
                                             <div v-tippy content="Click to copy to clipboard" @click.stop.prevent="copyToClipboard('rtmpUrl')">
                                                 <v-layout align-center>
                                                     <!-- <v-flex shrink>
-<fluro-icon icon="copy" />
-</v-flex> -->
+                                                        <fluro-icon icon="copy" />
+                                                    </v-flex> -->
                                                     <v-flex class="copystring">{{rtmpUrl}}</v-flex>
                                                 </v-layout>
                                                 <input type="hidden" ref="rtmpUrl" :value="rtmpUrl">
@@ -167,35 +178,29 @@
                                             <div v-tippy content="Click to copy to clipboard" @click.stop.prevent="copyToClipboard('streamKey')">
                                                 <v-layout align-center>
                                                     <!-- <v-flex shrink>
-<fluro-icon icon="copy" />
-</v-flex> -->
+                                                        <fluro-icon icon="copy" />
+                                                    </v-flex> -->
                                                     <v-flex class="copystring">{{streamKey}}</v-flex>
                                                 </v-layout>
                                                 <input type="hidden" ref="streamKey" :value="streamKey">
                                             </div>
                                         </v-input>
-                                        <v-input class="no-flex" label="Fluro Live URL">
-                                            <div v-tippy content="Click to copy to clipboard" @click.stop.prevent="copyToClipboard('liveUrl')">
-                                                <v-layout align-center>
-                                                    <!-- <v-flex shrink>
-<fluro-icon icon="copy" />
-</v-flex> -->
-                                                    <v-flex class="copystring">{{liveUrl}}</v-flex>
-                                                </v-layout>
-                                                <input type="hidden" ref="liveUrl" :value="liveUrl">
-                                            </div>
+                                        <!-- <v-input class="no-flex" label="Fluro Live URL">
+                                        <div v-tippy content="Click to copy to clipboard" @click.stop.prevent="copyToClipboard('liveUrl')">
+                                            <v-layout align-center>
+                                                <v-flex class="copystring">{{liveUrl}}</v-flex>
+                                            </v-layout>
+                                            <input type="hidden" ref="liveUrl" :value="liveUrl">
+                                        </div>
                                         </v-input>
                                         <v-input class="no-flex" label="Video Stream URL">
                                             <div v-tippy content="Click to copy to clipboard" @click.stop.prevent="copyToClipboard('streamUrl')">
                                                 <v-layout align-center>
-                                                    <!-- <v-flex shrink>
-<fluro-icon icon="copy" />
-</v-flex> -->
                                                     <v-flex class="copystring">{{streamUrl}}</v-flex>
                                                 </v-layout>
                                                 <input type="hidden" ref="streamUrl" :value="streamUrl">
                                             </div>
-                                        </v-input>
+                                        </v-input> -->
                                     </fluro-panel-body>
                                 </fluro-panel>
                             </template>
@@ -206,9 +211,9 @@
                             <!-- <p class="help-block">How many minutes earlier can users checkin</p> -->
                             <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.checkinStartOffset" v-model="model.checkinData"></fluro-content-form-field> -->
                             <!-- <div class="input-group">
-<input type="number" min="0" placeholder="Defaults to 90 mins" class="form-control" ng-model="item.checkinData.checkinStartOffset" />
-<div class="input-group-addon">Minutes earlier</div>
-</div> -->
+                                                <input type="number" min="0" placeholder="Defaults to 90 mins" class="form-control" ng-model="item.checkinData.checkinStartOffset" />
+                                                <div class="input-group-addon">Minutes earlier</div>
+                                            </div> -->
                             <!-- </v-input> -->
                             <!-- <p class="help-block">No checkins before</p> -->
                             <!-- <p class="lead"> -->
@@ -217,20 +222,20 @@
                             <!-- </p> -->
                             <!-- </v-flex> -->
                             <!-- <v-flex xs12 sm6>
-<v-input class="no-flex">
-<v-label>Checkin Closes</v-label>
-<p class="help-block">How many minutes after this event's end time can a user still checkin</p>
-<div class="input-group">
-<input type="number" min="0" placeholder="Defaults to 90 mins" class="form-control" ng-model="model.checkinData.checkinEndOffset" />
-<div class="input-group-addon">Minutes later</div>
-</div>
-</v-input>
-<p class="help-block">No checkins after</p>
-<p class="lead">
-{{checkinEndDate | formatDate:'g:ia l j M':model.timezone}}<br />
-<em class="text-muted small">{{model.timezone}}</em>
-</p>
-</v-flex> -->
+                                        <v-input class="no-flex">
+                                            <v-label>Checkin Closes</v-label>
+                                            <p class="help-block">How many minutes after this event's end time can a user still checkin</p>
+                                            <div class="input-group">
+                                                <input type="number" min="0" placeholder="Defaults to 90 mins" class="form-control" ng-model="model.checkinData.checkinEndOffset" />
+                                                <div class="input-group-addon">Minutes later</div>
+                                            </div>
+                                        </v-input>
+                                        <p class="help-block">No checkins after</p>
+                                        <p class="lead">
+                                            {{checkinEndDate | formatDate:'g:ia l j M':model.timezone}}<br />
+                                            <em class="text-muted small">{{model.timezone}}</em>
+                                        </p>
+                                    </v-flex> -->
                             <!-- </v-layout> -->
                         </constrain>
                     </v-container>
@@ -348,7 +353,8 @@
                                                     <p class="help-block">How many minutes earlier can users checkin</p>
                                                     <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.checkinStartOffset" v-model="model" />
                                                     <p class="help-block">No checkins before</p>
-                                                    <p class="lead"> {{checkinStartDate | formatDate('h:mma dddd D MMM', model.timezone)}}
+                                                    <p class="lead">
+                                                        {{checkinStartDate | formatDate('h:mma dddd D MMM', model.timezone)}}
                                                         <!-- {{checkinStartDate | formatDate:'g:ia l j M':model.timezone}} -->
                                                     </p>
                                                 </v-input>
@@ -359,7 +365,8 @@
                                                     <p class="help-block">How many minutes after this event's end time can a user still check in?</p>
                                                     <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.checkinEndOffset" v-model="model" />
                                                     <p class="help-block">No checkins after</p>
-                                                    <p class="lead"> {{checkinEndDate | formatDate('h:mma dddd D MMM', model.timezone)}}
+                                                    <p class="lead">
+                                                        {{checkinEndDate | formatDate('h:mma dddd D MMM', model.timezone)}}
                                                         <!-- {{checkinEndDate | formatDate:'g:ia l j M':model.timezone}} -->
                                                     </p>
                                                 </v-input>
@@ -375,9 +382,9 @@
                             <!-- <p class="help-block">How many minutes earlier can users checkin</p> -->
                             <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.checkinStartOffset" v-model="model.checkinData"></fluro-content-form-field> -->
                             <!-- <div class="input-group">
-<input type="number" min="0" placeholder="Defaults to 90 mins" class="form-control" ng-model="item.checkinData.checkinStartOffset" />
-<div class="input-group-addon">Minutes earlier</div>
-</div> -->
+                                                <input type="number" min="0" placeholder="Defaults to 90 mins" class="form-control" ng-model="item.checkinData.checkinStartOffset" />
+                                                <div class="input-group-addon">Minutes earlier</div>
+                                            </div> -->
                             <!-- </v-input> -->
                             <!-- <p class="help-block">No checkins before</p> -->
                             <!-- <p class="lead"> -->
@@ -386,20 +393,20 @@
                             <!-- </p> -->
                             <!-- </v-flex> -->
                             <!-- <v-flex xs12 sm6>
-<v-input class="no-flex">
-<v-label>Checkin Closes</v-label>
-<p class="help-block">How many minutes after this event's end time can a user still checkin</p>
-<div class="input-group">
-<input type="number" min="0" placeholder="Defaults to 90 mins" class="form-control" ng-model="model.checkinData.checkinEndOffset" />
-<div class="input-group-addon">Minutes later</div>
-</div>
-</v-input>
-<p class="help-block">No checkins after</p>
-<p class="lead">
-{{checkinEndDate | formatDate:'g:ia l j M':model.timezone}}<br />
-<em class="text-muted small">{{model.timezone}}</em>
-</p>
-</v-flex> -->
+                                        <v-input class="no-flex">
+                                            <v-label>Checkin Closes</v-label>
+                                            <p class="help-block">How many minutes after this event's end time can a user still checkin</p>
+                                            <div class="input-group">
+                                                <input type="number" min="0" placeholder="Defaults to 90 mins" class="form-control" ng-model="model.checkinData.checkinEndOffset" />
+                                                <div class="input-group-addon">Minutes later</div>
+                                            </div>
+                                        </v-input>
+                                        <p class="help-block">No checkins after</p>
+                                        <p class="lead">
+                                            {{checkinEndDate | formatDate:'g:ia l j M':model.timezone}}<br />
+                                            <em class="text-muted small">{{model.timezone}}</em>
+                                        </p>
+                                    </v-flex> -->
                             <!-- </v-layout> -->
                         </constrain>
                     </v-container>
@@ -410,6 +417,8 @@
 </template>
 <script>
     /////////////////////////////////
+
+
     import MessagingEventManager from 'src/components/content/edit/components/MessagingEventManager.vue';
     import LocationViewMapComponent from 'src/components/content/event/LocationViewMapComponent.vue';
     import LocationSelector from 'src/components/content/edit/components/LocationSelector.vue';
@@ -418,10 +427,15 @@
     import TicketList from 'src/components/content/event/TicketList.vue';
     import TicketTypeManager from 'src/components/content/event/TicketTypeManager.vue';
     import FluroContentView from 'src/components/content/view/FluroContentView.vue';
+
     /////////////////////////////////
+
     import _ from 'lodash';
+
     import Vue from 'vue';
+
     /////////////////////////////////
+
     export default {
         components: {
             GuestList,
@@ -433,14 +447,19 @@
             LocationSelector,
             LocationViewMapComponent,
         },
-        props: {},
+        props: {
+
+        },
         mixins: [FluroContentEditMixin],
         methods: {
             copyToClipboard(refID) {
+
                 var self = this;
+
                 let testingCodeToCopy = this.$refs[refID];
                 testingCodeToCopy.setAttribute('type', 'text') // 不是 hidden 才能複製
                 testingCodeToCopy.select()
+
                 try {
                     var successful = document.execCommand('copy');
                     var msg = successful ? 'successful' : 'unsuccessful';
@@ -450,65 +469,95 @@
                     // alert('Oops, unable to copy');
                     // self.$fluro.error({message:'Unable to copy to clipboard'});
                 }
+
                 /* unselect the range */
                 testingCodeToCopy.setAttribute('type', 'hidden')
                 if (process.browser) {
                     window.getSelection().removeAllRanges()
                 }
+
             },
-            closePlan() {},
+            closePlan() {
+
+            },
             planUpdated(result) {
                 console.log('changed the plan!', result);
             },
             createPlan() {
+
                 var self = this;
                 var event = self.model;
+
                 ///////////////////////////////////////////////////////
+
                 self.$fluro.global.select('plan', {
-                    title: 'Select a template',
-                    minimum: 1,
-                    maximum: 1
-                }, true).then(function(plans) {
-                    if (!plans || !plans.length) {
-                        return;
-                    }
-                    var planID = self.$fluro.utils.getStringID(plans[0]);
-                    self.processing = true;
-                    return self.$fluro.content.get(planID).then(function(fullPlan) {
-                        var template = fullPlan;
-                        template.realms = event.realms;
-                        ///////////////////////////////////
-                        template.event = event;
-                        template.startDate = event.startDate;
-                        template.status = 'active';
-                        delete template._id;
-                        self.$fluro.global.create('plan', {
-                            template,
-                            copy: true,
-                        }, true).then(function(res) {
-                            self.processing = false;
-                        }, function(err) {
-                            self.processing = false;
+                        title: 'Select a template',
+                        minimum: 1,
+                        maximum: 1
+                    }, true)
+                    .then(function(plans) {
+                        if (!plans || !plans.length) {
+                            return;
+                        }
+
+                        var planID = self.$fluro.utils.getStringID(plans[0]);
+                        self.processing = true;
+
+                        return self.$fluro.content.get(planID).then(function(fullPlan) {
+
+                            var template = fullPlan;
+                            template.realms = event.realms;
+
+                            ///////////////////////////////////
+
+                            template.event = event;
+                            template.startDate = event.startDate;
+                            template.status = 'active';
+                            delete template._id;
+
+                            self.$fluro.global.create('plan', {
+                                    template,
+                                    copy: true,
+                                }, true)
+                                .then(function(res) {
+                                    self.processing = false;
+                                }, function(err) {
+                                    self.processing = false;
+                                })
                         })
                     })
-                })
+
+
+
+
             },
             createRoster(rosterType) {
+
                 var self = this;
+
+
                 var template = {
                     title: rosterType.title,
                     event: self.model,
                     definition: rosterType.definitionName,
                     realms: self.model.realms.slice(),
                 }
+
                 self.$fluro.global.create(rosterType.definitionName, {
-                    template,
-                }, true).then(function(result) {
-                    console.log('Result')
-                }).catch(function(err) {});
+                        template,
+                    }, true)
+                    .then(function(result) {
+                        console.log('Result')
+                    })
+                    .catch(function(err) {
+
+                    });
+
                 // fluro.global.create = function(definedType, options, modal) {
+
             },
             confirmationIcon(assignment) {
+
                 switch (assignment.confirmationStatus) {
                     case 'confirmed':
                         return 'check';
@@ -523,6 +572,7 @@
                         return 'question-circle';
                         break;
                 }
+
             },
             canEditRoster(roster) {
                 return this.$fluro.access.canEditItem(roster);
@@ -531,17 +581,25 @@
             //     console.log('Eit roster', roster);
             // },
         },
+
+
         watch: {
             'dateModel.startDate': function(value) {
+
                 /**/
                 // console.log('VALUE IS', value)
                 var date = new Date(value);
                 this.model.startDate = date;
                 this.update(this.model);
+
+
                 //If there is actually a value
                 if (value) {
+
                     //Check what the end date is currently
                     var endDate = this.dateModel.endDate ? new Date(this.dateModel.endDate) : false;
+
+
                     if (endDate) {
                         //If the end date is less than the start date, update it to the start date
                         if (endDate < date) {
@@ -559,7 +617,10 @@
                 var date = new Date(value);
                 this.model.endDate = date;
                 this.update(this.model);
+
+
                 var startDate = this.dateModel.startDate ? new Date(this.dateModel.startDate) : false;
+
                 if (startDate) {
                     if (startDate > date) {
                         // console.log('UPDATE START DATE', startDate, ' is greater than', date)
@@ -574,6 +635,7 @@
             if (!self.model.data) {
                 self.$set(self.model, 'data', {});
             }
+
             //console.log('Start Date BEFORE', self.model.startDate, self.model.endDate);
             if (self.model.startDate) {
                 self.dateModel.startDate = new Date(self.model.startDate);
@@ -581,69 +643,94 @@
             if (self.model.endDate) {
                 self.dateModel.endDate = new Date(self.model.endDate);
             }
+
             if (!self.model.checkinData) {
                 self.$set(self.model, 'checkinData', {
                     checkinStartOffset: 90,
                     checkinEndOffset: 90,
                 });
             }
+
             if (!self.model.streamData) {
                 self.$set(self.model, 'streamData', {
                     streamStartOffset: 30,
                     streamEndOffset: 30,
                 });
             }
+
             if (!self.model.messages) {
                 self.$set(self.model, 'messages', []);
             }
+
             if (!self.model.locations) {
                 self.$set(self.model, 'locations', []);
             }
+
             if (!self.model.rooms) {
                 self.$set(self.model, 'rooms', []);
             }
         },
         asyncComputed: {
+
             rosterTypes: {
                 default: [],
                 get() {
                     var self = this;
+
                     ///////////////////////////////////
+
                     return new Promise(function(resolve, reject) {
-                        return self.$fluro.types.subTypes('roster').then(function(types) {
-                            var filtered = _.filter(types, function(type) {
-                                var alreadyCreated = !self.existingRosterTypes[type.definitionName];
-                                if (!alreadyCreated) {
-                                    return;
-                                }
-                                //Return if we have enough permissions to create this thing
-                                return self.$fluro.access.can('create', type.definitionName, 'roster')
+
+                        return self.$fluro.types.subTypes('roster')
+                            .then(function(types) {
+
+                                var filtered = _.filter(types, function(type) {
+                                    var alreadyCreated = !self.existingRosterTypes[type.definitionName];
+                                    if (!alreadyCreated) {
+                                        return;
+                                    }
+
+                                    //Return if we have enough permissions to create this thing
+                                    return self.$fluro.access.can('create', type.definitionName, 'roster')
+                                })
+                                resolve(filtered)
                             })
-                            resolve(filtered)
-                        }).catch(reject);
+                            .catch(reject);
+
                     });
                 }
             },
             locations: {
                 default: [],
                 get() {
+
                     var self = this;
+
                     return new Promise(function(resolve, reject) {
-                        self.$fluro.api.get('/content/location?allDefinitions=true').then(function(res) {
-                            resolve(res.data);
-                        }).catch(function(err) {
-                            reject(err);
-                        })
+                        self.$fluro.api.get('/content/location?allDefinitions=true')
+                            .then(function(res) {
+                                resolve(res.data);
+                            })
+                            .catch(function(err) {
+                                reject(err);
+                            })
+
                     })
                 }
             },
         },
         computed: {
-            filteredTickets() {},
+            filteredTickets() {
+
+            },
             fieldsOutput() {
+
+
                 var self = this;
                 var array = [];
+
                 ///////////////////////////////////
+
                 addField('title', {
                     title: 'Event Title',
                     minimum: 1,
@@ -651,6 +738,7 @@
                     type: 'string',
                     placeholder: 'Event title',
                 })
+
                 addField('firstLine', {
                     title: 'Subtitle',
                     minimum: 0,
@@ -659,7 +747,9 @@
                     placeholder: 'Eg. A great event for the whole family. Featuring Special Guest...',
                     description: 'A short one line description about this event',
                 })
+
                 ///////////////////////////////////
+
                 addField('streamEnabled', {
                     title: 'Stream Enabled',
                     description: 'Enable live streaming for this event',
@@ -668,7 +758,11 @@
                     type: 'boolean',
                     // defaultValues: [true]
                 });
+
+
+
                 ///////////////////////////////////
+
                 addField('streamContent', {
                     title: 'Pre-recorded Video',
                     description: 'Select or create a video to stream for this event',
@@ -679,6 +773,7 @@
                         restrictType: 'video',
                     },
                 });
+
                 addField('streamIntegrations', {
                     title: 'Stream Integrations',
                     description: 'Broadcast to multiple endpoints',
@@ -689,9 +784,12 @@
                         restrictType: 'integration',
                     },
                 });
+
                 ///////////////////////////////////
                 ///////////////////////////////////
                 ///////////////////////////////////
+
+
                 var now = self.$fluro.date.moment().add('2', 'months').toDate();
                 console.log('Create Default event date', now)
                 // new Date();
@@ -702,7 +800,9 @@
                     type: 'date',
                     directive: 'datetimepicker',
                     defaultValues: [now],
+
                 })
+
                 addField('endDate', {
                     title: 'End Date',
                     minimum: 0,
@@ -710,7 +810,10 @@
                     type: 'date',
                     directive: 'datetimepicker',
                     defaultValues: [now],
+
                 })
+
+
                 addField('timezone', {
                     title: 'Event Timezone',
                     minimum: 0,
@@ -719,9 +822,13 @@
                     directive: 'timezone-select',
                     description: 'Set a local timezone for this event',
                 })
+
+
                 ///////////////////////////////////
                 ///////////////////////////////////
                 ///////////////////////////////////
+
+
                 addField('mainImage', {
                     title: 'Main Promotional Image',
                     description: 'Select a main promotional image for this event',
@@ -733,6 +840,8 @@
                         restrictType: 'image',
                     }
                 });
+
+
                 addField('track', {
                     title: 'Event Track',
                     description: 'The event track for this event',
@@ -744,6 +853,9 @@
                         restrictType: 'eventtrack',
                     }
                 });
+
+
+
                 addField('body', {
                     title: 'Body',
                     minimum: 0,
@@ -753,9 +865,12 @@
                     placeholder: '',
                     description: '',
                 })
+
                 ///////////////////////////////////
                 ///////////////////////////////////
                 ///////////////////////////////////
+
+
                 addField('images', {
                     title: 'Additional Images',
                     description: 'Additional promotional images for this event',
@@ -767,6 +882,7 @@
                         restrictType: 'image',
                     }
                 });
+
                 addField('videos', {
                     title: 'Videos',
                     description: 'Additional video content for this event',
@@ -778,6 +894,7 @@
                         restrictType: 'video',
                     }
                 });
+
                 addField('assets', {
                     title: 'Files and Resources',
                     description: 'Additional downloadable assets and resources for this event',
@@ -789,6 +906,8 @@
                         restrictType: 'asset',
                     }
                 });
+
+
                 addField('externalLinks', {
                     title: 'External Link',
                     // description: '',
@@ -802,22 +921,26 @@
                         type: 'group',
                         sameLine: true,
                         fields: [{
-                            title: 'Title',
-                            key: 'title',
-                            type: 'string',
-                            minimum: 1,
-                            maximum: 1,
-                        }, {
-                            title: 'URL',
-                            key: 'url',
-                            type: 'url',
-                            minimum: 1,
-                            maximum: 1,
-                            placeholder: 'https://',
-                        }, ],
+                                title: 'Title',
+                                key: 'title',
+                                type: 'string',
+                                minimum: 1,
+                                maximum: 1,
+                            },
+                            {
+                                title: 'URL',
+                                key: 'url',
+                                type: 'url',
+                                minimum: 1,
+                                maximum: 1,
+                                placeholder: 'https://',
+                            },
+                        ],
                     }],
                 });
+
                 ///////////////////////////////////
+
                 addField('socialImages', {
                     title: 'Social Media Artwork',
                     description: 'Add images and artwork that can be shared from pulse and slipstream to promote this event',
@@ -829,6 +952,7 @@
                         restrictType: 'image',
                     }
                 });
+
                 addField('socialBody', {
                     title: 'Social Media Blurb',
                     description: 'Add a social blurb and hashtags to use when sharing/promoting this event',
@@ -837,6 +961,9 @@
                     type: 'string',
                     directive: 'textarea',
                 });
+
+
+
                 // addField('externalLinks', {
                 //     title: 'External Links',
                 //     description: 'Relevant external links and URLs for this event',
@@ -848,16 +975,25 @@
                 //         restrictType: 'asset',
                 //     }
                 // });
+
+
                 ///////////////////////////////////
                 ///////////////////////////////////
                 ///////////////////////////////////
+
+
+
+
                 addField('publicTicketingEnabled', {
                     title: 'Enable Public Ticketing',
                     description: 'Enable ticketing for the public to register for this event',
                     minimum: 0,
                     maximum: 1,
                     type: 'boolean',
+
                 })
+
+
                 addField('forms', {
                     title: 'Registration Forms',
                     description: 'Manage registration forms that can be used to register for this event',
@@ -869,6 +1005,7 @@
                         restrictType: 'form',
                     },
                 })
+
                 addField('expectTeams', {
                     title: 'Expect Groups',
                     description: 'Select groups to expect as attendees. This will expect all active members of these groups as attending at the time of event start',
@@ -880,19 +1017,27 @@
                         restrictType: 'team',
                     },
                 })
+
                 ///////////////////////////////////
+
                 function addField(key, details) {
                     details.key = key;
                     array.push(details)
                     // // Vue.set(self.fields, key, details);
+
                     // if (details.enabled === false) {
+
                     // } else {
                     //     details.enabled = true;
                     // }
+
+
                     // var defaultValue = self.getDefaultValue(key, details);
                     // Vue.set(self.model, key, defaultValue);
                 }
+
                 return array;
+
             },
             eventID() {
                 return this.$fluro.utils.getStringID(this.model)
@@ -907,23 +1052,29 @@
                 return 'rtmp://rtmp.fluro.io/live/';
             },
             liveUrl() {
+
+
                 if (!this.streamKey) {
                     return 'Please save this event to generate your fluro live url';
                 }
+
                 return `https://fluro.live/event/${this.accountID}/${this.eventID}`;
             },
             streamUrl() {
                 if (!this.streamKey) {
                     return 'Please save this event to generate your fluro live url';
                 }
+
                 return `https://rtmp.fluro.io/live/${this.accountID}.${this.eventID}/index.m3u8`;
             },
             streamKey() {
+
                 var self = this;
                 if (!self.eventID || !self.accountID) {
                     return;
                     // 'Please save this event to get your stream key';
                 }
+
                 return `${self.accountID}.${self.eventID}`;
             },
             readableTypeName() {
@@ -947,6 +1098,7 @@
             checkinStartOffset() {
                 var self = this;
                 var originalOffsetValue = self.model.checkinData.checkinStartOffset;
+
                 if (originalOffsetValue === undefined || originalOffsetValue === null || isNaN(originalOffsetValue)) {
                     return 90;
                 } else {
@@ -960,6 +1112,7 @@
             checkinEndOffset() {
                 var self = this;
                 var originalOffsetValue = self.model.checkinData.checkinEndOffset;
+
                 if (originalOffsetValue === undefined || originalOffsetValue === null || isNaN(originalOffsetValue)) {
                     return 90;
                 } else {
@@ -971,6 +1124,7 @@
                 return self.$fluro.date.moment(self.model.startDate).add(self.checkinEndOffset, 'minutes').toDate();
             },
             checkinFields() {
+
                 return [{
                     title: 'Checkin Opens',
                     description: 'How many minutes earlier can users checkin',
@@ -991,9 +1145,14 @@
                     type: 'integer',
                 }]
             },
+
+
+
+
             streamStartOffset() {
                 var self = this;
                 var originalOffsetValue = self.model.streamData.streamStartOffset;
+
                 if (originalOffsetValue === undefined || originalOffsetValue === null || isNaN(originalOffsetValue)) {
                     return 90;
                 } else {
@@ -1007,6 +1166,7 @@
             streamEndOffset() {
                 var self = this;
                 var originalOffsetValue = self.model.streamData.streamEndOffset;
+
                 if (originalOffsetValue === undefined || originalOffsetValue === null || isNaN(originalOffsetValue)) {
                     return 90;
                 } else {
@@ -1018,32 +1178,41 @@
                 return self.$fluro.date.moment(self.model.endDate || self.model.startDate).add(self.streamEndOffset, 'minutes').toDate();
             },
             streamFields() {
-                return [{
-                    title: 'Stream Opens',
-                    description: 'How many minutes earlier can users stream',
-                    key: 'streamStartOffset',
-                    placeholder: "Defaults to 30 mins before event start",
-                    minimum: 0,
-                    maximum: 1,
-                    // suffix:'minutes',
-                    type: 'integer',
-                }, {
-                    title: 'Stream Closes',
-                    description: `How many minutes after this event's end time can a user still stream`,
-                    key: 'streamEndOffset',
-                    placeholder: "Defaults to 30 mins after event ends",
-                    minimum: 0,
-                    maximum: 1,
-                    // suffix:'minutes',
-                    type: 'integer',
-                }]
+
+                return [
+
+                    {
+                        title: 'Stream Opens',
+                        description: 'How many minutes earlier can users stream',
+                        key: 'streamStartOffset',
+                        placeholder: "Defaults to 30 mins before event start",
+                        minimum: 0,
+                        maximum: 1,
+                        // suffix:'minutes',
+                        type: 'integer',
+                    }, {
+                        title: 'Stream Closes',
+                        description: `How many minutes after this event's end time can a user still stream`,
+                        key: 'streamEndOffset',
+                        placeholder: "Defaults to 30 mins after event ends",
+                        minimum: 0,
+                        maximum: 1,
+                        // suffix:'minutes',
+                        type: 'integer',
+                    }
+                ]
             },
+
+
+
             showOutline() {
                 return false; //true; //false;//true;//false;//true;
             },
         },
         data() {
+
             var existingModel = JSON.parse(JSON.stringify(this.value));
+
             return {
                 dateModel: {
                     startDate: existingModel.startDate ? new Date(existingModel.startDate) : new Date(),
@@ -1070,6 +1239,7 @@
         opacity: 0.5;
         color: inherit;
         display: block;
+
     }
 
     .copystring {
@@ -1088,6 +1258,7 @@
             opacity: 1;
         }
     }
+
 
     .assignment-item {
         font-size: 12px;
@@ -1132,6 +1303,7 @@
             opacity: 1;
         }
     }
+
 
     .bordered {
         border: 1px solid rgba(#000, 0.1);
