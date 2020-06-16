@@ -417,6 +417,11 @@ export default {
 												this.$emit('source', src);
 								},
 								fullscreenChange() {
+
+										if(typeof document == 'undefined') {
+												return console.log('fullscreen can not be activated because the document is not defined yet!')
+										}
+
 												var state = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen;
 												if (!state) {
 																// console.log('close')
