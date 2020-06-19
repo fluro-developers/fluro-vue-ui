@@ -8,7 +8,7 @@
                 <v-container fluid grid-list-xl>
                     <constrain sm>
                        
-                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />
+                        <fluro-content-form-field autofocus :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />
                         <v-layout wrap>
                             <v-flex xs12 sm12>
                                 <h4>Realm Colors</h4>
@@ -88,6 +88,7 @@ export default {
                 maximum: 1,
                 type: 'string',
                 directive: 'color',
+                defaultValues:[''],
             });
 
             addField('bgColor', {
@@ -96,6 +97,7 @@ export default {
                 maximum: 1,
                 type: 'string',
                 directive: 'color',
+                defaultValues:[''],
             });
 
             ///////////////////////////////////

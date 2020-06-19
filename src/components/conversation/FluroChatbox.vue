@@ -65,7 +65,7 @@
 																</div>
 																<v-layout align-center>
 																				<v-flex>
-																								<textarea ref="textarea" @input="updateTextAreaSize" @keyup.enter="sendMessage($event)" v-model="proposed.message" placeholder="Type your message and press enter..."></textarea>
+																								<textarea ref="textarea" @input="updateTextAreaSize" @keyup.enter="sendMessage($event)" v-model="proposed.message" :placeholder="placeholder"></textarea>
 																				</v-flex>
 																				<v-flex shrink style="padding-left:10px" v-if="internalEnabled">
 																								<v-btn icon class="ma-0" @click="sendInternal($event)" style="margin-left:10px;">
@@ -135,7 +135,7 @@ export default {
 				},
 				data() {
 								return {
-												messageFilter:this.filter,
+												messageFilter: this.filter,
 												thread: {},
 												socketChannel: null,
 												mode: 'message',
@@ -161,6 +161,9 @@ export default {
 								conversationCheckString: 'init',
 				},
 				computed: {
+								placeholder() {
+												return this.mode == 'internal' ? `Type your internal note and press enter...` : `Type your message and press enter...`;
+								},
 								internalEnabled() {
 												return this.options.internalEnabled;
 								},
@@ -237,17 +240,7 @@ export default {
 																})
 								},
 								mount() {
-
-
 												var self = this;
-
-
-
-
-
-
-
-
 												this.init();
 								},
 								unmount() {
@@ -279,7 +272,12 @@ export default {
 
 												//////////////////////////////////////////////
 
-												var promise = self.$fluro.api.get(`/chat/${self.conversationID}/feed?=${self.chatCache}`, {
+												var url = `/chat/${self.conversationID}/feed?=${self.chatCache}`;
+
+												if (self.options.moderator) {
+																url = `/chat/${self.conversationID}/feed?m=true&cb=${self.chatCache}`;
+												}
+												var promise = self.$fluro.api.get(url, {
 																cache: false
 												});
 
@@ -372,7 +370,10 @@ export default {
 												var self = this;
 
 												if (self.$socket) {
-																self.socketChannel.disconnect();
+																if (self.socketChannel) {
+																				self.socketChannel.disconnect();
+																}
+
 												}
 
 												// if (self.$socket) {
@@ -616,12 +617,11 @@ export default {
 
 
 												var message = self.proposed.message;
-												//console.log('Send Message!', message)
-
 												self.proposed.message = ''
 												self.updateTextAreaSize();
 
 												self.$fluro.api.post(`${self.conversationUrl}`, {
+																				internal: self.mode == 'internal',
 																				message,
 																}).then(function(res) {
 																				//console.log('Posted!', res.data);

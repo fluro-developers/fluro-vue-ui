@@ -31,6 +31,28 @@
 																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.timezone" v-model="model"></fluro-content-form-field>
 																																				</v-flex>
 																																</v-layout>
+																																<fluro-panel v-if="differentTimezoneThanUser">
+																																				<fluro-panel-body>
+																																								<v-input class="no-flex">
+																																												<v-label>Local Time</v-label>
+																																												<div>
+																																																{{model.startDate | formatDate('h:mma - dddd D MMM Y', model.timezone) }} <em class="text-muted">({{model.timezone}})</em>
+																																												</div>
+																																								</v-input>
+																																				</fluro-panel-body>
+																																</fluro-panel>
+																																<!-- <div class="panel panel-default" ng-show="$root.differentTimezone(item.timezone)">
+																																				<div class="panel-body">
+																																								<div class="form-group" style="margin:0;">
+																																												<label>Local Time</label>
+																																												<div>{{item.startDate | formatDate:'g:ia - l j M Y':item.timezone}} <em class="text-muted">({{item.timezone}})</em></div>
+																																								</div>
+																																				</div>
+																																</div> -->
+																																<!-- <div class="alert alert-warning" ng-show="showPastWarning()">
+																																				<i class="far fa-warning"></i> This date of this event is in the past ({{item.endDate | timeago}}) are you sure that it's correct? <br />
+																																				Please note the system will archive this event immediately after you save.
+																																</div> -->
 																																<!-- <v-input class="no-flex"> -->
 																																<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.mainImage" v-model="model"></fluro-content-form-field>
 																																<!-- </v-input> -->
@@ -721,6 +743,10 @@ export default {
 								},
 				},
 				computed: {
+								differentTimezoneThanUser() {
+									// console.log('checkit!', this.model.timezone )
+												return this.$fluro.date.isDifferentTimezoneThanUser(this.model.timezone || '')
+								},
 								filteredTickets() {
 
 								},
@@ -790,27 +816,43 @@ export default {
 												///////////////////////////////////
 												///////////////////////////////////
 
+												var timezoneDescription;
+												var differentTimezone = self.$fluro.date.isDifferentTimezoneThanUser(self.model.timezone);
+												if(differentTimezone) {
+														var browserTimezone = self.$fluro.date.currentTimezone();
+														timezoneDescription = browserTimezone;
+												}
 
-												var now = self.$fluro.date.moment().add('2', 'months').toDate();
-												console.log('Create Default event date', now)
+
+												var now = new Date();
+												// self.$fluro.date.moment().add('2', 'months').toDate();
+												// console.log('Create Default event date', now)
 												// new Date();
 												addField('startDate', {
-																title: 'Start Date',
+																title: `Start Date`,
 																minimum: 1,
 																maximum: 1,
 																type: 'date',
+																description:timezoneDescription,
 																directive: 'datetimepicker',
 																defaultValues: [now],
+																params:{
+																	persistentDescription:!!timezoneDescription,
+																}
 
 												})
 
 												addField('endDate', {
-																title: 'End Date',
+																title: `End Date`,
 																minimum: 0,
 																maximum: 1,
 																type: 'date',
+																description:timezoneDescription,
 																directive: 'datetimepicker',
 																defaultValues: [now],
+																params:{
+																	persistentDescription:!!timezoneDescription,
+																}
 
 												})
 

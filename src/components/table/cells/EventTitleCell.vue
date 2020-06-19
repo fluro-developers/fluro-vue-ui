@@ -1,13 +1,12 @@
 <template>
 				<div>
 								<strong>{{row.title}}</strong><br />
-								<em class="text-muted small">{{readableEventDate}}</em>
-								<div v-if="row.firstLine"><em class="text-muted small">{{row.firstLine | limit(100)}}</em> </div>
-								<div v-if="row.rooms && row.rooms.length" class="text-muted small"><strong>Rooms:</strong> <em>{{row.rooms | comma('title')}}</em></div>
+								<em class="muted font-xs">{{readableEventDate}}</em>
+								<div v-if="row.firstLine"><em class="muted font-xs">{{row.firstLine | limit(100)}}</em> </div>
+								<div v-if="row.rooms && row.rooms.length" class="muted font-xs"><strong>Rooms:</strong> <em>{{row.rooms | comma('title')}}</em></div>
 				</div>
 </template>
 <script>
-
 export default {
 				props: {
 								'row': {
@@ -29,6 +28,4 @@ export default {
 
 </script>
 <style lang="scss">
-
-
 </style>

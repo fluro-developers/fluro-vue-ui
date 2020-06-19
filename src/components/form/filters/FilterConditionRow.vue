@@ -1,7 +1,5 @@
 <template>
-				<!-- grid-list-lg -->
 				<v-container class="filter-condition-row grid-list-sm" v-if="ready" :class="{mini:mini}" pa-0>
-								<!-- <pre>{{useBasicReferenceSelect}} {{referenceSelectField}}</pre> -->
 								<v-layout row wrap>
 												<v-flex xs12 sm4>
 																<template v-if="fields.length">
@@ -21,18 +19,6 @@
 																																				</template>
 																																				<template v-else>
 																																								{{data.item.title}}
-																																								<!-- <v-list-tile-content class="border-bottom" style="height:50px;"> -->
-																																								<!-- <v-list-tile-title v-html="data.item.title"></v-list-tile-title> -->
-																																								<!-- <v-list-tile-sub-title v-html="data.item.group"></v-list-tile-sub-title> -->
-																																								<!-- </v-list-tile-content> -->
-																																								<!-- {{data.item.title}} -->
-																																								<!-- <v-list-item-avatar>
-										<img :src="data.item.avatar">
-									</v-list-item-avatar>
-									<v-list-item-content>
-										<v-list-item-title v-html="data.item.name"></v-list-item-title>
-										<v-list-item-subtitle v-html="data.item.group"></v-list-item-subtitle>
-									</v-list-item-content> -->
 																																				</template>
 																																</template>
 																												</v-autocomplete>
@@ -103,7 +89,7 @@
 																</v-flex>
 																<v-flex xs12 sm5 v-else-if="inputType == 'array' && dataType != 'date'">
 																				<template v-if="simpleKeyIsRealms">
-																								<fluro-realm-select action="view any" :filterDiscriminator="discriminator" block small v-model="model.values" />
+																								<fluro-realm-select action="view any" :filterDiscriminator="discriminator || discriminatorType || discriminatorDefinition" block small v-model="model.values" />
 																								<!-- <pre>{{discriminator}} - {{discriminatorType}} - {{discriminatorDefinition}}</pre> -->
 																				</template>
 																				<template v-else-if="useBasicReferenceSelect">
@@ -448,12 +434,11 @@ export default {
 												}
 								},
 								dateMeasures() {
-												return [
-												{
+												return [{
 																				title: 'Minutes',
 																				value: 'minute',
 																},
-															{
+																{
 																				title: 'Hours',
 																				value: 'hour',
 																},
@@ -1232,91 +1217,91 @@ export default {
 				},
 				/**
 				asyncComputed: {
-					values: {
-						default: [],
-						get() {
+				values: {
+				default: [],
+				get() {
 
-							var self = this;
-							var key = this.model.key;
+				var self = this;
+				var key = this.model.key;
 
-							if (!key || !key.length) {
-								return Promise.resolve([]);
-							}
+				if (!key || !key.length) {
+				return Promise.resolve([]);
+				}
 
-							////console.log('Lets go get options for', key);
-
-
-							var dataType = self.dataType;
-							switch (dataType) {
-								case 'number':
-								case 'float':
-								case 'integer':
-								case 'decimal':
-									return Promise.resolve([]);
-									break;
-								case 'boolean':
-									return Promise.resolve([true, false]);
-									break;
-							}
+				////console.log('Lets go get options for', key);
 
 
-
-							this.loadingValues = true;
-							////////////////////////////////////
-
-							return new Promise(function(resolve, reject) {
+				var dataType = self.dataType;
+				switch (dataType) {
+				case 'number':
+				case 'float':
+				case 'integer':
+				case 'decimal':
+				return Promise.resolve([]);
+				break;
+				case 'boolean':
+				return Promise.resolve([true, false]);
+				break;
+				}
 
 
 
-								if (self.rows && self.rows.length) {
+				this.loadingValues = true;
+				////////////////////////////////////
 
-									//Check to see if the rows we know about already have the data
-									//we are wanting to search on, because if so we can just use that
-									// var rawRowsAlreadyHaveKey = _.every(self.rows, function(row) {
-									//     return row.hasOwnProperty(key);
-									// })
-
-									// //If we already know the options then send them back and resolve
-									// if (rawRowsAlreadyHaveKey) {
-									//     var allOptions = _.chain(self.rows)
-									//         .map(key)
-									//         .uniq()
-									//         .value();
-
-									//     return resolve(allOptions)
-									// }
-
-									//Get all the ids
-									var subSetIDs = _.map(self.rows, '_id');
-
-									//We need to make an asynchronous request to the server
-									//to find out what values we can filter by
-									// ////console.log('DATA TYPE', self.dataType)
-									var options = {
-
-									}
-
-									if (self.dataType == 'reference') {
-										options.params = {
-											populate: true
-										};
-									}
-
-									return self.$fluro.content.values(subSetIDs, key, options).then(function(res) {
-										resolve(res);
-										self.loadingValues = false;
-									}, function(err) {
-										reject(err);
-										self.loadingValues = false;
-									});
-								}
-
-								// return resolve([]);
+				return new Promise(function(resolve, reject) {
 
 
-							});
-						},
-					}
+
+				if (self.rows && self.rows.length) {
+
+				//Check to see if the rows we know about already have the data
+				//we are wanting to search on, because if so we can just use that
+				// var rawRowsAlreadyHaveKey = _.every(self.rows, function(row) {
+				//     return row.hasOwnProperty(key);
+				// })
+
+				// //If we already know the options then send them back and resolve
+				// if (rawRowsAlreadyHaveKey) {
+				//     var allOptions = _.chain(self.rows)
+				//         .map(key)
+				//         .uniq()
+				//         .value();
+
+				//     return resolve(allOptions)
+				// }
+
+				//Get all the ids
+				var subSetIDs = _.map(self.rows, '_id');
+
+				//We need to make an asynchronous request to the server
+				//to find out what values we can filter by
+				// ////console.log('DATA TYPE', self.dataType)
+				var options = {
+
+				}
+
+				if (self.dataType == 'reference') {
+				options.params = {
+				populate: true
+				};
+				}
+
+				return self.$fluro.content.values(subSetIDs, key, options).then(function(res) {
+				resolve(res);
+				self.loadingValues = false;
+				}, function(err) {
+				reject(err);
+				self.loadingValues = false;
+				});
+				}
+
+				// return resolve([]);
+
+
+				});
+				},
+				}
 				}
 
 				/**/

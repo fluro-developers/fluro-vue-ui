@@ -1,7 +1,5 @@
 <template>
-    <div class="dots">
-       
-       
+    <div class="dots">       
         <span class="dot" :style="{backgroundColor:realm.bgColor || '#000'}" :content="realm.title" v-tippy small v-for="realm in filtered"/>
     </div>
 </template>
@@ -18,24 +16,33 @@ export default {
             type:[Array, Object],
         },
     },
+    data(){
+        return {
+        model:this.realms,
+    }
+    },
+    watch:{
+        realms(r) {
+            this.model = r;
+        }
+    },
     computed:{
-        actualRealms() {
-            if(!this.realms) {
+        filtered() {
+
+
+            var actualRealms = [];
+
+            if(!this.model) {
                 return;
             }
 
-            if(_.isArray(this.realms)) {
-            	return this.realms;
+            if(_.isArray(this.model)) {
+            	actualRealms = this.model;
+            } else if(_.isObject(this.model)) {
+            	actualRealms = [this.model];
             }
 
-             if(_.isObject(this.realms)) {
-            	return [this.realms];
-            }
-
-            return [];
-        },
-        filtered() {
-            var filtered = _.chain(this.actualRealms)
+            var filtered = _.chain(actualRealms)
             .filter(function(realm) {
                 if(!realm) {
                     return;

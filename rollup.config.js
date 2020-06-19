@@ -43,7 +43,7 @@ const plugins = [
 				//css(),
 
 				vue({
-					//css:false, //TOGGLE THIS ON BEFORE BUILD - FOR WEB BUILDER CSS
+								//css:false, //TOGGLE THIS ON BEFORE BUILD - FOR WEB BUILDER CSS
 								postcss: {
 												plugins: require('./postcss.config')().plugins
 								}
@@ -57,10 +57,11 @@ const plugins = [
 								exclude: 'node_modules/**'
 				}),
 
-
+/**/
 				postcss({
-								//extract: true, //TOGGLE THIS ON BEFORE BUILD - FOR WEB BUILDER CSS
+								extract: true, //TOGGLE THIS ON BEFORE BUILD - FOR WEB BUILDER CSS
 				})
+				/**/
 ];
 const pluginsWithMinify = plugins.slice(0);
 

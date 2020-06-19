@@ -1,12 +1,12 @@
 <template>
 				<div class="video-wrapper" :class="classes">
-					<!-- <div class="muted" v-if="muted">
+								<!-- <div class="muted" v-if="muted">
 						:muted="muted"
 						<fluro-icon icon="volume-mute"/>
 					</div> -->
 								<!-- <pre>{{connected}}</pre> -->
 								<!--  -->
-								<video ref="video"  @volumechange="volumeChanged" @click="toggle()" playsinline></video>
+								<video ref="video" @volumechange="volumeChanged" @click="toggle()" playsinline></video>
 								<flex-column class="controls" @click="toggle()" v-if="connected">
 												<flex-column center>
 																<div class="control-widgets">
@@ -67,7 +67,7 @@ export default {
 				},
 				data() {
 								return {
-												muted:false,
+												muted: false,
 												actualVolume: 100,
 												hls: null,
 												video: null,
@@ -199,9 +199,9 @@ export default {
 
 								// //console.log('STREAM PLAYER: MOUNTED');
 								self.$fluro.utils.injectScript('https://cdn.jsdelivr.net/npm/hls.js@latest')
-												.then(function() {
+												.then(function(res) {
 
-																console.log('Script injected successfully!')
+																console.log('Script injected successfully!', res)
 
 
 
@@ -328,9 +328,9 @@ export default {
 												///////////////////////////////////////////
 
 												function start() {
-													if(onlyLoad) {
-														return;
-													}
+																if (onlyLoad) {
+																				return;
+																}
 																// console.log('Start!');
 																self.play();
 												}
@@ -418,9 +418,9 @@ export default {
 								},
 								fullscreenChange() {
 
-										if(typeof document == 'undefined') {
-												return console.log('fullscreen can not be activated because the document is not defined yet!')
-										}
+												if (typeof document == 'undefined') {
+																return console.log('fullscreen can not be activated because the document is not defined yet!')
+												}
 
 												var state = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen;
 												if (!state) {
@@ -480,7 +480,7 @@ export default {
 
 
 												if (self.url) {
-													//self.muted = true;
+																//self.muted = true;
 																self.setSource(self.url, true);
 												}
 												///////////////////////////////////////////
