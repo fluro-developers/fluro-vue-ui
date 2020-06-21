@@ -45,6 +45,8 @@
                                 <v-container px-0 pt-0 v-if="showVideo">
                                     <fluro-video :cacheKey="videoCacheKey" :item="model" />
                                 </v-container>
+
+                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.poster" v-model="model"></fluro-content-form-field>
                                 <template v-if="!hideBody && !fullBody">
                                     <v-input label="Body / Caption" class="no-flex">
                                         <fluro-editor v-model="model.body" :options="editorOptions" placeholder="Type your text in here"></fluro-editor>
@@ -229,6 +231,19 @@ export default {
                 maximum: 1,
                 type: 'string',
                 placeholder: 'Optional short description describing the collection',
+            });
+
+
+            addField('poster', {
+                title: 'Poster / Thumbnail Image',
+                description:'Customise the poster image for this video',
+                minimum: 0,
+                maximum: 1,
+                type: 'reference',
+                params:{
+                    restrictType:'image',
+                    allDefinitions:true,
+                }
             });
 
             addField('assetType', {

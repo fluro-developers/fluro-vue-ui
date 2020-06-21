@@ -1,10 +1,10 @@
 <template>
     <div>
         <template v-if="isArray">
-            <span class="inline-tag" v-for="date in rendered" :content="date | timeago" v-tippy>{{date | formatDate('MMM D, YYYY')}}</span>
+            <span class="inline-tag" v-for="date in rendered" :content="date | timeago" v-tippy>{{date | formatDate(format)}}</span>
         </template>
         <template v-else-if="rendered">
-            <span class="inline-tag" v-if="rendered" :content="rendered | timeago" v-tippy>{{rendered | formatDate('MMM D, YYYY')}}</span>
+            <span class="inline-tag" v-if="rendered" :content="rendered | timeago" v-tippy>{{rendered | formatDate(format)}}</span>
         </template>
     </div>
 </template>
@@ -42,6 +42,13 @@ export default {
         },
     },
     computed: {
+        format() {
+            if(this.column && this.column.format) {
+                return this.column.format;
+            }
+
+            return 'MMM D, YYYY';
+        },
         isArray() {
             return _.isArray(this.data);
         },

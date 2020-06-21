@@ -52,6 +52,36 @@ export default {
                 }
             }
 
+
+            if(row._type == 'post') {
+
+                var postLine = [];
+
+                // if(row.author) {
+                //     postLine.push(_.get(row, 'author.name')|| _.get(row, 'author.title'));
+                // } else {
+                //     postLine.push(_.get(row, 'managedAuthor.title'));
+                // }
+
+                // if(postLine.length) {
+                //     postLine.unshift('Posted by');
+                // }
+
+               
+                    // postLine.push('Connected to');
+                
+
+                if(row.parent.startDate) {
+                    postLine.push(`${self.$fluro.date.formatDate(row.parent.startDate, 'ddd D MMM YYYY - h:mma')} - ${row.parent.title}`);
+                } else if(row.parent.title) {
+                    postLine.push(`'${row.parent.title}'`);
+                }
+
+                return _.compact(postLine).join(' ');
+
+
+            }
+
             if(row.firstLine) {
                 return row.firstLine
             }
