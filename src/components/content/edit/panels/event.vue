@@ -344,6 +344,7 @@
 																								<!-- </constrain> -->
 																								<ticket-type-manager v-model="model"></ticket-type-manager>
 																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.publicTicketingEnabled" v-model="model"></fluro-content-form-field>
+																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.publicTicketingConfirmationMessage" v-model="model"></fluro-content-form-field>
 																								<!-- <pre>{{model.ticketTypes}}</pre> -->
 																								<!-- <pre>{{model.ticketLimit}}</pre> -->
 																								<ticket-list :event="model" />
@@ -357,7 +358,6 @@
 																												<constrain lg>
 																																<h3 margin>Automated Messages</h3>
 																																<event-message-manager v-model="model.messages" />
-
 																																<!-- <messaging-event-manager :config="config" v-model="model.messages" :startDate="model.startDate" :endDate="model.endDate" /> -->
 																												</constrain>
 																								</v-container>
@@ -1037,6 +1037,54 @@ export default {
 																type: 'boolean',
 
 												})
+
+
+												addField('publicTicketingConfirmationMessage', {
+																title: 'Ticket Confirmation Message',
+																description: 'Customise the message to be sent at the top of the digital tickets email',
+																minimum: 0,
+																maximum: 1,
+																type: 'string',
+																directive: 'wysiwyg',
+																expressions:{
+																	show() {
+																		return self.model.publicTicketingEnabled;
+																	}
+																},
+																params: {
+																				tokens: [
+																				{
+																								title: 'Recipient Preferred First Name',
+																								key: 'tokens.firstName',
+																				},
+
+																				{
+																								title: 'Event Title',
+																								key: 'tokens.eventTitle',
+																				}, 
+
+																				{
+																								title: 'Event Start Time',
+																								key: 'tokens.startTime',
+																				},
+
+																				{
+																								title: 'Event Start Date',
+																								key: 'tokens.startDate',
+																				},
+
+																				{
+																								title: 'Location names',
+																								key: 'tokens.locations',
+																				}, 
+
+																				]
+																}
+
+												})
+
+
+
 
 
 												addField('forms', {
