@@ -501,11 +501,19 @@
 																<template v-if="multipleInput">
 																				<v-input :outline="showOutline" :label="displayLabel" :success="success" class="no-flex">
 																								<template v-if="fieldModel && fieldModel.length">
-																												<draggable v-model="fieldModel" v-bind="dragOptions" @start="drag=true" @end="drag=false">
+																												<draggable v-model="fieldModel" handle=".handle" v-bind="dragOptions" @start="drag=true" @end="drag=false">
 																																<!-- <transition-group type="transition" :name="!drag ? 'flip-list' : null"> -->
 																																<div class="multi-input-row" :key="entry" v-for="(entry, index) in fieldModel">
+																																				<span class="handle">
+																																								<fluro-icon icon="arrows" left />
+																																				</span>
 																																				<v-flex style="padding:0 !important;">{{entry}}</v-flex>
-																																				<span @click="removeValue(index, true)">Remove</span>
+																																				<span v-if="type == 'email'" @click="copyToClipboard(entry)">
+																																								<fluro-icon icon="copy" right />
+																																				</span>
+																																				<span @click="removeValue(index, true)">
+																																								<fluro-icon icon="trash-alt" right />
+																																				</span>
 																																</div>
 																																<!-- </transition-group> -->
 																												</draggable>
@@ -762,9 +770,9 @@ export default {
 				computed: {
 								webMode() {
 												if (typeof window !== 'undefined') {
-														if(window.adminPanelMode) {
-															return false;
-														}
+																if (window.adminPanelMode) {
+																				return false;
+																}
 												}
 												return this.$fluro.app;
 								},
@@ -1328,6 +1336,10 @@ export default {
 												return _.get(this.field, 'params.disableWebform');
 								},
 								type() {
+
+												if (!this.field) {
+																console.error('Field not defined!!', this);
+												}
 												return this.field.type;
 								},
 								expressions() {
@@ -1819,6 +1831,12 @@ export default {
 								// 				// //console.log('FIELD UPDATED', this.field.title, data);
 								// 				this.$emit('input', this.model);
 								// },
+
+								copyToClipboard(value) {
+												if (this.$fluro.global.copyToClipBoard) {
+																this.$fluro.global.copyToClipBoard(value);
+												}
+								},
 								createDefaults() {
 
 												var self = this;
@@ -3511,14 +3529,25 @@ function checkValidInput(self, input) {
 												cursor: pointer;
 								}
 
+								.handle {
+									opacity: 0.5;
+								}
+
+								@media(max-width:600px) {
+
+												svg,
+												span {
+																opacity: 0.5 !important;
+												}
+								}
+
 								&:hover {
 
 												svg,
 												span {
-																opacity: 0.5;
+																opacity: 1;
 												}
 								}
-
 
 								span {
 												font-style: italic;

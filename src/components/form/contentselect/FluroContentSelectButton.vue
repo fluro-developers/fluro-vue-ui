@@ -1,8 +1,17 @@
 <template>
 				<div class="content-select-button">
-								<v-btn :small="small" :large="large" :color="color" :block="block" class="pill mx-0" @click.native="showModal">
-												<span>{{selectionSummary}}</span>
-								</v-btn>
+								<v-layout style="padding:0; margin:0;">
+												<v-flex style="padding:0; margin:0;">
+																<v-btn :small="small" :large="large" :color="color" :block="block" class="pill ma-0" @click.native="showModal">
+																				<span>{{selectionSummary}}</span>
+																</v-btn>
+												</v-flex>
+												<v-flex style="padding:0; margin:0;" shrink v-if="canCreate">
+																<v-btn v-tippy :content="createTooltip" icon :small="small" :large="large" color="primary" class="pill my-0 mr-0 ml-1" @click.native="create">
+																				<fluro-icon icon="plus" />
+																</v-btn>
+												</v-flex>
+								</v-layout>
 				</div>
 </template>
 <script>
@@ -83,6 +92,13 @@ export default {
 								},
 				},
 				computed: {
+					createTooltip() {
+						return `Create new ${this.$fluro.types.readable(this.type)}`;
+					},
+								canCreate() {
+												var self = this;
+												return self.$fluro.access.can('create', this.type);
+								},
 								selection() {
 												return this.selector ? this.selector.selection : [];
 								},
@@ -140,25 +156,25 @@ export default {
 
 
 
-								
 
 
 
-												var SelectionManager = Vue.extend(FluroSelector);
-												var defaultValue = self.singleValue ? [self.value] : self.value;
 
-												self.selector = new SelectionManager({
-																propsData: {
-																				minimum: self.minimum,
-																				maximum: self.maximum,
-																				allDefinitions: self.allDefinitions,
-																				searchInheritable: self.searchInheritable,
-																				value: defaultValue,
-																}
-												});
+								var SelectionManager = Vue.extend(FluroSelector);
+								var defaultValue = self.singleValue ? [self.value] : self.value;
+
+								self.selector = new SelectionManager({
+												propsData: {
+																minimum: self.minimum,
+																maximum: self.maximum,
+																allDefinitions: self.allDefinitions,
+																searchInheritable: self.searchInheritable,
+																value: defaultValue,
+												}
+								});
 
 
-								
+
 
 								// self.selector.$fluro = self.$fluro;
 				},
@@ -190,6 +206,17 @@ export default {
 								}
 				},
 				methods: {
+								create() {
+										var self = this;
+
+
+										self.$fluro.global.create(self.type, {disableCacheClearOnSave:true}, true)
+										.then(function(res) {
+
+												self.selector.select(res);
+										})
+
+								},
 								showModal() {
 
 												var self = this;

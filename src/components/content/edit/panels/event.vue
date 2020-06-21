@@ -74,19 +74,19 @@
 																</slot>
 												</tab>
 												<!-- <tab :heading="`${definition.title} details`" v-if="definition && definition.fields && definition.fields.length">
-                <slot>
-                    <flex-column-body style="background: #fafafa;">
-                        <v-container>
-                            <constrain sm>
-                                <h3 margin>{{definition.title}}</h3>
-                               
-                                <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields">
-                                </fluro-content-form>
-                            </constrain>
-                        </v-container>
-                    </flex-column-body>
-                </slot>
-            </tab> -->
+				<slot>
+					<flex-column-body style="background: #fafafa;">
+						<v-container>
+							<constrain sm>
+								<h3 margin>{{definition.title}}</h3>
+							   
+								<fluro-content-form :options="options" v-model="model.data" :fields="definition.fields">
+								</fluro-content-form>
+							</constrain>
+						</v-container>
+					</flex-column-body>
+				</slot>
+			</tab> -->
 												<tab :heading="`Team Members`" v-if="model.rostered">
 																<flex-column-body style="background: #fafafa;">
 																				<v-container>
@@ -189,8 +189,8 @@
 																																												<div v-tippy content="Click to copy to clipboard" @click.stop.prevent="copyToClipboard('rtmpUrl')">
 																																																<v-layout align-center>
 																																																				<!-- <v-flex shrink>
-                                                        <fluro-icon icon="copy" />
-                                                    </v-flex> -->
+														<fluro-icon icon="copy" />
+													</v-flex> -->
 																																																				<v-flex class="copystring">{{rtmpUrl}}</v-flex>
 																																																</v-layout>
 																																																<input type="hidden" ref="rtmpUrl" :value="rtmpUrl">
@@ -200,8 +200,8 @@
 																																												<div v-tippy content="Click to copy to clipboard" @click.stop.prevent="copyToClipboard('streamKey')">
 																																																<v-layout align-center>
 																																																				<!-- <v-flex shrink>
-                                                        <fluro-icon icon="copy" />
-                                                    </v-flex> -->
+														<fluro-icon icon="copy" />
+													</v-flex> -->
 																																																				<v-flex class="copystring">{{streamKey}}</v-flex>
 																																																</v-layout>
 																																																<input type="hidden" ref="streamKey" :value="streamKey">
@@ -235,9 +235,9 @@
 																												<!-- <p class="help-block">How many minutes earlier can users checkin</p> -->
 																												<!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.checkinStartOffset" v-model="model.checkinData"></fluro-content-form-field> -->
 																												<!-- <div class="input-group">
-                                                <input type="number" min="0" placeholder="Defaults to 90 mins" class="form-control" ng-model="item.checkinData.checkinStartOffset" />
-                                                <div class="input-group-addon">Minutes earlier</div>
-                                            </div> -->
+												<input type="number" min="0" placeholder="Defaults to 90 mins" class="form-control" ng-model="item.checkinData.checkinStartOffset" />
+												<div class="input-group-addon">Minutes earlier</div>
+											</div> -->
 																												<!-- </v-input> -->
 																												<!-- <p class="help-block">No checkins before</p> -->
 																												<!-- <p class="lead"> -->
@@ -246,20 +246,20 @@
 																												<!-- </p> -->
 																												<!-- </v-flex> -->
 																												<!-- <v-flex xs12 sm6>
-                                        <v-input class="no-flex">
-                                            <v-label>Checkin Closes</v-label>
-                                            <p class="help-block">How many minutes after this event's end time can a user still checkin</p>
-                                            <div class="input-group">
-                                                <input type="number" min="0" placeholder="Defaults to 90 mins" class="form-control" ng-model="model.checkinData.checkinEndOffset" />
-                                                <div class="input-group-addon">Minutes later</div>
-                                            </div>
-                                        </v-input>
-                                        <p class="help-block">No checkins after</p>
-                                        <p class="lead">
-                                            {{checkinEndDate | formatDate:'g:ia l j M':model.timezone}}<br />
-                                            <em class="text-muted small">{{model.timezone}}</em>
-                                        </p>
-                                    </v-flex> -->
+										<v-input class="no-flex">
+											<v-label>Checkin Closes</v-label>
+											<p class="help-block">How many minutes after this event's end time can a user still checkin</p>
+											<div class="input-group">
+												<input type="number" min="0" placeholder="Defaults to 90 mins" class="form-control" ng-model="model.checkinData.checkinEndOffset" />
+												<div class="input-group-addon">Minutes later</div>
+											</div>
+										</v-input>
+										<p class="help-block">No checkins after</p>
+										<p class="lead">
+											{{checkinEndDate | formatDate:'g:ia l j M':model.timezone}}<br />
+											<em class="text-muted small">{{model.timezone}}</em>
+										</p>
+									</v-flex> -->
 																												<!-- </v-layout> -->
 																								</constrain>
 																				</v-container>
@@ -356,7 +356,9 @@
 																								<v-container>
 																												<constrain lg>
 																																<h3 margin>Automated Messages</h3>
-																																<messaging-event-manager :config="config" v-model="model.messages" :startDate="model.startDate" :endDate="model.endDate" />
+																																<event-message-manager v-model="model.messages" />
+
+																																<!-- <messaging-event-manager :config="config" v-model="model.messages" :startDate="model.startDate" :endDate="model.endDate" /> -->
 																												</constrain>
 																								</v-container>
 																				</flex-column-body>
@@ -406,9 +408,9 @@
 																												<!-- <p class="help-block">How many minutes earlier can users checkin</p> -->
 																												<!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.checkinStartOffset" v-model="model.checkinData"></fluro-content-form-field> -->
 																												<!-- <div class="input-group">
-                                                <input type="number" min="0" placeholder="Defaults to 90 mins" class="form-control" ng-model="item.checkinData.checkinStartOffset" />
-                                                <div class="input-group-addon">Minutes earlier</div>
-                                            </div> -->
+												<input type="number" min="0" placeholder="Defaults to 90 mins" class="form-control" ng-model="item.checkinData.checkinStartOffset" />
+												<div class="input-group-addon">Minutes earlier</div>
+											</div> -->
 																												<!-- </v-input> -->
 																												<!-- <p class="help-block">No checkins before</p> -->
 																												<!-- <p class="lead"> -->
@@ -417,20 +419,20 @@
 																												<!-- </p> -->
 																												<!-- </v-flex> -->
 																												<!-- <v-flex xs12 sm6>
-                                        <v-input class="no-flex">
-                                            <v-label>Checkin Closes</v-label>
-                                            <p class="help-block">How many minutes after this event's end time can a user still checkin</p>
-                                            <div class="input-group">
-                                                <input type="number" min="0" placeholder="Defaults to 90 mins" class="form-control" ng-model="model.checkinData.checkinEndOffset" />
-                                                <div class="input-group-addon">Minutes later</div>
-                                            </div>
-                                        </v-input>
-                                        <p class="help-block">No checkins after</p>
-                                        <p class="lead">
-                                            {{checkinEndDate | formatDate:'g:ia l j M':model.timezone}}<br />
-                                            <em class="text-muted small">{{model.timezone}}</em>
-                                        </p>
-                                    </v-flex> -->
+										<v-input class="no-flex">
+											<v-label>Checkin Closes</v-label>
+											<p class="help-block">How many minutes after this event's end time can a user still checkin</p>
+											<div class="input-group">
+												<input type="number" min="0" placeholder="Defaults to 90 mins" class="form-control" ng-model="model.checkinData.checkinEndOffset" />
+												<div class="input-group-addon">Minutes later</div>
+											</div>
+										</v-input>
+										<p class="help-block">No checkins after</p>
+										<p class="lead">
+											{{checkinEndDate | formatDate:'g:ia l j M':model.timezone}}<br />
+											<em class="text-muted small">{{model.timezone}}</em>
+										</p>
+									</v-flex> -->
 																												<!-- </v-layout> -->
 																								</constrain>
 																				</v-container>
@@ -744,7 +746,7 @@ export default {
 				},
 				computed: {
 								differentTimezoneThanUser() {
-									// console.log('checkit!', this.model.timezone )
+												// console.log('checkit!', this.model.timezone )
 												return this.$fluro.date.isDifferentTimezoneThanUser(this.model.timezone || '')
 								},
 								filteredTickets() {
@@ -818,9 +820,9 @@ export default {
 
 												var timezoneDescription;
 												var differentTimezone = self.$fluro.date.isDifferentTimezoneThanUser(self.model.timezone);
-												if(differentTimezone) {
-														var browserTimezone = self.$fluro.date.currentTimezone();
-														timezoneDescription = browserTimezone;
+												if (differentTimezone) {
+																var browserTimezone = self.$fluro.date.currentTimezone();
+																timezoneDescription = browserTimezone;
 												}
 
 
@@ -833,11 +835,11 @@ export default {
 																minimum: 1,
 																maximum: 1,
 																type: 'date',
-																description:timezoneDescription,
+																description: timezoneDescription,
 																directive: 'datetimepicker',
 																defaultValues: [now],
-																params:{
-																	persistentDescription:!!timezoneDescription,
+																params: {
+																				persistentDescription: !!timezoneDescription,
 																}
 
 												})
@@ -847,11 +849,11 @@ export default {
 																minimum: 0,
 																maximum: 1,
 																type: 'date',
-																description:timezoneDescription,
+																description: timezoneDescription,
 																directive: 'datetimepicker',
 																defaultValues: [now],
-																params:{
-																	persistentDescription:!!timezoneDescription,
+																params: {
+																				persistentDescription: !!timezoneDescription,
 																}
 
 												})

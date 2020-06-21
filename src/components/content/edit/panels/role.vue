@@ -7,7 +7,7 @@
         <template v-else>
             <!-- :vertical="true" -->
             <!-- :vertical="true" -->
-            <tabset :justified="true">
+            <tabset v-model="tabIndex" :justified="true">
                 <!--  <template v-slot:menuprefix>
                     <template v-if="context == 'edit' && $vuetify.breakpoint.mdAndUp">
                         <flex-column-header style="text-align:center">
@@ -20,6 +20,24 @@
                         </flex-column-header>
                     </template>
                 </template> -->
+
+                <tab :heading="informationPanelTitle">
+                    <flex-column-body style="background: #fafafa;">
+                        
+                        <v-container fluid>
+                            <constrain sm>
+                                <fluro-content-form-field :autofocus="!model.title" :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />
+                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.firstLine" v-model="model" />
+                                <template v-if="definition && definition.fields && definition.fields.length">
+                                    <h4 margin>{{definition.title}} Information</h4>
+                                    <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
+                                </template>
+                            </constrain>
+                        </v-container>
+                    </flex-column-body>
+                </tab>
+
+
                 <tab heading="Basic Permissions">
                     <tabset :justified="true" :vertical="true" :persist="true">
                         <template v-slot:menuprefix>
@@ -67,21 +85,7 @@
                         </tab>
                     </tabset>
                 </tab>
-                <tab :heading="informationPanelTitle">
-                    <flex-column-body style="background: #fafafa;">
-                    	
-                        <v-container fluid>
-                            <constrain sm>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.firstLine" v-model="model" />
-                                <template v-if="definition && definition.fields && definition.fields.length">
-                                    <h4 margin>{{definition.title}} Information</h4>
-                                    <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
-                                </template>
-                            </constrain>
-                        </v-container>
-                    </flex-column-body>
-                </tab>
+                
                 <!-- <tab heading="Developer">
                     <flex-column-body style="background: #fafafa;">
                         <v-container fluid>
@@ -115,9 +119,14 @@ export default {
         SearchInput,
         // FluroEditor,
     },
-    created() {},
+    created() {
+        if(this.model._id) {
+            this.tabIndex = 1;
+        }
+    },
     data() {
         return {
+            tabIndex:0,
             search: '',
             loadingPermissions: true,
         }

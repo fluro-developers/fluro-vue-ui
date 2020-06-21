@@ -7,7 +7,7 @@
             <tab heading="Roster">
                 <flex-column-body style="background: #fafafa;">
 
-                        	<!-- <roster-main v-model="model" :definition="definition"></roster-main> -->
+                        	<roster-main v-model="model" :definition="definition"></roster-main>
                             <!-- <default-roster-manager :config="config" v-model="model.defaultRosters" :rosterOptions="rosterDefinitions.definitions" /> -->
                 </flex-column-body>
             </tab>
@@ -34,6 +34,7 @@
 </template>
 <script>
 /////////////////////////////////
+import RosterMain from 'src/components/content/edit/components/RosterMain.vue';
 import ReminderEventManager from 'src/components/content/edit/components/ReminderEventManager.vue';
 import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
 
@@ -47,7 +48,7 @@ import _ from 'lodash';
 export default {
 
     mixins: [FluroContentEditMixin],
-    components: { ReminderEventManager, RosterMain },
+    components: { ReminderEventManager,RosterMain },
     methods: {
         modelUpdated() {
             this.update(this.model);

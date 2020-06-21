@@ -1,4 +1,4 @@
-console.log('fluro-vue-ui 2.1.82')
+console.log('fluro-vue-ui 2.1.83')
 
 /////////////////////////////////////////////////////
 
@@ -275,6 +275,7 @@ export { FluroChatbox as FluroChatbox };
 export { FluroStreamPlayer as FluroStreamPlayer };
 export { FluroHelp as FluroHelp };
 export { FluroButton as FluroButton };
+
 
 
 export { FluroModalMixin as FluroModalMixin };

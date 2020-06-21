@@ -729,7 +729,9 @@ export default {
 				}
 
 				&:nth-child(odd) {
+					&.default {
 								background: rgba(#000, 0.02);
+							}
 				}
 
 				&:hover {
@@ -934,6 +936,13 @@ $message-radius: 20px;
 								}
 
 
+				}
+
+				&.internal {
+					textarea {
+						background: #fff5c0;
+						color: #674300;
+					}
 				}
 
 

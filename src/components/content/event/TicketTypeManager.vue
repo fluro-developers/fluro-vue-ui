@@ -13,32 +13,42 @@
 																</v-flex>
 												</v-layout>
 								</fluro-panel-title>
+								<div v-show="false">
+									<fluro-table />
+								</div>
 								<div class="fluro-table-wrapper">
 												<div class="fluro-table-scroll">
 																<table class="fluro-table-main">
 																				<thead>
 																								<tr>
 																												<th>Type</th>
-																												<th>Limit</th>
+																												<th>Capacity Limit</th>
 																												<th>Purchased</th>
 																												<th>Available</th>
 																												<th>Filled</th>
+																												<th></th>
 																								</tr>
 																				</thead>
 																				<tbody>
 																								<tr>
-																												<th>Any</th>
+																												<th>All/Any Tickets</th>
 																												<td><input v-model="model.ticketLimit" type="number" min="0" /></td>
 																												<td>{{model.tickets.value}}</td>
 																												<td>{{model.tickets.value ? getAvailable(model.tickets.value, model.ticketLimit) : ''}}</td>
-																												<td>{{model.tickets.value ? getPercent(model.tickets.value, model.ticketLimit) : ''}}%</td>
+																												<td>{{model.tickets.value ? `${getPercent(model.tickets.value, model.ticketLimit)}%` : ''}}</td>
+																												<td></td>
 																								</tr>
-																								<tr v-for="entry in model.ticketTypes">
+																								<tr :key="entry.title" v-for="(entry, index) in model.ticketTypes">
 																												<th> <input v-model="entry.title" /></th>
 																												<td><input v-model="entry.limit" type="number" min="0" /></td>
 																												<td>{{getPurchased(entry)}}</td>
 																												<td>{{getAvailable(getPurchased(entry), entry.limit)}}</td>
 																												<td>{{getPercent(getPurchased(entry), entry.limit)}}%</td>
+																												<td>
+																																<v-btn small class="ma-0" icon @click="removeEntry(index)">
+																																				<fluro-icon icon="trash-alt" />
+																																</v-btn>
+																												</td>
 																								</tr>
 																				</tbody>
 																</table>
@@ -72,11 +82,11 @@
 </template>
 <script>
 import _ from 'lodash';
-
+import { FluroTable } from 'fluro-vue-ui'
 
 export default {
 				components: {
-
+								FluroTable,
 				},
 				props: {
 								value: {
@@ -108,6 +118,9 @@ export default {
 				// 				}
 				// },
 				methods: {
+								removeEntry(index) {
+												this.model.ticketTypes.splice(index, 1);
+								},
 								getAvailable(value, limit) {
 
 

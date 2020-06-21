@@ -736,6 +736,11 @@ export default {
 																case 'event':
 																				return self.$fluro.date.readableEventDate(self.model);
 																				break;
+																case 'roster':
+																case 'checkin':
+																case 'ticket':
+																		return self.model.event ? `${self.model.event.title} ${self.$fluro.date.readableEventDate(self.model.event)}` : '';
+																break;
 																case 'plan':
 
 																				var hasEvent = _.get(self.model, 'event.title');

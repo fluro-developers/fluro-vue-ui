@@ -11,10 +11,9 @@
 																												<h3 margin>Event Track Details</h3>
 																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />
 																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.firstLine" v-model="model" />
-																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.mainImage" v-model="model" />
-																												<location-selector v-model="model" :allLocations="locations" locationsPath="defaultLocations" roomsPath="defaultRooms" />
-																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultPlans" v-model="model" />
-																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultOwners" v-model="model" />
+																												<!-- <location-selector v-model="model" :allLocations="locations" locationsPath="defaultLocations" roomsPath="defaultRooms" /> -->
+																												<!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultPlans" v-model="model" /> -->
+																												<!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultOwners" v-model="model" /> -->
 																								</constrain>
 																				</v-container>
 																</flex-column-body>
@@ -39,17 +38,40 @@
 																												<p class="muted">Add default information for events created on this track.</p>
 																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultTitle" v-model="model" /><br>
 																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultFirstLine" v-model="model" /><br>
-																												<v-layout>
-																																<v-flex xs12 sm3>
-																																				<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultStartTime" v-model="model" />
-																																</v-flex>
-																																<v-flex xs12 sm3>
-																																				<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultDuration" v-model="model" />
-																																</v-flex>
-																																<v-flex xs12 sm6>
-																																				<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.timezone" v-model="model" />
-																																</v-flex>
-																												</v-layout>
+																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.mainImage" v-model="model" />
+																												<fluro-panel>
+																																<fluro-panel-title>
+																																				<strong>Default Times</strong>
+																																</fluro-panel-title>
+																																<fluro-panel-body>
+																																				<v-layout>
+																																								<v-flex xs12 sm3>
+																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultStartTime" v-model="model" />
+																																								</v-flex>
+																																								<v-flex xs12 sm3>
+																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultDuration" v-model="model" />
+																																								</v-flex>
+																																								<v-flex xs12 sm6>
+																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.timezone" v-model="model" />
+																																								</v-flex>
+																																				</v-layout>
+																																</fluro-panel-body>
+																												</fluro-panel>
+																												<fluro-panel>
+																																<fluro-panel-title>
+																																				<strong>Checkin Defaults</strong>
+																																</fluro-panel-title>
+																																<fluro-panel-body>
+																																				<v-layout>
+																																								<v-flex xs6>
+																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultCheckinStartOffset" v-model="model" />
+																																								</v-flex>
+																																								<v-flex xs6>
+																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultCheckinEndOffset" v-model="model" />
+																																								</v-flex>
+																																				</v-layout>
+																																</fluro-panel-body>
+																												</fluro-panel>
 																												<location-selector v-model="model" :allLocations="locations" locationsPath="defaultLocations" roomsPath="defaultRooms" />
 																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultPlans" v-model="model" />
 																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultBody" v-model="model" />
@@ -73,8 +95,19 @@
 																<flex-column-body style="background: #fafafa;">
 																				<v-container>
 																								<constrain md>
-																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.publicTicketingEnabled" v-model="model"></fluro-content-form-field>
-																												<ticket-type-manager v-model="model"></ticket-type-manager>
+																										
+																																				<!-- <constrain sm> -->
+																																				<h3 margin>Ticketing Defaults</h3>
+																																				<!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.forms" v-model="model"></fluro-content-form-field> -->
+																																				<!-- </constrain> -->
+																																				<ticket-type-manager v-model="model"></ticket-type-manager>
+																																				<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.publicTicketingEnabled" v-model="model"></fluro-content-form-field>
+																																				<!-- <pre>{{model.ticketTypes}}</pre> -->
+																																				<!-- <pre>{{model.ticketLimit}}</pre> -->
+																																				<!-- <ticket-list :event="model" /> -->
+																																
+																												<!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.publicTicketingEnabled" v-model="model"></fluro-content-form-field> -->
+																												<!-- <ticket-type-manager v-model="model"></ticket-type-manager> -->
 																								</constrain>
 																				</v-container>
 																</flex-column-body>
@@ -621,6 +654,33 @@ export default {
 																],
 												});
 
+
+
+
+
+
+
+												addField('defaultCheckinStartOffset', {
+																title: 'Checkin Opens (minutes)',
+																minimum: 0,
+																maximum: 1,
+																type: 'integer',
+																placeholder: '90 minutes earlier',
+																//directive: 'timepicker',
+																//description: moment(now).fromNow(),
+												});
+
+												addField('defaultCheckinEndOffset', {
+																title: 'Checkin Closes (minutes)',
+																minimum: 0,
+																maximum: 1,
+																type: 'integer',
+																placeholder: '90 minutes later',
+																//directive: 'timepicker',
+																//description: moment(now).fromNow(),
+												});
+
+
 												addField('defaultStartTime', {
 																title: 'Start Time',
 																minimum: 0,
@@ -688,7 +748,7 @@ export default {
 
 												addField('defaultExpectTeams', {
 																title: 'Expected Groups/Teams',
-																description: "Select groups whose members should be expected to attend",
+																description: "Select groups whose members will be expected to attend events on this track",
 																minimum: 0,
 																maximum: 0,
 																type: 'reference',
@@ -699,8 +759,8 @@ export default {
 												});
 
 												addField('defaultForms', {
-																title: 'Registration Forms',
-																description: "These forms will be added to each created event",
+																title: 'Default Registration Forms',
+																description: "These forms will be added to each created event on this track",
 																minimum: 0,
 																maximum: 0,
 																type: 'reference',
