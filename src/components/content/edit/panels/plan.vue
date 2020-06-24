@@ -47,7 +47,7 @@
                             </div>
                         </template>
                         <v-card tile>
-                            <v-container  style="min-width:300px" pa-3 style="background: #f0f2f5;">
+                            <v-container  style="min-width:300px;background: #f0f2f5;" pa-3>
                             	
                                 <!-- <v-list style="max-height: 50vh;" class="scroll-y" dense> -->
                                 <!-- <v-list-tile> -->

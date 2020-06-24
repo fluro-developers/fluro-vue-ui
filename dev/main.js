@@ -3,6 +3,7 @@ import FluroVueUI from '../dist/es/index';
 
 Vue.use(FluroVueUI);
 
+// test
 // eslint-disable-next-line no-new
 new Vue({
 	el: '#app',

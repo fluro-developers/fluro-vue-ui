@@ -45,21 +45,21 @@
             	<v-label>
             		Contact
             	</v-label>
-                <fluro-list-item @click.native="$fluro.global.view(item.contact)" :bordered="true" :item="item.contact">
+                <fluro-list-item @click.native="$fluro.global.view(item.contact)" :bordered="true" :item="item.contact"/>
             </v-input>
 
             <v-input class="no-flex" v-if="item.event">
             	<v-label>
             		Event
             	</v-label>
-                <fluro-list-item @click.native="$fluro.global.view(item.event)" :bordered="true" :item="item.event">
+                <fluro-list-item @click.native="$fluro.global.view(item.event)" :bordered="true" :item="item.event"/>
             </v-input>
 
             <v-input class="no-flex" v-if="item.interaction">
             	<v-label>
             		Interaction
             	</v-label>
-                <fluro-list-item @click.native="$fluro.global.view(item.interaction)" :bordered="true" :item="item.interaction">
+                <fluro-list-item @click.native="$fluro.global.view(item.interaction)" :bordered="true" :item="item.interaction"/>
             </v-input>
             
             <!-- <pre>{{item}}</pre> -->
