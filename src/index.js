@@ -17,6 +17,7 @@ import FluroFieldEditor from './components/fields/FluroFieldEditor.vue';
 import FluroCompileHtml from './components/FluroCompileHtml.vue';
 import FluroInfiniteScroll from './components/ui/FluroInfiniteScroll.vue';
 import FluroPagedContent from './components/ui/FluroPagedContent.vue';
+import FluroAudio from './components/FluroAudio.vue';
 import FluroVideo from './components/FluroVideo.vue';
 import FluroVideoThumbnail from './components/FluroVideoThumbnail.vue';
 import FluroModal from './components/ui/modal/Modal.vue';
@@ -150,103 +151,103 @@ import _ from 'lodash';
  * @param {any} Vue Vue API.
  */
 function install(Vue, options) {
-				var fluro = Vue.prototype.$fluro;
+	var fluro = Vue.prototype.$fluro;
 
-				//Setup a modals array
-				fluro.global.modals = [];
+	//Setup a modals array
+	fluro.global.modals = [];
 
-				/////////////////////////////////////////////
+	/////////////////////////////////////////////
 
-				//Add a function to show modals
-				fluro.modal = function(modal) {
-								return new Promise(function(resolve, reject) {
-												modal.modalID = fluro.global.modals.length;
-												modal.resolve = resolve;
-												modal.reject = reject;
-												//Inject the modal into the stack
-												fluro.global.modals.splice(modal.modalID, 0, modal);
-								});
+	//Add a function to show modals
+	fluro.modal = function(modal) {
+		return new Promise(function(resolve, reject) {
+			modal.modalID = fluro.global.modals.length;
+			modal.resolve = resolve;
+			modal.reject = reject;
+			//Inject the modal into the stack
+			fluro.global.modals.splice(modal.modalID, 0, modal);
+		});
 
-				}
+	}
 
-				/////////////////////////////////////////////
+	/////////////////////////////////////////////
 
-				//Request the user to answer some questions
-				fluro.options = function(options, title, description) {
-								return fluro.modal({
-												component: FluroOptionsDialog,
-												options: {
-																title,
-																description,
-																options,
-												}
-								})
-				}
+	//Request the user to answer some questions
+	fluro.options = function(options, title, description) {
+		return fluro.modal({
+			component: FluroOptionsDialog,
+			options: {
+				title,
+				description,
+				options,
+			}
+		})
+	}
 
-				/////////////////////////////////////////////
+	/////////////////////////////////////////////
 
-				//Request the user to answer some questions
-				fluro.prompt = function(fields, title, model) {
-								return fluro.modal({
-												component: FluroPromptDialog,
-												options: {
-																title,
-																fields,
-																model,
-												}
-								})
-				}
+	//Request the user to answer some questions
+	fluro.prompt = function(fields, title, model) {
+		return fluro.modal({
+			component: FluroPromptDialog,
+			options: {
+				title,
+				fields,
+				model,
+			}
+		})
+	}
 
 
 
-				/////////////////////////////////////////////
+	/////////////////////////////////////////////
 
-				fluro.confirm = function(title, description, options) {
+	fluro.confirm = function(title, description, options) {
 
-								if (!options) {
-												options = {};
-								}
+		if (!options) {
+			options = {};
+		}
 
-								options.title = title;
-								options.description = description;
+		options.title = title;
+		options.description = description;
 
-								return fluro.modal({
-												component: FluroConfirmDialog,
-												options,
-								})
-				}
+		return fluro.modal({
+			component: FluroConfirmDialog,
+			options,
+		})
+	}
 
-				/////////////////////////////////////////////
+	/////////////////////////////////////////////
 
-				fluro.closeModal = function(modalID) {
-								var modal = _.find(fluro.global.modals, { modalID });
-								var index = _.findIndex(fluro.global.modals, modal);
-								fluro.global.modals.splice(index, 1);
-				}
+	fluro.closeModal = function(modalID) {
+		var modal = _.find(fluro.global.modals, { modalID });
+		var index = _.findIndex(fluro.global.modals, modal);
+		fluro.global.modals.splice(index, 1);
+	}
 
-				/////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////
 
-				Vue.mixin(Layout);
+	Vue.mixin(Layout);
 
-				//Add Fluro Components Globally
-				Vue.component('fluro-icon', FluroIcon);
-				Vue.component('fluro-realm-dots', FluroRealmDots);
-				Vue.component('fluro-realm-tags', FluroRealmTags);
-				Vue.component('fluro-realm-bar', FluroRealmBar);
-				Vue.component('fluro-status-label', FluroStatusLabel);
-				Vue.component('fluro-avatar', FluroAvatar);
-				Vue.component('fluro-image', FluroImage);
-				Vue.component('fluro-list-item', FluroListItem);
-				Vue.component('fluro-toggle-item', FluroToggleItem);
-				Vue.component('fluro-video', FluroVideo);
-				Vue.component('fluro-video-thumbnail', FluroVideoThumbnail);
-				Vue.component('fluro-page-preloader', FluroPagePreloader);
-				// Vue.component('fluro-html', FluroHTML);
-				Vue.component('flex-row', FlexRow);
-				Vue.component('flex-column', FlexColumn);
-				Vue.component('flex-column-body', FlexColumnBody);
-				Vue.component('flex-column-header', FlexColumnHeader);
-				Vue.component('flex-column-footer', FlexColumnFooter);
+	//Add Fluro Components Globally
+	Vue.component('fluro-icon', FluroIcon);
+	Vue.component('fluro-realm-dots', FluroRealmDots);
+	Vue.component('fluro-realm-tags', FluroRealmTags);
+	Vue.component('fluro-realm-bar', FluroRealmBar);
+	Vue.component('fluro-status-label', FluroStatusLabel);
+	Vue.component('fluro-avatar', FluroAvatar);
+	Vue.component('fluro-image', FluroImage);
+	Vue.component('fluro-list-item', FluroListItem);
+	Vue.component('fluro-toggle-item', FluroToggleItem);
+	Vue.component('fluro-video', FluroVideo);
+	Vue.component('fluro-video-thumbnail', FluroVideoThumbnail);
+	Vue.component('fluro-page-preloader', FluroPagePreloader);
+	// Vue.component('fluro-html', FluroHTML);
+	Vue.component('flex-row', FlexRow);
+	Vue.component('flex-column', FlexColumn);
+	Vue.component('flex-column-body', FlexColumnBody);
+	Vue.component('flex-column-header', FlexColumnHeader);
+	Vue.component('flex-column-footer', FlexColumnFooter);
 }
 
 
@@ -255,12 +256,12 @@ function install(Vue, options) {
 
 
 if ((typeof window !== 'undefined') && window.Vue) {
-				install(window.Vue);
+	install(window.Vue);
 }
 
 
 export default {
-				install,
+	install,
 }
 
 
@@ -285,6 +286,7 @@ export { FluroFieldEditor as FluroFieldEditor };
 export { FluroCompileHtml as FluroCompileHtml };
 export { FluroInfiniteScroll as FluroInfiniteScroll };
 export { FluroPagedContent as FluroPagedContent };
+export { FluroAudio as FluroAudio };
 export { FluroVideo as FluroVideo };
 export { FluroVideoThumbnail as FluroVideoThumbnail };
 export { FluroModal as FluroModal };
