@@ -2263,4 +2263,4 @@ var pid=0;function emitVueEvent(e){var t=this;this.player.on(e,function(i){t.$em
 
 export default plugin;
 export { vueVimeoPlayer };
-//# sourceMappingURL=bundle.es-29b1afe1.js.map
+//# sourceMappingURL=bundle.es-12ae68ed.js.map
