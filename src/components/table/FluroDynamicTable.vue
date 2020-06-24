@@ -62,7 +62,7 @@
 																																				</v-card>
 																																</v-menu>
 																												</th>
-																												<th @contextmenu.prevent="showOptionsForColumn(column)" @click="toggleSort(column)" :class="{'shrink':column.shrink, sortable:isSortable(column), 'sorting':sort.sortKey == column.key, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}" v-for="column in renderColumns">
+																												<th @contextmenu.prevent="showOptionsForColumn(column)" @click="toggleSort(column)" :class="{'shrink':column.shrink, sortable:isSortable(column), 'sorting':sort.sortKey == column.key, 'tiny':column.tiny, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}" v-for="column in renderColumns">
 																																<template v-if="column.icon">
 																																				<fluro-icon v-tippy :content="column.title" library="fas" :icon="column.icon" />
 																																</template>

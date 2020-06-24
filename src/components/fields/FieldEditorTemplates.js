@@ -29,7 +29,7 @@ templates.push({
         type: 'string',
         key: '',
         directive:'select',
-        allowedValues:[
+        options:[
             'Option One',
             'Option Two',
             'Option Three',

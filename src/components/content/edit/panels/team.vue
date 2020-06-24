@@ -168,6 +168,14 @@ export default {
 												self.$set(self.model, 'assignments', []);
 								}
 
+								if (!self.model.provisionalMembers) {
+												self.$set(self.model, 'provisionalMembers', []);
+								}
+
+								if (!self.model.tracks) {
+												self.$set(self.model, 'tracks', []);
+								}
+
 								if (!self.model.visibleAssigned) {
 												self.$set(self.model, 'visibleAssigned', false);
 								}

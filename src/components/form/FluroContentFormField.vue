@@ -458,6 +458,9 @@
 												<template v-else-if="renderer == 'app-menu-select'">
 																<fluro-app-menu-select :field="field" v-model="fieldModel" :options="options" :label="displayLabel" />
 												</template>
+												<template v-else-if="renderer == 'app-type-select'">
+																<fluro-app-type-select :field="field" v-model="fieldModel" :options="options" :label="displayLabel" />
+												</template>
 												<template v-else-if="renderer == 'app-block-select'">
 																<fluro-app-block-select :field="field" v-model="fieldModel" :options="options" :label="displayLabel" />
 												</template>
@@ -3530,7 +3533,7 @@ function checkValidInput(self, input) {
 								}
 
 								.handle {
-									opacity: 0.5;
+												opacity: 0.5;
 								}
 
 								@media(max-width:600px) {

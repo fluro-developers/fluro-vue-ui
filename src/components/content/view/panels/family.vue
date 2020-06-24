@@ -24,22 +24,22 @@
 																								</v-flex>
 																				</v-layout>
 																				<!-- <fluro-panel> -->
-																								<!-- <fluro-panel-title> -->
-																												<h4>{{item.items.length}} Family Members</h4>
-																								<!-- </fluro-panel-title> -->
-																								<list-group>
-																												<!-- <fluro-panel-body> -->
-																												<list-group-item :item="contact" :key="contact._id" @click="$fluro.global.view(contact, true)" v-for="contact in item.items">
-																																<template v-slot:right>
-																																				<v-btn class="ma-0" icon small flat @click.stop.prevent="$actions.open([contact])">
-																																								<fluro-icon icon="ellipsis-h" />
-																																				</v-btn>
-																																</template>
-																												</list-group-item>
-																												<!-- </fluro-panel-body> -->
-																								</list-group>
+																				<!-- <fluro-panel-title> -->
+																				<h4>{{item.items.length}} Family Members</h4>
+																				<!-- </fluro-panel-title> -->
+																				<list-group>
+																								<!-- <fluro-panel-body> -->
+																								<list-group-item :item="contact" :key="contact._id" @click="$fluro.global.view(contact, true)" v-for="contact in item.items">
+																												<template v-slot:right>
+																																<v-btn class="ma-0" icon small flat @click.stop.prevent="$actions.open([contact])">
+																																				<fluro-icon icon="ellipsis-h" />
+																																</v-btn>
+																												</template>
+																								</list-group-item>
+																								<!-- </fluro-panel-body> -->
+																				</list-group>
 																				<!-- </fluro-panel> -->
-																				<fluro-panel>
+																				<fluro-panel v-if="item.address">
 																								<fluro-panel-title>
 																												Home Address
 																								</fluro-panel-title>
@@ -80,6 +80,7 @@
 																												</v-layout>
 																								</fluro-panel-body>
 																				</fluro-panel>
+																				<template v-if="item.postalAddress">
 																				<fluro-panel v-if="!item.samePostal">
 																								<fluro-panel-title>
 																												Postal Address
@@ -121,6 +122,7 @@
 																												</v-layout>
 																								</fluro-panel-body>
 																				</fluro-panel>
+																			</template>
 																				<template v-if="fields && fields.length">
 																								<fluro-content-render :fields="fields" v-model="item.data" />
 																				</template>
@@ -139,6 +141,7 @@ import FluroContentViewMixin from 'src/components/content/view/FluroContentViewM
 /////////////////////////////////
 
 export default {
+
 				props: {
 								config: {
 												type: Object,

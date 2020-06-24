@@ -8,12 +8,8 @@
 																<flex-column-body style="background: #fafafa;">
 																				<v-container grid-list-xl>
 																								<constrain sm>
-
-
 																												<fluro-content-form :options="options" v-model="model" :fields="fieldsOutput">
 																																<template v-slot:form="{formFields, fieldHash, model, update, options}">
-																																				
-
 																																				<fluro-panel v-if="!model.contact && (!model.contacts || !model.contacts.length)">
 																																								<fluro-panel-title>
 																																												Contact Information
@@ -25,7 +21,6 @@
 																																												<fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.contact" v-model="model" />
 																																								</fluro-panel-body>
 																																				</fluro-panel>
-
 																																				<template v-else>
 																																								<fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.contact" v-model="model" />
 																																								<fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.contacts" v-model="model" />
@@ -35,12 +30,14 @@
 																																</template>
 																												</fluro-content-form>
 
-
-																												<!-- <fluro-content-form :options="options" v-model="model.rawData" :fields="definition.fields" /> -->
-																												
-
-
-
+																												<fluro-panel v-if="definition.fields && definition.fields.length">
+																																<fluro-panel-title>
+																																				Submitted Data
+																																</fluro-panel-title>
+																																<fluro-panel-body>
+																																				<fluro-content-form :options="options" v-model="model.rawData" :fields="definition.fields" />
+																																</fluro-panel-body>
+																												</fluro-panel>
 																								</constrain>
 																				</v-container>
 																</flex-column-body>

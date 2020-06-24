@@ -54,9 +54,9 @@
 																</template>
 																<template v-else>
 																				<!-- <v-layout row wrap> -->
-																								<template v-for="subField in fields">
-																												<fluro-content-render-field :raw="raw" :field="subField" v-model="model" />
-																								</template>
+																				<template v-for="subField in fields">
+																								<fluro-content-render-field :raw="raw" :field="subField" v-model="model" />
+																				</template>
 																				<!-- </v-layout> -->
 																</template>
 												</template>

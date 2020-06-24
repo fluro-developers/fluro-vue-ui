@@ -4,6 +4,7 @@
 								<!-- <pre>{{rawPage}}</pre> -->
 								<!-- <pre>{{totalPages}}</pre> -->
 								<!-- <pre>{{sort}}</pre> -->
+								<!-- <pre>{{page}}</pre> -->
 								<fluro-page-preloader v-if="showLoading" contain />
 								<v-container class="flex-center" v-if="rows.length && !sorted.length">
 												<slot name="emptytext">
@@ -57,7 +58,7 @@
 																																				</v-card>
 																																</v-menu>
 																												</th>
-																												<th @click="toggleSort(column)" :class="[column.classes, {'shrink':column.shrink, sortable:isSortable(column), 'sorting':sort.sortKey == column.key, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}]" v-for="column in columns">
+																												<th @click="toggleSort(column)" :class="[column.classes, {'shrink':column.shrink, sortable:isSortable(column), 'sorting':sort.sortKey == column.key, 'tiny':column.tiny, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}]" v-for="column in columns">
 																																<div class="sort-icon" v-if="isActiveSort(column.key)">
 																																				<fluro-icon library="fas" icon="caret-down" v-if="sort.sortDirection == 'desc'" />
 																																				<fluro-icon library="fas" icon="caret-up" v-if="sort.sortDirection == 'asc'" />
@@ -581,8 +582,6 @@ export default {
 
 								sorted() {
 
-
-
 												var self = this;
 												var items = this.refined;
 
@@ -746,11 +745,11 @@ export default {
 												return Math.min(this.startOffset + this.perPage, this.filteredTotal);
 								},
 								rawPage() {
-												// console.log('RAW', this.currentPage, this.totalPages)
+												console.log('RAW', this.currentPage, this.totalPages)
 												if (this.currentPage > this.totalPages) {
 																return _.first(this.availablePages);
 												} else {
-																return this.availablePages[this.currentPage - 1];
+																return this.availablePages[Math.max(this.currentPage - 1, 0)];
 												}
 								},
 								totalPages() {
@@ -1080,6 +1079,7 @@ export default {
 																var self = this;
 
 																if (!self.isAsync) {
+																				console.log('table debug > return early', self.rawPage)
 																				return Promise.resolve(self.rawPage);
 																}
 
@@ -1100,6 +1100,7 @@ export default {
 
 																if (!ids || !ids.length) {
 																				self.loading = false;
+																				console.log('table debug > return empty')
 																				return Promise.resolve([]);
 																}
 
@@ -1243,6 +1244,8 @@ export default {
 												var self = this;
 
 												var rows = self.isAsync ? self.rows : self.items;
+
+												console.log('ROWS', rows);
 
 												if (!rows || !rows.length) {
 																self.filtered = rows;
@@ -1592,8 +1595,8 @@ export default {
 												}
 
 
-												if(item.collected) {
-													classes.push('ticket-status-collected')
+												if (item.collected) {
+																classes.push('ticket-status-collected')
 												}
 
 												if (this.$selection.isSelected(item)) {

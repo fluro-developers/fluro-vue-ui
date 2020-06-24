@@ -200,6 +200,10 @@
 																								<template v-if="model.directive == 'app-field-key-select' || model.directive == 'app-field-select'">
 																												<fluro-content-form-field :field="fields.referenceType" v-model="model.params" />
 																								</template>
+																								<template v-if="model.directive == 'app-type-select'">
+																												<fluro-content-form-field :field="fields.referenceType" v-model="model.params" />
+																												<fluro-content-form-field :field="fields.includeDefinedTypes" v-model="model.params" />
+																								</template>
 																								<fluro-content-form-field v-if="model.directive == 'currency'" :field="fields.currency" v-model="model.params" />
 																								<v-container class="grid-list-xl" pa-0 fluid v-if="model.type != 'void'">
 																												<v-layout>
@@ -276,6 +280,9 @@
 																																				</template>
 																																				<template v-else>
 																																								<fluro-content-form-field @input="resetRequired(fields.defaultValues)" :field="fields.defaultValues" v-model="model" />
+																																				</template>
+																																				<template v-if="!requiresOptions">
+																																								<fluro-content-form-field :field="fields.allowedValues" v-model="model" />
 																																				</template>
 																																</template>
 																												</template>
@@ -1059,10 +1066,13 @@ export default {
 
 												addField('allowedValues', {
 																title: 'Allowed Options',
-																description: 'Add each option that the user may select.',
+																description: 'Restrict what values can be entered into this field',
 																minimum: 0,
 																maximum: 0,
 																type: 'string',
+																params: {
+																				persistentDescription: true,
+																}
 												})
 
 												addField('allowedReferences', {
@@ -1373,6 +1383,15 @@ export default {
 																options: self.referenceOptions,
 												})
 
+												addField('includeDefinedTypes', {
+																title: 'Include defined types',
+																description: 'Include any extended definitions of this type',
+																minimum: 0,
+																maximum: 1,
+																type: 'boolean',
+
+												})
+
 
 												addField('currency', {
 																key: 'currency',
@@ -1614,6 +1633,12 @@ export default {
 																				inputOptions.push({
 																								title: 'Website Builder Theme Select',
 																								value: 'app-theme-select',
+																				})
+
+
+																				inputOptions.push({
+																								title: 'Website Builder Type Select',
+																								value: 'app-type-select',
 																				})
 																}
 

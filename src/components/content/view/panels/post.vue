@@ -44,9 +44,7 @@ export default {
     data() {
         return {}
     },
-    created() {
-        console.log('THIS RENDERER', this)
-    }
+    
 }
 </script>
 <style scoped lang="scss">

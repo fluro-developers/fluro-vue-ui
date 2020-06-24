@@ -75,6 +75,8 @@
 																								</div>
 																				</div>
 																</div> -->
+
+															
 																								<fluro-content-render :fields="fields" :raw="true" v-model="item.rawData" />
 																				</v-container>
 																</flex-column-body>
@@ -82,7 +84,7 @@
 												<tab :heading="`${tickets.length} Tickets`" v-if="tickets.length">
 																<flex-column-body style="background: #fafafa;">
 																				<v-container fluid style="background: #fff;" class="border-bottom">
-																								<img class="qrcode"  :src="qrCodeURL" />
+																								<img class="qrcode" :src="qrCodeURL" />
 																				</v-container>
 																				<v-container>
 																								<ticket-list :interaction="item" />
@@ -372,11 +374,11 @@ export default {
 
 </script>
 <style scoped lang="scss">
-
 .qrcode {
-	display: block;
-	border:5px solid #000;
-	background: #000;
-	margin:auto;
+				display: block;
+				border: 5px solid #000;
+				background: #000;
+				margin: auto;
 }
+
 </style>

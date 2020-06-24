@@ -52,7 +52,7 @@
 																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultDuration" v-model="model" />
 																																								</v-flex>
 																																								<v-flex xs12 sm6>
-																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.timezone" v-model="model" />
+																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultTimezone" v-model="model" />
 																																								</v-flex>
 																																				</v-layout>
 																																</fluro-panel-body>
@@ -175,7 +175,7 @@
 																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultDuration" v-model="model" />
 																																								</v-flex>
 																																								<v-flex xs12 sm6>
-																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.timezone" v-model="model" />
+																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultTimezone" v-model="model" />
 																																								</v-flex>
 																																				</v-layout>
 																																				<!--
@@ -703,7 +703,7 @@ export default {
 																}
 												});
 
-												addField('timezone', {
+												addField('defaultTimezone', {
 																title: 'Event Timezone',
 																minimum: 0,
 																maximum: 1,
