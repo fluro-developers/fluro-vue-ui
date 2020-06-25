@@ -1,4 +1,4 @@
-console.log('fluro-vue-ui 2.1.85')
+console.log('fluro-vue-ui 2.1.86')
 
 /////////////////////////////////////////////////////
 
@@ -238,6 +238,7 @@ function install(Vue, options) {
 	Vue.component('fluro-status-label', FluroStatusLabel);
 	Vue.component('fluro-avatar', FluroAvatar);
 	Vue.component('fluro-image', FluroImage);
+	Vue.component('fluro-audio', FluroAudio);
 	Vue.component('fluro-list-item', FluroListItem);
 	Vue.component('fluro-toggle-item', FluroToggleItem);
 	Vue.component('fluro-video', FluroVideo);

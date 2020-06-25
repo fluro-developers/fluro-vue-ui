@@ -651,7 +651,7 @@ export default {
     }
 
     .timeslot {
-        position: absolute;
+        position: absolute !important;
         width: 100%;
     }
 
