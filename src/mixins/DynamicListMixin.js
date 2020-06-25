@@ -158,12 +158,16 @@ export default {
 
 												var startDate = self.calendarStartDate || self.startDate;
 												if (startDate) {
-																filterCriteria.startDate = new Date(startDate);
+																startDate = new Date(startDate);
+																startDate.setHours(0, 0, 0, 0);
+																filterCriteria.startDate = startDate;
 												}
 
 												var endDate = self.calendarEndDate || self.endDate;
 												if (endDate) {
-																filterCriteria.endDate = new Date(endDate);
+																endDate = new Date(endDate);
+																endDate.setHours(23, 59, 59, 999);
+																filterCriteria.endDate = endDate;
 												}
 
 												//Include the timezone of the current requesting user
@@ -261,6 +265,7 @@ export default {
 
 												endDate = new Date(endDate);
 												endDate.setHours(0, 0, 0, 0);
+
 
 
 												return `${startDate.getTime()} ${endDate.getTime()}`;
