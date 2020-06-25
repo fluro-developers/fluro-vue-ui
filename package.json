@@ -1,8 +1,9 @@
 {
 	"name": "fluro-vue-ui",
-	"version": "2.1.83",
+	"version": "2.1.84",
 	"description": "A package that contains helpful Fluro UI components and mixins",
 	"main": "dist/es/index.js",
+	"main2": "src/index.js",
 	"scripts": {
 		"prebuild": "del-cli dist/**",
 		"build": "cross-env NODE_ENV=production rollup -c",

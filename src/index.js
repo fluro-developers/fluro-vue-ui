@@ -1,9 +1,10 @@
-console.log('fluro-vue-ui 2.1.83')
+console.log('fluro-vue-ui 2.1.85')
 
 /////////////////////////////////////////////////////
 
 
 
+import FluroCalendar from './components/ui/FluroCalendar.vue';
 import FluroButton from './components/ui/FluroButton.vue';
 import FluroHelp from './components/FluroHelp.vue';
 import FluroChatbox from './components/conversation/FluroChatbox.vue';
@@ -271,6 +272,7 @@ export default {
 
 
 
+export { FluroCalendar as FluroCalendar };
 export { FluroImage as FluroImage };
 export { FluroChatbox as FluroChatbox };
 export { FluroStreamPlayer as FluroStreamPlayer };
