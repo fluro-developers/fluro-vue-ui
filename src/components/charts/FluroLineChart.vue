@@ -2,14 +2,21 @@
     <div>
         <!--         Model:
  -->
-        <!-- <pre>{{model}}</pre> -->
+       
         <!-- <h3>{{model.title}}</h3> -->
+
+
+        <!-- <pre>CHART DATA: {{chartOptions}}</pre> -->
         <div id="mainChart">
             <apexchart :type="chartType" :height="height" :width="width" :options="chartOptions" :series="chartData"></apexchart>
         </div>
         <div v-if="isBrushed" id="brushedChartKey">
             <apexchart :type="chartType" :width="width" :height="brushedChartOptions.chart.height" :options="brushedChartOptions" :series="brushedChartData"></apexchart>
         </div>
+
+
+         <!-- <pre>LINE CHART MODEL: {{chartData}}</pre> -->
+         <pre>LINE CHART OPTIONS: {{chartOptions}}</pre>
     </div>
 </template>
 <script>
@@ -76,7 +83,7 @@ export default {
         },
         chartOptions() {
             var self = this
-            var chartOpt = _.cloneDeep(self.options)
+            var chartOpt = JSON.parse(JSON.stringify(self.options));//_.cloneDeep(self.options)
             // if (!_.get(chartOpt, "chart.width")) {
             //     _.set(chartOpt, "chart.width", 380)
             // }
@@ -247,40 +254,67 @@ export default {
                 //     _.set(returnYAxis, 'labels.style.color', color)
                 //     _.set(returnYAxis, 'title.style.color', color)
                 // }
-                var min = _.min(ser.data)
+
+
+
+                var min = _.min(ser.data) || 0;
                 if (min > 0) {
                     min = Math.round(min * 0.97)
                 }
-                var max = _.max(ser.data)
+
+                var max = _.max(ser.data) || 0;
+                max = Math.round(max * 1.03) || 0;
+
+
                 _.set(returnYAxis, 'min', min)
-                _.set(returnYAxis, 'max', Math.round(max * 1.03) || 0)
+                _.set(returnYAxis, 'max', max);
+
+
+                  console.log('YAXIS RETURN', returnYAxis);
                 return (returnYAxis)
             }
-            if (!_.get(chartOpt, "yaxis")) {
+            
+
+            ////////////////////////////////////////
+
+            var yaxis = _.get(chartOpt, "yaxis")
+
+            console.log('YAXIS', yaxis)
+
+            ////////////////////////////////////////
+
+            if (!yaxis) {
                 console.log("no yaxis", yaxis)
-                var yaxis = []
+                chartOpt.yaxis = yaxis = []
                 var count = 0
+
                 _.set(chartOpt, 'stroke.dashArray', new Array(self.chartData.length).fill(0))
                 _.each(self.chartData, function(ser) {
                     yaxis.push(createYAxisOptions(ser, count))
                     count = count + 1
                     console.log("count", count)
                 })
-                _.set(chartOpt, "yaxis", yaxis)
+                // _.set(chartOpt, "yaxis", yaxis)
             }
-            var yaxis = _.get(chartOpt, "yaxis")
+
             // need to check yAxis is an array and that the length matches the number of series.
             if (!Array.isArray(yaxis)) {
                 console.log("some yaxis", yaxis)
-                yaxis = [yaxis]
+                chartOpt.yaxis = yaxis = [yaxis]
                 for (var i = 1; i < self.chartData.length; i++) {
                     yaxis.push(createYAxisOptions(self.chartData[i], i))
                 }
-                _.set(chartOpt, "yaxis", yaxis)
+               
             }
+
+             // _.set(chartOpt, "yaxis", yaxis)
+
+            ////////////////////////////////////////
+
             if (self.annotations) {
                 _.set(chartOpt, 'annotations', self.annotations)
             }
+
             if (!_.get(chartOpt, 'annotations')) {
                 if (self.model.axis.key.toLowerCase().includes('date')) {
                     var years = _.reduce(self.model.axis.data, function(result, value, key) {
@@ -320,6 +354,8 @@ export default {
             //   min: 5,
             //   max: 40
             // },
+
+             console.log('YAXIS AFTER', yaxis)
             console.log("Chart Options", chartOpt)
             //console.log("Model", self.model)
             return chartOpt;
