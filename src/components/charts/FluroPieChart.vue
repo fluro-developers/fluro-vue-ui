@@ -42,7 +42,7 @@ export default {
         },
     },
     props: {
-        model: {
+        value: {
             type: Object,
             required: true
         },
@@ -76,8 +76,13 @@ export default {
     },
     data() {
         return {
-
+        	model: this.value
         }
+    },
+    watch: {
+    	value(v) {
+    		this.model = v
+    	}
     },
     asyncComputed: {}
 }

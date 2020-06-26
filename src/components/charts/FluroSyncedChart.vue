@@ -282,7 +282,7 @@ export default {
 
     },
     props: {
-        model: {
+        value: {
             type: Object,
             required: true
         },
@@ -304,6 +304,12 @@ export default {
         width: {
             type: Number,
         },
+
+    },
+    watch: {
+    	value(v) {
+    		this.model = v
+    	}
     },
     components: {
 
@@ -313,7 +319,7 @@ export default {
     },
     data() {
         return {
-
+        	model: this.value
         }
     },
     asyncComputed: {}

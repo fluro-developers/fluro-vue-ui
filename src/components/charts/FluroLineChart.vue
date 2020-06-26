@@ -1,22 +1,19 @@
 <template>
     <div>
-        <!--         Model:
- -->
-       
+        <!--   Model:
+-->
         <!-- <h3>{{model.title}}</h3> -->
-
-
         <!-- <pre>CHART DATA: {{chartOptions}}</pre> -->
-        <div id="mainChart">
-            <apexchart :type="chartType" :height="height" :width="width" :options="chartOptions" :series="chartData"></apexchart>
+        <div v-if="chartOptions">
+            <div id="mainChart">
+                <apexchart :type="chartType" :height="height" :width="width" :options="chartOptions" :series="chartData"></apexchart>
+            </div>
+            <div v-if="isBrushed" id="brushedChartKey">
+                <apexchart :type="chartType" :width="width" :height="brushedChartOptions.chart.height" :options="brushedChartOptions" :series="brushedChartData"></apexchart>
+            </div>
         </div>
-        <div v-if="isBrushed" id="brushedChartKey">
-            <apexchart :type="chartType" :width="width" :height="brushedChartOptions.chart.height" :options="brushedChartOptions" :series="brushedChartData"></apexchart>
-        </div>
-
-
-         <!-- <pre>LINE CHART MODEL: {{chartData}}</pre> -->
-         <pre>LINE CHART OPTIONS: {{chartOptions}}</pre>
+        <!-- <pre>LINE CHART MODEL: {{chartData}}</pre> -->
+        <!-- <pre>LINE CHART OPTIONS: {{chartOptions}}</pre> -->
     </div>
 </template>
 <script>
@@ -28,7 +25,7 @@ export default {
     mixins: [ReportingColorsMixin, ReportingComputationalMixin],
     computed: {
         mainChartId() {
-            console.log("TestGUID", this.$fluro.utils.guid())
+            //console.log("TestGUID", this.$fluro.utils.guid())
             return this.$fluro.utils.guid()
         },
         brushedChartId() {
@@ -36,10 +33,15 @@ export default {
         },
         chartData() {
             var self = this
-            var returnData = _.cloneDeep(self.model.series)
+            //console.log("FLUROLINECHART model", self.model)
+            var returnData = _.concat([], self.model.series)
+            if (!_.get(_.first(self.model.series), 'data.length')) {
+                return
+            }
             if (_.get(self, "options._AOT")) {
                 returnData = _.concat(returnData, self.calculateRunningAverages(returnData))
             }
+            //console.log("FLUROLINECHART ChartData", returnData)
             return returnData
         },
         brushedChartOptions() {
@@ -56,17 +58,15 @@ export default {
             _.set(brushedOptions, "chart.selection", {
                 enabled: true,
                 xaxis: {
-                    
                     min: new Date(self.model.axis.data[Math.round(entriesLength * 0.6)]).getTime(),
                     max: new Date(_.last(self.model.axis.data)).getTime()
                 }
-                
             })
-            console.log("Chart Selection", _.get(brushedOptions, "chart.selection"))
+            // console.log("Chart Selection", _.get(brushedOptions, "chart.selection"))
             _.set(brushedOptions, 'colors', ['#008FFB'])
             delete brushedOptions.brushed
             delete brushedOptions.toolbar
-            console.log("Brushed Options", brushedOptions)
+            // console.log("Brushed Options", brushedOptions)
             var yaxis = _.first(brushedOptions.yaxis)
             _.set(brushedOptions, 'yaxis', [yaxis])
             return brushedOptions
@@ -74,295 +74,280 @@ export default {
         brushedChartData() {
             var self = this
             var returnData = _.cloneDeep(self.model.series)
-            console.log("BrushedData", returnData)
+            // console.log("BrushedData", returnData)
             return returnData
         },
         isBrushed() {
             var self = this
             return _.get(self, "options.brushed")
         },
+    },
+    asyncComputed: {
         chartOptions() {
             var self = this
-            var chartOpt = JSON.parse(JSON.stringify(self.options));//_.cloneDeep(self.options)
-            // if (!_.get(chartOpt, "chart.width")) {
-            //     _.set(chartOpt, "chart.width", 380)
-            // }
-            if (!_.get(chartOpt, "chart.height")) {
-                _.set(chartOpt, "chart.height", 380)
-            }
-            //console.log("chartType", self.chartType)
-            if (!_.get(chartOpt, "chart.type")) {
-                _.set(chartOpt, "chart.type", self.chartType)
-            }
-            if (!_.get(chartOpt, "chart.dropShadow")) {
-                _.set(chartOpt, "chart.dropShadow", {
-                    enabled: true,
-                    color: '#000',
-                    top: 18,
-                    left: 7,
-                    blur: 10,
-                    opacity: 0.2
-                })
-            }
-            _.set(chartOpt, 'chart.id', self.mainChartId)
-            //console.log("Main chart id", _.get(chartOpt, 'chart.id'))
-            if (!_.get(chartOpt, 'colors')) {
-                _.set(chartOpt, "colors", self.theme.colors)
-            }
-            if (!_.get(chartOpt, "dataLabels")) {
-                _.set(chartOpt, "dataLabels", {
-                    enabled: false,
-                })
-            }
-            if (!_.get(chartOpt, "stroke")) {
-                _.set(chartOpt, "stroke", {
-                    curve: 'smooth'
-                })
-            }
-            if (!_.get(chartOpt, "markers")) {
-                _.set(chartOpt, "markers", {
-                    size: 0
-                })
-            }
-            if (!_.get(chartOpt, "labels")) {
-                _.set(chartOpt, "labels", {
-                    borderColor: '#e7e7e7',
-                    row: {
-                        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-                        opacity: 0.5
-                    },
-                })
-            }
-            if (_.get(chartOpt, "brushed")) {
-                delete chartOpt.brushed
-            }
-            if (!_.get(chartOpt, "legend")) {
-                _.set(chartOpt, "legend", {
-                    show: true
-                })
-            }
-            _.set(chartOpt, 'xaxis', {
-                categories: _.get(self.model, 'axis.data'),
-                title: {
-                    text: _.get(self.model, 'axis.title'),
+            return new Promise(function(resolve, reject) {
+                var chartOpt = _.cloneDeep(self.options)
+                // if (!_.get(chartOpt, "chart.width")) {
+                //  _.set(chartOpt, "chart.width", 380)
+                // }
+                if (!_.get(chartOpt, "chart.height")) {
+                    _.set(chartOpt, "chart.height", 380)
                 }
-            })
-            if (!_.get(chartOpt, "zoom")) {
-                _.set(chartOpt, "zoom", {
-                    type: 'x',
-                    enabled: true,
-                    autoScaleYaxis: true
-                })
-                _.set(chartOpt, "chart.toolbar", {
-                    show: true,
-                    offsetX: 0,
-                    offsetY: 0,
-                    tools: {
-                        download: true,
-                        selection: true,
-                        zoom: true,
-                        zoomin: true,
-                        zoomout: true,
-                        pan: true,
-                        reset: true | '<img src="/static/icons/reset.png" width="20">',
-                        customIcons: []
-                    },
-                    autoSelected: 'zoom'
-                })
-            }
-            if (self.isBrushed) {
-                delete chartOpt.zoom
-                // delete chartOpt.chart.toolbar
-                _.set(chartOpt, "chart.toolbar", {
-                    autoSelected: 'pan',
-                    show: false
-                })
-            }
-            if (self.model.axis.key.toLowerCase().includes('date')) {
-                _.set(chartOpt, 'xaxis.type', 'datetime')
-            }
-            if (!_.get(chartOpt, "stroke")) {
-                _.set(chartOpt, "stroke", {
-                    curve: 'smooth',
-                })
-            }
-            // if (!_.get(chartOpt, 'title')) {
-            //     _.set(chartOpt, 'title', {
-            //         text: ' ',
-            //         align: 'left'
-            //     }, )
-            // }
-            if (self.chartType == 'area') {
-                if (!_.get(chartOpt, "fill")) {
-                    _.set(chartOpt, "fill", {
-                        type: 'gradient',
-                        gradient: {
-                            shadeIntensity: 1,
-                            inverseColors: false,
-                            opacityFrom: 0.5,
-                            opacityTo: 0,
-                            stops: [0, 90, 100]
+                //console.log("chartType", self.chartType)
+                if (!_.get(chartOpt, "chart.type")) {
+                    _.set(chartOpt, "chart.type", self.chartType)
+                }
+                if (!_.get(chartOpt, "chart.dropShadow")) {
+                    _.set(chartOpt, "chart.dropShadow", {
+                        enabled: true,
+                        color: '#000',
+                        top: 18,
+                        left: 7,
+                        blur: 10,
+                        opacity: 0.2
+                    })
+                }
+                _.set(chartOpt, 'chart.id', self.mainChartId)
+                //console.log("Main chart id", _.get(chartOpt, 'chart.id'))
+                if (!_.get(chartOpt, 'colors')) {
+                    _.set(chartOpt, "colors", self.theme.colors)
+                }
+                if (!_.get(chartOpt, "dataLabels")) {
+                    _.set(chartOpt, "dataLabels", {
+                        enabled: false,
+                    })
+                }
+                if (!_.get(chartOpt, "stroke")) {
+                    _.set(chartOpt, "stroke", {
+                        curve: 'smooth'
+                    })
+                }
+                if (!_.get(chartOpt, "markers")) {
+                    _.set(chartOpt, "markers", {
+                        size: 0
+                    })
+                }
+                if (!_.get(chartOpt, "labels")) {
+                    _.set(chartOpt, "labels", {
+                        borderColor: '#e7e7e7',
+                        row: {
+                            colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                            opacity: 0.5
                         },
                     })
                 }
-            }
-            // _.set(chartOpt, "chart.events", {
-            //     zoomed(chartContext, event) {
-            //         //console.log("context", chartContext, "options", options)
-            //         self.$emit("FluroChartEvent", { key: 'zoom', event })
-            //     },
-            //     // click(event, chartContext, config) {
-            //     //     self.$emit("FluroChartEvent", {key: 'click', event, config})
-            //     // }
-            // })
-
-            function createYAxisOptions(ser, count) {
-                var returnYAxis = {
-                    axisTicks: {
-                        show: true,
-                    },
-                    axisBorder: {
-                        show: true,
-                        color: self.getColor(count),
-                    },
-                    labels: {
-                        style: {
-                            color: self.getColor(count),
-                        }
-                    },
+                if (_.get(chartOpt, "brushed")) {
+                    delete chartOpt.brushed
+                }
+                if (!_.get(chartOpt, "legend")) {
+                    _.set(chartOpt, "legend", {
+                        show: true
+                    })
+                }
+                _.set(chartOpt, 'xaxis', {
+                    categories: _.get(self.model, 'axis.data'),
                     title: {
-                        text: ser.name,
-                        style: {
-                            color: self.getColor(count),
-                        }
-                    },
-                    tooltip: {
-                        enabled: true,
-                        shared: true,
-                    },
-                    show: true,
-                }
-                if (ser.key.includes("_AOT")) {
-                    _.set(chartOpt, `stroke.dashArray[${count}]`, 5)
-                }
-                if (count > 0) {
-                    _.set(returnYAxis, 'opposite', true)
-                }
-                // if (_.get(ser, 'color')) {
-                //     var color = _.set(returnYAxis, 'axisBorder.color', _.get(ser, 'color'))
-                //     _.set(returnYAxis, 'axisBorder.color', color)
-                //     _.set(returnYAxis, 'labels.style.color', color)
-                //     _.set(returnYAxis, 'title.style.color', color)
-                // }
-
-
-
-                var min = _.min(ser.data) || 0;
-                if (min > 0) {
-                    min = Math.round(min * 0.97)
-                }
-
-                var max = _.max(ser.data) || 0;
-                max = Math.round(max * 1.03) || 0;
-
-
-                _.set(returnYAxis, 'min', min)
-                _.set(returnYAxis, 'max', max);
-
-
-                  console.log('YAXIS RETURN', returnYAxis);
-                return (returnYAxis)
-            }
-            
-
-            ////////////////////////////////////////
-
-            var yaxis = _.get(chartOpt, "yaxis")
-
-            console.log('YAXIS', yaxis)
-
-            ////////////////////////////////////////
-
-            if (!yaxis) {
-                console.log("no yaxis", yaxis)
-                chartOpt.yaxis = yaxis = []
-                var count = 0
-
-                _.set(chartOpt, 'stroke.dashArray', new Array(self.chartData.length).fill(0))
-                _.each(self.chartData, function(ser) {
-                    yaxis.push(createYAxisOptions(ser, count))
-                    count = count + 1
-                    console.log("count", count)
+                        text: _.get(self.model, 'axis.title'),
+                    }
                 })
-                // _.set(chartOpt, "yaxis", yaxis)
-            }
-
-            // need to check yAxis is an array and that the length matches the number of series.
-            if (!Array.isArray(yaxis)) {
-                console.log("some yaxis", yaxis)
-                chartOpt.yaxis = yaxis = [yaxis]
-                for (var i = 1; i < self.chartData.length; i++) {
-                    yaxis.push(createYAxisOptions(self.chartData[i], i))
+                if (!_.get(chartOpt, "zoom")) {
+                    _.set(chartOpt, "zoom", {
+                        type: 'x',
+                        enabled: true,
+                        autoScaleYaxis: true
+                    })
+                    _.set(chartOpt, "chart.toolbar", {
+                        show: true,
+                        offsetX: 0,
+                        offsetY: 0,
+                        tools: {
+                            download: true,
+                            selection: true,
+                            zoom: true,
+                            zoomin: true,
+                            zoomout: true,
+                            pan: true,
+                            reset: true | '<img src="/static/icons/reset.png" width="20">',
+                            customIcons: []
+                        },
+                        autoSelected: 'zoom'
+                    })
                 }
-               
-            }
-
-             // _.set(chartOpt, "yaxis", yaxis)
-
-            ////////////////////////////////////////
-
-            if (self.annotations) {
-                _.set(chartOpt, 'annotations', self.annotations)
-            }
-
-            if (!_.get(chartOpt, 'annotations')) {
+                if (self.isBrushed) {
+                    delete chartOpt.zoom
+                    // delete chartOpt.chart.toolbar
+                    _.set(chartOpt, "chart.toolbar", {
+                        autoSelected: 'pan',
+                        show: false
+                    })
+                }
                 if (self.model.axis.key.toLowerCase().includes('date')) {
-                    var years = _.reduce(self.model.axis.data, function(result, value, key) {
-                        result[moment(value).year()] = moment(value).year()
-                        return result
-                    }, {})
-                    var defaultAnnotations = _.chain(years).map(function(year) {
-                        return [{
-                            x: new Date(`25 Dec ${year}`).getTime(),
-                            borderColor: '#775DD0',
-                            label: {
-                                style: {
-                                    color: '#fff',
-                                    background: '#775DD0',
-                                },
-                                text: 'Christmas Day',
-                            }
-                        }, {
-                            x: new Date(self.easterComputus(year)).getTime(),
-                            borderColor: '#775DD0',
-                            label: {
-                                style: {
-                                    color: '#fff',
-                                    background: '#775DD0',
-                                },
-                                text: 'Easter Sunday',
-                            }
-                        }]
-                    }).flatten().value()
-                    _.set(chartOpt, 'annotations', { xaxis: defaultAnnotations })
+                    _.set(chartOpt, 'xaxis.type', 'datetime')
                 }
-            }
-            // yaxis: {
-            //   title: {
-            //     text: 'Temperature'
-            //   },
-            //   min: 5,
-            //   max: 40
-            // },
-
-             console.log('YAXIS AFTER', yaxis)
-            console.log("Chart Options", chartOpt)
-            //console.log("Model", self.model)
-            return chartOpt;
+                if (!_.get(chartOpt, "stroke")) {
+                    _.set(chartOpt, "stroke", {
+                        curve: 'smooth',
+                    })
+                }
+                // if (!_.get(chartOpt, 'title')) {
+                //  _.set(chartOpt, 'title', {
+                //   text: ' ',
+                //   align: 'left'
+                //  }, )
+                // }
+                if (self.chartType == 'area') {
+                    if (!_.get(chartOpt, "fill")) {
+                        _.set(chartOpt, "fill", {
+                            type: 'gradient',
+                            gradient: {
+                                shadeIntensity: 1,
+                                inverseColors: false,
+                                opacityFrom: 0.5,
+                                opacityTo: 0,
+                                stops: [0, 90, 100]
+                            },
+                        })
+                    }
+                }
+                // _.set(chartOpt, "chart.events", {
+                //  zoomed(chartContext, event) {
+                //   //console.log("context", chartContext, "options", options)
+                //   self.$emit("FluroChartEvent", { key: 'zoom', event })
+                //  },
+                //  // click(event, chartContext, config) {
+                //  //  self.$emit("FluroChartEvent", {key: 'click', event, config})
+                //  // }
+                // })
+                function createYAxisOptions(ser, count) {
+                    var returnYAxis = {
+                        axisTicks: {
+                            show: true,
+                        },
+                        axisBorder: {
+                            show: true,
+                            color: self.getColor(count),
+                        },
+                        labels: {
+                            style: {
+                                color: self.getColor(count),
+                            }
+                        },
+                        title: {
+                            text: ser.name,
+                            style: {
+                                color: self.getColor(count),
+                            }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            shared: true,
+                        },
+                        show: true,
+                    }
+                    if (ser.key.includes("_AOT")) {
+                        _.set(chartOpt, `stroke.dashArray[${count}]`, 5)
+                    }
+                    if (count > 0) {
+                        _.set(returnYAxis, 'opposite', true)
+                    }
+                    // if (_.get(ser, 'color')) {
+                    //  var color = _.set(returnYAxis, 'axisBorder.color', _.get(ser, 'color'))
+                    //  _.set(returnYAxis, 'axisBorder.color', color)
+                    //  _.set(returnYAxis, 'labels.style.color', color)
+                    //  _.set(returnYAxis, 'title.style.color', color)
+                    // }
+                    var min = _.min(ser.data) || 0;
+                    if (min > 0) {
+                        min = Math.round(min * 0.97)
+                    }
+                    var max = _.max(ser.data) || 0;
+                    max = Math.round(max * 1.03) || 0;
+                    _.set(returnYAxis, 'min', min)
+                    _.set(returnYAxis, 'max', max);
+                    // console.log('YAXIS RETURN', returnYAxis);
+                    return (returnYAxis)
+                }
+                ////////////////////////////////////////
+                var yaxis = _.get(chartOpt, "yaxis")
+                //console.log('YAXIS', yaxis)
+                ////////////////////////////////////////
+                if (!yaxis) {
+                    //console.log("FLUROLINECHART no yaxis", yaxis)
+                    chartOpt.yaxis = yaxis = []
+                    var count = 0
+                    _.set(chartOpt, 'stroke.dashArray', new Array(self.chartData.length).fill(0))
+                    _.each(self.chartData, function(ser) {
+                        yaxis.push(createYAxisOptions(ser, count))
+                        count = count + 1
+                        //console.log("count", count)
+                    })
+                    // _.set(chartOpt, "yaxis", yaxis)
+                }
+                // need to check yAxis is an array and that the length matches the number of series.
+                if (!Array.isArray(yaxis)) {
+                    // console.log("some yaxis", yaxis)
+                    chartOpt.yaxis = yaxis = [yaxis]
+                    for (var i = 1; i < self.chartData.length; i++) {
+                        yaxis.push(createYAxisOptions(self.chartData[i], i))
+                    }
+                }
+                // _.set(chartOpt, "yaxis", yaxis)
+                ////////////////////////////////////////
+                if (self.annotations) {
+                    _.set(chartOpt, 'annotations', self.annotations)
+                }
+                if (!_.get(chartOpt, 'annotations')) {
+                    if (self.model.axis.key.toLowerCase().includes('date')) {
+                        var years = _.reduce(self.model.axis.data, function(result, value, key) {
+                            result[moment(value).year()] = moment(value).year()
+                            return result
+                        }, {})
+                        var defaultAnnotations = _.chain(years).map(function(year) {
+                            return [{
+                                x: new Date(`25 Dec ${year}`).getTime(),
+                                borderColor: '#775DD0',
+                                label: {
+                                    style: {
+                                        color: '#fff',
+                                        background: '#775DD0',
+                                    },
+                                    text: 'Christmas Day',
+                                }
+                            }, {
+                                x: new Date(self.easterComputus(year)).getTime(),
+                                borderColor: '#775DD0',
+                                label: {
+                                    style: {
+                                        color: '#fff',
+                                        background: '#775DD0',
+                                    },
+                                    text: 'Easter Sunday',
+                                }
+                            }]
+                        }).flatten().value()
+                        _.set(chartOpt, 'annotations', { xaxis: defaultAnnotations })
+                    }
+                }
+                // yaxis: {
+                //   title: {
+                //  text: 'Temperature'
+                //   },
+                //   min: 5,
+                //   max: 40
+                // },
+                //console.log('YAXIS AFTER', yaxis)
+                //nsole.log("FLUROLINECHART Chart Options", chartOpt)
+                //nsole.log("FLUROLINECHART Model", self.model)
+                resolve(chartOpt);
+            })
         },
+        created: function() {
+            //nsole.log("Computed Series", this.chartData)
+        },
+        
     },
     props: {
-        model: {
+        value: {
             type: Object,
             required: true
         },
@@ -397,13 +382,18 @@ export default {
     components: {},
     methods: {},
     data() {
-        return {}
+        return {
+            model: this.value
+        }
     },
-    asyncComputed: {},
-    created: function() {
-        console.log("Computed Series", this.chartData)
-    }
+    watch: {
+        value(v) {
+            this.model = v
+        }
+    },
+
 }
+
 </script>
 <style lang="scss">
 </style>
