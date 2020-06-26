@@ -139,7 +139,10 @@ import DynamicListMixin from './mixins/DynamicListMixin';
 import DynamicPageMixin from './mixins/DynamicPageMixin';
 import FluroContactCommunicateMixin from './mixins/FluroContactCommunicateMixin';
 import FluroSelectionMixin from './mixins/FluroSelectionMixin';
-
+import FluroChart from './components/charts/FluroChart.vue';
+import FluroLineChart from './components/charts/FluroLineChart.vue';
+import FluroPieChart from './components/charts/FluroPieChart.vue';
+import FluroSyncedChart from './components/charts/FluroSyncedChart.vue';
 
 /////////////////////////////////////////////////////
 
@@ -412,3 +415,7 @@ export { DynamicListMixin as DynamicListMixin };
 export { DynamicPageMixin as DynamicPageMixin };
 export { FluroContactCommunicateMixin as FluroContactCommunicateMixin };
 export { FluroSelectionMixin as FluroSelectionMixin };
+export { FluroChart as FluroChart}
+export { FluroLineChart as FluroLineChart}
+export { FluroPieChart as FluroPieChart}
+export { FluroSyncedChart as FluroSyncedChart}
