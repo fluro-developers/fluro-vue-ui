@@ -728,7 +728,7 @@ export default {
 																																.orderBy('title')
 																																.value();
 
-																																console.log('TYPES LOADED', cleaned, values)
+																												console.log('TYPES LOADED', cleaned, values)
 
 																												resolve(cleaned);
 																								});
@@ -776,7 +776,7 @@ export default {
 												var array = [];
 
 
-											
+
 
 												///////////////////////////////
 
@@ -817,7 +817,7 @@ export default {
 																minimum: 0,
 																maximum: 0,
 																type: 'string',
-																directive:'select',
+																directive: 'select',
 																options: self.eventTypeOptions,
 																description: `Select event definitions that these rosters are relevant for. Eg. If ${this.model.plural} are only relevant for specific types of events then select them here, otherwise ${this.model.plural} will appear in the planner for events on any kind`,
 																// params: {
@@ -842,7 +842,7 @@ export default {
 												});
 
 
-													array.push({
+												array.push({
 																title: 'Relevant Realms',
 																key: 'rosterRealms',
 																minimum: 0,
@@ -855,7 +855,7 @@ export default {
 																				persistentDescription: true,
 																},
 												});
-												
+
 
 
 
@@ -1204,7 +1204,16 @@ export default {
 																type: 'reference',
 																params: {
 																				restrictType: 'definition',
-																				parentType: 'process',
+																				referenceFilter: {
+																								operator: 'and',
+																								filters: [{
+																												key: 'parentType',
+																												comparator: '==',
+																												value: 'process',
+																								}, ]
+																				},
+
+
 																},
 																description: `Select processes that the form submission will be added into`,
 												})
@@ -1221,7 +1230,14 @@ export default {
 																type: 'reference',
 																params: {
 																				restrictType: 'definition',
-																				parentType: 'process',
+																				referenceFilter: {
+																								operator: 'and',
+																								filters: [{
+																												key: 'parentType',
+																												comparator: '==',
+																												value: 'process',
+																								}, ]
+																				},
 																},
 																description: `Select processes to add the primary (or first linked) contact to after form submission`,
 												})
