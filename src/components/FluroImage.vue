@@ -89,8 +89,6 @@ export default {
 
             var url = self.url;
 
-
-
             //Create a new image
             var img = new Image;
 
@@ -108,6 +106,7 @@ export default {
                 self.$emit('error', $event);
             }
 
+            img.src = '';
             img.src = url;
         }
     },
