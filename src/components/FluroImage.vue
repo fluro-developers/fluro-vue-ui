@@ -89,7 +89,7 @@ export default {
 
             var url = self.url;
 
-            console.log('LOAD THE URL', self.url);
+            // console.log('LOAD THE URL', self.url);
 
             //Create a new image
             var img = new Image;
@@ -97,7 +97,7 @@ export default {
             //Once the image has loaded
             img.onload = function($event) {
 
-                console.log('IMAGE LOAD', url, $event);
+                // console.log('IMAGE LOAD', url, $event);
                 self.loaded = true;
                 self.$emit('load', $event);
                 self.loadedImageWidth = img.width;
@@ -106,7 +106,7 @@ export default {
 
             //Once the image has loaded
             img.onerror = function($event) {
-                console.log('IMAGE ERROR', url, $event);
+                // console.log('IMAGE ERROR', url, $event);
                 self.$emit('error', $event);
             }
 
@@ -182,7 +182,7 @@ export default {
 
                 var outputURL = self.$fluro.asset.imageUrl(self.imageID, requestWidth, requestHeight, params);
 
-                console.log('OUTPUT URL', outputURL);
+               // console.log('OUTPUT URL', outputURL);
                 return outputURL;
             } else {
                 return;
