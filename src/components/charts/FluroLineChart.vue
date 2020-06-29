@@ -6,7 +6,7 @@
 								<!-- <pre>CHART DATA: {{chartOptions}}</pre> -->
 								<div v-if="chartOptions">
 												<div id="mainChart">
-																<apexchart :type="chartType" :height="height" :width="width" :options="chartOptions" :series="chartData"></apexchart>
+																<apexchart :type="actualChartType" :height="height" :width="width" :options="chartOptions" :series="chartData"></apexchart>
 												</div>
 												<div v-if="isBrushed" id="brushedChartKey">
 																<apexchart :type="chartType" :width="width" :height="brushedChartOptions.chart.height" :options="brushedChartOptions" :series="brushedChartData"></apexchart>
@@ -26,7 +26,7 @@ export default {
 				computed: {
 								actualChartType() {
 												if (this.options._AOT) {
-														return 'line';
+																return 'line';
 												}
 
 												return this.chartType;
@@ -53,7 +53,7 @@ export default {
 																// if (self.chartType != 'line') {
 																_.each(returnData, function(series) {
 																				// console.log('TESTING AT THIS POINT IN TIME', self.chartType);
-																				series.type = 'column';//self.chartType;//'column'; //self.chartType; //self.chartType || self.originalChartType;
+																				series.type = 'column'; //self.chartType;//'column'; //self.chartType; //self.chartType || self.originalChartType;
 																})
 																// }
 
@@ -107,6 +107,7 @@ export default {
 												return _.get(self, "options.brushed")
 								},
 				},
+
 				asyncComputed: {
 								chartOptions() {
 												var self = this
@@ -120,7 +121,7 @@ export default {
 																}
 																//console.log("chartType", self.chartType)
 																// if (!_.get(chartOpt, "chart.type")) {
-																				_.set(chartOpt, "chart.type", self.actualChartType)
+																_.set(chartOpt, "chart.type", self.actualChartType)
 																// }
 
 
