@@ -40,7 +40,9 @@ export default {
     computed: {
     	compiledOptions: function() {
     		var options = this.options
+    		console.log("Here")
     		options.colors = this.colors
+			console.log("There")
     		return options
     	},
         normalisedChartType: function() {
@@ -79,8 +81,8 @@ export default {
             var chrtdata
         	var colorCount = 0
         	_.each(self.series, function(ser) {
-        		if (_.get(ser, color)) {
-        			self.colors[colorCount] = _.get(ser, color)
+        		if (_.get(ser, "color")) {
+        			self.colors[colorCount] = _.get(ser, "color")
         		}
         		colorCount = colorCount + 1
         	}) 
@@ -192,7 +194,18 @@ export default {
         return {
             loading: true,
             model: this.value,
-            colors: this.theme.colors
+           	colors: [
+				'#008FFB', 
+				'#00E396', 
+				'#FEB019', 
+				'#FF4560', 
+				'#775DD0', 
+				'#7adc12',
+				'#f34be2',
+				'#b76b1a',
+				'#ff7800',
+
+			],
         }
     },
     watch: {
