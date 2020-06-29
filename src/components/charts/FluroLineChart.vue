@@ -25,10 +25,12 @@ export default {
     mixins: [ReportingColorsMixin, ReportingComputationalMixin],
     computed: {
         actualChartType() {
-            if (this.options._AOT) {
-                return 'line';
+            var chartType = this.chartType
+            if (this.options._AOT && this.chartType != 'area') {
+                chartType = 'line';
             }
-            return this.chartType;
+            //console.log("ChartType", chartType )
+            return chartType;
         },
         mainChartId() {
             //console.log("TestGUID", this.$fluro.utils.guid())
@@ -45,15 +47,21 @@ export default {
                 return
             }
             if (_.get(self, "options._AOT")) {
-                // if (self.chartType != 'line') {
-                _.each(returnData, function(series) {
-                    // console.log('TESTING AT THIS POINT IN TIME', self.chartType);
-                    series.type = 'column'; //self.chartType;//'column'; //self.chartType; //self.chartType || self.originalChartType;
-                })
-                // }
-                returnData = _.concat(returnData, self.calculateRunningAverages(returnData))
+                if (!(self.chartType == 'line' || self.chartType == 'area')) {
+                    _.each(returnData, function(series) {
+                        series.type = 'column'; //self.chartType;//'column'; //self.chartType; //self.chartType || self.originalChartType;
+                    })
+                }
+                var aotseries = self.calculateRunningAverages(returnData)
+                if (self.chartType == 'area') {
+                    aotseries = _.map(aotseries, function(ser){
+                        delete ser.type
+                        return ser
+                    })
+                }
+                returnData = _.concat(returnData, aotseries)
             }
-            console.log("FLUROLINECHART ChartData", returnData)
+            // console.log("FLUROLINECHART ChartData", returnData)
             return returnData
         },
         brushedChartOptions() {
@@ -146,11 +154,7 @@ export default {
                         enabled: false,
                     })
                 }
-                if (!_.get(chartOpt, "stroke")) {
-                    _.set(chartOpt, "stroke", {
-                        curve: 'smooth'
-                    })
-                }
+
                 if (!_.get(chartOpt, "markers")) {
                     _.set(chartOpt, "markers", {
                         size: 0
@@ -366,7 +370,7 @@ export default {
                 //   max: 40
                 // },
                 //console.log('YAXIS AFTER', yaxis)
-                console.log("FLUROLINECHART Chart Options", chartOpt)
+                // console.log("FLUROLINECHART Chart Options", chartOpt)
                 //console.log("FLUROLINECHART Model", self.model)
                 resolve(chartOpt);
             })

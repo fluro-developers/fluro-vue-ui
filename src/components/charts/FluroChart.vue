@@ -22,8 +22,6 @@
             	</div>
             </slot>
             <slot name="footer"></slot>
-            <!-- <pre>DATA SOURCE: {{dataSource}}</pre> -->
-            <!-- <pre>CHART DATA: {{chartData}}</pre> -->
         </template>
     </div>
 </template>
@@ -40,9 +38,7 @@ export default {
     computed: {
     	compiledOptions: function() {
     		var options = this.options
-    		console.log("Here")
     		options.colors = this.colors
-			console.log("There")
     		return options
     	},
         normalisedChartType: function() {
