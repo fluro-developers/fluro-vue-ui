@@ -53,14 +53,14 @@ export default {
 	    	var runningaverages = []
 
             _.each(data, function(series){
-            	console.log("In running average", series)
+            	//console.log("In running average", series)
             	if(series.AOT){
 	                var count = 0
 	                var total = 0
 	                var average = {
 	                    name: `${series.name} - Average over time`,
 	                    key: `${series.key}_AOT`,
-	                    type:'line',
+	                    type: 'line',
 	                    data: _.map(series.data, function(value){
 	                        total = total + value
 	                        count = count + 1
