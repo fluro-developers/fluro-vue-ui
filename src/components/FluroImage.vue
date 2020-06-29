@@ -180,7 +180,10 @@ export default {
                     params.from = self.$fluro.utils.getStringID(self.from);
                 }
 
-                return self.$fluro.asset.imageUrl(self.imageID, requestWidth, requestHeight, params);
+                var outputURL = self.$fluro.asset.imageUrl(self.imageID, requestWidth, requestHeight, params);
+
+                console.log('OUTPUT URL', outputURL);
+                return outputURL;
             } else {
                 return;
             }
