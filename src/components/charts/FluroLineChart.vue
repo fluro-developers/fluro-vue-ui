@@ -46,6 +46,7 @@ export default {
             if (!_.get(_.first(self.model.series), 'data.length')) {
                 return
             }
+            //console.log("options in FLC", _.get(self, "options"))
             if (_.get(self, "options._AOT")) {
                 if (!(self.chartType == 'line' || self.chartType == 'area')) {
                     _.each(returnData, function(series) {
@@ -61,7 +62,7 @@ export default {
                 }
                 returnData = _.concat(returnData, aotseries)
             }
-            // console.log("FLUROLINECHART ChartData", returnData)
+            console.log("FLUROLINECHART ChartData", returnData)
             return returnData
         },
         brushedChartOptions() {

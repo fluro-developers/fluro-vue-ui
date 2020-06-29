@@ -37,8 +37,16 @@ export default {
     mixins: [ReportingColorsMixin, ReportingComputationalMixin],
     computed: {
     	compiledOptions: function() {
-    		var options = this.options
-    		options.colors = this.colors
+    		var self = this
+    		var options = self.options
+    		options.colors = self.colors
+    		_.each(self.series, function (ser) {
+    			//console.log("FC Processing series", ser)
+    			if (ser.AOT){
+    				options._AOT = true
+    			}
+    		})
+    		//console.log("FC compiledOptions", options)
     		return options
     	},
         normalisedChartType: function() {
@@ -108,6 +116,7 @@ export default {
                             data: _.get(self.dataSource, `series.${ser.key}`),
                             key: ser.key,
                             color: ser.color,
+                            AOT: ser.AOT
                         }
                     })
                     chrtdata = {
