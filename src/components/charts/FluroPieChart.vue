@@ -24,6 +24,10 @@ export default {
                 _.set(chartOpt, "labels", self.model.labels)
             }
 
+            if (!_.get(chartOpt, "colors")) {
+                _.set(chartOpt, "colors", self.model.colors)
+            }
+
             if (!_.get(chartOpt, "responsive")) {
                 _.set(chartOpt, "responsive", [{
                     breakpoint: 480,
