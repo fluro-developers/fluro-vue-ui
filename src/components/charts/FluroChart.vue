@@ -11,19 +11,17 @@
             <slot name="graph">
             	<div v-if="dataSource">
 	                <div v-if="normalisedChartType=='pie'">
-	                    <fluro-pie-chart v-model="chartData" :annotations="annotations" :options="options" :chartType="chartType" :height="height" :width="width" />
+	                    <fluro-pie-chart v-model="chartData" :annotations="annotations" :options="compiledOptions" :chartType="chartType" :height="height" :width="width" />
 	                </div>
 	                <div v-else-if="normalisedChartType=='line'">
-	                    <fluro-line-chart @zoom="zoomChange" v-model="chartData" :annotations="annotations" :options="options" :chartType="chartType" :height="height" :width="width" />
+	                    <fluro-line-chart @zoom="zoomChange" v-model="chartData" :annotations="annotations" :options="compiledOptions" :chartType="chartType" :height="height" :width="width" />
 	                </div>
 	                <div v-else-if="normalisedChartType=='synced'">
-	                    <fluro-synced-chart v-model="chartData" :annotations="annotations" :options="options" :chartType="chartType" :height="height" :width="width" />
+	                    <fluro-synced-chart v-model="chartData" :annotations="annotations" :options="compiledOptions" :chartType="chartType" :height="height" :width="width" />
 	                </div>
             	</div>
             </slot>
             <slot name="footer"></slot>
-            <!-- <pre>DATA SOURCE: {{dataSource}}</pre> -->
-            <!-- <pre>CHART DATA: {{chartData}}</pre> -->
         </template>
     </div>
 </template>
@@ -38,6 +36,11 @@ import ReportingComputationalMixin from './mixins/ReportingComputationalMixin.js
 export default {
     mixins: [ReportingColorsMixin, ReportingComputationalMixin],
     computed: {
+    	compiledOptions: function() {
+    		var options = this.options
+    		options.colors = this.colors
+    		return options
+    	},
         normalisedChartType: function() {
             var self = this
             var type = self.chartType
@@ -72,14 +75,22 @@ export default {
             var self = this
             //console.log("FLUROCHART chartType", self.chartType, self.normalisedChartType)
             var chrtdata
+        	var colorCount = 0
+        	_.each(self.series, function(ser) {
+        		if (_.get(ser, "color")) {
+        			self.colors[colorCount] = _.get(ser, "color")
+        		}
+        		colorCount = colorCount + 1
+        	}) 
             switch (self.normalisedChartType) {
                 case "pie":
+                	
                     chrtdata = _.first(_.map(self.series, function(ser) {
                         return {
                             series: {
                                 name: _.get(ser, "title"),
                                 data: _.get(self.dataSource, `series["${ser.key}"].data`),
-                                color:ser.color,
+                                
                             },
                             labels: _.get(self.dataSource, `series["${ser.key}"].labels`),
                         }
@@ -88,13 +99,15 @@ export default {
                 case "line":
                 case "synced":
                 default:
+
                     //console.log("FLUROCHART data Source", self.dataSource)
                     var series = _.map(self.series, function(ser) {
+
                         return {
                             name: _.get(ser, "title"),
                             data: _.get(self.dataSource, `series.${ser.key}`),
                             key: ser.key,
-                            color:ser.color,
+                            color: ser.color,
                         }
                     })
                     chrtdata = {
@@ -176,7 +189,19 @@ export default {
     data() {
         return {
             loading: true,
-            model: this.value
+            model: this.value,
+           	colors: [
+				'#008FFB', 
+				'#00E396', 
+				'#FEB019', 
+				'#FF4560', 
+				'#775DD0', 
+				'#7adc12',
+				'#f34be2',
+				'#b76b1a',
+				'#ff7800',
+
+			],
         }
     },
     watch: {
