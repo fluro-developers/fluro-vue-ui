@@ -29,15 +29,27 @@
 																																				<fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.emails" v-model="model" />
 																																</template>
 																												</fluro-content-form>
-
 																												<fluro-panel v-if="definition.fields && definition.fields.length">
-																																<fluro-panel-title>
-																																				Submitted Data
-																																</fluro-panel-title>
-																																<fluro-panel-body>
-																																				<fluro-content-form :options="options" v-model="model.rawData" :fields="definition.fields" />
-																																</fluro-panel-body>
+																																<tabset :justified="true">
+																																				<tab heading="Submitted Data">
+																																					<fluro-panel-body class="border-bottom">
+																																						This is the data that was provided at the time of submission. 
+																																					</fluro-panel-body>
+																																								<fluro-panel-body>
+																																												<fluro-content-form :options="options" context="raw" v-model="model.rawData" :fields="definition.fields" />
+																																								</fluro-panel-body>
+																																				</tab>
+																																				<tab heading="Computed Data">
+																																					<fluro-panel-body class="border-bottom">
+																																						This is the data after it has been processed by the system. Your form may have content that is transformed into dynamic links to other content in the database, eg. contacts, families etc
+																																					</fluro-panel-body>
+																																								<fluro-panel-body>
+																																												<fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
+																																								</fluro-panel-body>
+																																				</tab>
+																																</tabset>
 																												</fluro-panel>
+																												
 																								</constrain>
 																				</v-container>
 																</flex-column-body>

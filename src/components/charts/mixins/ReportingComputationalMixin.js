@@ -58,6 +58,7 @@ export default {
                 var average = {
                     name: `${series.name} - Average over time`,
                     key: `${series.key}_AOT`,
+                    type:'line',
                     data: _.map(series.data, function(value){
                         total = total + value
                         count = count + 1
