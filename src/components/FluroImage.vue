@@ -1,6 +1,6 @@
 <template>
     <div class="fluro-image" :class="{loaded:loaded, cover:cover, contain:contain}" :style="style">
-        <img v-if="longpress" class="holder" :src="url"/>
+        <img v-if="longpress" class="holder" :src="url" />
         <div :style="spacer"></div>
         <!-- <transition name="fade"> -->
             <!-- <pre>{{placeholder}} - {{spinner}}</pre> -->
@@ -89,12 +89,15 @@ export default {
 
             var url = self.url;
 
+            console.log('LOAD THE URL', self.url);
+
             //Create a new image
             var img = new Image;
 
-
             //Once the image has loaded
             img.onload = function($event) {
+
+                console.log('IMAGE LOAD', url, $event);
                 self.loaded = true;
                 self.$emit('load', $event);
                 self.loadedImageWidth = img.width;
@@ -103,10 +106,11 @@ export default {
 
             //Once the image has loaded
             img.onerror = function($event) {
+                console.log('IMAGE ERROR', url, $event);
                 self.$emit('error', $event);
             }
 
-            img.src = '';
+            // img.src = '';
             img.src = url;
         }
     },
