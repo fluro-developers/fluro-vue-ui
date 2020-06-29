@@ -46,6 +46,7 @@ export default {
             if (!_.get(_.first(self.model.series), 'data.length')) {
                 return
             }
+            //console.log("options in FLC", _.get(self, "options"))
             if (_.get(self, "options._AOT")) {
                 if (!(self.chartType == 'line' || self.chartType == 'area')) {
                     _.each(returnData, function(series) {
@@ -61,7 +62,7 @@ export default {
                 }
                 returnData = _.concat(returnData, aotseries)
             }
-            // console.log("FLUROLINECHART ChartData", returnData)
+            //console.log("FLUROLINECHART ChartData", returnData)
             return returnData
         },
         brushedChartOptions() {
@@ -89,11 +90,14 @@ export default {
             // console.log("Brushed Options", brushedOptions)
             var yaxis = _.first(brushedOptions.yaxis)
             _.set(brushedOptions, 'yaxis', [yaxis])
+            brushedOptions.legend = {
+                show: false
+            }
             return brushedOptions
         },
         brushedChartData() {
             var self = this
-            var returnData = _.cloneDeep(self.model.series)
+            var returnData = [_.first(self.model.series)]
             // console.log("BrushedData", returnData)
             return returnData
         },
@@ -298,7 +302,7 @@ export default {
                     max = Math.round(max * 1.03) || 0;
                     _.set(returnYAxis, 'min', min)
                     _.set(returnYAxis, 'max', max);
-                    // console.log('YAXIS RETURN', returnYAxis);
+                    // console.log('YAXIS RETURN', returnYAxis, ser);
                     return (returnYAxis)
                 }
                 ////////////////////////////////////////
