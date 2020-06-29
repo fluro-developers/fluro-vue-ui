@@ -79,6 +79,7 @@ export default {
                             series: {
                                 name: _.get(ser, "title"),
                                 data: _.get(self.dataSource, `series["${ser.key}"].data`),
+                                color:ser.color,
                             },
                             labels: _.get(self.dataSource, `series["${ser.key}"].labels`),
                         }
@@ -93,6 +94,7 @@ export default {
                             name: _.get(ser, "title"),
                             data: _.get(self.dataSource, `series.${ser.key}`),
                             key: ser.key,
+                            color:ser.color,
                         }
                     })
                     chrtdata = {

@@ -279,21 +279,21 @@ export default {
 																function createYAxisOptions(ser, count) {
 																				var returnYAxis = {
 																								axisTicks: {
-																												show: true,
-																								},
+																												show: true,},
+
 																								axisBorder: {
 																												show: true,
-																												color: self.getColor(count),
+																												color: ser.color || self.getColor(count),
 																								},
 																								labels: {
 																												style: {
-																																color: self.getColor(count),
+																																color: ser.color || self.getColor(count),
 																												}
 																								},
 																								title: {
 																												text: ser.name,
 																												style: {
-																																color: self.getColor(count),
+																																color: ser.color || self.getColor(count),
 																												}
 																								},
 																								tooltip: {
