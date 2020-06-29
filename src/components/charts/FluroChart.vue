@@ -11,13 +11,13 @@
             <slot name="graph">
             	<div v-if="dataSource">
 	                <div v-if="normalisedChartType=='pie'">
-	                    <fluro-pie-chart v-model="chartData" :annotations="annotations" :options="compiledOptions" :chartType="chartType" :height="height" :width="width" />
+	                    <fluro-pie-chart v-model="chartData" :annotations="annotations" :options="compiledOptions" :chartType="cleansedChartType" :height="height" :width="width" />
 	                </div>
 	                <div v-else-if="normalisedChartType=='line'">
-	                    <fluro-line-chart @zoom="zoomChange" v-model="chartData" :annotations="annotations" :options="compiledOptions" :chartType="chartType" :height="height" :width="width" />
+	                    <fluro-line-chart @zoom="zoomChange" v-model="chartData" :annotations="annotations" :options="compiledOptions" :chartType="cleansedChartType" :height="height" :width="width" />
 	                </div>
 	                <div v-else-if="normalisedChartType=='synced'">
-	                    <fluro-synced-chart v-model="chartData" :annotations="annotations" :options="compiledOptions" :chartType="chartType" :height="height" :width="width" />
+	                    <fluro-synced-chart v-model="chartData" :annotations="annotations" :options="compiledOptions" :chartType="cleansedChartType" :height="height" :width="width" />
 	                </div>
             	</div>
             </slot>
@@ -48,6 +48,15 @@ export default {
     		})
     		//console.log("FC compiledOptions", options)
     		return options
+    	},
+    	cleansedChartType: function() {
+    		var self = this;
+    		var type = self.chartType
+    		if(type == 'column') {
+    			type = 'bar'
+    		}
+    		return type
+
     	},
         normalisedChartType: function() {
             var self = this
