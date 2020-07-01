@@ -26,13 +26,17 @@
     </div>
 </template>
 <script>
+
 import _ from 'lodash';
-import moment from 'moment';
+import {moment} from 'fluro';
 import FluroPieChart from './FluroPieChart.vue'
 import FluroLineChart from './FluroLineChart.vue'
 import FluroSyncedChart from './FluroSyncedChart.vue'
 import ReportingColorsMixin from './mixins/ReportingColorsMixin.js';
 import ReportingComputationalMixin from './mixins/ReportingComputationalMixin.js';
+
+
+
 export default {
     mixins: [ReportingColorsMixin, ReportingComputationalMixin],
     computed: {
@@ -78,16 +82,64 @@ export default {
             }
             return type
         },
-        // renderChartData: function() {
-        //  var series = _.map(self.series, function(ser) {
-        //   return {
-        //    name: _.get(ser, "title"),
-        //    data: _.get(self.dataSource, `series.${ser.key}`),
-        //   }
-        //  })
-        //  _.each(series, function(ser) {
-        //  })
-        // }
+        groupChartData: function() {
+         
+        	var self = this
+        	var dataSource = self.dataSource
+            // console.log("Datasource", dataSource)
+            // console.log("Series", self.series)
+
+            function groupData(groupFormat, datasource) {
+
+                var returnDatasource = {}
+                        
+                _.each(dataSource.axis, function(entryDate, key) {
+                    // console.log("in the each", entryDate, key)
+                    var groupingKey = self.getGroupDate(entryDate, groupFormat)
+                    var currentGroupedEntry = _.get(returnDatasource, groupingKey)
+                    if (!currentGroupedEntry) {
+
+                        currentGroupedEntry = {}
+                        
+                    }
+
+                    _.each(self.series, function(ser){
+                        var currentTotal = _.get(currentGroupedEntry, ser.key) || 0
+                        _.set(currentGroupedEntry, ser.key, currentTotal + _.get(datasource, `series.${ser.key}` )[key])
+
+                    })
+                    _.set(returnDatasource, groupingKey, currentGroupedEntry)
+                })
+
+                return returnDatasource
+
+            }
+
+            var groupedData = groupData(self.groupBy, dataSource)
+            //console.log("groupedData", groupedData)
+
+            var returnData = {
+                axis: [],
+                series: {}
+            }
+
+            _.each(self.series, function(ser){
+                _.set(returnData, `series.${ser.key}`, [])
+            })
+
+            _.each(groupedData, function (entry, key) {
+                // console.log("groupedData Entry", entry, key)
+                returnData.axis.push(moment.utc(key).format())
+                _.each(self.series, function(ser){
+                    var series = _.get(returnData, `series.${ser.key}`)
+                    series.push(_.get(entry, ser.key))
+                })
+            })
+
+            console.log("returnData", returnData)
+        	return returnData
+
+        },
         chartData: function() {
             var self = this
             //console.log("FLUROCHART chartType", self.chartType, self.normalisedChartType)
@@ -122,7 +174,7 @@ export default {
 
                         return {
                             name: _.get(ser, "title"),
-                            data: _.get(self.dataSource, `series.${ser.key}`),
+                            data: _.get(self.groupChartData, `series.${ser.key}`),
                             key: ser.key,
                             color: ser.color,
                             AOT: ser.AOT
@@ -133,7 +185,7 @@ export default {
                         axis: {
                             title: _.get(self.axis, "title"),
                             key: _.get(self.axis, "key"),
-                            data: _.get(self.dataSource, 'axis'),
+                            data: _.get(self.groupChartData, 'axis'),
                         },
                     }
                     break;
@@ -145,6 +197,9 @@ export default {
     props: {
         value: {
             type: Object,
+        },
+        groupBy: {
+        	type: String,
         },
         endpoint: {
             type: String,
@@ -203,6 +258,16 @@ export default {
             var self = this
             // console.log("FC Options", options)
             self.$emit("chartEvent", options)
+        },
+        getGroupDate(date, format) {
+            switch(format){
+                case 'year':
+                case 'week': 
+                default:
+                    return moment(date).startOf(format).toDate()
+                    break;
+            }
+            
         }
     },
     data() {
