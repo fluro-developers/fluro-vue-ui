@@ -204,6 +204,10 @@
 																												<fluro-content-form-field :field="fields.referenceType" v-model="model.params" />
 																												<fluro-content-form-field :field="fields.includeDefinedTypes" v-model="model.params" />
 																								</template>
+																								<template v-if="model.type == 'boolean'">
+																												<fluro-content-form-field :field="fields.storeCopy" v-model="model.params" />
+																												<fluro-content-form-field :field="fields.storeData" v-model="model.params" />
+																								</template>
 																								<fluro-content-form-field v-if="model.directive == 'currency'" :field="fields.currency" v-model="model.params" />
 																								<v-container class="grid-list-xl" pa-0 fluid v-if="model.type != 'void'">
 																												<v-layout>
@@ -1406,6 +1410,34 @@ export default {
 
 
 
+
+
+
+												addField('storeCopy', {
+																key: 'storeCopy',
+																title: 'Store Terms and Conditions',
+																description: 'Select whether to store a copy of the terms being agreed to as they are presented upon form submission.',
+																minimum: 0,
+																maximum: 1,
+																type: 'boolean',
+												})
+
+
+												addField('storeData', {
+																key: 'storeData',
+																title: 'Terms / Conditions Details',
+																description: 'Write the terms the user is agreeing to when ticking this field',
+																minimum: 0,
+																maximum: 1,
+																type: 'string',
+																directive: 'textarea',
+																expressions: {
+																				show: 'model.storeCopy',
+																}
+												})
+
+
+
 												addField('sizeAxis', {
 																key: 'sizeAxis',
 																title: 'Axis',
@@ -1483,10 +1515,10 @@ export default {
 																								value: 'input',
 																				})
 
-																				inputOptions.push({
-																								title: 'Terms / Conditions Checkbox',
-																								value: 'terms',
-																				})
+																				// inputOptions.push({
+																				// 				title: 'Terms / Conditions Checkbox',
+																				// 				value: 'terms',
+																				// })
 																				break;
 																case 'string':
 																				if (self.model.maximum != 1) {

@@ -1,42 +1,11 @@
 <template>
 				<div>
-								<audio ref="audio" :muted="muted" :src="contentURL" controls></audio>
-								
-								<!-- <div>
-        <div v-if="contentURL">
-
-            
-            {{currentTime}}/{{duration}}
-            <flex-column center>
-                <div class="control-widgets">
-                    <div class="control-words">
-                        <v-btn fab color="primary" @click="toggle()">
-                            <fluro-icon class="play-pause-button" library="fas" :icon="playing ? 'pause' : 'play'" />
-                        </v-btn>
-                    </div>
-                    <div class="volume">
-                        <v-layout align-center>
-                            <v-flex shrink @click="volumeMute()">
-                                <fluro-icon library="fas" icon="volume-mute" />
-                            </v-flex>
-                            <v-flex>
-                                <div class="range-wrap">
-                                    <range-slider min="0" max="100" step="1" v-model="volume"></range-slider>
-                                </div>
-                            </v-flex>
-                            <v-flex shrink @click="volumeFull()">
-                                <fluro-icon library="fas" icon="volume-up" />
-                            </v-flex>
-                        </v-layout>
-                    </div>
-                </div>
-            </flex-column>
-        </div>
-        <div v-else>
-            <h3>No Content ID</h3>
-        </div>
-    </div> -->
+								<slot :volume="playerVolume" :muted="muted" :play="play" :pause="pause" :toggle="toggle" :mute="mute" :toggleMute="toggleMute" :unmute="unmute" :playing="playing" />
 				</div>
+				<!-- Playing: {{playing}} <br /> -->
+				<!-- Volume: {{actualVolume}} <br /> -->
+				<!-- <audio ref="audio" :muted="muted" :src="contentURL" controls></audio> -->
+				<!-- </div> -->
 </template>
 <script>
 // import RangeSlider from 'vue-range-slider';
@@ -50,14 +19,20 @@ export default {
 												default () {
 																return 80;
 												}
-								}
+								},
+								global: {
+												type: Boolean,
+								},
 				},
 				data() {
 								return {
+												mounted: false,
 												model: this.value,
 												actualVolume: (this.volume / 100),
-												playing: false,
+												isPlaying: false,
 												muted: false,
+												localAudio: null,
+												audio: null,
 								}
 				},
 				mounted() {
@@ -75,9 +50,53 @@ export default {
 				watch: {
 								volume(v) {
 												this.playerVolume = v;
+								},
+								audio(newValue, oldValue) {
+
+
+												var self = this;
+
+												if (oldValue) {
+																oldValue.removeEventListener('pause', self.paused);
+																oldValue.removeEventListener('play', self.played);
+																oldValue.removeEventListener('timeupdate', self.timeupdated);
+																oldValue.removeEventListener('volumechange', self.volumechanged);
+												}
+
+
+												if (newValue) {
+																newValue.addEventListener('pause', self.paused);
+																newValue.addEventListener('play', self.played);
+																newValue.addEventListener('timeupdate', self.timeupdated);
+																newValue.addEventListener('volumechange', self.volumechanged);
+												}
 								}
 				},
 				computed: {
+
+								playing() {
+												var self = this;
+
+												if(!self.isPlaying) {
+													return;
+												}
+
+												if(!self.global) {
+													return self.isPlaying;
+												}
+
+												if(!self.$fluro.app) {
+													return;
+												}
+
+												var contentID = self.contentID;
+												var globalTrackID = self.$fluro.utils.getStringID(self.$fluro.app.global.currentTrack);
+
+												var match = (contentID == globalTrackID);
+
+												//console.log('MATCH?', contentID, globalTrackID)
+												return match
+								},
 								playerVolume: {
 												get() {
 																return this.actualVolume;
@@ -89,11 +108,11 @@ export default {
 																if (isNaN(v)) {
 																				v = 0;
 																}
-
-																this.actualVolume = v;
-																if (this.$refs.audio) {
-																				this.$refs.audio.volume = (v / 100);
+																if (!this.audio) {
+																				return;
 																}
+																this.actualVolume = v;
+																this.audio.volume = (v / 100);
 												}
 								},
 								contentID() {
@@ -102,50 +121,61 @@ export default {
 								contentURL() {
 												return this.$fluro.asset.getUrl(this.contentID);
 								},
-								audio() {
-												return this.$refs.audio;
-								},
 								duration() {
-												if (this.$refs.audio) {
-																return this.$refs.audio.duration;
+												if (this.audio) {
+																return this.audio.duration;
 												}
 								},
 								currentTime() {
-												if (this.$refs.audio) {
-																return this.$refs.audio.currentTime;
+												if (this.audio) {
+																return this.audio.currentTime;
 												}
-								}
+								},
 				},
 				methods: {
 								mount() {
 												var self = this;
-												var audio = this.$refs.audio;
-												audio.addEventListener('pause', self.paused);
-												audio.addEventListener('play', self.played);
-												audio.addEventListener('timeupdate', self.timeupdated);
-												// audio.addEventListener('seeked', self.timeupdated);
-												// audio.addEventListener('seeking', self.timeupdated);
-												audio.addEventListener('volumechange', self.volumechanged);
+												self.mounted = true;
+
+
+												if (self.global) {
+																self.audio = self.$fluro.app.audioPlayer;
+												} else {
+																if (!self.localAudio) {
+																				self.localAudio = new Audio();
+																}
+																self.audio = self.localAudio;
+												}
+
+												console.log('GOT AUDIO', self.$el, self.audio)
+												self.audio.addEventListener('pause', self.paused);
+												self.audio.addEventListener('play', self.played);
+												self.audio.addEventListener('timeupdate', self.timeupdated);
+												self.audio.addEventListener('volumechange', self.volumechanged);
 
 								},
 								unmount() {
 												var self = this;
-												var audio = this.$refs.audio;
-												audio.removeEventListener('pause', self.paused);
-												audio.removeEventListener('play', self.played);
-												audio.removeEventListener('timeupdate', self.timeupdated);
-												// audio.removeEventListener('seeked', self.timeupdated);
-												// audio.removeEventListener('seeking', self.timeupdated);
-												audio.removeEventListener('volumechange', self.volumechanged);
+												self.mounted = false;
+												if (!self.audio) {
+																return;
+												}
+
+												self.audio.removeEventListener('pause', self.paused);
+												self.audio.removeEventListener('play', self.played);
+												self.audio.removeEventListener('timeupdate', self.timeupdated);
+												self.audio.removeEventListener('volumechange', self.volumechanged);
+
+												self.audio = null;
 
 								},
 								paused() {
-												this.playing = false;
+												this.isPlaying = false;
 												this.$emit('pause');
 												// console.log('PAUSE');
 								},
 								played() {
-												this.playing = true;
+												this.isPlaying = true;
 												this.$emit('play');
 												// console.log('PLAY')
 								},
@@ -155,27 +185,49 @@ export default {
 																return;
 												}
 
-												var volume = (this.$refs.audio.volume * 100);
+												if (!self.audio) {
+																return;
+												}
+
+
+												var volume = (self.audio.volume * 100);
 												this.playerVolume = volume;
 												this.$emit('volume', { volume });
 								},
 								timeupdated(event) {
-												var data = { time: event.timeStamp, duration: this.$refs.audio.duration };
-												this.$emit('time', data);
+
+												var self = this;
+												if (!self.audio) {
+																return;
+												}
+
+												var progress = parseFloat(((self.audio.currentTime / self.audio.duration) * 100), 10);
+												var data = { time: event.timeStamp, progress, currentTime: self.audio.currentTime, duration: self.audio.duration };
+												self.$emit('time', data);
 								},
 								mute() {
 												this.muted = true;
-												this.$refs.audio.volume = 0;
+
+
+												if (!this.audio) {
+																return;
+												}
+												this.audio.volume = 0;
 								},
 								unmute() {
 												this.muted = false;
 
-												var vol = Math.max(0, Math.min(Math.ceil (this.actualVolume / 100), 1));
+
+												if (!this.audio) {
+																return;
+												}
+
+												var vol = Math.max(0, Math.min(Math.ceil(this.actualVolume / 100), 1));
 
 
 												console.log(vol, this.actualVolume)
 
-												this.$refs.audio.volume = vol;
+												this.audio.volume = vol;
 								},
 								toggleMute() {
 												if (this.muted) {
@@ -194,11 +246,44 @@ export default {
 								},
 								play() {
 												var self = this;
-												self.$refs.audio.play();
+
+
+												if (!self.audio) {
+																return;
+												}
+
+												if (!self.contentURL) {
+																return;
+												}
+
+												if(self.global && self.$fluro.app) {
+														self.$set(self.$fluro.app.global, 'currentTrack', self.model);
+												}
+
+												if (self.audio.src != self.contentURL) {
+																self.audio.src = self.contentURL;
+												}
+
+
+
+												self.audio.play();
+
+
+												console.log('AUDIO Play', self.audio.src);
+
+
 								},
 								pause() {
 												var self = this;
-												self.$refs.audio.pause();
+
+												if (!self.audio) {
+																return;
+												}
+
+
+												self.audio.pause();
+
+												console.log('AUDIO Pause', self.audio.src);
 								},
 
 				}
@@ -207,9 +292,10 @@ export default {
 </script>
 <style lang="scss">
 audio {
-	display: block;
-	width: 100%;
+				display: block;
+				width: 100%;
 }
+
 /**
 .play-pause-button {
 				width: 100% !important;
@@ -286,4 +372,5 @@ audio {
 
 
 /**/
+
 </style>

@@ -6,7 +6,7 @@
                 <fluro-avatar md :id="contact._id" v-else />
             </v-flex>
             <v-flex>
-                <strong>{{contact.title}}</strong>
+                <strong>{{contactName}}</strong>
                 <div class="summary">{{summary}}</div>
             </v-flex>
             <v-flex shrink >
@@ -55,6 +55,9 @@ export default {
         },
     },
     computed: {
+        contactName() {
+            return this.model.contact && this.model.contact.title ? this.model.contact.title : this.model.contactName;
+        },
         sendable() {
             return this.model.confirmationStatus == 'proposed';
         },

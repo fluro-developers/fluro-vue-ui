@@ -344,6 +344,11 @@ export default {
                     })
 
                     if (!alreadyAssigned) {
+
+                        if(!self.slot.assignments) {
+                            self.$set(self.slot, 'assignments', []);
+                        }
+                        
                         self.slot.assignments.push(matchingAssignment);
                     }
 
@@ -356,7 +361,8 @@ export default {
 
 
                 function assignmentCreateError(err) {
-                    var err = err.response.data;
+                    console.log('CREATE ERROR', err);
+                        var err = err.response ? err.response.data || err.response : err;
                     var conflictError = err.error;
                     var message = err.message;
 

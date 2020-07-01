@@ -1336,7 +1336,7 @@ export default {
 												return this.field.fields;
 								},
 								officeUseOnly() {
-												return _.get(this.field, 'params.disableWebform');
+												return _.get(this.field, 'params.disableWebform') && this.context != 'admin';
 								},
 								type() {
 

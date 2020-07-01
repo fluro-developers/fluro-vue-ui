@@ -1330,6 +1330,10 @@ export default {
 
 .filter-condition-row.mini {
 
+				&>>> .v-input {
+								font-size: 13px;
+				}
+
 				&>>>.v-messages {
 								display: none !important;
 				}
