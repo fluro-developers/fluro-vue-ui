@@ -55,7 +55,7 @@ export default {
                 }
                 var aotseries = self.calculateRunningAverages(returnData)
                 if (self.chartType == 'area') {
-                    aotseries = _.map(aotseries, function(ser){
+                    aotseries = _.map(aotseries, function(ser) {
                         delete ser.type
                         return ser
                     })
@@ -158,7 +158,6 @@ export default {
                         enabled: false,
                     })
                 }
-
                 if (!_.get(chartOpt, "markers")) {
                     _.set(chartOpt, "markers", {
                         size: 0
@@ -246,15 +245,54 @@ export default {
                         })
                     }
                 }
-                // _.set(chartOpt, "chart.events", {
-                //  zoomed(chartContext, event) {
-                //   //console.log("context", chartContext, "options", options)
-                //   self.$emit("FluroChartEvent", { key: 'zoom', event })
-                //  },
-                //  // click(event, chartContext, config) {
-                //  //  self.$emit("FluroChartEvent", {key: 'click', event, config})
-                //  // }
-                // })
+                _.set(chartOpt, "chart.events", {
+                    zoomed(chartContext, event) {
+                        //console.log("context", chartContext, "options", options)
+                        self.$emit("chartEvent", { key: 'zoom', event })
+                    },
+                    click(event, chartContext, config) {
+                        self.$emit("chartEvent", { key: 'click', event, config })
+                    },
+                    markerClick(event, chartContext, { seriesIndex, dataPointIndex, config }) {
+                        self.$emit("chartEvent", { key: 'markerClick', event, seriesIndex, dataPointIndex, config })
+                    },
+                    dataPointSelection(event, chartContext, config) {
+                        console.log("datapointSelection", event, config)
+                        self.$emit("chartEvent", { key: 'dataPointSelection', event, config })
+                    },
+                    legendClick(chartContext, seriesIndex, config) {
+                        console.log("datapointSelection", event, config)
+                        self.$emit("chartEvent", { key: 'dataPointSelection', event, seriesIndex })
+                    },
+                    scrolled(chartContext, { xaxis }) {
+                        self.$emit("chartEvent", { key: 'chartContext', xaxis })
+                    },
+                    beforeZoom(chartContext, { xaxis }) {
+                        self.$emit("chartEvent", { key: 'beforeZoom', xaxis })
+                    },
+                    dataPointMouseLeave(event, chartContext, config) {
+                        self.$emit("chartEvent", { key: 'dataPointMouseLeave', event, config })
+                    },
+                    dataPointMouseEnter(event, chartContext, config) {
+                        self.$emit("chartEvent", { key: 'dataPointMouseEnter', event, config })
+                    },
+                    selection(chartContext, { xaxis, yaxis }) {
+                        self.$emit("chartEvent", { key: 'selection', xaxis, yaxis })
+                    },
+                    mouseMove(event, chartContext, config) {
+                        self.$emit("chartEvent", { key: 'mouseMove', event, config })
+                    },
+                    updated(chartContext, config) {
+                        self.$emit("chartEvent", { key: 'updated', config })
+                    },
+                    mounted(chartContext, config) {
+                        self.$emit("chartEvent", { key: 'mounted', config })
+                    },
+                    beforeMounted(chartContext, config) {
+                        self.$emit("chartEvent", { key: 'beforeMounted', config })
+                    }
+                })
+
                 function createYAxisOptions(ser, count) {
                     var returnYAxis = {
                         axisTicks: {

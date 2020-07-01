@@ -11,13 +11,13 @@
             <slot name="graph">
             	<div v-if="dataSource">
 	                <div v-if="normalisedChartType=='pie'">
-	                    <fluro-pie-chart v-model="chartData" :annotations="annotations" :options="compiledOptions" :chartType="cleansedChartType" :height="height" :width="width" />
+	                    <fluro-pie-chart @chartEvent="chartEvent" v-model="chartData" :annotations="annotations" :options="compiledOptions" :chartType="cleansedChartType" :height="height" :width="width" />
 	                </div>
 	                <div v-else-if="normalisedChartType=='line'">
-	                    <fluro-line-chart @zoom="zoomChange" v-model="chartData" :annotations="annotations" :options="compiledOptions" :chartType="cleansedChartType" :height="height" :width="width" />
+	                    <fluro-line-chart @chartEvent="chartEvent" v-model="chartData" :annotations="annotations" :options="compiledOptions" :chartType="cleansedChartType" :height="height" :width="width" />
 	                </div>
 	                <div v-else-if="normalisedChartType=='synced'">
-	                    <fluro-synced-chart v-model="chartData" :annotations="annotations" :options="compiledOptions" :chartType="cleansedChartType" :height="height" :width="width" />
+	                    <fluro-synced-chart @chartEvent="chartEvent" v-model="chartData" :annotations="annotations" :options="compiledOptions" :chartType="cleansedChartType" :height="height" :width="width" />
 	                </div>
             	</div>
             </slot>
@@ -199,9 +199,10 @@ export default {
         FluroSyncedChart,
     },
     methods: {
-        zoomChange(options) {
+        chartEvent(options) {
             var self = this
-            self.$emit("zoom", options)
+            // console.log("FC Options", options)
+            self.$emit("chartEvent", options)
         }
     },
     data() {
