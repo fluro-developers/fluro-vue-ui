@@ -533,7 +533,9 @@ export default {
 												delete requestData.__v;
 												var definedType = requestData.definition || self.definitionName || self.typeName;
 
-												return self.$fluro.api.put(`/content/${definedType}/${requestData._id}`, requestData);
+
+												console.log('SUBMIT UPDATE', self.model, requestData)
+												return self.$fluro.api.put(`/content/${definedType}/${requestData._id}?replaceData=true`, requestData);
 								},
 								submit() {
 												var self = this;

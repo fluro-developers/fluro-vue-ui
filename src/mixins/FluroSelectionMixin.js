@@ -92,7 +92,11 @@ export default {
                 return itemID == selectedItemID;
             })
 
+            
             self.selection.splice(index, 1);
+            // console.log('SPLICE', index, self.selection)
+            // this.$emit('input', self.model);
+
         },
         toggle(item) {
 
