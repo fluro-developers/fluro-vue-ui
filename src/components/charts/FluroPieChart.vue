@@ -25,6 +25,18 @@ export default {
             if (!_.get(chartOpt, "colors")) {
                 _.set(chartOpt, "colors", self.model.colors)
             }
+            if(!_.get(chartOpt, 'chart.toolbar')) {
+
+	            _.set(chartOpt, "chart.toolbar", {
+	                show: true,
+	                offsetX: 0,
+	                offsetY: 0,
+	                tools: {
+	                    download: true,
+	                },
+	            })
+        	}
+           
             if (!_.get(chartOpt, "responsive")) {
                 _.set(chartOpt, "responsive", [{
                     breakpoint: 480,

@@ -258,11 +258,11 @@ export default {
                         self.$emit("chartEvent", { key: 'markerClick', event, seriesIndex, dataPointIndex, config })
                     },
                     dataPointSelection(event, chartContext, config) {
-                        console.log("datapointSelection", event, config)
+                        //console.log("datapointSelection", event, config)
                         self.$emit("chartEvent", { key: 'dataPointSelection', event, config })
                     },
                     legendClick(chartContext, seriesIndex, config) {
-                        console.log("datapointSelection", event, config)
+                        //console.log("datapointSelection", event, config)
                         self.$emit("chartEvent", { key: 'dataPointSelection', event, seriesIndex })
                     },
                     scrolled(chartContext, { xaxis }) {
