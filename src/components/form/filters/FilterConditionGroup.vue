@@ -1977,6 +1977,132 @@ export default {
 																				case 'process':
 																								//Extra filters for process cards
 																								break;
+																				case 'checkin':
+																								//Extra filters for process cards
+
+																								///////////////////////////////////
+
+																								injectFields.push({
+																												title: 'Contact Definition (Now)',
+																												key: '_contact.definition',
+																												maximum: 1,
+																												minimum: 0,
+																												type: 'string',
+																												directive: 'select',
+																												options: contactDefinitionOptions,
+																								});
+
+																								injectFields.push({
+																												title: 'Contact Definition (At time of checkin)',
+																												key: 'contactDefinition',
+																												maximum: 1,
+																												minimum: 0,
+																												type: 'string',
+																												directive: 'select',
+																												options: contactDefinitionOptions,
+																								});
+
+																								injectFields.push({
+																												title: 'Contact Tags (Now)',
+																												key: '_contact.tags',
+																												maximum: 1,
+																												minimum: 0,
+																												type: 'reference',
+																												typeSelect: 'tag',
+																								});
+
+																								injectFields.push({
+																												title: 'Contact Realms (Now)',
+																												key: '_contact.realms',
+																												maximum: 1,
+																												minimum: 0,
+																												type: 'reference',
+																												typeSelect: 'realm',
+																								});
+
+																								injectFields.push({
+																												title: 'Contact Tags (At time of checkin)',
+																												key: 'contactTags',
+																												maximum: 1,
+																												minimum: 0,
+																												type: 'reference',
+																												typeSelect: 'tag',
+																								});
+
+																								///////////////////////////////////
+
+
+																								injectFields.push({
+																												title: 'Event Track',
+																												key: '_event.track',
+																												maximum: 1,
+																												minimum: 0,
+																												type: 'reference',
+																												typeSelect: 'eventtrack',
+																								});
+
+
+																								injectFields.push({
+																												title: 'Event Tags',
+																												key: '_event.tags',
+																												maximum: 1,
+																												minimum: 0,
+																												type: 'reference',
+																												typeSelect: 'tag',
+																								});
+
+
+
+																								injectFields.push({
+																												title: 'Event Type / Definition',
+																												key: '_event.definition',
+																												maximum: 1,
+																												minimum: 0,
+																												type: 'string',
+																												directive: 'select',
+																												options: eventDefinitionOptions,
+																								});
+
+
+
+
+																								// {
+																								// 				title: 'Event Type (Definition)',
+																								// 				key: 'definition',
+																								// 				maximum: 1,
+																								// 				minimum: 0,
+																								// 				type: 'string',
+																								// 				directive: 'select',
+																								// 				// options:[{
+																								// 				// 	name:'Hello',
+																								// 				// 	value:'there',
+																								// 				// }],
+																								// 				options: eventDefinitionOptions,
+																								// },
+
+																								// injectFields.push({
+																								// 				title: 'Fluro Login > Status',
+																								// 				key: '_persona.state',
+																								// 				maximum: 1,
+																								// 				minimum: 0,
+																								// 				type: 'string',
+																								// 				directive: 'select',
+																								// 				options: [{
+																								// 												text: 'None / No Access',
+																								// 												value: 'none',
+																								// 								},
+																								// 								{
+																								// 												text: 'Awaiting Collection',
+																								// 												value: 'waiting',
+																								// 								},
+																								// 								{
+																								// 												text: 'Connected',
+																								// 												value: 'connected',
+																								// 								},
+																								// 				]
+																								// });
+
+																								break;
 																				case 'family':
 
 																								injectFields.push({
@@ -2182,6 +2308,7 @@ export default {
 																								break;
 																				default:
 																								switch (self.type) {
+
 																												case 'photo':
 
 																																injectFields.push({

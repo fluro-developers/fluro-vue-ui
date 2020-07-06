@@ -93,7 +93,7 @@
 																								<!-- <pre>{{discriminator}} - {{discriminatorType}} - {{discriminatorDefinition}}</pre> -->
 																				</template>
 																				<template v-else-if="useBasicReferenceSelect">
-																								<fluro-content-select-button small block :allDefinitions="true" :type="useBasicReferenceSelect" v-model="model.values" />
+																								<fluro-content-select-button :createDisabled="true" small block :allDefinitions="true" :type="useBasicReferenceSelect" v-model="model.values" />
 																				</template>
 																				<template v-else>
 																								<template v-if="referenceSelectField">
@@ -175,7 +175,7 @@
 																				<v-text-field v-else-if="dataType == 'integer'" class="small-input" single-line mask="############" v-model="model.value"></v-text-field>
 																				<template v-else-if="useBasicReferenceSelect">
 																								<!-- <pre>{{referenceID}}</pre> -->
-																								<fluro-content-select-button small block :allDefinitions="true" :maximum="1" :single-value="true" :type="useBasicReferenceSelect" v-model="model.value" />
+																								<fluro-content-select-button :createDisabled="true"  small block :allDefinitions="true" :maximum="1" :single-value="true" :type="useBasicReferenceSelect" v-model="model.value" />
 																				</template>
 																				<template v-else-if="referenceSelectField">
 																								<template v-if="$vuetify.breakpoint.xsOnly">
@@ -1327,29 +1327,30 @@ export default {
 }
 
 
-
+</style>
+<style lang="scss">
 .filter-condition-row.mini {
 
-				&>>> .v-input {
-								font-size: 13px;
+				 .v-input {
+								font-size: 13px !important;
 				}
 
-				&>>>.v-messages {
+				.v-messages {
 								display: none !important;
 				}
 
-				&>>>.v-select__slot {
+				.v-select__slot {
 								overflow: hidden;
 				}
 
-				&>>>.v-select,
-				&>>>.v-text-field {
+				.v-select,
+				.v-text-field {
 
 								margin: 0;
 								padding: 0;
 
 								.v-label {
-												font-size: 13px;
+												font-size: 13px !important;
 								}
 
 

@@ -1,4 +1,4 @@
-console.log('fluro-vue-ui 2.1.95')
+console.log('fluro-vue-ui 2.1.96')
 
 /////////////////////////////////////////////////////
 
@@ -29,6 +29,7 @@ import FluroTable from './components/table/FluroTable.vue';
 import TableRowCheckbox from './components/table/TableRowCheckbox.vue';
 import TableHeaderCheckbox from './components/table/TableHeaderCheckbox.vue';
 import TableCell from './components/table/TableCell.vue';
+import ProcessDots from './components/ui/ProcessDots.vue';
 import SearchInput from './components/ui/SearchInput.vue';
 import FluroDynamicTable from './components/table/FluroDynamicTable.vue';
 import DefinitionCell from './components/table/cells/DefinitionCell.vue';
@@ -304,6 +305,8 @@ export { FluroTable as FluroTable };
 export { TableHeaderCheckbox as TableHeaderCheckbox };
 export { TableRowCheckbox as TableRowCheckbox };
 
+
+export { ProcessDots as ProcessDots };
 export { TableCell as TableCell };
 export { SearchInput as SearchInput };
 export { FluroDynamicTable as FluroDynamicTable };

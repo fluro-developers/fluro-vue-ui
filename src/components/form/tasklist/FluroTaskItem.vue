@@ -1,50 +1,65 @@
 <template>
-    <div class="fluro-task-item" @mouseover="over = true" @mouseout="over = false" @click="clicked()" :class="[model.status, {hover:over}]">
-        <v-layout align-center row>
-            <v-flex shrink>
-                <!-- @click="prompt()" -->
-                <div class="task-icon" @click.stop.prevent="prompt()">
-                    <v-btn class="ma-0 mr-2" icon>
-                        <span class="checkbox-outer" :class="model.status">
-                            <fluro-icon library="fas" v-if="model.status == 'pending'" icon="minus" />
-                            <fluro-icon library="fas" v-else-if="model.status == 'failed'" icon="exclamation" />
-                            <fluro-icon library="fas" v-else icon="check" />
-                        </span>
-                    </v-btn>
-                </div>
-            </v-flex>
-            <v-flex>
-                <fluro-inline-edit >
-                    <template v-slot:default>
-                        <strong>{{model.name}}</strong>
-                    </template>
-                    <template v-slot:edit="{props, blur, focus}">
-                        
-                        <input class="input" @focus="focus($event)" @input="update" v-model="model.name" @keyup.enter="blur" @blur="blur" />
-                    
-                    </template>
-                </fluro-inline-edit>
-                <div class="wrap">
-                    <fluro-inline-edit >
-                        <template v-slot:default>
-
-                            <div class="sm muted" v-html="model.description"></div>
-                            <div class="detail-placeholder">
-                            <div class="sm muted" v-if="!model.description || !model.description.length">Click here to add more description</div>
-                        </div>
-                        </template>
-                        <template v-slot:edit="{props, blur, focus}">
-                            <!-- <fluro-editor @focus="focus($event)" @keyup.enter="blur" @blur="blur" @input="update" v-model="model.description"/> -->
-                            <textarea class="input" @focus="focus($event)" placeholder="Add more details to this task" @input="update" v-model="model.description" @keyup.enter="blur" @blur="blur" />
-                        </template>
+				<div class="fluro-task-item" @mouseover="over = true" @mouseout="over = false" @click="clicked()" :class="[model.status, {hover:over}]">
+								<v-layout align-center row>
+												<v-flex shrink>
+																<!-- @click="prompt()" -->
+																<div class="task-icon" @click.stop.prevent="prompt()">
+																				<v-btn class="ma-0 mr-2" icon>
+																								<span class="checkbox-outer" :class="model.status">
+																												<fluro-icon library="fas" v-if="model.status == 'pending'" icon="minus" />
+																												<fluro-icon library="fas" v-else-if="model.status == 'failed'" icon="exclamation" />
+																												<fluro-icon library="fas" v-else icon="check" />
+																								</span>
+																				</v-btn>
+																</div>
+												</v-flex>
+												<v-flex>
+																<fluro-inline-edit>
+																				<template v-slot:default>
+																								<strong>{{model.name}}</strong>
+																				</template>
+																				<template v-slot:edit="{props, blur, focus}">
+																								<input class="input" @focus="focus($event)" @input="update" v-model="model.name" @keyup.enter="blur" @blur="blur" />
+																				</template>
+																</fluro-inline-edit>
+																<div class="wrap">
+																				<fluro-inline-edit>
+																								<template v-slot:default>
+																												<div class="sm muted" v-html="model.description"></div>
+																												<div class="detail-placeholder">
+																																<div class="sm muted" v-if="!model.description || !model.description.length">Click here to add more description</div>
+																												</div>
+																								</template>
+																								<template v-slot:edit="{props, blur, focus}">
+																												<!-- <fluro-editor @focus="focus($event)" @keyup.enter="blur" @blur="blur" @input="update" v-model="model.description"/> -->
+																												<textarea class="input" @focus="focus($event)" placeholder="Add more details to this task" @input="update" v-model="model.description" @keyup.enter="blur" @blur="blur" />
+																												</template>
                     </fluro-inline-edit>
                 </div>
             </v-flex>
-            <v-flex shrink class="edit-button">
-                <v-btn class="ma-0" @click.stop.prevent="edit" small icon>
+            <v-flex shrink class="edit-button" @click.stop.prevent>
+               <v-menu v-model="actionsOpen" :fixed="true" transition="slide-y-transition" offset-y>
+                    <template v-slot:activator="{ on }">
+                        
+                <v-btn v-tippy content="More Options"class="ma-0"  small icon v-on="on">
                     <fluro-icon icon="ellipsis-h" />
                 </v-btn>
+            </template>
+             <v-list dense>
+                       
+                        <v-list-tile @click="edit">
+                            <v-list-tile-content>Edit Task</v-list-tile-content>
+                        </v-list-tile>
+                        
+                        <v-divider />
+                        <v-list-tile @click="removeTask()">
+                            <v-list-tile-content>Delete Task</v-list-tile-content>
+                        </v-list-tile>
+                    </v-list>
+
+            </v-menu>
             </v-flex>
+            
         </v-layout>
     </div>
 </template>
@@ -108,6 +123,7 @@ export default {
 
 
         return {
+            actionsOpen:false,
             over:false,
             checked: false,
             model: copy,
@@ -131,6 +147,10 @@ export default {
                 default:
                     break;
             }
+        },
+        removeTask() {
+        	console.log('REMOVE!!');
+            this.$emit('remove', this.model);
         },
         edit() {
             var self = this;

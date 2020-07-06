@@ -122,14 +122,14 @@ export default {
                 _.set(chartOpt, "chart.type", self.actualChartType)
                 // }
                 if (self.chartType == 'area' && !_.get(chartOpt, "chart.dropShadow")) {
-                    _.set(chartOpt, "chart.dropShadow", {
-                        enabled: true,
-                        color: '#000',
-                        top: 18,
-                        left: 7,
-                        blur: 10,
-                        opacity: 0.2
-                    })
+                    // _.set(chartOpt, "chart.dropShadow", {
+                    //     enabled: true,
+                    //     color: '#000',
+                    //     top: 18,
+                    //     left: 7,
+                    //     blur: 10,
+                    //     opacity: 0.2
+                    // })
                 }
                 if ((chartOpt.chart.type == 'bar' || chartOpt.chart.type == 'column') && !chartOpt.plotOptions) {
                     var columnOptions = {
@@ -165,7 +165,7 @@ export default {
                 }
                 if (!_.get(chartOpt, "labels")) {
                     _.set(chartOpt, "labels", {
-                        borderColor: '#e7e7e7',
+                        //borderColor: '#e7e7e7',
                         row: {
                             colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
                             opacity: 0.5
@@ -222,6 +222,7 @@ export default {
                 }
                 if (!_.get(chartOpt, "stroke")) {
                     _.set(chartOpt, "stroke", {
+                        width:3,
                         curve: 'smooth',
                     })
                 }
@@ -232,18 +233,18 @@ export default {
                 //  }, )
                 // }
                 if (self.chartType == 'area') {
-                    if (!_.get(chartOpt, "fill")) {
-                        _.set(chartOpt, "fill", {
-                            type: 'gradient',
-                            gradient: {
-                                shadeIntensity: 1,
-                                inverseColors: false,
-                                opacityFrom: 0.5,
-                                opacityTo: 0,
-                                stops: [0, 90, 100]
-                            },
-                        })
-                    }
+                    // if (!_.get(chartOpt, "fill")) {
+                    //     _.set(chartOpt, "fill", {
+                    //         type: 'gradient',
+                    //         gradient: {
+                    //             shadeIntensity: 1,
+                    //             inverseColors: false,
+                    //             opacityFrom: 0.5,
+                    //             opacityTo: 0,
+                    //             stops: [0, 90, 100]
+                    //         },
+                    //     })
+                    // }
                 }
                 _.set(chartOpt, "chart.events", {
                     zoomed(chartContext, event) {
@@ -319,8 +320,12 @@ export default {
                         },
                         show: true,
                     }
+
                     if (ser.key.includes("_AOT")) {
-                        _.set(chartOpt, `stroke.dashArray[${count}]`, 5)
+                        // returnYAxis.stroke = {
+                        //     dashArray:5,
+                        // }
+                        _.set(chartOpt, `stroke.dashArray[${count}]`, 2)
                         // _.set(chartOpt, `chart.type`, 'line')
                     }
                     if (count > 0) {

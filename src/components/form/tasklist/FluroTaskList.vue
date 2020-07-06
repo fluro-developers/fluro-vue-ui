@@ -53,7 +53,7 @@
         <!-- <fluro-panel-body> -->
         <!--  -->
         <draggable class="task-list-items" @start="dragStart" @change="onChange" @end="dragEnd" :list="model.tasks" :options="dragOptions">
-            <fluro-task-item :state="state" :definition="definition" :card="card" v-model="model.tasks[index]" @input="update" :key="task.guid" v-for="(task, index) in model.tasks" />
+            <fluro-task-item :state="state" @remove="removeTask" :definition="definition" :card="card" v-model="model.tasks[index]" @input="update" :key="task.guid" v-for="(task, index) in model.tasks" />
         </draggable>
         <template >
             <fluro-inline-edit :autofocus="value.autofocus">
@@ -79,6 +79,8 @@
                 </template>
             </fluro-inline-edit>
         </template>
+
+
         <!-- <v-btn small @click="addTask" class="ml-0">
                 Add task
                 <fluro-icon right icon="plus" />
@@ -145,6 +147,27 @@ export default {
         }
     },
     methods: {
+        removeTask(task) {
+
+
+            var self = this;
+
+            var taskName = _.camelCase(task.name);
+
+            var index = _.findIndex(self.model.tasks, function(task) {
+                return _.camelCase(task.name) == taskName;
+            });
+
+            console.log('REMOVE', task, index);
+            if(index == -1) {
+                return;
+            }
+
+            self.model.tasks.splice(index, 1);
+
+            self.update();
+            console.log('Remove tasks!')
+        },
         newTaskMore() {
             var self = this;
             

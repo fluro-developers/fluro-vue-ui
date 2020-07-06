@@ -33,7 +33,7 @@
 												<!-- </router-link> -->
 								</component>
 								<!-- <pre>{{actionsEnabled}} {{actions}}</pre> -->
-								<slot name="actions">
+								<slot name="actions" :item="item">
 												<div class="item-actions" :class="{active:actionsOpen}" v-if="actionsEnabled">
 																<v-menu :left="true" v-model="actionsOpen" :fixed="true" transition="slide-y-transition" offset-y>
 																				<template v-slot:activator="{ on }">

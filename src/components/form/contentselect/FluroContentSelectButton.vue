@@ -29,6 +29,9 @@ import FluroSelector from 'src/components/form/contentselect/FluroSelector.vue';
 
 export default {
 				props: {
+								createDisabled: {
+												type: Boolean,
+								},
 								label: {
 												type: String,
 								},
@@ -92,12 +95,12 @@ export default {
 								},
 				},
 				computed: {
-					createTooltip() {
-						return `Create new ${this.$fluro.types.readable(this.type)}`;
-					},
+								createTooltip() {
+												return `Create new ${this.$fluro.types.readable(this.type)}`;
+								},
 								canCreate() {
 												var self = this;
-												return self.$fluro.access.can('create', this.type);
+												return !self.createDisabled && self.$fluro.access.can('create', this.type);
 								},
 								selection() {
 												return this.selector ? this.selector.selection : [];
@@ -207,14 +210,14 @@ export default {
 				},
 				methods: {
 								create() {
-										var self = this;
+												var self = this;
 
 
-										self.$fluro.global.create(self.type, {disableCacheClearOnSave:true}, true)
-										.then(function(res) {
+												self.$fluro.global.create(self.type, { disableCacheClearOnSave: true }, true)
+																.then(function(res) {
 
-												self.selector.select(res);
-										})
+																				self.selector.select(res);
+																})
 
 								},
 								showModal() {

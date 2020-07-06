@@ -40,9 +40,11 @@ const plugins = [
 		]
 	}),
 	globalStyles({ patterns }),
-	//css(),
+	
 	vue({
-		//css:false, //TOGGLE THIS ON BEFORE BUILD - FOR WEB BUILDER CSS
+		/**
+		css:false, //UNCOMMENT THIS ON BEFORE BUILD - FOR WEB BUILDER CSS
+		/**/
 		postcss: {
 			plugins: require('./postcss.config')().plugins
 		}
@@ -57,7 +59,7 @@ const plugins = [
 
 	/**/
 	postcss({
-		extract: true, //TOGGLE THIS ON BEFORE BUILD - FOR WEB BUILDER CSS
+		extract: false, //TOGGLE THIS TO TRUE BEFORE BUILD - FOR WEB BUILDER CSS
 	})
 	/**/
 ];

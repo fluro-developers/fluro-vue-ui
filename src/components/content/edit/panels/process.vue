@@ -130,6 +130,12 @@
 																				<v-flex xs12 sm4 class="sidebar">
 																								<flex-column-body>
 																												<v-container>
+																																<v-input class="no-flex">
+																																				<v-label>Progress</v-label>
+																																				<div>
+																																								<process-dots :definition="definition" v-model="model" />
+																																				</div>
+																																</v-input>
 																																<fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="fieldHash.dueDate" v-model="model"></fluro-content-form-field>
 																																<fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="fieldHash.state" v-model="model"></fluro-content-form-field>
 																																<!-- <pre>SHOW KEY CONTACTS {{showKeyContacts}}</pre> -->
@@ -250,6 +256,7 @@
 import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
 import FluroContentView from 'src/components/content/view/FluroContentView.vue';
 import FluroTaskList from 'src/components/form/tasklist/FluroTaskList.vue';
+import ProcessDots from 'src/components/ui/ProcessDots.vue';
 
 /////////////////////////////////
 
@@ -310,6 +317,7 @@ export default {
 				components: {
 								FluroContentView,
 								FluroTaskList,
+								ProcessDots,
 								// FluroAvatarUpdate,
 								// FluroContentForm,
 								// FluroRealmSelect,
@@ -325,6 +333,10 @@ export default {
 												self.$fluro.global.select(form.form.definitionName, { maximum: 1 })
 																.then(function(interactions) {
 
+																				if (!interactions || !interactions.length) {
+																								return;
+																				}
+
 																				var cardID = self.$fluro.utils.getStringID(self.model);
 																				var interactionID = self.$fluro.utils.getStringID(interactions[0]);
 																				var formID = self.$fluro.utils.getStringID(form.form);
@@ -339,8 +351,8 @@ export default {
 																												definition: formID,
 																								})
 																								.then(function(result) {
-																											self.$emit('refresh');
-																											self.$set(self.linking, formID, false);
+																												self.$emit('refresh');
+																												self.$set(self.linking, formID, false);
 																								})
 																								.catch(function(err) {
 																												self.$fluro.error(err);
@@ -671,7 +683,7 @@ export default {
 
 				data() {
 								return {
-										linking:{},
+												linking: {},
 												resending: {},
 								}
 				},

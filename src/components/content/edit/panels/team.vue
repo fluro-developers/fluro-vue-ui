@@ -133,6 +133,16 @@
 																				</v-container>
 																</flex-column-body>
 												</tab>
+
+												<tab heading="Metrics">
+																<flex-column-body style="background: #fafafa;">
+																				<v-container class="grid-list-xl">
+																								<constrain md>
+																												<metrics-dashboard :id="model" type="team"/>
+																								</constrain>
+																				</v-container>
+																</flex-column-body>
+												</tab>
 								</tabset>
 				</flex-column>
 </template>
@@ -144,6 +154,7 @@ import NotificationTeamManager from 'src/components/content/edit/components/Noti
 import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
 //import FluroContentEdit from 'src/components/content/edit/FluroContentEdit.vue';
 import TeamTrackTeaser from 'src/components/content/edit/components/TeamTrackTeaser.vue';
+import MetricsDashboard from 'src/components/MetricsDashboard.vue';
 
 // import { JSONView } from "vue-json-component";
 
@@ -156,6 +167,7 @@ import _ from 'lodash';
 
 export default {
 				components: {
+					MetricsDashboard,
 								TeamTrackTeaser,
 								NotificationTeamManager,
 								GroupRoleManager,
