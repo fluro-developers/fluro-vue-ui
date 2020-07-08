@@ -1,5 +1,5 @@
 <template>
-    <flex-column>
+    <flex-column style="background: #ccc; position:relative;">
         <fluro-page-preloader contain v-if="!loaded" />
         <iframe ref="iframe" @load="loaded = true" class="mailout-preview-frame" :src="url" />
     </flex-column>
@@ -11,7 +11,7 @@ export default {
             type: String,
         },
         cacheKey: {
-            type: String,
+            type: [String, Number],
         },
         live: {
             type: Boolean,
@@ -44,6 +44,8 @@ export default {
             }
         },
         url() {
+
+            this.loaded = false;
             var url = `${this.$fluro.apiURL}/mailout/render/${this.definition}`
             var queryParameters = this.$fluro.utils.mapParameters(this.params);
             return `${url}?${queryParameters}`;

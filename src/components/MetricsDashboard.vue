@@ -1,6 +1,5 @@
 <template>
-    <div>
-        <template v-if="loading"> Loading Component <v-progress-circular indeterminate></v-progress-circular>
+    <div> METRICS DASHBOARD <template v-if="loading"> Loading Component <v-progress-circular indeterminate></v-progress-circular>
         </template>
         <template v-else>
             <h3>Attendance</h3>

@@ -59,7 +59,7 @@ const plugins = [
 
 	/**/
 	postcss({
-		extract: false, //TOGGLE THIS TO TRUE BEFORE BUILD - FOR WEB BUILDER CSS
+		extract: true, //TOGGLE THIS TO TRUE BEFORE BUILD - FOR WEB BUILDER CSS
 	})
 	/**/
 ];

@@ -82,6 +82,9 @@ export default {
 								}
 				},
 				watch: {
+								searchInheritable() {
+												this.reload();
+								},
 								changeKey() {
 												this.reload();
 								},
@@ -218,7 +221,8 @@ export default {
 												return this.includeArchivedByDefault
 								},
 								reloadRequired() {
-												return `${this.cacheKey}-${this.dataType}-${this.filterCheckString} ${this.dateWatchString} ${this.sort.sortKey} ${this.sort.sortDirection} ${this.sort.sortType} ${this.groupingColumn ? this.groupingColumn.key : ''}  ${this.debouncedSearch}`;
+												console.log('RELOAD REQUIRED', this.searchInheritable)
+												return `${this.cacheKey}-${this.searchInheritable}-${this.dataType}-${this.filterCheckString} ${this.dateWatchString} ${this.sort.sortKey} ${this.sort.sortDirection} ${this.sort.sortType} ${this.groupingColumn ? this.groupingColumn.key : ''}  ${this.debouncedSearch}`;
 								},
 								activeFilters() {
 												return FilterService.activeFilters(this.filterConfig);
