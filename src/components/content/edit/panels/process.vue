@@ -133,7 +133,7 @@
 																																<v-input class="no-flex">
 																																				<v-label>Progress</v-label>
 																																				<div>
-																																								<process-dots :definition="definition" v-model="model" />
+																																								<process-dots :definition="definition" :card="model" />
 																																				</div>
 																																</v-input>
 																																<fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="fieldHash.dueDate" v-model="model"></fluro-content-form-field>

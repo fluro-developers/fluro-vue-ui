@@ -958,9 +958,9 @@ export default {
 								},
 				},
 				watch: {
-					columns(columns) {
-						 this.structureColumns = _.compact(columns)
-					},
+								columns(columns) {
+												this.structureColumns = _.compact(columns)
+								},
 								extraColumns() {
 												this.$emit('additionalColumns', this.extraColumns);
 								},
@@ -1225,6 +1225,10 @@ export default {
 																}
 
 																var fields = ['title', '_type', 'definition']
+
+																if (self.searchInheritable) {
+																				fields.push('account');
+																}
 
 																//////////////////////////////////////
 
@@ -1925,7 +1929,7 @@ export default {
 																				padding: 4px $padding-h;
 
 																				&.checkbox-cell {
-																					padding:0;
+																								padding: 0;
 																				}
 																}
 												}

@@ -28,12 +28,9 @@
 																<template v-else>
 																				<v-text-field single-line label="" v-model="model.key"></v-text-field>
 																</template>
-																<!-- <pre>{{selector}}</pre> -->
 												</v-flex>
-												<!-- v-if="!hasSubFields" -->
 												<v-flex xs12 sm3>
 																<v-select single-line dense ref="inputComparator" v-model="modelComparator" item-text="title" item-value="operator" :items="comparators" />
-																<!-- <pre>{{model.comparator}}</pre> -->
 												</v-flex>
 												<template v-if="comparator && inputType != 'none'">
 																<v-flex xs12 sm5 v-if="inputType == 'daterange'">
@@ -138,7 +135,6 @@
 																																<!-- STRING TEXT -->
 																																<v-autocomplete class="small-input" multiple dense v-model="model.values" :loading="loadingValues" :items="cleanedValueSelection"></v-autocomplete>
 																												</template>
-																												<!-- <pre>{{cleanedValueSelection}}</pre> -->
 																								</template>
 																				</template>
 																</v-flex>
@@ -175,7 +171,7 @@
 																				<v-text-field v-else-if="dataType == 'integer'" class="small-input" single-line mask="############" v-model="model.value"></v-text-field>
 																				<template v-else-if="useBasicReferenceSelect">
 																								<!-- <pre>{{referenceID}}</pre> -->
-																								<fluro-content-select-button :createDisabled="true"  small block :allDefinitions="true" :maximum="1" :single-value="true" :type="useBasicReferenceSelect" v-model="model.value" />
+																								<fluro-content-select-button :createDisabled="true" small block :allDefinitions="true" :maximum="1" :single-value="true" :type="useBasicReferenceSelect" v-model="model.value" />
 																				</template>
 																				<template v-else-if="referenceSelectField">
 																								<template v-if="$vuetify.breakpoint.xsOnly">
@@ -218,13 +214,13 @@
 																																<v-select class="small-input" dense v-model="model.value" :loading="loadingValues" :items="cleanedValueSelection"></v-select>
 																												</template>
 																												<template v-else>
-																																<!-- MANUAL INPUT -->
 																																<v-autocomplete class="small-input" dense v-model="model.value" :loading="loadingValues" :items="cleanedValueSelection"></v-autocomplete>
 																												</template>
 																								</template>
 																				</template>
 																</v-flex>
 												</template>
+												<!-- <pre>SELECT AUTO {{comparator}} -- {{inputType}}</pre> -->
 								</v-layout>
 								<!-- HERE {{possibleValues}} -->
 								<!-- <pre>{{model}}</pre> -->
@@ -428,9 +424,7 @@ export default {
 																return this.model.comparator;
 												},
 												set(val) {
-
-																console.log('SET COMPARATOR TO', val, this.model)
-																this.model.comparator = val;
+																this.$set(this.model, 'comparator', val);
 												}
 								},
 								dateMeasures() {
@@ -466,7 +460,8 @@ export default {
 																return this.referenceIDModel;
 												},
 												set(reference) {
-																this.model.value = this.$fluro.utils.getStringID(reference);
+													this.$set(this.model, 'value', this.$fluro.utils.getStringID(reference));
+																// this.model.value = ;
 																this.referenceIDModel = reference;
 												}
 								},
@@ -765,14 +760,23 @@ export default {
 								comparator() {
 
 												var matchedComparator = FilterService.comparatorLookup[this.model.comparator];
-												// if (!matchedComparator) {
-												// 				console.log('COMPARE', matchedComparator, this.model)
-												// } else {
-												// 				console.log('we matched it', this.model.key, this.model.comparator, matchedComparator)
-												// }
+
+
+												if (this.model.comparator == 'in') {
+																console.log('GET THE COMPARATOR', matchedComparator, FilterService.comparatorLookup)
+												}
+
 												return matchedComparator; //FilterService.comparatorLookup[this.model.comparator];
 								},
 								inputType() {
+
+
+												if (this.model.comparator == 'in') {
+																console.log('GET THE INPUT TYPE', this.comparator)
+												}
+
+
+
 												return this.comparator ? this.comparator.inputType : null;
 								},
 								dataType() {
@@ -938,7 +942,7 @@ export default {
 
 												//If we have no key then there are no possible values
 												if (!key || !key.length) {
-																console.log('Values > No key so clear values');
+																console.log('Values > No key so clear values', key, self.model);
 																self.possibleValues = [];
 																self.loadingValues = false;
 																// console.log('CADE > No key so no values', self.model)
@@ -957,6 +961,29 @@ export default {
 												//     key = splitParameters;
 												// }
 
+
+												// console.log('KEY', key, self.selector);
+												////////////////////////////////////
+
+												var selectableOptions = [];
+
+												if (self.selector) {
+																if (self.selector.allowedValues && self.selector.allowedValues.length) {
+																				selectableOptions = self.selector.allowedValues;
+																} else if (self.selector.options && self.selector.options.length) {
+																				selectableOptions = self.selector.options;
+																}
+
+																if (selectableOptions.length) {
+																				self.possibleValues = selectableOptions
+																				self.loadingValues = false;
+																				// console.log('Return selectable options', selectableOptions, self.selector)
+																				return;
+																}
+
+
+
+												}
 
 												////////////////////////////////
 
@@ -982,6 +1009,7 @@ export default {
 																default:
 																				switch (key) {
 																								case 'definition':
+
 																												if (self.definition && self.definition.definitions) {
 																																return self.possibleValues = _.map(self.definition.definitions, function(def) {
 																																				return { text: def.title, value: def.definitionName };
@@ -1014,28 +1042,7 @@ export default {
 												}
 
 
-												////////////////////////////////////
 
-												var selectableOptions = [];
-
-												if (self.selector) {
-
-																if (self.selector.allowedValues && self.selector.allowedValues.length) {
-																				selectableOptions = self.selector.allowedValues;
-																} else if (self.selector.options && self.selector.options.length) {
-																				selectableOptions = self.selector.options;
-																}
-
-																if (selectableOptions.length) {
-																				self.possibleValues = selectableOptions
-																				self.loadingValues = false;
-																				console.log('Return selectable options', selectableOptions, self.selector)
-																				return;
-																}
-
-
-
-												}
 
 
 
@@ -1326,12 +1333,11 @@ export default {
 				padding: 5px;
 }
 
-
 </style>
 <style lang="scss">
 .filter-condition-row.mini {
 
-				 .v-input {
+				.v-input {
 								font-size: 13px !important;
 				}
 

@@ -483,9 +483,9 @@ export default {
 
 																var self = this;
 
-																if (!self.isContactType) {
-																				return Promise.resolve([]);
-																}
+																// if (!self.isContactType) {
+																// 				return Promise.resolve([]);
+																// }
 
 																return new Promise(function(resolve, reject) {
 																				return self.$fluro.access.retrieveSelectableRealms('view', 'event', 'event', { flat: true })
@@ -509,10 +509,6 @@ export default {
 								eventTracks: {
 												get() {
 																var self = this;
-
-																if (!self.isContactType) {
-																				return Promise.resolve([]);
-																}
 
 																////////////////////////////////////////////////////////
 
@@ -601,10 +597,7 @@ export default {
 												get() {
 																var self = this;
 
-																if (!self.isContactType) {
-																				// console.log('Not a contact type')
-																				return Promise.resolve([]);
-																}
+
 																// return new Promise(function(resolve, reject) {
 
 																return self.$fluro.types.subTypes('event')
@@ -617,9 +610,7 @@ export default {
 												get() {
 																var self = this;
 
-																if (!self.isContactType) {
-																				return Promise.resolve([]);
-																}
+
 																// return new Promise(function(resolve, reject) {
 
 																return self.$fluro.types.subTypes('contact')
@@ -632,9 +623,9 @@ export default {
 												get() {
 																var self = this;
 
-																if (!self.isContactType) {
-																				return Promise.resolve([]);
-																}
+																// if (!self.isContactType) {
+																// 				return Promise.resolve([]);
+																// }
 																// return new Promise(function(resolve, reject) {
 
 																return self.$fluro.types.subTypes('team')
@@ -817,6 +808,8 @@ export default {
 												postDefinitionOptions = postDefinitionOptions.concat(_.map(self.postTypes, function(definition) {
 																return {
 																				text: definition.title,
+																				name: definition.title,
+																				title: definition.title,
 																				value: definition.definitionName,
 																}
 												}))
@@ -863,73 +856,107 @@ export default {
 																],
 												});
 
-												/////////////////////////////////////////////
+												//////////////////////////////////////////////////
+
+												var eventDefinitionOptions = [];
+												var contactDefinitionOptions = [];
+												var eventTrackOptions = [];
+												var rosterDefinitionOptions = [];
+												var interactionDefinitionOptions = [];
+												var teamDefinitionOptions = [];
+												var groupNameOptions = [];
 
 
+												groupNameOptions = groupNameOptions.concat(_.map(self.groupNames, function(group) {
+																return {
+																				text: group.title,
+																				title: group.title,
+																				name: group.title,
+																				value: group.title,
+																}
+												}))
+
+												interactionDefinitionOptions = interactionDefinitionOptions.concat(_.map(self.interactionTypes, function(definition) {
+																return {
+																				text: definition.title,
+																				title: definition.title,
+																				name: definition.title,
+																				value: definition.definitionName,
+																}
+												}))
+
+												rosterDefinitionOptions = rosterDefinitionOptions.concat(_.map(self.rosterTypes, function(definition) {
+																return {
+																				text: definition.title,
+																				title: definition.title,
+																				name: definition.title,
+																				value: definition.definitionName,
+																}
+												}))
+
+
+												// console.log('TEAM TYPES', self.teamTypes)
+
+												teamDefinitionOptions = teamDefinitionOptions.concat(_.map(self.teamTypes, function(definition) {
+																return {
+																				title: definition.title,
+																				name: definition.name,
+																				text: definition.title,
+																				value: definition.definitionName,
+																}
+												}))
+
+
+												// console.log('TEAM TYPES', self.teamTypes, teamDefinitionOptions)
+
+												//////////////////////////////////////////////////
+
+
+												// switch (self.basicType) {
+												// 				case 'contact':
+												// 				case 'checkin':
+												eventDefinitionOptions = eventDefinitionOptions.concat(_.map(self.eventTypes, function(definition) {
+																return {
+																				name: definition.title,
+																				title: definition.title,
+																				text: definition.title,
+																				value: definition.definitionName,
+																}
+												}))
+
+												contactDefinitionOptions = contactDefinitionOptions.concat(_.map(self.contactTypes, function(definition) {
+																return {
+																				title: definition.title,
+																				name: definition.name,
+																				text: definition.title,
+																				value: definition.definitionName,
+																}
+												}))
+
+
+												// console.log('WE GOT CONTACT TYPES', contactDefinitionOptions);
+
+												//////////////////////////////////////////////////
+												eventTrackOptions = eventTrackOptions.concat(_.map(self.eventTracks, function(track) {
+																return {
+																				title: track.title,
+																				name: track.title,
+																				text: track.title,
+																				value: track._id,
+																}
+												}))
+												// break;
+												// }
+
+
+												console.log('EVENT TRACK OPTIONS', eventTrackOptions)
+
+												//////////////////////////////////////////////////
 
 
 												if (self.isContactType) {
 
-																var eventDefinitionOptions = [];
-																var eventTrackOptions = [];
-																var rosterDefinitionOptions = [];
-																var interactionDefinitionOptions = [];
-																var teamDefinitionOptions = [];
-																var contactDefinitionOptions = [];
-																var groupNameOptions = [];
 
-																groupNameOptions = groupNameOptions.concat(_.map(self.groupNames, function(group) {
-																				return {
-																								text: group.title,
-																								value: group.title,
-																				}
-																}))
-
-																interactionDefinitionOptions = interactionDefinitionOptions.concat(_.map(self.interactionTypes, function(definition) {
-																				return {
-																								text: definition.title,
-																								value: definition.definitionName,
-																				}
-																}))
-
-																rosterDefinitionOptions = rosterDefinitionOptions.concat(_.map(self.rosterTypes, function(definition) {
-																				return {
-																								text: definition.title,
-																								value: definition.definitionName,
-																				}
-																}))
-
-																eventTrackOptions = eventTrackOptions.concat(_.map(self.eventTracks, function(track) {
-																				return {
-																								text: track.title,
-																								value: track._id,
-																				}
-																}))
-
-																eventDefinitionOptions = eventDefinitionOptions.concat(_.map(self.eventTypes, function(definition) {
-																				return {
-																								name: definition.title,
-																								title: definition.title,
-																								text: definition.title,
-																								value: definition.definitionName,
-																				}
-																}))
-
-																contactDefinitionOptions = contactDefinitionOptions.concat(_.map(self.contactTypes, function(definition) {
-																				return {
-																								title: definition.title,
-																								text: definition.title,
-																								value: definition.definitionName,
-																				}
-																}))
-
-																teamDefinitionOptions = teamDefinitionOptions.concat(_.map(self.teamTypes, function(definition) {
-																				return {
-																								title: definition.title,
-																								text: definition.title,
-																								value: definition.definitionName,
-																				}
-																}))
 
 																////////////////////////////////////////////////////////
 
@@ -950,7 +977,7 @@ export default {
 																});
 
 																injectFields.push({
-																				title: 'Total number of groups',
+																				title: 'Total number of groups contact is a member of',
 																				key: '_teams.all.length',
 																				maximum: 1,
 																				minimum: 0,
@@ -989,6 +1016,8 @@ export default {
 																												directive: 'select',
 																												options: teamDefinitionOptions,
 																								},
+
+
 																				],
 																});
 

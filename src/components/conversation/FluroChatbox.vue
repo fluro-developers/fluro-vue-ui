@@ -309,10 +309,11 @@ export default {
 								}, 400),
 
 								socketUpdate(event) {
+												console.log('socket')
 												this.reloadConversation();
 								},
 								poll() {
-												// console.log('poll')
+												console.log('poll')
 												this.reloadConversation();
 								},
 
@@ -336,7 +337,7 @@ export default {
 																self.socketChannel = self.$socket.channel(self.conversationID);
 																self.socketChannel.on('message.create', self.socketUpdate)
 																self.socketChannel.on('message.update', self.socketUpdate)
-																POLL_FREQUENCY = 10000;
+																POLL_FREQUENCY = 20000;
 
 
 
@@ -729,9 +730,9 @@ export default {
 				}
 
 				&:nth-child(odd) {
-					&.default {
-								background: rgba(#000, 0.02);
-							}
+								&.default {
+												background: rgba(#000, 0.02);
+								}
 				}
 
 				&:hover {
@@ -939,10 +940,10 @@ $message-radius: 20px;
 				}
 
 				&.internal {
-					textarea {
-						background: #fff5c0;
-						color: #674300;
-					}
+								textarea {
+												background: #fff5c0;
+												color: #674300;
+								}
 				}
 
 

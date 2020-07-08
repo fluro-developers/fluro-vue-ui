@@ -624,6 +624,12 @@ export default {
 
 																								/////////////////////////////////////////////
 
+																								if(self.definitionName) {
+																										requestData.definition = self.definitionName;
+																								}
+																								
+
+																								/////////////////////////////////////////////
 
 																								//Change the state to uploading
 																								file.state = 'uploading';

@@ -442,6 +442,192 @@
 																								<!-- <pre>MANAGE {{model.fields}}</pre> -->
 																								<fluro-field-editor v-model="model.fields" :item="model" />
 																				</tab>
+																				<tab heading="Template" v-if="model.parentType == 'mailout'">
+																								<flex-row class="code-panels">
+																												<!-- <flex-column class="code-panel" :class="{'panel-collapsed':collapsed.js}">
+																																<div class="code-heading" @click="togglePanel('js')">
+																																				<label>
+																																								<fluro-icon icon="caret-right" library="fas" left /><strong>Javascript</strong>
+																																				</label>
+																																</div>
+																																<flex-column class="code-panel-column">
+																																				<fluro-code-editor style="flex: 1 1 100%" v-model="model.data.js" lang="javascript" />
+																																</flex-column>
+																												</flex-column> -->
+																												<flex-column class="code-panel" :class="{'panel-collapsed':collapsed.html}">
+																																<div class="code-heading" @click="togglePanel('html')">
+																																				<v-layout>
+																																								<v-flex>
+																																												<label>
+																																																<fluro-icon icon="caret-right" library="fas" left /><strong>HTML (EJS)</strong>
+																																												</label>
+																																								</v-flex>
+																																								<v-flex shrink v-tippy content="Expand" class="arrow-expander" @click.stop.prevent="togglePanel('html', true)">
+																																												<fluro-icon icon="expand-alt" />
+																																								</v-flex>
+																																				</v-layout>
+																																</div>
+																																<flex-column class="code-panel-column">
+																																				<fluro-code-editor style="flex: 1 1 100%" v-model="model.data.html" lang="html" />
+																																</flex-column>
+																												</flex-column>
+																												<flex-column class="code-panel" :class="{'panel-collapsed':collapsed.css}">
+																																<div class="code-heading" @click="togglePanel('css')">
+																																				<v-layout>
+																																								<v-flex>
+																																												<label>
+																																																<fluro-icon icon="caret-right" library="fas" left /><strong>SCSS (EJS)</strong>
+																																												</label>
+																																								</v-flex>
+																																								<v-flex shrink v-tippy content="Expand" class="arrow-expander" @click.stop.prevent="togglePanel('css', true)">
+																																												<fluro-icon icon="expand-alt" />
+																																								</v-flex>
+																																				</v-layout>
+																																</div>
+																																<!--  -->
+																																<flex-column class="code-panel-column">
+																																				<fluro-code-editor :autoformat="false" style="flex: 1 1 100%" v-model="model.data.css" lang="scss" />
+																																</flex-column>
+																												</flex-column>
+																												<flex-column class="code-panel light" :class="{'panel-collapsed':collapsed.preview}">
+																																<div class="code-heading" @click="togglePanel('preview')">
+																																				<v-layout>
+																																								<v-flex>
+																																												<label>
+																																																<fluro-icon icon="caret-right" library="fas" left /><strong>Preview</strong>
+																																												</label>
+																																								</v-flex>
+																																								<v-flex shrink v-tippy content="Expand" class="arrow-expander" @click.stop.prevent="togglePanel('preview', true)">
+																																												<fluro-icon icon="expand-alt" />
+																																								</v-flex>
+																																				</v-layout>
+																																</div>
+																																<!--  -->
+																																<flex-column class="code-panel-column">
+																																				<!-- <mailout-preview class="application-body" live="true" cache="cache.buster" definition="item.definitionName" mailout="selectedMailoutID"></mailout-preview> -->
+																																				<mailout-render-preview :live="true" :cacheKey="mailoutCacheKey" :definition="model.definitionName" />
+																																				<!-- <fluro-code-editor :autoformat="false" style="flex: 1 1 100%" v-model="model.data.css" lang="scss" /> -->
+																																</flex-column>
+																												</flex-column>
+																												<flex-column class="code-panel light" :class="{'panel-collapsed':collapsed.tokens}">
+																																<div class="code-heading" @click="togglePanel('tokens')">
+																																				<v-layout>
+																																								<v-flex>
+																																												<label>
+																																																<fluro-icon icon="caret-right" library="fas" left /><strong>Tokens</strong>
+																																												</label>
+																																								</v-flex>
+																																								<v-flex shrink v-tippy content="Expand" class="arrow-expander" @click.stop.prevent="togglePanel('tokens', true)">
+																																												<fluro-icon icon="expand-alt" />
+																																								</v-flex>
+																																				</v-layout>
+																																</div>
+																																<!--  -->
+																																<flex-column class="code-panel-column">
+																																	<flex-column-body>
+																																		<v-container fluid pa-0>
+																																				<fluro-accordion class="stacker">
+																																								<fluro-accordion-panel v-for="group in snippetGroups" :heading="group.title">
+																																												<div class="snippet-row" v-tippy content="Click to copy" @click="copy(snippet)" v-for="snippet in group.snippets">
+																																															<!-- <v-input class="no-flex"> -->
+																																																<!-- <v-layout> -->
+																																																<!-- <v-flex xs4> -->
+																																																<label>{{snippet.title}}</label>
+																																																<!-- </v-flex> -->
+																																																<!-- <v-flex xs8> -->
+																																																<div style="overflow: auto">
+																																																				<div class="snippet">{{snippet.code}}</div>
+																																																</div>
+																																																<!-- </v-flex> -->
+																																																<!-- </v-layout> -->
+																																															<!-- </v-input> -->
+																																												</div>
+																																								</fluro-accordion-panel>
+																																								<fluro-accordion-panel heading="Help / Utilities">
+																																												<v-input class="no-flex">
+																																																<v-label>Multiple value fields</v-label>
+																																																<div class="help-snippet">
+																																																				<% for (var i = 0; i < get('items.length'); i++) { %><br />
+																																																				&lt;h3&gt;
+																																																				<%= get('items[i].title') %>&lt;/h3&gt;<br />
+																																																				<% } %>
+																																																</div>
+																																												</v-input>
+																																												<v-input class="no-flex">
+																																																<v-label>Icon URL</v-label>
+																																																<p class="help-block">Font library, the icon name, and an optional color</p>
+																																																<div class="help-snippet">
+																																																				<%= iconUrl('fab', 'facebook', 'fff') %>
+																																																</div>
+																																																<div class="help-snippet">
+																																																				<%= iconUrl('fas', 'arrow-right', 'ff0000') %>
+																																																</div>
+																																																<div class="help-snippet">
+																																																				<%= iconUrl('far', 'home') %>
+																																																</div>
+																																												</v-input>
+																																												<v-input class="no-flex">
+																																																<v-label>Image URL</v-label>
+																																																<p class="help-block">Generated by providing a path to the image on the mailout data</p>
+																																																<div class="help-snippet">
+																																																				<%= imageUrl('path.to.image', optionalWidth, optionalHeight, options) %>
+																																																</div>
+																																												</v-input>
+																																												<v-input class="no-flex">
+																																																<v-label>Image URL</v-label>
+																																																<p class="help-block">Generated by providing a static ID</p>
+																																																<div class="help-snippet">
+																																																				<%= imageUrl('5c872b1f2380ba45e486b033', 500, null, {static:true}) %>
+																																																</div>
+																																												</v-input>
+																																												<v-input class="no-flex">
+																																																<v-label>Poster URL</v-label>
+																																																<div class="help-snippet">
+																																																				<%= posterUrl('path.to.video', optionalWidth, optionalHeight) %>
+																																																</div>
+																																												</v-input>
+																																												<v-input class="no-flex">
+																																																<v-label>Download URL</v-label>
+																																																<div class="help-snippet">
+																																																				<%= downloadUrl('path.to.asset') %>
+																																																</div>
+																																												</v-input>
+																																												<v-input class="no-flex">
+																																																<v-label>Variable Dump</v-label>
+																																																<div class="help-snippet">
+																																																				<%- pre('path.to.data') %>
+																																																</div>
+																																												</v-input>
+																																												<v-input class="no-flex">
+																																																<v-label>Escape HTML</v-label>
+																																																<div class="help-snippet">
+																																																				<%- get('path.to.data') %>
+																																																</div>
+																																												</v-input>
+																																												<v-input class="no-flex">
+																																																<v-label>Unsubscribe link</v-label>
+																																																<div class="help-snippet">
+																																																				<!-- <% if(get('mailout.mailoutType') != 'transactional') { %> -->
+																																																				<%- unsubscribe() %>
+																																																				<!-- <% } %> -->
+																																																</div>
+																																												</v-input>
+																																												<v-input class="no-flex">
+																																																<v-label>Open Tracker Code</v-label>
+																																																<div class="help-snippet">
+																																																				<%- tracker %>
+																																																</div>
+																																												</v-input>
+																																								</fluro-accordion-panel>
+																																				</fluro-accordion>
+																																			</v-container>
+																																			</flex-column-body>
+																																				<!-- Tokens -->
+																																				<!-- <fluro-code-editor :autoformat="false" style="flex: 1 1 100%" v-model="model.data.css" lang="scss" /> -->
+																																</flex-column>
+																												</flex-column>
+																								</flex-row>
+																				</tab>
 																				<!-- <tab heading="Process Options" v-if="model.parentType == 'process'">
                         <flex-column-body style="background: #fafafa;">
                             <v-container>
@@ -521,9 +707,13 @@ import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditM
 import PaymentModifierEditor from 'src/components/content/edit/components/PaymentModifierEditor.vue';
 import FluroColumnSelect from 'src/components/content/edit/components/FluroColumnSelect.vue';
 import FluroFieldEditor from 'src/components/fields/FluroFieldEditor.vue';
+import FluroCodeEditor from 'src/components/form/FluroCodeEditor.vue';
 import FluroContentSelectButton from 'src/components/form/contentselect/FluroContentSelectButton.vue';
 import FieldTemplates from 'src/components/fields/FieldEditorTemplates.js';
+import MailoutRenderPreview from 'src/components/mailout/MailoutRenderPreview.vue';
 import _ from 'lodash';
+import FluroAccordion from 'src/components/ui/accordion/FluroAccordion.vue';
+import FluroAccordionPanel from 'src/components/ui/accordion/FluroAccordionPanel.vue';
 
 
 
@@ -535,16 +725,43 @@ import Vue from 'vue';
 
 export default {
 				components: {
+								FluroAccordion,
+								FluroAccordionPanel,
 								FluroFieldEditor,
 								FluroContentSelectButton,
 								PaymentModifierEditor,
 								FluroColumnSelect,
+								FluroCodeEditor,
+								MailoutRenderPreview,
 								//RosterSlotManager,
 								// FluroEditor,
 				},
 				mixins: [FluroContentEditMixin],
 				methods: {
+								copy(snippet) {
+												this.$fluro.global.copyToClipBoard(snippet.code);
+								},
+								incrementCacheKey: _.debounce(function() {
 
+												console.log('Cache key', this.mailoutCacheKey);
+												this.mailoutCacheKey++;
+								}, 1000),
+								togglePanel(syntax, isolate) {
+
+												console.log('TOGGLE', syntax);
+
+												var self = this;
+
+												if (isolate) {
+																for (var key in self.collapsed) {
+																				self.$set(self.collapsed, key, true);
+																}
+												}
+
+												self.$set(self.collapsed, syntax, !self.collapsed[syntax]);
+
+												// this.collapsed[syntax] = !this.collapsed[syntax];
+								},
 								setParentType(parentType) {
 												var self = this;
 
@@ -674,7 +891,9 @@ export default {
 
 				},
 				watch: {
+								'mailoutRefresh': 'incrementCacheKey',
 								'model.parentType': 'setParentType',
+
 				},
 				asyncComputed: {
 								parentTypeOptions: {
@@ -771,7 +990,133 @@ export default {
 								}
 				},
 				computed: {
+								snippetGroups() {
 
+												var self = this;
+
+
+												var array = [];
+
+												array.push({
+																title: 'Recipient',
+																snippets: [{
+																								title: 'First Name',
+																								code: `<%= get('firstName') %>`
+																				},
+																				{
+																								title: 'Last Name',
+																								code: `<%= get('lastName') %>`
+																				},
+																				{
+																								title: 'Email Address',
+																								code: `<%= get('email') %>`
+																				},
+
+																				{
+																								title: 'Recipient Timezone',
+																								code: `<%= get('timezone') %>`
+																				},
+																],
+												})
+
+
+												array.push({
+																title: 'Sender',
+																snippets: [{
+																								title: 'Sender First Name',
+																								code: `<%= get('mailout.fromFirstName') %>`
+																				},
+																				{
+																								title: 'Sender Last Name',
+																								code: `<%= get('mailout.fromLastName') %>`
+																				},
+
+																				{
+																								title: 'Sender Email',
+																								code: `<%= get('mailout.fromEmail') %>`
+																				},
+
+																				{
+																								title: 'Sender Photo URL',
+																								code: `<%= avatarUrl('mailout.author._id') %>`
+																				},
+
+
+																],
+												})
+
+
+
+												var snippets = self.$fluro.utils.getFlattenedFields(self.model.fields, [], []).map(function(field) {
+
+																console.log('FIELD', field);
+																return {
+																				title: field.title,
+																				code: `<%= get('data.${field.trail.join('.')}') %>`,
+																}
+												});
+
+
+
+
+												array.push({
+																title: `Custom Fields`,
+																snippets,
+												})
+
+
+												array.push({
+																title: 'Mailout',
+																snippets: [{
+																								title: 'Subject',
+																								code: `<%= get('mailout.subject') %>`
+																				},
+
+																				{
+																								title: 'Mailout ID',
+																								code: `<%= get('mailout._id') %>`
+																				},
+
+																				{
+																								title: 'Correspondence ID',
+																								code: `<%= get('_id') %>`
+																				},
+
+																]
+												})
+
+												array.push({
+																title: 'Account',
+																snippets: [{
+																								title: 'Account Name',
+																								code: `<%= get('account.title') %>`
+																				},
+
+																				{
+																								title: 'Account ID',
+																								code: `<%= get('account._id') %>`
+																				},
+
+																				{
+																								title: 'Account Color',
+																								code: `<%= get('account.color') %>`
+																				},
+
+																				{
+																								title: 'Account Timezone',
+																								code: `<%= get('account.timezone') %>`
+																				},
+
+																]
+												})
+
+
+
+												return array;
+								},
+								mailoutRefresh() {
+												return `${this.model.data.html}-${this.model.data.css}`
+								},
 								rosterFields() {
 												var array = [];
 
@@ -1804,6 +2149,14 @@ export default {
 				},
 				data() {
 								return {
+												mailoutCacheKey: 0,
+												collapsed: {
+																js: false,
+																html: false,
+																css: false,
+																preview: false,
+																tokens: false,
+												},
 												tabIndex: 0,
 												alternativePaymentMethodIndex: 0,
 												expandedSettings: {
@@ -1818,10 +2171,148 @@ export default {
 }
 
 </script>
+<style lang="scss">
+	
+.stacker {
+.accordion-panel {
+	margin-bottom: 0;
+	border:none;
+
+	&.expanded {
+			.accordion-panel-title {
+				background:none;
+			}
+	}
+}
+
+.accordion-panel-title {
+	font-weight: 600;
+	border-top:1px solid rgba(#000,0.1);
+}
+
+.accordion-panel-body .container {
+	padding:10px;
+}
+}
+
+
+</style>
 <style lang="scss" scoped>
 .field-row {
 				padding: 0 15px;
 				border-bottom: 1px solid rgba(#000, 0.1);
+}
+
+
+
+.snippet {
+	cursor: pointer;
+}
+
+.snippet-row {
+	display: block;
+		margin-bottom: 15px;
+
+	label {
+		font-weight: 600;
+		text-transform: uppercase;;
+		font-size: 0.8em;
+		letter-spacing: 0.02em;
+	
+	}
+}
+
+.snippet,
+.help-snippet {
+				font-size: 12px;
+				font-weight: bold;
+				font-family: monospace;
+
+				white-space: nowrap;
+
+				background: #f3f2ff;
+				color: #7653c1;
+				display: inline-block;;
+
+}
+
+
+.code-heading {
+				line-height: 30px;
+				height: 30px;
+				padding: 0 15px;
+				background: #555;
+				color: rgba(#fff, 0.8);
+				white-space: nowrap;
+				border: 1px solid rgba(#000, 0.1);
+				cursor: pointer !important;
+
+				&:hover {
+								background: #444;
+								color: #fff;
+				}
+
+				label {
+								display: block;
+								text-transform: uppercase;
+								margin: 0;
+								padding: 0;
+								letter-spacing: 0.05em;
+								font-size: 12px;
+								pointer-events: none;
+				}
+
+
+				.arrow-expander {
+								opacity: 0.5;
+								cursor: pointer;
+
+								&:hover {
+												opacity: 1;
+								}
+				}
+}
+
+.code-panels {
+				background: #262626;
+}
+
+.code-panel {
+
+				&.light {
+								background: #fafafa;
+				}
+
+				.code-panel-column {
+								border-left: 1px solid rgba(#000, 0.1);
+								border-right: 1px solid rgba(#000, 0.1);
+				}
+}
+
+
+
+.panel-collapsed {
+				width: 30px !important;
+				flex: none;
+				background: #fafafa;
+
+
+				.arrow-expander {
+								display: none !important;
+				}
+
+				.code-heading {
+								flex: 1;
+								height: auto;
+
+								label {
+												transform: rotate(90deg);
+								}
+				}
+
+				.code-panel-column {
+								display: none;
+				}
 }
 
 </style>
