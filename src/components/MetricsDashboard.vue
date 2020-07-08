@@ -89,7 +89,7 @@ export default {
                     },
                 ],
                 model,
-                options: options: {
+                options: {
                     yaxis: [{
                         min: 0,
                         max,
@@ -115,6 +115,7 @@ export default {
                         },
                         show: true,
                     }],
+                }
             }
 
             // console.log("Event Graph Data", returnData)
