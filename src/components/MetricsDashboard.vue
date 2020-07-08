@@ -1,6 +1,5 @@
 <template>
-    <div>
-        <template v-if="loading"> Loading Component <v-progress-circular indeterminate></v-progress-circular>
+    <div> METRICS DASHBOARD <template v-if="loading"> Loading Component <v-progress-circular indeterminate></v-progress-circular>
         </template>
         <template v-else>
             <div v-if="eventData.model.series.attendance.length">
@@ -72,6 +71,7 @@ export default {
                 }
             })
 
+            var max = Math.max(_.max(model.series.attendance), _.max(model.series.expected) )
 
             var returnData =  {
                 axis: {
@@ -89,7 +89,32 @@ export default {
                     },
                 ],
                 model,
-                options: {}
+                options: options: {
+                    yaxis: [{
+                        min: 0,
+                        max,
+                        title: {
+                            text: 'Attendance',
+                        },
+                        tooltip: {
+                            enabled: true,
+                            shared: true,
+                        },
+                        show: true,
+                    }, 
+                    {
+                        min: 0,
+                        max,
+                        opposite: true,
+                        title: {
+                            text: 'Expected'
+                        },
+                        tooltip: {
+                            enabled: true,
+                            shared: true,
+                        },
+                        show: true,
+                    }],
             }
 
             // console.log("Event Graph Data", returnData)
