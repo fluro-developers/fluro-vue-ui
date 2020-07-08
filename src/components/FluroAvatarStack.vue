@@ -1,8 +1,8 @@
 <template>
     <div class="face-stack">
         <div class="face" v-tippy :content="contact.title" v-for="contact in contacts">
-            <fluro-avatar sm :id="contact" type="contact" /> 
-        </div>   
+            <fluro-avatar sm :id="contact" type="contact" />
+        </div>
     </div>
 </template>
 <script>
