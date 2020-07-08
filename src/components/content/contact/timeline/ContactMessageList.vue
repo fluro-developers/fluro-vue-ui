@@ -1,32 +1,32 @@
 <template>
-                <flex-column class="contact-message-list">
-                                <template v-if="loading">
-                                                <fluro-page-preloader contain />
-                                </template>
-                                <template v-else>
-                                                <!-- <flex-column-header>
+  <flex-column class="contact-message-list">
+    <template v-if="loading">
+      <fluro-page-preloader contain />
+    </template>
+    <template v-else>
+      <!-- <flex-column-header>
                 <v-container class="border-bottom text-xs-center" style="background: #fff;">
                     <v-btn small @click="create(postType)" v-for="postType in postTypes">
                         Add {{postType.title}}
                         <fluro-icon right icon="plus" />
                     </v-btn>
                 </v-container>
-            </flex-column-header> -->
-                                                <flex-column-body style="background: #eee;">
-                                                                <!-- <v-container> -->
-                                                                <div class="timeline">
-                                                                                <div class="year" v-for="year in timeline">
-                                                                                                <div class="year-label">{{year.date | formatDate('YYYY')}}</div>
-                                                                                                <div class="month" v-for="month in year.months">
-                                                                                                                <div class="month-label">{{month.date | formatDate('MMM')}}</div>
-                                                                                                                <div class="day" v-for="day in month.days">
-                                                                                                                                <div class="day-label">{{day.date | formatDate('ddd D')}}</div>
-                                                                                                                                <div class="entries">
-                                                                                                                                                <div v-for="entry in day.items" :key="entry._id">
-                                                                                                                                                                <mailout-card :item="entry" v-if="entry._type == 'mailout'" />
-                                                                                                                                                                <text-message-card :item="entry" v-if="entry._type == 'sms'" />
-                                                                                                                                                </div>
-                                                                                                                                                <!--  <div @click="$fluro.global.json(entry.data, {title:entry.message, depth:5})" class="entry" v-for="entry in day.items" :key="entry._id">
+      </flex-column-header>-->
+      <flex-column-body style="background: #eee;">
+        <!-- <v-container> -->
+        <div class="timeline">
+          <div class="year" v-for="year in timeline">
+            <div class="year-label">{{year.date | formatDate('YYYY')}}</div>
+            <div class="month" v-for="month in year.months">
+              <div class="month-label">{{month.date | formatDate('MMM')}}</div>
+              <div class="day" v-for="day in month.days">
+                <div class="day-label">{{day.date | formatDate('ddd D')}}</div>
+                <div class="entries">
+                  <div v-for="entry in day.items" :key="entry._id">
+                    <mailout-card :item="entry" v-if="entry._type == 'mailout'" />
+                    <text-message-card :item="entry" v-if="entry._type == 'sms'" />
+                  </div>
+                  <!--  <div @click="$fluro.global.json(entry.data, {title:entry.message, depth:5})" class="entry" v-for="entry in day.items" :key="entry._id">
                                             <v-layout>
                                                 <v-flex shrink class="pr-1">
                                                     <fluro-avatar v-if="entry.managedUser" :id="entry.managedUser" type="persona" />
@@ -40,141 +40,123 @@
                                                     {{entry.created | formatDate('h:mma')}}
                                                 </v-flex>
                                             </v-layout>
-                                        </div> -->
-                                                                                                                                </div>
-                                                                                                                </div>
-                                                                                                </div>
-                                                                                </div>
-                                                                </div>
-                                                                <!-- <div class="card" v-for="message in timeline">
+                  </div>-->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- <div class="card" v-for="message in timeline">
                         <mailout-card :item="message" v-if="message._type == 'mailout'" />
                         <text-message-card :item="message" v-if="message._type == 'sms'" />
-                    </div> -->
-                                                                <!-- </v-container> -->
-                                                </flex-column-body>
-                                </template>
-                </flex-column>
+        </div>-->
+        <!-- </v-container> -->
+      </flex-column-body>
+    </template>
+  </flex-column>
 </template>
 <script>
-
-import _ from 'lodash';
-import MailoutCard from 'src/components/content/contact/timeline/cards/MailoutCard.vue';
-import TextMessageCard from 'src/components/content/contact/timeline/cards/TextMessageCard.vue';
+import _ from "lodash";
+import MailoutCard from "src/components/content/contact/timeline/cards/MailoutCard.vue";
+import TextMessageCard from "src/components/content/contact/timeline/cards/TextMessageCard.vue";
 
 export default {
-                props: {
-                                contact: {
-                                                type: Object,
-                                }
-                },
-                components: {
-                                MailoutCard,
-                                TextMessageCard,
-                },
-                data() {
-                                return {
-                                                loading: false,
-                                }
-                },
-                computed: {
-                                timeline() {
+  props: {
+    contact: {
+      type: Object
+    }
+  },
+  components: {
+    MailoutCard,
+    TextMessageCard
+  },
+  data() {
+    return {
+      loading: false
+    };
+  },
+  computed: {
+    timeline() {
+      var self = this;
+      var array = [];
 
+      array = _.chain(array.concat(self.sms, self.emails))
+        .orderBy(function(entry) {
+          return new Date(entry.date);
+        })
+        .reverse()
+        .value();
 
-                                                var self = this;
-                                                var array = [];
+      return self.$fluro.date.timeline(array, "date");
+    }
+  },
+  asyncComputed: {
+    sms: {
+      default: [],
+      get() {
+        var self = this;
+        self.loading = true;
 
+        var contactID = self.$fluro.utils.getStringID(self.contact);
+        if (!contactID) {
+          Promise.resolve([]);
+          self.loading = false;
+        }
 
+        return new Promise(function(resolve, reject) {
+          self.$fluro.api
+            .get(`/contact/${contactID}/sms`)
+            .then(function(res) {
+              var mapped = _.map(res.data, function(entry) {
+                entry._type = "sms";
+                return entry;
+              });
 
+              resolve(mapped);
+              self.loading = false;
+            })
+            .catch(function(err) {
+              reject(err);
+              self.loading = false;
+            });
+          // https://api.staging.fluro.io/info/checkins?contact=592e50389d9129595a75cc4e
+        });
+      }
+    },
+    emails: {
+      default: [],
+      get() {
+        var self = this;
+        self.loading = true;
 
-                                                array = _.chain(array.concat(self.sms, self.emails))
-                                                                .orderBy(function(entry) {
-                                                                                return new Date(entry.date);
-                                                                })
-                                                                .reverse()
-                                                                .value();
+        var contactID = self.$fluro.utils.getStringID(self.contact);
+        if (!contactID) {
+          Promise.resolve([]);
+          self.loading = false;
+        }
 
+        return new Promise(function(resolve, reject) {
+          self.$fluro.api
+            .get(`/info/correspondence?contact=${contactID}`)
+            .then(function(res) {
+              var mapped = _.map(res.data, function(entry) {
+                entry._type = "mailout";
+                return entry;
+              });
 
-
-
-                                                return self.$fluro.date.timeline(array, 'date');
-                                }
-                },
-                asyncComputed: {
-                                sms: {
-                                                default: [],
-                                                get() {
-
-                                                                var self = this;
-                                                                self.loading = true;
-
-                                                                var contactID = self.$fluro.utils.getStringID(self.contact);
-                                                                if (!contactID) {
-                                                                                Promise.resolve([])
-                                                                                self.loading = false;
-                                                                }
-
-                                                                return new Promise(function(resolve, reject) {
-
-                                                                                self.$fluro.api.get(`/contact/${contactID}/sms`).then(function(res) {
-
-
-                                                                                                                var mapped = _.map(res.data, function(entry) {
-                                                                                                                                entry._type = 'sms';
-                                                                                                                                return entry;
-                                                                                                                })
-
-
-
-                                                                                                                resolve(mapped);
-                                                                                                                self.loading = false;
-                                                                                                })
-                                                                                                .catch(function(err) {
-                                                                                                                reject(err);
-                                                                                                                self.loading = false;
-
-                                                                                                });
-                                                                                // https://api.staging.fluro.io/info/checkins?contact=592e50389d9129595a75cc4e
-                                                                })
-                                                }
-                                },
-                                emails: {
-                                                default: [],
-                                                get() {
-
-                                                                var self = this;
-                                                                self.loading = true;
-
-                                                                var contactID = self.$fluro.utils.getStringID(self.contact);
-                                                                if (!contactID) {
-                                                                                Promise.resolve([])
-                                                                                self.loading = false;
-                                                                }
-
-                                                                return new Promise(function(resolve, reject) {
-
-                                                                                self.$fluro.api.get(`/info/correspondence?contact=${contactID}`).then(function(res) {
-                                                                                                                var mapped = _.map(res.data, function(entry) {
-                                                                                                                                entry._type = 'mailout';
-                                                                                                                                return entry;
-                                                                                                                })
-
-
-
-                                                                                                                resolve(mapped);
-                                                                                                                self.loading = false;
-                                                                                                })
-                                                                                                .catch(function(err) {
-                                                                                                                reject(err);
-                                                                                                                self.loading = false;
-
-                                                                                                });
-                                                                                // https://api.staging.fluro.io/info/checkins?contact=592e50389d9129595a75cc4e
-                                                                })
-                                                }
-                                }
-                }
-}
-
+              resolve(mapped);
+              self.loading = false;
+            })
+            .catch(function(err) {
+              reject(err);
+              self.loading = false;
+            });
+          // https://api.staging.fluro.io/info/checkins?contact=592e50389d9129595a75cc4e
+        });
+      }
+    }
+  }
+};
 </script>
 <style lang="scss">
 // .timeline {
@@ -209,7 +191,6 @@ export default {
 //             margin: 10px 0;
 //             color: rgba(#000, 0.8);
 //         }
-
 
 //         .day {
 //             display: flex;
@@ -255,5 +236,4 @@ export default {
 //             }
 //         }
 //     }
-
 </style>

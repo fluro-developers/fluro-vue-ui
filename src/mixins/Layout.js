@@ -4,10 +4,10 @@ import FluroRealmBar from 'src/components/ui/FluroRealmBar.vue';
 
 
 export default {
-				components: {
-								Wrapper,
-								Constrain,
-								FluroRealmBar,
+	components: {
+		Wrapper,
+		Constrain,
+		FluroRealmBar,
 
-				}
+	}
 }
