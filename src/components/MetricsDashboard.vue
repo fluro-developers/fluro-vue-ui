@@ -152,7 +152,7 @@ export default {
                 options: {}
             }
 
-            console.log("GroupSize Graph Data", returnData)
+            //console.log("GroupSize Graph Data", returnData)
             return returnData
         },
         genderBreakdown() {
@@ -288,7 +288,7 @@ export default {
                 }
             }
 
-            console.log("Age Spread data", returnData)
+            //console.log("Age Spread data", returnData)
             return returnData
         }
 
