@@ -3,16 +3,32 @@
         <template v-if="loading"> Loading Component <v-progress-circular indeterminate></v-progress-circular>
         </template>
         <template v-else>
-            <h3>Attendance</h3>
-            <fluro-chart chartType="line" :options="eventData.options" v-model="eventData.model" :series="eventData.series" :axis="eventData.axis" />
-            <h3>Group Size</h3>
-            <fluro-chart chartType="line" :options="groupSize.options" v-model="groupSize.model" :series="groupSize.series" :axis="groupSize.axis" />
-            <h3>Gender Breakdown</h3>
-            <fluro-chart chartType="pie" :options="genderBreakdown.options" v-model="genderBreakdown.model" :series="genderBreakdown.series" />
-            <!-- Type: {{type}}  -->
-            <!-- Model:<pre>{{eventData}}</pre> -->
-            <!-- ID: -->
-            <!-- <pre>{{genderBreakdown}}</pre> -->
+            <div v-if="eventData.model.series.attendance.length">
+                <h3>Event Attendance</h3>
+                <fluro-chart chartType="line" :options="eventData.options" v-model="eventData.model" :series="eventData.series" :axis="eventData.axis" />
+            </div>
+            <div v-if="groupSize.model.series.groupsize.length">
+                <h3>Group Size</h3>
+                <fluro-chart chartType="line" :options="groupSize.options" v-model="groupSize.model" :series="groupSize.series" :axis="groupSize.axis" />
+            </div>
+            <v-container>
+                <v-layout row>
+                    <v-flex xs12 md3>
+                        <div v-if="groupSize.model.series.groupsize.length">
+                            <h3>Gender Breakdown</h3>
+                            <fluro-chart chartType="pie" :options="genderBreakdown.options" v-model="genderBreakdown.model" :series="genderBreakdown.series" />
+                        </div>
+                    </v-flex>
+                    <v-flex  md9>
+                        <div>
+                            <h3>Age Breakdown</h3>
+                            <fluro-chart chartType="line" :options="ageSpread.options" v-model="ageSpread.model" :series="ageSpread.series"  :axis="ageSpread.axis" />
+                        </div>                        
+                    </v-flex>
+                </v-layout>
+            </v-container>        
+                        <!-- <div v-if="ageSpread.model.data.agespread.length"> -->
+
         </template>
     </div>
 </template>
@@ -39,8 +55,7 @@ export default {
                 series: {
                     attendance: [],
                     expected: [],
-                },
-                options: {}
+                }
             }
             var events = _.sortBy(self.model.events, function(event) {
                 return event.startDate
@@ -56,30 +71,29 @@ export default {
                     model.series.expected.push(_.get(event, "stats.guestExpected") || 0)
                 }
             })
-            return {
+
+
+            var returnData =  {
                 axis: {
                     "title": "Date",
                     "key": "date"
                 },
                 series: [
-                    // {
-                    //   "title": "Headcount",
-                    //   "key": "headcount"
-                    // },
-                    // {
-                    //   "title": "Checkins",
-                    //   "key": "checkins",
-                    // },
                     {
                         "title": "Attendance",
                         "key": "attendance"
-                    }, {
+                    },
+                    {
                         "title": "Expected",
                         "key": "expected",
                     },
                 ],
-                model
+                model,
+                options: {}
             }
+
+            // console.log("Event Graph Data", returnData)
+            return returnData
         },
         groupSize() {
             var self = this;
@@ -87,8 +101,7 @@ export default {
                 axis: [],
                 series: {
                     groupsize: [],
-                },
-                options: {}
+                }
             }
             var stats = _.sortBy(self.model.statsheets, function(stat) {
                 return stat.date
@@ -98,7 +111,7 @@ export default {
                 model.axis.push(stat.date)
                 model.series.groupsize.push(_.get(stat, "data.memberCount.total"))
             })
-            return {
+            var returnData = {
                 axis: {
                     "title": "Date",
                     "key": "date"
@@ -108,8 +121,12 @@ export default {
                     "key": "groupsize",
                     AOT: true
                 }, ],
-                model
+                model,
+                options: {}
             }
+
+            console.log("GroupSize Graph Data", returnData)
+            return returnData
         },
         genderBreakdown() {
             var self = this;
@@ -135,7 +152,119 @@ export default {
             _.set(returnData, 'model.series[gender]', {data, labels})
             // console.log("Gender Graph Data", returnData)
             return returnData
+        },
+        ageSpread() {
+            var self = this
+            var statbase = _.last(self.model.statsheets) 
+            var ageSpread = statbase.data.ages.spread
+            var averageAge = statbase.data.ages.average
+
+            var groupedAges = new Array(8).fill(0)
+
+            _.each(ageSpread, function(value, key) {
+                // console.log("key", key, "value", value)
+                switch(true){
+                    case (key < 16):
+                        groupedAges[0] = groupedAges[0] + value
+                        break
+                    case (key < 26):
+                        groupedAges[1] = groupedAges[1] + value
+                        break
+                    case (key < 36):
+                        groupedAges[2] = groupedAges[2] + value
+                        break;
+                    case (key < 46):
+                        groupedAges[3] = groupedAges[3] + value
+                        break;
+                    case (key < 56):
+                        groupedAges[4] = groupedAges[4] + value
+                        break;
+                    case (key < 66):
+                        groupedAges[5] = groupedAges[5] + value
+                        break;
+                    case (key < 76):
+                        groupedAges[6] = groupedAges[6] + value
+                        break;
+                    case (key >= 76):
+                        groupedAges[7] = groupedAges[7] + value
+                        break;
+                            
+                }
+            })
+            // console.log("groupedAges", groupedAges)
+
+            var labels = ["Under 15", "16 - 25", "26 - 35", "36 - 45", "46 - 55", "56 - 65", "66 - 75", "Over 76"]
+
+            var series = [{
+                    title: "Age Spread",
+                    type: 'column',
+                    key: "agespread"
+                },
+                {
+                    title: "Average Age",
+                    type: 'line',
+                    key: "averageage"
+                }]
+
+            
+
+            var model = {
+                axis: labels,
+                series: {
+                    agespread: _.map(groupedAges, function(value) {
+                        return value || 0
+                    }),
+                    averageage: new Array(8).fill(averageAge)
+                }
+            }
+
+            var returnData = {
+                axis: {
+                    key: "ages",
+                    title: "Ages"
+                },
+                model,
+                series,
+                options: {
+                    chart: {
+                        height: 350,
+                        type: 'line',
+                    },
+                    stroke: {
+                        width: [0, 4],
+                        dashArray: [0,2]
+                    },
+                    yaxis: [{
+                        title: {
+                            text: 'Age Spread',
+                        },
+                        tooltip: {
+                            enabled: true,
+                            shared: true,
+                        },
+                        show: true,
+                    }, 
+                    {
+                        min: 0,
+                        max: 100,
+                        opposite: true,
+                        title: {
+                            text: 'Average Age'
+                        },
+                        tooltip: {
+                            enabled: true,
+                            shared: true,
+                        },
+                        show: true,
+                    }],
+                    labels,    
+                }
+            }
+
+            console.log("Age Spread data", returnData)
+            return returnData
         }
+
     },
     asyncComputed: {
         model: {
@@ -155,6 +284,7 @@ export default {
                                 }
                             }).then(function(res) {
                                 resolve(res.data);
+                                // console.log("Dataset", res.data)
                                 self.loading = false;
                             }, function(err) {
                                 reject(err);

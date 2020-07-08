@@ -185,7 +185,8 @@ export default {
                             data: _.get(self.groupChartData, `series.${ser.key}`),
                             key: ser.key,
                             color: ser.color,
-                            AOT: ser.AOT
+                            AOT: ser.AOT,
+                            type: _.get(ser, "type")
                         }
                     })
                     chrtdata = {
