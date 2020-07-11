@@ -5,6 +5,7 @@
             <strong>{{row.title}}</strong>
             <div class="summary" v-if="firstLine">{{firstLine}}</div>
             <!-- <pre>{{firstLine}}</pre> -->
+            
            
         </div>
         <div class="shrink" v-if="status">

@@ -1,4 +1,4 @@
-console.log('fluro-vue-ui 2.1.96')
+console.log('fluro-vue-ui 2.1.98')
 
 /////////////////////////////////////////////////////
 
@@ -192,13 +192,14 @@ function install(Vue, options) {
 	/////////////////////////////////////////////
 
 	//Request the user to answer some questions
-	fluro.prompt = function(fields, title, model) {
+	fluro.prompt = function(fields, title, model, description) {
 		return fluro.modal({
 			component: FluroPromptDialog,
 			options: {
 				title,
 				fields,
 				model,
+				description,
 			}
 		})
 	}

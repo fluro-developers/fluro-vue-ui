@@ -5,6 +5,8 @@
 		<!-- <pre>{{totalPages}}</pre> -->
 		<!-- <pre>{{sort}}</pre> -->
 		<!-- <pre>{{page}}</pre> -->
+
+		<!-- <pre>{{items.length}} {{rawPage ? rawPage.length : 'Nope'}} {{availablePages ? availablePages.length : 'Nope'}}</pre> -->
 		<fluro-page-preloader v-if="showLoading" contain />
 		<v-container class="flex-center" v-if="rows.length && !sorted.length">
 			<slot name="emptytext">
@@ -745,7 +747,7 @@ export default {
 			return Math.min(this.startOffset + this.perPage, this.filteredTotal);
 		},
 		rawPage() {
-			console.log('RAW', this.currentPage, this.totalPages)
+			// console.log('RAW', this.currentPage, this.totalPages)
 			if (this.currentPage > this.totalPages) {
 				return _.first(this.availablePages);
 			} else {
@@ -1080,7 +1082,7 @@ export default {
 
 				if (!self.isAsync) {
 					console.log('table debug > return early', self.rawPage)
-					return Promise.resolve(self.rawPage);
+					return Promise.resolve((self.rawPage || [] ).slice());
 				}
 
 				//////////////////////////////////////

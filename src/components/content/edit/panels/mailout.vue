@@ -247,7 +247,7 @@
                                         <fluro-panel-title :class="{collapsed:!expanded.realms}" @click.native="toggleExpand('realms')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{realms.length}} Realms</h6>
+                                                    <h6>{{selectedRealms.length}} Realms</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -256,7 +256,7 @@
                                         </fluro-panel-title>
                                         <fluro-panel-body v-if="expanded.realms">
                                             <!-- <div class="sm muted">Send to contacts at specific events</div> -->
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.realms" v-model="model"></fluro-content-form-field>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.selectedRealms" v-model="model"></fluro-content-form-field>
                                         </fluro-panel-body>
                                     </fluro-panel>
                                     <!-- <fluro-panel>
@@ -480,12 +480,12 @@ export default {
     		}
     	},
 
-    	realms:{
+    	selectedRealms:{
     		get() {
-    			return this.model.realms || [];
+    			return this.model.selectedRealms || [];
     		},
     		set(array) {
-    			this.model.realms = array;
+    			this.model.selectedRealms = array;
     		}
     	},
 
@@ -525,7 +525,7 @@ export default {
                 personas: self.expandedSettings._personas || (self.model.personas && self.model.personas.length),
                 collections: self.expandedSettings._collections || (self.model.collections && self.model.collections.length),
                 tags: self.expandedSettings._tags || (self.model.tags && self.model.tags.length),
-                realms: self.expandedSettings._realms || (self.model.realms && self.model.realms.length),
+                realms: self.expandedSettings._realms || (self.model.selectedRealms && self.model.selectedRealms.length),
                 definitions: self.expandedSettings._definitions || (self.model.definitions && self.model.definitions.length),
                 query: self.expandedSettings._query || (self.model.query),
             }
@@ -550,6 +550,9 @@ export default {
                 maximum: 1,
                 type: 'string',
                 placeholder: 'Eg. My awesome new email',
+                params:{
+                    autofocus:!self.model.title,
+                }
             })
 
             addField('subject', {
@@ -761,14 +764,15 @@ export default {
                 },
             })
 
-            addField('realms', {
+            addField('selectedRealms', {
                 title: 'Select Realms',
                 minimum: 0,
                 maximum: 0,
                 type: 'reference',
-                directive: 'realm-select',
+                directive: 'realmselect',
                 params: {
-                    restrictType: 'realm',
+                    searchInheritable:false,
+                    // restrictType: 'realm',
                 },
             })
 

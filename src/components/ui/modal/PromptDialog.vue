@@ -5,6 +5,7 @@
         <flex-column-header class="border-bottom" v-if="title">
             <v-container pa-2>
                 <h3 v-if="title">{{title}}</h3>
+                <div v-if="description" class="font-sm muted">{{description}}</div>
             </v-container>
         </flex-column-header>
         <flex-column-body>
@@ -50,6 +51,9 @@ export default {
         }
     },
     computed: {
+        description() {
+            return this.options.description;
+        },
         title() {
             return this.options.title;
         },

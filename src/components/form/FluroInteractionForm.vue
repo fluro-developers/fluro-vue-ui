@@ -51,7 +51,7 @@
               :fields="fields"
             />
             <div class="payment" v-if="showPaymentForm">
-              <v-container>
+              <v-container >
                 <h2>Payment Summary</h2>
                 <v-layout align-center>
                   <v-flex class="modifier-title">
@@ -102,6 +102,7 @@
                 />
               </v-container>
               <v-container
+                px-0
                 v-if="definition.data.enableReceipt"
                 style="background: #fafafa"
                 class="border-top"

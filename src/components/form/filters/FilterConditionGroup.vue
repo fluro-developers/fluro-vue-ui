@@ -968,7 +968,7 @@ export default {
       // break;
       // }
 
-      console.log("EVENT TRACK OPTIONS", eventTrackOptions);
+      // console.log("EVENT TRACK OPTIONS", eventTrackOptions);
 
       //////////////////////////////////////////////////
 

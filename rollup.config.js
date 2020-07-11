@@ -43,7 +43,7 @@ const plugins = [
 	
 	vue({
 		/**
-		css:false, //UNCOMMENT THIS ON BEFORE BUILD - FOR WEB BUILDER CSS
+		css:false, //UNCOMMENT THIS ON BEFORE BUILD - FOR WEB BUILDER CSS, comment out for normal build
 		/**/
 		postcss: {
 			plugins: require('./postcss.config')().plugins
@@ -59,7 +59,7 @@ const plugins = [
 
 	/**/
 	postcss({
-		extract: true, //TOGGLE THIS TO TRUE BEFORE BUILD - FOR WEB BUILDER CSS
+		extract: false, //TOGGLE THIS TO TRUE - FOR WEB BUILDER CSS, FALSE for normal build
 	})
 	/**/
 ];

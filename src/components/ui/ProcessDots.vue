@@ -1,5 +1,5 @@
 <template>
-	<div class="process-dots">
+	<div class="process-dots" v-if="linear">
 		<!-- <pre>{{states}}</pre> -->
 		<!-- <pre>{{mapped}}</pre> -->
 		<span v-tippy :content="state.title" :style="{color:state.color}" :key="state.key" v-for="state in mapped">
@@ -31,7 +31,11 @@ export default {
     //     },
     // },
 	computed:{
+        linear() {
 
+            // console.log('IS LINEAR?', this.definition.data);
+            return _.get(this.definition, 'data.mode') != 'lanes';
+        },
 		mapped() {
 
             var self = this;

@@ -934,20 +934,12 @@ export default {
       var matchedComparator =
         FilterService.comparatorLookup[this.model.comparator];
 
-      if (this.model.comparator == "in") {
-        console.log(
-          "GET THE COMPARATOR",
-          matchedComparator,
-          FilterService.comparatorLookup
-        );
-      }
+     
 
       return matchedComparator; //FilterService.comparatorLookup[this.model.comparator];
     },
     inputType() {
-      if (this.model.comparator == "in") {
-        console.log("GET THE INPUT TYPE", this.comparator);
-      }
+     
 
       return this.comparator ? this.comparator.inputType : null;
     },

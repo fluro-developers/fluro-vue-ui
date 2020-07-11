@@ -162,6 +162,8 @@
 				<v-text-field :persistent-hint="persistentDescription" :suffix="suffix" :prefix="prefix" :outline="showOutline" :success="success" :required="required" :novalidate="true" pattern="^[+-]?[0-9]+(?:\.[0-9]+)?$" :label="displayLabel" v-model="fieldModel" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
 			</template>
 			<template v-else-if="renderer == 'realmselect'">
+				
+
 				<v-input class="no-flex" :persistent-hint="true" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
 					<fluro-realm-select block type="collection" v-model="fieldModel" />
 				</v-input>
@@ -1686,6 +1688,8 @@ export default {
 				//And we are a reference field
 				if (dataType == 'reference') {
 					switch (directive) {
+						case 'realmselect':
+						case 'realm-select':
 						case 'content-select-button':
 							return directive;
 							break;
