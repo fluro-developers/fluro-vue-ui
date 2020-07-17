@@ -49,7 +49,7 @@
 													</v-list-tile-title>
 												</v-list-tile-content>
 											</v-list-tile>
-											<v-list-tile @click="deselectAll()" v-if="$selection.selection.length">
+											<v-list-tile @click="deselectAll()" v-if="selectionManager.selection.length">
 												<v-list-tile-content>
 													<v-list-tile-title>
 														Deselect all {{filteredTotal}} items
@@ -67,7 +67,7 @@
 								</div>
 								{{column.title}}
 							</th>
-							<th class="last shrink" v-if="selectionEnabled">
+							<th class="last shrink" v-if="actionsAreEnabled">
 								<!-- <v-btn class="ma-0" small icon @click.stop.prevent="toggleConfiguration()"> -->
 								<!-- <fluro-icon icon="cog" /> -->
 								<!-- </v-btn> -->
@@ -80,7 +80,7 @@
 								<tr class="breaker" v-if="group.title">
 									<th></th>
 									<!-- <td></td> -->
-									<!-- <th is="table-row-checkbox" :checked="$selection.allSelected(group)"/> -->
+									<!-- <th is="table-row-checkbox" :checked="selectionManager.allSelected(group)"/> -->
 									<td :colspan="1 + columns.length">{{group.title}}</td>
 								</tr>
 								<tr :class="classes(item)" :key="item[trackingKey]" v-for="(item, key) in group.items">
@@ -88,13 +88,13 @@
 										<!-- <th>TEST {{selection.isSelected(item)}}</th> -->
 										<th is="table-row-checkbox" />
 										<td @click.native="clicked(item, column, key)" :colspan="columns.length">-</td>
-										<th class="shrink">
+										<th class="shrink" v-if="actionsAreEnabled">
 										</th>
 									</template>
 									<template v-else>
-										<th class="first" is="table-row-checkbox" :checked="$selection.isSelected(item)" @click.native.stop.prevent="checkboxClick(item, $event, item._pageIndex)" :value="item" />
+										<th class="first" is="table-row-checkbox" :checked="selectionManager.isSelected(item)" @click.native.stop.prevent="checkboxClick(item, $event, item._pageIndex)" :value="item" />
 										<table-cell @click.native="clicked(item, column, key)" :row="item" v-for="column in columns" :class="[column.classes, {'sorting':sort.sortKey == column.key}]" :column="column"></table-cell>
-										<th class="last shrink">
+										<th class="last shrink" v-if="actionsAreEnabled">
 											<div class="action-buttons">
 												<!-- <pre>{{item._relevance}}</pre> -->
 												<!-- <v-btn class="ma-0" v-if="$vuetify.breakpoint.mdAndUp" small icon>
@@ -118,13 +118,13 @@
 									<!-- <th>TEST {{selection.isSelected(item)}}</th> -->
 									<th is="table-row-checkbox" v-if="selectionEnabled" />
 									<td @click.native="clicked(item, column, key)" :colspan="columns.length">-</td>
-									<th class="shrink" v-if="selectionEnabled">
+									<th class="shrink" v-if="actionsAreEnabled">
 									</th>
 								</template>
 								<template v-else>
-									<th class="first" is="table-row-checkbox" v-if="selectionEnabled" :checked="$selection.isSelected(item)" @click.native.stop.prevent="checkboxClick(item, $event, key)" :value="item" />
+									<th class="first" is="table-row-checkbox" v-if="selectionEnabled" :checked="selectionManager.isSelected(item)" @click.native.stop.prevent="checkboxClick(item, $event, key)" :value="item" />
 									<table-cell @click.native="clicked(item, column, key)" :row="item" v-for="column in columns" :class="[column.classes, {'sorting':sort.sortKey == column.key}]" :column="column"></table-cell>
-									<th class="last shrink" v-if="selectionEnabled">
+									<th class="last shrink" v-if="actionsAreEnabled">
 										<div class="action-buttons">
 											<!-- <pre>{{item._relevance}}</pre> -->
 											<!-- <v-btn class="ma-0" v-if="$vuetify.breakpoint.mdAndUp" small icon>
@@ -377,6 +377,15 @@ export default {
 		},
 		endDate: {
 			type: Date,
+		},
+		selection:{
+			type:Object,
+		},
+		actionsEnabled:{
+			type:Boolean,
+			default() {
+				return true;
+			}
 		}
 	},
 	data() {
@@ -387,6 +396,7 @@ export default {
 		// console.log('INITIAL PAGE', this.initPage)
 
 		return {
+			groupingColumn: null,
 			// filterConfig:JSON.parse(JSON.stringify(this.filterConfig)), 
 			filtered: [],
 			refined: [],
@@ -402,6 +412,9 @@ export default {
 		}
 	},
 	computed: {
+		selectionManager() {
+			return this.selection || this.$selection;
+		},
 		footerEnabled() {
 
 			if (this.showFooter) {
@@ -412,8 +425,11 @@ export default {
 				return true;
 			}
 		},
+		actionsAreEnabled() {
+			return this.selectionEnabled && this.actionsEnabled;
+		},
 		selectionEnabled() {
-			return !(this.enableSelection === false) && this.$selection;
+			return !(this.enableSelection === false) && this.selectionManager;
 		},
 		grouped() {
 
@@ -767,7 +783,7 @@ export default {
 
 			//Check if any of the rows are not selected
 			var anyNotSelected = _.some(self.page, function(item) {
-				var notSelected = !self.$selection.isSelected(item);
+				var notSelected = !self.selectionManager.isSelected(item);
 				return notSelected;
 			})
 
@@ -782,7 +798,7 @@ export default {
 			}
 
 			return _.some(self.page, function(item) {
-				return self.$selection.isSelected(item);
+				return self.selectionManager.isSelected(item);
 			})
 		},
 		selectAllIcon() {
@@ -1443,7 +1459,7 @@ export default {
 			// console.log('ITEM INDEX', itemIndex, item, $event);
 			return this.toggleSelection(item, $event, itemIndex);
 			// //console.log('Checkbox click!');
-			return this.$selection.toggle(item);
+			return this.selectionManager.toggle(item);
 		},
 		toggleSelection(item, $event, itemIndex, isolateOnClick) {
 
@@ -1457,12 +1473,12 @@ export default {
 				if (isolateOnClick) {
 					//Set the selection to just this item
 
-					this.$selection.setSelection([item]);
+					this.selectionManager.setSelection([item]);
 					//console.log('SET SELECTION', item)
 					return
 				} else {
 					//Select/Deselect this item
-					this.$selection.toggle(item);
+					this.selectionManager.toggle(item);
 
 					return
 				}
@@ -1473,7 +1489,7 @@ export default {
 			//They held CTRL/CMD down when they clicked
 			if ($event.metaKey) {
 				this.previousSelectionIndex = -1;
-				return this.$selection.toggle(item);
+				return this.selectionManager.toggle(item);
 			}
 
 			////////////////////
@@ -1483,10 +1499,10 @@ export default {
 				//Remember this thing as what we selected
 				this.previousSelectionIndex = itemIndex;
 				if (isolateOnClick) {
-					this.$selection.previousIntent = 'select';
-					return this.$selection.setSelection([item]);
+					this.selectionManager.previousIntent = 'select';
+					return this.selectionManager.setSelection([item]);
 				} else {
-					return this.$selection.toggle(item);
+					return this.selectionManager.toggle(item);
 				}
 			}
 
@@ -1516,18 +1532,18 @@ export default {
 
 				var getRange = this.page.slice(start, end);
 
-				switch (this.$selection.previousIntent) {
+				switch (this.selectionManager.previousIntent) {
 					case 'deselect':
-						return this.$selection.deselectMultiple(getRange);
+						return this.selectionManager.deselectMultiple(getRange);
 						break;
 					default:
-						return this.$selection.selectMultiple(getRange);
+						return this.selectionManager.selectMultiple(getRange);
 						break;
 				}
 			}
 
 			this.previousSelectionIndex = itemIndex;
-			return this.$selection.toggle(item);
+			return this.selectionManager.toggle(item);
 		},
 		isActiveSort(key) {
 			return this.sort.sortKey == key;
@@ -1601,7 +1617,7 @@ export default {
 				classes.push('ticket-status-collected')
 			}
 
-			if (this.$selection.isSelected(item)) {
+			if (this.selectionManager.isSelected(item)) {
 				classes.push('selected');
 			}
 
@@ -1650,20 +1666,20 @@ export default {
 				return;
 			}
 
-			this.$selection.selectMultiple(this.page)
+			this.selectionManager.selectMultiple(this.page)
 		},
 		deselectPage() {
 			if (!this.page || !this.page.length) {
 				return;
 			}
 
-			this.$selection.deselectMultiple(this.page)
+			this.selectionManager.deselectMultiple(this.page)
 		},
 		selectAll() {
-			this.$selection.selectMultiple(this.refined);
+			this.selectionManager.selectMultiple(this.refined);
 		},
 		deselectAll() {
-			this.$selection.deselectAll();
+			this.selectionManager.deselectAll();
 		},
 		toggleSelectAll() {
 
@@ -1674,10 +1690,10 @@ export default {
 
 			// //console.log('Toggle All', this.page);
 			if (this.allSelected) {
-				this.$selection.deselectMultiple(this.page)
+				this.selectionManager.deselectMultiple(this.page)
 
 			} else {
-				this.$selection.selectMultiple(this.page)
+				this.selectionManager.selectMultiple(this.page)
 			}
 		}
 	},
@@ -1786,6 +1802,7 @@ export default {
 			th,
 			td {
 
+				&,
 				&.first,
 				&.last,
 				&.sticky-first,
@@ -1799,9 +1816,12 @@ export default {
 			&:nth-child(odd) {
 				background: #fcfcfc;
 
+
+
 				th,
 				td {
 
+					&,
 					&.first,
 					&.last,
 					&.sticky-first,
@@ -1816,6 +1836,7 @@ export default {
 			&.status-archived,
 			&.status-deceased {
 
+				&,
 				th,
 				td {
 
@@ -1838,7 +1859,7 @@ export default {
 
 				th,
 				td {
-
+					&,
 					&.first,
 					&.last,
 					&.sticky-first,

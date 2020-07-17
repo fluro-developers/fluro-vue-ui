@@ -2,6 +2,8 @@
     <div class="boolean-cell text-xs-center" :class="{'true':booleanTrue, 'false':!booleanTrue}">
         <fluro-icon library="fas" v-if="booleanTrue" icon="check-circle"/>
         <fluro-icon library="far" v-else icon="times"/>
+
+        <!-- <pre>{{data}} {{booleanTrue}}</pre> -->
     </div>
 </template>
 <script>
@@ -23,10 +25,13 @@ export default {
     computed:{
         booleanTrue() {
             if(_.isString(this.data)) {
-                switch(String(this.data).toLowerCase()) {
+                var string = String(this.data).toLowerCase();
+                switch(string) {
                     case 'true':
                     case 'y':
                     case 'yes':
+                    case '1':
+                    case 't':
                         return true;
                     break;
                     case 'false':
@@ -35,13 +40,16 @@ export default {
                     case 'n':
                     case 'no':
                     case '':
+                    case '0':
+                    case 'f':
                         return;
                     break;
+
+                    
                 }
-                return 
             }
 
-            return this.data ? true : false;
+            return !!this.data;// ? true : false;
         }
     }
 }

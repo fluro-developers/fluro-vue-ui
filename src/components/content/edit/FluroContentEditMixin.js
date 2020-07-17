@@ -12,7 +12,10 @@ export default {
 		context: {
 			type: String,
 			default: 'new'
-		}
+		},
+		save:{
+			type:Function,
+		},
 	},
 	data() {
 		return {

@@ -81,6 +81,7 @@ import BooleanCell from 'src/components/table/cells/BooleanCell.vue';
 import DateCell from 'src/components/table/cells/DateCell.vue';
 import RealmDotCell from 'src/components/table/cells/RealmDotCell.vue';
 import TimeagoCell from 'src/components/table/cells/TimeagoCell.vue';
+import AvatarCell from 'src/components/table/cells/AvatarCell.vue';
 
 
 
@@ -130,6 +131,12 @@ export default {
 
             var renderer = this.column.renderer
             switch(this.column.renderer) {
+                case 'contactAvatar':
+                    return AvatarCell;
+                break;
+                case 'boolean':
+                    return BooleanCell;
+                    break;
                 case 'date':
                 case 'datetime':
                     this.column.type = 'date';
