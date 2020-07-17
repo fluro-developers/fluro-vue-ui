@@ -1242,6 +1242,14 @@ export default {
               }
             );
             break;
+          case "resultset":
+            return DynamicImportService.load(
+              "src/components/content/edit/panels/resultset.vue",
+              function() {
+                return import("src/components/content/edit/panels/resultset.vue");
+              }
+            );
+            break;
           case "integration":
             return DynamicImportService.load(
               "src/components/content/edit/panels/integration.vue",
