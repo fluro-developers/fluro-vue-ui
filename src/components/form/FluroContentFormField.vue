@@ -1152,7 +1152,21 @@ export default {
 			}
 
 
-			return _.compact(this.field.type == 'reference' ? this.defaultReferences : this.field.defaultValues);
+			return _.filter(this.field.type == 'reference' ? this.defaultReferences : this.field.defaultValues, function(value) {
+
+				switch(value) {
+					case 'null':
+					case 'undefined':
+					case null:
+					case undefined:
+						return;
+					break;
+					default:
+						return value;
+					break;
+				}
+				// return value != null 
+			});
 
 
 			// .filter(function(entry) {
@@ -1690,6 +1704,8 @@ export default {
 					switch (directive) {
 						case 'realmselect':
 						case 'realm-select':
+							return 'realmselect';
+							break;
 						case 'content-select-button':
 							return directive;
 							break;
@@ -1707,8 +1723,11 @@ export default {
 					}
 
 				}
+			} else {
+				if(directive == 'custom') {
+					return directive;
+				}
 			}
-
 
 			/////////////////////////////////
 			/////////////////////////////////
