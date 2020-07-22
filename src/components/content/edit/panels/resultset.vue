@@ -1,6 +1,6 @@
 <template>
   <flex-column>
-    <template v-if="loading">
+    <template v-if="saving">
       <fluro-page-preloader contain />
     </template>
     <tabset v-else :justified="true" :vertical="true">
@@ -167,6 +167,11 @@ export default {
     var self = this;
   },
   asyncComputed: {},
+  props: {
+    value: {
+      type: Object
+    }
+  },
   computed: {
     showOutline() {
       return false; //true; //false;//true;//false;//true;
@@ -391,7 +396,10 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+      model: this.value,
+      saving: false
+    };
   }
 };
 </script>
