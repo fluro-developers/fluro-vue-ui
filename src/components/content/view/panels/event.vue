@@ -131,7 +131,11 @@
                                             <strong>{{roster.title}}</strong>
                                         </v-flex>
                                         <v-flex shrink v-if="$fluro.access.canEditItem(roster)">
-                                            <v-btn icon class="ma-0" @click="$actions.open([roster])" v-tippy :content="`Actions`">
+                                            <v-btn class="ma-0" small @click="editRoster(roster)">
+                                                Edit
+                                                <fluro-icon icon="pencil" right />
+                                            </v-btn>
+                                            <v-btn icon class="ma-0" small @click="$actions.open([roster])" v-tippy :content="`Actions`">
                                                 <fluro-icon icon="ellipsis-h" />
                                             </v-btn>
                                         </v-flex>
@@ -244,6 +248,14 @@ export default {
     },
     mixins: [FluroContentViewMixin],
     methods: {
+        editRoster(roster) {
+            var self = this;
+
+            self.$fluro.global.edit(roster, true)
+            .then(function(updated) {
+                _.assign(roster, updated);
+            })
+        },
         confirmationIcon(assignment) {
 
             switch (assignment.confirmationStatus) {

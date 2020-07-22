@@ -1,36 +1,56 @@
 <template>
-    <div>
-        <template v-if="loading"> Loading Component <v-progress-circular indeterminate></v-progress-circular>
-        </template>
+    <flex-column>
+        <fluro-page-preloader v-if="loading" contain />
+        <!--  <template v-if="loading"> Loading Component <v-progress-circular indeterminate></v-progress-circular>
+        </template> -->
         <template v-else>
-            <div v-if="eventData.model.series.attendance.length">
-                <h3>Event Attendance</h3>
-                <fluro-chart chartType="line" :options="eventData.options" v-model="eventData.model" :series="eventData.series" :axis="eventData.axis" />
-            </div>
-            <div v-if="groupSize.model.series.groupsize.length">
-                <h3>Group Size</h3>
-                <fluro-chart chartType="line" :options="groupSize.options" v-model="groupSize.model" :series="groupSize.series" :axis="groupSize.axis" />
-            </div>
-            <v-container>
-                <v-layout row>
-                    <v-flex xs12 md3>
-                        <div v-if="groupSize.model.series.groupsize.length">
-                            <h3>Gender Breakdown</h3>
-                            <fluro-chart chartType="pie" :options="genderBreakdown.options" v-model="genderBreakdown.model" :series="genderBreakdown.series" />
-                        </div>
-                    </v-flex>
-                    <v-flex  md9>
-                        <div>
-                            <h3>Age Breakdown</h3>
-                            <fluro-chart chartType="line" :options="ageSpread.options" v-model="ageSpread.model" :series="ageSpread.series"  :axis="ageSpread.axis" />
-                        </div>                        
-                    </v-flex>
-                </v-layout>
-            </v-container>        
-                        <!-- <div v-if="ageSpread.model.data.agespread.length"> -->
-
+            <fluro-panel v-if="eventData.model.series.attendance.length">
+                <fluro-panel-title>
+                    <strong>Attendance</strong>
+                </fluro-panel-title>
+                <fluro-panel-body>
+                    <fluro-chart chartType="line" :options="eventData.options" v-model="eventData.model" :series="eventData.series" :axis="eventData.axis" />
+                </fluro-panel-body>
+            </fluro-panel>
+            <template v-if="groupSize.model.series.groupsize.length">
+                <fluro-panel>
+                    <fluro-panel-title>
+                        <strong>Group Size</strong>
+                    </fluro-panel-title>
+                    <fluro-panel-body>
+                        <fluro-chart chartType="line" :options="groupSize.options" v-model="groupSize.model" :series="groupSize.series" :axis="groupSize.axis" />
+                    </fluro-panel-body>
+                </fluro-panel>
+               
+                    <v-layout row>
+                        <v-flex xs12 lg4>
+                            <fluro-panel>
+                                <fluro-panel-title>
+                                    <strong>Gender</strong>
+                                </fluro-panel-title>
+                                <fluro-panel-body>
+                                    <fluro-chart chartType="pie" :options="genderBreakdown.options" v-model="genderBreakdown.model" :series="genderBreakdown.series" />
+                                </fluro-panel-body>
+                                </div>
+                            </fluro-panel>
+                        </v-flex>
+                        <v-spacer/>
+                        <v-flex xs12 lg8>
+                            <fluro-panel>
+                                <fluro-panel-title>
+                                    <strong>Ages</strong>
+                                </fluro-panel-title>
+                                <fluro-panel-body>
+                                    <fluro-chart chartType="line" :options="ageSpread.options" v-model="ageSpread.model" :series="ageSpread.series" :axis="ageSpread.axis" />
+                                </fluro-panel-body>
+                            </fluro-panel>
+                        </v-flex>
+                    </v-layout>
+                
+            </template>
+            <!-- <div v-if="ageSpread.model.data.agespread.length"> -->
         </template>
-    </div>
+    </flex-column>
 </template>
 <script>
 import { moment } from 'fluro';
@@ -72,15 +92,14 @@ export default {
                 }
             })
 
-            var max = Math.max(_.max(model.series.attendance), _.max(model.series.expected) )
+            var max = Math.max(_.max(model.series.attendance), _.max(model.series.expected))
 
-            var returnData =  {
+            var returnData = {
                 axis: {
                     "title": "Date",
                     "key": "date"
                 },
-                series: [
-                    {
+                series: [{
                         "title": "Attendance",
                         "key": "attendance"
                     },
@@ -92,30 +111,31 @@ export default {
                 model,
                 options: {
                     yaxis: [{
-                        min: 0,
-                        max,
-                        title: {
-                            text: 'Attendance',
+                            min: 0,
+                            max,
+                            title: {
+                                text: 'Attendance',
+                            },
+                            tooltip: {
+                                enabled: true,
+                                shared: true,
+                            },
+                            show: true,
                         },
-                        tooltip: {
-                            enabled: true,
-                            shared: true,
-                        },
-                        show: true,
-                    }, 
-                    {
-                        min: 0,
-                        max,
-                        opposite: true,
-                        title: {
-                            text: 'Expected'
-                        },
-                        tooltip: {
-                            enabled: true,
-                            shared: true,
-                        },
-                        show: true,
-                    }],
+                        {
+                            min: 0,
+                            max,
+                            opposite: true,
+                            title: {
+                                text: 'Expected'
+                            },
+                            tooltip: {
+                                enabled: true,
+                                shared: true,
+                            },
+                            show: true,
+                        }
+                    ],
                 }
             }
 
@@ -162,27 +182,26 @@ export default {
             var data = []
 
             var returnData = {
-                model: {
-                },
+                model: {},
                 series: [{
                     title: "Gender Composition",
                     key: "gender"
                 }],
                 options: {
-                    colors: ['#00BFFF','#FFC0CB', '#FFFF00', '#FFEBCD']
+                    colors: ['#00BFFF', '#FFC0CB', '#FFFF00', '#FFEBCD']
                 }
             }
             _.each(_.get(stats, "data.genders"), function(value, key) {
-                labels.push(key.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}))
+                labels.push(key.replace(/\w\S*/g, function(txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }))
                 data.push(value)
             })
-            _.set(returnData, 'model.series[gender]', {data, labels})
+            _.set(returnData, 'model.series[gender]', { data, labels })
             // console.log("Gender Graph Data", returnData)
             return returnData
         },
         ageSpread() {
             var self = this
-            var statbase = _.last(self.model.statsheets) 
+            var statbase = _.last(self.model.statsheets)
             var ageSpread = statbase.data.ages.spread
             var averageAge = statbase.data.ages.average
 
@@ -190,7 +209,7 @@ export default {
 
             _.each(ageSpread, function(value, key) {
                 // console.log("key", key, "value", value)
-                switch(true){
+                switch (true) {
                     case (key < 16):
                         groupedAges[0] = groupedAges[0] + value
                         break
@@ -215,7 +234,7 @@ export default {
                     case (key >= 76):
                         groupedAges[7] = groupedAges[7] + value
                         break;
-                            
+
                 }
             })
             // console.log("groupedAges", groupedAges)
@@ -231,9 +250,10 @@ export default {
                     title: "Average Age",
                     type: 'line',
                     key: "averageage"
-                }]
+                }
+            ]
 
-            
+
 
             var model = {
                 axis: labels,
@@ -259,32 +279,33 @@ export default {
                     },
                     stroke: {
                         width: [0, 4],
-                        dashArray: [0,2]
+                        dashArray: [0, 2]
                     },
                     yaxis: [{
-                        title: {
-                            text: 'Age Spread',
+                            title: {
+                                text: 'Age Spread',
+                            },
+                            tooltip: {
+                                enabled: true,
+                                shared: true,
+                            },
+                            show: true,
                         },
-                        tooltip: {
-                            enabled: true,
-                            shared: true,
-                        },
-                        show: true,
-                    }, 
-                    {
-                        min: 0,
-                        max: 100,
-                        opposite: true,
-                        title: {
-                            text: 'Average Age'
-                        },
-                        tooltip: {
-                            enabled: true,
-                            shared: true,
-                        },
-                        show: true,
-                    }],
-                    labels,    
+                        {
+                            min: 0,
+                            max: 100,
+                            opposite: true,
+                            title: {
+                                text: 'Average Age'
+                            },
+                            tooltip: {
+                                enabled: true,
+                                shared: true,
+                            },
+                            show: true,
+                        }
+                    ],
+                    labels,
                 }
             }
 

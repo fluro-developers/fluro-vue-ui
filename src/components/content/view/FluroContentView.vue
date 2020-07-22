@@ -187,6 +187,14 @@ export default {
               }
             );
             break;
+          case "team":
+            return DynamicImportService.load(
+              "src/components/content/view/panels/team.vue",
+              function() {
+                return import("src/components/content/view/panels/team.vue");
+              }
+            );
+            break;
           case "asset":
             return DynamicImportService.load(
               "src/components/content/view/panels/asset.vue",
