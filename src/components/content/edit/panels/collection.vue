@@ -34,7 +34,11 @@
                     <!-- </slot> -->
                 </tab>
                 <tab :heading="`${definition.title} Information`" v-if="definition && definition.fields && definition.fields.length">
-                    <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
+                    <flex-column-body style="background: #fafafa;">
+                        <v-container fluid>
+                            <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
+                        </v-container>
+                    </flex-column-body>
                 </tab>
                 <!-- <tab heading="Advanced / Metadata" v-if="hasMeta">
                     <flex-column-body style="background: #fafafa;">
@@ -147,6 +151,7 @@ export default {
         return {}
     },
 }
+
 </script>
 <style lang="scss">
 </style>

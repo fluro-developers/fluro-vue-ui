@@ -43,7 +43,7 @@
 												<template v-if="model.publicDetails.organization">
 																<v-layout>
 																				<v-flex xs12 sm6>
-																								<v-btn style="border:1px solid #ddd" block large :to="{name:'songselect'}">
+																								<v-btn style="border:1px solid #ddd" block large :to="{name:'songselect', params:{integration:model._id}}">
 																												Browse Song Library
 																												<fluro-icon icon="music" right />
 																								</v-btn>

@@ -59,5 +59,6 @@ export default {
 iframe.mailout-preview-frame {
     border: none;
     flex: 1;
+    min-height: 80vh;
 }
 </style>

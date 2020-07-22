@@ -1,6 +1,6 @@
 <template>
     <div class="search-input" :class="{active:searchFocussed || model.length}">
-        <input ref="input" @focus="searchFocussed = true" @blur="searchFocussed = false" :placeholder="placeholder" v-model="model" />
+        <input ref="input" @focus="searchFocussed = true" :autofocus="autofocus" @blur="searchFocussed = false" :placeholder="placeholder" v-model="model" />
         <div class="search-icon" @click="reset()">
             <fluro-icon :icon="icon" :spin="processing" />
             <!-- <fluro-icon icon="search" v-else /> -->
@@ -29,9 +29,9 @@ export default {
         processing:{
         	type:Boolean,
         },
-        // autofocus:{
-        // 	type:Boolean,
-        // }
+        autofocus:{
+        	type:Boolean,
+        }
     },
     computed:{
     	icon() {
