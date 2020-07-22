@@ -178,7 +178,7 @@ export default {
     },
     editResultSet(item) {
       this.$fluro.global
-        .edit(item)
+        .edit(item, true)
         .then(function(res) {
           _.assign(item, res);
         })

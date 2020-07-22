@@ -42,30 +42,14 @@
                   :field="fieldHash.realms"
                   v-model="model"
                 ></fluro-content-form-field> -->
-                <fluro-content-form-field
+                <!-- <fluro-content-form-field
                   :form-fields="formFields"
                   :outline="showOutline"
                   @input="update"
                   :options="options"
                   :field="fieldHash.tags"
                   v-model="model"
-                ></fluro-content-form-field>
-                <fluro-content-form-field
-                  :form-fields="formFields"
-                  :outline="showOutline"
-                  @input="update"
-                  :options="options"
-                  :field="fieldHash.sendContacts"
-                  v-model="model"
-                ></fluro-content-form-field>
-                <fluro-content-form-field
-                  :form-fields="formFields"
-                  :outline="showOutline"
-                  @input="update"
-                  :options="options"
-                  :field="fieldHash.sendTeams"
-                  v-model="model"
-                ></fluro-content-form-field>
+                ></fluro-content-form-field> -->
                 <fluro-content-form-field
                   :form-fields="formFields"
                   :outline="showOutline"
