@@ -6,6 +6,9 @@
 																				<v-container fluid>
 																								<constrain sm>
 																												<search-input placeholder="Search Members" :autofocus="true" v-model="keywords" />
+																												
+
+
 																												<fluro-panel v-for="group in item.assignments">
 																																<fluro-panel-title>
 																																				<strong>{{group.contacts.length}} {{group.title}}</strong>
@@ -24,6 +27,8 @@
 																																<!-- <fluro-panel> -->
 																																<!-- </fluro-panel> -->
 																												</fluro-panel>
+
+																												
 																												<fluro-content-render :fields="definedFields" v-model="item.data" />
 																								</constrain>
 																				</v-container>

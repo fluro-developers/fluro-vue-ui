@@ -20,7 +20,7 @@
 												</slot>
 								</v-container>
 								<template v-else>
-												<div ref="scrollableArea" class="fluro-table-scroll" :class="{clickable:clickable, loading:showLoading}">
+												<div ref="scrollableArea" class="fluro-table-scroll" :class="{scrollable:isScrollable, clickable:clickable, loading:showLoading}">
 																<span ref="top"></span>
 																<table class="fluro-table-main no-select">
 																				<thead>
@@ -387,6 +387,12 @@ export default {
 								selection: {
 												type: Object,
 								},
+								scrollable: {
+												type: Boolean,
+												default () {
+																return true;
+												}
+								},
 								actionsEnabled: {
 												type: Boolean,
 												default () {
@@ -419,6 +425,9 @@ export default {
 								}
 				},
 				computed: {
+								isScrollable() {
+									return this.scrollable;// && this.items.length 
+								},
 								selectionManager() {
 												return this.selection || this.$selection;
 								},
@@ -1843,7 +1852,11 @@ export default {
 								width: 100%;
 								z-index: 1;
 								margin: auto;
-								overflow: auto;
+
+								&.scrollable {
+												overflow: auto;
+								}
+
 								height: 100%;
 
 								overscroll-behavior-x: none !important;
