@@ -288,7 +288,7 @@ export default {
             .get(`/query/${self.model._id}/resultsets`)
             .then(function(res) {
               resolve(res.data);
-              console.log("Found Data", res.data);
+              // console.log("Found Data", res.data);
               self.loadingResultSets = false;
             })
             .catch(function(err) {
