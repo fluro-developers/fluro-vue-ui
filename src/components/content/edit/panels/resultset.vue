@@ -1,10 +1,10 @@
 <template>
   <flex-column>
-    <template v-if="loading">
+    <template v-if="saving">
       <fluro-page-preloader contain />
     </template>
     <tabset v-else :justified="true" :vertical="true">
-      <tab heading="Resultset Details">
+      <tab heading="Details">
         <flex-column-body style="background: #fafafa;">
           <v-container>
             <constrain sm>
@@ -34,22 +34,41 @@
                   :field="fieldHash.parent"
                   v-model="model"
                 ></fluro-content-form-field>
-                <fluro-content-form-field
+                <!-- <fluro-content-form-field
                   :form-fields="formFields"
                   :outline="showOutline"
                   @input="update"
                   :options="options"
                   :field="fieldHash.realms"
                   v-model="model"
-                ></fluro-content-form-field>
-                <fluro-content-form-field
+                ></fluro-content-form-field> -->
+                <!-- <fluro-content-form-field
                   :form-fields="formFields"
                   :outline="showOutline"
                   @input="update"
                   :options="options"
                   :field="fieldHash.tags"
                   v-model="model"
+                ></fluro-content-form-field> -->
+                <fluro-content-form-field
+                  :form-fields="formFields"
+                  :outline="showOutline"
+                  @input="update"
+                  :options="options"
+                  :field="fieldHash.integrations"
+                  v-model="model"
                 ></fluro-content-form-field>
+              </div>
+            </constrain>
+          </v-container>
+        </flex-column-body>
+      </tab>
+      <tab heading="Notifications">
+        <flex-column-body style="background: #fafafa;">
+          <v-container>
+            <constrain sm>
+              <!-- <pre>{{model}}</pre> -->
+              <div class="grid-list-xl">
                 <fluro-content-form-field
                   :form-fields="formFields"
                   :outline="showOutline"
@@ -66,36 +85,64 @@
                   :field="fieldHash.sendTeams"
                   v-model="model"
                 ></fluro-content-form-field>
-                <fluro-content-form-field
-                  :form-fields="formFields"
-                  :outline="showOutline"
-                  @input="update"
-                  :options="options"
-                  :field="fieldHash.integrations"
-                  v-model="model"
-                ></fluro-content-form-field>
-                <fluro-content-form-field
-                  :form-fields="formFields"
-                  :outline="showOutline"
-                  @input="update"
-                  :options="options"
-                  :field="fieldHash.count"
-                  v-model="model"
-                ></fluro-content-form-field>
-                <fluro-content-form-field
-                  :form-fields="formFields"
-                  :outline="showOutline"
-                  @input="update"
-                  :options="options"
-                  :field="fieldHash.timestamp"
-                  v-model="model"
-                ></fluro-content-form-field>
+              </div>
+            </constrain>
+          </v-container>
+        </flex-column-body>
+      </tab>
+      <tab heading="Automation">
+        <flex-column-body style="background: #fafafa;">
+          <v-container>
+            <constrain sm>
+              <v-layout row>
+                <v-flex shrink sm3>
+                  <fluro-content-form-field
+                    :form-fields="formFields"
+                    :outline="showOutline"
+                    @input="update"
+                    :options="options"
+                    :field="fieldHash.count"
+                    v-model="model"
+                  ></fluro-content-form-field>
+                </v-flex>
+                <v-flex grow sm9>
+                  <fluro-content-form-field
+                    :form-fields="formFields"
+                    :outline="showOutline"
+                    @input="update"
+                    :options="options"
+                    :field="fieldHash.measure"
+                    v-model="model"
+                  ></fluro-content-form-field>
+                </v-flex>
+              </v-layout>
+
+              <!-- <pre>{{model}}</pre> -->
+
+              <div class="grid-list-xl">
                 <fluro-content-form-field
                   :form-fields="formFields"
                   :outline="showOutline"
                   @input="update"
                   :options="options"
                   :field="fieldHash.nth"
+                  v-model="model"
+                ></fluro-content-form-field>
+                <fluro-content-form-field
+                  :form-fields="formFields"
+                  :outline="showOutline"
+                  @input="update"
+                  :options="options"
+                  :field="fieldHash.weekday"
+                  v-model="model"
+                ></fluro-content-form-field>
+
+                <fluro-content-form-field
+                  :form-fields="formFields"
+                  :outline="showOutline"
+                  @input="update"
+                  :options="options"
+                  :field="fieldHash.timestamp"
                   v-model="model"
                 ></fluro-content-form-field>
                 <fluro-content-form-field
@@ -111,15 +158,7 @@
                   :outline="showOutline"
                   @input="update"
                   :options="options"
-                  :field="fieldHash.measure"
-                  v-model="model"
-                ></fluro-content-form-field>
-                <fluro-content-form-field
-                  :form-fields="formFields"
-                  :outline="showOutline"
-                  @input="update"
-                  :options="options"
-                  :field="fieldHash.weekday"
+                  :field="fieldHash.timezone"
                   v-model="model"
                 ></fluro-content-form-field>
               </div>
@@ -127,14 +166,14 @@
           </v-container>
         </flex-column-body>
       </tab>
-      <tab :heading="`Individual Permissions`">
+      <tab heading="Permissions">
         <slot>
           <flex-column-body style="background: #fafafa;">
             <v-container grid-list-xl>
               <constrain sm>
-                <h3 margin>{{ contextName }} Individual Permissions</h3>
-                <!-- <pre>{{model.permissionSets}}</pre> -->
+                <h3 margin>Resultset Permissions</h3>
                 <fluro-permission-select @input="modelUpdated" v-model="model.permissionSets" />
+                <!-- <pre>{{model.permissionSets}}</pre> -->
               </constrain>
             </v-container>
           </flex-column-body>
@@ -156,8 +195,8 @@ import Vue from "vue";
 /////////////////////////////////
 
 export default {
-  mixins: [FluroContentEditMixin, FluroPermissionSelect],
-  components: {},
+  mixins: [FluroContentEditMixin],
+  components: { FluroPermissionSelect },
   methods: {
     modelUpdated() {
       this.update(this.model);
@@ -167,6 +206,11 @@ export default {
     var self = this;
   },
   asyncComputed: {},
+  props: {
+    value: {
+      type: Object
+    }
+  },
   computed: {
     showOutline() {
       return false; //true; //false;//true;//false;//true;
@@ -193,7 +237,7 @@ export default {
       });
 
       addField("parent", {
-        title: "Parent",
+        title: "Query",
         minimum: 1,
         maximum: 1,
         type: "reference",
@@ -208,6 +252,7 @@ export default {
         minimum: 1,
         maximum: 0,
         type: "reference",
+        directive: "realm-select",
         params: {
           restrictType: "realm"
         }
@@ -258,11 +303,69 @@ export default {
       });
 
       addField("count", {
-        title: "Pin Number",
+        title: "Run Every",
         minimum: 0,
         maximum: 1,
-        type: "number",
-        description: "The count"
+        type: "number"
+      });
+
+      addField("measure", {
+        //title: "Period",
+        minimum: 0,
+        maximum: 1,
+        type: "string",
+        directive: "select",
+        description:
+          "Days? Weeks? Months? between the times when this result set is run.",
+        options: [
+          { title: "Day", value: "days" },
+          { title: "Week", value: "weeks" },
+          { title: "Month", value: "months" },
+          { title: "Year", value: "years" }
+        ]
+      });
+
+      addField("nth", {
+        title: "On The",
+        minimum: 0,
+        maximum: 1,
+        type: "text",
+        directive: "select",
+        options: [
+          { title: "Same Date", value: "date" },
+          { title: "First", value: "1" },
+          { title: "Second", value: "2" },
+          { title: "Third", value: "3" },
+          { title: "Forth", value: "4" },
+          { title: "Sifth", value: "5" }
+        ],
+        expressions: {
+          hide() {
+            return self.model.measure != "months";
+          }
+        }
+      });
+
+      addField("weekday", {
+        title: "Day of week that this executes",
+        minimum: 0,
+        maximum: 1,
+        type: "string",
+        directive: "select",
+        options: [
+          { title: "Monday", value: "monday" },
+          { title: "Tuesday", value: "tuesday" },
+          { title: "Wednesday", value: "wednesday" },
+          { title: "Thursday", value: "thursday" },
+          { title: "Friday", value: "friday" },
+          { title: "Saturday", value: "saturday" },
+          { title: "Sunday", value: "sunday" }
+        ],
+        expressions: {
+          hide() {
+            return self.model.measure != "months" && self.model.nth == "date";
+          }
+        }
       });
 
       addField("timestamp", {
@@ -307,66 +410,21 @@ export default {
         ]
       });
 
-      addField("nth", {
-        title: "Period",
-        minimum: 0,
-        maximum: 1,
-        type: "string",
-        description: "",
-        options: [
-          { title: "Date", value: "date" }
-          // {title: 'Weeks', value: 'weeks'},
-          // {title: 'Months', value: 'months'},
-          // {title: 'Years', value: 'years'},
-        ]
-      });
-
       addField("nextDate", {
-        title: "Next Execution Date",
+        title: "Next Activation",
         minimum: 0,
         maximum: 1,
         type: "date",
         description: ""
       });
 
-      addField("measure", {
-        title: "Period",
+      addField("timezone", {
+        title: "Description",
         minimum: 0,
         maximum: 1,
         type: "string",
-        description:
-          "Days? Weeks? Months? between the times when this result set is run.",
-        options: [
-          { title: "Days", value: "days" },
-          { title: "Weeks", value: "weeks" },
-          { title: "Months", value: "months" },
-          { title: "Years", value: "years" }
-        ]
+        directive: "timezone-select"
       });
-
-      addField("weekday", {
-        title: "Day of week that this executes",
-        minimum: 0,
-        maximum: 1,
-        type: "string",
-        options: [
-          { title: "Monday", value: "monday" },
-          { title: "Tuesday", value: "tuesday" },
-          { title: "Wednesday", value: "wednesday" },
-          { title: "Thursday", value: "thursday" },
-          { title: "Friday", value: "friday" },
-          { title: "Saturday", value: "saturday" },
-          { title: "Sunday", value: "sunday" }
-        ]
-      });
-
-      // addField('firstLine', {
-      //     title: 'Description',
-      //     minimum: 0,
-      //     maximum: 1,
-      //     type: 'string',
-      //     placeholder: 'Eg. A list of my favorite people',
-      // })
 
       // // console.log('TYPE OPTIONS', self.typeOptions);
 
@@ -391,7 +449,10 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+      model: this.value,
+      saving: false
+    };
   }
 };
 </script>
