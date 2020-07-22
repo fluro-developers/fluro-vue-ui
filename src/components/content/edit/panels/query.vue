@@ -91,7 +91,7 @@
           </flex-column-body>
         </slot> 
       </tab>
-      <tab heading="Automation" v-if="model._id">
+      <tab heading="Automation" v-if="resultSets.length">
         <!-- <result-set-edit v-model="resultSets" /> -->
         <slot>
           <flex-column-body style="background: #fafafa;">
@@ -101,7 +101,6 @@
                   <b>{{resultset.title}}</b> {{resultset.firstLine}}
                   <v-btn @click="editResultSet(resultset)" ><fluro-icon icon="pencil" />Edit</v-btn>
                 </div>
-                <pre>{{resultSets}}</pre>
               </constrain>
             </v-container>
           </flex-column-body>
