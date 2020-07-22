@@ -25,6 +25,12 @@ export default {
         // FluroContentRenderField,
     },
     computed: {
+        readableTypeName() {
+
+            console.log('CHECKING?', this.definition, this.item._type, this.item.definition);
+            
+            return this.definition ? this.$fluro.types.readable(this.definition.definitionName) : this.$fluro.types.readable(this.item._type);
+        },
         itemID() {
             return this.$fluro.utils.getStringID(this.item);
         },

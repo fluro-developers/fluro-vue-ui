@@ -92,16 +92,13 @@
 																								<draggable v-model="fieldModel" handle=".handle" v-bind="dragOptions" @start="drag=true" @end="drag=false">
 																												<v-card :key="object.guid" v-for="(object, index) in fieldModel">
 																																<v-toolbar class="elevation-0">
-																																	<v-btn small icon flat class="handle">
-																																													<fluro-icon icon="arrows"/>
-																																								</v-btn>
-
+																																				<v-btn small icon flat class="handle">
+																																								<fluro-icon icon="arrows" />
+																																				</v-btn>
 																																				<v-toolbar-title class="hidden-xs" @click="toggleCollapsed(object)">
-																																								
 																																								{{groupTitle(object, index)}}
-																																									</v-toolbar-title>
+																																				</v-toolbar-title>
 																																				<v-spacer />
-
 																																				<v-toolbar-items>
 																																								<v-btn small icon flat @click="toggleCollapsed(object)">
 																																												<fluro-icon :icon=" object._collapsed ? `angle-down` : `angle-up` " />
@@ -110,7 +107,6 @@
 																																												<fluro-icon icon="times" />
 																																								</v-btn>
 																																				</v-toolbar-items>
-																																			
 																																</v-toolbar>
 																																<v-card-text v-if="!object._collapsed">
 																																				<fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel[index]" @input="elementValueChanged" :fields="fields" />

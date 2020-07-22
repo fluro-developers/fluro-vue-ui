@@ -369,9 +369,9 @@ export default {
         plans() {
             return this.item.plans || [];
         },
-        readableTypeName() {
-            return this.definition ? this.$fluro.types.readable(this.definition.title) : 'Event';
-        },
+        // readableTypeName() {
+        //     return this.definition ? this.$fluro.types.readable(this.definition.definitionName) : 'Event';
+        // },
     },
     data() {
         return {
