@@ -20,11 +20,6 @@
                         <flex-column-body style="background: #fafafa;">
                             <!-- <pre>{{definition.fields}}</pre> -->
                             <v-container>
-
-                             
-
-
-
                                 <!-- <pre>{{model}}</pre> -->
                                 <constrain sm>
                                     <template v-if="reference">
@@ -66,6 +61,15 @@
                                         <h3 margin>{{title}}</h3>
                                         <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="referenceItemField" v-model="model"></fluro-content-form-field>
                                     </template>
+                                    <fluro-panel v-if="model.taskCount && model.taskCount.checkinsExpected">
+                                        <fluro-panel-title class="border-bottom">
+                                            <strong>{{model.taskCount.checkinsCompleted}} of {{model.taskCount.checkinsExpected}} checkins complete</strong>
+                                            <!-- <v-input class="no-flex"> -->
+                                            <!-- <v-label>{{model.taskCount.checkinsCompleted}} of {{model.taskCount.checkinsExpected}} Checkins</v-label> -->
+                                            <!-- </v-input> -->
+                                        </fluro-panel-title>
+                                        <fluro-table :items="model.checkins" :columns="checkinColumns" />
+                                    </fluro-panel>
                                     <template v-if="model.forms && model.forms.length">
                                         <!-- <h3 margin>Forms</h3> -->
                                         <v-input class="no-flex" v-if="awaitingForms && awaitingForms.length">
@@ -269,6 +273,7 @@ import FluroContentEditMixin from "src/components/content/edit/FluroContentEditM
 import FluroContentView from "src/components/content/view/FluroContentView.vue";
 import FluroTaskList from "src/components/form/tasklist/FluroTaskList.vue";
 import ProcessDots from "src/components/ui/ProcessDots.vue";
+import FluroTable from "src/components/table/FluroTable.vue";
 
 /////////////////////////////////
 
@@ -312,7 +317,8 @@ export default {
     components: {
         FluroContentView,
         FluroTaskList,
-        ProcessDots
+        ProcessDots,
+        FluroTable,
         // FluroAvatarUpdate,
         // FluroContentForm,
         // FluroRealmSelect,
@@ -480,6 +486,33 @@ export default {
         // },
     },
     computed: {
+        checkinColumns() {
+
+         var array = [];
+
+         array.push({
+          title:'Event',
+          key:'event.title',
+         })
+
+         array.push({
+          title:'Date',
+          key:'event.startDate',
+          type:'date',
+          sortType:'date',
+         })
+
+         array.push({
+          title:'When',
+          key:'event.startDate',
+          type:'date',
+          sortType:'date',
+          renderer:'timeago',
+         })
+
+
+         return array;
+        },
         showKeyContacts() {
             var reference = this.model.item;
             if (reference && reference._type == "contact") {
@@ -509,8 +542,8 @@ export default {
                 maximum: 1,
                 type: "string",
                 placeholder: "",
-                params:{
-                 autofocus:true,
+                params: {
+                    autofocus: true,
                 }
             });
 

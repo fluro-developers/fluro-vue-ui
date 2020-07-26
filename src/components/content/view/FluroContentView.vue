@@ -16,13 +16,17 @@
           </template>
           <template v-slot:right>
             <template v-if="embedded">
-              <v-btn v-if="model._id" icon class="mr-0" small @click="$actions.open([model])">
+              <v-btn v-tippy content="More actions" v-if="model._id" icon class="mr-0" small @click="$actions.open([model])">
                 <fluro-icon icon="ellipsis-h" />
               </v-btn>
-              <v-btn v-if="canEdit" icon small @click="edit">
+              <v-btn v-tippy content="Edit" v-if="canEdit" icon small @click="edit">
                 <fluro-icon icon="pencil" />
               </v-btn>
+              <v-btn v-tippy content="Download" v-if="canDownload" icon small :href="$fluro.asset.downloadUrl(model)" target="_blank">
+               <fluro-icon icon="cloud-download" />
+              </v-btn>
             </template>
+           
             <template v-else>
               <v-btn v-if="model._id" icon class="mr-0" small @click="$actions.open([model])">
                 <fluro-icon icon="ellipsis-h" />
@@ -31,6 +35,9 @@
               <v-btn v-if="canEdit" @click="edit">
                 Edit
                 <fluro-icon right icon="pencil" />
+              </v-btn>
+              <v-btn v-tippy content="Download" v-if="canDownload" icon small :href="$fluro.asset.downloadUrl(model)" target="_blank">
+               <fluro-icon icon="cloud-download" />
               </v-btn>
             </template>
           </template>
@@ -142,6 +149,16 @@ export default {
     // definition() {
     //     return this.config.definition;
     // },
+    canDownload() {
+      switch(this.type) {
+        case 'asset':
+        case 'audio':
+        case 'video':
+        case 'image':
+          return true;
+        break;
+      }
+    },
     canEdit() {
       switch (this.type) {
         case "mailout":

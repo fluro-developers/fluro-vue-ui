@@ -404,6 +404,13 @@
 																																												<fluro-content-form v-model="model.data" :fields="processFields" />
 																																								</fluro-panel-body>
 																																				</fluro-panel>
+																																				<fluro-panel v-if="model.parentType == 'post'">
+																																								<fluro-panel-body>
+																																												<h4 margin>Post Options</h4>
+																																												<!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.firstLine" v-model="model" /> -->
+																																												<fluro-content-form v-model="model.data" :fields="postFields" />
+																																								</fluro-panel-body>
+																																				</fluro-panel>
 																																				<fluro-panel v-if="model.parentType == 'roster'">
 																																								<tabset justified>
 																																												<tab heading="Roster Settings">
@@ -438,7 +445,7 @@
 																												</v-container>
 																								</flex-column-body>
 																				</tab>
-																				<tab heading="Manage Fields" v-if="fieldsMakeSense">
+																				<tab heading="Manage Fields" v-if="fieldsMakeSense" index="fields">
 																								<!-- <pre>MANAGE {{model.fields}}</pre> -->
 																								<fluro-field-editor v-model="model.fields" :item="model" />
 																				</tab>
@@ -524,104 +531,104 @@
 																																</div>
 																																<!--  -->
 																																<flex-column class="code-panel-column">
-																																	<flex-column-body>
-																																		<v-container fluid pa-0>
-																																				<fluro-accordion class="stacker">
-																																								<fluro-accordion-panel v-for="group in snippetGroups" :heading="group.title">
-																																												<div class="snippet-row" v-tippy content="Click to copy" @click="copy(snippet)" v-for="snippet in group.snippets">
-																																															<!-- <v-input class="no-flex"> -->
-																																																<!-- <v-layout> -->
-																																																<!-- <v-flex xs4> -->
-																																																<label>{{snippet.title}}</label>
-																																																<!-- </v-flex> -->
-																																																<!-- <v-flex xs8> -->
-																																																<div style="overflow: auto">
-																																																				<div class="snippet">{{snippet.code}}</div>
-																																																</div>
-																																																<!-- </v-flex> -->
-																																																<!-- </v-layout> -->
-																																															<!-- </v-input> -->
-																																												</div>
-																																								</fluro-accordion-panel>
-																																								<fluro-accordion-panel heading="Help / Utilities">
-																																												<v-input class="no-flex">
-																																																<v-label>Multiple value fields</v-label>
-																																																<div class="help-snippet">
-																																																				<% for (var i = 0; i < get('items.length'); i++) { %><br />
-																																																				&lt;h3&gt;
-																																																				<%= get('items[i].title') %>&lt;/h3&gt;<br />
-																																																				<% } %>
-																																																</div>
-																																												</v-input>
-																																												<v-input class="no-flex">
-																																																<v-label>Icon URL</v-label>
-																																																<p class="help-block">Font library, the icon name, and an optional color</p>
-																																																<div class="help-snippet">
-																																																				<%= iconUrl('fab', 'facebook', 'fff') %>
-																																																</div>
-																																																<div class="help-snippet">
-																																																				<%= iconUrl('fas', 'arrow-right', 'ff0000') %>
-																																																</div>
-																																																<div class="help-snippet">
-																																																				<%= iconUrl('far', 'home') %>
-																																																</div>
-																																												</v-input>
-																																												<v-input class="no-flex">
-																																																<v-label>Image URL</v-label>
-																																																<p class="help-block">Generated by providing a path to the image on the mailout data</p>
-																																																<div class="help-snippet">
-																																																				<%= imageUrl('path.to.image', optionalWidth, optionalHeight, options) %>
-																																																</div>
-																																												</v-input>
-																																												<v-input class="no-flex">
-																																																<v-label>Image URL</v-label>
-																																																<p class="help-block">Generated by providing a static ID</p>
-																																																<div class="help-snippet">
-																																																				<%= imageUrl('5c872b1f2380ba45e486b033', 500, null, {static:true}) %>
-																																																</div>
-																																												</v-input>
-																																												<v-input class="no-flex">
-																																																<v-label>Poster URL</v-label>
-																																																<div class="help-snippet">
-																																																				<%= posterUrl('path.to.video', optionalWidth, optionalHeight) %>
-																																																</div>
-																																												</v-input>
-																																												<v-input class="no-flex">
-																																																<v-label>Download URL</v-label>
-																																																<div class="help-snippet">
-																																																				<%= downloadUrl('path.to.asset') %>
-																																																</div>
-																																												</v-input>
-																																												<v-input class="no-flex">
-																																																<v-label>Variable Dump</v-label>
-																																																<div class="help-snippet">
-																																																				<%- pre('path.to.data') %>
-																																																</div>
-																																												</v-input>
-																																												<v-input class="no-flex">
-																																																<v-label>Escape HTML</v-label>
-																																																<div class="help-snippet">
-																																																				<%- get('path.to.data') %>
-																																																</div>
-																																												</v-input>
-																																												<v-input class="no-flex">
-																																																<v-label>Unsubscribe link</v-label>
-																																																<div class="help-snippet">
-																																																				<!-- <% if(get('mailout.mailoutType') != 'transactional') { %> -->
-																																																				<%- unsubscribe() %>
-																																																				<!-- <% } %> -->
-																																																</div>
-																																												</v-input>
-																																												<v-input class="no-flex">
-																																																<v-label>Open Tracker Code</v-label>
-																																																<div class="help-snippet">
-																																																				<%- tracker %>
-																																																</div>
-																																												</v-input>
-																																								</fluro-accordion-panel>
-																																				</fluro-accordion>
-																																			</v-container>
-																																			</flex-column-body>
+																																				<flex-column-body>
+																																								<v-container fluid pa-0>
+																																												<fluro-accordion class="stacker">
+																																																<fluro-accordion-panel v-for="group in snippetGroups" :heading="group.title">
+																																																				<div class="snippet-row" v-tippy content="Click to copy" @click="copy(snippet)" v-for="snippet in group.snippets">
+																																																								<!-- <v-input class="no-flex"> -->
+																																																								<!-- <v-layout> -->
+																																																								<!-- <v-flex xs4> -->
+																																																								<label>{{snippet.title}}</label>
+																																																								<!-- </v-flex> -->
+																																																								<!-- <v-flex xs8> -->
+																																																								<div style="overflow: auto">
+																																																												<div class="snippet">{{snippet.code}}</div>
+																																																								</div>
+																																																								<!-- </v-flex> -->
+																																																								<!-- </v-layout> -->
+																																																								<!-- </v-input> -->
+																																																				</div>
+																																																</fluro-accordion-panel>
+																																																<fluro-accordion-panel heading="Help / Utilities">
+																																																				<v-input class="no-flex">
+																																																								<v-label>Multiple value fields</v-label>
+																																																								<div class="help-snippet">
+																																																												<% for (var i = 0; i < get('items.length'); i++) { %><br />
+																																																												&lt;h3&gt;
+																																																												<%= get('items[i].title') %>&lt;/h3&gt;<br />
+																																																												<% } %>
+																																																								</div>
+																																																				</v-input>
+																																																				<v-input class="no-flex">
+																																																								<v-label>Icon URL</v-label>
+																																																								<p class="help-block">Font library, the icon name, and an optional color</p>
+																																																								<div class="help-snippet">
+																																																												<%= iconUrl('fab', 'facebook', 'fff') %>
+																																																								</div>
+																																																								<div class="help-snippet">
+																																																												<%= iconUrl('fas', 'arrow-right', 'ff0000') %>
+																																																								</div>
+																																																								<div class="help-snippet">
+																																																												<%= iconUrl('far', 'home') %>
+																																																								</div>
+																																																				</v-input>
+																																																				<v-input class="no-flex">
+																																																								<v-label>Image URL</v-label>
+																																																								<p class="help-block">Generated by providing a path to the image on the mailout data</p>
+																																																								<div class="help-snippet">
+																																																												<%= imageUrl('path.to.image', optionalWidth, optionalHeight, options) %>
+																																																								</div>
+																																																				</v-input>
+																																																				<v-input class="no-flex">
+																																																								<v-label>Image URL</v-label>
+																																																								<p class="help-block">Generated by providing a static ID</p>
+																																																								<div class="help-snippet">
+																																																												<%= imageUrl('5c872b1f2380ba45e486b033', 500, null, {static:true}) %>
+																																																								</div>
+																																																				</v-input>
+																																																				<v-input class="no-flex">
+																																																								<v-label>Poster URL</v-label>
+																																																								<div class="help-snippet">
+																																																												<%= posterUrl('path.to.video', optionalWidth, optionalHeight) %>
+																																																								</div>
+																																																				</v-input>
+																																																				<v-input class="no-flex">
+																																																								<v-label>Download URL</v-label>
+																																																								<div class="help-snippet">
+																																																												<%= downloadUrl('path.to.asset') %>
+																																																								</div>
+																																																				</v-input>
+																																																				<v-input class="no-flex">
+																																																								<v-label>Variable Dump</v-label>
+																																																								<div class="help-snippet">
+																																																												<%- pre('path.to.data') %>
+																																																								</div>
+																																																				</v-input>
+																																																				<v-input class="no-flex">
+																																																								<v-label>Escape HTML</v-label>
+																																																								<div class="help-snippet">
+																																																												<%- get('path.to.data') %>
+																																																								</div>
+																																																				</v-input>
+																																																				<v-input class="no-flex">
+																																																								<v-label>Unsubscribe link</v-label>
+																																																								<div class="help-snippet">
+																																																												<!-- <% if(get('mailout.mailoutType') != 'transactional') { %> -->
+																																																												<%- unsubscribe() %>
+																																																												<!-- <% } %> -->
+																																																								</div>
+																																																				</v-input>
+																																																				<v-input class="no-flex">
+																																																								<v-label>Open Tracker Code</v-label>
+																																																								<div class="help-snippet">
+																																																												<%- tracker %>
+																																																								</div>
+																																																				</v-input>
+																																																</fluro-accordion-panel>
+																																												</fluro-accordion>
+																																								</v-container>
+																																				</flex-column-body>
 																																				<!-- Tokens -->
 																																				<!-- <fluro-code-editor :autoformat="false" style="flex: 1 1 100%" v-model="model.data.css" lang="scss" /> -->
 																																</flex-column>
@@ -877,7 +884,7 @@ export default {
 
 								if (self.fieldsMakeSense) {
 												if (self.model._id && !self.isForm) {
-																self.tabIndex = 1;
+																self.tabIndex = 'fields';
 												}
 								}
 
@@ -1848,6 +1855,106 @@ export default {
 												// console.log('DO THE OUTPUT!!!');
 												return array;
 								},
+								postFields() {
+
+												var self = this;
+												var array = [];
+
+
+												///////////////////////////////////
+
+												array.push({
+																title: 'Types to attach to ',
+																minimum: 0,
+																maximum: 0,
+																key: 'postParentTypes',
+																type: 'string',
+																directive: 'select',
+																options: self.referenceOptions,
+																params: {
+																				persistentDescription: true
+																},
+																description: `Restrict what kind of content types this posts can attach to, For example if doing an event report, choose 'Event', or for a private note about a person choose 'Contact' `,
+												})
+
+
+
+												///////////////////////////////////
+
+												array.push({
+																title: 'Notifications',
+																minimum: 0,
+																maximum: 0,
+																key: 'notifyContacts',
+																type: 'reference',
+																params: {
+																				restrictType: 'contact',
+																},
+																description: `Send a basic notification to the selected contacts eac time a new ${self.model.title || 'post'} is submitted`,
+												})
+
+
+
+												///////////////////////////////////
+
+												addField('interactionProcesses', {
+																title: 'Add post to process',
+																minimum: 0,
+																maximum: 0,
+																type: 'reference',
+																params: {
+																				restrictType: 'definition',
+																				referenceFilter: {
+																								operator: 'and',
+																								filters: [{
+																												key: 'parentType',
+																												comparator: '==',
+																												value: 'process',
+																								}, ]
+																				},
+
+
+																},
+																description: `Select processes that these posts will be added into, helpful for comment approval etc`,
+												})
+												addField('processAssignTo', {
+																title: 'Assign to',
+																minimum: 0,
+																maximum: 0,
+																type: 'reference',
+																params: {
+																				restrictType: 'contact',
+																				allDefinitions: true,
+																},
+																expressions:{
+																	show:'model.interactionProcesses.length',
+																},
+																description: `Assign the process card to specific contacts`,
+												})
+
+												addField('reactionPipelines', {
+																title: 'Reaction Pipelines',
+																minimum: 0,
+																maximum: 0,
+																type: 'reference',
+																params: {
+																				restrictType: 'reaction',
+																				allDefinitions: true,
+																},
+																description: `Select reaction pipelines to push these kind of posts into when they are created`,
+												})
+												
+
+
+												function addField(key, field) {
+																if (!field.key) {
+																				field.key = key;
+																}
+																array.push(field);
+												}
+
+												return array;
+								},
 								processFields() {
 												var self = this;
 												var array = [];
@@ -2157,7 +2264,7 @@ export default {
 																preview: false,
 																tokens: false,
 												},
-												tabIndex: 0,
+												tabIndex: null,
 												alternativePaymentMethodIndex: 0,
 												expandedSettings: {
 																_contacts: false,
@@ -2172,29 +2279,27 @@ export default {
 
 </script>
 <style lang="scss">
-	
 .stacker {
-.accordion-panel {
-	margin-bottom: 0;
-	border:none;
+				.accordion-panel {
+								margin-bottom: 0;
+								border: none;
 
-	&.expanded {
-			.accordion-panel-title {
-				background:none;
-			}
-	}
-}
+								&.expanded {
+												.accordion-panel-title {
+																background: none;
+												}
+								}
+				}
 
-.accordion-panel-title {
-	font-weight: 600;
-	border-top:1px solid rgba(#000,0.1);
-}
+				.accordion-panel-title {
+								font-weight: 600;
+								border-top: 1px solid rgba(#000, 0.1);
+				}
 
-.accordion-panel-body .container {
-	padding:10px;
+				.accordion-panel-body .container {
+								padding: 10px;
+				}
 }
-}
-
 
 </style>
 <style lang="scss" scoped>
@@ -2206,20 +2311,21 @@ export default {
 
 
 .snippet {
-	cursor: pointer;
+				cursor: pointer;
 }
 
 .snippet-row {
-	display: block;
-		margin-bottom: 15px;
+				display: block;
+				margin-bottom: 15px;
 
-	label {
-		font-weight: 600;
-		text-transform: uppercase;;
-		font-size: 0.8em;
-		letter-spacing: 0.02em;
-	
-	}
+				label {
+								font-weight: 600;
+								text-transform: uppercase;
+								;
+								font-size: 0.8em;
+								letter-spacing: 0.02em;
+
+				}
 }
 
 .snippet,
@@ -2232,7 +2338,8 @@ export default {
 
 				background: #f3f2ff;
 				color: #7653c1;
-				display: inline-block;;
+				display: inline-block;
+				;
 
 }
 

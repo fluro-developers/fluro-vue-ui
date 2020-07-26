@@ -5,7 +5,10 @@
 																<flex-column-body style="background: #fafafa;">
 																				<v-container fluid>
 																								<constrain sm>
-																												<h3 margin>{{readableTypeName}} Details</h3>
+																												<h3>{{item.title}}</h3>
+																												<div class="font-sm muted">{{item.firstLine}}</div>
+																												<br/>
+																												<br/>
 																												<template v-if="fields.length">
 																																<fluro-content-render :fields="fields" v-model="item.data" />
 																												</template>
@@ -36,7 +39,7 @@
 																																<!-- <fluro-panel> -->
 																																<!-- </fluro-panel> -->
 																												</fluro-panel>
-																												<fluro-content-render :fields="definedFields" v-model="item.data" />
+																												<!-- <fluro-content-render :fields="definedFields" v-model="item.data" /> -->
 																								</constrain>
 																				</v-container>
 																</flex-column-body>

@@ -28,6 +28,7 @@
 																																				</fluro-panel-title>
 																																				<fluro-panel-body>
 																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.bundleIDs" v-model="model" />
+																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.nativeEngine" v-model="model" />
 																																				</fluro-panel-body>
 																																</fluro-panel>
 																																<!--  <div v-if="definition && definition.fields && definition.fields.length">
@@ -39,7 +40,7 @@
 																				</v-container>
 																</flex-column-body>
 												</tab>
-												<tab :heading="`${devices.length } Devices`" v-if="devicesEnabled">
+												<tab :heading="`${devices ? devices.length : 0} Devices`" :enabled="!!devicesEnabled">
 																<flex-column-body style="background: #fafafa;">
 																				<v-container fluid>
 																								<constrain sm>
@@ -77,32 +78,30 @@
 																				</v-container>
 																</flex-column-body>
 												</tab>
-												<template v-if="model.authenticationStyle == 'application'">
-																<tab heading="Application Permissions">
-																				<flex-column-body style="background: #fafafa;">
-																								<v-container>
-																												<constrain sm>
-																																<h5 margin>Application Permissions</h5>
-																																<p>Add permissions here that will be attributed to this application's API Key whether a user is signed in or not.</p>
-																																<fluro-permission-select @input="modelUpdated" v-model="model.permissionSets" />
-																												</constrain>
-																								</v-container>
-																				</flex-column-body>
-																</tab>
-																<tab heading="User Permissions">
-																				<flex-column-body style="background: #fafafa;">
-																								<v-container>
-																												<constrain sm>
-																																<h5 margin>User Permissions</h5>
-																																<p>Add permissions here that will be attributed to a logged in user when signed in to this application. These will be merged with any existing permissions retrieved from a user's managed persona in the '{{application.title}}' account</p>
-																																<fluro-permission-select @input="modelUpdated" v-model="model.userPermissionSets" />
-																												</constrain>
-																								</v-container>
-																				</flex-column-body>
-																</tab>
-												</template>
-												<tab :heading="`${definition.title} Details`" v-if="definition">
+												<tab heading="Application Permissions" :enabled="model.authenticationStyle == 'application'">
 																<flex-column-body style="background: #fafafa;">
+																				<v-container>
+																								<constrain sm>
+																												<h5 margin>Application Permissions</h5>
+																												<p>Add permissions here that will be attributed to this application's API Key whether a user is signed in or not.</p>
+																												<fluro-permission-select @input="modelUpdated" v-model="model.permissionSets" />
+																								</constrain>
+																				</v-container>
+																</flex-column-body>
+												</tab>
+												<tab heading="User Permissions" :enabled="model.authenticationStyle == 'application'">
+																<flex-column-body style="background: #fafafa;">
+																				<v-container>
+																								<constrain sm>
+																												<h5 margin>User Permissions</h5>
+																												<p>Add permissions here that will be attributed to a logged in user when signed in to this application. These will be merged with any existing permissions retrieved from a user's managed persona in the '{{model.title}}' account</p>
+																												<fluro-permission-select @input="modelUpdated" v-model="model.userPermissionSets" />
+																								</constrain>
+																				</v-container>
+																</flex-column-body>
+												</tab>
+												<tab :heading="`${readableContentType} Details`" :enabled="definition">
+																<flex-column-body style="background: #fafafa;" v-if="definition">
 																				<v-container fluid>
 																								<constrain sm>
 																												<fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
@@ -309,6 +308,19 @@ export default {
 																type: "string",
 																description: "Add the native iOS and Android bundle ids for this application",
 																placeholder: "Eg. com.yourwebsite.application"
+												});
+
+
+												addField("nativeEngine", {
+																title: "Application Engine",
+																minimum: 0,
+																maximum: 1,
+																type: "reference",
+																params: {
+																				// restrictType: 'fluroAppEngine',
+																				restrictType: 'asset',
+																},
+																description: "Override your own custom application engine",
 												});
 
 

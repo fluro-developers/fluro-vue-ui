@@ -358,9 +358,7 @@ export default {
       loading: true
     };
   },
-  created() {
-    console.log("THIS RENDERER", this);
-  }
+
 };
 </script>
 <style scoped lang="scss">

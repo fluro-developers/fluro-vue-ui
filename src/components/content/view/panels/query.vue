@@ -25,8 +25,8 @@
             </v-container>
           </flex-column-body>
         </tab>
-        <tab :heading="`Historical Results`" v-if="!loadingResultSetData ">
-          <flex-column-body style="background: #fafafa;" v-if="resultSetsData.length">
+        <tab :heading="`History`" v-if="resultSetsData.length">
+          <flex-column-body style="background: #fafafa;" >
             <div v-for="dataset in resultSetsData" v-bind:key="dataset._id">
               <v-container fluid>
                 <constrain sm>

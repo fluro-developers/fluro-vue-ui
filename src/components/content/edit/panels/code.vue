@@ -5,44 +5,34 @@
         </template>
         <template v-else>
             <!-- :vertical="true" -->
-            <tabset :justified="true" :vertical="true">
-                <tab heading="Code" >
-                    <v-layout row class="top-bar" px-4 py-2>
-                        <v-flex xs8 sm4 md3 px-2>
-                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />
-                        </v-flex>
-                        <v-flex xs4 sm2 md2 px-2>
-                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.syntax" v-model="model" />
-                        </v-flex>
-                    </v-layout>
-                    <fluro-code-editor style="flex: 1 1 100%" v-model="model.body" :lang="model.syntax" />
-                </tab>
-                <tab :heading="`${definition.title} Details`" v-if="definition">
-                    <slot>
-                        <flex-column-body style="background: #fafafa;">
-                            <v-container fluid>
-                                <constrain sm>
+            <tabset :justified="true" v-model="tabIndex">
+                <tab :heading="`${readableContentType} Details`" index="config">
+                    <flex-column-body style="background: #fafafa;">
+                        <v-container fluid>
+                            <constrain sm>
+                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />
+                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.syntax" v-model="model" />
+                                <template v-if="definition">
                                     <h3 margin>{{definition.title}} Details</h3>
                                     <!-- <div class="form-group" v-if="definition.data.titleGeneration != 'force'"> -->
                                     <!-- <label>{{titleLabel}}</label> -->
                                     <!-- <input class="form-control" placeholder="{{titleLabel}}" ng-model="item.title"> -->
                                     <!-- </div> -->
                                     <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
-                                </constrain>
-                            </v-container>
-                        </flex-column-body>
-                    </slot>
+                                </template>
+                            </constrain>
+                        </v-container>
+                    </flex-column-body>
+                    <flex-column-body style="background: #fafafa;">
+                        <v-container fluid>
+                            <constrain sm>
+                                <fluro-privacy-select v-model="model.privacy" />
+                            </constrain>
+                        </v-container>
+                    </flex-column-body>
                 </tab>
-                <tab :heading="`Privacy`">
-                    <slot>
-                        <flex-column-body style="background: #fafafa;">
-                            <v-container fluid>
-                                <constrain sm>
-                                    <fluro-privacy-select v-model="model.privacy"/>
-                                </constrain>
-                            </v-container>
-                        </flex-column-body>
-                    </slot>
+                <tab :heading="codeTitle" index="code">
+                    <fluro-code-editor style="flex: 1 1 100%" v-model="model.body" :lang="model.syntax" />
                 </tab>
             </tabset>
         </template>
@@ -79,6 +69,30 @@ export default {
     },
     mixins: [FluroContentEditMixin],
     computed: {
+        codeTitle() {
+            var self = this;
+
+
+            switch (self.model.syntax) {
+                case 'css':
+                    return 'CSS';
+                    break;
+                case 'html':
+                    return 'HTML';
+                    break;
+                case 'javascript':
+                case 'js':
+                    return 'Javascript';
+                    break;
+                case 'sass':
+                case 'scss':
+                    return 'SCSS';
+                    break;
+                default:
+                    return 'Code';
+                    break;
+            }
+        },
         fieldsOutput() {
 
 
@@ -145,10 +159,17 @@ export default {
     },
     data() {
         return {
+            tabIndex: 'code',
             editorOptions: {},
         }
     },
+    created() {
+        if (!this.model._id) {
+            this.tabIndex = 'config';
+        }
+    }
 }
+
 </script>
 <style lang="scss">
 .fluro-editor.full-bleed {
@@ -193,4 +214,5 @@ export default {
         }
     }
 }
+
 </style>

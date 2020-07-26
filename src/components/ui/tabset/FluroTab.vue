@@ -1,31 +1,36 @@
 <template>
     <transition name="slide">
-        <flex-column v-if="active">
-            <slot />
-        </flex-column>
+        <!-- <flex-column> -->
+            <!-- {{key}} {{active}} -->
+            <flex-column v-if="active">
+                <slot />
+            </flex-column>
+        <!-- </flex-column> -->
     </transition>
 </template>
 <script>
-
 import _ from 'lodash';
 
 export default {
     props: {
-        muted:{
-            type:Boolean,
+        muted: {
+            type: Boolean,
         },
-        enabled:{
-            type:Boolean,
-            default:true,
+        enabled: {
+            type: Boolean,
+            default: true,
         },
         heading: {
             type: String
         },
         tooltip: {
             type: String,
-            default() {
-            	return null;
+            default () {
+                return null;
             }
+        },
+        index: {
+            type: String,
         },
         iconType: {
             type: String
@@ -34,18 +39,25 @@ export default {
             type: Object
         },
     },
-    inject: ['tabs', 'addTab', 'activeTabIndex', 'removeTab'],
+    inject: ['tabs', 'addTab', 'getActiveTabIndex', 'removeTab'],
     created() {
         // console.log('THISIIIIITY', this.tabs)
 
-        
-        // this.tabs.push(this);
+        var self = this;
 
-        
-        this.index = this.tabs.length;
-        this.addTab(this);
-        this.active = this.index == this.activeTabIndex;
+        if (!self.index) {
+            self.key = self.$fluro.utils.guid();
+        } else {
+         self.key = self.index;
+        }
 
+        // self.tabs.push(self);
+        // self.key = self.tabs.length;
+        self.addTab(self);
+
+        var activeTabIndex = this.getActiveTabIndex();
+        // console.log('CHECK ACTIVE?', activeTabIndex, self.key);
+        self.active = (self.key == activeTabIndex);
 
     },
     watch: {
@@ -58,14 +70,14 @@ export default {
     },
     methods: {
         emitActive(val) {
-            if(this.active) {
+            if (this.active) {
                 this.$emit('activeTab');
             }
         },
     },
     data() {
         return {
-            index: 0,
+            key: null,
             active: false,
         }
     },
@@ -88,6 +100,7 @@ export default {
 
     // }
 }
+
 </script>
 <style lang="scss">
 .slide-leave-active,
@@ -96,10 +109,10 @@ export default {
 }
 
 .slide-enter {
-    top:0;
-    left:0;
-    right:0;
-    bottom:0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     width: 100%;
     position: absolute;
     transform: translate(15px, 0);
@@ -107,10 +120,10 @@ export default {
 }
 
 .slide-leave-to {
-    top:0;
-    left:0;
-    right:0;
-    bottom:0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     width: 100%;
     position: absolute;
     transform: translate(-15px, 0);
@@ -128,4 +141,5 @@ export default {
   transform: scale(0.9);
 }
 /**/
+
 </style>

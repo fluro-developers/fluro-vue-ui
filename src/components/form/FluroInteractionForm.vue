@@ -1013,8 +1013,7 @@ export default {
                                 return done(null, {
                                         error: {
                                                 message: self.debugMode ?
-                                                        `Integration Setup Error: No test keys found.` :
-                                                        `Integration Setup Error: No live keys found.`
+                                                        `Integration Setup Error: No test keys found.` : `Integration Setup Error: No live keys found.`
                                         }
                                 });
                         }

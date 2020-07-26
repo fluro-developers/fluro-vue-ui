@@ -134,6 +134,9 @@ export default {
                 case 'contactAvatar':
                     return AvatarCell;
                 break;
+                case 'personaAvatar':
+                    return AvatarCell;
+                break;
                 case 'boolean':
                     return BooleanCell;
                     break;

@@ -1088,7 +1088,7 @@ export default {
 
 																if (!self.isAsync) {
 																				var page = (self.rawPage || []).slice();
-																				console.log('table debug > return early', self.$el, page.length)
+																				// console.log('table debug > return early', self.$el, page.length)
 																				return Promise.resolve(page);
 																}
 
@@ -1109,7 +1109,7 @@ export default {
 
 																if (!ids || !ids.length) {
 																				self.loading = false;
-																				console.log('table debug > return empty')
+																				// console.log('table debug > return empty')
 																				return Promise.resolve([]);
 																}
 
@@ -1134,7 +1134,7 @@ export default {
 
 																								if (column.additionalFields && column.additionalFields.length) {
 																												return [].concat(column.additionalFields, column.key)
-																												console.log('Additional Fields', column.additionalFields)
+																												// console.log('Additional Fields', column.additionalFields)
 																								}
 
 																								return column.key;
@@ -1178,7 +1178,7 @@ export default {
 																																.map(function(id, i) {
 																																				var entry = lookup[id];
 																																				if (!entry) {
-																																								console.log('No entry for', id)
+																																							//	console.log('No entry for', id)
 																																								return;
 																																				}
 																																				entry._pageIndex = i;
@@ -1736,7 +1736,7 @@ export default {
 								setPage(pageNumber) {
 
 												if (this.currentPage == pageNumber) {
-																console.log('already at page', pageNumber)
+															//	console.log('already at page', pageNumber)
 																return;
 												}
 												this.currentPage = pageNumber;
@@ -1950,6 +1950,7 @@ export default {
 																th,
 																td {
 
+																				&,
 																				&.first,
 																				&.last,
 																				&.sticky-first,
@@ -1994,6 +1995,7 @@ export default {
 																th,
 																td {
 
+																				&,
 																				&.first,
 																				&.last,
 																				&.sticky-first,

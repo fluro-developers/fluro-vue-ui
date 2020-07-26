@@ -4,20 +4,19 @@
             <slot name="menuprefix"></slot>
             <div class="tabset-menu" ref="outer">
                 <div class="tabset-menu-inner" ref="inner">
-                    <template v-for="(tab, index) in enabledTabs">
-                        <!-- <div v-if="tab.$slots.title" :class="{active:index == activeTabIndex, muted:tab.muted}" @click="selectTab(index)">
+                    <!-- <template > -->
+                    <!-- <div v-if="tab.$slots.title" :class="{active:index == activeTabIndex, muted:tab.muted}" @click="selectTab(index)">
                             Test {{tab.$slots.title}} <slot name="title"/>
                         </div> -->
-                        <!-- v-else  -->
-                        <a flat :v-tippy="tab.tooltip && tab.tooltip.length" :content="tab.tooltip" :class="{active:index == activeTabIndex, muted:tab.muted}" @click="selectTab(index)">
-                            {{tab.heading}} 
-                            <template v-if="tab.icon">
-                            <fluro-icon v-if="tab.icon.icon" :icon="tab.icon.icon" :library="tab.icon.library" :style="{ color: tab.icon.color }"/>
-                            <fluro-icon v-if="tab.icon.type" :type="tab.icon.type" :library="tab.icon.library" :style="{ color: tab.icon.color }"/>
-                            </template>
-                        </a>
-                    </template>
-
+                    <!-- v-else  -->
+                    <a v-for="tab in enabledTabs" :key="tab.key" flat :v-tippy="tab.tooltip && tab.tooltip.length" :content="tab.tooltip" :class="{active:tab.key == activeTabIndex, muted:tab.muted}" @click="selectTab(tab.key)">
+                        {{tab.heading}}
+                        <template v-if="tab.icon">
+                            <fluro-icon v-if="tab.icon.icon" :icon="tab.icon.icon" :library="tab.icon.library" :style="{ color: tab.icon.color }" />
+                            <fluro-icon v-if="tab.icon.type" :type="tab.icon.type" :library="tab.icon.library" :style="{ color: tab.icon.color }" />
+                        </template>
+                    </a>
+                    <!-- </template> -->
                 </div>
             </div>
             <slot name="menusuffix"></slot>
@@ -28,13 +27,12 @@
     </flex-column>
 </template>
 <script>
-
 import _ from 'lodash';
 
 export default {
     props: {
         value: {
-            type: Number,
+            type: [Number, String],
         },
         options: {
             type: Object
@@ -55,12 +53,13 @@ export default {
             addTab: this.addTab,
             tabs: this.tabs,
             activeTabIndex: this.activeTabIndex,
+            getActiveTabIndex: this.getActiveTabIndex,
         }
     },
     data() {
         return {
             tabs: [],
-            activeTabIndex: this.value || 0,
+            activeTabIndex: this.value || null,
         }
     },
     watch: {
@@ -73,73 +72,104 @@ export default {
         enabledTabs() {
             var self = this;
             // return self.tabs; //_.filter(self.tabs, {enabled:true});
-            return _.filter(self.tabs, {enabled:true});
+            return _.filter(self.tabs, { enabled: true });
         },
     },
     methods: {
-        removeTab(tab) {
-            _.pull(this.tabs, tab);
+        getActiveTabIndex() {
+            return this.activeTabIndex;
         },
-        addTab(tab) {
-            if (_.includes(this.tabs, tab)) {
+        removeTab(tab) {
+
+            var self = this;
+            var index = self.tabs.indexOf(tab);
+            if (index == -1) {
                 return;
             }
 
-            this.tabs.push(tab);
+
+            self.tabs.splice(index, 1);
+        },
+        addTab(tab) {
+
+            var self = this;
+            //Add another tab to the tabcount
+            // this.tabCount++;
+            if (_.includes(self.tabs, tab)) {
+                return;
+            }
+
+            var existingTabs = self.tabs.length;
+            self.tabs.push(tab);
+
+
+            //Select the first tab by default unless otherwise specified
+            if (!existingTabs && !self.activeTabIndex) {
+                self.activeTabIndex = tab.key;
+                tab.active = true;
+                console.log('activate first tab', tab);
+                // self.selectTab(tab.key);
+            }
+
+
         },
         selectTab(index) {
 
 
-            // console.log('Select', index)
-
+            console.log('Select', index)
             var self = this;
 
-
-            index = Math.max(index, 0);
-            index = Math.min(index, self.tabs.length - 1);
-
+            // index = Math.max(index, 0);
+            // index = Math.min(index, self.tabs.length - 1);
             self.activeTabIndex = index;
+
+            ////////////////////////////////////////////////
 
             var menuElement = self.$refs.outer;
             var containerElement = self.$refs.inner;
-            var childElement = containerElement.children[self.activeTabIndex];
 
-            ////////////////////////////////////////////////
-            ////////////////////////////////////////////////
-            ////////////////////////////////////////////////
+            if (containerElement) {
+                var childElement = containerElement.children[self.activeTabIndex];
 
-            var parentPos = containerElement.getBoundingClientRect();
-            var childPos = childElement.getBoundingClientRect();
-            var relativePos = {};
+                ////////////////////////////////////////////////
+                ////////////////////////////////////////////////
+                ////////////////////////////////////////////////
 
-            relativePos.top = childPos.top - parentPos.top,
-                relativePos.right = childPos.right - parentPos.right,
-                relativePos.bottom = childPos.bottom - parentPos.bottom,
-                relativePos.left = childPos.left - parentPos.left;
-
-            ////////////////////////////////////////////////
-
-
-            var menuWidth = menuElement.offsetWidth;
-            var childWidth = childElement.offsetWidth;
-            var scrollWidth = menuElement.scrollWidth;
-            var target = relativePos.left - ((menuWidth / 2) - (childWidth / 2)); //relativePos.left;
-            // var target = relativePos.left; //relativePos.left;
-            ////////////////////////////////////////////////
-            ////////////////////////////////////////////////
+                if (childElement) {
 
 
 
-            // var target = relativePos.left; //(menuElement.offsetWidth/2) - relativePos.left;
+                    var parentPos = containerElement.getBoundingClientRect();
+                    var childPos = childElement.getBoundingClientRect();
+                    var relativePos = {};
 
-            // console.log('TEST', menuWidth, scrollWidth, target);
+                    relativePos.top = childPos.top - parentPos.top,
+                        relativePos.right = childPos.right - parentPos.right,
+                        relativePos.bottom = childPos.bottom - parentPos.bottom,
+                        relativePos.left = childPos.left - parentPos.left;
+
+                    ////////////////////////////////////////////////
 
 
-            menuElement.scrollTo({
-                // top: 100,
-                left: target,
-                behavior: 'smooth'
-            });
+                    var menuWidth = menuElement.offsetWidth;
+                    var childWidth = childElement.offsetWidth;
+                    var scrollWidth = menuElement.scrollWidth;
+                    var target = relativePos.left - ((menuWidth / 2) - (childWidth / 2)); //relativePos.left;
+                    // var target = relativePos.left; //relativePos.left;
+                    ////////////////////////////////////////////////
+                    ////////////////////////////////////////////////
+
+                    // var target = relativePos.left; //(menuElement.offsetWidth/2) - relativePos.left;
+                    // console.log('TEST', menuWidth, scrollWidth, target);
+
+                    menuElement.scrollTo({
+                        // top: 100,
+                        left: target,
+                        behavior: 'smooth'
+                    });
+                }
+
+            }
 
 
             // menuElement.scrollLeft = target;
@@ -183,14 +213,9 @@ export default {
 
             // menuElement.scrollLeft = scrollTarget;
 
-
-
-
-
-
-
+            //Disable all the other tabs
             _.each(self.tabs, function(tab) {
-                tab.active = tab.index == self.activeTabIndex;
+                tab.active = tab.key == self.activeTabIndex;
             })
 
 
@@ -214,6 +239,7 @@ export default {
 
     // }
 }
+
 </script>
 <style lang="scss">
 .tabset {
@@ -346,4 +372,5 @@ export default {
 
     }
 }
+
 </style>
