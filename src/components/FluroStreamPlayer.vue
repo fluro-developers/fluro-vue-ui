@@ -133,7 +133,7 @@ export default {
 																return;
 												}
 
-												if (typeof window != 'undefined') {
+												if (process.browser) {
 																return window.navigator.share;
 												}
 								},
@@ -205,11 +205,6 @@ export default {
 
 
 
-																// console.log('Initialise from hls')
-																// if(window.innerWidth < 768) {
-																//     self.play();
-																//     self.playing = true;
-																// }
 
 
 																self.initialize();

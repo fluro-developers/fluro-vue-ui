@@ -88,11 +88,13 @@ export default {
                     var downloadURL = self.$fluro.api.defaults.baseURL + res.data.download;
 
 
+ if (process.browser) {
                     if (token) {
                         window.open(downloadURL + "?access_token=" + token);
                     } else {
                         window.open(downloadURL);
                     }
+                }
 
                     self.exporting = false;
                 })

@@ -193,7 +193,7 @@ export default {
         // },
         exportItems(segment) {
 
-          console.log('SIGMENT', segment);
+            console.log('SIGMENT', segment);
 
             var self = this;
             self.exporting = true;
@@ -201,7 +201,7 @@ export default {
 
             var eventID = self.$fluro.utils.getStringID(self.event);
             var url = `/event/${this.eventID}/guestlist/${segment.key}/csv`;
-            
+
             self.$fluro.api
                 .get(url, { cache: false })
                 .then(function(res) {
@@ -211,10 +211,13 @@ export default {
 
                     var token = self.$fluro.auth.getCurrentToken();
                     var downloadURL = self.$fluro.api.defaults.baseURL + res.data.download;
-                    if (token) {
-                        window.open(downloadURL + "?access_token=" + token);
-                    } else {
-                        window.open(downloadURL);
+
+                    if (process.browser) {
+                        if (token) {
+                            window.open(downloadURL + "?access_token=" + token);
+                        } else {
+                            window.open(downloadURL);
+                        }
                     }
 
                     self.exporting = false;

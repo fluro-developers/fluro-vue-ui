@@ -1,7 +1,6 @@
 <template>
 				<div @click="clicked($event)" :data-field-key="key" class="fluro-content-form-field" v-if="isVisible" v-bind="attributes" :class="fieldClass">
 								<pre v-if="!field">FATAL - NO FIELD SPECIFIED</pre>
-							
 								<template v-if="ready && model">
 												<template v-if="officeUseOnly">
 												</template>
@@ -2974,20 +2973,6 @@ export default {
 
 
 
-
-
-
-								// console.log('TESTING', !!this.$fluro.app, window.adminPanelMode, self.webMode)
-
-
-
-								//console.log('FIELD IS CREATED', self.field.title)
-								////////////////////////////////////////////
-
-								//Clean up any bad input
-
-
-
 								var cleaned = self.fixCorruptedData(self.model[self.field.key]);
 								if (typeof cleaned != typeof self.model[self.field.key] || cleaned != self.model[self.field.key]) {
 												self.$set(self.model, self.field.key, cleaned);
@@ -3842,7 +3827,7 @@ function checkValidInput(self, input) {
 								padding: 15px 15px;
 								background: rgba(#000, 0.05);
 								border-radius: 3px;
-								margin-top: 16px;
+								margin: 16px 0;
 
 								&.has-error {
 												background: rgba(#ff5252, 0.05)

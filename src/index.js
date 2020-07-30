@@ -1,4 +1,4 @@
-console.log('fluro-vue-ui 2.2.1')
+console.log('fluro-vue-ui 2.2.3')
 
 /////////////////////////////////////////////////////
 

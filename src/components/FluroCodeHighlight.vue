@@ -1,34 +1,33 @@
 <template>
-   
-      <code ref="code" class="fluro-code-highlight"><slot/></code>
-      
+        <code ref="code" class="fluro-code-highlight">
+                <slot /></code>
 </template>
 <script>
 export default {
 
-    props: {
-        'lang': {
-            type: String,
-            default: 'javascript',
+        props: {
+                'lang': {
+                        type: String,
+                        default: 'javascript',
+                },
         },
-    },
-    mounted() {
+        mounted() {
 
-// console.log('MOUNTED')
-        var block = this.$refs.code;
+                // console.log('MOUNTED')
+                var block = this.$refs.code;
 
-        if (window.hljs) {
-          console.log(block)
-            window.hljs.highlightBlock(block);
+                if (process.browser) {
+                        if (window.hljs) {
+                                console.log(block)
+                                window.hljs.highlightBlock(block);
+                        }
+                }
+
         }
-
-    }
 }
 
 </script>
 <style lang="scss">
-
-
 /* Tomorrow Night Eighties Theme */
 /* Original theme - https://github.com/chriskempson/tomorrow-theme */
 /* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
@@ -36,7 +35,7 @@ export default {
 /* Tomorrow Comment */
 .hljs-comment,
 .hljs-quote {
-  color: #999999;
+        color: #999999;
 }
 
 /* Tomorrow Red */
@@ -48,7 +47,7 @@ export default {
 .hljs-selector-class,
 .hljs-regexp,
 .hljs-deletion {
-  color: #f2777a;
+        color: #f2777a;
 }
 
 /* Tomorrow Orange */
@@ -60,12 +59,12 @@ export default {
 .hljs-params,
 .hljs-meta,
 .hljs-link {
-  color: #f99157;
+        color: #f99157;
 }
 
 /* Tomorrow Yellow */
 .hljs-attribute {
-  color: #ffcc66;
+        color: #ffcc66;
 }
 
 /* Tomorrow Green */
@@ -73,34 +72,35 @@ export default {
 .hljs-symbol,
 .hljs-bullet,
 .hljs-addition {
-  color: #99cc99;
+        color: #99cc99;
 }
 
 /* Tomorrow Blue */
 .hljs-title,
 .hljs-section {
-  color: #6699cc;
+        color: #6699cc;
 }
 
 /* Tomorrow Purple */
 .hljs-keyword,
 .hljs-selector-tag {
-  color: #cc99cc;
+        color: #cc99cc;
 }
 
 .hljs {
-  display: block;
-  overflow-x: auto;
-  background: #2d2d2d;
-  color: #cccccc;
-  padding: 0.5em;
+        display: block;
+        overflow-x: auto;
+        background: #2d2d2d;
+        color: #cccccc;
+        padding: 0.5em;
 }
 
 .hljs-emphasis {
-  font-style: italic;
+        font-style: italic;
 }
 
 .hljs-strong {
-  font-weight: bold;
+        font-weight: bold;
 }
+
 </style>

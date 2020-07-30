@@ -89,7 +89,6 @@
                             </v-container>
                         </div>
                         <div class="actions">
-                            
                             <template v-if="state == 'processing'">
                                 <template v-if="webMode">
                                     <fluro-button :loading="true" :block="mobile" :large="mobile" :disabled="true">{{submitText}}</fluro-button>
@@ -272,7 +271,7 @@ export default {
             errorMessages: [],
             result: null,
             state: this.defaultState,
-            mounted:false,
+            mounted: false,
         };
     },
     created() {
@@ -1272,12 +1271,14 @@ export default {
                 //Here we generate our client side tokens
                 switch (self.paymentIntegration.module) {
                     case "eway":
-                        if (process.browser && !window.eCrypt) {
-                            self.serverErrors = `ERROR: Eway is selected for payment but the eCrypt script has not been included in this application visit https://eway.io/api-v3/#encrypt-function for more information`;
-                            self.$fluro.error(self.serverErrors);
-                            self.state = "error";
-                            self.$emit("error", err);
-                            return;
+                        if (process.browser) {
+                            if (!window.eCrypt) {
+                                self.serverErrors = `ERROR: Eway is selected for payment but the eCrypt script has not been included in this application visit https://eway.io/api-v3/#encrypt-function for more information`;
+                                self.$fluro.error(self.serverErrors);
+                                self.state = "error";
+                                self.$emit("error", err);
+                                return;
+                            }
                         }
 
                         /////////////////////////////////////////////
@@ -1385,10 +1386,16 @@ export default {
         box-shadow: 0 1px 2px rgba(#000, 0.1);
     }
 
-    dt,
-    label {
-        font-weight: 600;
+    .fluro-content-form-field-custom {
+
+        dt,
+        label {
+            font-weight: 600;
+        }
+
     }
+
+    
 
     .modifier {
         opacity: 0.5;

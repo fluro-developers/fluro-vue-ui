@@ -207,7 +207,9 @@ export default {
 																self.processing = true
 
 																//Visit the url
-																window.location.href = url;
+																if (process.browser) {
+																				window.location.href = url;
+																}
 
 												}
 								}
@@ -261,17 +263,16 @@ export default {
 																title: "Mode",
 																minimum: 1,
 																maximum: 1,
-																directive:'select',
+																directive: 'select',
 																type: "string",
-																options:[
-																{
-																	title:'Live / Production',
-																	value:'prod',
-																},
-																{
-																	title:'Development / Staging',
-																	value:'dev',
-																},
+																options: [{
+																								title: 'Live / Production',
+																								value: 'prod',
+																				},
+																				{
+																								title: 'Development / Staging',
+																								value: 'dev',
+																				},
 
 																]
 												});
