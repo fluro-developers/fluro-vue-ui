@@ -1,8 +1,8 @@
 {
 				"name": "fluro-vue-ui",
-				"version": "2.2.1",
+				"version": "2.2.2",
 				"description": "A package that contains helpful Fluro UI components and mixins",
-				"main": "src/index.js",
+				"main": "dist/index.js",
 				"scripts": {
 								"extract": "node ./extractor.js",
 								"build": "webpack --mode=production --config webpack.config.js",
