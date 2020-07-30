@@ -42,14 +42,15 @@
         <!-- <v-progress-linear class="total-progress" color="primary" v-model="progress"></v-progress-linear> -->
         <!-- <div class="dropbox" v-show="!files.length"> -->
         <!-- accept="image/*" -->
-        <label class="file-drop" v-if="!files.length">
+       
+        <label class="file-drop" :class="{active:dragging}" v-if="!files.length" @dragover.prevent.stop="fileover" @dragleave.prevent.stop="fileout" @drop.prevent.stop="filedrop">
             <input ref="file" type="file" :accept="acceptedFileTypes" @change="fileSelected($event.target)">
             {{description}}
         </label>
+       
     </v-input>
 </template>
 <script>
-
 import _ from 'lodash';
 
 export default {
@@ -62,30 +63,32 @@ export default {
     data() {
         return {
             files: [],
+            dragging: false,
         }
     },
     computed: {
         acceptedFileTypes() {
-            switch(this.value._type) {
+            switch (this.value._type) {
                 case 'image':
                     return ' image/*';
-                break;
+                    break;
                 case 'video':
                     return ' video/*';
-                break;
+                    break;
                 case 'audio':
                     return ' audio/*';
-                break;
+                    break;
                 default:
-                break;
+                    break;
             }
-           
+
         },
         description() {
             if (this.value._id) {
-                return `Click to select or drop a new ${this.type} file`;
+                // Drag and drop a file or click to select
+                return `Click or drag here to upload a new ${this.type} file`;
             } else {
-                return `Click or drop to upload a new ${this.type} file`;
+                return `Click or drag here to upload a new ${this.type} file`;
             }
         },
         label() {
@@ -118,13 +121,38 @@ export default {
             self.$emit('file', null);
             // self.mapFilesToValues();
         },
-        fileSelected(field) {
-            console.log('FILE SELECTED', field);
+        filedrop(e) {
+            console.log('FILEDROP AT FIELD LEVEL')
             var self = this;
+            if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+                e.preventDefault();
+                e.stopPropagation();
+                self.filesSelected(e.dataTransfer.files);
+            }
+            this.dragging = false;
+        },
+        fileout() {
+            console.log('FILEOUT AT FIELD LEVEL')
+            this.dragging = false;
 
-            var list = field.files;
-            if (!list.length) return;
+        },
+        fileover(e) {
+            console.log('FILEOVER AT FIELD LEVEL')
 
+            if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+                // console.log('FILE OVER', e.dataTransfer);
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+
+            this.dragging = true;
+
+
+        },
+        filesSelected(list) {
+            var self = this;
+            self.dragging = false;
             /////////////////////////////////////////
 
             //Update our files list
@@ -156,6 +184,16 @@ export default {
             if (self.value._id) {
                 self.upload();
             }
+        },
+
+        fileSelected(field) {
+            console.log('FILE SELECTED', field);
+            var self = this;
+
+            var list = field.files;
+            if (!list.length) return;
+
+            self.filesSelected(list);
         },
         upload() {
 
@@ -257,8 +295,11 @@ export default {
         }
     },
 }
+
 </script>
 <style lang="scss">
+
+
 .file-drop {
     display: block;
     position: relative;
@@ -279,8 +320,12 @@ export default {
 
     &:hover,
     &:focus,
-    &:active {
-        background: #fff;
+    &:active,
+    &.active,
+        {
+        background: rgba($primary, 0.1); //#fff;
+        color: $primary;
+        border-color: $primary;
     }
 
 
@@ -324,4 +369,5 @@ export default {
         }
     }
 }
+
 </style>

@@ -314,8 +314,9 @@
                 </template>
                 <template v-if="model._id && definition">
                     <tab heading="Preview">
-
-                        <!-- <mailout-render-preview :mailout="model._id" :definition="definition.definitionName" /> -->
+<flex-column style="border-left:1px solid #ddd">
+                        <mailout-render-preview :mailout="model._id" :definition="definition.definitionName" />
+                    </flex-column>
                     </tab>
                     <tab heading="Testing" v-if="model.state != 'sent'">
                         <mailout-test-panel v-model="model" />
@@ -352,11 +353,11 @@ import Vue from 'vue';
 
 /////////////////////////////////
 
-import MailoutRenderPreview from 'src/components/mailout/MailoutRenderPreview.vue';
-import MailoutResultsPanel from 'src/components/mailout/MailoutResultsPanel.vue';
-import MailoutPreflightPanel from 'src/components/mailout/MailoutPreflightPanel.vue';
-import MailoutTestPanel from 'src/components/mailout/MailoutTestPanel.vue';
-import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
+import MailoutRenderPreview from '../../../mailout/MailoutRenderPreview.vue';
+import MailoutResultsPanel from '../../../mailout/MailoutResultsPanel.vue';
+import MailoutPreflightPanel from '../../../mailout/MailoutPreflightPanel.vue';
+import MailoutTestPanel from '../../../mailout/MailoutTestPanel.vue';
+import FluroContentEditMixin from '../FluroContentEditMixin.js';
 
 
 /////////////////////////////////

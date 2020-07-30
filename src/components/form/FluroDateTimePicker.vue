@@ -16,13 +16,13 @@
             <!-- <v-card> -->
             <!-- <v-card-text style="padding: 0;"> -->
             <fluro-tabset v-model="activeTab" :justified="true">
-                <fluro-tab heading="Date">
+                <fluro-tab heading="Date" index="date">
                     <!-- <pre>{{typeof datetime}}</pre> -->
                     <!-- <pre>{{datePart}}</pre> -->
                     <!--  -->
                     <v-date-picker attach class="elevation-0" :min="minDateString" :max="maxDateString" full-width v-model="datePart" scrollable :locale="locale" actions></v-date-picker>
                 </fluro-tab>
-                <fluro-tab heading="Time">
+                <fluro-tab heading="Time" index="time">
                     <!-- <pre>{{typeof datetime}}</pre> -->
                     <!-- <pre>{{timePart}}</pre> -->
                     <v-time-picker ref="timer" attach full-width class="v-time-picker-custom elevation-0" v-model="timePart" scrollable :format="timePickerFormat" actions></v-time-picker>
@@ -62,8 +62,8 @@
 </template>
 <script>
 
-import FluroTab from 'src/components/ui/tabset/FluroTab.vue'
-import FluroTabset from 'src/components/ui/tabset/FluroTabset.vue'
+import FluroTab from '../ui/tabset/FluroTab.vue'
+import FluroTabset from '../ui/tabset/FluroTabset.vue'
 
 const DEFAULT_DATE_FORMAT = 'YYYY-MM-DD'
 const DEFAULT_TIME_FORMAT = 'HH:mm'
@@ -165,7 +165,7 @@ export default {
             display: false,
             dateSelected: false,
             timeSelected: false,
-            activeTab: 0,
+            activeTab: 'date',
             selectedDatetime: null
         }
     },
@@ -205,7 +205,7 @@ export default {
             set(val) {
                 var self = this;
                 self.dateSelected = true
-                self.activeTab = 1
+                self.activeTab = 'time'
 
                 var moment = self.$fluro.date.moment;
                 let date = moment(val, DEFAULT_DATE_FORMAT)
@@ -240,7 +240,7 @@ export default {
     methods: {
         okHandler() {
             this.display = false
-            this.activeTab = 0
+            this.activeTab = 'date';
             if(this.$refs.timer) {
                 this.$refs.timer.selectingHour = true
             }

@@ -38,8 +38,8 @@
     </div>
 </template>
 <script>
-import FluroConfirmButton from 'src/components/ui/FluroConfirmButton.vue';
-import ReminderEventComponent from 'src/components/content/edit/components/ReminderEventComponent.vue';
+import FluroConfirmButton from '../../../ui/FluroConfirmButton.vue';
+import ReminderEventComponent from './ReminderEventComponent.vue';
 
 
 export default {

@@ -71,8 +71,8 @@
 /////////////////////////////////
 import _ from 'lodash';
 
-import PlanRow from "src/components/content/view/components/PlanRowView.vue";
-import FluroContentViewMixin from 'src/components/content/view/FluroContentViewMixin.js';
+import PlanRow from "../components/PlanRowView.vue";
+import FluroContentViewMixin from '../FluroContentViewMixin.js';
 
 //////////////////////////////////////////////////////
 

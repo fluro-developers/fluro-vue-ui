@@ -139,9 +139,9 @@ export default {
     }
 
     &.proposed {
-        background: desaturate(lighten($primary, 45%), 5%);
-        color: desaturate(darken($primary, 10%), 15%);
-        border-color: rgba(desaturate(darken($primary, 10%), 15%), 0.3);
+        background: desaturate(lighten($proposedColor, 45%), 5%);
+        color: desaturate(darken($proposedColor, 10%), 15%);
+        border-color: rgba(desaturate(darken($proposedColor, 10%), 15%), 0.3);
     }
 
     &.unknown {

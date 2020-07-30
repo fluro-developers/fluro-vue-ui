@@ -64,8 +64,8 @@
   </div>
 </template>
 <script>
-import FluroConfirmButton from "src/components/ui/FluroConfirmButton.vue";
-import FluroContentForm from "src/components/form/FluroContentForm.vue";
+import FluroConfirmButton from "../../../ui/FluroConfirmButton.vue";
+import FluroContentForm from "../../../form/FluroContentForm.vue";
 import draggable from "vuedraggable";
 import _ from "lodash";
 

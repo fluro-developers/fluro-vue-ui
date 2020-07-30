@@ -1,68 +1,66 @@
 <template>
     <flex-column>
-        <template v-if="loading">
-            <fluro-page-preloader contain />
-        </template>
-        <template v-else>
-            <!-- :vertical="true" -->
-            <tabset :justified="true" :vertical="true">
-                <tab heading="Details">
-                    <flex-column-body style="background: #fafafa;">
-                        <v-container fluid>
-                            <constrain sm>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
-                                <template v-if="!model._id || assetType != 'upload'">
-                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.assetType" v-model="model"></fluro-content-form-field>
-                                </template>
-                                <template v-if="assetType == 'upload'">
-                                    <!-- If we already exist -->
-                                    <template v-if="model._id">
-                                        <template v-if="replace">
-                                            <asset-replace-upload v-model="model" @input="assetReplaced" />
+        <div class="file-drop-area" :class="{active:dragging}" @dragover.prevent.stop="fileover" @dragleave.prevent.stop="fileout" @drop.prevent.stop="filedrop">
+            <template v-if="loading">
+                <fluro-page-preloader contain />
+            </template>
+            <template v-else>
+                <!-- :vertical="true" -->
+                <tabset :justified="true" :vertical="true">
+                    <tab heading="Details">
+                        <flex-column-body style="background: #fafafa;">
+                            <v-container fluid>
+                                <constrain sm>
+                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
+                                    <template v-if="!model._id || assetType != 'upload'">
+                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.assetType" v-model="model"></fluro-content-form-field>
+                                    </template>
+                                    <template v-if="assetType == 'upload'">
+                                        <!-- If we already exist -->
+                                        <template v-if="model._id">
+                                            <template v-if="replace">
+                                                <asset-replace-upload ref="replaceForm"  v-model="model" @input="assetReplaced" />
+                                            </template>
+                                            <template v-else>
+                                                <v-input :label="model.filename" class="no-flex">
+                                                    <div>
+                                                        <v-btn class="ma-0" @click="replace = true">
+                                                            Replace with a new file
+                                                            <fluro-icon right library="fas" icon="cloud-upload" />
+                                                        </v-btn>
+                                                    </div>
+                                                </v-input>
+                                            </template>
                                         </template>
                                         <template v-else>
-                                            <v-input :label="model.filename" class="no-flex">
-                                                <div>
-                                                    <v-btn class="ma-0" @click="replace = true">
-                                                        Replace with a new file
-                                                        <fluro-icon right library="fas" icon="cloud-upload" />
-                                                    </v-btn>
-                                                </div>
-                                            </v-input>
+                                            <asset-replace-upload ref="replaceForm"  v-model="model" @file="fileSelected" />
                                         </template>
                                     </template>
                                     <template v-else>
-                                        <asset-replace-upload v-model="model" @file="fileSelected" />
+                                        <fluro-content-form v-model="model.external" :fields="externalFields">
+                                            <!-- <template v-slot:form="{formFields, fieldHash, model, update, options}"> -->
+                                            <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.youtube" v-model="model"/> -->
+                                            <!-- </template> -->
+                                        </fluro-content-form>
                                     </template>
-                                </template>
-                                <template v-else>
-                                    <fluro-content-form v-model="model.external" :fields="externalFields">
-                                        <!-- <template v-slot:form="{formFields, fieldHash, model, update, options}"> -->
-                                        <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.youtube" v-model="model"/> -->
-                                        <!-- </template> -->
-                                    </fluro-content-form>
-                                </template>
-                                <v-container px-0 pt-0 v-if="showVideo">
-                                    <fluro-video :cacheKey="videoCacheKey" :item="model" />
-                                </v-container>
-
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.poster" v-model="model"></fluro-content-form-field>
-                                <template v-if="!hideBody && !fullBody">
-                                    <v-input label="Body / Caption" class="no-flex">
-                                        <fluro-editor v-model="model.body" :options="editorOptions" placeholder="Type your text in here"></fluro-editor>
-                                    </v-input>
-                                </template>
-
-
-                                <template v-if="definition && definition.fields && definition.fields.length">
-                                    <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
-                                </template>
-                                <fluro-privacy-select v-model="model.privacy" />
-                            </constrain>
-                        </v-container>
-                    </flex-column-body>
-                </tab>
-                <!-- <tab :heading="`${definition.title} Information`" v-if="definition && definition.fields && definition.fields.length">
+                                    <v-container px-0 pt-0 v-if="showVideo">
+                                        <fluro-video :cacheKey="videoCacheKey" :item="model" />
+                                    </v-container>
+                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.poster" v-model="model"></fluro-content-form-field>
+                                    <template v-if="!hideBody && !fullBody">
+                                        <v-input label="Body / Caption" class="no-flex">
+                                            <fluro-editor v-model="model.body" :options="editorOptions" placeholder="Type your text in here"></fluro-editor>
+                                        </v-input>
+                                    </template>
+                                    <template v-if="definition && definition.fields && definition.fields.length">
+                                        <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
+                                    </template>
+                                    <fluro-privacy-select v-model="model.privacy" />
+                                </constrain>
+                            </v-container>
+                        </flex-column-body>
+                    </tab>
+                    <!-- <tab :heading="`${definition.title} Information`" v-if="definition && definition.fields && definition.fields.length">
                     <flex-column-body style="background: #fafafa;">
                         <v-container fluid>
                             <constrain sm>
@@ -71,7 +69,7 @@
                         </v-container>
                     </flex-column-body>
                 </tab> -->
-                <!-- <tab heading="Advanced / Metadata" v-if="hasMeta">
+                    <!-- <tab heading="Advanced / Metadata" v-if="hasMeta">
                     <flex-column-body style="background: #fafafa;">
                         <v-container fluid>
                             <constrain sm>
@@ -99,17 +97,18 @@
                         </v-container>
                     </flex-column-body>
                 </tab> -->
-            </tabset>
-        </template>
+                </tabset>
+            </template>
+        </div>
     </flex-column>
 </template>
 <script>
 /////////////////////////////////
 
-import FluroEditor from 'src/components/form/FluroEditor.vue';
-import FluroCodeEditor from 'src/components/form/FluroEditor.vue';
-import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
-import FluroAssetEditMixin from 'src/components/content/edit/FluroAssetEditMixin';
+import FluroEditor from '../../../form/FluroEditor.vue';
+import FluroCodeEditor from '../../../form/FluroEditor.vue';
+import FluroContentEditMixin from '../FluroContentEditMixin.js';
+import FluroAssetEditMixin from '../FluroAssetEditMixin';
 
 /////////////////////////////////
 
@@ -236,13 +235,13 @@ export default {
 
             addField('poster', {
                 title: 'Poster / Thumbnail Image',
-                description:'Customise the poster image for this video',
+                description: 'Customise the poster image for this video',
                 minimum: 0,
                 maximum: 1,
                 type: 'reference',
-                params:{
-                    restrictType:'image',
-                    allDefinitions:true,
+                params: {
+                    restrictType: 'image',
+                    allDefinitions: true,
                 }
             });
 
@@ -355,6 +354,7 @@ export default {
     },
 
 }
+
 </script>
 <style lang="scss">
 .media-preview {
@@ -371,6 +371,7 @@ export default {
         margin: auto;
     }
 }
+
 </style>
 <style lang="scss" scoped>
 .color-swatch {
@@ -380,4 +381,5 @@ export default {
     margin: 0 1px 1px 0;
     display: inline-block;
 }
+
 </style>

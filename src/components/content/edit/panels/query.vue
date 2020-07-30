@@ -119,10 +119,10 @@
 <script>
 /////////////////////////////////
 
-import FluroContentEditMixin from "src/components/content/edit/FluroContentEditMixin.js";
-import FilterConditionGroup from "src/components/form/filters/FilterConditionGroup.vue";
-import ColumnCustomiser from "src/components/content/edit/components/ColumnCustomiser.vue";
-// import ResultSetEdit from 'src/components/content/edit/panels/resultset.vue'
+import FluroContentEditMixin from "../FluroContentEditMixin.js";
+import FilterConditionGroup from "../../../form/filters/FilterConditionGroup.vue";
+import ColumnCustomiser from "../components/ColumnCustomiser.vue";
+// import ResultSetEdit from './resultset.vue'
 /////////////////////////////////
 
 import Vue from "vue";

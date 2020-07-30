@@ -29,6 +29,7 @@
 																																				<fluro-panel-body>
 																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.bundleIDs" v-model="model" />
 																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.nativeEngine" v-model="model" />
+																																								<!-- <pre>{{model.nativeEngine}}</pre> -->
 																																				</fluro-panel-body>
 																																</fluro-panel>
 																																<!--  <div v-if="definition && definition.fields && definition.fields.length">
@@ -48,10 +49,10 @@
 																																<v-flex>
 																																				<h5>{{devices.length}} Devices</h5>
 																																</v-flex>
-																																<v-flex shrink v-if="deviceSelection.selection.length">
-																																				<v-btn color="primary">
-																																								{{deviceSelection.selection.length}} selected
-																																								<fluro-icon icon="angle-right" />
+																																<v-flex shrink>
+																																				<v-btn color="primary" :loading="sending" @click="sendPush()">
+																																								Send Push to {{pushDevices.length}}
+																																								<fluro-icon icon="paper-plane" right />
 																																				</v-btn>
 																																</v-flex>
 																												</v-layout>
@@ -141,11 +142,11 @@
 <script>
 /////////////////////////////////
 
-import FluroContentEditMixin from "src/components/content/edit/FluroContentEditMixin.js";
-import FluroPermissionSelect from "src/components/form/FluroPermissionSelect.vue";
-import RedirectManager from "src/components/content/edit/components/RedirectManager.vue";
-import FluroTable from 'src/components/table/FluroTable.vue';
-import FluroSelector from 'src/components/form/contentselect/FluroSelector.vue';
+import FluroContentEditMixin from "../FluroContentEditMixin.js";
+import FluroPermissionSelect from "../../../form/FluroPermissionSelect.vue";
+import RedirectManager from "../components/RedirectManager.vue";
+import FluroTable from '../../../table/FluroTable.vue';
+import FluroSelector from '../../../form/contentselect/FluroSelector.vue';
 
 
 
@@ -186,6 +187,19 @@ export default {
 								},
 				},
 				computed: {
+								pushDevices() {
+												var self = this;
+
+												var devices = self.devices;
+
+												if (self.deviceSelection && self.deviceSelection.selection.length) {
+																devices = self.deviceSelection.selection
+												}
+
+												return _.filter(devices, function(device) {
+																return device.notificationID;
+												})
+								},
 								deviceSelection() {
 
 												var SelectionManager = Vue.extend(FluroSelector);
@@ -431,12 +445,91 @@ export default {
 								}
 				},
 				methods: {
+								sendPush() {
+												var self = this;
+
+
+												var fields = [];
+
+
+												fields.push({
+																title: 'Title',
+																key: 'title',
+																description: 'The main title of this notification',
+																minimum: 1,
+																maximum: 1,
+												})
+
+												fields.push({
+																title: 'Body',
+																key: 'body',
+																directive: 'textarea',
+																description: 'Subtext for this notification',
+																minimum: 0,
+																maximum: 1,
+												})
+
+												fields.push({
+																title: 'URL Path',
+																key: 'path',
+																type: 'string',
+																placeholder: 'Eg. /notifications',
+																description: 'The path you app should navigate to if a user taps this notification (Include preceding slash)',
+																minimum: 0,
+																maximum: 1,
+												})
+
+												self.sending = true;
+
+												var devices = self.$fluro.utils.arrayIDs(self.pushDevices);
+
+												self.$fluro.prompt(fields, `New Notification`, `Sending to ${devices.length} devices`)
+																.then(function(answers) {
+
+
+																				
+
+																				//////////////////////////////////////////////////
+
+																				self.$fluro.api.post(`/native/${self.model._id}/messages`, {
+																												devices,
+																												notification: {
+																																title: answers.title,
+																																body: answers.body,
+																												},
+																												data: {
+																																path: answers.path ? answers.path : null,
+																												}
+																								})
+																								.then(function(res) {
+
+																												self.sending = false;
+																												self.$fluro.notify('Notification was sent!')
+																								}, failed)
+
+																}, failed)
+
+
+												function failed(err) {
+
+																if (err) {
+																				self.$fluro.error(err);
+																}
+
+																self.sending = false;
+
+												}
+
+								},
 								modelUpdated() {
+
 												this.update(this.model);
 								}
 				},
 				data() {
-								return {};
+								return {
+												sending: false,
+								};
 				}
 };
 

@@ -148,8 +148,8 @@
 </template>
 <script>
 import draggable from "vuedraggable";
-import FluroSelectionMixin from "src/mixins/FluroSelectionMixin.js";
-import FluroContentSelectModal from "src/components/form/contentselect/FluroContentSelectModal.vue";
+import FluroSelectionMixin from "../../mixins/FluroSelectionMixin.js";
+import FluroContentSelectModal from "./contentselect/FluroContentSelectModal.vue";
 import _ from "lodash";
 
 export default {

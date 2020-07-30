@@ -221,11 +221,11 @@ import Vue from 'vue';
 import _ from 'lodash';
 
 
-import FluroContentView from 'src/components/content/view/FluroContentView.vue';
-import LocationViewMapComponent from 'src/components/content/event/LocationViewMapComponent.vue';
-import FluroContentViewMixin from 'src/components/content/view/FluroContentViewMixin.js';
-import GuestList from 'src/components/content/event/GuestList.vue';
-import TicketList from 'src/components/content/event/TicketList.vue';
+import FluroContentView from '../FluroContentView.vue';
+import LocationViewMapComponent from '../../event/LocationViewMapComponent.vue';
+import FluroContentViewMixin from '../FluroContentViewMixin.js';
+import GuestList from '../../event/GuestList.vue';
+import TicketList from '../../event/TicketList.vue';
 
 /////////////////////////////////
 
@@ -410,8 +410,8 @@ export default {
     }
 
     &.proposed {
-        background-color: rgba($primary, 0.1);
-        color: darken($primary, 20%);
+        background-color: rgba($proposedColor, 0.1);
+        color: darken($proposedColor, 20%);
     }
 }
 </style>

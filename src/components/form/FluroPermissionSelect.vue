@@ -129,8 +129,8 @@
 import Vue from 'vue';
 import _ from 'lodash';
 
-import FluroRealmSelect from 'src/components/form/realmselect/FluroRealmSelect.vue';
-import FluroContentSelectButton from 'src/components/form/contentselect/FluroContentSelectButton.vue';
+import FluroRealmSelect from './realmselect/FluroRealmSelect.vue';
+import FluroContentSelectButton from './contentselect/FluroContentSelectButton.vue';
 
 ///////////////////////////////////////////////
 

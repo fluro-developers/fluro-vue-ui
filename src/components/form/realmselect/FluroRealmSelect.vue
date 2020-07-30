@@ -13,14 +13,14 @@ import Vue from 'vue';
 import _ from 'lodash';
 
 
-import FluroRealmDots from 'src/components/ui/FluroRealmDots.vue';
-import FluroRealmSelectItem from 'src/components/form/realmselect/FluroRealmSelectItem.vue';
-import FluroSelectionMixin from 'src/mixins/FluroSelectionMixin';
-import Layout from 'src/mixins/Layout';
+import FluroRealmDots from '../../ui/FluroRealmDots.vue';
+import FluroRealmSelectItem from './FluroRealmSelectItem.vue';
+import FluroSelectionMixin from '../../../mixins/FluroSelectionMixin';
+import Layout from '../../../mixins/Layout';
 
 ///////////////////////////////////////////////
 
-import RealmSelectModal from 'src/components/form/realmselect/RealmSelectModal.vue';
+import RealmSelectModal from './RealmSelectModal.vue';
 
 ///////////////////////////////////////////////
 

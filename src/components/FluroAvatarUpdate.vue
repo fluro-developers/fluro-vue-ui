@@ -10,7 +10,7 @@
     </label>
 </template>
 <script>
-import FluroAvatar from 'src/components/FluroAvatar.vue';
+import FluroAvatar from './FluroAvatar.vue';
 import _ from 'lodash';
 
 

@@ -56,8 +56,8 @@
   </div>
 </template>
 <script>
-import FluroContentForm from "src/components/form/FluroContentForm.vue";
-import FluroConfirmButton from "src/components/ui/FluroConfirmButton.vue";
+import FluroContentForm from "../../../form/FluroContentForm.vue";
+import FluroConfirmButton from "../../../ui/FluroConfirmButton.vue";
 import draggable from "vuedraggable";
 
 export default {

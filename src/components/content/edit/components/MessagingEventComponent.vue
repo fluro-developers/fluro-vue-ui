@@ -132,8 +132,8 @@
 <script>
 
     //TODO Check whether this mixin needs to be included? I think james has it here by mistake
-import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
-import FluroContentForm from 'src/components/form/FluroContentForm.vue';
+import FluroContentEditMixin from '../FluroContentEditMixin.js';
+import FluroContentForm from '../../../form/FluroContentForm.vue';
 
 
 

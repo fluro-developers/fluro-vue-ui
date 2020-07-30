@@ -4,7 +4,7 @@
   </div>
 </template>
 <script>
-import DynamicImportService from "src/DynamicImportService.js";
+import DynamicImportService from "../../DynamicImportService.js";
 
 // import CodeEditor from 'vue2-ace-editor';
 // import js_beautify from 'js-beautify';

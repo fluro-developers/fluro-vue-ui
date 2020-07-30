@@ -123,10 +123,10 @@
   </flex-column>
 </template>
 <script>
-import FluroHelp from "src/components/FluroHelp.vue";
-import FluroModalMixin from "src/mixins/ModalMixin.js";
-import FluroExpressionEditor from "src/components/form/FluroExpressionEditor.vue";
-import PaymentModifierAccordionPanel from "src/components/content/edit/components/PaymentModifierAccordionPanel.vue";
+import FluroHelp from "../../../FluroHelp.vue";
+import FluroModalMixin from "../../../../mixins/ModalMixin.js";
+import FluroExpressionEditor from "../../../form/FluroExpressionEditor.vue";
+import PaymentModifierAccordionPanel from "./PaymentModifierAccordionPanel.vue";
 
 export default {
   components: {

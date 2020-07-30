@@ -44,9 +44,9 @@
     </div>
 </template>
 <script>
-import ListGroup from 'src/components/ui/ListGroup.vue';
-import ListGroupItem from 'src/components/ui/ListGroupItem.vue';
-import ContactProcessState from 'src/components/content/edit/components/ContactProcessState.vue';
+import ListGroup from '../../../ui/ListGroup.vue';
+import ListGroupItem from '../../../ui/ListGroupItem.vue';
+import ContactProcessState from './ContactProcessState.vue';
 
 import Vue from 'vue';
 

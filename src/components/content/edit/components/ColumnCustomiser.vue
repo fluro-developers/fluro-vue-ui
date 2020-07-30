@@ -58,9 +58,9 @@
     </div>
 </template>
 <script>
-import FluroConfirmButton from "src/components/ui/FluroConfirmButton.vue";
-import FluroContentEditMixin from "src/components/content/edit/FluroContentEditMixin.js";
-import PathSelector from "src/components/content/edit/components/PathSelector.vue";
+import FluroConfirmButton from "../../../ui/FluroConfirmButton.vue";
+import FluroContentEditMixin from "../FluroContentEditMixin.js";
+import PathSelector from "./PathSelector.vue";
 import _ from 'lodash';
 
 export default {

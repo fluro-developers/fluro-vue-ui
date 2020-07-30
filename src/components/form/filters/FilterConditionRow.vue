@@ -247,12 +247,12 @@
 import { FilterService } from "fluro";
 import _ from "lodash";
 
-import DynamicImportService from "src/DynamicImportService";
+import DynamicImportService from "../../../DynamicImportService";
 
-import FluroRealmSelect from "src/components/form/realmselect/FluroRealmSelect.vue";
-// import FluroContentSelectButton from 'src/components/form/contentselect/FluroContentSelectButton.vue';
-// import FilterConditionRow from 'src/components/form/filters/FilterConditionRow.vue';
-// import FilterConditionGroup from 'src/components/form/filters/FilterConditionGroup.vue';
+import FluroRealmSelect from "../realmselect/FluroRealmSelect.vue";
+// import FluroContentSelectButton from '../contentselect/FluroContentSelectButton.vue';
+// import FilterConditionRow from './FilterConditionRow.vue';
+// import FilterConditionGroup from './FilterConditionGroup.vue';
 
 export default {
 				name: "filter-condition-row",
@@ -306,22 +306,22 @@ export default {
 
 								Promise.all([
 												DynamicImportService.load(
-																"src/components/form/filters/FilterConditionGroup.vue",
+																"./FilterConditionGroup.vue",
 																function() {
-																				return import("src/components/form/filters/FilterConditionGroup.vue");
+																				return import("./FilterConditionGroup.vue");
 																}
 												),
 												DynamicImportService.load(
-																"src/components/form/filters/FilterConditionRow.vue",
+																"./FilterConditionRow.vue",
 																function() {
-																				return import("src/components/form/filters/FilterConditionRow.vue");
+																				return import("./FilterConditionRow.vue");
 																}
 												),
 												DynamicImportService.load(
-																"src/components/form/contentselect/FluroContentSelectButton.vue",
+																"../contentselect/FluroContentSelectButton.vue",
 																function() {
 																				return import(
-																								"src/components/form/contentselect/FluroContentSelectButton.vue"
+																								"../contentselect/FluroContentSelectButton.vue"
 																				);
 																}
 												)
@@ -334,8 +334,8 @@ export default {
 								});
 				},
 				// beforeCreate: function() {
-				//     this.$options.components.FilterConditionRow = require('src/components/form/filters/FilterConditionRow.vue').default;
-				//     this.$options.components.FilterConditionGroup = require('src/components/form/filters/FilterConditionGroup.vue').default;
+				//     this.$options.components.FilterConditionRow = require('./FilterConditionRow.vue').default;
+				//     this.$options.components.FilterConditionGroup = require('./FilterConditionGroup.vue').default;
 				// },
 
 

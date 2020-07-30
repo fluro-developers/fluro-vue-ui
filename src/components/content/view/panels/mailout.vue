@@ -6,21 +6,21 @@
         <template v-else>
             <!-- <pre>{{activeTabIndex}} {{item.state}} {{resultsEnabled}}</pre> -->
             <tabset v-model="activeTabIndex" :justified="true">
-                <tab heading="Results" v-if="item.state == 'sent'">
+               <!--  <tab heading="Results" v-if="item.state == 'sent'" index="sentresults">
                      <mailout-results-panel v-model="item"/>
                     
-                </tab>
-                <tab heading="Rendered Preview">
+                </tab> -->
+                <tab heading="Rendered Preview" index="preview">
                     <mailout-render-preview :mailout="item._id" :definition="item.definition" />
                 </tab>
-                <tab heading="Test" v-if="item.state != 'sent'">
+                <tab heading="Test" v-if="item.state != 'sent'" index="test">
                     <mailout-test-panel v-model="item"/>
                 </tab>
-                <tab :heading="sendHeading" v-if="item.state != 'sent'">
+                <tab :heading="sendHeading" v-if="item.state != 'sent'" index="preflight">
                     <mailout-preflight-panel v-model="item"/>
                     
                 </tab>
-                <tab heading="Results" v-if="item.state != 'sent' && resultsEnabled">
+                <tab heading="Results" v-if="resultsEnabled" index="results">
                      <mailout-results-panel v-model="item"/>
                     
                 </tab>
@@ -36,11 +36,11 @@
 import Vue from 'vue';
 
 
-import FluroContentViewMixin from 'src/components/content/view/FluroContentViewMixin.js';
-import MailoutRenderPreview from 'src/components/mailout/MailoutRenderPreview.vue';
-import MailoutTestPanel from 'src/components/mailout/MailoutTestPanel.vue';
-import MailoutResultsPanel from 'src/components/mailout/MailoutResultsPanel.vue';
-import MailoutPreflightPanel from 'src/components/mailout/MailoutPreflightPanel.vue';
+import FluroContentViewMixin from '../FluroContentViewMixin.js';
+import MailoutRenderPreview from '../../../mailout/MailoutRenderPreview.vue';
+import MailoutTestPanel from '../../../mailout/MailoutTestPanel.vue';
+import MailoutResultsPanel from '../../../mailout/MailoutResultsPanel.vue';
+import MailoutPreflightPanel from '../../../mailout/MailoutPreflightPanel.vue';
 
 
 
@@ -165,8 +165,10 @@ export default {
     },
     data() {
 
+        var state = this.item.state;
+
         return {
-            activeTabIndex:0,
+            activeTabIndex: state == 'sent' ? 'results' :'preview',
             search: '',
             
         }

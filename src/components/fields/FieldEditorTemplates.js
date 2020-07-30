@@ -1,5 +1,3 @@
-
-
 let templates = [];
 
 //////////////////////////////////
@@ -28,12 +26,12 @@ templates.push({
         askCount: 1,
         type: 'string',
         key: '',
-        directive:'select',
-        options:[
-            'Option One',
-            'Option Two',
-            'Option Three',
-            'Option Four',
+        directive: 'select',
+        options: [
+            { name: 'Option One', value: 'Option One' },
+            { name: 'Option Two', value: 'Option Two' },
+            { name: 'Option Three', value: 'Option Three' },
+            { name: 'Option Four', value: 'Option Four' },
         ],
 
     }
@@ -42,7 +40,7 @@ templates.push({
 
 templates.push({
     title: 'Person',
-    key:'person',
+    key: 'person',
     description: `Add a new Contact Reference Field including the basic details (First Name, Last Name etc..)`,
     field: {
         title: '',
@@ -379,8 +377,8 @@ templates.push({
         maximum: 0,
         type: 'reference',
         directive: 'upload',
-        params:{
-            restrictType:'image'
+        params: {
+            restrictType: 'image'
         },
         key: 'upload',
     },

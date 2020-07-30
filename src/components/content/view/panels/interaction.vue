@@ -97,8 +97,8 @@
 
 import Vue from "vue";
 
-import FluroContentViewMixin from "src/components/content/view/FluroContentViewMixin.js";
-import TicketList from "src/components/content/event/TicketList.vue";
+import FluroContentViewMixin from "../FluroContentViewMixin.js";
+import TicketList from "../../event/TicketList.vue";
 
 /////////////////////////////////
 

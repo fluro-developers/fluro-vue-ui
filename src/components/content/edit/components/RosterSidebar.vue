@@ -13,7 +13,7 @@
         </flex-column-header>
         <flex-column>
             <tabset v-model="activeTabIndex" v-if="slot">
-                <tab :heading="`${rosteredCount} Rostered`">
+                <tab :heading="`${rosteredCount} Rostered`" index="rostered">
                     <flex-column-body>
                         <v-container>
                             <v-container pa-0 pb-2>
@@ -90,7 +90,7 @@
                         </v-container>
                     </flex-column-body>
                 </tab>
-                <tab :heading="`${unavailableCount} Unavailable`">
+                <tab :heading="`${unavailableCount} Unavailable`" index="unavailable">
                     <flex-column-body>
                         <v-container>
                             <v-container pa-0 pb-2 v-if="conflicts.length">
@@ -124,8 +124,8 @@
     </flex-column>
 </template>
 <script>
-import RosterSlotSuggestionListItem from 'src/components/content/edit/components/RosterSlotSuggestionListItem.vue';
-import RosterSlotAssignmentListItem from 'src/components/content/edit/components/RosterSlotAssignmentListItem.vue';
+import RosterSlotSuggestionListItem from './RosterSlotSuggestionListItem.vue';
+import RosterSlotAssignmentListItem from './RosterSlotAssignmentListItem.vue';
 import _ from 'lodash';
 
 export default {
@@ -140,7 +140,7 @@ export default {
     },
     data() {
         return {
-            activeTabIndex: 0,
+            activeTabIndex:'rostered',
             search: '',
             searchFocussed: false,
             searching: false,
@@ -529,7 +529,7 @@ export default {
             if (this.$refs.search) {
                 this.$refs.search.focus();
             }
-            this.activeTabIndex = 0;
+            this.activeTabIndex = 'rostered';
         },
         reloadSuggestions() {
 

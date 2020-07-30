@@ -89,10 +89,10 @@
 <script>
 
 
-import FluroContentForm from 'src/components/form/FluroContentForm.vue';
-import FluroContentFormField from 'src/components/form/FluroContentFormField.vue';
-import FluroModalMixin from 'src/mixins/ModalMixin';
-import FluroContentSelectButton from 'src/components/form/contentselect/FluroContentSelectButton.vue';
+import FluroContentForm from '../form/FluroContentForm.vue';
+import FluroContentFormField from '../form/FluroContentFormField.vue';
+import FluroModalMixin from '../../mixins/ModalMixin';
+import FluroContentSelectButton from '../form/contentselect/FluroContentSelectButton.vue';
 
 
 

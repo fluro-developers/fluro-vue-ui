@@ -31,7 +31,7 @@ import _ from 'lodash';
 import { Youtube } from 'vue-youtube'; // Vue.use(Youtube);
 
 
-import DynamicImportService from 'src/DynamicImportService.js';
+import DynamicImportService from '../DynamicImportService.js';
 
 
 export default {
@@ -67,6 +67,11 @@ export default {
 												}
 								}
 				},
+				// beforeCreate() {
+								// this.$options.components.FluroContentForm = require('./FluroContentForm.vue').default;
+					
+								//this.ready = true;
+				// },
 				mounted() {
 
 								var self = this;

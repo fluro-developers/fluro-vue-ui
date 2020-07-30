@@ -1,7 +1,7 @@
-import FluroContentForm from 'src/components/form/FluroContentForm.vue';
-import FluroContentFormField from "src/components/form/FluroContentFormField.vue";
-import FluroPrivacySelect from "src/components/form/FluroPrivacySelect.vue";
-import FluroHelp from 'src/components/FluroHelp.vue';
+import FluroContentForm from '../../form/FluroContentForm.vue';
+import FluroContentFormField from "../../form/FluroContentFormField.vue";
+import FluroPrivacySelect from "../../form/FluroPrivacySelect.vue";
+import FluroHelp from '../../FluroHelp.vue';
 
 export default {
 	props: {
@@ -70,6 +70,8 @@ export default {
 		}
 	},
 	methods: {
-
+		update() {
+			this.$emit('input', this.model);
+		}
 	}
 }

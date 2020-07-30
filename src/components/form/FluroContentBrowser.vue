@@ -59,7 +59,7 @@
     </div>
 </template>
 <script>
-import FluroSelectionMixin from 'src/mixins/FluroSelectionMixin.js';
+import FluroSelectionMixin from '../../mixins/FluroSelectionMixin.js';
 import _ from 'lodash';
 
 

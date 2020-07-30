@@ -190,15 +190,15 @@
 import Vue from "vue";
 import _ from "lodash";
 
-import FluroTagSelect from "src/components/form/tagselect/FluroTagSelect.vue";
-import FluroQuickPrivacy from "src/components/form/FluroQuickPrivacy.vue";
-import FluroRealmSelect from "src/components/form/realmselect/FluroRealmSelect.vue";
-import FluroStatusSelect from "src/components/form/FluroStatusSelect.vue";
-import FluroInlineEdit from "src/components/form/FluroInlineEdit.vue";
-import FluroContentFormField from "src/components/form/FluroContentFormField.vue";
-import Changelog from "src/components/content/edit/components/Changelog.vue";
+import FluroTagSelect from "../../form/tagselect/FluroTagSelect.vue";
+import FluroQuickPrivacy from "../../form/FluroQuickPrivacy.vue";
+import FluroRealmSelect from "../../form/realmselect/FluroRealmSelect.vue";
+import FluroStatusSelect from "../../form/FluroStatusSelect.vue";
+import FluroInlineEdit from "../../form/FluroInlineEdit.vue";
+import FluroContentFormField from "../../form/FluroContentFormField.vue";
+import Changelog from "./components/Changelog.vue";
 
-import DynamicImportService from "src/DynamicImportService.js";
+import DynamicImportService from "../../../DynamicImportService.js";
 
 export default {
     props: {
@@ -245,7 +245,7 @@ export default {
             result: null,
             state: "ready",
             tagSearch: "",
-            loading: true
+            loading: true,
         };
     },
     created() {
@@ -276,6 +276,7 @@ export default {
         self.removeListeners();
     },
     methods: {
+
         showRealmsPopup() {
             var realmSelector = this.$refs.realmSelector;
 
@@ -903,7 +904,20 @@ export default {
             return this.config.type;
         },
         definitionTitle() {
-            return this.definition ? this.definition.title : this.typeConfig.title;
+
+            var definition = this.definition;
+
+            if (definition) {
+                return this.definition.title;
+            }
+
+            if (this.typeConfig.definitionName == 'definition') {
+                if (this.model.parentType) {
+                    return `${this.$fluro.types.readable(this.model.parentType)} Definition`;
+                }
+            }
+
+            return this.typeConfig.title;
         },
         typeName() {
             if (!this.typeConfig) {
@@ -917,6 +931,13 @@ export default {
         },
         hasErrors() {
             return (this.errorMessages || []).length ? true : false;
+        },
+        component() {
+            var self = this;
+            if (!self.typeName) {
+                return;
+            }
+            return () => import(`./panels/${this.typeName}.vue`)
         }
     },
     components: {
@@ -930,6 +951,7 @@ export default {
         Changelog
     },
     asyncComputed: {
+        /**
         component: {
             default: null,
             get() {
@@ -942,10 +964,10 @@ export default {
                 switch (self.typeName) {
                     case "academic":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/academic.vue",
+                            "./panels/academic.vue",
                             function() {
                                 return import(
-                                    "src/components/content/edit/panels/academic.vue"
+                                    "./panels/academic.vue"
                                 );
                             }
                         );
@@ -953,313 +975,313 @@ export default {
                         break;
                     case "application":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/application.vue",
+                            "./panels/application.vue",
                             function() {
                                 return import(
-                                    "src/components/content/edit/panels/application.vue"
+                                    "./panels/application.vue"
                                 );
                             }
                         );
                         break;
                     case "article":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/article.vue",
+                            "./panels/article.vue",
                             function() {
-                                return import("src/components/content/edit/panels/article.vue");
+                                return import("./panels/article.vue");
                             }
                         );
                         break;
                     case "asset":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/asset.vue",
+                            "./panels/asset.vue",
                             function() {
-                                return import("src/components/content/edit/panels/asset.vue");
+                                return import("./panels/asset.vue");
                             }
                         );
                         break;
                     case "attendance":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/attendance.vue",
+                            "./panels/attendance.vue",
                             function() {
                                 return import(
-                                    "src/components/content/edit/panels/attendance.vue"
+                                    "./panels/attendance.vue"
                                 );
                             }
                         );
                         break;
                     case "audio":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/audio.vue",
+                            "./panels/audio.vue",
                             function() {
-                                return import("src/components/content/edit/panels/audio.vue");
+                                return import("./panels/audio.vue");
                             }
                         );
                         break;
                     case "capability":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/capability.vue",
+                            "./panels/capability.vue",
                             function() {
                                 return import(
-                                    "src/components/content/edit/panels/capability.vue"
+                                    "./panels/capability.vue"
                                 );
                             }
                         );
                         break;
                     case "checkin":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/checkin.vue",
+                            "./panels/checkin.vue",
                             function() {
-                                return import("src/components/content/edit/panels/checkin.vue");
+                                return import("./panels/checkin.vue");
                             }
                         );
                         break;
                     case "code":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/code.vue",
+                            "./panels/code.vue",
                             function() {
-                                return import("src/components/content/edit/panels/code.vue");
+                                return import("./panels/code.vue");
                             }
                         );
                         break;
                     case "collection":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/collection.vue",
+                            "./panels/collection.vue",
                             function() {
                                 return import(
-                                    "src/components/content/edit/panels/collection.vue"
+                                    "./panels/collection.vue"
                                 );
                             }
                         );
                         break;
                     case "component":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/component.vue",
+                            "./panels/component.vue",
                             function() {
                                 return import(
-                                    "src/components/content/edit/panels/component.vue"
+                                    "./panels/component.vue"
                                 );
                             }
                         );
                         break;
                     case "contact":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/contact.vue",
+                            "./panels/contact.vue",
                             function() {
-                                return import("src/components/content/edit/panels/contact.vue");
+                                return import("./panels/contact.vue");
                             }
                         );
                         break;
                     case "contactdetail":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/contactdetail.vue",
+                            "./panels/contactdetail.vue",
                             function() {
                                 return import(
-                                    "src/components/content/edit/panels/contactdetail.vue"
+                                    "./panels/contactdetail.vue"
                                 );
                             }
                         );
                         break;
                     case "definition":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/definition.vue",
+                            "./panels/definition.vue",
                             function() {
                                 return import(
-                                    "src/components/content/edit/panels/definition.vue"
+                                    "./panels/definition.vue"
                                 );
                             }
                         );
                         break;
                     case "event":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/event.vue",
+                            "./panels/event.vue",
                             function() {
-                                return import("src/components/content/edit/panels/event.vue");
+                                return import("./panels/event.vue");
                             }
                         );
                         break;
                     case "eventtrack":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/eventtrack.vue",
+                            "./panels/eventtrack.vue",
                             function() {
                                 return import(
-                                    "src/components/content/edit/panels/eventtrack.vue"
+                                    "./panels/eventtrack.vue"
                                 );
                             }
                         );
                         break;
                     case "family":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/family.vue",
+                            "./panels/family.vue",
                             function() {
-                                return import("src/components/content/edit/panels/family.vue");
+                                return import("./panels/family.vue");
                             }
                         );
                         break;
                     case "image":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/image.vue",
+                            "./panels/image.vue",
                             function() {
-                                return import("src/components/content/edit/panels/image.vue");
+                                return import("./panels/image.vue");
                             }
                         );
                         break;
                     case "resultset":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/resultset.vue",
+                            "./panels/resultset.vue",
                             function() {
-                                return import("src/components/content/edit/panels/resultset.vue");
+                                return import("./panels/resultset.vue");
                             }
                         );
                         break;
                     case "integration":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/integration.vue",
+                            "./panels/integration.vue",
                             function() {
                                 return import(
-                                    "src/components/content/edit/panels/integration.vue"
+                                    "./panels/integration.vue"
                                 );
                             }
                         );
                         break;
                     case "interaction":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/interaction.vue",
+                            "./panels/interaction.vue",
                             function() {
                                 return import(
-                                    "src/components/content/edit/panels/interaction.vue"
+                                    "./panels/interaction.vue"
                                 );
                             }
                         );
                         break;
                     case "location":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/location.vue",
+                            "./panels/location.vue",
                             function() {
                                 return import(
-                                    "src/components/content/edit/panels/location.vue"
+                                    "./panels/location.vue"
                                 );
                             }
                         );
                         break;
                     case "mailout":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/mailout.vue",
+                            "./panels/mailout.vue",
                             function() {
-                                return import("src/components/content/edit/panels/mailout.vue");
+                                return import("./panels/mailout.vue");
                             }
                         );
                         break;
                     case "persona":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/persona.vue",
+                            "./panels/persona.vue",
                             function() {
-                                return import("src/components/content/edit/panels/persona.vue");
+                                return import("./panels/persona.vue");
                             }
                         );
                         break;
                     case "plan":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/plan.vue",
+                            "./panels/plan.vue",
                             function() {
-                                return import("src/components/content/edit/panels/plan.vue");
+                                return import("./panels/plan.vue");
                             }
                         );
                         break;
                     case "policy":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/policy.vue",
+                            "./panels/policy.vue",
                             function() {
-                                return import("src/components/content/edit/panels/policy.vue");
+                                return import("./panels/policy.vue");
                             }
                         );
                         break;
                     case "post":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/post.vue",
+                            "./panels/post.vue",
                             function() {
-                                return import("src/components/content/edit/panels/post.vue");
+                                return import("./panels/post.vue");
                             }
                         );
                         break;
                     case "process":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/process.vue",
+                            "./panels/process.vue",
                             function() {
-                                return import("src/components/content/edit/panels/process.vue");
+                                return import("./panels/process.vue");
                             }
                         );
                         break;
                     case "query":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/query.vue",
+                            "./panels/query.vue",
                             function() {
-                                return import("src/components/content/edit/panels/query.vue");
+                                return import("./panels/query.vue");
                             }
                         );
                         break;
                     case "realm":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/realm.vue",
+                            "./panels/realm.vue",
                             function() {
-                                return import("src/components/content/edit/panels/realm.vue");
+                                return import("./panels/realm.vue");
                             }
                         );
                         break;
                     case "role":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/role.vue",
+                            "./panels/role.vue",
                             function() {
-                                return import("src/components/content/edit/panels/role.vue");
+                                return import("./panels/role.vue");
                             }
                         );
                         break;
                     case "roster":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/roster.vue",
+                            "./panels/roster.vue",
                             function() {
-                                return import("src/components/content/edit/panels/roster.vue");
+                                return import("./panels/roster.vue");
                             }
                         );
                         break;
                     case "tag":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/tag.vue",
+                            "./panels/tag.vue",
                             function() {
-                                return import("src/components/content/edit/panels/tag.vue");
+                                return import("./panels/tag.vue");
                             }
                         );
                         break;
                     case "team":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/team.vue",
+                            "./panels/team.vue",
                             function() {
-                                return import("src/components/content/edit/panels/team.vue");
+                                return import("./panels/team.vue");
                             }
                         );
                         break;
                     case "ticket":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/ticket.vue",
+                            "./panels/ticket.vue",
                             function() {
-                                return import("src/components/content/edit/panels/ticket.vue");
+                                return import("./panels/ticket.vue");
                             }
                         );
                         break;
                     case "timetrigger":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/timetrigger.vue",
+                            "./panels/timetrigger.vue",
                             function() {
                                 return import(
-                                    "src/components/content/edit/panels/timetrigger.vue"
+                                    "./panels/timetrigger.vue"
                                 );
                             }
                         );
                         break;
                     case "video":
                         return DynamicImportService.load(
-                            "src/components/content/edit/panels/video.vue",
+                            "./panels/video.vue",
                             function() {
-                                return import("src/components/content/edit/panels/video.vue");
+                                return import("./panels/video.vue");
                             }
                         );
                         break;
@@ -1268,6 +1290,7 @@ export default {
                 return Promise.resolve();
             }
         },
+        /**/
         config: {
             default: null,
             get() {
@@ -1351,6 +1374,33 @@ export default {
         // max-width: 1200px;
         min-width: 80vw;
         min-height: 80vh;
+    }
+}
+
+
+.file-drop-area {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    position: relative;
+
+    &.active {
+        &:before {
+            pointer-events: none !important;
+            content: '';
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            position: absolute;
+            background: rgba($primary, 0.1);
+            border: 2px dashed $primary;
+            z-index: 1;
+        }
+
+
     }
 }
 

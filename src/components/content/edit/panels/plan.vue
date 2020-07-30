@@ -253,8 +253,8 @@
 import _ from 'lodash';
 
 import draggable from "vuedraggable";
-import PlanRow from "src/components/content/edit/components/PlanRowEdit.vue";
-import FluroContentEditMixin from "src/components/content/edit/FluroContentEditMixin.js";
+import PlanRow from "../components/PlanRowEdit.vue";
+import FluroContentEditMixin from "../FluroContentEditMixin.js";
 
 //////////////////////////////////////////////////////
 

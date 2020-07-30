@@ -8,16 +8,17 @@
                 </constrain>
             </v-container>
         </flex-column-header>
+        
         <flex-column-footer class="border-top">
             <v-container class="pa-2">
                 <constrain xs>
                     <v-layout>
-                    	<template v-if="!options.noCancel">
-                        <v-btn block @click="dismiss()">
-                            Cancel
-                        </v-btn>
-                        <v-spacer />
-                    </template>
+                        <template v-if="!options.noCancel">
+                            <v-btn block @click="dismiss()">
+                                Cancel
+                            </v-btn>
+                            <v-spacer />
+                        </template>
                         <v-btn block :color="confirmColor" @click="close()">
                             {{confirmText}}
                         </v-btn>
@@ -28,8 +29,8 @@
     </flex-column>
 </template>
 <script>
-import ModalMixin from 'src/mixins/ModalMixin';
-import Layout from 'src/mixins/Layout';
+import ModalMixin from '../../../mixins/ModalMixin';
+import Layout from '../../../mixins/Layout';
 
 export default {
     props: {
@@ -56,6 +57,7 @@ export default {
         },
     },
 }
+
 </script>
 <style lang="scss">
 .fluro-confirm-dialog {
@@ -66,4 +68,5 @@ export default {
         min-width: 500px;
     }
 }
+
 </style>

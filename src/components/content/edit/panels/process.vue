@@ -269,11 +269,11 @@
 <script>
 /////////////////////////////////
 
-import FluroContentEditMixin from "src/components/content/edit/FluroContentEditMixin.js";
-import FluroContentView from "src/components/content/view/FluroContentView.vue";
-import FluroTaskList from "src/components/form/tasklist/FluroTaskList.vue";
-import ProcessDots from "src/components/ui/ProcessDots.vue";
-import FluroTable from "src/components/table/FluroTable.vue";
+import FluroContentEditMixin from "../FluroContentEditMixin.js";
+import FluroContentView from "../../view/FluroContentView.vue";
+import FluroTaskList from "../../../form/tasklist/FluroTaskList.vue";
+import ProcessDots from "../../../ui/ProcessDots.vue";
+import FluroTable from "../../../table/FluroTable.vue";
 
 /////////////////////////////////
 
@@ -488,30 +488,30 @@ export default {
     computed: {
         checkinColumns() {
 
-         var array = [];
+            var array = [];
 
-         array.push({
-          title:'Event',
-          key:'event.title',
-         })
+            array.push({
+                title: 'Event',
+                key: 'event.title',
+            })
 
-         array.push({
-          title:'Date',
-          key:'event.startDate',
-          type:'date',
-          sortType:'date',
-         })
+            array.push({
+                title: 'Date',
+                key: 'event.startDate',
+                type: 'date',
+                sortType: 'date',
+            })
 
-         array.push({
-          title:'When',
-          key:'event.startDate',
-          type:'date',
-          sortType:'date',
-          renderer:'timeago',
-         })
+            array.push({
+                title: 'When',
+                key: 'event.startDate',
+                type: 'date',
+                sortType: 'date',
+                renderer: 'timeago',
+            })
 
 
-         return array;
+            return array;
         },
         showKeyContacts() {
             var reference = this.model.item;

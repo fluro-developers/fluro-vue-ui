@@ -48,7 +48,7 @@
 /////////////////////////////////
 
 import Vue from "vue";
-import FluroContentViewMixin from "src/components/content/view/FluroContentViewMixin.js";
+import FluroContentViewMixin from "../FluroContentViewMixin.js";
 import _ from "lodash";
 
 /////////////////////////////////

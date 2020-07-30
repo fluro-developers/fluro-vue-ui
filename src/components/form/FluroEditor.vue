@@ -358,16 +358,16 @@
 // Import the editor
 
 import tippy from 'tippy.js';
-import FluroCodeEditor from 'src/components/form/FluroCodeEditor.vue';
-import Mention from 'src/components/form/tiptap/mentions.js';
-import FluroNode from 'src/components/form/tiptap/fluroNode';
-import FluroMark from 'src/components/form/tiptap/fluroMark';
-import Asset from 'src/components/form/tiptap/asset';
-import Image from 'src/components/form/tiptap/image';
-import Video from 'src/components/form/tiptap/video';
-import Token from 'src/components/form/tiptap/token';
-import Alignment from 'src/components/form/tiptap/alignment';
-import Typography from 'src/components/form/tiptap/typography';
+import FluroCodeEditor from './FluroCodeEditor.vue';
+import Mention from './tiptap/mentions.js';
+import FluroNode from './tiptap/fluroNode';
+import FluroMark from './tiptap/fluroMark';
+import Asset from './tiptap/asset';
+import Image from './tiptap/image';
+import Video from './tiptap/video';
+import Token from './tiptap/token';
+import Alignment from './tiptap/alignment';
+import Typography from './tiptap/typography';
 
 
 

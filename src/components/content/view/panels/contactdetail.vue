@@ -13,8 +13,8 @@
 /////////////////////////////////
 
 import Vue from "vue";
-import FluroContentViewMixin from "src/components/content/view/FluroContentViewMixin.js";
-// import FluroContentRender from 'src/components/FluroContentRender.vue';
+import FluroContentViewMixin from "../FluroContentViewMixin.js";
+// import FluroContentRender from '../../../FluroContentRender.vue';
 
 /////////////////////////////////
 

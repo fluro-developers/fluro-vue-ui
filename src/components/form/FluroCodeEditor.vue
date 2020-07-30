@@ -7,7 +7,7 @@
 // import CodeEditor from 'vue2-ace-editor';
 // import js_beautify from 'js-beautify';
 
-import DynamicImportService from "src/DynamicImportService.js";
+import DynamicImportService from "../../DynamicImportService.js";
 
 // console.log('BEAUTIFY', js_beautify.html);
 

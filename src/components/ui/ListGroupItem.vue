@@ -24,8 +24,8 @@
 	</component>
 </template>
 <script>
-import FluroItemImage from 'src/components/ui/FluroItemImage.vue';
-import FluroRealmBar from 'src/components/ui/FluroRealmBar.vue';
+import FluroItemImage from './FluroItemImage.vue';
+import FluroRealmBar from './FluroRealmBar.vue';
 
 
 export default {

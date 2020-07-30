@@ -255,9 +255,9 @@
 				</div>
 </template>
 <script>
-import TableHeaderCheckbox from 'src/components/table/TableHeaderCheckbox.vue';
-import TableRowCheckbox from 'src/components/table/TableRowCheckbox.vue';
-import TableCell from 'src/components/table/TableCell.vue';
+import TableHeaderCheckbox from './TableHeaderCheckbox.vue';
+import TableRowCheckbox from './TableRowCheckbox.vue';
+import TableCell from './TableCell.vue';
 
 import _ from 'lodash';
 
@@ -425,6 +425,9 @@ export default {
 								}
 				},
 				computed: {
+					plural() {
+						return 'items';
+					},
 								isScrollable() {
 									return this.scrollable;// && this.items.length 
 								},
@@ -1782,7 +1785,9 @@ export default {
 												this.selectionManager.deselectMultiple(this.page)
 								},
 								selectAll() {
-												this.selectionManager.selectMultiple(this.refined);
+
+									
+												this.selectionManager.selectMultiple(this.filtered);
 								},
 								deselectAll() {
 												this.selectionManager.deselectAll();

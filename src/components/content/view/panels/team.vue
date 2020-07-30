@@ -60,11 +60,11 @@
 /////////////////////////////////
 
 import Vue from 'vue';
-import FluroContentViewMixin from 'src/components/content/view/FluroContentViewMixin.js';
-import TeamMetricsDashboard from "src/components/TeamMetricsDashboard.vue";
-import FluroTable from "src/components/table/FluroTable.vue";
-import SearchInput from "src/components/ui/SearchInput.vue";
-import ContactAvatar from "src/components/table/cells/AvatarCell.vue";
+import FluroContentViewMixin from '../FluroContentViewMixin.js';
+import TeamMetricsDashboard from "../../../TeamMetricsDashboard.vue";
+import FluroTable from "../../../table/FluroTable.vue";
+import SearchInput from "../../../ui/SearchInput.vue";
+import ContactAvatar from "../../../table/cells/AvatarCell.vue";
 
 /////////////////////////////////
 

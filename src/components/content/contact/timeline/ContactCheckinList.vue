@@ -12,7 +12,7 @@
                     </v-btn>
                 </v-container>
             </flex-column-header> -->
-            <flex-column-body style="background: #eee;">
+            <flex-column-body style="background: #fafafa;">
                 <!-- <pre>{{items}}</pre> -->
                 <div class="timeline">
                     <div class="year" v-for="year in timeline">

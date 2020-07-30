@@ -73,8 +73,8 @@
 
 import Vue from 'vue';
 
-import FluroContentViewMixin from 'src/components/content/view/FluroContentViewMixin.js';
-import FluroDefinedList from 'src/components/FluroDefinedList.vue';
+import FluroContentViewMixin from '../FluroContentViewMixin.js';
+import FluroDefinedList from '../../../FluroDefinedList.vue';
 
 /////////////////////////////////
 

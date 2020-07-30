@@ -14,7 +14,7 @@
 
                     <!-- <pre>{{definition}}</pre> -->
                     <fluro-content-form v-model="dataModel.data" ref="form" @errorMessages="validate" :fields="definition.fields"></fluro-content-form>
-                    <fluro-realm-select v-model="dataModel.realms" type="event" :definition="dataModel.definition" />
+                    <!-- <fluro-realm-select v-model="dataModel.realms" type="event" :definition="dataModel.definition" /> -->
                 </v-container>
             </flex-column-body>
             <flex-column-footer class="border-top">
@@ -46,7 +46,14 @@
                             </v-btn>
                         </template>
                         <v-spacer />
-                        <v-btn class="mx-0" :loading="state == 'processing'" :disabled="hasErrors" type="submit" color="primary">
+                         <fluro-tag-select class="mx-0 ml-2" v-model="dataModel.tags"/>
+                        <v-spacer />
+                        <!-- <v-flex> -->
+                                                        <fluro-realm-select ref="realmSelector" v-tippy :content="`Select where this ${definition.title} should be kept`" v-model="dataModel.realms" type="post" :definition="definition.definitionName" />
+
+                        <!-- </v-flex> -->
+                        <v-spacer />
+                        <v-btn class="mx-0 ml-2" :loading="state == 'processing'" :disabled="hasErrors" type="submit" color="primary">
                             Submit
                         </v-btn>
                     </v-layout>
@@ -60,9 +67,10 @@
 import _ from 'lodash';
 
 import async from 'async';
-import FluroRealmSelect from 'src/components/form/realmselect/FluroRealmSelect.vue';
-import FluroContentForm from 'src/components/form/FluroContentForm.vue';
-import FluroModalMixin from 'src/mixins/ModalMixin';
+import FluroTagSelect from '../../form/tagselect/FluroTagSelect.vue';
+import FluroRealmSelect from '../../form/realmselect/FluroRealmSelect.vue';
+import FluroContentForm from '../../form/FluroContentForm.vue';
+import FluroModalMixin from '../../../mixins/ModalMixin';
 
 export default {
     props: {
@@ -73,6 +81,7 @@ export default {
     components: {
         FluroRealmSelect,
         FluroContentForm,
+        FluroTagSelect,
     },
     mixins: [FluroModalMixin],
     data() {
@@ -140,6 +149,19 @@ export default {
         },
     },
     methods: {
+        showRealmsPopup() {
+            var realmSelector = this.$refs.realmSelector;
+
+            console.log("Show Realms?", realmSelector);
+
+            if (!realmSelector) {
+                return;
+            }
+            if (realmSelector.showModal) {
+                realmSelector.showModal();
+            }
+            // this.$refs.realmSelector.$emit('click');
+        },
         validate() {
             this.errorMessages = _.get(this.$refs, 'form.errorMessages');
         },
@@ -163,6 +185,12 @@ export default {
             if (self.errorMessages && self.errorMessages.length) {
                 return;
             }
+
+
+            if (!self.dataModel.realms || !self.dataModel.realms.length) {
+                return self.showRealmsPopup();
+            }
+        
 
             self.state = 'processing';
 

@@ -20,7 +20,7 @@
 </template>
 <script>
 
-import FluroStatusLabel from 'src/components/ui/FluroStatusLabel.vue';
+import FluroStatusLabel from '../ui/FluroStatusLabel.vue';
 export default {
 	components:{
 		FluroStatusLabel,

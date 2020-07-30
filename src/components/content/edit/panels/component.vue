@@ -112,9 +112,9 @@
 /////////////////////////////////
 
 import Vue from "vue";
-import FluroContentEditMixin from "src/components/content/edit/FluroContentEditMixin.js";
-import FluroFieldEditor from "src/components/fields/FluroFieldEditor.vue";
-import FluroCodeEditor from "src/components/form/FluroCodeEditor.vue";
+import FluroContentEditMixin from "../FluroContentEditMixin.js";
+import FluroFieldEditor from "../../../fields/FluroFieldEditor.vue";
+import FluroCodeEditor from "../../../form/FluroCodeEditor.vue";
 /////////////////////////////////
 
 export default {

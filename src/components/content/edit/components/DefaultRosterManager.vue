@@ -12,7 +12,7 @@
     </div>
 </template>
 <script>
-import DefaultRosterComponent from 'src/components/content/edit/components/DefaultRosterComponent.vue';
+import DefaultRosterComponent from './DefaultRosterComponent.vue';
 import _ from 'lodash';
 
 

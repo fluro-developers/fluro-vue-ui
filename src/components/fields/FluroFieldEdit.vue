@@ -501,23 +501,25 @@
                             </v-input>
                         </div>
                     </v-container>
+
+
                 </flex-column-body>
             </tab>
         </tabset>
     </flex-column>
 </template>
 <script>
-import FieldSelectModal from "src/components/fields/FieldSelectModal.vue";
-import FluroContentFormField from "src/components/form/FluroContentFormField.vue";
-import FluroContentForm from "src/components/form/FluroContentForm.vue";
-import OptionsManager from "src/components/fields/FluroOptionsManager.vue";
-import ExpressionFieldSelect from "src/components/fields/ExpressionFieldSelect.vue";
-import FluroExpressionEditor from "src/components/form/FluroExpressionEditor.vue";
-import FluroInlineEdit from "src/components/form/FluroInlineEdit.vue";
-import TicketingManager from "src/components/fields/TicketingManager.vue";
+import FieldSelectModal from "./FieldSelectModal.vue";
+import FluroContentFormField from "../form/FluroContentFormField.vue";
+import FluroContentForm from "../form/FluroContentForm.vue";
+import OptionsManager from "./FluroOptionsManager.vue";
+import ExpressionFieldSelect from "./ExpressionFieldSelect.vue";
+import FluroExpressionEditor from "../form/FluroExpressionEditor.vue";
+import FluroInlineEdit from "../form/FluroInlineEdit.vue";
+import TicketingManager from "./TicketingManager.vue";
 import _ from "lodash";
 
-import FluroHelp from "src/components/FluroHelp.vue";
+import FluroHelp from "../FluroHelp.vue";
 
 export default {
     components: {
@@ -541,9 +543,7 @@ export default {
             type: Object
         }
     },
-    created() {
-        // this.startListener();
-    },
+   
     data() {
         var self = this;
         var model = this.value;
@@ -592,6 +592,18 @@ export default {
             if (!model.params.ticketing.events) {
                 self.$set(model.params.ticketing, "events", []);
             }
+
+
+            // this.startListener();
+                if(model.type == 'group') {
+                    if(model.sameLine) {
+                        self.$set(model, 'sameLine', true);
+                    } else {
+                        self.$set(model, 'sameLine', false);
+                    }
+                }
+
+
 
             if (!model.expressions) {
                 self.$set(model, "expressions", {});

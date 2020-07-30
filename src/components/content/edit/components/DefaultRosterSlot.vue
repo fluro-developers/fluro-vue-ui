@@ -18,8 +18,8 @@
     </fluro-content-form>
 </template>
 <script>
-import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
-import FluroContentForm from 'src/components/form/FluroContentForm.vue';
+import FluroContentEditMixin from '../FluroContentEditMixin.js';
+import FluroContentForm from '../../../form/FluroContentForm.vue';
 
 
 export default {

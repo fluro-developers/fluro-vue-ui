@@ -1,4 +1,4 @@
-import AddPost from 'src/components/ui/modal/AddPost.vue';
+import AddPost from '../components/ui/modal/AddPost.vue';
 import _ from 'lodash';
 
 export default {

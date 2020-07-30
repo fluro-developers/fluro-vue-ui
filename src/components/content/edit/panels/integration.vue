@@ -91,7 +91,7 @@
 <script>
 /////////////////////////////////
 
-import FluroContentEditMixin from "src/components/content/edit/FluroContentEditMixin.js";
+import FluroContentEditMixin from "../FluroContentEditMixin.js";
 
 
 
@@ -101,14 +101,14 @@ import Vue from "vue";
 
 /////////////////////////////////
 
-import Stripe from 'src/components/content/edit/panels/integrations/Stripe.vue';
-import Eway from 'src/components/content/edit/panels/integrations/Eway.vue';
-import SongSelect from 'src/components/content/edit/panels/integrations/SongSelect.vue';
-import AWSS3 from 'src/components/content/edit/panels/integrations/AWSS3.vue';
-import PayPal from 'src/components/content/edit/panels/integrations/PayPal.vue';
-import GoogleOAuth from 'src/components/content/edit/panels/integrations/GoogleOAuth.vue';
-import FacebookOAuth from 'src/components/content/edit/panels/integrations/FacebookOAuth.vue';
-import StripeConnect from 'src/components/content/edit/panels/integrations/StripeConnect.vue';
+import Stripe from './integrations/Stripe.vue';
+import Eway from './integrations/Eway.vue';
+import SongSelect from './integrations/SongSelect.vue';
+import AWSS3 from './integrations/AWSS3.vue';
+import PayPal from './integrations/PayPal.vue';
+import GoogleOAuth from './integrations/GoogleOAuth.vue';
+import FacebookOAuth from './integrations/FacebookOAuth.vue';
+import StripeConnect from './integrations/StripeConnect.vue';
 
 
 

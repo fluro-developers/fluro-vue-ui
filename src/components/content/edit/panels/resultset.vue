@@ -185,8 +185,8 @@
 <script>
 /////////////////////////////////
 
-import FluroContentEditMixin from "src/components/content/edit/FluroContentEditMixin.js";
-import FluroPermissionSelect from "src/components/form/FluroPermissionSelect.vue";
+import FluroContentEditMixin from "../FluroContentEditMixin.js";
+import FluroPermissionSelect from "../../../form/FluroPermissionSelect.vue";
 
 /////////////////////////////////
 

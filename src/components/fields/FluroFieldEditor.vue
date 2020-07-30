@@ -393,15 +393,15 @@
 import Vue from "vue";
 import _ from "lodash";
 
-import FieldTemplates from "src/components/fields/FieldEditorTemplates";
-import ComponentFieldTemplates from "src/components/fields/FieldEditorComponentTemplates";
+import FieldTemplates from "./FieldEditorTemplates";
+import ComponentFieldTemplates from "./FieldEditorComponentTemplates";
 import draggable from "vuedraggable";
-import FluroFieldEditorItem from "src/components/fields/FluroFieldEditorItem.vue";
-import FluroFieldEdit from "src/components/fields/FluroFieldEdit.vue";
-import FluroContentForm from "src/components/form/FluroContentForm.vue";
-import FluroInteractionForm from "src/components/form/FluroInteractionForm.vue";
-import FluroCompileHtml from "src/components/FluroCompileHtml.vue";
-import FluroHelp from "src/components/FluroHelp.vue";
+import FluroFieldEditorItem from "./FluroFieldEditorItem.vue";
+import FluroFieldEdit from "./FluroFieldEdit.vue";
+import FluroContentForm from "../form/FluroContentForm.vue";
+import FluroInteractionForm from "../form/FluroInteractionForm.vue";
+import FluroCompileHtml from "../FluroCompileHtml.vue";
+import FluroHelp from "../FluroHelp.vue";
 
 export default {
   components: {

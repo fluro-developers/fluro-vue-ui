@@ -9,7 +9,7 @@
                             Test {{tab.$slots.title}} <slot name="title"/>
                         </div> -->
                     <!-- v-else  -->
-                    <a v-for="tab in enabledTabs" :key="tab.key" flat :v-tippy="tab.tooltip && tab.tooltip.length" :content="tab.tooltip" :class="{active:tab.key == activeTabIndex, muted:tab.muted}" @click="selectTab(tab.key)">
+                    <a v-for="tab in enabledTabs" :key="tab.key" flat v-tippy :content="tab.tooltip" :class="{active:tab.key == activeTabIndex, muted:tab.muted}" @click="selectTab(tab.key)">
                         {{tab.heading}}
                         <template v-if="tab.icon">
                             <fluro-icon v-if="tab.icon.icon" :icon="tab.icon.icon" :library="tab.icon.library" :style="{ color: tab.icon.color }" />
@@ -104,10 +104,12 @@ export default {
 
 
             //Select the first tab by default unless otherwise specified
+
+            
             if (!existingTabs && !self.activeTabIndex) {
                 self.activeTabIndex = tab.key;
                 tab.active = true;
-                console.log('activate first tab', tab);
+                // console.log('activate first tab', tab);
                 // self.selectTab(tab.key);
             }
 
@@ -242,6 +244,8 @@ export default {
 
 </script>
 <style lang="scss">
+
+
 .tabset {
     flex: 1;
     // border: 1px solid rgba(#000, 0.05);

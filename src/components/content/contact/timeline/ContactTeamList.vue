@@ -45,7 +45,7 @@
 <script>
 
 import _ from 'lodash';
-import ContactGroupManager from 'src/components/content/edit/components/ContactGroupManager.vue';
+import ContactGroupManager from '../../edit/components/ContactGroupManager.vue';
 export default {
     props: {
         contact: {

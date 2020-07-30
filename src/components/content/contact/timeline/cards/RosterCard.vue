@@ -22,7 +22,7 @@
   </div>
 </template>
 <script>
-import FluroRealmBar from "src/components/ui/FluroRealmBar.vue";
+import FluroRealmBar from "../../../../ui/FluroRealmBar.vue";
 
 export default {
   props: {

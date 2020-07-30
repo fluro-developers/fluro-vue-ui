@@ -9,7 +9,7 @@
 
 import _ from 'lodash';
 
-import AdvancedTicketingOptionsModal from 'src/components/fields/AdvancedTicketingOptionsModal.vue';
+import AdvancedTicketingOptionsModal from './AdvancedTicketingOptionsModal.vue';
 
 export default {
     props: {

@@ -12,7 +12,7 @@
                     </v-btn>
                 </v-container>
       </flex-column-header>-->
-      <flex-column-body style="background: #eee;">
+      <flex-column-body style="background: #fafafa;">
         <!-- <v-container> -->
         <div class="timeline">
           <div class="year" v-for="year in timeline">
@@ -57,8 +57,8 @@
 </template>
 <script>
 import _ from "lodash";
-import MailoutCard from "src/components/content/contact/timeline/cards/MailoutCard.vue";
-import TextMessageCard from "src/components/content/contact/timeline/cards/TextMessageCard.vue";
+import MailoutCard from "./cards/MailoutCard.vue";
+import TextMessageCard from "./cards/TextMessageCard.vue";
 
 export default {
   props: {

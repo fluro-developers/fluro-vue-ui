@@ -1,14 +1,14 @@
 <template>
     <div class="fluro-item-image">
         <template v-if="item._type == 'image'">
-            <div class="thumbnail" :style="{backgroundImage:`url(${$fluro.asset.imageUrl(item._id, 50)})`}"/>
+            <div class="thumbnail" :style="{backgroundImage:`url(${$fluro.asset.imageUrl(itemID, 50)})`}"/>
         </template>
         <template v-else-if="item._type == 'event'">
-            <div class="thumbnail" :style="{backgroundImage:`url(${$fluro.asset.coverUrl(item._id, `event`, {w:50})})`}"/>
+            <div class="thumbnail" :style="{backgroundImage:`url(${$fluro.asset.coverUrl(itemID, `event`, {w:50})})`}"/>
         </template>
         <template v-else-if="item._type == 'contact'">
-             <fluro-avatar md :id="item._id" :type="item._type" />
-            <!-- <div class="thumbnail" :style="{backgroundImage:`url(${$fluro.asset.avatarUrl(item._id, `contact`, {w:50})})`}"/> -->
+             <fluro-avatar md :id="itemID" :type="item._type" />
+            <!-- <div class="thumbnail" :style="{backgroundImage:`url(${$fluro.asset.avatarUrl(itemID, `contact`, {w:50})})`}"/> -->
         </template>
         <template v-else>
             <div class="icon-avatar">
@@ -21,11 +21,16 @@
 export default {
     props: {
         'item': {
-            type: Object,
+            type: [Object,String],
             default() {
                 return {}
             }
         },
+    },
+    computed:{
+        itemID() {
+            return this.$fluro.utils.getStringID(this.item);
+        }
     }
 }
 </script>

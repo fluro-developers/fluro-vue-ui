@@ -1,63 +1,39 @@
 <template>
-  <div
-    class="fluro-task-item"
-    @mouseover="over = true"
-    @mouseout="over = false"
-    @click="clicked()"
-    :class="[model.status, {hover:over}]"
-  >
-    <v-layout align-center row>
-      <v-flex shrink>
-        <!-- @click="prompt()" -->
-        <div class="task-icon" @click.stop.prevent="prompt()">
-          <v-btn class="ma-0 mr-2" icon>
-            <span class="checkbox-outer" :class="model.status">
-              <fluro-icon library="fas" v-if="model.status == 'pending'" icon="minus" />
-              <fluro-icon library="fas" v-else-if="model.status == 'failed'" icon="exclamation" />
-              <fluro-icon library="fas" v-else icon="check" />
-            </span>
-          </v-btn>
-        </div>
-      </v-flex>
-      <v-flex>
-        <fluro-inline-edit>
-          <template v-slot:default>
-            <strong>{{model.name}}</strong>
-          </template>
-          <template v-slot:edit="{props, blur, focus}">
-            <input
-              class="input"
-              @focus="focus($event)"
-              @input="update"
-              v-model="model.name"
-              @keyup.enter="blur"
-              @blur="blur"
-            />
-          </template>
-        </fluro-inline-edit>
-        <div class="wrap">
-          <fluro-inline-edit>
-            <template v-slot:default>
-              <div class="sm muted" v-html="model.description"></div>
-              <div class="detail-placeholder">
-                <div
-                  class="sm muted"
-                  v-if="!model.description || !model.description.length"
-                >Click here to add more description</div>
-              </div>
-            </template>
-            <template v-slot:edit="{props, blur, focus}">
-              <!-- <fluro-editor @focus="focus($event)" @keyup.enter="blur" @blur="blur" @input="update" v-model="model.description"/> -->
-              <textarea
-                class="input"
-                @focus="focus($event)"
-                placeholder="Add more details to this task"
-                @input="update"
-                v-model="model.description"
-                @keyup.enter="blur"
-                @blur="blur"
-              />
-            </template>
+    <div class="fluro-task-item" @mouseover="over = true" @mouseout="over = false" @click="clicked()" :class="[model.status, {hover:over}]">
+        <v-layout align-center row>
+            <v-flex shrink>
+                <!-- @click="prompt()" -->
+                <div class="task-icon" @click.stop.prevent="prompt()">
+                    <v-btn class="ma-0 mr-2" icon>
+                        <span class="checkbox-outer" :class="model.status">
+                            <fluro-icon library="fas" v-if="model.status == 'pending'" icon="minus" />
+                            <fluro-icon library="fas" v-else-if="model.status == 'failed'" icon="exclamation" />
+                            <fluro-icon library="fas" v-else icon="check" />
+                        </span>
+                    </v-btn>
+                </div>
+            </v-flex>
+            <v-flex>
+                <fluro-inline-edit>
+                    <template v-slot:default>
+                        <strong>{{model.name}}</strong>
+                    </template>
+                    <template v-slot:edit="{props, blur, focus}">
+                        <input class="input" @focus="focus($event)" @input="update" v-model="model.name" @keyup.enter="blur" @blur="blur" />
+                    </template>
+                </fluro-inline-edit>
+                <div class="wrap">
+                    <fluro-inline-edit>
+                        <template v-slot:default>
+                            <div class="sm muted" v-html="model.description"></div>
+                            <div class="detail-placeholder">
+                                <div class="sm muted" v-if="!model.description || !model.description.length">Click here to add more description</div>
+                            </div>
+                        </template>
+                        <template v-slot:edit="{props, blur, focus}">
+                            <!-- <fluro-editor @focus="focus($event)" @keyup.enter="blur" @blur="blur" @input="update" v-model="model.description"/> -->
+                            <textarea class="input" @focus="focus($event)" placeholder="Add more details to this task" @input="update" v-model="model.description" @keyup.enter="blur" @blur="blur" />
+                            </template>
           </fluro-inline-edit>
         </div>
       </v-flex>
@@ -88,10 +64,10 @@ import _ from "lodash";
 
 /////////////////////////////////////////////
 
-import FluroTaskModal from "src/components/form/tasklist/FluroTaskModal.vue";
-import FluroTaskEditModal from "src/components/form/tasklist/FluroTaskEditModal.vue";
-import FluroInlineEdit from "src/components/form/FluroInlineEdit.vue";
-import FluroEditor from "src/components/form/FluroEditor.vue";
+import FluroTaskModal from "./FluroTaskModal.vue";
+import FluroTaskEditModal from "./FluroTaskEditModal.vue";
+import FluroInlineEdit from "../FluroInlineEdit.vue";
+import FluroEditor from "../FluroEditor.vue";
 
 /////////////////////////////////////////////
 
@@ -142,6 +118,13 @@ export default {
       model: copy
     };
   },
+  computed:{
+   states() {
+
+    var states = _.get(this, 'definition.data.states');
+     return JSON.parse(JSON.stringify(states))
+   }
+  },
   watch: {
     value(val) {
       this.model = val; //JSON.parse(JSON.stringify(this.value));
@@ -165,6 +148,7 @@ export default {
       console.log("REMOVE!!");
       this.$emit("remove", this.model);
     },
+
     edit() {
       var self = this;
 
@@ -176,6 +160,7 @@ export default {
       // })
       //
       function callback(data) {
+        console.log('MODEL', data);
         self.model = data;
         self.update();
       }
@@ -188,11 +173,12 @@ export default {
           options: {
             task: self.model,
             card: self.card,
-            definition: self.definition,
+            definition: JSON.parse(JSON.stringify(self.definition)),
             callback
           }
         })
         .then(function(result) {
+          console.log('MODEL RESULT', result);
           self.model = result;
           self.update();
         })
@@ -212,8 +198,7 @@ export default {
 
       /////////////////////////////////////
 
-      var currentState = _.chain(self.definition)
-        .get("data.states")
+      var currentState = _.chain(self.states)
         .find(function(state) {
           return state.key == self.card.state;
         })
@@ -239,12 +224,12 @@ export default {
         .modal({
           component: FluroTaskModal,
           options: {
-            task: matchingTask || self.model,
+            task: JSON.parse(JSON.stringify(matchingTask || self.model)),
             card: self.card
           }
         })
         .then(function(result) {
-          self.model.status = result;
+          self.$set(self.model, 'status', result);
           self.update();
         })
         .catch(function(err) {

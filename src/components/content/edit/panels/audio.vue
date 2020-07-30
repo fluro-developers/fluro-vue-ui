@@ -1,5 +1,8 @@
 <template>
     <flex-column>
+
+                <div class="file-drop-area" :class="{active:dragging}" @dragover.prevent.stop="fileover" @dragleave.prevent.stop="fileout" @drop.prevent.stop="filedrop">
+
         <template v-if="loading">
             <fluro-page-preloader contain />
         </template>
@@ -30,7 +33,7 @@
                                 <div v-if="isUpload">
                                     <template v-if="model._id">
                                         <template v-if="replace">
-                                            <asset-replace-upload v-model="model" @input="assetReplaced" />
+                                            <asset-replace-upload  ref="replaceForm"  v-model="model" @input="assetReplaced" />
                                         </template>
                                         <template v-else>
                                             <v-layout>
@@ -50,7 +53,7 @@
                                         </template>
                                     </template>
                                     <template v-else>
-                                        <asset-replace-upload v-model="model" @file="fileSelected" />
+                                        <asset-replace-upload  ref="replaceForm"  v-model="model" @file="fileSelected" />
                                     </template>
                                 </div>
                                 <v-input label="Body" class="no-flex pt-2">
@@ -100,14 +103,15 @@
                 </tab> -->
             </tabset>
         </template>
+    </div>
     </flex-column>
 </template>
 <script>
 /////////////////////////////////
 
-import FluroEditor from 'src/components/form/FluroEditor.vue';
-import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
-import FluroAssetEditMixin from 'src/components/content/edit/FluroAssetEditMixin';
+import FluroEditor from '../../../form/FluroEditor.vue';
+import FluroContentEditMixin from '../FluroContentEditMixin.js';
+import FluroAssetEditMixin from '../FluroAssetEditMixin';
 
 /////////////////////////////////
 

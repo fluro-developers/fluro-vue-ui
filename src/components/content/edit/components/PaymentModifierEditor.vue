@@ -13,8 +13,8 @@
 </template>
 <script>
 import draggable from 'vuedraggable'
-import PaymentModifierItem from 'src/components/content/edit/components/PaymentModifierItem.vue';
-import PaymentModifierModal from 'src/components/content/edit/components/PaymentModifierModal.vue';
+import PaymentModifierItem from './PaymentModifierItem.vue';
+import PaymentModifierModal from './PaymentModifierModal.vue';
 
 export default {
     components: {

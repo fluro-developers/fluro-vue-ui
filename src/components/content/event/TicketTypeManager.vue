@@ -37,7 +37,7 @@
               </td>
               <td>{{model.tickets.value}}</td>
               <td>{{model.tickets.value ? getAvailable(model.tickets.value, model.ticketLimit) : ''}}</td>
-              <td>{{model.tickets.value ? `${getPercent(model.tickets.value, model.ticketLimit)}%` : ''}}</td>
+              <td>{{model.tickets.value ? `${getPercent(model.tickets.value, model.ticketLimit)}` : ''}}</td>
               <td></td>
             </tr>
             <tr :key="entry.title" v-for="(entry, index) in model.ticketTypes">
@@ -49,7 +49,7 @@
               </td>
               <td>{{getPurchased(entry)}}</td>
               <td>{{getAvailable(getPurchased(entry), entry.limit)}}</td>
-              <td>{{getPercent(getPurchased(entry), entry.limit)}}%</td>
+              <td>{{getPercent(getPurchased(entry), entry.limit)}}</td>
               <td>
                 <v-btn small class="ma-0" icon @click="removeEntry(index)">
                   <fluro-icon icon="trash-alt" />
@@ -88,7 +88,8 @@
 </template>
 <script>
 import _ from "lodash";
-import { FluroTable } from "fluro-vue-ui";
+// import { FluroTable } from "fluro-vue-ui";
+import FluroTable from '../../table/FluroTable.vue';
 
 export default {
   components: {
@@ -134,19 +135,30 @@ export default {
         return 0;
       }
 
-      console.log("Available", value, limit);
+     
       return Math.max(limit - value, 0);
     },
     getPercent(value, limit) {
       value = parseInt(value || 0);
       limit = parseInt(limit || 0);
 
+      if(!limit) {
+        return ''
+      }
+
       if (!value && !limit) {
         return 0;
       }
 
-      console.log("Percent", value, limit);
-      return Math.ceil((value / limit) * 100);
+     
+      var fraction = Math.ceil(value / limit);
+      var percentage = (fraction * 100);
+
+      if(!fraction || !percentage) {
+        return '';
+      }
+
+      return `${percentage}%`
     },
     getPurchased(ticketType) {
       var self = this;
@@ -155,7 +167,7 @@ export default {
 
       var value = _.get(self.model, `tickets.types[${key}]`) || 0;
 
-      console.log("PURCHASED", ticketType, value);
+     
       if (isNaN(value)) {
         value = 0;
       }

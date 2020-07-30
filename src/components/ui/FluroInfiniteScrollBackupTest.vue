@@ -11,7 +11,7 @@
 
 	import _ from 'lodash';
 
-import FluroInfinitePage from 'src/components/ui/FluroInfiniteScrollPage.vue';
+import FluroInfinitePage from './FluroInfiniteScrollPage.vue';
 
 export default {
     components: {

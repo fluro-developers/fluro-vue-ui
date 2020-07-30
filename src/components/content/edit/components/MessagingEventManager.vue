@@ -39,8 +39,8 @@
     </div>
 </template>
 <script>
-import FluroConfirmButton from 'src/components/ui/FluroConfirmButton.vue';
-import MessagingEventComponent from 'src/components/content/edit/components/MessagingEventComponent.vue';
+import FluroConfirmButton from '../../../ui/FluroConfirmButton.vue';
+import MessagingEventComponent from './MessagingEventComponent.vue';
 
 
 export default {

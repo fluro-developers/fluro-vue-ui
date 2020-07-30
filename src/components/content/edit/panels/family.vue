@@ -137,10 +137,10 @@
 <script>
 /////////////////////////////////
 
-import FamilyMemberCard from "src/components/content/edit/components/FamilyMemberCard.vue";
-import FluroContentEditMixin from "src/components/content/edit/FluroContentEditMixin.js";
-import AddressManager from "src/components/content/edit/components/AddressManager.vue";
-import FluroAcademicSelect from "src/components/form/FluroAcademicSelect.vue";
+import FamilyMemberCard from "../components/FamilyMemberCard.vue";
+import FluroContentEditMixin from "../FluroContentEditMixin.js";
+import AddressManager from "../components/AddressManager.vue";
+import FluroAcademicSelect from "../../../form/FluroAcademicSelect.vue";
 
 /////////////////////////////////
 

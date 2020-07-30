@@ -46,7 +46,7 @@
 
 import _ from 'lodash';
 
-import FluroInfiniteScroll from 'src/components/ui/FluroInfiniteScroll.vue';
+import FluroInfiniteScroll from './FluroInfiniteScroll.vue';
 
 export default {
     components: { FluroInfiniteScroll },

@@ -3,9 +3,9 @@
     </div>
 </template>
 <script>
-import ModalMixin from 'src/mixins/ModalMixin';
-import FluroTabset from 'src/components/ui/tabset/FluroTabset.vue';
-import FluroTab from 'src/components/ui/tabset/FluroTab.vue';
+import ModalMixin from '../../../mixins/ModalMixin';
+import FluroTabset from '../../ui/tabset/FluroTabset.vue';
+import FluroTab from '../../ui/tabset/FluroTab.vue';
 
 export default {
     props: {

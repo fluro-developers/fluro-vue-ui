@@ -95,8 +95,8 @@
 	import _ from 'lodash';
 
 import draggable from 'vuedraggable';
-import FluroTaskItem from 'src/components/form/tasklist/FluroTaskItem.vue';
-import FluroInlineEdit from 'src/components/form/FluroInlineEdit.vue';
+import FluroTaskItem from './FluroTaskItem.vue';
+import FluroInlineEdit from '../FluroInlineEdit.vue';
 
 export default {
     components: {
@@ -129,6 +129,7 @@ export default {
             required: true,
         }
     },
+
     data() {
 
         var copy = JSON.parse(JSON.stringify(this.value));
@@ -142,8 +143,22 @@ export default {
         }
     },
     watch: {
-        value() {
-            this.model = JSON.parse(JSON.stringify(this.value));
+        value(v) {
+
+            var self = this;
+
+            if(self.model != v) {
+                self.model = JSON.parse(JSON.stringify(v));
+
+               // var newModel = JSON.parse(JSON.stringify(v));
+
+               // _.each(newModel.tasks, function(task) {
+               //      self.$set(task, 'guid', self.$fluro.utils.guid());
+               // })
+
+               // console.log('New Model!')
+               //  self.model = newModel;
+            }
         }
     },
     methods: {
@@ -291,7 +306,7 @@ input[block] {
 	display: block;
     padding: 5px;
     background: #fff;
-    border: 1px solid #2ad4b9;
+    border: 1px solid $primary;//#2ad4b9;
     width: 100%;
 }
 
@@ -301,7 +316,7 @@ input[block] {
     // border-top: 3px solid rgba(#000, 0.05);
 
     .task-list-items {
-
+        min-height:5px;
 
         // .fluro-task-item {
 

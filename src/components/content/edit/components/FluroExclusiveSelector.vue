@@ -12,7 +12,7 @@
 <script>
 
 
-import FluroCheckbox from 'src/components/content/edit/components/FluroCheckbox.vue';
+import FluroCheckbox from './FluroCheckbox.vue';
 
 /////////////////////////////////
 

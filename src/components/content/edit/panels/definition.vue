@@ -26,7 +26,12 @@
 																																																</v-layout>
 																																																<template v-if="!model._id">
 																																																				<div v-show="showDefinitionName">
-																																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.definitionName" v-model="model" />
+																																																								<div v-show="!editDefinitionName && model.definitionName" v-tippy content="Edit database definition name" @click="editDefinitionName = true" class="font-xs muted"><strong>Database name:</strong> {{model.definitionName}}
+																																																												<fluro-icon icon="pencil" right />
+																																																								</div>
+																																																								<div v-show="editDefinitionName">
+																																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.definitionName" v-model="model" />
+																																																								</div>
 																																																				</div>
 																																																</template>
 																																																<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.privacy" v-model="model" />
@@ -332,7 +337,7 @@
 																				</tab>
 																</template>
 																<template v-else>
-																				<tab heading="Configuration">
+																				<tab heading="Configuration" index="config">
 																								<flex-column-body style="background: #fafafa;">
 																												<v-container grid-list-xl>
 																																<constrain sm>
@@ -346,6 +351,7 @@
 																																																				<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.plural" v-model="model" />
 																																																</v-flex>
 																																												</v-layout>
+																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.firstLine" v-model="model" />
 																																												<template v-if="model._id">
 																																																<fluro-panel>
 																																																				<fluro-panel-body>
@@ -368,7 +374,12 @@
 																																												</template>
 																																												<template v-else>
 																																																<div v-show="showDefinitionName">
-																																																				<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.definitionName" v-model="model" />
+																																																				<div v-show="!editDefinitionName && model.definitionName" v-tippy content="Edit database definition name" @click="editDefinitionName = true" class="font-xs muted"><strong>Database name:</strong> {{model.definitionName}}
+																																																								<fluro-icon icon="pencil" right />
+																																																				</div>
+																																																				<div v-show="editDefinitionName">
+																																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.definitionName" v-model="model" />
+																																																				</div>
 																																																</div>
 																																																<template v-if="lockedSubType">
 																																																</template>
@@ -400,7 +411,7 @@
 																																				<fluro-panel v-if="model.parentType == 'process'">
 																																								<fluro-panel-body>
 																																												<h4 margin>Process Board Options</h4>
-																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.firstLine" v-model="model" />
+																																												<!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.firstLine" v-model="model" /> -->
 																																												<fluro-content-form v-model="model.data" :fields="processFields" />
 																																								</fluro-panel-body>
 																																				</fluro-panel>
@@ -409,6 +420,13 @@
 																																												<h4 margin>Post Options</h4>
 																																												<!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.firstLine" v-model="model" /> -->
 																																												<fluro-content-form v-model="model.data" :fields="postFields" />
+																																								</fluro-panel-body>
+																																				</fluro-panel>
+																																				<fluro-panel v-if="model.parentType == 'team'">
+																																								<fluro-panel-body>
+																																												<h4 margin>Default Positions</h4>
+																																												<!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.firstLine" v-model="model" /> -->
+																																												<group-role-manager :definitionMode="true" v-model="model.data.defaultPositions" />
 																																								</fluro-panel-body>
 																																				</fluro-panel>
 																																				<fluro-panel v-if="model.parentType == 'roster'">
@@ -423,7 +441,10 @@
 																																																<roster-slot-manager v-model="model.data.slots" />
 																																												</tab>
 																																												<tab heading="Reminders">
-																																																<!-- <roster-slot-manager v-model="model.data.slots" /> -->
+																																																<fluro-panel-body>
+																																																				<!-- <roster-slot-manager v-model="model.data.slots" /> -->
+																																																				<definition-reminder-manager :slots="model.data.slots" v-model="model.data.defaultReminders" />
+																																																</fluro-panel-body>
 																																												</tab>
 																																												<tab heading="Roster Restrictions">
 																																																<fluro-panel-body>
@@ -710,17 +731,18 @@
 <script>
 /////////////////////////////////
 
-import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
-import PaymentModifierEditor from 'src/components/content/edit/components/PaymentModifierEditor.vue';
-import FluroColumnSelect from 'src/components/content/edit/components/FluroColumnSelect.vue';
-import FluroFieldEditor from 'src/components/fields/FluroFieldEditor.vue';
-import FluroCodeEditor from 'src/components/form/FluroCodeEditor.vue';
-import FluroContentSelectButton from 'src/components/form/contentselect/FluroContentSelectButton.vue';
-import FieldTemplates from 'src/components/fields/FieldEditorTemplates.js';
-import MailoutRenderPreview from 'src/components/mailout/MailoutRenderPreview.vue';
+import FluroContentEditMixin from '../FluroContentEditMixin.js';
+import PaymentModifierEditor from '../components/PaymentModifierEditor.vue';
+import FluroColumnSelect from '../components/FluroColumnSelect.vue';
+import FluroFieldEditor from '../../../fields/FluroFieldEditor.vue';
+import FluroCodeEditor from '../../../form/FluroCodeEditor.vue';
+import FluroContentSelectButton from '../../../form/contentselect/FluroContentSelectButton.vue';
+import FieldTemplates from '../../../fields/FieldEditorTemplates.js';
+import MailoutRenderPreview from '../../../mailout/MailoutRenderPreview.vue';
 import _ from 'lodash';
-import FluroAccordion from 'src/components/ui/accordion/FluroAccordion.vue';
-import FluroAccordionPanel from 'src/components/ui/accordion/FluroAccordionPanel.vue';
+import FluroAccordion from '../../../ui/accordion/FluroAccordion.vue';
+import FluroAccordionPanel from '../../../ui/accordion/FluroAccordionPanel.vue';
+import GroupRoleManager from "../components/GroupRoleManager.vue";
 
 
 
@@ -732,6 +754,7 @@ import Vue from 'vue';
 
 export default {
 				components: {
+
 								FluroAccordion,
 								FluroAccordionPanel,
 								FluroFieldEditor,
@@ -740,6 +763,7 @@ export default {
 								FluroColumnSelect,
 								FluroCodeEditor,
 								MailoutRenderPreview,
+								GroupRoleManager,
 								//RosterSlotManager,
 								// FluroEditor,
 				},
@@ -895,6 +919,19 @@ export default {
 								if (!self.model.data) {
 												self.$set(self.model, 'data', {});
 								}
+
+								if (!self.model.data.slots) {
+												self.$set(self.model.data, 'slots', []);
+								}
+
+								if (!self.model.data.defaultReminders) {
+												self.$set(self.model.data, 'defaultReminders', []);
+								}
+
+								if (!self.model.data.defaultPositions) {
+												self.$set(self.model.data, 'defaultPositions', []);
+								}
+
 
 				},
 				watch: {
@@ -1199,6 +1236,7 @@ export default {
 																key: 'rosterRealms',
 																minimum: 0,
 																maximum: 0,
+																directive: 'realm-select',
 																type: 'reference',
 																description: `Select realms that these rosters are relevant for. Eg. If ${this.model.plural} are only relevant for realms then select those realms here`,
 																params: {
@@ -1306,6 +1344,10 @@ export default {
 								lockedSubType() {
 												if (this.definitionData && this.definitionData.definitionSubType) {
 																return this.definitionData.definitionSubType
+												}
+
+												if (this.model.fromTemplate && this.model.parentType) {
+																return true;
 												}
 
 												return;
@@ -1926,8 +1968,8 @@ export default {
 																				restrictType: 'contact',
 																				allDefinitions: true,
 																},
-																expressions:{
-																	show:'model.interactionProcesses.length',
+																expressions: {
+																				show: 'model.interactionProcesses.length',
 																},
 																description: `Assign the process card to specific contacts`,
 												})
@@ -1943,7 +1985,7 @@ export default {
 																},
 																description: `Select reaction pipelines to push these kind of posts into when they are created`,
 												})
-												
+
 
 
 												function addField(key, field) {
@@ -2081,6 +2123,7 @@ export default {
 
 
 
+
 												addField('plural', {
 																title: 'Plural',
 																minimum: 1,
@@ -2120,15 +2163,18 @@ export default {
 																params: {
 																				persistentDescription: true
 																},
-																description: `Optional short description describing this ${self.$fluro.types.readable(self.model.parentType)}`,
+																description: `Write a short description about what these ${self.$fluro.types.readable(self.model.parentType, true)} are and what they do`,
 												})
 
 												addField('definitionName', {
-																title: 'Definition Name',
+																title: 'Definition Database Name',
 																minimum: 1,
 																maximum: 1,
 																type: 'string',
-																description: `This is a unique key to store this field's data in the database. for this ${self.readableContentType}`,
+																description: `This is a unique key to store this field's data in the database. for this ${self.readableContentType}. This is usually automatically generated.`,
+																params: {
+																				persistentDescription: true,
+																},
 																expressions: {
 																				// transform(value) {
 
@@ -2159,8 +2205,9 @@ export default {
 																title: 'Weight',
 																key: 'weight',
 																minimum: 0,
-																maximum: 0,
+																maximum: 1,
 																type: 'integer',
+																defaultValues: ['0'],
 																description: 'Set the weight of this roster, this will determine the ordering when shown in the multi planner, (Lighter weight rosters will be shown at the top, Heavier weight rosters will be shown toward the bottom)',
 																params: {
 																				persistentDescription: true,
@@ -2264,6 +2311,7 @@ export default {
 																preview: false,
 																tokens: false,
 												},
+												editDefinitionName: false,
 												tabIndex: null,
 												alternativePaymentMethodIndex: 0,
 												expandedSettings: {

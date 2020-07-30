@@ -12,7 +12,7 @@
         </div> -->
 </template>
 <script>
-import FluroHelp from 'src/components/FluroHelp.vue';
+import FluroHelp from '../../FluroHelp.vue';
 
 import _ from 'lodash';
 

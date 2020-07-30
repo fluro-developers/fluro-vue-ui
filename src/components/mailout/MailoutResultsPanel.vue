@@ -100,14 +100,14 @@ import Vue from 'vue';
 import _ from 'lodash';
 
 
-import CorrespondenceInfoModal from 'src/components/mailout/CorrespondenceInfoModal.vue';
-import MailoutPushModal from 'src/components/mailout/MailoutPushModal.vue';
-import MailoutRenderPreview from 'src/components/mailout/MailoutRenderPreview.vue';
-import MailoutTestPanel from 'src/components/mailout/MailoutTestPanel.vue';
-import SearchInput from 'src/components/ui/SearchInput.vue';
-import StatusCell from 'src/components/table/cells/StatusCell.vue';
-import AvatarCell from 'src/components/table/cells/AvatarCell.vue';
-import FluroTable from 'src/components/table/FluroTable.vue';
+import CorrespondenceInfoModal from './CorrespondenceInfoModal.vue';
+import MailoutPushModal from './MailoutPushModal.vue';
+import MailoutRenderPreview from './MailoutRenderPreview.vue';
+import MailoutTestPanel from './MailoutTestPanel.vue';
+import SearchInput from '../ui/SearchInput.vue';
+import StatusCell from '../table/cells/StatusCell.vue';
+import AvatarCell from '../table/cells/AvatarCell.vue';
+import FluroTable from '../table/FluroTable.vue';
 
 
 

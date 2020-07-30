@@ -1,6 +1,6 @@
-import FluroContentRender from 'src/components/FluroContentRender.vue';
-// import FluroContentRenderField from 'src/components/FluroContentRenderField.vue';
-import Layout from 'src/mixins/Layout';
+import FluroContentRender from '../../FluroContentRender.vue';
+// import FluroContentRenderField from '../../FluroContentRenderField.vue';
+import Layout from '../../../mixins/Layout';
 
 
 

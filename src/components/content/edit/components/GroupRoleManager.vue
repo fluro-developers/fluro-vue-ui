@@ -6,7 +6,8 @@
 																				<v-layout align-center ma-0 py-0 px-2>
 																								<v-flex xs3>
 																												<strong>{{assignment.title}}</strong>
-																												<div v-if="assignment.reporter" class="sm text-muted"><fluro-icon icon="chart"/> Reporter</div>
+																												<div v-if="assignment.reporter" class="sm text-muted">
+																																<fluro-icon icon="chart" /> Reporter</div>
 																												<div v-if="assignment.roles && assignment.roles.length" class="sm text-muted">{{assignment.roles | comma('title') }}</div>
 																								</v-flex>
 																								<v-flex xs5>
@@ -40,7 +41,7 @@
 																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.reporter" v-model="model" />
 																																								</v-flex>
 																																								<v-flex xs8 sm9 py-0>
-																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.contacts" v-model="model" />
+																																												<fluro-content-form-field v-if="!definitionMode" :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.contacts" v-model="model" />
 																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.roles" v-model="model" />
 																																								</v-flex>
 																																				</v-layout>
@@ -107,8 +108,9 @@
 				</div>
 </template>
 <script>
-import FluroContentEditMixin from "src/components/content/edit/FluroContentEditMixin.js";
-import FluroConfirmButton from "src/components/ui/FluroConfirmButton.vue";
+import FluroContentForm from '../../../form/FluroContentForm.vue';
+import FluroContentFormField from "../../../form/FluroContentFormField.vue";
+import FluroConfirmButton from "../../../ui/FluroConfirmButton.vue";
 import draggable from "vuedraggable";
 
 export default {
@@ -116,14 +118,17 @@ export default {
 								value: {
 												type: Array
 								},
-								config: {
-												required: true
+								definitionMode: {
+												type: Boolean,
+												default: false,
 								}
 				},
-				mixins: [FluroContentEditMixin],
+				extends: FluroContentForm,
 				components: {
 								draggable,
-								FluroConfirmButton
+								FluroConfirmButton,
+								FluroContentForm,
+								FluroContentFormField,
 				},
 				data() {
 								return {
@@ -138,32 +143,36 @@ export default {
 								addSlot() {
 												var self = this;
 
-												var fields = [{
-																				title: "Position Title",
-																				description: "The name of this position",
-																				key: "title",
-																				minimum: 1,
-																				maximum: 1,
-																				type: "string",
-																				placeholder: "Eg. Leader, Co-Leader, Coach",
-																				params: {
-																								autofocus: true
-																				}
-																},
+												var fields = []
+
+												fields.push({
+																title: "Position Title",
+																description: "The name of this position",
+																key: "title",
+																minimum: 1,
+																maximum: 1,
+																type: "string",
+																placeholder: "Eg. Leader, Co-Leader, Coach",
+																params: {
+																				autofocus: true
+																}
+												});
 
 
-																{
-																				title: "Request Group Reports",
-																				description: "Send reporting requests to this position",
-																				key: "reporter",
-																				minimum: 0,
-																				maximum: 1,
-																				type: "boolean",
-																},
+												fields.push({
+																title: "Request Group Reports",
+																description: "Send reporting requests to this position",
+																key: "reporter",
+																minimum: 0,
+																maximum: 1,
+																type: "boolean",
+												});
 
 
+												if (!self.definitionMode) {
 
-																{
+
+																fields.push({
 																				title: "Contacts",
 																				key: "contacts",
 																				description: "Select people to fill this position",
@@ -174,22 +183,23 @@ export default {
 																								restrictType: "contact",
 																								allDefinitions: true
 																				}
-																},
+																})
+												}
 
-																{
-																				title: "Permission Roles",
-																				key: "roles",
-																				description: "Select access roles that will be granted within the context of this group to anyone added into this position",
-																				minimum: 0,
-																				maximum: 0,
-																				type: "reference",
-																				params: {
-																								restrictType: "role",
-																								allDefinitions: true,
-																								searchInheritable: true
-																				}
+												fields.push({
+																title: "Permission Roles",
+																key: "roles",
+																description: "Select access roles that will be granted within the context of this group to anyone added into this position",
+																minimum: 0,
+																maximum: 0,
+																type: "reference",
+																params: {
+																				restrictType: "role",
+																				allDefinitions: true,
+																				searchInheritable: true
 																}
-												];
+												});
+
 
 												self.$fluro.prompt(fields, "New Position").then(function(res) {
 																console.log(res);
@@ -294,7 +304,7 @@ export default {
 																minimum: 0,
 																maximum: 1,
 																type: "boolean",
-																description:'Send reporting requests to people in this position',
+																description: 'Send reporting requests to people in this position',
 												});
 
 

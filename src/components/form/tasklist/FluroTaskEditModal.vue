@@ -8,7 +8,7 @@
                             <fluro-icon icon="square-pencil" /> {{model.name}}</h4>
                     </v-flex>
                     <v-flex shrink>
-                        <v-btn class="ma-0" small color="primary" @click="dismiss()">
+                        <v-btn class="ma-0" small color="primary" @click="close(model)">
                             Done
                         </v-btn>
                     </v-flex>
@@ -60,10 +60,10 @@
 	import _ from 'lodash';
 
 
-import ModalMixin from 'src/mixins/ModalMixin';
-import FluroContentForm from 'src/components/form/FluroContentForm.vue';
-import FluroTabset from 'src/components/ui/tabset/FluroTabset.vue';
-import FluroTab from 'src/components/ui/tabset/FluroTab.vue';
+import ModalMixin from '../../../mixins/ModalMixin';
+import FluroContentForm from '../FluroContentForm.vue';
+import FluroTabset from '../../ui/tabset/FluroTabset.vue';
+import FluroTab from '../../ui/tabset/FluroTab.vue';
 
 
 

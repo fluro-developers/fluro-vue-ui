@@ -133,8 +133,8 @@ import Vue from "vue";
 import _ from "lodash";
 
 import { FilterService } from "fluro";
-import FilterConditionRow from "src/components/form/filters/FilterConditionRow.vue";
-// import FilterConditionGroup from 'src/components/form/filters/FilterConditionGroup.vue';
+import FilterConditionRow from "./FilterConditionRow.vue";
+// import FilterConditionGroup from './FilterConditionGroup.vue';
 
 var indexIterator = 0;
 var DEFAULT_COMPARATOR = "in"; //'in'; //'=='
@@ -281,8 +281,8 @@ export default {
 								};
 				},
 				// beforeCreate: function() {
-				//     this.$options.components.FilterConditionRow = require('src/components/form/filters/FilterConditionRow.vue').default;
-				//     this.$options.components.FilterConditionGroup = require('src/components/form/filters/FilterConditionGroup.vue').default;
+				//     this.$options.components.FilterConditionRow = require('./FilterConditionRow.vue').default;
+				//     this.$options.components.FilterConditionGroup = require('./FilterConditionGroup.vue').default;
 				// },
 				created() {
 								var self = this;
@@ -904,7 +904,7 @@ export default {
 																								name: track.title,
 																								text: track.title,
 																								value: track._id,
-																								_id:track._id,
+																								_id: track._id,
 																				};
 																})
 												);
@@ -1926,6 +1926,8 @@ export default {
 																switch (self.basicType) {
 																				case "process":
 																								//Extra filters for process cards
+
+																								
 																								break;
 																				case "checkin":
 																								//Extra filters for process cards

@@ -39,9 +39,9 @@
   </div>
 </template>
 <script>
-import FluroContentRender from "src/components/FluroContentRender.vue";
-import FluroAvatar from "src/components/FluroAvatar.vue";
-import FluroRealmBar from "src/components/ui/FluroRealmBar.vue";
+import FluroContentRender from "../../../../FluroContentRender.vue";
+import FluroAvatar from "../../../../FluroAvatar.vue";
+import FluroRealmBar from "../../../../ui/FluroRealmBar.vue";
 
 export default {
   props: {

@@ -120,9 +120,9 @@
     </div>
 </template>
 <script>
-import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
-import FluroExclusiveSelector from 'src/components/content/edit/components/FluroExclusiveSelector.vue';
-import FluroContentForm from 'src/components/form/FluroContentForm.vue';
+import FluroContentEditMixin from '../FluroContentEditMixin.js';
+import FluroExclusiveSelector from './FluroExclusiveSelector.vue';
+import FluroContentForm from '../../../form/FluroContentForm.vue';
 
 
 export default {

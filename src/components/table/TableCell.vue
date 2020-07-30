@@ -76,12 +76,12 @@
 
 import _ from 'lodash';
 
-import NumberCell from 'src/components/table/cells/NumberCell.vue';
-import BooleanCell from 'src/components/table/cells/BooleanCell.vue';
-import DateCell from 'src/components/table/cells/DateCell.vue';
-import RealmDotCell from 'src/components/table/cells/RealmDotCell.vue';
-import TimeagoCell from 'src/components/table/cells/TimeagoCell.vue';
-import AvatarCell from 'src/components/table/cells/AvatarCell.vue';
+import NumberCell from './cells/NumberCell.vue';
+import BooleanCell from './cells/BooleanCell.vue';
+import DateCell from './cells/DateCell.vue';
+import RealmDotCell from './cells/RealmDotCell.vue';
+import TimeagoCell from './cells/TimeagoCell.vue';
+import AvatarCell from './cells/AvatarCell.vue';
 
 
 

@@ -120,7 +120,10 @@
                                     <!-- <pre>{{roster}}</pre> -->
                                 </fluro-panel-body>
                             </fluro-panel>
-                            <v-btn block @click="createRoster(rosterType)" class="btn-ghost" v-for="rosterType in rosterTypes">Add {{ rosterType.title }}</v-btn>
+                            <v-btn block @click="createRoster(rosterType)" :loading="rosterType.loading" class="btn-ghost" v-for="rosterType in rosterTypes">Add {{ rosterType.title }}</v-btn>
+                            <p></p>
+                            <h3 margin>Reminders</h3>
+                            <event-reminder-manager :slots="rosterSlots" :startDate="model.startDate" :endDate="model.endDate" v-model="model.reminders" />
                         </constrain>
                     </v-container>
                 </flex-column-body>
@@ -420,14 +423,16 @@
 <script>
 /////////////////////////////////
 
-import MessagingEventManager from "src/components/content/edit/components/MessagingEventManager.vue";
-import LocationViewMapComponent from "src/components/content/event/LocationViewMapComponent.vue";
-import LocationSelector from "src/components/content/edit/components/LocationSelector.vue";
-import FluroContentEditMixin from "src/components/content/edit/FluroContentEditMixin.js";
-import GuestList from "src/components/content/event/GuestList.vue";
-import TicketList from "src/components/content/event/TicketList.vue";
-import TicketTypeManager from "src/components/content/event/TicketTypeManager.vue";
-import FluroContentView from "src/components/content/view/FluroContentView.vue";
+// import MessagingEventManager from "../components/MessagingEventManager.vue";
+
+// import MessagingEventManager from "../components/MessagingEventManager.vue";
+import LocationViewMapComponent from "../../event/LocationViewMapComponent.vue";
+import LocationSelector from "../components/LocationSelector.vue";
+import FluroContentEditMixin from "../FluroContentEditMixin.js";
+import GuestList from "../../event/GuestList.vue";
+import TicketList from "../../event/TicketList.vue";
+import TicketTypeManager from "../../event/TicketTypeManager.vue";
+import FluroContentView from "../../view/FluroContentView.vue";
 
 /////////////////////////////////
 
@@ -444,7 +449,7 @@ export default {
         TicketTypeManager,
         // FluroContentEdit,
         FluroContentView,
-        MessagingEventManager,
+        // MessagingEventManager,
         LocationSelector,
         LocationViewMapComponent
     },
@@ -538,24 +543,62 @@ export default {
         createRoster(rosterType) {
             var self = this;
 
-            var template = {
+            var newRoster = {
                 title: rosterType.title,
                 event: self.model,
                 definition: rosterType.definitionName,
-                realms: self.model.realms.slice()
+                realms: self.model.realms.slice(),
             };
 
-            self.$fluro.global
-                .create(
-                    rosterType.definitionName, {
-                        template
-                    },
-                    true
-                )
-                .then(function(result) {
-                    console.log("Result");
-                })
-                .catch(function(err) {});
+
+            self.$set(rosterType, 'loading', true);
+
+            self.$fluro.api.post(`/content/${rosterType.definitionName}`, newRoster)
+                .then(function(res) {
+
+                    var roster = res.data;
+
+                    if (!self.model.rostered) {
+                        self.$set(self.model, 'rostered', []);
+                    }
+                    self.model.rostered.push(roster);
+
+                    //////////////////////////////////////////////
+
+                    
+
+                    self.$fluro.global.edit(roster, true).then(function(updated) {
+                        _.assign(roster, updated)
+                    });
+
+                    self.$set(rosterType, 'loading', false);
+
+                    // // console.log('SET NOW', column.rosters[rosterDefinitionName], roster);
+
+                    // self.$set(column.rosters[rosterDefinitionName], 'roster', roster);
+                    // self.$set(column, 'addingRoster', false);
+
+                }, function(err) {
+                    self.$fluro.error(err);
+                    self.$set(rosterType, 'loading', false);
+                    // self.$set(column, 'addingRoster', false);
+                });
+
+
+
+
+
+            // self.$fluro.global
+            //     .create(
+            //         rosterType.definitionName, {
+            //             template
+            //         },
+            //         true
+            //     )
+            //     .then(function(result) {
+            //         console.log("Result");
+            //     })
+            //     .catch(function(err) {});
 
             // fluro.global.create = function(definedType, options, modal) {
         },
@@ -721,6 +764,30 @@ export default {
         }
     },
     computed: {
+        rosterSlots() {
+            var self = this;
+
+            // console.log(self.rosterTypes);
+
+            return _.chain(self.rosterTypes)
+                .map(function(rosterType) {
+                    return rosterType.data.slots;
+                })
+                .compact()
+                .flatten()
+                .map('title')
+                .compact()
+                .uniqBy(function(title) {
+                    return String(title).toLowerCase();
+                })
+                .map(function(title) {
+                    return {
+                        title,
+                        key: String(title).toLowerCase(),
+                    }
+                })
+                .value();
+        },
         differentTimezoneThanUser() {
             // console.log('checkit!', this.model.timezone )
             return this.$fluro.date.isDifferentTimezoneThanUser(
@@ -1347,8 +1414,8 @@ export default {
     }
 
     &.proposed {
-        background-color: rgba($primary, 0.1);
-        color: darken($primary, 20%);
+        background-color: rgba($proposedColor, 0.1);
+        color: darken($proposedColor, 20%);
     }
 }
 
@@ -1358,6 +1425,9 @@ export default {
     opacity: 0.5;
 
     &:hover {
+        border-color: $primary;
+        color: $primary;
+        background: rgba($primary, 0.1);
         opacity: 1;
     }
 }

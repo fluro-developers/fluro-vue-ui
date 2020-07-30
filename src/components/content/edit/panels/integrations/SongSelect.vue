@@ -66,7 +66,7 @@
 																								<div class="form-group">
 																												<strong>{{model.publicDetails.organization}}</strong>
 																								</div>
-																								<v-btn small @click="$fluro.global.delete(model)" v-if="$fluro.access.canDeleteItem(model)">
+																								<v-btn small @click="$fluro.global.delete([model])" v-if="$fluro.access.canDeleteItem(model)">
 																												<span>Delete this integration</span>
 																												<fluro-icon icon="trash-alt" />
 																								</v-btn>
@@ -134,8 +134,8 @@
 				</div>
 </template>
 <script>
-import FluroContentForm from 'src/components/form/FluroContentForm.vue';
-import FluroContentFormField from "src/components/form/FluroContentFormField.vue";
+import FluroContentForm from '../../../../form/FluroContentForm.vue';
+import FluroContentFormField from "../../../../form/FluroContentFormField.vue";
 
 
 export default {

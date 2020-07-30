@@ -28,7 +28,7 @@
     </list-group-item>
 </template>
 <script>
-import FluroConfirmButton from 'src/components/ui/FluroConfirmButton.vue';
+import FluroConfirmButton from '../../../ui/FluroConfirmButton.vue';
 import _ from 'lodash';
 
 export default {

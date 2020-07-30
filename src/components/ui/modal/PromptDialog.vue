@@ -1,7 +1,7 @@
 <template>
 
     <flex-column class="fluro-prompt-dialog">
-        <form @submit.prevent.stop="done">
+        <form style="flex:1; display:flex; " @submit.prevent.stop="done">
         <flex-column-header class="border-bottom" v-if="title">
             <v-container pa-2>
                 <h3 v-if="title">{{title}}</h3>
@@ -32,8 +32,8 @@
     </flex-column>
 </template>
 <script>
-import ModalMixin from 'src/mixins/ModalMixin';
-import FluroContentForm from 'src/components/form/FluroContentForm.vue';
+import ModalMixin from '../../../mixins/ModalMixin';
+import FluroContentForm from '../../form/FluroContentForm.vue';
 
 export default {
     components:{

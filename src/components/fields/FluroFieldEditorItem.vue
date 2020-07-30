@@ -65,7 +65,7 @@
           </div>
         </v-flex>
         <v-flex shrink v-if="hasSubFields" @click.stop.prevent="toggleCollapsed()">
-          <fluro-icon :icon="model.collapsed ? 'angle-up': 'angle-down'" />
+          <fluro-icon :icon="model.collapsed ? 'angle-down': 'angle-up'" />
         </v-flex>
         <v-flex shrink @click.stop.prevent>
           <div class="actions" :class="{active:showActions}">
@@ -129,9 +129,9 @@
 import draggable from "vuedraggable";
 import _ from "lodash";
 
-// import FluroFieldEditorItem from 'src/components/fields/FluroFieldEditorItem.vue';
+// import FluroFieldEditorItem from './FluroFieldEditorItem.vue';
 
-import FluroHelp from "src/components/FluroHelp.vue";
+import FluroHelp from "../FluroHelp.vue";
 
 export default {
   name: "fluro-field-editor-item",

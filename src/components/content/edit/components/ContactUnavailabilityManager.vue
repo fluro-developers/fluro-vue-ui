@@ -69,12 +69,12 @@
     </div>
 </template>
 <script>
-import ListGroup from 'src/components/ui/ListGroup.vue';
-import ListGroupItem from 'src/components/ui/ListGroupItem.vue';
-import FluroConfirmButton from 'src/components/ui/FluroConfirmButton.vue';
-import FluroContentSelectButton from 'src/components/form/contentselect/FluroContentSelectButton.vue';
-import FluroContentFormField from 'src/components/form/FluroContentFormField.vue';
-import FluroSelector from 'src/components/form/contentselect/FluroSelector.vue';
+import ListGroup from '../../../ui/ListGroup.vue';
+import ListGroupItem from '../../../ui/ListGroupItem.vue';
+import FluroConfirmButton from '../../../ui/FluroConfirmButton.vue';
+import FluroContentSelectButton from '../../../form/contentselect/FluroContentSelectButton.vue';
+import FluroContentFormField from '../../../form/FluroContentFormField.vue';
+import FluroSelector from '../../../form/contentselect/FluroSelector.vue';
 import Vue from 'vue';
 import _ from 'lodash';
 

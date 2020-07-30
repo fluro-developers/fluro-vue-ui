@@ -8,7 +8,7 @@
 
 
 
-import FluroVideo from 'src/components/FluroVideo.vue';
+import FluroVideo from './FluroVideo.vue';
 
 export default {
 	components:{

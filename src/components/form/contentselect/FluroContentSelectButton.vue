@@ -36,10 +36,10 @@ import _ from "lodash";
 
 ///////////////////////////////////////////////
 
-import FluroContentSelectModal from "src/components/form/contentselect/FluroContentSelectModal.vue";
-// import FluroSelector from 'src/components/form/contentselect/FluroSelector.vue';
-import FluroSelector from "src/components/form/contentselect/FluroSelector.vue";
-// import FluroSelectorFactory from 'src/components/form/contentselect/FluroSelectorFactory';
+import FluroContentSelectModal from "./FluroContentSelectModal.vue";
+// import FluroSelector from './FluroSelector.vue';
+import FluroSelector from "./FluroSelector.vue";
+// import FluroSelectorFactory from './FluroSelectorFactory';
 
 ///////////////////////////////////////////////
 

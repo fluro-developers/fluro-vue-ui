@@ -21,7 +21,7 @@
                     </template>
                 </template> -->
 
-                <tab :heading="informationPanelTitle">
+                <tab :heading="informationPanelTitle" index="config">
                     <flex-column-body style="background: #fafafa;">
                         
                         <v-container fluid>
@@ -38,7 +38,7 @@
                 </tab>
 
 
-                <tab heading="Basic Permissions">
+                <tab heading="Basic Permissions" index="basic">
                     <tabset :justified="true" :vertical="true" :persist="true">
                         <template v-slot:menuprefix>
                             <div class="search-box">
@@ -63,7 +63,7 @@
                         </tab>
                     </tabset>
                 </tab>
-                <tab heading="Defined Permissions">
+                <tab heading="Defined Permissions" index="defined">
                     <tabset :justified="true" :vertical="true" :persist="true">
                         <template v-slot:menuprefix>
                             <div class="search-box">
@@ -99,9 +99,9 @@
 <script>
 /////////////////////////////////
 
-import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
-import SearchInput from 'src/components/ui/SearchInput.vue';
-import FluroToggleItem from 'src/components/ui/FluroToggleItem.vue';
+import FluroContentEditMixin from '../FluroContentEditMixin.js';
+import SearchInput from '../../../ui/SearchInput.vue';
+import FluroToggleItem from '../../../ui/FluroToggleItem.vue';
 
 
 
@@ -121,12 +121,12 @@ export default {
     },
     created() {
         if(this.model._id) {
-            this.tabIndex = 1;
+            this.tabIndex = 'basic';
         }
     },
     data() {
         return {
-            tabIndex:0,
+            tabIndex:'config',
             search: '',
             loadingPermissions: true,
         }

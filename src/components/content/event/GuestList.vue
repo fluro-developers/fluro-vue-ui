@@ -11,16 +11,27 @@
                         <search-input v-model="search" />
                     </v-flex>
                     <!-- <div> -->
-                        <!-- <v-btn @click="push()" color="primary" class="ma-0 ml-2">Push -->
-                            <!-- <fluro-icon icon="plus" right /> -->
-                        <!-- </v-btn> -->
+                    <!-- <v-btn @click="push()" color="primary" class="ma-0 ml-2">Push -->
+                    <!-- <fluro-icon icon="plus" right /> -->
+                    <!-- </v-btn> -->
                     <!-- </div> -->
                 </v-layout>
             </fluro-panel-body>
             <tabset :justified="true">
-                <tab :heading="`${segment.contacts.length} ${segment.title}`" v-for="segment in segments">
-                    <v-container pa2 class="border-bottom" v-if="segments.length <= 1">
-                        <h3 margin>{{segment.contacts.length}} {{segment.title}}</h3>
+                <tab :heading="`${segment.contacts.length} ${segment.title}`" :key="segment.key" v-for="segment in segments">
+                    <!-- v-if="segments.length <= 1" -->
+                    <v-container pa-2 class="border-bottom">
+                        <v-layout align-center>
+                            <v-flex>
+                                <h4>{{segment.contacts.length}} {{segment.title}}</h4>
+                            </v-flex>
+                            <v-flex shrink>
+                                <v-btn class="ma-0" small color="primary" :loading="exporting" @click="exportItems(segment)">
+                                    Export {{segment.title}}
+                                    <fluro-icon right library="fas" icon="share" />
+                                </v-btn>
+                            </v-flex>
+                        </v-layout>
                     </v-container>
                     <fluro-table trackingKey="_id" defaultSort="firstName" :pageSize="35" style="max-height:50vh;" :items="segment.contacts" :columns="columns" />
                 </tab>
@@ -29,9 +40,9 @@
     </div>
 </template>
 <script>
-import SearchInput from 'src/components/ui/SearchInput.vue';
-import AvatarCell from 'src/components/table/cells/AvatarCell.vue';
-import FluroTable from 'src/components/table/FluroTable.vue';
+import SearchInput from '../../ui/SearchInput.vue';
+import AvatarCell from '../../table/cells/AvatarCell.vue';
+import FluroTable from '../../table/FluroTable.vue';
 import _ from 'lodash';
 
 
@@ -46,15 +57,16 @@ export default {
             type: [Object, String],
         }
     },
-    watch:{
-    	search:_.debounce(function(v) {
-    		this.debouncedSearch = v;
-    	}, 300),
+    watch: {
+        search: _.debounce(function(v) {
+            this.debouncedSearch = v;
+        }, 300),
     },
     data() {
         return {
-        	search:'',
-        	debouncedSearch:'',
+            exporting: false,
+            search: '',
+            debouncedSearch: '',
             loading: true,
             columns: [{
                     title: '',
@@ -92,18 +104,18 @@ export default {
         }
     },
     computed: {
-    	filtered() {
-    		var self = this;
-    		var filtered = self.guests;
+        filtered() {
+            var self = this;
+            var filtered = self.guests;
 
-    		if(self.debouncedSearch && self.debouncedSearch.length) {
-    			filtered = _.filter(filtered, function(item) {
-    				return _.includes(item.searchString, self.debouncedSearch);
-    			})
-    		}
+            if (self.debouncedSearch && self.debouncedSearch.length) {
+                filtered = _.filter(filtered, function(item) {
+                    return _.includes(item.searchString, self.debouncedSearch);
+                })
+            }
 
-    		return filtered;
-    	},
+            return filtered;
+        },
         segments() {
             return _.chain(this.filtered)
                 .reduce(function(set, guest) {
@@ -133,7 +145,7 @@ export default {
                     return set;
                 }, {
 
-                  
+
                     expected: {
                         title: 'Expected',
                         contacts: []
@@ -159,15 +171,59 @@ export default {
                         contacts: []
                     },
                 })
-                .values()
+                .map(function(segment, key) {
+                    segment.key = key;
+                    return segment;
+                })
                 .filter(function(segment) {
-                	return segment.contacts.length;
+                    return segment.contacts.length;
                 })
                 .value();
         },
         eventID() {
             return this.$fluro.utils.getStringID(this.event);
         },
+    },
+    methods: {
+        // exportItems(segment) {
+
+        //     var self = this;
+        //     self.exporting = true;
+        //     console.log('SIGMENT', segment);
+        // },
+        exportItems(segment) {
+
+          console.log('SIGMENT', segment);
+
+            var self = this;
+            self.exporting = true;
+
+
+            var eventID = self.$fluro.utils.getStringID(self.event);
+            var url = `/event/${this.eventID}/guestlist/${segment.key}/csv`;
+            
+            self.$fluro.api
+                .get(url, { cache: false })
+                .then(function(res) {
+                    self.$fluro.notify(
+                        "Your popup blocker may stop this file from downloading"
+                    );
+
+                    var token = self.$fluro.auth.getCurrentToken();
+                    var downloadURL = self.$fluro.api.defaults.baseURL + res.data.download;
+                    if (token) {
+                        window.open(downloadURL + "?access_token=" + token);
+                    } else {
+                        window.open(downloadURL);
+                    }
+
+                    self.exporting = false;
+                })
+                .catch(function(err) {
+                    self.$fluro.error(err);
+                    self.exporting = false;
+                });
+        }
     },
     asyncComputed: {
         guests: {
@@ -181,8 +237,8 @@ export default {
                     return self.$fluro.api.get(`/event/${self.eventID}/guestlist`).then(function(res) {
 
                             var results = _.map(res.data, function(item) {
-                            	item.searchString = String(`${item.title} ${item.firstName} ${item.lastName} ${item.preferredName} ${item.lastName} ${item.age} ${item.gender}`).toLowerCase()	
-                            	return item;
+                                item.searchString = String(`${item.title} ${item.firstName} ${item.lastName} ${item.preferredName} ${item.lastName} ${item.age} ${item.gender}`).toLowerCase()
+                                return item;
                             });
 
                             resolve(results);
@@ -198,6 +254,7 @@ export default {
         },
     },
 }
+
 </script>
 <style lang="scss">
 </style>

@@ -6,7 +6,7 @@
     </div>
 </template>
 <script>
-import FluroAvatar from 'src/components/FluroAvatar.vue';
+import FluroAvatar from './FluroAvatar.vue';
 
 export default {
     components:{

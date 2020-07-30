@@ -37,7 +37,7 @@
 <script>
 /////////////////////////////////
 
-import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
+import FluroContentEditMixin from '../FluroContentEditMixin.js';
 
 /////////////////////////////////
 

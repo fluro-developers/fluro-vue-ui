@@ -1,6 +1,6 @@
-import Wrapper from 'src/components/ui/FluroWrapper.vue';
-import Constrain from 'src/components/ui/FluroConstrain.vue';
-import FluroRealmBar from 'src/components/ui/FluroRealmBar.vue';
+import Wrapper from '../components/ui/FluroWrapper.vue';
+import Constrain from '../components/ui/FluroConstrain.vue';
+import FluroRealmBar from '../components/ui/FluroRealmBar.vue';
 
 
 export default {

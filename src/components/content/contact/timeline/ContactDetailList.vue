@@ -9,7 +9,7 @@
                    
                 </v-container>
       </flex-column-header>-->
-      <flex-column-body style="background: #eee;">
+      <flex-column-body style="background: #fafafa;">
         <v-container fluid>
           <fluro-panel
             class="sheet-panel"
@@ -62,7 +62,7 @@
 </template>
 <script>
 import _ from "lodash";
-import FluroContentRender from "src/components/FluroContentRender.vue";
+import FluroContentRender from "../../../FluroContentRender.vue";
 
 export default {
   props: {

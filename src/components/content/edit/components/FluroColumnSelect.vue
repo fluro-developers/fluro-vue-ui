@@ -9,7 +9,7 @@
   </fluro-panel>
 </template>
 <script>
-import FluroColumnSelectItem from "src/components/content/edit/components/FluroColumnSelectItem.vue";
+import FluroColumnSelectItem from "./FluroColumnSelectItem.vue";
 
 export default {
   props: {

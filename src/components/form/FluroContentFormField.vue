@@ -1,6 +1,7 @@
 <template>
 				<div @click="clicked($event)" :data-field-key="key" class="fluro-content-form-field" v-if="isVisible" v-bind="attributes" :class="fieldClass">
 								<pre v-if="!field">FATAL - NO FIELD SPECIFIED</pre>
+							
 								<template v-if="ready && model">
 												<template v-if="officeUseOnly">
 												</template>
@@ -159,11 +160,11 @@
 												</template>
 												<template v-else-if="renderer == 'checkbox'">
 																<div class="terms" :class="{'has-error':errorMessages.length}" v-if="savedTerms">
-																				<v-checkbox :outline="showOutline" :success="success" :mandatory="required" :persistent-hint="true" :label="displayLabel" v-model="fieldModel" @change="elementValueChanged(event, true)" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
+																				<v-checkbox :outline="showOutline" :success="success" :mandatory="required" :persistent-hint="true" :label="displayLabel" v-model="fieldModel" @change="elementValueChanged($event, true)" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
 																				<div class="conditions">{{field.params.storeData}}</div>
 																</div>
 																<template v-else>
-																				<v-checkbox :outline="showOutline" :success="success" :mandatory="required" :persistent-hint="true" :label="displayLabel" v-model="fieldModel" @change="elementValueChanged(event, true)" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
+																				<v-checkbox :outline="showOutline" :success="success" :mandatory="required" :persistent-hint="true" :label="displayLabel" v-model="fieldModel" @change="elementValueChanged($event, true)" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
 																</template>
 												</template>
 												<template v-else-if="renderer == 'number'">
@@ -269,6 +270,7 @@
 												<template v-else-if="renderer == 'content-select'">
 																<v-input class="no-flex" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
 																				<!--  -->
+																				<!-- CONTENT SELECT -->
 																				<fluro-content-select :context="context" :template="params.template" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :success="success" :required="required" :error-messages="errorMessages" :label="displayLabel" :outline="showOutline" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="placeholder" :minimum="minimum" @blur="touch()" @focus="focussed();" :type="restrictType" :lockFilter="referenceFilter" @input="elementValueChanged" :searchInheritable="searchInheritable" :maximum="maximum" v-model="fieldModel" />
 																</v-input>
 												</template>
@@ -455,9 +457,9 @@
 																												</v-layout>
 																								</div>
 																				</div>
-																				<label class="file-drop" v-if="canAddFile">
+																				<label class="file-drop" v-if="canAddFile" @dragover.prevent.stop="fileover" @drop.prevent.stop="filedrop">
 																								<input ref="file" type="file" :multiple="multipleInput" @change="filesSelected($event.target.files)">
-																								Drag and drop or click here to select {{multipleInput ? 'files' : 'a file'}}
+																								Drag and drop a file or click to select {{multipleInput ? 'files' : 'a file'}}
 																				</label>
 																</v-input>
 												</template>
@@ -546,8 +548,12 @@
 <script>
 //Import validation options from vuelidate
 import { validationMixin } from 'vuelidate';
+import { required, minLength, maxLength, email, url } from 'vuelidate/lib/validators';
+/**
+
 import validators from 'vuelidate/lib/validators';
-const { required, minLength, maxLength, email, url } = validators;
+const { required, minLength, maxLength, email, url } = ;
+/**/
 import _ from 'lodash';
 import Vue from 'vue';
 
@@ -563,22 +569,22 @@ import Expressions from 'expression-eval';
 
 
 import draggable from 'vuedraggable';
-// import FluroContentForm from 'src/components/form/FluroContentForm.vue';
-// import FluroContentFormField from 'src/components/form/FluroContentFormField.vue';
-import FluroCompileHtml from 'src/components/FluroCompileHtml.vue';
-// import FluroEditor from 'src/components/form/FluroEditor.vue';
-import FluroCurrencyInput from 'src/components/form/FluroCurrencyInput.vue';
-// import FluroCodeEditor from 'src/components/form/FluroCodeEditor.vue';
-import FluroSignatureField from 'src/components/form/FluroSignatureField.vue';
-import FluroDateTimePicker from 'src/components/form/FluroDateTimePicker.vue';
-import FluroContentSelect from 'src/components/form/FluroContentSelect.vue';
-import FluroContentSelectButton from 'src/components/form/contentselect/FluroContentSelectButton.vue';
-import FluroRealmSelect from 'src/components/form/realmselect/FluroRealmSelect.vue';
-import DynamicImportService from 'src/DynamicImportService.js';
+// import FluroContentForm from './FluroContentForm.vue';
+// import FluroContentFormField from './FluroContentFormField.vue';
+import FluroCompileHtml from '../FluroCompileHtml.vue';
+// import FluroEditor from './FluroEditor.vue';
+import FluroCurrencyInput from './FluroCurrencyInput.vue';
+// import FluroCodeEditor from './FluroCodeEditor.vue';
+import FluroSignatureField from './FluroSignatureField.vue';
+import FluroDateTimePicker from './FluroDateTimePicker.vue';
+import FluroContentSelect from './FluroContentSelect.vue';
+import FluroContentSelectButton from './contentselect/FluroContentSelectButton.vue';
+import FluroRealmSelect from './realmselect/FluroRealmSelect.vue';
+// import DynamicImportService from '../../DynamicImportService.js';
 
 
-// let FluroEditor = import('src/components/form/FluroEditor.vue');
-// let FluroCodeEditor = import('src/components/form/FluroCodeEditor.vue');
+// let FluroEditor = import('./FluroEditor.vue');
+// let FluroCodeEditor = import('./FluroCodeEditor.vue');
 
 
 ////////////////////////////////////////////////////////
@@ -615,8 +621,11 @@ export default {
 
 
 
+
+
+
 								return {
-												ready: false,
+												ready: true,
 												hasInitialValue: false,
 												asyncOptionsLoading: false,
 												drag: false,
@@ -781,12 +790,25 @@ export default {
 				},
 				computed: {
 								webMode() {
-												if (typeof window !== 'undefined') {
-																if (window.adminPanelMode) {
-																				return false;
-																}
+
+												var self = this;
+
+
+
+												if (!self.$fluro.app) {
+																return;
 												}
-												return this.$fluro.app;
+
+												var element = self.$el;
+												if (!element) {
+																return;
+												}
+
+												if (!element.ownerDocument) {
+																return;
+												}
+
+												return !element.ownerDocument.defaultView.adminPanelMode;
 								},
 								useBasicDropdown() {
 												return this.selectOptions.length < 5 || this.mobile || this.params.dropdown;
@@ -1478,10 +1500,30 @@ export default {
 
 
 												if (self.field.options && self.field.options.length) {
-																actualOptions = _.map(self.field.options, function(option) {
-																				option.title = option.title ? option.title : option.name;
-																				return option;
-																});
+
+																actualOptions = _.chain(self.field.options)
+																				.map(function(option) {
+
+																								if (!option) {
+																												return;
+																								}
+
+																								if (_.isString(option)) {
+																												return {
+																																title: option,
+																																name: option,
+																																text: option,
+																																value: option,
+																												}
+																								}
+
+																								option.title = option.title ? option.title : (option.name || option.text || String(option));
+
+																								return option;
+																				})
+																				.compact()
+																				.value();
+
 												} else {
 																if (self.allowedValues && self.allowedValues.length) {
 																				actualOptions = _.chain(self.allowedValues)
@@ -1491,6 +1533,7 @@ export default {
 																																name: option,
 																																value: option,
 																																title: option,
+																																text: option,
 																												}
 																								})
 																								.value();
@@ -1542,6 +1585,8 @@ export default {
 												if (self.type == 'void') {
 																return errors;
 												}
+
+
 
 
 												if (self.type == 'group' && !self.asObject) {
@@ -2104,6 +2149,17 @@ export default {
 												//////////////////////////////////
 
 												switch (self.field.type) {
+																case 'reference':
+
+																				if (!value) {
+																								if (self.multipleInput) {
+																												value = [];
+																								} else {
+																												value = null;
+																								}
+																				}
+
+																				break;
 																case 'date':
 																				if (value) {
 																								if (String(value).toLowerCase() == 'now') {
@@ -2435,6 +2491,23 @@ export default {
 												}
 
 
+								},
+								filedrop(e) {
+												console.log('FILEDROP AT FIELD LEVEL')
+												var self = this;
+												if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+																e.preventDefault();
+																e.stopPropagation();
+																self.filesSelected(e.dataTransfer.files);
+												}
+								},
+								fileover(e) {
+												console.log('FILEOVER AT FIELD LEVEL')
+												if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+																// console.log('FILE OVER', e.dataTransfer);
+																e.preventDefault();
+																e.stopPropagation();
+												}
 								},
 								filesSelected(list) {
 
@@ -2811,11 +2884,11 @@ export default {
 								},
 								clicked($event) {
 												this.debugSelect($event);
-												this.touch();
+												// this.touch();
 								},
 								focussed() {
 												this.debugSelect();
-												this.touch();
+												// this.touch();
 								},
 								modalFocussed() {
 												this.focussed();
@@ -2895,7 +2968,18 @@ export default {
 				},
 				created() {
 
+
 								var self = this;
+
+
+
+
+
+
+
+								// console.log('TESTING', !!this.$fluro.app, window.adminPanelMode, self.webMode)
+
+
 
 								//console.log('FIELD IS CREATED', self.field.title)
 								////////////////////////////////////////////
@@ -2928,7 +3012,7 @@ export default {
 								///////////////////////////////////////////////
 
 								self.createDefaults();
-								return self.checkInitialValue();
+								self.checkInitialValue();
 
 
 
@@ -2961,11 +3045,12 @@ export default {
 								/**/
 
 
-
+								// self.ready = true;
 								////////////////////////////////////////////
 								//Emit itself being created
 
 								self.$emit('created', self);
+
 
 
 
@@ -3241,6 +3326,14 @@ export default {
 				},
 
 				mixins: [validationMixin],
+				beforeCreate() {
+								this.$options.components.FluroContentForm = require('./FluroContentForm.vue').default;
+								this.$options.components.FluroContentFormField = require('./FluroContentFormField.vue').default;
+								this.$options.components.FluroEditor = require('./FluroEditor.vue').default;
+								this.$options.components.FluroCodeEditor = require('./FluroCodeEditor.vue').default;
+								//this.ready = true;
+				},
+				/**
 				beforeCreate: function() {
 
 
@@ -3250,17 +3343,17 @@ export default {
 
 
 								Promise.all([
-																DynamicImportService.load('src/components/form/FluroContentForm.vue', function() {
-																				return import('src/components/form/FluroContentForm.vue')
+																DynamicImportService.load('./FluroContentForm.vue', function() {
+																				return import('./FluroContentForm.vue')
 																}),
-																DynamicImportService.load('src/components/form/FluroContentFormField.vue', function() {
-																				return import('src/components/form/FluroContentFormField.vue')
+																DynamicImportService.load('./FluroContentFormField.vue', function() {
+																				return import('./FluroContentFormField.vue')
 																}),
-																DynamicImportService.load('src/components/form/FluroEditor.vue', function() {
-																				return import('src/components/form/FluroEditor.vue')
+																DynamicImportService.load('./FluroEditor.vue', function() {
+																				return import('./FluroEditor.vue')
 																}),
-																DynamicImportService.load('src/components/form/FluroCodeEditor.vue', function() {
-																				return import('src/components/form/FluroCodeEditor.vue')
+																DynamicImportService.load('./FluroCodeEditor.vue', function() {
+																				return import('./FluroCodeEditor.vue')
 																}),
 												])
 												.then(function(results) {
@@ -3273,6 +3366,7 @@ export default {
 																self.ready = true;
 												})
 				},
+				/**/
 				validations: {
 								model: {
 												validateInput,

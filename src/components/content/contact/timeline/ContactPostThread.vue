@@ -12,7 +12,7 @@
           </v-btn>
         </v-container>
       </flex-column-header>
-      <flex-column-body style="background: #eee;">
+      <flex-column-body style="background: #fafafa;">
         <v-container>
           <div class="card" v-for="post in items">
             <post-card :item="post" />
@@ -24,8 +24,8 @@
 </template>
 <script>
 import _ from "lodash";
-import PostCard from "src/components/content/contact/timeline/cards/PostCard.vue";
-import AddPost from "src/components/ui/modal/AddPost.vue";
+import PostCard from "./cards/PostCard.vue";
+import AddPost from "../../../ui/modal/AddPost.vue";
 
 export default {
   props: {

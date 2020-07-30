@@ -32,7 +32,7 @@
 <script>
 import _ from 'lodash';
 
-import Layout from 'src/mixins/Layout';
+import Layout from '../../mixins/Layout';
 
 export default {
     mixins: [Layout],

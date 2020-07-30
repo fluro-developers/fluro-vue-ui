@@ -107,11 +107,11 @@
 </template>
 <script>
 /////////////////////////////////
-import RoomManager from 'src/components/content/edit/components/RoomManager.vue';
-import LocationEditMapComponent from 'src/components/content/edit/components/LocationEditMapComponent.vue';
-import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
-import AddressManager from 'src/components/content/edit/components/AddressManager.vue';
-import KeyContactLocationManager from 'src/components/content/edit/components/KeyContactLocationManager.vue';
+import RoomManager from '../components/RoomManager.vue';
+import LocationEditMapComponent from '../components/LocationEditMapComponent.vue';
+import FluroContentEditMixin from '../FluroContentEditMixin.js';
+import AddressManager from '../components/AddressManager.vue';
+import KeyContactLocationManager from '../components/KeyContactLocationManager.vue';
 
 /////////////////////////////////
 

@@ -19,7 +19,7 @@
   </div>
 </template>
 <script>
-import FluroContentFormField from "src/components/form/FluroContentFormField.vue";
+import FluroContentFormField from "../../../form/FluroContentFormField.vue";
 
 export default {
   props: {

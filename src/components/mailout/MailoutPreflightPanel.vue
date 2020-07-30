@@ -129,7 +129,7 @@
 
 import _ from 'lodash';
 
-import FluroContentFormField from 'src/components/form/FluroContentFormField.vue';
+import FluroContentFormField from '../form/FluroContentFormField.vue';
 
 export default {
     components:{
@@ -270,6 +270,12 @@ export default {
         },
     },
     watch: {
+        item:{
+            handler(i) {
+                this.$emit('input', i)
+            },
+            deep:true,
+        },
         'item.state': function() {
             this.checkIfCountdownIsNeeded()
         },

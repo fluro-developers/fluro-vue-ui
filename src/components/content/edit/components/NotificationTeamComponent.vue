@@ -19,8 +19,8 @@
 <script>
 
     //TODO check whether this actually needs to be here
-import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
-import FluroExclusiveSelector from 'src/components/content/edit/components/FluroExclusiveSelector.vue';
+import FluroContentEditMixin from '../FluroContentEditMixin.js';
+import FluroExclusiveSelector from './FluroExclusiveSelector.vue';
 
 
 

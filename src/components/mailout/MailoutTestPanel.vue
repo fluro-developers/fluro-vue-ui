@@ -26,7 +26,7 @@
 </template>
 <script>
 
-import FluroContentSelectButton from 'src/components/form/contentselect/FluroContentSelectButton.vue';
+import FluroContentSelectButton from '../form/contentselect/FluroContentSelectButton.vue';
 
 export default {
 	components:{

@@ -83,12 +83,15 @@
                     </v-container>
                 </flex-column-body>
             </tab>
-            <tab heading="Roster Defaults">
+            <tab heading="Roster Settings">
                 <flex-column-body style="background: #fafafa;">
                     <v-container>
                         <constrain md>
+                            <h4 margin>Roster Reminders</h4>
+                            <p>Setup reminders for team members rostered to events on this track</p>
+                            <event-reminder-manager :slots="rosterSlots" v-model="model.defaultReminders" />
                             <!-- <default-roster-manager :config="config" v-model="model.defaultRosters" :rosterOptions="rosterDefinitions.definitions"/> -->
-                            <reminder-event-manager :config="config" v-model="model.defaultReminders" :allAssignmentOptions="allPositions" />
+                            <!-- <reminder-event-manager :config="config" v-model="model.defaultReminders" :allAssignmentOptions="allPositions" /> -->
                         </constrain>
                     </v-container>
                 </flex-column-body>
@@ -137,10 +140,8 @@
                                     </div>
                                 </fluro-panel-title>
                                 <fluro-panel-body v-if="model.autoRecur">
+                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.recurAmount" v-model="model" />
                                     <v-layout row wrap>
-                                        <v-flex xs12 sm12>
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.recurAmount" v-model="model" />
-                                        </v-flex>
                                         <v-flex xs12 sm6>
                                             <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.nextRecurDate" v-model="model" />
                                             <p class="muted">{{nextRecurDateFromNow}}</p>
@@ -148,16 +149,31 @@
                                         <v-flex xs12 sm6>
                                             <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.archiveDate" v-model="model" />
                                         </v-flex>
-                                        <v-flex xs12 sm12>
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.recurDefinition" v-model="model" />
-                                        </v-flex>
+                                    </v-layout>
+                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.recurDefinition" v-model="model" />
+                                    <v-layout>
                                         <v-flex xs12 sm4>
                                             <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.recurCount" v-model="model" />
                                         </v-flex>
                                         <v-flex xs12 sm8>
                                             <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.recurMeasure" v-model="model" />
                                         </v-flex>
-                                        <v-flex xs12 sm4 v-if="model.recurMeasure == 'weeks'">
+                                    </v-layout>
+                                    <v-layout v-if="model.recurMeasure == 'weeks'">
+                                        <v-flex xs12 sm4>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.recurWeekday" v-model="model" />
+                                        </v-flex>
+                                    </v-layout>
+                                    <v-layout v-if="model.recurMeasure == 'months'">
+                                        <v-flex>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.recurNth" v-model="model" />
+                                        </v-flex>
+                                        
+                                        <v-flex v-else v-if="model.recurNth != 'date'">
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.recurWeekday" v-model="model" />
+                                        </v-flex>
+                                    </v-layout>
+                                    <!--  <v-flex xs12 sm4 v-if="model.recurMeasure == 'weeks'">
                                             <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.recurWeekday" v-model="model" />
                                         </v-flex>
                                         <v-flex xs12 sm8 v-if="model.recurMeasure == 'weeks'" />
@@ -169,6 +185,10 @@
                                         </v-flex>
                                         <v-flex xs12 sm4 v-if="(model.recurMeasure == 'months') && (model.recurNth == 'date')" />
                                         <v-flex xs12 sm8 v-else-if="model.recurMeasure == 'months'" />
+
+
+                                         -->
+                                    <v-layout>
                                         <v-flex xs12 sm3>
                                             <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultStartTime" v-model="model" />
                                         </v-flex>
@@ -206,13 +226,13 @@ import Vue from "vue";
 import _ from "lodash";
 
 /////////////////////////////////
-import LocationSelector from "src/components/content/edit/components/LocationSelector.vue";
-import MessagingEventManager from "src/components/content/edit/components/MessagingEventManager.vue";
-import ReminderEventManager from "src/components/content/edit/components/ReminderEventManager.vue";
-import DefaultRosterManager from "src/components/content/edit/components/DefaultRosterManager.vue";
-import FluroContentEditMixin from "src/components/content/edit/FluroContentEditMixin.js";
+import LocationSelector from "../components/LocationSelector.vue";
+import MessagingEventManager from "../components/MessagingEventManager.vue";
+import ReminderEventManager from "../components/ReminderEventManager.vue";
+import DefaultRosterManager from "../components/DefaultRosterManager.vue";
+import FluroContentEditMixin from "../FluroContentEditMixin.js";
 
-import TicketTypeManager from "src/components/content/event/TicketTypeManager.vue";
+import TicketTypeManager from "../../event/TicketTypeManager.vue";
 
 /////////////////////////////////
 
@@ -401,6 +421,30 @@ export default {
         }
     },
     computed: {
+        rosterSlots() {
+            var self = this;
+
+            // console.log(self.rosterTypes);
+
+            return _.chain(self.rosterTypes)
+                .map(function(rosterType) {
+                    return rosterType.data.slots;
+                })
+                .compact()
+                .flatten()
+                .map('title')
+                .compact()
+                .uniqBy(function(title) {
+                    return String(title).toLowerCase();
+                })
+                .map(function(title) {
+                    return {
+                        title,
+                        key: String(title).toLowerCase(),
+                    }
+                })
+                .value();
+        },
         fieldsOutput() {
             var self = this;
             var array = [];
@@ -656,7 +700,7 @@ export default {
                 directive: "select",
                 defaultValues: ["date"],
                 options: [{
-                        name: "Same Date",
+                        name: `Same Date (${self.$fluro.date.formatDate(self.model.nextRecurDate, 'Do')} of each month)`,
                         value: "date"
                     },
                     {
@@ -835,6 +879,38 @@ export default {
         }
     },
     asyncComputed: {
+        rosterTypes: {
+            default: [],
+            get() {
+                var self = this;
+
+                ///////////////////////////////////
+
+                return new Promise(function(resolve, reject) {
+                    return self.$fluro.types
+                        .subTypes("roster")
+                        .then(function(types) {
+                            var filtered = _.filter(types, function(type) {
+                                // var alreadyCreated = !self.existingRosterTypes[
+                                //     type.definitionName
+                                // ];
+                                // if (!alreadyCreated) {
+                                //     return;
+                                // }
+
+                                //Return if we have enough permissions to create this thing
+                                return self.$fluro.access.can(
+                                    "create",
+                                    type.definitionName,
+                                    "roster"
+                                )
+                            });
+                            resolve(filtered);
+                        })
+                        .catch(reject);
+                });
+            }
+        },
         defOptions: {
             default: [],
             get() {

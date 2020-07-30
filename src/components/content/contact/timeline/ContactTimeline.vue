@@ -72,15 +72,15 @@
   </div>-->
 </template>
 <script>
-import FluroTimeline from "src/components/ui/FluroTimeline.vue";
-import MailoutCard from "src/components/content/contact/timeline/cards/MailoutCard.vue";
-import PostCard from "src/components/content/contact/timeline/cards/PostCard.vue";
-import InteractionCard from "src/components/content/contact/timeline/cards/InteractionCard.vue";
-import CheckinCard from "src/components/content/contact/timeline/cards/CheckinCard.vue";
-import LogCard from "src/components/content/contact/timeline/cards/LogCard.vue";
-import RosterCard from "src/components/content/contact/timeline/cards/RosterCard.vue";
-import TextMessageCard from "src/components/content/contact/timeline/cards/TextMessageCard.vue";
-import GroupedCard from "src/components/content/contact/timeline/cards/GroupedCard.vue";
+import FluroTimeline from "../../../ui/FluroTimeline.vue";
+import MailoutCard from "./cards/MailoutCard.vue";
+import PostCard from "./cards/PostCard.vue";
+import InteractionCard from "./cards/InteractionCard.vue";
+import CheckinCard from "./cards/CheckinCard.vue";
+import LogCard from "./cards/LogCard.vue";
+import RosterCard from "./cards/RosterCard.vue";
+import TextMessageCard from "./cards/TextMessageCard.vue";
+import GroupedCard from "./cards/GroupedCard.vue";
 
 export default {
   props: {

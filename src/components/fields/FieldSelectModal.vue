@@ -5,7 +5,7 @@
 </template>
 <script>
 
-import FluroModalMixin from 'src/mixins/ModalMixin.js';
+import FluroModalMixin from '../../mixins/ModalMixin.js';
 
 export default {
 	components:{

@@ -450,29 +450,29 @@
 <script>
 /////////////////////////////////
 
-import FluroAcademicSelect from 'src/components/form/FluroAcademicSelect.vue';
-import FluroRealmSelect from 'src/components/form/realmselect/FluroRealmSelect.vue';
-import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
-import FluroContactCommunicateMixin from 'src/mixins/FluroContactCommunicateMixin';
+import FluroAcademicSelect from '../../../form/FluroAcademicSelect.vue';
+import FluroRealmSelect from '../../../form/realmselect/FluroRealmSelect.vue';
+import FluroContentEditMixin from '../FluroContentEditMixin.js';
+import FluroContactCommunicateMixin from '../../../../mixins/FluroContactCommunicateMixin';
 
 
 
-import FluroAvatarUpdate from 'src/components/FluroAvatarUpdate.vue';
-import ContactTimeline from 'src/components/content/contact/timeline/ContactTimeline.vue';
-import ContactMessageList from 'src/components/content/contact/timeline/ContactMessageList.vue';
-import ContactTransactionList from 'src/components/content/contact/timeline/ContactTransactionList.vue';
-import ContactCheckinList from 'src/components/content/contact/timeline/ContactCheckinList.vue';
-import ContactInteractionList from 'src/components/content/contact/timeline/ContactInteractionList.vue';
-import ContactPostThread from 'src/components/content/contact/timeline/ContactPostThread.vue';
+import FluroAvatarUpdate from '../../../FluroAvatarUpdate.vue';
+import ContactTimeline from '../../contact/timeline/ContactTimeline.vue';
+import ContactMessageList from '../../contact/timeline/ContactMessageList.vue';
+import ContactTransactionList from '../../contact/timeline/ContactTransactionList.vue';
+import ContactCheckinList from '../../contact/timeline/ContactCheckinList.vue';
+import ContactInteractionList from '../../contact/timeline/ContactInteractionList.vue';
+import ContactPostThread from '../../contact/timeline/ContactPostThread.vue';
 
 
 
-import ContactGroupManager from 'src/components/content/edit/components/ContactGroupManager.vue';
-import ContactProcessManager from 'src/components/content/edit/components/ContactProcessManager.vue';
-import ContactCapabilityManager from 'src/components/content/edit/components/ContactCapabilityManager.vue';
-import ContactRelationshipManager from 'src/components/content/edit/components/ContactRelationshipManager.vue';
-import ContactUnavailabilityManager from 'src/components/content/edit/components/ContactUnavailabilityManager.vue';
-import AddPost from 'src/components/ui/modal/AddPost.vue';
+import ContactGroupManager from '../components/ContactGroupManager.vue';
+import ContactProcessManager from '../components/ContactProcessManager.vue';
+import ContactCapabilityManager from '../components/ContactCapabilityManager.vue';
+import ContactRelationshipManager from '../components/ContactRelationshipManager.vue';
+import ContactUnavailabilityManager from '../components/ContactUnavailabilityManager.vue';
+import AddPost from '../../../ui/modal/AddPost.vue';
 import _ from 'lodash';
 
 

@@ -9,7 +9,7 @@ import vue from 'rollup-plugin-vue';
 import globalStyles from 'rollup-plugin-vue-global-styles'
 import alias from '@rollup/plugin-alias';
 import pkg from './package.json';
-
+import json from '@rollup/plugin-json';
 
 
 
@@ -56,6 +56,7 @@ const plugins = [
 	babel({
 		exclude: 'node_modules/**'
 	}),
+	json(),
 
 	/**/
 	postcss({

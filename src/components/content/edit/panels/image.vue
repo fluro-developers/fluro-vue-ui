@@ -1,12 +1,13 @@
 <template>
     <flex-column>
-        <template v-if="loading">
-            <fluro-page-preloader contain />
-        </template>
-        <template v-else>
-            <!-- :vertical="true" -->
-            <tabset :justified="true" :vertical="true">
-               <!--  <template v-slot:menuprefix>
+        <div class="file-drop-area" :class="{active:dragging}" @dragover.prevent.stop="fileover" @dragleave.prevent.stop="fileout" @drop.prevent.stop="filedrop">
+            <template v-if="loading">
+                <fluro-page-preloader contain />
+            </template>
+            <template v-else>
+                <!-- :vertical="true" -->
+                <tabset :justified="true" :vertical="true">
+                    <!--  <template v-slot:menuprefix>
                     <template v-if="context == 'edit' && $vuetify.breakpoint.mdAndUp">
                         <flex-column-header style="text-align:center">
                             <div style="padding: 10px; max-width:200px; margin: auto;">
@@ -18,115 +19,109 @@
                         </flex-column-header>
                     </template>
                 </template> -->
-
-
-
-                <tab heading="Details">
-                    <!-- <slot> -->
-                    <flex-column-body style="background: #fafafa;">
-                        <v-container fluid>
-                            <constrain sm>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
-                                <template v-if="model._id">
-                                    <!-- @load="onLoad" @error="onError" -->
-                                    <div class="media-preview">
-                                        <div class="media-preview-wrap">
-                                            <fluro-image :longpress="true" :height="450" :image-height="450" contain :item="model" :cacheKey="imageCacheKey" :spinner="true"></fluro-image>
+                    <tab heading="Details">
+                        <!-- <slot> -->
+                        <flex-column-body style="background: #fafafa;">
+                            <v-container fluid>
+                                <constrain sm>
+                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
+                                    <template v-if="model._id">
+                                        <!-- @load="onLoad" @error="onError" -->
+                                        <div class="media-preview">
+                                            <div class="media-preview-wrap">
+                                                <fluro-image :longpress="true" :height="450" :image-height="450" contain :item="model" :cacheKey="imageCacheKey" :spinner="true"></fluro-image>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <template v-if="replace">
-                                        <asset-replace-upload v-model="model" @input="assetReplaced" />
+                                        <template v-if="replace">
+                                            <asset-replace-upload ref="replaceForm" v-model="model" @input="assetReplaced" />
+                                        </template>
+                                        <template v-else>
+                                            <v-layout>
+                                                <v-flex>
+                                                    <v-input :label="model.filename" class="no-flex">
+                                                        <div>
+                                                            <v-btn class="ma-0" @click="replace = true">
+                                                                Replace with a new file
+                                                                <fluro-icon right library="fas" icon="cloud-upload" />
+                                                            </v-btn>
+                                                        </div>
+                                                    </v-input>
+                                                </v-flex>
+                                                <v-flex>
+                                                    <v-input label="Main Colors" v-if="model.colors && model.colors.length" class="no-flex">
+                                                        <div>
+                                                            <div class="color-swatch" :style="{backgroundColor:color}" v-tippy :content="color" v-for="color in model.colors" />
+                                                        </div>
+                                                    </v-input>
+                                                </v-flex>
+                                            </v-layout>
+                                        </template>
                                     </template>
                                     <template v-else>
-                                        <v-layout>
-                                            <v-flex>
-                                                <v-input :label="model.filename" class="no-flex">
-                                                    <div>
-                                                        <v-btn class="ma-0" @click="replace = true">
-                                                            Replace with a new file
-                                                            <fluro-icon right library="fas" icon="cloud-upload" />
-                                                        </v-btn>
-                                                    </div>
-                                                </v-input>
-                                            </v-flex>
-                                            <v-flex>
-                                                <v-input label="Main Colors" v-if="model.colors && model.colors.length" class="no-flex">
-                                                    <div>
-                                                        <div class="color-swatch" :style="{backgroundColor:color}" v-tippy :content="color" v-for="color in model.colors" />
-                                                    </div>
-                                                </v-input>
-                                            </v-flex>
-                                        </v-layout>
+                                        <asset-replace-upload ref="replaceForm"  v-model="model" @file="fileSelected" />
+                                        <!-- <pre>{{file}}</pre> -->
                                     </template>
-                                </template>
-                                <template v-else>
-                                    <asset-replace-upload v-model="model" @file="fileSelected" />
-                                    <!-- <pre>{{file}}</pre> -->
-                                </template>
-                                <!-- <div class="form-group" v-if="definition.data.titleGeneration != 'force'"> -->
-                                <!-- <label>{{titleLabel}}</label> -->
-                                <!-- <input class="form-control" placeholder="{{titleLabel}}" ng-model="item.title"> -->
-                                <!-- </div> -->
-                                <template v-if="definition && definition.fields && definition.fields.length">
-                                    <!-- <fluro-panel> -->
+                                    <!-- <div class="form-group" v-if="definition.data.titleGeneration != 'force'"> -->
+                                    <!-- <label>{{titleLabel}}</label> -->
+                                    <!-- <input class="form-control" placeholder="{{titleLabel}}" ng-model="item.title"> -->
+                                    <!-- </div> -->
+                                    <template v-if="definition && definition.fields && definition.fields.length">
+                                        <!-- <fluro-panel> -->
                                         <!-- <fluro-panel-title> -->
-                                            <!-- <h5>{{definition.title}} Information</h5> -->
+                                        <!-- <h5>{{definition.title}} Information</h5> -->
                                         <!-- </fluro-panel-title> -->
                                         <!-- <fluro-panel-body> -->
-                                            <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
+                                        <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
                                         <!-- </fluro-panel-body> -->
-                                    <!-- </fluro-panel> -->
-                                </template>
-
-                                <template v-if="!hideBody && !fullBody">
-                                    <v-input label="Body / Caption" class="no-flex">
-                                        <fluro-editor v-model="model.body" :options="editorOptions" placeholder="Type your text in here"></fluro-editor>
-                                    </v-input>
-                                </template>
-
-
-                                <fluro-privacy-select v-model="model.privacy"/>
-                            </constrain>
-                        </v-container>
-                    </flex-column-body>
-                    <!-- </slot> -->
-                </tab>
-                <tab heading="Advanced / Metadata" v-if="hasMeta">
-                    <flex-column-body style="background: #fafafa;">
-                        <v-container fluid>
-                            <constrain sm>
-                                <!-- <div > -->
-                                <fluro-panel v-if="model.data.iptc">
-                                    <fluro-panel-title>
-                                        <h5>IPTC Data</h5>
-                                    </fluro-panel-title>
-                                    <fluro-panel-body>
-                                        <json-view :deep="3" :data="model.data.iptc" />
-                                    </fluro-panel-body>
-                                </fluro-panel>
-                                <!-- </div> -->
-                                <!-- <div v-if="model.data.exif"> -->
-                                <fluro-panel v-if="model.data.exif">
-                                    <fluro-panel-title>
-                                        <h5>EXIF Data</h5>
-                                    </fluro-panel-title>
-                                    <fluro-panel-body>
-                                        <json-view :deep="3" :data="model.data.exif" />
-                                    </fluro-panel-body>
-                                </fluro-panel>
-                                <!-- </div> -->
-                            </constrain>
-                        </v-container>
-                    </flex-column-body>
-                </tab>
-            </tabset>
-        </template>
-        <!-- <flex-column-body> -->
-        <!-- // <pre>{{model}}</pre> -->
-        <!-- </flex-column-body> -->
-        <!-- <flex-column-body> -->
-        <!-- WOOOT -->
-        <!-- <tabset v-else :justified="true" :vertical="true">
+                                        <!-- </fluro-panel> -->
+                                    </template>
+                                    <template v-if="!hideBody && !fullBody">
+                                        <v-input label="Body / Caption" class="no-flex">
+                                            <fluro-editor v-model="model.body" :options="editorOptions" placeholder="Type your text in here"></fluro-editor>
+                                        </v-input>
+                                    </template>
+                                    <fluro-privacy-select v-model="model.privacy" />
+                                </constrain>
+                            </v-container>
+                        </flex-column-body>
+                        <!-- </slot> -->
+                    </tab>
+                    <tab heading="Advanced / Metadata" v-if="hasMeta">
+                        <flex-column-body style="background: #fafafa;">
+                            <v-container fluid>
+                                <constrain sm>
+                                    <!-- <div > -->
+                                    <fluro-panel v-if="model.data.iptc">
+                                        <fluro-panel-title>
+                                            <h5>IPTC Data</h5>
+                                        </fluro-panel-title>
+                                        <fluro-panel-body>
+                                            <json-view :deep="3" :data="model.data.iptc" />
+                                        </fluro-panel-body>
+                                    </fluro-panel>
+                                    <!-- </div> -->
+                                    <!-- <div v-if="model.data.exif"> -->
+                                    <fluro-panel v-if="model.data.exif">
+                                        <fluro-panel-title>
+                                            <h5>EXIF Data</h5>
+                                        </fluro-panel-title>
+                                        <fluro-panel-body>
+                                            <json-view :deep="3" :data="model.data.exif" />
+                                        </fluro-panel-body>
+                                    </fluro-panel>
+                                    <!-- </div> -->
+                                </constrain>
+                            </v-container>
+                        </flex-column-body>
+                    </tab>
+                </tabset>
+            </template>
+            <!-- <flex-column-body> -->
+            <!-- // <pre>{{model}}</pre> -->
+            <!-- </flex-column-body> -->
+            <!-- <flex-column-body> -->
+            <!-- WOOOT -->
+            <!-- <tabset v-else :justified="true" :vertical="true">
             <tab heading="Basic Details">
                 <slot>
                     <flex-column-body style="background: #fafafa;">
@@ -134,14 +129,15 @@
                 </slot>
             </tab>
         </tabset> -->
+        </div>
     </flex-column>
 </template>
 <script>
 /////////////////////////////////
 
-import FluroEditor from 'src/components/form/FluroEditor.vue';
-import FluroContentEditMixin from 'src/components/content/edit/FluroContentEditMixin.js';
-import FluroAssetEditMixin from 'src/components/content/edit/FluroAssetEditMixin';
+import FluroEditor from '../../../form/FluroEditor.vue';
+import FluroContentEditMixin from '../FluroContentEditMixin.js';
+import FluroAssetEditMixin from '../FluroAssetEditMixin';
 
 /////////////////////////////////
 
@@ -220,6 +216,7 @@ export default {
         }
     },
 }
+
 </script>
 <style lang="scss">
 .media-preview {
@@ -236,13 +233,15 @@ export default {
         margin: auto;
     }
 }
+
 </style>
 <style lang="scss" scoped>
 .color-swatch {
-    width:36px;
-    height:36px;
-        border-radius: 3px;
+    width: 36px;
+    height: 36px;
+    border-radius: 3px;
     margin: 0 1px 1px 0;
     display: inline-block;
 }
+
 </style>

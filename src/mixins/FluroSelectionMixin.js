@@ -52,6 +52,33 @@ export default {
 
         },
 
+        deselectMultiple(items) {
+
+            var self = this;
+
+
+            _.each(items, function(item) {
+                self.deselect(item);
+            })
+            // var indexes = _.reduce(self.selection,)
+            // self.deselect(item);
+
+            // // console.time('select multiple')
+            // // console.log('Select multiple items', self.selection, items);
+            // var newSelection = [...self.selection, ...items];
+            // newSelection = _.uniqBy(newSelection, function(item) {
+            //     return item._id || item;
+            // });
+
+            // console.log('SELECT NEW ITEMS', self.selectionMaximum, newSelection.length);
+            // self.setSelection(newSelection)
+            // // console.timeEnd('select multiple')
+            // // rehash()
+            // // service.previousIntent = 'select';
+            
+
+        },
+
 
 
         setSelection(array) {

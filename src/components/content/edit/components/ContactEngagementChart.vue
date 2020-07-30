@@ -11,7 +11,7 @@
     </flex-column-body>
 </template>
 <script>
-import TrendChart from 'src/components/reporting/FluroTrendChart.vue';
+import TrendChart from '../../../reporting/FluroTrendChart.vue';
 import _ from 'lodash';
 
 
