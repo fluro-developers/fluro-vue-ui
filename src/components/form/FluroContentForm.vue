@@ -1,12 +1,12 @@
 <template>
     <div class="fluro-content-form" v-if="ready && model">
         <slot name="form" :parent="formModel" :context="context" :form-fields="formFields" :field-hash="fieldHash" :model="model" :update="update" :options="options">
-            <v-container fluid class="grid-list-lg" pa-0 :key="`${field.title}${field.key}`" v-for="(field, index) in actualFields">
-               <pre>{{field.title}} - {{field.key}}</pre>
-                <fluro-content-form-field :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="actualFields[index]" @input="update" v-model="model" />
-               
+            <v-container fluid class="grid-list-lg" pa-0 :key="`${field.key}-${index}`" v-for="(field, index) in fields">
+                <fluro-content-form-field :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="fields[index]" @input="update" v-model="model" />
             </v-container>
         </slot>
+
+        <!-- <pre>{{model}}</pre> -->
     </div>
 </template>
 <script>
@@ -78,9 +78,21 @@ export default {
         }
     },
     computed: {
-        
+        // fields() {
+
+        //     var self = this;
+
+        //     return _.map(self.fields, function(field) {
+        //         if (!field.guid) {
+        //             field.guid = self.$fluro.utils.guid();
+        //             return field;
+        //         }
+        //         return field;
+
+        //     })
+        // },
         fieldsOutput() {
-            return this.actualFields;
+            return this.fields;
         },
         formModel() {
             return this.parent || this.model;
@@ -123,8 +135,7 @@ export default {
         return {
             ready: true,
             model: this.value,
-            watchEnabled: true,
-            actualFields:this.fields,
+            watchEnabled: true
         };
     },
     components: {
@@ -133,7 +144,7 @@ export default {
     watch: {
         model(newModel, oldModel) {
             if (this.watchEnabled) {
-                console.log('emit change for', this)
+                // console.log('emit change for', this)
                 this.$emit("input", this.model);
             }
         },
@@ -142,11 +153,9 @@ export default {
 
             //If the model has been changed
             if (self.model != v) {
-                console.log('new value is set', v)
+                // console.log('new value is set', self)
 
                 self.watchEnabled = false;
-
-
                 self.model = v;
                 self.reset();
 
@@ -160,9 +169,11 @@ export default {
             //    this.$set(this, 'model', val);
             //    this.reset();
         },
-        // fields(val) {
-        //        ///console.log('FIELDS CHANGED needs reset')
-        //        return this.reset();
+        // fields(fields) {
+        //     var self = this;
+        //     _.each(fields, function(field) {
+        //         field.guid = self.$fluro.utils.guid();
+        //     })
         // },
         errorMessages(messages) {
             this.$emit("errorMessages", messages);
@@ -225,21 +236,6 @@ export default {
         this.reset();
     },
     methods: {
-        cleanFields(fields) {
-
-            if(!fields) {
-                fields = [];
-            }
-
-            var self = this;
-            fields.each(function(field) {
-                if(!field.guid) {
-                    field.guid = self.$fluro.guid();
-                }
-            })
-
-            return fields;
-        },
         touch() {
             _.each(this.formFields, function(component) {
                 if (component.touch) {
@@ -248,10 +244,8 @@ export default {
             });
         },
         reset() {
-
             var self = this;
-            console.log('form reset', this)
-            // console.log('Form reset() THIS SHOULD ONLY HAPPEN IF THE ORIGINAL PROP IS CHANGED')
+            // ///console.log('Form reset() THIS SHOULD ONLY HAPPEN IF THE ORIGINAL PROP IS CHANGED')
 
             /////////////////////////////////////////////////
 
@@ -338,9 +332,7 @@ export default {
         },
 
         update(input, valueThatWasChanged) {
-
-
-            console.log('form model changed from update callback');
+            // ///console.log('form model changed from update callback');
             // this.$forceUpdate();
             // this.$emit('input', this.model);
             // ///console.log('form model changed');
