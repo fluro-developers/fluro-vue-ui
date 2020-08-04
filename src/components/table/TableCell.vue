@@ -1,83 +1,77 @@
 <template>
     <td :class="{wrap:shouldWrap, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}">
         <!-- {{rawValue.length}} {{shouldWrap}} -->
-<!-- <pre>{{column.key}}</pre> -->
-        
+        <!-- <pre>{{column.key}}</pre> -->
         <div :class="{'wrap-limit':shouldWrap}">
-        <component v-if="renderer" :data="preValue" :is="renderer" :row="row" :column="column" />
-        <template v-else-if="simpleArray">
-        	<!-- Simple Array -->
-            <template v-for="entry in formattedArray">
-                <component v-if="renderer" :data="entry" :is="renderer" :row="row" :column="column" />
-                <div v-else>
-                    <span class="inline-tag">
-                        {{entry | simple}}
-                    </span>
-                </div>
-            </template>
-        </template>
-        <div v-else-if="formattedArray" style="max-width: 600px; white-space: normal;">
-        	
-            <template v-for="entry in formattedArray">
-                <a class="inline-tag" v-if="entry._id" @click.stop.prevent="clicked(entry)" :style="{color:entry.color, backgroundColor:entry.bgColor}">
-                   
-                    <template v-if="entry._type == 'event'">
-                        <fluro-icon type="event" /> {{entry.title}} <span class="text-muted">// {{entry | readableEventDate}}</span>
-                    </template>
-                    <template v-else-if="entry._type == 'post'">
-                        <fluro-icon type="post" /> {{entry.title}} <span class="text-muted">// {{entry.managedAuthor ? entry.managedAuthor.title : ''}} {{entry.created | timeago}}</span>
-                    </template>
-                    <template v-else-if="entry._type == 'ticket'">
-                        <fluro-icon type="ticket" /> {{entry.title}} - {{entry.event.title}}<span class="text-muted">// {{entry.event | readableEventDate}}</span>
-                    </template>
-                    <template v-else-if="entry._type == 'team' && entry.position" :content="entry.title" v-tippy >
-                        
-                        <!-- <fluro-icon type="team" />  -->
-                        {{entry.position}}
-                        <!-- <fluro-icon type="team" /> {{entry.title}} <span class="text-muted" v-if="entry.position">{{entry.position}}</span> -->
-                    </template>
-                    <template v-else>
-                    	
-                        <fluro-icon v-if="entry._type" :type="entry._type" /> {{entry.title}} <template v-if="entry.appendage"> - {{entry.appendage}}</template>
-                    </template>
-                </a>
-                <template v-else-if="renderer">
-                    <component :data="entry" :is="renderer" :row="row" :column="column" />
+            <component v-if="renderer" :data="preValue" :is="renderer" :row="row" :column="column" />
+            <template v-else-if="simpleArray">
+                <!-- Simple Array -->
+                <template v-for="entry in formattedArray">
+                    <component v-if="renderer" :data="entry" :is="renderer" :row="row" :column="column" />
+                    <div v-else>
+                        <span class="inline-tag">
+                            {{entry | simple}}
+                        </span>
+                    </div>
                 </template>
-                <template v-else>{{entry}}</template>
             </template>
-            <!-- <template>{{formattedArray.length}} in total</template> -->
+            <div v-else-if="formattedArray" style="max-width: 600px; white-space: normal;">
+                <template v-for="entry in formattedArray">
+                    <a class="inline-tag" v-if="entry._id" @click.stop.prevent="clicked(entry)" :style="{color:entry.color, backgroundColor:entry.bgColor}">
+                        <template v-if="entry._type == 'event'">
+                            <fluro-icon type="event" /> {{entry.title}} <span class="text-muted">// {{entry | readableEventDate}}</span>
+                        </template>
+                        <template v-else-if="entry._type == 'post'">
+                            <fluro-icon type="post" /> {{entry.title}} <span class="text-muted">// {{entry.managedAuthor ? entry.managedAuthor.title : ''}} {{entry.created | timeago}}</span>
+                        </template>
+                        <template v-else-if="entry._type == 'ticket'">
+                            <fluro-icon type="ticket" /> {{entry.title}} - {{entry.event.title}}<span class="text-muted">// {{entry.event | readableEventDate}}</span>
+                        </template>
+                        <template v-else-if="entry._type == 'team' && entry.position" :content="entry.title" v-tippy>
+                            <!-- <fluro-icon type="team" />  -->
+                            {{entry.position}}
+                            <!-- <fluro-icon type="team" /> {{entry.title}} <span class="text-muted" v-if="entry.position">{{entry.position}}</span> -->
+                        </template>
+                        <template v-else>
+                            <fluro-icon v-if="entry._type" :type="entry._type" /> {{entry.title}} <template v-if="entry.appendage"> - {{entry.appendage}}</template>
+                        </template>
+                    </a>
+                    <template v-else-if="renderer">
+                        <component :data="entry" :is="renderer" :row="row" :column="column" />
+                    </template>
+                    <template v-else>{{entry}}</template>
+                </template>
+                <!-- <template>{{formattedArray.length}} in total</template> -->
+            </div>
+            <div v-else-if="complexObject">
+                <template v-if="preValue._type == 'event'">
+                    <a class="inline-tag" @click.stop.prevent="clicked(preValue)">
+                        <fluro-icon type="event" /> {{preValue.title}} <span class="text-muted">// {{preValue | readableEventDate}}</span>
+                    </a>
+                </template>
+                <template v-else-if="preValue._type == 'team' && preValue.position">
+                    {{preValue.position}}
+                </template>
+                <template v-else>
+                    <!--  TESTING WEIRD -->
+                    <a @click.stop.prevent="clicked(preValue)" class="inline-tag" :style="{color:preValue.color, backgroundColor:preValue.bgColor}">
+                        <fluro-icon v-if="preValue._type" :type="preValue._type" /> {{complexTitle}} <template v-if="complexAppendage"> - {{complexAppendage}}</template>
+                    </a>
+                </template>
+            </div>
+            <component v-else-if="renderer" :data="rawValue" :is="renderer" :row="row" :column="column" />
+            <slot v-else :value="value" :row="row" :column="column">
+                {{value}}
+            </slot>
         </div>
-        <div v-else-if="complexObject">
-
-            <template v-if="preValue._type == 'event'">
-                <a class="inline-tag" @click.stop.prevent="clicked(preValue)">
-                    <fluro-icon type="event" /> {{preValue.title}} <span class="text-muted">// {{preValue | readableEventDate}}</span>
-                </a>
-            </template>
-            <template v-else-if="preValue._type == 'team' && preValue.position">
-                {{preValue.position}}
-            </template>
-            <template v-else>
-   <!--  TESTING WEIRD -->
-                <a @click.stop.prevent="clicked(preValue)" class="inline-tag" :style="{color:preValue.color, backgroundColor:preValue.bgColor}">
-                    <fluro-icon v-if="preValue._type" :type="preValue._type" /> {{complexTitle}} <template v-if="complexAppendage"> - {{complexAppendage}}</template>
-                </a>
-            </template>
-        </div>
-        <component v-else-if="renderer" :data="rawValue" :is="renderer" :row="row" :column="column" />
-        <slot v-else :value="value" :row="row" :column="column">
-            {{value}}
-        </slot>
-    </div>
     </td>
 </template>
 <script>
-
 import _ from 'lodash';
 
 import NumberCell from './cells/NumberCell.vue';
 import BooleanCell from './cells/BooleanCell.vue';
+import ButtonCell from './cells/ButtonCell.vue';
 import DateCell from './cells/DateCell.vue';
 import RealmDotCell from './cells/RealmDotCell.vue';
 import TimeagoCell from './cells/TimeagoCell.vue';
@@ -130,15 +124,18 @@ export default {
             // }
 
             var renderer = this.column.renderer
-            switch(this.column.renderer) {
+            switch (this.column.renderer) {
                 case 'contactAvatar':
                     return AvatarCell;
-                break;
+                    break;
                 case 'personaAvatar':
                     return AvatarCell;
-                break;
+                    break;
                 case 'boolean':
                     return BooleanCell;
+                    break;
+                case 'button':
+                    return ButtonCell;
                     break;
                 case 'date':
                 case 'datetime':
@@ -161,8 +158,11 @@ export default {
             if (renderer) {
                 return renderer;
             }
-            
+
             switch (this.column.type) {
+                case 'button':
+                    return ButtonCell;
+                    break;
                 case 'date':
                     return DateCell;
                     break;
@@ -171,7 +171,7 @@ export default {
                 case 'decimal':
                 case 'float':
 
-                    if(!this.subField) {
+                    if (!this.subField) {
                         return NumberCell;
                     }
                     break;
@@ -252,7 +252,7 @@ export default {
                                 bgColor: entry.bgColor,
                                 startDate: entry.startDate,
                                 endDate: entry.endDate,
-                                created:entry.created,
+                                created: entry.created,
                             }
                         }
 
@@ -265,7 +265,7 @@ export default {
                         return entry;
                     })
                     .filter(function(entry) {
-                    	return entry == 0 || entry;
+                        return entry == 0 || entry;
                     })
 
                     .value();
@@ -277,7 +277,7 @@ export default {
             return _.some(this.formattedArray, function(e) {
                 var match = !(e._id || e.title || e.name || e.id)
                 // if(match) {
-                // 	console.log('Thing is missing', e);
+                //  console.log('Thing is missing', e);
                 // }
                 return match;
             })
@@ -340,8 +340,14 @@ export default {
             }
 
 
+
             // console.log('COMPLEX', val)
-            return val.title || val.name || val;
+            var output = val.title || val.name || val;
+
+            if (self.column.filter) {
+                return self.column.filter(output);
+            }
+            return output;
         },
         key() {
 
@@ -384,22 +390,22 @@ export default {
                 //     pathPiece = pathPiece.slice(1);
                 // }
                 // var shallowArray = _.get(this.row, pieces[0]);
-                var match =  _.get(self.row, pieces[0]);
+                var match = _.get(self.row, pieces[0]);
 
-                 var subFieldPath = self.subField;
-                if(subFieldPath) {
+                var subFieldPath = self.subField;
+                if (subFieldPath) {
 
                     if (subFieldPath[0] == '.') {
                         subFieldPath = subFieldPath.slice(1);
                     }
-                    
-                    if(_.isArray(match)) {
+
+                    if (_.isArray(match)) {
                         match = _.map(match, subFieldPath);
-                        
+
                     } else {
                         match = _.get(match, subFieldPath);
                     }
-                    
+
                 }
 
 
@@ -546,17 +552,17 @@ export default {
                         return object;
                     })
                     .filter(function(v) {
-                    	return (v == 0) || v;
+                        return (v == 0) || v;
                     })
                     .uniqBy(function(v) {
                         return (v._id || v.id || v);
                     })
                     .orderBy(function(entry) {
-                        if(entry.startDate) {
+                        if (entry.startDate) {
                             return new Date(entry.startDate);
                         }
 
-                        if(entry.created) {
+                        if (entry.created) {
                             return new Date(entry.created);
                         }
 
@@ -581,9 +587,9 @@ export default {
             return val;
         },
     },
-    filters:{
+    filters: {
         simple(input) {
-            if(_.isArray(input)) {
+            if (_.isArray(input)) {
                 return input.join(', ');
             }
 
@@ -591,15 +597,15 @@ export default {
         }
     }
 }
+
 </script>
 <style scoped lang="scss">
-
-
 .wrap-limit {
     // white-space: normal !important;
-    max-width:500px;
+    max-width: 500px;
     overflow: hidden;
     white-space: pre-line;
     text-overflow: ellipsis;
 }
+
 </style>

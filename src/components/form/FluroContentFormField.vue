@@ -175,6 +175,41 @@
 																				<fluro-realm-select block type="collection" v-model="fieldModel" />
 																</v-input>
 												</template>
+												<template v-else-if="renderer == 'dob'">
+																<v-input class="no-flex" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
+																				<v-layout>
+																								<v-flex>
+																												<v-select label="Date" :error-messages="errorMessages" :outline="showOutline" :success="success" :required="required" v-model="dateModelDay" item-text="title" :items="dateDayOptions" @blur="touch()" @focus="focussed()" />
+																								</v-flex>
+																								<v-spacer />
+																								<v-flex>
+																												<v-select label="Month" :error-messages="errorMessages" :outline="showOutline" :success="success" :required="required" v-model="dateModelMonth" item-text="title" :items="dateMonthOptions" @blur="touch()" @focus="focussed()" />
+																								</v-flex>
+																								<v-spacer />
+																								<v-flex>
+																												<v-select label="Year" :error-messages="errorMessages" :outline="showOutline" :success="success" :required="required" v-model="dateModelYear" item-text="title" :items="dateYearOptions" @blur="touch()" @focus="focussed()" />
+																								</v-flex>
+																				</v-layout>
+																</v-input>
+												</template>
+												<template v-else-if="renderer == 'button-select'">
+																<v-input class="no-flex" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
+																				<div class="button-select-buttons">
+																								<template v-if="webMode">
+																												<fluro-button @click="toggleValue(button.value)" :class="{active:isSelectedValue(button.value)}" :key="button.value" v-for="button in selectOptions">
+																																{{button.name || button.title}}
+																																<fluro-icon right icon="check" class="tick" />
+																												</fluro-button>
+																								</template>
+																								<template v-else>
+																												<v-btn :color="isSelectedValue(button.value) ? `primary` : null" :class="{active:isSelectedValue(button.value)}" class="ml-0" @click="toggleValue(button.value)" v-for="button in selectOptions">
+																																{{button.name || button.title}}
+																																<fluro-icon right icon="check" class="tick" />
+																												</v-btn>
+																								</template>
+																				</div>
+																</v-input>
+												</template>
 												<template v-else-if="renderer == 'datepicker'">
 																<v-menu :fixed="true" v-model="modal" min-width="290px" :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
 																				<template v-slot:activator="{ on }">
@@ -599,6 +634,13 @@ function mapDefaultDateValue(value) {
 
 ////////////////////////////////////////////////////////
 
+const RANGE = (x, y) => Array.from((function*() {
+				while (x <= y) yield x++;
+})());
+
+
+////////////////////////////////////////////////////////
+
 export default {
 				name: 'fluro-content-form-field',
 				components: {
@@ -624,6 +666,11 @@ export default {
 
 
 								return {
+												actualDateModelDay: null,
+												actualDateModelMonth: null,
+												actualDateModelYear: null,
+
+
 												ready: true,
 												hasInitialValue: false,
 												asyncOptionsLoading: false,
@@ -788,6 +835,164 @@ export default {
 								// 'isNew':'checkNew',
 				},
 				computed: {
+
+								dateModelDay: {
+												get() {
+
+																return this.actualDateModelDay
+																// if (!this.dateStringModel) {
+																// 				return;
+																// }
+
+																// return this.dateStringModel.split('-')[2];
+												},
+												set(v) {
+
+																if (v == undefined || v == null) {
+																				this.actualDateModelMonth = null;
+																				return;
+																}
+
+																this.actualDateModelDay = v;
+																if (!this.actualDateModelYear || !this.actualDateModelMonth) {
+																				return;
+																}
+
+																this.dateStringModel = `${this.actualDateModelYear}-${this.actualDateModelMonth}-${this.actualDateModelDay}`;
+												}
+								},
+								dateModelMonth: {
+												get() {
+																return this.actualDateModelMonth
+																// if (!this.dateStringModel) {
+																// 				return;
+																// }
+
+																// return this.dateStringModel.split('-')[1];
+												},
+												set(v) {
+
+																if (v == undefined || v == null) {
+																				this.actualDateModelMonth = null;
+																				return;
+																}
+																this.actualDateModelMonth = v;
+																if (!this.actualDateModelDay || !this.actualDateModelYear) {
+																				return;
+																}
+
+																this.dateStringModel = `${this.actualDateModelYear}-${this.actualDateModelMonth}-${this.actualDateModelDay}`;
+												}
+								},
+								dateModelYear: {
+												get() {
+																return this.actualDateModelYear;
+																// if (!this.dateStringModel) {
+																// 				return;
+																// }
+
+																// return this.dateStringModel.split('-')[0];
+												},
+												set(v) {
+
+																if (v == undefined || v == null) {
+																				this.actualDateModelMonth = null;
+																				return;
+																}
+
+																this.actualDateModelYear = v;
+																if (!this.actualDateModelDay || !this.actualDateModelMonth) {
+																				return;
+																}
+
+																this.dateStringModel = `${this.actualDateModelYear}-${this.actualDateModelMonth}-${this.actualDateModelDay}`;
+												}
+								},
+								dateDayOptions() {
+												return RANGE(1, 31).map(function(v) {
+																return {
+																				title: v,
+																				value: v,
+																}
+												})
+								},
+								dateMonthOptions() {
+												var array = [];
+
+												array.push({
+																title: 'January',
+																value: '01',
+												})
+
+												array.push({
+																title: 'February',
+																value: '02',
+												})
+
+												array.push({
+																title: 'March',
+																value: '03',
+												})
+
+												array.push({
+																title: 'April',
+																value: '04',
+												})
+
+												array.push({
+																title: 'May',
+																value: '05',
+												})
+
+												array.push({
+																title: 'June',
+																value: '06',
+												})
+
+												array.push({
+																title: 'July',
+																value: '07',
+												})
+
+												array.push({
+																title: 'August',
+																value: '08',
+												})
+
+												array.push({
+																title: 'September',
+																value: '09',
+												})
+
+												array.push({
+																title: 'October',
+																value: '10',
+												})
+
+												array.push({
+																title: 'November',
+																value: '11',
+												})
+
+												array.push({
+																title: 'December',
+																value: '12',
+												})
+
+												return array;
+								},
+								dateYearOptions() {
+
+												var year = new Date().getFullYear();
+
+
+												return RANGE(year - 120, year).map(function(v) {
+																return {
+																				title: v,
+																				value: String(v),
+																}
+												})
+								},
 								webMode() {
 
 												var self = this;
@@ -1809,7 +2014,10 @@ export default {
 																case 'content-select-button':
 																				directive = 'content-select-button';
 																				break;
+																case 'dobselect':
 																case 'dob-select':
+																				directive = 'dob';
+																				break;
 																case 'date-select':
 																case 'datepicker':
 																				directive = 'datepicker';
@@ -1853,6 +2061,8 @@ export default {
 
 
 																case 'button-select':
+																				directive = 'button-select';
+																				break;
 																case 'order-select':
 																				directive = 'select';
 																				break;
@@ -2806,6 +3016,82 @@ export default {
 
 												return `${this.title} ${index+1}`
 								},
+
+								getActualValue(value) {
+												if (value == undefined || value == null) {
+																return;
+												}
+												return value._id || value.id || value.value || value;
+								},
+								toggleValue(value) {
+												var self = this;
+
+												if (value == undefined || value == null) {
+																return;
+												}
+
+												if (!self.isSelectedValue(value)) {
+																self.selectValue(value);
+												} else {
+																self.deselectValue(value);
+												}
+								},
+								selectValue(value) {
+												var self = this;
+
+												if (self.multipleInput && !self.canAddValue) {
+																console.log('reached limit')
+																return;
+												}
+												if (!self.isSelectedValue(value)) {
+
+																if (self.multipleInput) {
+																				self.fieldModel.push(value);
+																} else {
+																				self.fieldModel = value;
+																}
+												}
+
+												self.elementValueChanged(null, true);
+
+								},
+								deselectValue(value) {
+												var self = this;
+												if (self.isSelectedValue(value)) {
+																if (self.multipleInput) {
+																				var index = self.fieldModel.indexOf(value);
+																				if (index != -1) {
+
+																								self.fieldModel.splice(index, 1);
+																				}
+																} else {
+																				self.fieldModel = null;
+																}
+												}
+
+												self.elementValueChanged(null, true);
+
+								},
+								isSelectedValue(value) {
+												var self = this;
+
+												if (value == undefined || value == null) {
+																return;
+												}
+
+												var stringValue = self.getActualValue(value);
+
+												if (self.multipleInput) {
+																return self.fieldModel.some(function(val) {
+																				return self.getActualValue(val) == stringValue
+																});
+												} else {
+																return self.getActualValue(self.fieldModel) == stringValue;
+												}
+
+								},
+
+
 								includesValue(value) {
 												return _.includes(this.fieldModel, value);
 								},
@@ -3852,6 +4138,31 @@ function checkValidInput(self, input) {
 								.v-text-field__details {
 												text-align: right;
 								}
+				}
+}
+
+
+.button-select-buttons {
+
+				.v-btn,
+				.btn {
+
+								.tick {
+												opacity: 0;
+								}
+
+								&.active {
+												.tick {
+																opacity: 1;
+												}
+								}
+
+								&:hover {
+												.tick {
+																opacity: 0.5;
+												}
+								}
+
 				}
 }
 

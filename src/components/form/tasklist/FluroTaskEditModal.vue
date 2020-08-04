@@ -153,7 +153,7 @@ export default {
     },
     computed: {
         postOptions() {
-            return _.chain(this.postTypes)
+            var array = _.chain(this.postTypes)
                 .map(function(postType) {
                     return {
                         name: postType.title,
@@ -164,6 +164,14 @@ export default {
                     return postType.name
                 })
                 .value();
+
+
+                array.unshift({
+                    name:'None',
+                    value:'',
+                })
+
+            return array;
         },
         completeFields() {
             var self = this;

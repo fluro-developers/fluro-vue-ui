@@ -1,11 +1,7 @@
 <template>
     <div class="access-pass-select">
-        <!-- <h5 margin>{{selected.length}} Access Passes</h5> -->
-
-        <!-- <pre>{{value}}</pre> -->
         <v-input class="no-flex" v-if="selected.length">
             <h5 margin>{{selected.length}} selected</h5>
-            <!-- <p class="help-block">To change {{contextName}} password or email details click the button below, this will send an invitation to the user to create a new password and then login to the system</p> -->
             <list-group>
                 <transition-group type="transition" name="flip-list">
                     <list-group-item :key="pass._id" v-for="pass in selected">
@@ -17,8 +13,12 @@
                             <div class="muted sm">{{pass.description}}</div>
                         </template>
                         <template v-slot:right>
-                            <v-btn class="ma-0" small icon @click="deselect(pass)">
-                                <fluro-icon icon="times" />
+                            <v-btn class="my-0" icon small @click="edit(pass)">
+                                <fluro-icon icon="pencil" />
+                            </v-btn>
+                            <v-btn class="my-0" small @click="deselect(pass)">
+                             Remove from {{contextName}}
+                                <fluro-icon icon="times" right />
                             </v-btn>
                         </template>
                     </list-group-item>
@@ -26,33 +26,30 @@
             </list-group>
         </v-input>
         <p></p>
-
-        <!-- <fluro-content-select-button color="primary" type="policy" v-model="selection" /> -->
-
-
-
-        <!-- <h5 margin>Available Passes</h5> -->
-        <v-input class="no-flex">
+        <v-input class="no-flex" v-if="notSelected.length">
             <h5>Available passes</h5>
             <p class="help-block">Add passes to {{contextName}} by selecting from available passes below</p>
             <list-group>
                 <transition-group type="transition" name="flip-list">
-                <list-group-item :key="pass._id" class="inactive" v-for="pass in notSelected">
-                    <template v-slot:left>
-                        <fluro-realm-bar :realm="pass.realms" />
-                    </template>
-                    <template v-slot:default>
-                        <strong>{{pass.title}}</strong>
-                        <div class="muted sm">{{pass.description}}</div>
-                        <!-- <pre>{{pass}}</pre> -->
-                    </template>
-                    <template v-slot:right>
-                        <v-btn class="ma-0" color="primary" small @click="select(pass)">
-                            Add
-                            <fluro-icon right icon="plus" />
-                        </v-btn>
-                    </template>
-                </list-group-item>
+                    <list-group-item :key="pass._id" class="inactive" v-for="pass in notSelected">
+                        <template v-slot:left>
+                            <fluro-realm-bar :realm="pass.realms" />
+                        </template>
+                        <template v-slot:default>
+                            <strong>{{pass.title}}</strong>
+                            <div class="muted sm">{{pass.description}}</div>
+                            <!-- <pre>{{pass}}</pre> -->
+                        </template>
+                        <template v-slot:right>
+                            <v-btn class="my-0" icon small @click="edit(pass)">
+                                <fluro-icon icon="pencil" />
+                            </v-btn>
+                            <v-btn class="my-0" color="primary" small @click="select(pass)">
+                                Add to {{contextName}}
+                                <fluro-icon right icon="plus" />
+                            </v-btn>
+                        </template>
+                    </list-group-item>
                 </transition-group>
             </list-group>
         </v-input>
@@ -168,12 +165,21 @@ export default {
 
         }
     },
-    methods: {}
+    methods: {
+        edit(pass) {
+            var self = this;
+
+            self.$fluro.global.edit(pass, true).then(function(res) {
+              Object.assign(pass, res);
+            })
+        }
+    }
 }
+
 </script>
 <style scoped lang="scss">
 .access-pass-select {
-    & >>> .list-group-item-content {
+    &>>>.list-group-item-content {
         padding-left: 10px;
     }
 
@@ -181,4 +187,5 @@ export default {
         transition: transform 0.5s;
     }
 }
+
 </style>

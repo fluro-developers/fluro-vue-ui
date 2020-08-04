@@ -425,11 +425,11 @@ export default {
 								}
 				},
 				computed: {
-					plural() {
-						return 'items';
-					},
+								plural() {
+												return 'items';
+								},
 								isScrollable() {
-									return this.scrollable;// && this.items.length 
+												return this.scrollable; // && this.items.length 
 								},
 								selectionManager() {
 												return this.selection || this.$selection;
@@ -1181,7 +1181,7 @@ export default {
 																																.map(function(id, i) {
 																																				var entry = lookup[id];
 																																				if (!entry) {
-																																							//	console.log('No entry for', id)
+																																								//	console.log('No entry for', id)
 																																								return;
 																																				}
 																																				entry._pageIndex = i;
@@ -1739,7 +1739,7 @@ export default {
 								setPage(pageNumber) {
 
 												if (this.currentPage == pageNumber) {
-															//	console.log('already at page', pageNumber)
+																//	console.log('already at page', pageNumber)
 																return;
 												}
 												this.currentPage = pageNumber;
@@ -1786,7 +1786,7 @@ export default {
 								},
 								selectAll() {
 
-									
+
 												this.selectionManager.selectMultiple(this.filtered);
 								},
 								deselectAll() {

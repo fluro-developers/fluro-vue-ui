@@ -56,7 +56,7 @@ export default {
             type: Object
         },
         fields: {
-            type: Array
+            type: Array,
         },
         value: {
             type: Object
@@ -255,6 +255,10 @@ export default {
             }
 
             function createDefaults(field) {
+                if(!field) {
+                    return;
+                }
+
                 if (field.type == "group" && !field.asObject) {
                     (field.fields || []).forEach(createDefaults);
                     return;

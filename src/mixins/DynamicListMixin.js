@@ -127,6 +127,8 @@ export default {
 				} else {
 					filter = this.lockFilter.filters.push(filter);
 				}
+
+
 				console.log('LOCK FILTER CHECK', filter);
 			}
 
@@ -159,19 +161,23 @@ export default {
 			/////////////////////////////////////////////////////////////
 			/////////////////////////////////////////////////////////////
 
-			var startDate = self.calendarStartDate || self.startDate;
+			var startDate = self.calendarStartDate || self.startDate || (this.lockFilter ? this.lockFilter.startDate : null);
 			if (startDate) {
 				startDate = new Date(startDate);
 				startDate.setHours(0, 0, 0, 0);
 				filterCriteria.startDate = startDate;
 			}
 
-			var endDate = self.calendarEndDate || self.endDate;
+			var endDate = self.calendarEndDate || self.endDate || (this.lockFilter ? this.lockFilter.endDate : null);
 			if (endDate) {
 				endDate = new Date(endDate);
 				endDate.setHours(23, 59, 59, 999);
 				filterCriteria.endDate = endDate;
 			}
+
+
+
+			
 
 			//Include the timezone of the current requesting user
 			filterCriteria.timezone = self.$fluro.date.defaultTimezone;
