@@ -196,7 +196,7 @@
 																<v-input class="no-flex" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
 																				<div class="button-select-buttons">
 																								<template v-if="webMode">
-																												<fluro-button @click="toggleValue(button.value)" :class="{active:isSelectedValue(button.value)}" :key="button.value" v-for="button in selectOptions">
+																												<fluro-button @click="toggleValue(button.value)" :outline="!isSelectedValue(button.value)" :class="{active:isSelectedValue(button.value)}" :key="button.value" v-for="button in selectOptions">
 																																{{button.name || button.title}}
 																																<fluro-icon right icon="check" class="tick" />
 																												</fluro-button>
