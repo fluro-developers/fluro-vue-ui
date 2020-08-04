@@ -196,13 +196,13 @@
 																<v-input class="no-flex" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
 																				<div class="button-select-buttons">
 																								<template v-if="webMode">
-																												<fluro-button @click="toggleValue(button.value)" :outline="!isSelectedValue(button.value)" :class="{active:isSelectedValue(button.value)}" :key="button.value" v-for="button in selectOptions">
+																												<fluro-button :block="$fluro.device.breakpoint.xsOnly" @click="toggleValue(button.value)" :class="{active:isSelectedValue(button.value), inactive:!isSelectedValue(button.value)}" :key="button.value" v-for="button in selectOptions">
 																																{{button.name || button.title}}
 																																<fluro-icon right icon="check" class="tick" />
 																												</fluro-button>
 																								</template>
 																								<template v-else>
-																												<v-btn :color="isSelectedValue(button.value) ? `primary` : null" :class="{active:isSelectedValue(button.value)}" class="ml-0" @click="toggleValue(button.value)" v-for="button in selectOptions">
+																												<v-btn :block="$fluro.device.breakpoint.xsOnly" :color="isSelectedValue(button.value) ? `primary` : null" :class="{active:isSelectedValue(button.value)}" class="ml-0" @click="toggleValue(button.value)" v-for="button in selectOptions">
 																																{{button.name || button.title}}
 																																<fluro-icon right icon="check" class="tick" />
 																												</v-btn>
@@ -4163,6 +4163,11 @@ function checkValidInput(self, input) {
 												}
 								}
 
+				}
+
+				.btn.inactive {
+						background: rgba(#000, 0.1);
+						color: inherit !important;
 				}
 }
 
