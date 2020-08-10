@@ -1,7 +1,7 @@
 <template>
 	<div class="modal-outer" :class="[{center:!fixed}, {top:top}, {fixed:fixed}, {full:full}, size]">
 		<!-- @click.stop="dismiss()"  -->
-		<div class="blanket" @click="dismiss" />
+		<div class="blanket" @click="checkDismiss" />
 		<div class="modal-inner">
 			<component :options="modal.options" v-bind="componentProps" @close="close" @dismiss="dismiss" :is="modal.component" />
 			<!-- <component @close="close" @dismiss="dismiss" :is="component" /> -->
@@ -50,6 +50,11 @@ export default {
 		},
 	},
 	methods: {
+		checkDismiss() {
+			if(options.backdrop) {
+				return this.dismiss();
+			}
+		},
 		dismiss(err) {
 			var self = this;
 			self.$fluro.closeModal(self.modal.modalID);

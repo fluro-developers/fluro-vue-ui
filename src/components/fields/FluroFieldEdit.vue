@@ -586,7 +586,7 @@ export default {
             }
 
             if (!model.params.ticketing) {
-                self.$set(model.params, "ticketing", { events: [] });
+                self.$set(model.params, "ticketing", { enabled:false, events: [] });
             }
 
             if (!model.params.ticketing.events) {

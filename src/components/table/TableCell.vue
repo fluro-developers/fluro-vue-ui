@@ -1,7 +1,8 @@
 <template>
     <td :class="{wrap:shouldWrap, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}">
-        <!-- {{rawValue.length}} {{shouldWrap}} -->
-        <!-- <pre>{{column.key}}</pre> -->
+        
+        <!-- {{preValue}} -->
+        <!-- <pre>{{rawValue}} {{column.key}}</pre> -->
         <div :class="{'wrap-limit':shouldWrap}">
             <component v-if="renderer" :data="preValue" :is="renderer" :row="row" :column="column" />
             <template v-else-if="simpleArray">

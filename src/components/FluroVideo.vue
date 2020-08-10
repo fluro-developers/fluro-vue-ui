@@ -6,7 +6,7 @@
 												<youtube-embed :video-id="mediaID" />
 								</div>
 								<div class="fluro-video-embed" v-if="provider == 'upload'">
-												<video class="embed-responsive-item" :poster="posterUrl" controls>
+												<video class="embed-responsive-item" :preload="preloadStyle" :poster="posterUrl" controls>
 																<source :src="assetUrl" :type="item.mimetype">
 												</video>
 								</div>
@@ -68,9 +68,9 @@ export default {
 								}
 				},
 				// beforeCreate() {
-								// this.$options.components.FluroContentForm = require('./FluroContentForm.vue').default;
-					
-								//this.ready = true;
+				// this.$options.components.FluroContentForm = require('./FluroContentForm.vue').default;
+
+				//this.ready = true;
 				// },
 				mounted() {
 
@@ -94,6 +94,19 @@ export default {
 				//     }
 				// },
 				computed: {
+								preloadStyle() {
+												var self = this;
+
+												if (self.options.preload) {
+																return self.options.preload;
+												}
+
+												if (self.$fluro.app && self.$fluro.app.native) {
+														return 'none';
+												}
+
+												return;
+								},
 								provider() {
 												if (this.item) {
 																return this.item.assetType;

@@ -1927,7 +1927,7 @@ export default {
 																				case "process":
 																								//Extra filters for process cards
 
-																								
+
 																								break;
 																				case "checkin":
 																								//Extra filters for process cards
@@ -1962,6 +1962,53 @@ export default {
 																												type: "reference",
 																												typeSelect: "tag"
 																								});
+
+																								injectFields.push({
+																												title: "Contact Email Addresses (Now)",
+																												key: "_contact.emails",
+																												maximum: 0,
+																												minimum: 0,
+																												type: "email",
+
+																								});
+
+																								injectFields.push({
+																												title: "Contact Phone Numbers (Now)",
+																												key: "_contact.phoneNumbers",
+																												maximum: 0,
+																												minimum: 0,
+																												type: "string",
+
+																								});
+
+																								injectFields.push({
+																												title: "Contact Status (Now)",
+																												key: "_contact.status",
+																												maximum: 0,
+																												minimum: 0,
+																												type: "string",
+
+																								});
+
+																								injectFields.push({
+																												title: "Notes",
+																												key: "notes",
+																												maximum: 0,
+																												minimum: 0,
+																												type: "string",
+
+																								});
+
+																								injectFields.push({
+																												title: "Nametag Notes",
+																												key: "notes",
+																												maximum: 0,
+																												minimum: 0,
+																												type: "string",
+
+																								});
+
+
 
 																								injectFields.push({
 																												title: "Contact Realms (Now)",
@@ -2241,6 +2288,60 @@ export default {
 																												type: "integer"
 																								});
 
+																								break;
+																				case 'team':
+
+																								injectFields.push({
+																												title: "Event Tracks",
+																												key: "_tracks.all.length",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "integer",
+																												subfieldTitle: "Where event track matches...",
+																												subfields: [
+																																{
+																																				title: "Title",
+																																				key: "title",
+																																				maximum: 1,
+																																				minimum: 0,
+																																				type: "string",
+																																},
+																																{
+																																				title: "Realms",
+																																				key: "realms",
+																																				maximum: 0,
+																																				minimum: 0,
+																																				type: "reference",
+																																				directive: "select",
+																																				_discriminatorDefinition: "realm"
+																																},
+																																{
+																																				title: "Tags",
+																																				key: "tags",
+																																				maximum: 0,
+																																				minimum: 0,
+																																				type: "reference",
+																																				typeSelect: "tag"
+																																				// directive: 'content-select-button',
+																																				// directive: 'select',
+
+																																				// directive: 'select',
+																																				//_discriminatorDefinition: 'tag',
+																																},
+																																
+																																
+																																// {
+																																// 				title: "Definition",
+																																// 				key: "definition",
+																																// 				maximum: 0,
+																																// 				minimum: 0,
+																																// 				type: "string",
+																																// 				directive: "select",
+																																// 				options: teamDefinitionOptions
+																																// }
+
+																												]
+																								});
 																								break;
 																				default:
 																								switch (self.type) {
