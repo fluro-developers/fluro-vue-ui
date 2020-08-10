@@ -294,6 +294,10 @@ export default {
             var self = this;
 
             let inputField = this.$refs.clipboard;
+            if(!inputField) {
+                return;
+            }
+            
             inputField.value = string;
             inputField.setAttribute("type", "text"); // 不是 hidden 才能複製
             inputField.select();
