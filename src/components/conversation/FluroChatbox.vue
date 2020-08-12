@@ -335,6 +335,11 @@ export default {
             if (currentUser) {
                 userID = currentUser._hid;
                 console.log('We tune in as the current user', userID)
+            } else {
+                if (self.application) {
+                    userID = self.$fluro.utils.getStringID(self.application);
+                    console.log('We tune in as the current application', userID)
+                }
             }
 
             if (!userID) {
@@ -345,6 +350,7 @@ export default {
             ////////////////////////////
 
             if (self.$socket) {
+                console.log('socket channel')
                 self.socketChannel = self.$socket.channel(userID, self.conversationID);
                 self.socketChannel.on("message.create", self.socketUpdate);
                 self.socketChannel.on("message.update", self.socketUpdate);
@@ -361,6 +367,8 @@ export default {
                 // // self.$socket.$subscribe(self.conversationID, self.socketUpdate);
                 // self.$socket.$subscribe('message.update', self.socketUpdate);
                 // self.$socket.$subscribe('message.create', self.socketUpdate);
+            } else {
+             console.log('No $socket')
             }
 
             ////////////////////////////
