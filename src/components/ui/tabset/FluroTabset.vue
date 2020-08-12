@@ -54,6 +54,7 @@ export default {
             tabs: this.tabs,
             activeTabIndex: this.activeTabIndex,
             getActiveTabIndex: this.getActiveTabIndex,
+            tabset:this,
         }
     },
     data() {

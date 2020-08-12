@@ -51,7 +51,7 @@ export default {
 	},
 	methods: {
 		checkDismiss() {
-			if(options.backdrop) {
+			if(this.options.backdrop) {
 				return this.dismiss();
 			}
 		},

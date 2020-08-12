@@ -72,6 +72,7 @@ export default {
 	},
 	data() {
 		return {
+			reloadChangeKey:0,
 			cacheKey: null,
 			all: [], //Including unmatched
 			rows: [], //Only the rows that match
@@ -199,6 +200,7 @@ export default {
 					}
 
 					self.loadingItems = false;
+					self.reloadChangeKey++;
 				})
 				.catch(function (err) {
 					self.loadingItems = false;
@@ -212,6 +214,8 @@ export default {
 
 						self.setPage(1);
 					}
+
+					self.reloadChangeKey++;
 
 					if (self.$fluro.api.axios.isCancel(err)) {
 						// return reject(err);

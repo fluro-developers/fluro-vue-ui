@@ -309,11 +309,13 @@
                                         <div class="sm muted">Add other pre-defined fields to this contact</div>
                                         <v-btn class="ma-0" :loading="loadingFields" @click="selectDetailSheetFields">Select Fields</v-btn>
                                     </v-input>
+                                    <fluro-content-form-field :field="fields.targetStatus" v-model="model.params" />
                                     <fluro-content-form-field :field="fields.targetHouseholdRole" v-model="model.params" />
                                     <fluro-content-form-field :field="fields.targetDefinition" v-model="model.params" />
                                     <fluro-content-form-field :field="fields.targetTeams" v-model="model.params" />
                                     <fluro-content-form-field :field="fields.targetProcesses" v-model="model.params" />
                                     <fluro-content-form-field :field="fields.targetTags" v-model="model.params" />
+                                    <fluro-content-form-field :field="fields.targetTagsRemove" v-model="model.params" />
                                     <fluro-content-form-field :field="fields.targetCapabilities" v-model="model.params" />
                                     <fluro-content-form-field :field="fields.targetReactions" v-model="model.params" />
                                 </fluro-panel-body>
@@ -340,10 +342,10 @@
                                 </fluro-panel-body>
                             </fluro-panel>
                             <fluro-panel v-if="model.type == 'reference'">
-                             <fluro-panel-body>
-                                <fluro-content-form-field @input="resetRequired(fields.defaultValues)" :field="fields.population" v-model="model.params" />
-                                <fluro-content-form-field @input="resetRequired(fields.defaultValues)" :field="fields.populationDetails" v-model="model.params" />
-                            </fluro-panel-body>
+                                <fluro-panel-body>
+                                    <fluro-content-form-field @input="resetRequired(fields.defaultValues)" :field="fields.population" v-model="model.params" />
+                                    <fluro-content-form-field @input="resetRequired(fields.defaultValues)" :field="fields.populationDetails" v-model="model.params" />
+                                </fluro-panel-body>
                             </fluro-panel>
                             <fluro-content-form-field :field="fields.errorMessage" v-model="model" />
                             <fluro-content-form-field :field="fields.className" v-model="model" />
@@ -501,8 +503,6 @@
                             </v-input>
                         </div>
                     </v-container>
-
-
                 </flex-column-body>
             </tab>
         </tabset>
@@ -543,7 +543,7 @@ export default {
             type: Object
         }
     },
-   
+
     data() {
         var self = this;
         var model = this.value;
@@ -586,7 +586,7 @@ export default {
             }
 
             if (!model.params.ticketing) {
-                self.$set(model.params, "ticketing", { enabled:false, events: [] });
+                self.$set(model.params, "ticketing", { enabled: false, events: [] });
             }
 
             if (!model.params.ticketing.events) {
@@ -595,13 +595,13 @@ export default {
 
 
             // this.startListener();
-                if(model.type == 'group') {
-                    if(model.sameLine) {
-                        self.$set(model, 'sameLine', true);
-                    } else {
-                        self.$set(model, 'sameLine', false);
-                    }
+            if (model.type == 'group') {
+                if (model.sameLine) {
+                    self.$set(model, 'sameLine', true);
+                } else {
+                    self.$set(model, 'sameLine', false);
                 }
+            }
 
 
 
@@ -1776,6 +1776,32 @@ export default {
                 })
                 .value();
 
+
+            addField("targetStatus", {
+                title: "Status Update",
+                description: `What status should these contacts assume when form is submitted?`,
+                minimum: 0,
+                maximum: 1,
+                type: "string",
+                directive:'select',
+                defaultValues: ['active'],
+                options: [
+                  {
+                        name: 'Reactivate if archived (Default)',
+                        value: 'active',
+                    },
+                    {
+                        name: 'Archive upon submission',
+                        value: 'archive',
+                    },
+                    {
+                        name: `Leave current status (No change)`,
+                        value: 'nochange',
+                    },
+                ]
+            });
+
+
             ////////////////////////////////////////////
 
             addField("targetDefinition", {
@@ -1867,7 +1893,18 @@ export default {
 
             addField("targetTags", {
                 title: "Add Tags",
-                description: `Select tags to add to these ${embeddedPlural}. `,
+                description: `Select tags to add to these ${embeddedPlural} on form submission. `,
+                minimum: 0,
+                maximum: 0,
+                type: "reference",
+                params: {
+                    restrictType: "tag"
+                }
+            });
+
+            addField("targetTagsRemove", {
+                title: "Remove Tags",
+                description: `Select tags to remove from these ${embeddedPlural} on form submission. `,
                 minimum: 0,
                 maximum: 0,
                 type: "reference",

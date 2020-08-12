@@ -13,7 +13,12 @@
 								<div class="fluro-video-embed" v-if="provider == 'embed'" v-html="item.external.embed">
 								</div>
 								<div class="fluro-video-embed" v-if="provider == 'vimeo'">
-												<vimeo-player :video-id='mediaID'></vimeo-player>
+												<!-- <client-only> -->
+															
+																<iframe :src="`https://player.vimeo.com/video/${mediaID}?title=0&byline=0&portrait=0&badge=0`" width="640" height="360" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+																<!-- <vimeo-player ref="player" :video-id="videoID" @ready="onReady" :player-height="height"></vimeo-player> -->
+																<!-- <vimeo-player video-id="220721944"></vimeo-player> -->
+												<!-- </client-only> -->
 								</div>
 								<!-- <pre>{{item}}</pre> -->
 								<slot></slot>
@@ -102,7 +107,7 @@ export default {
 												}
 
 												if (self.$fluro.app && self.$fluro.app.native) {
-														return 'none';
+																return 'none';
 												}
 
 												return;

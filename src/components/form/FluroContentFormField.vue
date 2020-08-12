@@ -1518,6 +1518,7 @@ export default {
 
 
 																//Clean the input
+																// console.log('Before clean', value)
 																value = self.cleanInput(value);
 
 																//////////////////////////////////
@@ -2080,6 +2081,7 @@ export default {
 																								case 'number':
 																								case 'integer':
 																								case 'decimal':
+																								case 'float':
 																												directive = 'number';
 																												break;
 																								case 'reference':
@@ -2274,15 +2276,20 @@ export default {
 																								var changeValue;
 
 																								if (String(value).length) {
-																												changeValue = Number(value); //parseInt(parseFloat(value).toFixed(2)) / 100;
+																												changeValue = Number(parseFloat(value).toFixed(2));
+																												// changeValue = Number(value); //parseInt(parseFloat(value).toFixed(2)) / 100;
 																								} else {
-																												changeValue = null;
+																												changeValue = 0;
 																								}
 
+																								// console.log('VALUE BEFORE FLOAT', value)
 																								//If we have to transform the data
-																								if (parseFloat(value) != parseFloat(changeValue)) {
-																												value = changeValue;
-																								}
+																								// if (parseFloat(value).toFixed(2) != parseFloat(changeValue).toFixed(2)) {
+																								value = changeValue;
+																								// }
+																								// console.log('VALUE AFTER FLOAT', value)
+
+
 																				}
 																				break;
 																case 'float':
@@ -2384,9 +2391,11 @@ export default {
 																case 'integer':
 																				if (value != undefined && value != null) {
 																								if (String(value).length) {
+
+																												// var changeValue = Number(parseFloat(value).toFixed(2));
 																												value = parseInt(value);
 																								} else {
-																												value = null;
+																												value = 0;
 																								}
 																				}
 																				break;
@@ -2396,24 +2405,33 @@ export default {
 																								var changeValue;
 
 																								if (String(value).length) {
-																												changeValue = Number(value); //parseInt(parseFloat(value).toFixed(2)) / 100;
+																												changeValue = Number(parseFloat(value).toFixed(2));
+																												//parseInt(parseFloat(value).toFixed(2)) / 100;
+																												//Number(value); //
 																								} else {
-																												changeValue = null;
+																												changeValue = 0;
 																								}
 
-																								//If we have to transform the data
-																								if (parseFloat(value) != parseFloat(changeValue)) {
-																												value = changeValue;
-																								}
+																								// console.log('TRANSFORM FLOAT BEFORE', value, changeValue)
+																								// //If we have to transform the data
+																								// if (parseFloat(value).toFixed(2) != parseFloat(changeValue).toFixed(2)) {
+																								// 				value = changeValue;
+																								// }
+
+																								// console.log('TRANSFORM FLOAT AFTER', value, changeValue)
+																								value = changeValue;
+
+
 																				}
 																				break;
 																case 'float':
 																case 'decimal':
 																				if (value != undefined && value != null) {
 																								if (String(value).length) {
-																												value = Number(value); //parseInt(parseFloat(value).toFixed(2)) / 100;
+																												value = Number(parseFloat(value).toFixed(2));
+																												// value = Number(value); //parseInt(parseFloat(value).toFixed(2)) / 100;
 																								} else {
-																												value = null;
+																												value = 0;
 																								}
 																				}
 																				break;
@@ -4166,8 +4184,8 @@ function checkValidInput(self, input) {
 				}
 
 				.btn.inactive {
-						background: rgba(#000, 0.1);
-						color: inherit !important;
+								background: rgba(#000, 0.1);
+								color: inherit !important;
 				}
 }
 

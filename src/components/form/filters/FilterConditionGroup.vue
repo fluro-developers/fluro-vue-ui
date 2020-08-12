@@ -2298,8 +2298,7 @@ export default {
 																												minimum: 0,
 																												type: "integer",
 																												subfieldTitle: "Where event track matches...",
-																												subfields: [
-																																{
+																												subfields: [{
 																																				title: "Title",
 																																				key: "title",
 																																				maximum: 1,
@@ -2328,8 +2327,8 @@ export default {
 																																				// directive: 'select',
 																																				//_discriminatorDefinition: 'tag',
 																																},
-																																
-																																
+
+
 																																// {
 																																// 				title: "Definition",
 																																// 				key: "definition",

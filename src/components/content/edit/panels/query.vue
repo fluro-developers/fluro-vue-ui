@@ -337,7 +337,10 @@ export default {
                                 minimum: 1,
                                 maximum: 1,
                                 type: "string",
-                                placeholder: "Eg. My Awesome List"
+                                placeholder: "Eg. My Awesome List",
+                                params:{
+                                    autofocus:!self.model._id,
+                                }
                         });
 
                         addField("firstLine", {

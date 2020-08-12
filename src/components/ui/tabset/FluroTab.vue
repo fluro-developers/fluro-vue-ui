@@ -1,10 +1,12 @@
 <template>
     <transition name="slide">
         <!-- <flex-column> -->
-            <!-- {{key}} {{active}} -->
-            <flex-column v-if="active">
-                <slot />
-            </flex-column>
+        <!-- {{key}} {{active}} -->
+
+        <flex-column v-if="active">
+            <slot />
+        </flex-column>
+       
         <!-- </flex-column> -->
     </transition>
 </template>
@@ -39,7 +41,7 @@ export default {
             type: Object
         },
     },
-    inject: ['tabs', 'addTab', 'getActiveTabIndex', 'removeTab'],
+    inject: ['tabs', 'tabset', 'addTab', 'getActiveTabIndex', 'removeTab'],
     created() {
         // console.log('THISIIIIITY', this.tabs)
 
@@ -48,19 +50,23 @@ export default {
         if (!self.index) {
             self.key = self.$fluro.utils.guid();
         } else {
-         self.key = self.index;
+            self.key = self.index;
         }
 
         // self.tabs.push(self);
         // self.key = self.tabs.length;
         self.addTab(self);
 
-        var activeTabIndex = this.getActiveTabIndex();
+        // var activeTabIndex = this.getActiveTabIndex();
         // console.log('CHECK ACTIVE?', activeTabIndex, self.key);
-        self.active = (self.key == activeTabIndex);
+        self.active = (self.key == self.tabset.activeTabIndex);
 
     },
     watch: {
+        'tabset.activeTabIndex': function(index) {
+            this.active = this.key == index;
+            console.log('Active is now', index, this.active)
+        },
         active: 'emitActive',
     },
     beforeDestroy() {

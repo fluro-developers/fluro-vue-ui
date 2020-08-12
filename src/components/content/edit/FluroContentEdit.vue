@@ -37,6 +37,8 @@
                                                                 </template> -->
                             </template>
                             <help title="Realm Selector" :body="`Everything in Fluro needs to be kept somewhere, choose one or more realms for this ${definitionTitle}. This will affect who has access to view and edit this ${definitionTitle}`" />
+                            <!-- <pre>{{typeName}} - {{definitionName}}</pre> -->
+
                             <fluro-realm-select ref="realmSelector" v-tippy :content="`Select where this ${definitionTitle} should be stored`" v-if="typeName != 'realm'" v-model="model.realms" :type="typeName" :definition="definitionName" />
                             <fluro-tag-select class="mx-0 ml-2" v-if="typeName != 'tag'" v-model="model.tags">
                                 <help title="Tag Selector" :body="`Add tags to describe and make it easier to find this ${definitionTitle} when searching later`" />
@@ -297,7 +299,7 @@ export default {
             if(!inputField) {
                 return;
             }
-            
+
             inputField.value = string;
             inputField.setAttribute("type", "text"); // 不是 hidden 才能複製
             inputField.select();

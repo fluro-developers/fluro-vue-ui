@@ -176,6 +176,8 @@
 																																																																<fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.enableConfirmation" v-model="model" />
 																																																																<fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.includeTickets" v-model="model" />
 																																																																<fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.confirmationMessage" v-model="model" />
+																																																																<fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.confirmationTemplate" v-model="model" />
+
 																																																																<fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.notifyContacts" v-model="model" />
 																																																																<fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.enableReceipt" v-model="model" />
 																																																												</template>
@@ -1545,6 +1547,41 @@ export default {
 																directive: 'wysiwyg',
 																description: `Add a customised thank you message to be shown in the confirmation email. \n Please note that event registrations will already contain key dates, locations and directions underneath this message`,
 												})
+
+											
+
+													addField('confirmationTemplate', {
+																title: 'Confirmation Mailout Template',
+																minimum: 0,
+																maximum: 1,
+																type: 'reference',
+																params: {
+																				restrictType: 'definition',
+																				searchInheritable:true,
+																				referenceFilter: {
+																								operator: 'and',
+																								filters: [
+																								{
+																												key: 'parentType',
+																												comparator: '==',
+																												value: 'mailout',
+																								},
+																								// {
+																								// 				key: 'systemOnly',
+																								// 				comparator: '==',
+																								// 				value:true,
+																								// },
+
+																								
+
+																								]
+																				},
+																},
+																description: `Select a html mailout template that can be used to style this message`,
+												})
+
+
+
 
 												addField('includeTickets', {
 																title: 'Include QR Code tickets',

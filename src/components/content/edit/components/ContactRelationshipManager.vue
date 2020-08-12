@@ -1,116 +1,100 @@
 <template>
-  <div>
-    <fluro-page-preloader v-if="loading" contain />
-    <template v-else>
-      <v-layout row wrap>
-        <template v-for="row in backlinks">
-          <v-flex>
-            <v-input class="no-flex">
-              <v-label>
-                {{row.relationship | capitalize}}
-                <span class="anniversary">{{anniversaryDate(row)}}</span>
-              </v-label>
-              <div class="relation-faces">
-                <div
-                  @click="$fluro.global.edit(contact, true)"
-                  class="relation-face"
-                  :class="contact.status"
-                  v-for="contact in row.contacts"
-                >
-                  <fluro-avatar lg :id="contact" />
-                  <div class="details">
-                    <div>
-                      <strong>{{contact.title}}</strong>
-                    </div>
-                    <div>{{contact.householdRole}}</div>
-                    <div>{{contact.gender}}</div>
-                    <div>{{contact.age}}</div>
-                    <div>{{contact.definition | definitionTitle}}</div>
-                    <fluro-status-label :value="contact.status" />
-                  </div>
-                </div>
-              </div>
-              <!-- <pre>{{model.relationships.length}}</pre> -->
-              <!-- <fluro-avatar-stack :contacts="row.contacts"/> -->
-            </v-input>
-          </v-flex>
-        </template>
-        <template v-for="row in model.relationships">
-          <v-flex>
-            <v-input class="no-flex">
-              <v-label>
-                {{contextName}} {{row.relationship | capitalize}}
-                <span class="anniversary">{{anniversaryDate(row)}}</span>
-              </v-label>
-              <div class="relation-faces">
-                <div
-                  @click="$fluro.global.edit(contact, true)"
-                  class="relation-face"
-                  :class="contact.status"
-                  v-for="contact in row.contacts"
-                >
-                  <fluro-avatar lg :id="contact" />
-                  <div class="details">
-                    <div>
-                      <strong>{{contact.title}}</strong>
-                    </div>
-                    <div>{{contact.householdRole}}</div>
-                    <div>{{contact.gender}}</div>
-                    <div>{{contact.age}}</div>
-                    <div>{{contact.definition | definitionTitle}}</div>
-                    <fluro-status-label :value="contact.status" />
-                  </div>
-                </div>
-              </div>
-              <!-- <pre>{{model.relationships.length}}</pre> -->
-              <!-- <fluro-avatar-stack :contacts="row.contacts"/> -->
-            </v-input>
-          </v-flex>
-        </template>
-      </v-layout>
-      <fluro-panel>
-        <fluro-panel-title>
-          <h4>Add a relationship</h4>
-        </fluro-panel-title>
-        <fluro-panel-body>
-          <form>
-            <v-layout>
-              <v-flex xs12 sm5>
-                <v-select
-                  label="Relationship"
-                  v-model="proposed.relationshipType"
-                  item-text="title"
-                  :items="relationshipTypes"
-                ></v-select>
-                <template v-if="customRelationship">
-                  <v-text-field
-                    label="Custom Relationshp"
-                    v-model="proposed.relationship"
-                    placeholder="Boss, Coworker, Friend"
-                  />
+    <div>
+        <fluro-page-preloader v-if="loading" contain />
+        <template v-else>
+            <v-layout row wrap>
+                <template v-for="row in backlinks">
+                    <v-flex>
+                        <v-input class="no-flex">
+                            <v-label>
+                                {{row.relationship | capitalize}}
+                                <span class="anniversary">{{anniversaryDate(row)}}</span>
+                            </v-label>
+                            <div class="relation-faces">
+                                <div @click="$fluro.global.edit(contact, true)" class="relation-face" :class="contact.status" v-for="contact in row.contacts">
+                                    <fluro-avatar lg :id="contact" />
+                                    <div class="details">
+                                        <div>
+                                            <strong>{{contact.title}}</strong>
+                                        </div>
+                                        <div>{{contact.householdRole}}</div>
+                                        <div>{{contact.gender}}</div>
+                                        <div>{{contact.age}}</div>
+                                        <div>{{contact.definition | definitionTitle}}</div>
+                                        <fluro-status-label :value="contact.status" />
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <pre>{{model.relationships.length}}</pre> -->
+                            <!-- <fluro-avatar-stack :contacts="row.contacts"/> -->
+                        </v-input>
+                    </v-flex>
                 </template>
-                <template v-if="proposed.relationship == 'spouse'">
-                  <fluro-content-form-field :field="anniversaryField" v-model="proposed" />
+                <template v-for="row in model.relationships">
+                    <v-flex>
+                        <v-input class="no-flex">
+                            <v-label>
+                                {{contextName}} {{row.relationship | capitalize}}
+                                <span class="anniversary">{{anniversaryDate(row)}}</span>
+                            </v-label>
+                            <div class="relation-faces">
+                                <div @click="$fluro.global.edit(contact, true)" class="relation-face" :class="contact.status" v-for="contact in row.contacts">
+                                    <div class="btn-trash" @click.stop.prevent="removeRelationship(row, contact)">
+                                        <fluro-icon icon="trash-alt" />
+                                    </div>
+                                    <fluro-avatar lg :id="contact" />
+                                    <div class="details">
+                                        <div>
+                                            <strong>{{contact.title}}</strong>
+                                        </div>
+                                        <div>{{contact.householdRole}}</div>
+                                        <div>{{contact.gender}}</div>
+                                        <div>{{contact.age}}</div>
+                                        <div>{{contact.definition | definitionTitle}}</div>
+                                        <fluro-status-label :value="contact.status" />
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <pre>{{model.relationships.length}}</pre> -->
+                            <!-- <fluro-avatar-stack :contacts="row.contacts"/> -->
+                        </v-input>
+                    </v-flex>
                 </template>
-              </v-flex>
-              <v-flex xs12 sm5>
-                <!-- <v-input class="no-flex"> -->
-                <!-- <v-label>Select Contacts</v-label> -->
-                <fluro-content-select-button block type="contact" v-model="proposed.contacts" />
-                <!-- </v-input> -->
-              </v-flex>
-              <v-flex xs12 sm4>
-                <v-btn block color="primary" :disabled="disabled" @click="add()">
-                  Add
-                  <fluro-icon right icon="plus" />
-                </v-btn>
-              </v-flex>
             </v-layout>
-          </form>
-        </fluro-panel-body>
-      </fluro-panel>
-      <!-- <pre>{{relationships}}</pre> -->
-      <!-- <v-input class="no-flex" v-for="group in teamGroups">
+            <fluro-panel>
+                <fluro-panel-title>
+                    <h4>Add a relationship</h4>
+                </fluro-panel-title>
+                <fluro-panel-body>
+                    <form>
+                        <v-layout>
+                            <v-flex xs12 sm5>
+                                <v-select label="Relationship" v-model="proposed.relationshipType" item-text="title" :items="relationshipTypes"></v-select>
+                                <template v-if="customRelationship">
+                                    <v-text-field label="Custom Relationshp" v-model="proposed.relationship" placeholder="Boss, Coworker, Friend" />
+                                </template>
+                                <template v-if="proposed.relationship == 'spouse'">
+                                    <fluro-content-form-field :field="anniversaryField" v-model="proposed" />
+                                </template>
+                            </v-flex>
+                            <v-flex xs12 sm5>
+                                <!-- <v-input class="no-flex"> -->
+                                <!-- <v-label>Select Contacts</v-label> -->
+                                <fluro-content-select-button block type="contact" v-model="proposed.contacts" />
+                                <!-- </v-input> -->
+                            </v-flex>
+                            <v-flex xs12 sm4>
+                                <v-btn block color="primary" :disabled="disabled" @click="add()">
+                                    Add
+                                    <fluro-icon right icon="plus" />
+                                </v-btn>
+                            </v-flex>
+                        </v-layout>
+                    </form>
+                </fluro-panel-body>
+            </fluro-panel>
+            <!-- <pre>{{relationships}}</pre> -->
+            <!-- <v-input class="no-flex" v-for="group in teamGroups">
                 <v-label>{{group.title}}</v-label>
                 <list-group>
                     <template v-for="team in group.teams">
@@ -141,8 +125,8 @@
                     <fluro-icon right icon="plus" />
                 </v-btn>
       </v-input>-->
-    </template>
-  </div>
+        </template>
+    </div>
 </template>
 <script>
 import ListGroup from "../../../ui/ListGroup.vue";
@@ -156,346 +140,387 @@ import Vue from "vue";
 import _ from "lodash";
 
 export default {
-  props: {
-    value: {
-      type: Object,
-      required: true
-    }
-  },
-  data() {
-    return {
-      anniversaryField: {
-        key: "anniversary",
-        type: "date",
-        title: "Anniversary Date"
-      },
-      actionIndexes: {},
-      model: this.value,
-      loading: true,
-      backlinks: [],
-      proposed: {
-        checkinAuthorised: true,
-        relationshipType: null,
-        relationship: null,
-        anniversary: null,
-        contacts: []
-      }
-    };
-  },
-  created() {
-    console.log("RELOAD TEAMS");
-    this.reloadRelationships();
-    this.resetProposed();
-  },
-  methods: {
-    anniversaryDate(row) {
-      if (row.anniversary) {
-        return `${this.$fluro.date.formatDate(
+    props: {
+        value: {
+            type: Object,
+            required: true
+        }
+    },
+    data() {
+        return {
+            anniversaryField: {
+                key: "anniversary",
+                type: "date",
+                title: "Anniversary Date"
+            },
+            actionIndexes: {},
+            model: this.value,
+            loading: true,
+            backlinks: [],
+            proposed: {
+                checkinAuthorised: true,
+                relationshipType: null,
+                relationship: null,
+                anniversary: null,
+                contacts: []
+            }
+        };
+    },
+    created() {
+        console.log("RELOAD TEAMS");
+        this.reloadRelationships();
+        this.resetProposed();
+    },
+    methods: {
+        removeRelationship(row, contact) {
+
+            var self = this;
+
+
+
+            if (!row.contacts || row.contacts.length < 2) {
+                var rowIndex = self.model.relationships.indexOf(row);
+                self.model.relationships.splice(rowIndex, 1);
+                return;
+            }
+
+
+            var contactIndex = row.contacts.indexOf(contact);
+            row.contacts.splice(contactIndex, 1);
+
+
+        },
+        anniversaryDate(row) {
+            if (row.anniversary) {
+                return `${this.$fluro.date.formatDate(
           row.anniversary,
           "D MMM"
         )} (${this.$fluro.date.timeago(row.anniversary)})`;
-      }
-    },
-    add() {
-      var self = this;
-
-      // console.log('RELATIONSHIP', self.proposed);
-      var proposed = self.proposed;
-
-      if (!self.model.relationships || !self.model.relationships.length) {
-        self.$set(self.model, "relationships", []);
-      }
-
-      self.model.relationships.push(proposed);
-
-      // self.$fluro.api.put(`/contact/${self.contactID}/relationships`)
-
-      self.resetProposed();
-    },
-    resetProposed() {
-      this.proposed = {
-        checkinAuthorised: true,
-        relationshipType: null,
-        relationship: null,
-        anniversary: null,
-        contacts: []
-      };
-    },
-    // leave(team) {
-    //     var self = this;
-
-    //     //Get the ids from the teams
-    //     var teamID = self.$fluro.utils.getStringID(team);
-    //     self.loading = true;
-
-    //     //////////////////////////////////
-
-    //     var promise = self.$batch.run({
-    //             operation: 'remove from team',
-    //             ids: [self.contactID],
-    //             teams: [teamID],
-    //         })
-    //         .then(function(res) {
-    //             var index = _.findIndex(self.teams, { _id: teamID });
-    //             self.teams.splice(index, 1);
-    //             self.loading = false;
-    //         })
-    //         .catch(function(err) {
-    //             console.log('TEAMS ERR', err);
-    //             self.reloadRelationships();
-    //         });
-    // },
-    // select(type) {
-
-    //     var self = this;
-
-    //     //Ugly hack, but it's gotta be done unfortunately
-    //     var SelectionManager = Vue.extend(FluroSelector);
-    //     var instance = new SelectionManager({
-    //         propsData: {
-    //             minimum: 0,
-    //             maximum: 0,
-    //         }
-    //     })
-
-    //     // var isBasicType = self.$fluro.types.isBasicType(type);
-
-    //     var promise = self.$fluro.modal({
-    //             component: FluroContentSelectModal,
-    //             options: {
-    //                 allDefinitions: false, //isBasicType,
-    //                 selector: instance, //Vue(FluroSelector),
-    //                 type,
-    //                 minimum: 0,
-    //                 maximum: 0,
-    //             }
-    //         })
-    //         .then(function(items) {
-
-    //             if (!items || !items.length) {
-    //                 return;
-    //             }
-
-    //             self.loading = true;
-
-    //             //Get the ids from the teams
-    //             var teamIDs = self.$fluro.utils.arrayIDs(items);
-
-    //             //////////////////////////////////
-
-    //             var promise = self.$batch.run({
-    //                     operation: 'add to team',
-    //                     ids: [self.contactID],
-    //                     teams: teamIDs,
-    //                 })
-    //                 .then(function(res) {
-
-    //                     // self.teams = self.teams.concat(items);
-    //                     // self.loading = false;
-    //                     self.reloadRelationships();
-    //                 })
-    //                 .catch(function(err) {
-    //                     self.reloadRelationships();
-    //                 });
-
-    //         })
-    // },
-    reloadRelationships() {
-      var self = this;
-      self.loading = true;
-
-      if (!self.contactID) {
-        self.loading = false;
-        return;
-      }
-
-      self.$fluro.api
-        .get(`/contact/${self.contactID}/relationships`, {
-          params: {
-            backlinks: true
-          }
-        })
-        .then(function(res) {
-          self.backlinks = res.data;
-          self.loading = false;
-        })
-        .catch(function(err) {
-          self.loading = false;
-        });
-    }
-  },
-  components: {
-    FluroContentFormField,
-    FluroContentSelectButton,
-    // FluroAvatarStack,
-    ListGroup,
-    ListGroupItem
-    // FluroContentSelectButton,
-    // FluroContentSelectModal,
-  },
-  watch: {
-    "proposed.relationshipType": function(value) {
-      var self = this;
-
-      //////////////////////////////
-
-      if (!self.customRelationship) {
-        self.proposed.relationship = value;
-      }
-
-      // //////////////////////////////
-
-      // switch(value) {
-      //     case 'other':
-      //     break;
-      //     default:
-      //         self.proposed.relationship = value;
-      //     break;
-      // }
-    }
-  },
-  computed: {
-    relationships() {
-      // return this.
-      return this.backlinks;
-    },
-    customRelationship() {
-      return this.proposed.relationshipType == "other";
-    },
-    disabled() {
-      var invalid =
-        !this.proposed.contacts ||
-        !this.proposed.contacts.length ||
-        !this.proposed.relationship ||
-        !this.proposed.relationship.length;
-
-      if (invalid) {
-        return true;
-      }
-
-      if (
-        this.customRelationship &&
-        (!this.proposed.relationship || !this.proposed.relationship.length)
-      ) {
-        return true;
-      }
-    },
-    contextName() {
-      var name = this.model.preferredName || this.model.firstName || "";
-      if (!name || !name.length) {
-        return "";
-      }
-
-      if (_.endsWith(name, "s")) {
-        return `${name}'`;
-      }
-      return `${name}'s`;
-    },
-    relationshipTypes() {
-      var contextName = this.contextName;
-
-      return [
-        {
-          title: `${contextName} Parents`,
-          value: `parents`
+            }
         },
-        {
-          title: `${contextName} Guardians`,
-          value: `guardians`
+        add() {
+            var self = this;
+
+            // console.log('RELATIONSHIP', self.proposed);
+            var proposed = self.proposed;
+
+            if (!self.model.relationships || !self.model.relationships.length) {
+                self.$set(self.model, "relationships", []);
+            }
+
+            self.model.relationships.push(proposed);
+
+            // self.$fluro.api.put(`/contact/${self.contactID}/relationships`)
+
+            self.resetProposed();
         },
-        {
-          title: `${contextName} Children`,
-          value: `children`
+        resetProposed() {
+            this.proposed = {
+                checkinAuthorised: true,
+                relationshipType: null,
+                relationship: null,
+                anniversary: null,
+                contacts: []
+            };
         },
-        {
-          title: `${contextName} Siblings`,
-          value: `siblings`
-        },
-        {
-          title: `${contextName} Spouse`,
-          value: `spouse`
-        },
-        {
-          title: `${contextName} Partner`,
-          value: `partner`
-        },
-        {
-          title: `${contextName} Grandparents`,
-          value: `grandparents`
-        },
-        {
-          title: `${contextName} Grandchildren`,
-          value: `grandchildren`
-        },
-        {
-          title: `${contextName} Aunt/Uncle`,
-          value: `auntuncle`
-        },
-        {
-          title: `${contextName} Niece/Nephew`,
-          value: `niecenephew`
-        },
-        {
-          title: `Other`,
-          value: `other`
+        // leave(team) {
+        //     var self = this;
+
+        //     //Get the ids from the teams
+        //     var teamID = self.$fluro.utils.getStringID(team);
+        //     self.loading = true;
+
+        //     //////////////////////////////////
+
+        //     var promise = self.$batch.run({
+        //             operation: 'remove from team',
+        //             ids: [self.contactID],
+        //             teams: [teamID],
+        //         })
+        //         .then(function(res) {
+        //             var index = _.findIndex(self.teams, { _id: teamID });
+        //             self.teams.splice(index, 1);
+        //             self.loading = false;
+        //         })
+        //         .catch(function(err) {
+        //             console.log('TEAMS ERR', err);
+        //             self.reloadRelationships();
+        //         });
+        // },
+        // select(type) {
+
+        //     var self = this;
+
+        //     //Ugly hack, but it's gotta be done unfortunately
+        //     var SelectionManager = Vue.extend(FluroSelector);
+        //     var instance = new SelectionManager({
+        //         propsData: {
+        //             minimum: 0,
+        //             maximum: 0,
+        //         }
+        //     })
+
+        //     // var isBasicType = self.$fluro.types.isBasicType(type);
+
+        //     var promise = self.$fluro.modal({
+        //             component: FluroContentSelectModal,
+        //             options: {
+        //                 allDefinitions: false, //isBasicType,
+        //                 selector: instance, //Vue(FluroSelector),
+        //                 type,
+        //                 minimum: 0,
+        //                 maximum: 0,
+        //             }
+        //         })
+        //         .then(function(items) {
+
+        //             if (!items || !items.length) {
+        //                 return;
+        //             }
+
+        //             self.loading = true;
+
+        //             //Get the ids from the teams
+        //             var teamIDs = self.$fluro.utils.arrayIDs(items);
+
+        //             //////////////////////////////////
+
+        //             var promise = self.$batch.run({
+        //                     operation: 'add to team',
+        //                     ids: [self.contactID],
+        //                     teams: teamIDs,
+        //                 })
+        //                 .then(function(res) {
+
+        //                     // self.teams = self.teams.concat(items);
+        //                     // self.loading = false;
+        //                     self.reloadRelationships();
+        //                 })
+        //                 .catch(function(err) {
+        //                     self.reloadRelationships();
+        //                 });
+
+        //         })
+        // },
+        reloadRelationships() {
+            var self = this;
+            self.loading = true;
+
+            if (!self.contactID) {
+                self.loading = false;
+                return;
+            }
+
+            self.$fluro.api
+                .get(`/contact/${self.contactID}/relationships`, {
+                    params: {
+                        backlinks: true
+                    }
+                })
+                .then(function(res) {
+                    self.backlinks = res.data;
+                    self.loading = false;
+                })
+                .catch(function(err) {
+                    self.loading = false;
+                });
         }
-      ];
     },
-    contactID() {
-      if (!this.model._id) {
-        return;
-      }
+    components: {
+        FluroContentFormField,
+        FluroContentSelectButton,
+        // FluroAvatarStack,
+        ListGroup,
+        ListGroupItem
+        // FluroContentSelectButton,
+        // FluroContentSelectModal,
+    },
+    watch: {
+        "proposed.relationshipType": function(value) {
+            var self = this;
 
-      return this.$fluro.utils.getStringID(this.model);
+            //////////////////////////////
+
+            if (!self.customRelationship) {
+                self.proposed.relationship = value;
+            }
+
+            // //////////////////////////////
+
+            // switch(value) {
+            //     case 'other':
+            //     break;
+            //     default:
+            //         self.proposed.relationship = value;
+            //     break;
+            // }
+        }
+    },
+    computed: {
+        relationships() {
+            // return this.
+            return this.backlinks;
+        },
+        customRelationship() {
+            return this.proposed.relationshipType == "other";
+        },
+        disabled() {
+            var invalid = !this.proposed.contacts ||
+                !this.proposed.contacts.length ||
+                !this.proposed.relationship ||
+                !this.proposed.relationship.length;
+
+            if (invalid) {
+                return true;
+            }
+
+            if (
+                this.customRelationship &&
+                (!this.proposed.relationship || !this.proposed.relationship.length)
+            ) {
+                return true;
+            }
+        },
+        contextName() {
+            var name = this.model.preferredName || this.model.firstName || "";
+            if (!name || !name.length) {
+                return "";
+            }
+
+            if (_.endsWith(name, "s")) {
+                return `${name}'`;
+            }
+            return `${name}'s`;
+        },
+        relationshipTypes() {
+            var contextName = this.contextName;
+
+            return [{
+                    title: `${contextName} Parents`,
+                    value: `parents`
+                },
+                {
+                    title: `${contextName} Guardians`,
+                    value: `guardians`
+                },
+                {
+                    title: `${contextName} Children`,
+                    value: `children`
+                },
+                {
+                    title: `${contextName} Siblings`,
+                    value: `siblings`
+                },
+                {
+                    title: `${contextName} Spouse`,
+                    value: `spouse`
+                },
+                {
+                    title: `${contextName} Partner`,
+                    value: `partner`
+                },
+                {
+                    title: `${contextName} Grandparents`,
+                    value: `grandparents`
+                },
+                {
+                    title: `${contextName} Grandchildren`,
+                    value: `grandchildren`
+                },
+                {
+                    title: `${contextName} Aunt/Uncle`,
+                    value: `auntuncle`
+                },
+                {
+                    title: `${contextName} Niece/Nephew`,
+                    value: `niecenephew`
+                },
+                {
+                    title: `Other`,
+                    value: `other`
+                }
+            ];
+        },
+        contactID() {
+            if (!this.model._id) {
+                return;
+            }
+
+            return this.$fluro.utils.getStringID(this.model);
+        }
+    },
+    filters: {
+        capitalize(str) {
+            return _.startCase(str);
+        }
     }
-  },
-  filters: {
-    capitalize(str) {
-      return _.startCase(str);
-    }
-  }
 };
+
 </script>
 <style lang="scss">
 .anniversary {
-  font-weight: normal;
-  opacity: 0.5;
+    font-weight: normal;
+    opacity: 0.5;
 }
 
 .relation-faces {
-  display: block;
+    display: block;
 
-  .relation-face {
-    width: 100px;
-    padding: 10px;
-    background: #fff;
-    border: 1px solid rgba(#000, 0.1);
-    border-radius: 4px;
-    margin: 0 1% 1% 0;
-    display: inline-block;
-    text-align: center;
-    font-size: 14px;
-    cursor: pointer;
-    vertical-align: top;
+    .relation-face {
+        width: 100px;
+        padding: 10px;
+        background: #fff;
+        border: 1px solid rgba(#000, 0.1);
+        border-radius: 4px;
+        margin: 0 1% 1% 0;
+        display: inline-block;
+        text-align: center;
+        font-size: 14px;
+        cursor: pointer;
+        vertical-align: top;
+        position: relative;
 
-    &:hover {
-      background: #fafafa;
+
+        .btn-trash {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            z-index: 10;
+            display: none;
+            background: #000;
+            color: #fff;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            border-radius: 100%;
+
+        }
+
+
+        &:hover {
+            background: #fafafa;
+
+            .btn-trash {
+                display: block;
+            }
+        }
+
+        // font-weight: 600;
+
+        &.archived {
+            opacity: 0.5;
+            border: 1px solid rgba(#000, 0.1);
+            background: none;
+        }
+
+        .details {
+            padding: 5px 0;
+            text-transform: capitalize;
+            font-size: 0.8em;
+            opacity: 0.8;
+        }
     }
-
-    // font-weight: 600;
-
-    &.archived {
-      opacity: 0.5;
-      border: 1px solid rgba(#000, 0.1);
-      background: none;
-    }
-
-    .details {
-      padding: 5px 0;
-      text-transform: capitalize;
-      font-size: 0.8em;
-      opacity: 0.8;
-    }
-  }
 }
+
 </style>
