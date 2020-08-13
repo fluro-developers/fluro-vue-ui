@@ -562,10 +562,15 @@ export default {
                 }, true)
                 .then(function(res) {
                     if(res) {
-
+                        console.log("res", res)
                         var first = _.first(res)
 
-                        command( {item: first._id} )
+                        command({
+                            item: first._id, 
+                            width:first.width,
+                            height: first.height,
+                            } 
+                        )
                     }
                 }
             )

@@ -11,15 +11,23 @@ export default class Image extends Node {
             inline: true,
             attrs: {
                 item: {},
+                width: {
+                    default: '100%'
+                },
+                height: {
+                    default: '100%'
+                }
             },
             group: 'inline',
             draggable: true,
             parseDOM: [{
-                tag: 'fluro-image[item]',
+                tag: 'fluro-image[item][width][height]',
                 getAttrs: dom => ({
                     item: dom.getAttribute('item'),
+                    width: dom.getAttribute('width'),
+                    height: dom.getAttribute('height')
                 }),
-            }, ],
+            },],
             toDOM: node => ['fluro-image', node.attrs],
         }
     }
@@ -36,23 +44,45 @@ export default class Image extends Node {
 
     get view() {
         return {
-          props: ['node', 'updateAttrs', 'view'],
-          computed: {
-            item: {
-              get() {
-                //return `https://api.fluro.io/get/${this.node.attrs.item}`
-                return this.$fluro.asset.imageUrl(this.node.attrs.item)
-              },
-              set(item) {
-                this.updateAttrs({
-                  item,
-                })
-              },
+            props: ['node', 'updateAttrs', 'view'],
+            computed: {
+                item: {
+                    get() {
+                        //return `https://api.fluro.io/get/${this.node.attrs.item}`
+                        var imageUrl = this.$fluro.asset.imageUrl(this.node.attrs.item)
+                        return imageUrl
+                    },
+                    set(item) {
+                        var imageMetadata = this.$fluro.get(this.node.attrs.item)
+                        console.log("imageMetadata", imageMetadata)
+                        this.width = imageMetadata.width
+                        this.updateAttrs({
+                            item
+                        })
+                    },
+                },
+                width: {
+                    get() {
+                        return this.node.attrs.width
+                    },
+                    set(width) {
+                        this.updateAttrs({
+                            width
+                        })
+                    }
+                },
+                height: {
+                    get() {
+                        return this.node.attrs.width
+                    },
+                    set(width) {
+                        this.updateAttrs({
+                            width
+                        })
+                    }
+                },
             },
-          },
-          template: `<div class="fluro-image-preview"><img :src='item' /></div>`,
+            template: `<div class="fluro-image-preview"><img :src='item' :width='width' :height='height'/></div>`,
         }
-      }
-
-
+    }
 }
