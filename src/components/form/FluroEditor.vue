@@ -41,7 +41,9 @@
                 </button>
             </div>
         </editor-floating-menu> -->
-        <editor-menu-bubble v-if="bubbleEnabled" :editor="editor" @hide="hideBubble" :keep-in-bounds="keepInBounds" v-slot="{ commands, isActive, getMarkAttrs, menu }">
+        
+        <editor-menu-bubble v-if="bubbleEnabled" :editor="editor" @hide="hideBubble" :keep-in-bounds="keepInBounds" v-slot="{ commands, isActive, getMarkAttrs, menu, getNodeAttrs, nodes }">
+            <div><pre>Nodes: {{nodes}}</pre>
             <div class="menububble" :class="{ 'active': menu.isActive }" :style="`left: ${menu.left}px; bottom: ${menu.bottom}px;`">
                 <v-menu attach v-if="isEnabled('formats')" transition="slide-y-transition" offset-y>
                     <template v-slot:activator="{ on }">
@@ -67,18 +69,18 @@
                             <v-list-tile :class="{ 'active': isActive.heading({ level: 5 }) }" @click.stop.prevent="commands.heading({ level: 5 })">
                                 <v-list-tile-content><span style="margin:0 !important" class="h5">Heading 5</span></v-list-tile-content>
                             </v-list-tile>
-                            <v-list-tile :class="{ 'active': isActive.typography({ level:option.level}) }" v-for="option in typographyOptions" @click.stop.prevent="commands.typography({ level:option.level })">
+                            <v-list-tile :class="{ 'active': isActive.typography({ level:option.level}) }" v-for="option in typographyOptions" :key="option.title" @click.stop.prevent="commands.typography({ level:option.level })">
                                 <v-list-tile-content><span style="margin:0 !important" :class="option.level">{{option.title}}</span></v-list-tile-content>
                             </v-list-tile>
                             <!-- <template v-if="getFluroNodes().length"> -->
                             <template v-if="false">
-                                <v-list-tile @click.stop.prevent="commands.fluroNode(option)" v-for="option in getFluroNodes()">
+                                <v-list-tile @click.stop.prevent="commands.fluroNode(option)" v-for="option in getFluroNodes()" :key="option.title">
                                     <v-list-tile-content><span style="margin:0 !important" :class="option.className">{{option.title}}</span></v-list-tile-content>
                                 </v-list-tile>
                             </template>
                             <!-- <template v-if="getFluroMarks().length"> -->
                             <template v-if="false">
-                                <v-list-tile @click.stop.prevent="commands.fluroMark(option)" v-for="option in getFluroMarks()">
+                                <v-list-tile @click.stop.prevent="commands.fluroMark(option)" v-for="option in getFluroMarks()" :key="option.title">
                                     <v-list-tile-content><span style="margin:0 !important" :class="option.class">{{option.title}}</span></v-list-tile-content>
                                 </v-list-tile>
                             </template>
@@ -105,6 +107,18 @@
                         <fluro-icon icon="align-right" />
                     </v-btn>
                 </template>
+                <!-- turn this off administratively -->
+                <div v-if="false">
+                <form class="menububble__form" v-if="isActive.image()" @submit.prevent.stop="updateImage(commands.image)">
+                    <template v-if="selectedImage">
+                        <label for="widthInput">Width</label>
+                        <input class="link-input" type="text" v-model="selectedImage.width" placeholder="100%" ref="widthInput" @blur='updateNode("width", selectedImage.width)'/>
+                        <label for="heightInput">Height</label>
+                        <input class="link-input" type="text" v-model="selectedImage.height" placeholder="100%" ref="heightInput" @blur='updateNode("height", selectedImage.height)'/>
+                        <input type="submit">
+                    </template>
+                </form>
+                </div>
                 <form class="menububble__form" v-if="linkMenuIsActive" @submit.prevent="setLinkUrl(commands.link, linkUrl)">
                     <input class="link-input" type="text" v-model="linkUrl" placeholder="https://" ref="linkInput" @keydown.esc="hideLinkMenu" />
                     <v-btn small icon flat @click.stop.prevent="setLinkUrl(commands.link, null)">
@@ -117,6 +131,7 @@
                         <fluro-icon right icon="link" />
                     </v-btn>
                 </template>
+            </div>
             </div>
         </editor-menu-bubble>
         <editor-menu-bar :editor="editor" v-if="barEnabled">
@@ -148,18 +163,18 @@
                         <v-list-tile :class="{ 'active': isActive.heading({ level: 5 }) }" @click.stop.prevent="commands.heading({ level: 5 })">
                             <v-list-tile-content><span style="margin:0 !important" class="h5">Heading 5</span></v-list-tile-content>
                         </v-list-tile>
-                        <v-list-tile :class="{ 'active': isActive.typography({ level:option.level}) }" v-for="option in typographyOptions" @click.stop.prevent="commands.typography({ level:option.level })">
+                        <v-list-tile :class="{ 'active': isActive.typography({ level:option.level}) }" v-for="option in typographyOptions" @click.stop.prevent="commands.typography({ level:option.level })" :key="option.title">
                             <v-list-tile-content><span style="margin:0 !important" :class="option.level">{{option.title}}</span></v-list-tile-content>
                         </v-list-tile>
                         <!-- <template v-if="getFluroNodes().length"> -->
                         <template v-if="false">
-                            <v-list-tile @click.stop.prevent="commands.fluroNode(option)" v-for="option in getFluroNodes()">
+                            <v-list-tile @click.stop.prevent="commands.fluroNode(option)" v-for="option in getFluroNodes()" :key="option.title">
                                 <v-list-tile-content><span style="margin:0 !important" :class="option.className">{{option.title}}</span></v-list-tile-content>
                             </v-list-tile>
                         </template>
                         <!-- <template v-if="getFluroMarks().length"> -->
                         <template v-if="false">
-                            <v-list-tile @click.stop.prevent="commands.fluroMark(option)" v-for="option in getFluroMarks()">
+                            <v-list-tile @click.stop.prevent="commands.fluroMark(option)" v-for="option in getFluroMarks()" :key="option.title">
                                 <v-list-tile-content><span style="margin:0 !important" :class="option.class">{{option.title}}</span></v-list-tile-content>
                             </v-list-tile>
                         </template>
@@ -429,6 +444,8 @@ export default {
             TypographyPlugin: new Typography(),
             FluroNodePlugin: new FluroNode(),
             FluroMarkPlugin: new FluroMark(),
+            selectedImage: {},
+            selectedNode: null
         }
     },
     computed: {
@@ -463,6 +480,7 @@ export default {
         },
         hideBubble() {
             this.hideLinkMenu();
+            this.hideImageMenu();
         },
         addFluroNode(cssClass) {
             var pluginOptions = this.FluroNodePlugin.options.classes
@@ -497,6 +515,23 @@ export default {
             command({ href: url })
             this.hideLinkMenu()
             this.editor.focus()
+        },
+        showImageMenu(attrs) {
+            console.log("Image attrs",attrs)
+            this.selectedImage = attrs
+        },
+        hideImageMenu() {
+            this.selectedImage = {}
+        },
+        updateImage(command) {
+            console.log("performing Update")
+            command(this.selectedImage)  
+            this.hideImageMenu()
+            this.editor.focus()
+        },
+        updateNode(key, value) {
+            console.log("selectednode vs incoming", JSON.stringify(this.selectedNode.attrs), key, value)
+            _.set(this.selectedNode, `attrs.${key}`, value)
         },
         blurEditor($event) {
             // console.log('BLUR EDITOR')
@@ -699,6 +734,16 @@ export default {
             type: Object,
         },
     },
+    // watch: {
+    //     "selectedImage.width+selectedImage.height": function(){
+    //         console.log("New stuff", this.selectedImage, this.commands.image)
+    //         this.updateImage(this.commands.image)
+    //     },
+    //     "selectedImage": function(){
+    //         console.log("New stuff", this.selectedImage, this.commands.image)
+    //         this.updateImage(this.commands.image)
+    //     }
+    // },
     components: {
         EditorMenuBar,
         EditorContent,
@@ -941,6 +986,16 @@ export default {
             onFocus(event) {
                 self.focusEditor();
             },
+            onTransaction: ({ state }) => {
+                if(_.get(state, 'selection.node.type.name') == 'image') {
+                    this.showImageMenu(_.get(state, 'selection.node.attrs'))
+                    this.selectedNode = _.get(state, 'selection.node')
+                }
+                console.log("OnTransaction State", state)
+                // if(!_.get(this, "options.disable.bubble")) {
+                //     _.set(this, "options.disable.bubble", false)
+                // }
+            },
             // : self.focus,
         })
 
@@ -1108,11 +1163,11 @@ $color-white: #fff;
 
     .fluro-image-preview {
         max-width:100%;
-        img {
-            display:block;
-            width:100%;
-            height:auto;
-        }
+        // img {
+        //     //display:block;
+        //     //width:100%;
+        //     //height:auto;
+        // }
     }
 
     ul,

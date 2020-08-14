@@ -1,4 +1,6 @@
 import { Node, Plugin } from 'tiptap'
+import { NodeSelection } from 'prosemirror-state';
+
 
 export default class Image extends Node {
 
@@ -37,6 +39,7 @@ export default class Image extends Node {
             const { selection } = state
             const position = selection.$cursor ? selection.$cursor.pos : selection.$to.pos
             const node = type.create(attrs)
+            console.log("Logging something", attrs, node, position)
             const transaction = state.tr.insert(position, node)
             dispatch(transaction)
         }
@@ -44,7 +47,25 @@ export default class Image extends Node {
 
     get view() {
         return {
-            props: ['node', 'updateAttrs', 'view'],
+            props: ['node', 'updateAttrs', 'view', 'getPos', 'editable'],
+            methods:{ 
+                clicked(){
+                    // console.log("This was clicked")
+                    const { state } = this.view;
+                    let tr = state.tr;
+                    const selection = NodeSelection.create(state.doc, this.getPos());
+                    tr = tr.setSelection(selection);
+                    this.view.dispatch(tr);
+                },
+                onChange(event) {
+                    console.log(event)
+          
+                    // update the iframe url
+                    // this.updateAttrs({
+                    //   src: this.url,
+                    // })
+                  },
+            },
             computed: {
                 item: {
                     get() {
@@ -53,9 +74,8 @@ export default class Image extends Node {
                         return imageUrl
                     },
                     set(item) {
-                        var imageMetadata = this.$fluro.get(this.node.attrs.item)
-                        console.log("imageMetadata", imageMetadata)
-                        this.width = imageMetadata.width
+                        // var imageMetadata = this.$fluro.get(this.node.attrs.item)
+                        // console.log("imageMetadata", imageMetadata)
                         this.updateAttrs({
                             item
                         })
@@ -73,16 +93,18 @@ export default class Image extends Node {
                 },
                 height: {
                     get() {
-                        return this.node.attrs.width
+                        return this.node.attrs.height
                     },
-                    set(width) {
+                    set(height) {
                         this.updateAttrs({
-                            width
+                            height
                         })
                     }
                 },
             },
-            template: `<div class="fluro-image-preview"><img :src='item' :width='width' :height='height'/></div>`,
+            template: `<div @click.stop.prevent="clicked()" class="fluro-image-preview" ><img :src='item' :width='width' :height='height'/></div>`,
         }
     }
+
+
 }
