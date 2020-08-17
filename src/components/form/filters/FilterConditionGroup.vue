@@ -805,6 +805,13 @@ export default {
 																								type: "string",
 																								directive: "select",
 																								options: postDefinitionOptions
+																				},
+																				{
+																								title: "Title",
+																								key: "title",
+																								maximum: 1,
+																								minimum: 0,
+																								type: "string",
 																				}
 																]
 												});
@@ -971,6 +978,13 @@ export default {
 																												type: "string",
 																												directive: "select",
 																												options: teamDefinitionOptions
+																								},
+																								{
+																												title: "Title",
+																												key: "title",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "string",
 																								}
 																				]
 																});
@@ -1072,6 +1086,13 @@ export default {
 																												type: "string",
 																												directive: "select",
 																												options: teamDefinitionOptions
+																								},
+																								{
+																												title: "Title",
+																												key: "title",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "string",
 																								}
 																				]
 																});
@@ -1131,7 +1152,14 @@ export default {
 																												//  value:'there',
 																												// }],
 																												options: eventDefinitionOptions
-																								}
+																								},
+																								{
+																												title: "Title",
+																												key: "title",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "string",
+																								},
 																								// {
 																								//     title: 'Group / Room name',
 																								//     key: 'groupNames',
@@ -1227,7 +1255,8 @@ export default {
 																												type: "reference",
 																												directive: "select",
 																												options: eventTrackOptions
-																								}
+																								},
+
 																				]
 																});
 
@@ -1262,6 +1291,13 @@ export default {
 																												type: "string",
 																												directive: "select",
 																												options: interactionDefinitionOptions
+																								},
+																								{
+																												title: "Title",
+																												key: "title",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "string",
 																								}
 																				]
 																});
@@ -1333,6 +1369,20 @@ export default {
 																												minimum: 0,
 																												type: "reference",
 																												typeSelect: "mailout"
+																								},
+																								{
+																												title: "Title",
+																												key: "title",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "string",
+																								},
+																								{
+																												title: "Subject",
+																												key: "subject",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "string",
 																								}
 																				]
 																});
@@ -1408,7 +1458,14 @@ export default {
 																												type: "string",
 																												directive: "select",
 																												options: postDefinitionOptions
-																								}
+																								},
+																								{
+																								title: "Title",
+																								key: "title",
+																								maximum: 1,
+																								minimum: 0,
+																								type: "string",
+																				}
 																				]
 																});
 
@@ -1502,6 +1559,13 @@ export default {
 																								type: "string",
 																								directive: "select",
 																								options: contactDefinitionOptions
+																				},
+																				{
+																								title: "Title",
+																								key: "title",
+																								maximum: 1,
+																								minimum: 0,
+																								type: "string",
 																				}
 																];
 

@@ -27,7 +27,13 @@
                             </fluro-inline-edit>
                         </template>
                         <template v-slot:right>
-                            <template v-if="isAssetType">
+                            <!-- <template v-if="isQuery"> -->
+                                <!-- <v-btn class="mx-0 ml-2" v-if="jsonURL" :href="jsonURL" target="_blank">JSON</v-btn> -->
+                                <!-- <v-btn class="mx-0 ml-2" v-if="model._id" @click="exportCSV()">CSV</v-btn> -->
+                                <!-- <v-btn class="mx-0 ml-2" v-if="rssURL" :href="rssURL" target="_blank">RSS</v-btn> -->
+<!--  -->
+                            <!-- </template> -->
+                            <template v-if="showPadlock">
                                 <help title="Privacy Selector" body="Allows you to disable security for this content. By default websites apps and users need permission to access content in Fluro, clicking here can turn that off so that this content can be viewed on the web publicly without authentication" />
                                 <fluro-quick-privacy v-model="model" />
                                 <!-- <template v-if="model._id">
@@ -40,6 +46,7 @@
                             <!-- <pre>{{typeName}} - {{definitionName}}</pre> -->
 
                             <fluro-realm-select ref="realmSelector" v-tippy :content="`Select where this ${definitionTitle} should be stored`" v-if="typeName != 'realm'" v-model="model.realms" :type="typeName" :definition="definitionName" />
+                            
                             <fluro-tag-select class="mx-0 ml-2" v-if="typeName != 'tag'" v-model="model.tags">
                                 <help title="Tag Selector" :body="`Add tags to describe and make it easier to find this ${definitionTitle} when searching later`" />
                             </fluro-tag-select>
@@ -279,6 +286,7 @@ export default {
     },
     methods: {
 
+       
         showRealmsPopup() {
             var realmSelector = this.$refs.realmSelector;
 
@@ -685,6 +693,31 @@ export default {
         }
     },
     computed: {
+
+
+        
+
+        isQuery() {
+
+           
+            switch (this.typeName) {
+                case "query":
+                    return true;
+                    break;
+            }
+        },
+
+        
+        showPadlock() {
+
+            if(this.isAssetType) {
+                return true;
+            }
+
+            if(this.isQuery) {
+                return true;
+            }
+        },
         isAssetType() {
             switch (this.typeName) {
                 case "asset":

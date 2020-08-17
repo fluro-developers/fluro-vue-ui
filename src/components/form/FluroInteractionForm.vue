@@ -48,9 +48,7 @@
                                     </v-flex>
                                     <v-flex shrink v-if="baseAmount">
                                         <strong>
-                                            {{
-                                            formattedBaseAmount
-                                            }}
+                                            {{ formattedBaseAmount }}
                                         </strong>
                                     </v-flex>
                                 </v-layout>
@@ -70,23 +68,41 @@
                                             <h3>
                                                 {{ formattedTotal }}
                                                 <span class="muted">
-                                                    {{
-                                                    currency.toUpperCase()
-                                                    }}
+                                                    {{ currency.toUpperCase() }}
                                                 </span>
                                             </h3>
                                         </v-flex>
                                     </v-layout>
                                 </div>
                             </v-container>
-                            <v-container style="background: #fafafa" class="border-top">
-                                <h4>Card Details</h4>
-                                <fluro-content-form @errorMessages="validate" @input="modelChanged" ref="payment" :options="options" v-model="dataModel" :fields="paymentFields" />
-                            </v-container>
-                            <v-container v-if="definition.data.enableReceipt" style="background: #fafafa" class="border-top">
-                                <!-- <h5>Would you like an email receipt?</h5> -->
-                                <fluro-content-form-field @input="modelChanged" :options="options" :field="receiptInput" v-model="dataModel" />
-                            </v-container>
+                            <!-- <pre>{{selectedPaymentMethod}}</pre> -->
+                            <div class="border-top">
+                                <tabset :justified="true" v-model="selectedPaymentMethod">
+                                    <tab heading="Pay with Card" key="card" index="card">
+                                        <v-container style="background: #fafafa" class="border-top">
+                                            <h4>Card Details</h4>
+                                            <fluro-content-form @errorMessages="validate" @input="modelChanged" ref="payment" :options="options" v-model="dataModel" :fields="paymentFields" />
+                                        </v-container>
+                                        <v-container v-if="definition.data.enableReceipt" style="background: #fafafa" class="border-top">
+                                            <!-- <h5>Would you like an email receipt?</h5> -->
+                                            <fluro-content-form-field @input="modelChanged" :options="options" :field="receiptInput" v-model="dataModel" />
+                                        </v-container>
+                                    </tab>
+                                    <tab :heading="paymentMethod.title" v-for="paymentMethod in alternativePaymentMethods" :index="paymentMethod.key" :key="paymentMethod.key">
+                                        <v-container style="background: #fafafa" class="border-top">
+                                            <h4>{{paymentMethod.title}}</h4>
+                                            <!-- <pre>{{paymentMethod}}</pre> -->
+                                            <div v-html="paymentMethod.description">
+                                            </div>
+                                            <!-- <fluro-content-form @errorMessages="validate" @input="modelChanged" ref="payment" :options="options" v-model="dataModel" :fields="paymentFields" /> -->
+                                            <!-- </v-container> -->
+                                            <!-- <v-container v-if="definition.data.enableReceipt" style="background: #fafafa" class="border-top"> -->
+                                            <!-- <h5>Would you like an email receipt?</h5> -->
+                                            <!-- <fluro-content-form-field @input="modelChanged" :options="options" :field="receiptInput" v-model="dataModel" /> -->
+                                        </v-container>
+                                    </tab>
+                                </tabset>
+                            </div>
                         </div>
                         <div class="actions">
                             <template v-if="state == 'processing'">
@@ -262,6 +278,7 @@ export default {
     },
     data() {
         return {
+            selectedPaymentMethod: 'card',
             paymentReady: false,
             dataModel: JSON.parse(JSON.stringify(this.value)),
             // model: {
@@ -285,6 +302,11 @@ export default {
         this.mounted = true;
     },
     watch: {
+        selectedPaymentMethod(method) {
+            if (method != 'card') {
+                this.validate();
+            }
+        },
         state(state) {
             this.$emit("state", state);
         },
@@ -294,6 +316,22 @@ export default {
         paymentIntegration: "initializePayment"
     },
     computed: {
+        requiresCardPayment() {
+            return this.selectedPaymentMethod == 'card' || !this.selectedPaymentMethod;
+        },
+        allowAlternativePayments() {
+            return this.paymentDetails.allowAlternativePayments;
+        },
+        alternativePaymentMethods() {
+            var self = this;
+
+            if (!self.allowAlternativePayments) {
+                return []
+            }
+
+
+            return self.paymentDetails.paymentMethods || [];
+        },
 
         webMode() {
 
@@ -573,11 +611,15 @@ export default {
 
             //////////////////////////////
 
+            var paymentRequired = self.requiresCardPayment ? 1 : 0;
+
+            //////////////////////////////
+
             fields.push({
                 title: "Name on Card",
                 key: "cardName",
                 type: "string",
-                minimum: 1,
+                minimum: paymentRequired,
                 maximum: 1,
                 defaultValues: [defaultCardName]
             });
@@ -586,7 +628,7 @@ export default {
                 title: "Card Number",
                 key: "cardNumber",
                 type: "string",
-                minimum: 1,
+                minimum: paymentRequired,
                 maximum: 1,
                 defaultValues: [defaultCardNumber],
                 params: {
@@ -604,7 +646,7 @@ export default {
                 key: "cardExpMonth",
                 type: "string",
                 placeholder: "MM",
-                minimum: 1,
+                minimum: paymentRequired,
                 maximum: 1,
                 className: "xs4",
                 defaultValues: [defaultCardExpMonth]
@@ -615,7 +657,7 @@ export default {
                 key: "cardExpYear",
                 type: "string",
                 placeholder: "YYYY",
-                minimum: 1,
+                minimum: paymentRequired,
                 maximum: 1,
                 className: "xs4",
                 defaultValues: [defaultCardExpYear]
@@ -625,7 +667,7 @@ export default {
                 title: "CVN",
                 key: "cardCVC",
                 type: "string",
-                minimum: 1,
+                minimum: paymentRequired,
                 maximum: 1,
                 className: "xs4",
                 defaultValues: [defaultCardCVC]
@@ -1001,6 +1043,8 @@ export default {
             return done(null, cardDetails);
         },
         createStripeToken(done) {
+
+            console.log('Create stripe token');
             //STRIPE v2 (DEPRECATED)
             var self = this;
             var liveKey = self.paymentIntegration.publicDetails.livePublicKey;
@@ -1118,7 +1162,7 @@ export default {
             var errors = [];
             errors = errors.concat(form.errorMessages);
 
-            if (this.showPaymentForm) {
+            if (this.showPaymentForm && this.requiresCardPayment) {
                 var payment = this.$refs.payment;
                 if (payment && payment.errorMessages) {
                     errors = errors.concat(payment.errorMessages);
@@ -1154,6 +1198,8 @@ export default {
             //Reset the model
             // Vue.set(self.model, 'data', {});
 
+            self.selectedPaymentMethod = 'card';
+
             if (!hasBeenReset) {
                 hasBeenReset = true;
                 //Use the value that was input originally
@@ -1184,12 +1230,16 @@ export default {
 
             var dataModel = JSON.parse(JSON.stringify(self.dataModel));
 
+
+            // dataModel._paymentMethod = 
+
             //Remove data we don't want to send to the server
             delete dataModel.cardName;
             delete dataModel.cardNumber;
             delete dataModel.cardExpYear;
             delete dataModel.cardExpMonth;
             delete dataModel.cardCVC;
+
 
             /////////////////////////////////
 
@@ -1260,13 +1310,23 @@ export default {
             if (self.showPaymentForm) {
                 var paymentDetails = {
                     amount: self.total,
-                    email: dataModel.receiptEmail,
-                    integration: self.$fluro.utils.getStringID(self.paymentIntegration)
-                };
+                }
 
                 /////////////////////////////////
                 /////////////////////////////////
+
+                if (self.selectedPaymentMethod && self.selectedPaymentMethod != 'card') {
+                    paymentDetails.method = self.selectedPaymentMethod;
+                    return submitRequest(paymentDetails);
+                } else {
+                    paymentDetails.email = dataModel.receiptEmail;
+                    paymentDetails.integration = self.$fluro.utils.getStringID(self.paymentIntegration);
+                }
+
                 /////////////////////////////////
+                /////////////////////////////////
+
+                console.log('PAYMENT OPTIONS IS', self.selectedPaymentMethod, paymentDetails);
 
                 //Here we generate our client side tokens
                 switch (self.paymentIntegration.module) {
@@ -1395,7 +1455,7 @@ export default {
 
     }
 
-    
+
 
     .modifier {
         opacity: 0.5;

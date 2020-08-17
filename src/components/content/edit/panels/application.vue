@@ -483,7 +483,7 @@ export default {
 
 												var devices = self.$fluro.utils.arrayIDs(self.pushDevices);
 
-												self.$fluro.prompt(fields, `New Notification`, `Sending to ${devices.length} devices`)
+												self.$fluro.prompt(fields, `New Notification`, {}, `Sending to ${devices.length} devices`)
 																.then(function(answers) {
 
 

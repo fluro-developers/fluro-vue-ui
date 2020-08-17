@@ -288,6 +288,11 @@ export default {
                 background: #ccc;
             }
 
+            &:focus {
+                outline: none !important;
+            }
+
+
             &.active {
                 opacity: 1;
                 //background: #fff;

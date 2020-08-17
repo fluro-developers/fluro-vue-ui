@@ -1,7 +1,8 @@
 <template>
     <td :class="{wrap:shouldWrap, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}">
         
-        <!-- {{preValue}} -->
+        
+        <!-- <pre>{{formattedArray}}</pre> -->
         <!-- <pre>{{rawValue}} {{column.key}}</pre> -->
         <div :class="{'wrap-limit':shouldWrap}">
             <component v-if="renderer" :data="preValue" :is="renderer" :row="row" :column="column" />
@@ -34,6 +35,7 @@
                             <!-- <fluro-icon type="team" /> {{entry.title}} <span class="text-muted" v-if="entry.position">{{entry.position}}</span> -->
                         </template>
                         <template v-else>
+                            <!-- TESTING {{entry}} -->
                             <fluro-icon v-if="entry._type" :type="entry._type" /> {{entry.title}} <template v-if="entry.appendage"> - {{entry.appendage}}</template>
                         </template>
                     </a>
@@ -200,6 +202,8 @@ export default {
             }
 
             var subFieldPath = self.subField;
+
+            // console.log('APPENDAGE', self.column)
             if (subFieldPath) {
                 if (subFieldPath[0] == '.') {
                     subFieldPath = subFieldPath.slice(1);
@@ -222,12 +226,12 @@ export default {
 
 
 
-
-
                         //Check if we have a title or name
 
                         var title = (entry.title || entry.name);
-                        var appendage = self.subField ? _.get(entry, subFieldPath) : null;
+                        var appendage = entry.appendage || self.subField ? _.get(entry, subFieldPath) : null;
+
+
 
                         //If it's a reference
                         if (entry._id) {
