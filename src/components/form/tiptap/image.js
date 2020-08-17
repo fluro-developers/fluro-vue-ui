@@ -1,4 +1,6 @@
 import { Node, Plugin } from 'tiptap'
+import { NodeSelection } from 'prosemirror-state';
+
 
 export default class Image extends Node {
 
@@ -11,15 +13,23 @@ export default class Image extends Node {
             inline: true,
             attrs: {
                 item: {},
+                width: {
+                    default: '100%'
+                },
+                height: {
+                    default: '100%'
+                }
             },
             group: 'inline',
             draggable: true,
             parseDOM: [{
-                tag: 'fluro-image[item]',
+                tag: 'fluro-image[item][width][height]',
                 getAttrs: dom => ({
                     item: dom.getAttribute('item'),
+                    width: dom.getAttribute('width'),
+                    height: dom.getAttribute('height')
                 }),
-            }, ],
+            },],
             toDOM: node => ['fluro-image', node.attrs],
         }
     }
@@ -29,6 +39,7 @@ export default class Image extends Node {
             const { selection } = state
             const position = selection.$cursor ? selection.$cursor.pos : selection.$to.pos
             const node = type.create(attrs)
+            console.log("Logging something", attrs, node, position)
             const transaction = state.tr.insert(position, node)
             dispatch(transaction)
         }
@@ -36,23 +47,64 @@ export default class Image extends Node {
 
     get view() {
         return {
-          props: ['node', 'updateAttrs', 'view'],
-          computed: {
-            item: {
-              get() {
-                //return `https://api.fluro.io/get/${this.node.attrs.item}`
-                return this.$fluro.asset.imageUrl(this.node.attrs.item)
-              },
-              set(item) {
-                this.updateAttrs({
-                  item,
-                })
-              },
+            props: ['node', 'updateAttrs', 'view', 'getPos', 'editable'],
+            methods:{ 
+                clicked(){
+                    // console.log("This was clicked")
+                    const { state } = this.view;
+                    let tr = state.tr;
+                    const selection = NodeSelection.create(state.doc, this.getPos());
+                    tr = tr.setSelection(selection);
+                    this.view.dispatch(tr);
+                },
+                onChange(event) {
+                    console.log(event)
+          
+                    // update the iframe url
+                    // this.updateAttrs({
+                    //   src: this.url,
+                    // })
+                  },
             },
-          },
-          template: `<div class="fluro-image-preview"><img :src='item' /></div>`,
+            computed: {
+                item: {
+                    get() {
+                        //return `https://api.fluro.io/get/${this.node.attrs.item}`
+                        var imageUrl = this.$fluro.asset.imageUrl(this.node.attrs.item)
+                        return imageUrl
+                    },
+                    set(item) {
+                        // var imageMetadata = this.$fluro.get(this.node.attrs.item)
+                        // console.log("imageMetadata", imageMetadata)
+                        this.updateAttrs({
+                            item
+                        })
+                    },
+                },
+                width: {
+                    get() {
+                        return this.node.attrs.width
+                    },
+                    set(width) {
+                        this.updateAttrs({
+                            width
+                        })
+                    }
+                },
+                height: {
+                    get() {
+                        return this.node.attrs.height
+                    },
+                    set(height) {
+                        this.updateAttrs({
+                            height
+                        })
+                    }
+                },
+            },
+            template: `<div @click.stop.prevent="clicked()" class="fluro-image-preview" ><img :src='item' :width='width' :height='height'/></div>`,
         }
-      }
+    }
 
 
 }
