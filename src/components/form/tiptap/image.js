@@ -38,10 +38,16 @@ export default class Image extends Node {
         return attrs => (state, dispatch) => {
             const { selection } = state
             const position = selection.$cursor ? selection.$cursor.pos : selection.$to.pos
+            console.log("TYPE", type, "SELECTION", selection)
             const node = type.create(attrs)
             console.log("Logging something", attrs, node, position)
-            const transaction = state.tr.insert(position, node)
-            dispatch(transaction)
+            if (_.get(selection, "node.type.name")=="image") {
+                const transaction = state.tr.replaceSelectionWith(node)
+                dispatch(transaction)
+            } else {
+                const transaction = state.tr.insert(position, node)
+                dispatch(transaction)
+            }
         }
     }
 
@@ -58,7 +64,7 @@ export default class Image extends Node {
                     this.view.dispatch(tr);
                 },
                 onChange(event) {
-                    console.log(event)
+                    console.log("OnChange", event)
           
                     // update the iframe url
                     // this.updateAttrs({
