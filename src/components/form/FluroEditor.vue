@@ -76,14 +76,15 @@
                         </v-btn>
                     </template>
                 </div>
+                <!-- Menu for Images -->
                 <div v-if="selectedImage">
                     <form class="menububble__form" v-if="isActive.image()" @submit.prevent.stop="commands.image(selectedImage)">
-                        <template v-if="selectedImage">
-                            <label for="widthInput">Width</label>
-                            <input class="link-input" type="text" v-model="selectedImage.width" placeholder="100%" ref="widthInput" @blur='commands.image(selectedImage)'/>
-                            <label for="heightInput">Height</label>
-                            <input class="link-input" type="text" v-model="selectedImage.height" placeholder="100%" ref="heightInput" @blur='commands.image(selectedImage)'/>
-                            <input type="submit">
+                        <template>
+                            <label for="widthInput">&nbsp;Width:&nbsp;</label>
+                            <input class="number-input" type="text" v-model="selectedImage.width" placeholder="100%" ref="widthInput" @blur='commands.image(selectedImage)'/>
+                            <label for="heightInput">&nbsp;&nbsp;Height:&nbsp;</label>
+                            <input class="number-input" type="text" v-model="selectedImage.height" placeholder="100%" ref="heightInput" @blur='commands.image(selectedImage)'/>&nbsp;
+                            <!-- <input type="submit" value="Update"> -->
                         </template>
                     </form>
                 </div>
@@ -471,14 +472,14 @@ export default {
             this.editor.focus()
         },
         showImageMenu(attrs) {
-            console.log("Image attrs",attrs)
+            //console.log("Image attrs",attrs)
             this.selectedImage = attrs
         },
         hideImageMenu() {
             this.selectedImage = {}
         },
         updateImage(command) {
-            console.log("performing Update")
+            //console.log("performing Update")
             command(this.selectedImage)  
             this.hideImageMenu()
             this.editor.focus()
@@ -547,7 +548,7 @@ export default {
                 }, true)
                 .then(function(res) {
                     if(res) {
-                        console.log("res", res)
+                        //console.log("res", res)
                         var first = _.first(res)
 
                         command({
@@ -940,7 +941,7 @@ export default {
                 if(_.get(state, 'selection.node.type.name') == 'image') {
                     this.showImageMenu(_.get(state, 'selection.node.attrs'))
                 }
-                console.log("OnTransaction State", state)
+                //console.log("OnTransaction State", state)
                 // if(!_.get(this, "options.disable.bubble")) {
                 //     _.set(this, "options.disable.bubble", false)
                 // }
@@ -1082,6 +1083,8 @@ $color-white: #fff;
             color: #fff;
         }
 
+
+        .number-input,
         .link-input {
             background: rgba(#fff, 0.2);
             color: #fff;
@@ -1106,6 +1109,10 @@ $color-white: #fff;
                 color: rgba(#fff, 0.5);
             }
         }
+
+        .number-input {
+            width: 40px;
+        }
     }
 
     
@@ -1114,9 +1121,8 @@ $color-white: #fff;
         max-width:100%;
         img {
             display:block;
-            // width:100%;
-            // height:auto;
         }
+        display: inline-block;
     }
 
     ul,

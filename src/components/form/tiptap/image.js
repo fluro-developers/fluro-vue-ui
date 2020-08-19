@@ -54,7 +54,6 @@ export default class Image extends Node {
             props: ['node', 'updateAttrs', 'view', 'getPos', 'editable'],
             methods:{ 
                 clicked(){
-                    // console.log("This was clicked")
                     const { state } = this.view;
                     let tr = state.tr;
                     const selection = NodeSelection.create(state.doc, this.getPos());
@@ -63,23 +62,16 @@ export default class Image extends Node {
                 },
                 onChange(event) {
                     console.log("OnChange", event)
-          
-                    // update the iframe url
-                    // this.updateAttrs({
-                    //   src: this.url,
-                    // })
+
                   },
             },
             computed: {
                 item: {
                     get() {
-                        //return `https://api.fluro.io/get/${this.node.attrs.item}`
                         var imageUrl = this.$fluro.asset.imageUrl(this.node.attrs.item)
                         return imageUrl
                     },
                     set(item) {
-                        // var imageMetadata = this.$fluro.get(this.node.attrs.item)
-                        // console.log("imageMetadata", imageMetadata)
                         this.updateAttrs({
                             item
                         })
