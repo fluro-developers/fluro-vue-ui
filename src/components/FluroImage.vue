@@ -151,7 +151,7 @@ export default {
         styles.height = "auto";
       }
 
-      console.log("w", w, "h", h, styles.width, styles.height);
+
       return styles;
     },
     computedWidth() {

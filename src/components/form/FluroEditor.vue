@@ -1,91 +1,92 @@
 <template>
     <div class="fluro-editor">
-        <editor-menu-bubble v-if="bubbleEnabled" :editor="editor" @hide="hideBubble" :keep-in-bounds="keepInBounds" v-slot="{ commands, isActive, getMarkAttrs, menu }">
+        <editor-menu-bubble v-if="bubbleEnabled " :editor="editor" @hide="hideBubble" :keep-in-bounds="keepInBounds" v-slot="{ commands, isActive, getMarkAttrs, menu }">
             <div class="menububble" :class="{ 'active': menu.isActive }" :style="`left: ${menu.left}px; bottom: ${menu.bottom}px;`">
-                <v-menu attach v-if="isEnabled('formats')" transition="slide-y-transition" offset-y>
-                    <template v-slot:activator="{ on }">
-                        <v-btn small icon :disabled="showSource" v-on="on">
-                            <fluro-icon icon="paragraph" />
+                <div v-if="!selectedImage">
+                    <v-menu attach v-if="isEnabled('formats')" transition="slide-y-transition" offset-y>
+                        <template v-slot:activator="{ on }">
+                            <v-btn small icon :disabled="showSource" v-on="on">
+                                <fluro-icon icon="paragraph" />
+                            </v-btn>
+                        </template>
+                        <div style="overflow: auto; width:300px; max-height:300px;">
+                            <v-list>
+                                <v-list-tile :class="{ 'active': isActive.heading({ level: 1 }) }" @click.stop.prevent="commands.heading({ level: 1 })">
+                                    <v-list-tile-content><span style="margin:0 !important" class="h1">Heading 1</span></v-list-tile-content>
+                                </v-list-tile>
+                                <v-list-tile :class="{ 'active': isActive.heading({ level: 2 }) }" @click.stop.prevent="commands.heading({ level: 2 })">
+                                    <v-list-tile-content><span style="margin:0 !important" class="h2">Heading 2</span></v-list-tile-content>
+                                </v-list-tile>
+                                <v-list-tile :class="{ 'active': isActive.heading({ level: 3 }) }" @click.stop.prevent="commands.heading({ level: 3 })">
+                                    <v-list-tile-content><span style="margin:0 !important" class="h3">Heading 3</span></v-list-tile-content>
+                                </v-list-tile>
+                                <v-list-tile :class="{ 'active': isActive.heading({ level: 4 }) }" @click.stop.prevent="commands.heading({ level: 4 })">
+                                    <v-list-tile-content><span style="margin:0 !important" class="h4">Heading 4</span></v-list-tile-content>
+                                </v-list-tile>
+                                <v-list-tile :class="{ 'active': isActive.heading({ level: 5 }) }" @click.stop.prevent="commands.heading({ level: 5 })">
+                                    <v-list-tile-content><span style="margin:0 !important" class="h5">Heading 5</span></v-list-tile-content>
+                                </v-list-tile>
+                                <v-list-tile :class="{ 'active': isActive.typography({ level:option.level}) }" v-for="option in typographyOptions" :key="option.title" @click.stop.prevent="commands.typography({ level:option.level })">
+                                    <v-list-tile-content><span style="margin:0 !important" :class="option.level">{{option.title}}</span></v-list-tile-content>
+                                </v-list-tile>
+                                <template v-if="false">
+                                    <v-list-tile @click.stop.prevent="commands.fluroNode(option)" v-for="option in getFluroNodes()" :key="option.title">
+                                        <v-list-tile-content><span style="margin:0 !important" :class="option.className">{{option.title}}</span></v-list-tile-content>
+                                    </v-list-tile>
+                                </template>
+                                <!-- <template v-if="getFluroMarks().length"> -->
+                                <template v-if="false">
+                                    <v-list-tile @click.stop.prevent="commands.fluroMark(option)" v-for="option in getFluroMarks()" :key="option.title">
+                                        <v-list-tile-content><span style="margin:0 !important" :class="option.class">{{option.title}}</span></v-list-tile-content>
+                                    </v-list-tile>
+                                </template>
+                            </v-list>
+                        </div>
+                    </v-menu>
+                    <v-btn icon small flat :class="{ 'active': isActive.bold() }" @click.stop.prevent="commands.bold">
+                        <fluro-icon icon="bold" />
+                    </v-btn>
+                    <v-btn icon small flat :class="{ 'active': isActive.italic() }" @click.stop.prevent="commands.italic">
+                        <fluro-icon icon="italic" />
+                    </v-btn>
+                    <v-btn icon small flat :class="{ 'active': isActive.underline() }" @click.stop.prevent="commands.underline">
+                        <fluro-icon icon="underline" />
+                    </v-btn>
+                    <template v-if="isEnabled('alignment')">
+                        <v-btn icon small flat :class="{ 'active': isActive.alignment({ textAlign: 'left' }) }" @click.stop.prevent="commands.alignment({ textAlign: 'left' })">
+                            <fluro-icon icon="align-left" />
+                        </v-btn>
+                        <v-btn icon small flat :class="{ 'active': isActive.alignment({ textAlign: 'center' }) }" @click.stop.prevent="commands.alignment({ textAlign: 'center' })">
+                            <fluro-icon icon="align-center" />
+                        </v-btn>
+                        <v-btn icon small flat :class="{ 'active': isActive.alignment({ textAlign: 'right' }) }" @click.stop.prevent="commands.alignment({ textAlign: 'right' })">
+                            <fluro-icon icon="align-right" />
                         </v-btn>
                     </template>
-                    <div style="overflow: auto; width:300px; max-height:300px;">
-                        <v-list>
-                            <v-list-tile :class="{ 'active': isActive.heading({ level: 1 }) }" @click.stop.prevent="commands.heading({ level: 1 })">
-                                <v-list-tile-content><span style="margin:0 !important" class="h1">Heading 1</span></v-list-tile-content>
-                            </v-list-tile>
-                            <v-list-tile :class="{ 'active': isActive.heading({ level: 2 }) }" @click.stop.prevent="commands.heading({ level: 2 })">
-                                <v-list-tile-content><span style="margin:0 !important" class="h2">Heading 2</span></v-list-tile-content>
-                            </v-list-tile>
-                            <v-list-tile :class="{ 'active': isActive.heading({ level: 3 }) }" @click.stop.prevent="commands.heading({ level: 3 })">
-                                <v-list-tile-content><span style="margin:0 !important" class="h3">Heading 3</span></v-list-tile-content>
-                            </v-list-tile>
-                            <v-list-tile :class="{ 'active': isActive.heading({ level: 4 }) }" @click.stop.prevent="commands.heading({ level: 4 })">
-                                <v-list-tile-content><span style="margin:0 !important" class="h4">Heading 4</span></v-list-tile-content>
-                            </v-list-tile>
-                            <v-list-tile :class="{ 'active': isActive.heading({ level: 5 }) }" @click.stop.prevent="commands.heading({ level: 5 })">
-                                <v-list-tile-content><span style="margin:0 !important" class="h5">Heading 5</span></v-list-tile-content>
-                            </v-list-tile>
-                            <v-list-tile :class="{ 'active': isActive.typography({ level:option.level}) }" v-for="option in typographyOptions" :key="option.title" @click.stop.prevent="commands.typography({ level:option.level })">
-                                <v-list-tile-content><span style="margin:0 !important" :class="option.level">{{option.title}}</span></v-list-tile-content>
-                            </v-list-tile>
-                            <template v-if="false">
-                                <v-list-tile @click.stop.prevent="commands.fluroNode(option)" v-for="option in getFluroNodes()" :key="option.title">
-                                    <v-list-tile-content><span style="margin:0 !important" :class="option.className">{{option.title}}</span></v-list-tile-content>
-                                </v-list-tile>
-                            </template>
-                            <!-- <template v-if="getFluroMarks().length"> -->
-                            <template v-if="false">
-                                <v-list-tile @click.stop.prevent="commands.fluroMark(option)" v-for="option in getFluroMarks()" :key="option.title">
-                                    <v-list-tile-content><span style="margin:0 !important" :class="option.class">{{option.title}}</span></v-list-tile-content>
-                                </v-list-tile>
-                            </template>
-                        </v-list>
-                    </div>
-                </v-menu>
-                <v-btn icon small flat :class="{ 'active': isActive.bold() }" @click.stop.prevent="commands.bold">
-                    <fluro-icon icon="bold" />
-                </v-btn>
-                <v-btn icon small flat :class="{ 'active': isActive.italic() }" @click.stop.prevent="commands.italic">
-                    <fluro-icon icon="italic" />
-                </v-btn>
-                <v-btn icon small flat :class="{ 'active': isActive.underline() }" @click.stop.prevent="commands.underline">
-                    <fluro-icon icon="underline" />
-                </v-btn>
-                <template v-if="isEnabled('alignment')">
-                    <v-btn icon small flat :class="{ 'active': isActive.alignment({ textAlign: 'left' }) }" @click.stop.prevent="commands.alignment({ textAlign: 'left' })">
-                        <fluro-icon icon="align-left" />
-                    </v-btn>
-                    <v-btn icon small flat :class="{ 'active': isActive.alignment({ textAlign: 'center' }) }" @click.stop.prevent="commands.alignment({ textAlign: 'center' })">
-                        <fluro-icon icon="align-center" />
-                    </v-btn>
-                    <v-btn icon small flat :class="{ 'active': isActive.alignment({ textAlign: 'right' }) }" @click.stop.prevent="commands.alignment({ textAlign: 'right' })">
-                        <fluro-icon icon="align-right" />
-                    </v-btn>
-                </template>
-                <!-- turn this off administratively -->
-                <!-- <div v-if="false"> -->
-                <form class="menububble__form" v-if="isActive.image()" @submit.prevent.stop="commands.image(selectedImage)">
-                    <template v-if="selectedImage">
-                        <label for="widthInput">Width</label>
-                        <input class="link-input" type="text" v-model="selectedImage.width" placeholder="100%" ref="widthInput" @blur='commands.image(selectedImage)'/>
-                        <label for="heightInput">Height</label>
-                        <input class="link-input" type="text" v-model="selectedImage.height" placeholder="100%" ref="heightInput" @blur='commands.image(selectedImage)'/>
-                        <input type="submit">
+                    <form class="menububble__form" v-if="linkMenuIsActive" @submit.prevent="setLinkUrl(commands.link, linkUrl)">
+                        <input class="link-input" type="text" v-model="linkUrl" placeholder="https://" ref="linkInput" @keydown.esc="hideLinkMenu" />
+                        <v-btn small icon flat @click.stop.prevent="setLinkUrl(commands.link, null)">
+                            <fluro-icon icon="unlink" />
+                        </v-btn>
+                    </form>
+                    <template v-else>
+                        <v-btn small flat :class="{ 'active': isActive.link() }" @click.stop.prevent="showLinkMenu(getMarkAttrs('link'))">
+                            <span>{{ isActive.link() ? 'Update Link' : 'Link'}}</span>
+                            <fluro-icon right icon="link" />
+                        </v-btn>
                     </template>
-                </form>
-                <!-- </div> -->
-                <form class="menububble__form" v-if="linkMenuIsActive" @submit.prevent="setLinkUrl(commands.link, linkUrl)">
-                    <input class="link-input" type="text" v-model="linkUrl" placeholder="https://" ref="linkInput" @keydown.esc="hideLinkMenu" />
-                    <v-btn small icon flat @click.stop.prevent="setLinkUrl(commands.link, null)">
-                        <fluro-icon icon="unlink" />
-                    </v-btn>
-                </form>
-                <template v-else>
-                    <v-btn small flat :class="{ 'active': isActive.link() }" @click.stop.prevent="showLinkMenu(getMarkAttrs('link'))">
-                        <span>{{ isActive.link() ? 'Update Link' : 'Link'}}</span>
-                        <fluro-icon right icon="link" />
-                    </v-btn>
-                </template>
+                </div>
+                <div v-if="selectedImage">
+                    <form class="menububble__form" v-if="isActive.image()" @submit.prevent.stop="commands.image(selectedImage)">
+                        <template v-if="selectedImage">
+                            <label for="widthInput">Width</label>
+                            <input class="link-input" type="text" v-model="selectedImage.width" placeholder="100%" ref="widthInput" @blur='commands.image(selectedImage)'/>
+                            <label for="heightInput">Height</label>
+                            <input class="link-input" type="text" v-model="selectedImage.height" placeholder="100%" ref="heightInput" @blur='commands.image(selectedImage)'/>
+                            <input type="submit">
+                        </template>
+                    </form>
+                </div>
             </div>
         </editor-menu-bubble>
         <editor-menu-bar :editor="editor" v-if="barEnabled">
