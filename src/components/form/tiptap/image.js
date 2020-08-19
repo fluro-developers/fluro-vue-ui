@@ -38,9 +38,7 @@ export default class Image extends Node {
         return attrs => (state, dispatch) => {
             const { selection } = state
             const position = selection.$cursor ? selection.$cursor.pos : selection.$to.pos
-            console.log("TYPE", type, "SELECTION", selection)
             const node = type.create(attrs)
-            console.log("Logging something", attrs, node, position)
             if (_.get(selection, "node.type.name")=="image") {
                 const transaction = state.tr.replaceSelectionWith(node)
                 dispatch(transaction)
