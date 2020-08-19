@@ -42,8 +42,12 @@
             </div>
         </editor-floating-menu> -->
         
+<<<<<<< HEAD
         <editor-menu-bubble v-if="bubbleEnabled" :editor="editor" @hide="hideBubble" :keep-in-bounds="keepInBounds" v-slot="{ commands, isActive, getMarkAttrs, menu, getNodeAttrs, nodes }">
             <!-- <div><pre>Nodes: {{nodes}}</pre> -->
+=======
+        <editor-menu-bubble v-if="bubbleEnabled" :editor="editor" @hide="hideBubble" :keep-in-bounds="keepInBounds" v-slot="{ commands, isActive, getMarkAttrs, menu }">
+>>>>>>> a688c75c2b311eef9559d0b8600a32c4ae401932
             <div class="menububble" :class="{ 'active': menu.isActive }" :style="`left: ${menu.left}px; bottom: ${menu.bottom}px;`">
                 <v-menu attach v-if="isEnabled('formats')" transition="slide-y-transition" offset-y>
                     <template v-slot:activator="{ on }">
@@ -108,17 +112,17 @@
                     </v-btn>
                 </template>
                 <!-- turn this off administratively -->
-                <div v-if="false">
-                <form class="menububble__form" v-if="isActive.image()" @submit.prevent.stop="updateImage(commands.image)">
+                <!-- <div v-if="false"> -->
+                <form class="menububble__form" v-if="isActive.image()" @submit.prevent.stop="commands.image(selectedImage)">
                     <template v-if="selectedImage">
                         <label for="widthInput">Width</label>
-                        <input class="link-input" type="text" v-model="selectedImage.width" placeholder="100%" ref="widthInput" @blur='updateNode("width", selectedImage.width)'/>
+                        <input class="link-input" type="text" v-model="selectedImage.width" placeholder="100%" ref="widthInput" @blur='commands.image(selectedImage)'/>
                         <label for="heightInput">Height</label>
-                        <input class="link-input" type="text" v-model="selectedImage.height" placeholder="100%" ref="heightInput" @blur='updateNode("height", selectedImage.height)'/>
+                        <input class="link-input" type="text" v-model="selectedImage.height" placeholder="100%" ref="heightInput" @blur='commands.image(selectedImage)'/>
                         <input type="submit">
                     </template>
                 </form>
-                </div>
+                <!-- </div> -->
                 <form class="menububble__form" v-if="linkMenuIsActive" @submit.prevent="setLinkUrl(commands.link, linkUrl)">
                     <input class="link-input" type="text" v-model="linkUrl" placeholder="https://" ref="linkInput" @keydown.esc="hideLinkMenu" />
                     <v-btn small icon flat @click.stop.prevent="setLinkUrl(commands.link, null)">
@@ -131,7 +135,10 @@
                         <fluro-icon right icon="link" />
                     </v-btn>
                 </template>
+<<<<<<< HEAD
             <!-- </div> -->
+=======
+>>>>>>> a688c75c2b311eef9559d0b8600a32c4ae401932
             </div>
         </editor-menu-bubble>
         <editor-menu-bar :editor="editor" v-if="barEnabled">
@@ -445,7 +452,6 @@ export default {
             FluroNodePlugin: new FluroNode(),
             FluroMarkPlugin: new FluroMark(),
             selectedImage: {},
-            selectedNode: null
         }
     },
     computed: {
@@ -528,10 +534,6 @@ export default {
             command(this.selectedImage)  
             this.hideImageMenu()
             this.editor.focus()
-        },
-        updateNode(key, value) {
-            console.log("selectednode vs incoming", JSON.stringify(this.selectedNode.attrs), key, value)
-            _.set(this.selectedNode, `attrs.${key}`, value)
         },
         blurEditor($event) {
             // console.log('BLUR EDITOR')
@@ -989,7 +991,6 @@ export default {
             onTransaction: ({ state }) => {
                 if(_.get(state, 'selection.node.type.name') == 'image') {
                     this.showImageMenu(_.get(state, 'selection.node.attrs'))
-                    this.selectedNode = _.get(state, 'selection.node')
                 }
                 console.log("OnTransaction State", state)
                 // if(!_.get(this, "options.disable.bubble")) {
