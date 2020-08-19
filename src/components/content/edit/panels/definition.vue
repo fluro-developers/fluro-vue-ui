@@ -177,7 +177,6 @@
 																																																																<fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.includeTickets" v-model="model" />
 																																																																<fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.confirmationMessage" v-model="model" />
 																																																																<fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.confirmationTemplate" v-model="model" />
-
 																																																																<fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.notifyContacts" v-model="model" />
 																																																																<fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.enableReceipt" v-model="model" />
 																																																												</template>
@@ -306,8 +305,9 @@
 																																												<template v-slot:form="{formFields, fieldHash, model, update, options}">
 																																																<fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.allowAlternativePayments" v-model="model" />
 																																																<fluro-panel margin v-if="model.allowAlternativePayments">
-																																																				<tabset v-model="alternativePaymentMethodIndex">
-																																																								<tab :heading="method.title" v-for="(method, index) in alternativePaymentMethods">
+																																																	<!-- v-model="alternativePaymentMethodIndex" -->
+																																																				<tabset >
+																																																								<tab :heading="method.title" :key="method.guid" v-for="(method, index) in alternativePaymentMethods">
 																																																												<fluro-panel-body>
 																																																																<fluro-content-form v-model="alternativePaymentMethods[index]" :fields="paymentMethodFields" />
 																																																																<!-- <template v-slot:form="{formFields, fieldHash, model, update, options}"> -->
@@ -852,7 +852,11 @@ export default {
 												setTimeout(function() {
 
 
-																self.alternativePaymentMethodIndex = 0;
+																if (self.model.paymentDetails.paymentMethods && self.model.paymentDetails.paymentMethods.length) {
+
+																				var lastMethod = _.last(self.model.paymentDetails.paymentMethods);
+																				self.alternativePaymentMethodIndex = lastMethod.guid;//`${lastMethod.key}-${lastMethod.guid}`;
+																}
 												})
 												// }
 								},
@@ -864,17 +868,19 @@ export default {
 																title: 'Other Method',
 																key: '',
 																description: '',
+																guid: self.$fluro.utils.guid(),
 												}
 
 												if (!self.model.paymentDetails.paymentMethods) {
 																self.$set(self.model.paymentDetails, 'paymentMethods', []);
 												}
 
+												console.log('New Payment MEthod', newMethod);
 												self.model.paymentDetails.paymentMethods.push(newMethod);
+
 												setTimeout(function() {
-
-
-																self.alternativePaymentMethodIndex = self.model.paymentDetails.paymentMethods.length - 1;
+																var lastMethod = _.last(self.model.paymentDetails.paymentMethods);
+																self.alternativePaymentMethodIndex = lastMethod.guid;//`${lastMethod.key}-${lastMethod.guid}`;
 												})
 								},
 				},
@@ -1316,7 +1322,15 @@ export default {
 								},
 								alternativePaymentMethods: {
 												get() {
-																return this.model.paymentDetails.paymentMethods || [];
+
+																var self = this;
+
+																_.each(self.model.paymentDetails.paymentMethods, function(method) {
+																				if (!method.guid) {
+																								self.$set(method, 'guid', self.$fluro.utils.guid());
+																				}
+																})
+																return self.model.paymentDetails.paymentMethods || [];
 												},
 												set(payload) {
 																this.$set(this.model.paymentDetails, 'paymentMethods', payload);
@@ -1548,31 +1562,30 @@ export default {
 																description: `Add a customised thank you message to be shown in the confirmation email. \n Please note that event registrations will already contain key dates, locations and directions underneath this message`,
 												})
 
-											
 
-													addField('confirmationTemplate', {
+
+												addField('confirmationTemplate', {
 																title: 'Confirmation Mailout Template',
 																minimum: 0,
 																maximum: 1,
 																type: 'reference',
 																params: {
 																				restrictType: 'definition',
-																				searchInheritable:true,
+																				searchInheritable: true,
 																				referenceFilter: {
 																								operator: 'and',
-																								filters: [
-																								{
-																												key: 'parentType',
-																												comparator: '==',
-																												value: 'mailout',
-																								},
-																								// {
-																								// 				key: 'systemOnly',
-																								// 				comparator: '==',
-																								// 				value:true,
-																								// },
+																								filters: [{
+																																key: 'parentType',
+																																comparator: '==',
+																																value: 'mailout',
+																												},
+																												// {
+																												// 				key: 'systemOnly',
+																												// 				comparator: '==',
+																												// 				value:true,
+																												// },
 
-																								
+
 
 																								]
 																				},

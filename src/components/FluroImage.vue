@@ -36,16 +36,16 @@ export default {
 								},
 								item: [String, Object],
 								width: {
-												type: Number,
+												type: [Number, String],
 								},
 								height: {
-												type: Number,
+												type: [Number, String],
 								},
 								imageWidth: {
-												type: Number,
+												type: [Number, String],
 								},
 								imageHeight: {
-												type: Number,
+												type: [Number, String],
 								},
 								from: {
 												type: [String, Object],
@@ -119,27 +119,49 @@ export default {
 																backgroundImage: this.backgroundImage,
 												}
 
-												if (this.width) {
-																styles.width = `${this.width}px`;
+												///////////////////////////
+
+												var w = String(this.width).trim();
+												var h = String(this.height).trim();
+
+												var numericRegex = /^\d+$/;
+
+												///////////////////////////
+
+												var widthIsNumeric = numericRegex.test(w);
+												var heightIsNumeric = numericRegex.test(h);
+
+												///////////////////////////
+
+												if (w) {
+																if (widthIsNumeric) {
+																				styles.width = `${Number(w)}px`;
+																} else {
+																				styles.width = w;
+																}
+
 												} else {
 																styles.width = '100%';
 												}
 
-												if (this.height) {
-																styles.height = `${this.height}px`;
+												if (h) {
+																if (heightIsNumeric) {
+																				styles.height = `${Number(h)}px`;
+																} else {
+																				styles.height = h;
+																}
+
 												} else {
 																styles.height = 'auto';
 												}
 
-
-
 												return styles;
 								},
 								computedWidth() {
-												return this.imageWidth || this.loadedImageWidth || this.width || _.get(this.item, 'width') || 1;
+												return parseFloat(this.imageWidth || this.loadedImageWidth || this.width || _.get(this.item, 'width') || 1).toFixed(4);
 								},
 								computedHeight() {
-												return this.imageHeight || this.loadedImageHeight || this.height || _.get(this.item, 'height') || 1;
+												return parseFloat(this.imageHeight || this.loadedImageHeight || this.height || _.get(this.item, 'height') || 1).toFixed(4);
 								},
 								aspectRatio() {
 												return (this.computedHeight / this.computedWidth * 100);

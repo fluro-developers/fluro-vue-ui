@@ -43,7 +43,7 @@
         </editor-floating-menu> -->
         
         <editor-menu-bubble v-if="bubbleEnabled" :editor="editor" @hide="hideBubble" :keep-in-bounds="keepInBounds" v-slot="{ commands, isActive, getMarkAttrs, menu, getNodeAttrs, nodes }">
-            <div><pre>Nodes: {{nodes}}</pre>
+            <!-- <div><pre>Nodes: {{nodes}}</pre> -->
             <div class="menububble" :class="{ 'active': menu.isActive }" :style="`left: ${menu.left}px; bottom: ${menu.bottom}px;`">
                 <v-menu attach v-if="isEnabled('formats')" transition="slide-y-transition" offset-y>
                     <template v-slot:activator="{ on }">
@@ -131,7 +131,7 @@
                         <fluro-icon right icon="link" />
                     </v-btn>
                 </template>
-            </div>
+            <!-- </div> -->
             </div>
         </editor-menu-bubble>
         <editor-menu-bar :editor="editor" v-if="barEnabled">
@@ -1163,11 +1163,11 @@ $color-white: #fff;
 
     .fluro-image-preview {
         max-width:100%;
-        // img {
-        //     //display:block;
-        //     //width:100%;
-        //     //height:auto;
-        // }
+        img {
+            display:block;
+            width:100%;
+            height:auto;
+        }
     }
 
     ul,

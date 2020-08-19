@@ -717,6 +717,12 @@ export default {
             if(this.isQuery) {
                 return true;
             }
+
+            switch (this.typeName) {
+                case "event":
+                    return true;
+                    break;
+            }
         },
         isAssetType() {
             switch (this.typeName) {

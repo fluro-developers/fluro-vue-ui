@@ -15,7 +15,7 @@
                     <v-layout>
                         <template v-if="!options.noCancel">
                             <v-btn block @click="dismiss()">
-                                Cancel
+                                {{cancelText}}
                             </v-btn>
                             <v-spacer />
                         </template>
@@ -48,6 +48,9 @@ export default {
         },
         confirmText() {
             return this.options.confirmText ? this.options.confirmText : 'Confirm';
+        },
+        cancelText() {
+            return this.options.cancelText ? this.options.cancelText : 'Cancel';
         },
         title() {
             return this.options.title;
