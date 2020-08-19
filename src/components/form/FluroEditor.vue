@@ -42,12 +42,9 @@
             </div>
         </editor-floating-menu> -->
         
-<<<<<<< HEAD
+
         <editor-menu-bubble v-if="bubbleEnabled" :editor="editor" @hide="hideBubble" :keep-in-bounds="keepInBounds" v-slot="{ commands, isActive, getMarkAttrs, menu, getNodeAttrs, nodes }">
-            <!-- <div><pre>Nodes: {{nodes}}</pre> -->
-=======
-        <editor-menu-bubble v-if="bubbleEnabled" :editor="editor" @hide="hideBubble" :keep-in-bounds="keepInBounds" v-slot="{ commands, isActive, getMarkAttrs, menu }">
->>>>>>> a688c75c2b311eef9559d0b8600a32c4ae401932
+     
             <div class="menububble" :class="{ 'active': menu.isActive }" :style="`left: ${menu.left}px; bottom: ${menu.bottom}px;`">
                 <v-menu attach v-if="isEnabled('formats')" transition="slide-y-transition" offset-y>
                     <template v-slot:activator="{ on }">
