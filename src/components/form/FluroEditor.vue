@@ -1,56 +1,10 @@
 <template>
     <div class="fluro-editor">
-        <!-- <pre>{{model}}</pre> -->
-        <!-- <editor-floating-menu :editor="editor">
-            <div slot-scope="{ commands, isActive, menu }" class="editor__floating-menu" :class="{ 'is-active': menu.isActive }" :style="`top: ${menu.top}px`">
-                <v-menu :fixed="true" transition="slide-y-transition" offset-y>
-                    <template v-slot:activator="{ on }">
-                        <v-btn small icon :disabled="showSource" v-on="on">
-                            H1
-                        </v-btn>
-                    </template>
-                    <v-list>
-                        <v-list-tile :class="{ 'active': isActive.heading({ level: 1 }) }" @click.stop.prevent="commands.heading({ level: 1 })">
-                            <v-list-tile-content><span class="h1">Heading 1</span></v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile :class="{ 'active': isActive.heading({ level: 2 }) }" @click.stop.prevent="commands.heading({ level: 2 })">
-                            <v-list-tile-content><span class="h2">Heading 2</span></v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile :class="{ 'active': isActive.heading({ level: 3 }) }" @click.stop.prevent="commands.heading({ level: 3 })">
-                            <v-list-tile-content><span class="h3">Heading 3</span></v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile :class="{ 'active': isActive.heading({ level: 4 }) }" @click.stop.prevent="commands.heading({ level: 4 })">
-                            <v-list-tile-content><span class="h4">Heading 4</span></v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile :class="{ 'active': isActive.heading({ level: 5 }) }" @click.stop.prevent="commands.heading({ level: 5 })">
-                            <v-list-tile-content><span class="h5">Heading 5</span></v-list-tile-content>
-                        </v-list-tile>
-                    </v-list>
-                </v-menu>
-                <button class="menubar__button" :class="{ 'is-active': isActive.bullet_list() }" @click.stop.prevent="commands.bullet_list">
-                    <icon name="ul" />
-                </button>
-                <button class="menubar__button" :class="{ 'is-active': isActive.ordered_list() }" @click.stop.prevent="commands.ordered_list">
-                    <icon name="ol" />
-                </button>
-                <button class="menubar__button" :class="{ 'is-active': isActive.blockquote() }" @click.stop.prevent="commands.blockquote">
-                    <icon name="quote" />
-                </button>
-                <button class="menubar__button" :class="{ 'is-active': isActive.code_block() }" @click.stop.prevent="commands.code_block">
-                    <icon name="code" />
-                </button>
-            </div>
-        </editor-floating-menu> -->
-        
-
-
-        <editor-menu-bubble v-if="bubbleEnabled" :editor="editor" @hide="hideBubble" :keep-in-bounds="keepInBounds" v-slot="{ commands, isActive, getMarkAttrs, menu, getNodeAttrs, nodes }">
-   
+        <editor-menu-bubble v-if="bubbleEnabled" :editor="editor" @hide="hideBubble" :keep-in-bounds="keepInBounds" v-slot="{ commands, isActive, getMarkAttrs, menu }">
             <div class="menububble" :class="{ 'active': menu.isActive }" :style="`left: ${menu.left}px; bottom: ${menu.bottom}px;`">
                 <v-menu attach v-if="isEnabled('formats')" transition="slide-y-transition" offset-y>
                     <template v-slot:activator="{ on }">
                         <v-btn small icon :disabled="showSource" v-on="on">
-                            <!-- H1 -->
                             <fluro-icon icon="paragraph" />
                         </v-btn>
                     </template>
@@ -74,7 +28,6 @@
                             <v-list-tile :class="{ 'active': isActive.typography({ level:option.level}) }" v-for="option in typographyOptions" :key="option.title" @click.stop.prevent="commands.typography({ level:option.level })">
                                 <v-list-tile-content><span style="margin:0 !important" :class="option.level">{{option.title}}</span></v-list-tile-content>
                             </v-list-tile>
-                            <!-- <template v-if="getFluroNodes().length"> -->
                             <template v-if="false">
                                 <v-list-tile @click.stop.prevent="commands.fluroNode(option)" v-for="option in getFluroNodes()" :key="option.title">
                                     <v-list-tile-content><span style="margin:0 !important" :class="option.className">{{option.title}}</span></v-list-tile-content>
@@ -1160,8 +1113,8 @@ $color-white: #fff;
         max-width:100%;
         img {
             display:block;
-            width:100%;
-            height:auto;
+            // width:100%;
+            // height:auto;
         }
     }
 
