@@ -540,6 +540,24 @@ export default {
 												}
 								},
 
+								ticketTypes: {
+												get() {
+																var self = this;
+
+																if (!self.isContactType) {
+																				return Promise.resolve([]);
+																}
+																return new Promise(function(resolve, reject) {
+
+																				return self.$fluro.api.get(`/tickets/filter/types`)
+																				.then(function(res) {
+																					return resolve(res.data);
+																				})
+																								.catch(reject);
+																})
+												}
+								},
+
 								rosterTypes: {
 												get() {
 																var self = this;
@@ -818,6 +836,7 @@ export default {
 
 												//////////////////////////////////////////////////
 
+												var ticketOptions = [];
 												var eventDefinitionOptions = [];
 												var contactDefinitionOptions = [];
 												var eventTrackOptions = [];
@@ -912,6 +931,18 @@ export default {
 																								text: track.title,
 																								value: track._id,
 																								_id: track._id,
+																				};
+																})
+												);
+
+												//////////////////////////////////////////////////
+												ticketOptions = ticketOptions.concat(
+																_.map(self.ticketTypes, function(title) {
+																				return {
+																								title,
+																								name:title,
+																								text:title,
+																								value:title,
 																				};
 																})
 												);
@@ -1038,7 +1069,9 @@ export default {
 																												key: "title",
 																												maximum: 1,
 																												minimum: 0,
-																												type: "string"
+																												type: "string",
+																												directive: "select",
+																												options: ticketOptions
 																								},
 																								{
 																												title: "Collected",
@@ -1460,12 +1493,12 @@ export default {
 																												options: postDefinitionOptions
 																								},
 																								{
-																								title: "Title",
-																								key: "title",
-																								maximum: 1,
-																								minimum: 0,
-																								type: "string",
-																				}
+																												title: "Title",
+																												key: "title",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "string",
+																								}
 																				]
 																});
 

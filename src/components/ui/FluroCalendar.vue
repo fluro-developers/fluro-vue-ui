@@ -39,7 +39,7 @@
             <v-calendar ref="calendar" v-model="nowDateString" :type="calendar.value" color="primary">
                 <template v-slot:day="{ date }">
                     <template v-for="event in eventMap[date]">
-                        <div class="event-month-item" @click="selectEvent([event])">
+                        <div class="event-month-item" @click="selectEvent(event)">
                             <!-- <pre>{{event}}</pre> -->
                             <v-layout>
                                 <v-flex shrink>
@@ -101,7 +101,7 @@
                             <v-layout>
                                 <!-- <pre v-for="event in block[block.time].events">{{event}}</pre> -->
                                 <v-flex :key="event.guid" v-for="event in block.events">
-                                    <div class="event-calendar-pill" @click="selectEvent([event])" :style="{backgroundColor:event.bgColor, borderColor:event.borderColor, color:event.color, height: minutesToPixels(event.duration) + 'px'}">
+                                    <div class="event-calendar-pill" @click="selectEvent(event)" :style="{backgroundColor:event.bgColor, borderColor:event.borderColor, color:event.color, height: minutesToPixels(event.duration) + 'px'}">
                                         {{event.title}}
                                         <div class="time" v-if="!event.multiDay">{{event.startDate | formatDate('h:mma')}} </div>
                                         <div class="time" v-else>{{event | readableEventDate}} </div>
@@ -541,9 +541,9 @@ export default {
 
 
         },
-        selectEvent(events) {
-            console.log('SELECT', this, events)
-            this.$emit('select', events);
+        selectEvent(event) {
+            console.log('SELECT', this, event)
+            this.$emit('select', event);
         },
         today() {
             this.now = new Date();
