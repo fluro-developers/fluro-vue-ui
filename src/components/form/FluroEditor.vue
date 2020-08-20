@@ -1029,7 +1029,7 @@ export default {
                     this.selectedNode = _.get(state, 'selection.node')
                 }
                 
-                console.log(JSON.stringify(this.selectedNode))
+                // console.log(JSON.stringify(this.selectedNode))
                 //console.log("OnTransaction State", state)
                 // if(!_.get(this, "options.disable.bubble")) {
                 //     _.set(this, "options.disable.bubble", false)
