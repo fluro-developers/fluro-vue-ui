@@ -2,7 +2,7 @@
     <div class="fluro-editor">
         <editor-menu-bubble v-if="bubbleEnabled " :editor="editor" @hide="hideBubble" :keep-in-bounds="keepInBounds" v-slot="{ commands, isActive, getMarkAttrs, menu }">
             <div class="menububble" :class="{ 'active': menu.isActive }" :style="`left: ${menu.left}px; bottom: ${menu.bottom}px;`">
-                <div v-if="!selectedImage">
+                <div v-if="!specialityBubbleMenu">
                     <v-menu attach v-if="isEnabled('formats')" transition="slide-y-transition" offset-y>
                         <template v-slot:activator="{ on }">
                             <v-btn small icon :disabled="showSource" v-on="on">
@@ -76,17 +76,43 @@
                         </v-btn>
                     </template>
                 </div>
-                <!-- Menu for Images -->
-                <div v-if="selectedImage">
-                    <form class="menububble__form" v-if="isActive.image()" @submit.prevent.stop="commands.image(selectedImage)">
-                        <template>
-                            <label for="widthInput">&nbsp;Width:&nbsp;</label>
-                            <input class="number-input" type="text" v-model="selectedImage.width" placeholder="100%" ref="widthInput" @blur='commands.image(selectedImage)'/>
-                            <label for="heightInput">&nbsp;&nbsp;Height:&nbsp;</label>
-                            <input class="number-input" type="text" v-model="selectedImage.height" placeholder="100%" ref="heightInput" @blur='commands.image(selectedImage)'/>&nbsp;
-                            <!-- <input type="submit" value="Update"> -->
-                        </template>
-                    </form>
+                <!-- Menu for Images and Videos -->
+                <div v-if="specialityBubbleMenu">
+                    <template v-if="selectedImage">
+                        <div v-if="proEnabled">
+                            <form class="menububble__form" v-if="isActive.image()" @submit.prevent.stop="commands.image(selectedImage)">
+                                <template v-if="constrain">
+                                    <label for="widthInput">&nbsp;Scale:&nbsp;</label>
+                                    <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @change='scaleImage(commands.image)'/>
+                                </template>
+                                <template v-else>
+                                    <label for="widthInput">&nbsp;Width:&nbsp;</label>
+                                    <input class="number-input" type="text" v-model="selectedImage.width" placeholder="100%" ref="widthInput" @change='commands.image(selectedImage)'/>
+                                    <label for="heightInput">&nbsp;&nbsp;Height:&nbsp;</label>
+                                    <input class="number-input" type="text" v-model="selectedImage.height" placeholder="100%" ref="heightInput" @change='commands.image(selectedImage)'/>&nbsp;
+                                    <!-- <input type="submit" value="Update"> -->
+                                </template>
+                                <v-btn icon small flat @click.stop.prevent="constrain=!constrain">
+                                    <fluro-icon :icon="constrain?`lock`:`lock-open`" />
+                                </v-btn>
+                            </form>
+                        </div>
+                        <div v-if="!proEnabled">
+                            <form class="menububble__form" v-if="isActive.image()" @submit.prevent.stop="commands.image(selectedImage)">
+                                <template>
+                                    <label for="widthInput">&nbsp;Size:&nbsp;</label>
+                                    <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @change='scaleImage(commands.image)'/>
+                                    <!-- <input type="submit" value="Update"> -->
+                                </template>
+                            </form>
+                        </div>
+                    </template>
+                    <template v-if="selectedVideo">
+                        <form class="menububble__form" v-if="isActive.video()" @submit.prevent.stop="commands.video(selectedVideo)">
+                            <label for="widthInput">&nbsp;Scale:&nbsp;</label>
+                            <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @change='scaleVideo(commands.video)'/>
+                        </form>
+                    </template>
                 </div>
             </div>
         </editor-menu-bubble>
@@ -384,6 +410,7 @@ import {
 export default {
     data() {
         return {
+            constrain: true,
             keepInBounds: true,
             showSource: false,
             model: this.value,
@@ -401,10 +428,24 @@ export default {
             FluroNodePlugin: new FluroNode(),
             FluroMarkPlugin: new FluroMark(),
             selectedImage: {},
+            selectedVideo: {},
+            scale: 100,
         }
     },
     computed: {
-
+        objectScale: {
+            get() {
+                return this.scale
+            },
+            set(scale) {
+                scale = Math.min(scale, 200)
+                scale = Math.max(scale, 0)
+                this.scale = scale
+            }
+        },
+        proEnabled() {
+            return this.$pro && this.$pro.enabled 
+        },
         typographyOptions() {
             return this.TypographyPlugin.options.levels;
         },
@@ -420,6 +461,9 @@ export default {
         showSuggestions() {
             return this.query || this.hasResults
         },
+        specialityBubbleMenu() {
+            return this.selectedImage || this.selectedVideo
+        }
     },
     methods: {
         isEnabled(tool) {
@@ -484,6 +528,28 @@ export default {
             this.hideImageMenu()
             this.editor.focus()
         },
+        scaleImage(command) {
+            this.selectedImage.width = `${this.scale}%`
+            this.selectedImage.height = 'auto'
+            command(this.selectedImage)  
+        }, 
+        showVideoMenu(attrs) {
+            //console.log("Image attrs",attrs)
+            this.selectedVideo = attrs
+        },
+        hideVideoMenu() {
+            this.selectedVideo = {}
+        },
+        updateVideo(command) {
+            //console.log("performing Update")
+            command(this.selectedVideo)  
+            this.hideVideoMenu()
+            this.editor.focus()
+        },
+        scaleVideo(command) {
+            this.selectedVideo.width = `${this.scale}%`
+            command(this.selectedVideo)  
+        }, 
         blurEditor($event) {
             // console.log('BLUR EDITOR')
             this.$emit('blur');
@@ -540,6 +606,8 @@ export default {
         showImagePrompt(command) {
             var self = this;
 
+            self.hideImageMenu()
+
             self.$fluro.global.select('image', { 
                 title: 'Select an Image/Photo', 
                 minimum: 1, 
@@ -553,8 +621,8 @@ export default {
 
                         command({
                             item: first._id, 
-                            width:first.width,
-                            height: first.height,
+                            width: "100%",
+                            height: "auto",
                             } 
                         )
                     }
@@ -579,7 +647,7 @@ export default {
                 .then(function(res) {
                     if(res) {
                         var first = _.first(res)
-                        command( {item: first._id} )
+                        command( {item: first._id, width: "100%"} )
                     }
                 }
             )
@@ -940,6 +1008,9 @@ export default {
             onTransaction: ({ state }) => {
                 if(_.get(state, 'selection.node.type.name') == 'image') {
                     this.showImageMenu(_.get(state, 'selection.node.attrs'))
+                }
+                if(_.get(state, 'selection.node.type.name') == 'video') {
+                    this.showVideoMenu(_.get(state, 'selection.node.attrs'))
                 }
                 //console.log("OnTransaction State", state)
                 // if(!_.get(this, "options.disable.bubble")) {
