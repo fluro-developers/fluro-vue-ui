@@ -36,6 +36,8 @@ export default class Video extends Node {
             const node = type.create(attrs)
             if (_.get(selection, "node.type.name")=="video") {
                 const transaction = state.tr.replaceSelectionWith(node)
+                // selection = NodeSelection.create(state.doc, position);
+                // transaction.setSelection(selection)
                 dispatch(transaction)
             } else {
                 const transaction = state.tr.insert(position, node)
@@ -79,7 +81,7 @@ export default class Video extends Node {
                     }
                 },
             },
-            template: `<div @click.stop.prevent="clicked()"><img :src='item' :width='width' :height='auto'/></div>`,
+            template: `<div class="fluro-video-preview" @click.stop.prevent="clicked()"><img :src='item' :width='width' height='auto'/></div>`,
         }
     }
 
