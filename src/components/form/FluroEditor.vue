@@ -82,14 +82,14 @@
                         <div v-if="proEnabled">
                             <form class="menububble__form" v-if="isActive.image()" @submit.prevent.stop="commands.image(selectedImage)">
                                 <template v-if="constrain">
-                                    <label for="widthInput">&nbsp;Scale:&nbsp;</label>
-                                    <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @change='scaleImage(commands.image)'/>
+                                    <label for="widthInput">&nbsp;Scale&nbsp;</label>
+                                    <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @input='scaleImage(commands.image)'/>
                                 </template>
                                 <template v-else>
-                                    <label for="widthInput">&nbsp;Width:&nbsp;</label>
-                                    <input class="number-input" type="text" v-model="selectedImage.width" placeholder="100%" ref="widthInput" @change='commands.image(selectedImage)'/>
-                                    <label for="heightInput">&nbsp;&nbsp;Height:&nbsp;</label>
-                                    <input class="number-input" type="text" v-model="selectedImage.height" placeholder="100%" ref="heightInput" @change='commands.image(selectedImage)'/>&nbsp;
+                                    <label for="widthInput">&nbsp;Width&nbsp;</label>
+                                    <input class="number-input" type="text" v-model="selectedImage.width" placeholder="100%" ref="widthInput" @input='commands.image(selectedImage)'/>
+                                    <label for="heightInput">&nbsp;&nbsp;Height&nbsp;</label>
+                                    <input class="number-input" type="text" v-model="selectedImage.height" placeholder="100%" ref="heightInput" @input='commands.image(selectedImage)'/>&nbsp;
                                     <!-- <input type="submit" value="Update"> -->
                                 </template>
                                 <v-btn icon small flat @click.stop.prevent="constrain=!constrain">
@@ -100,8 +100,8 @@
                         <div v-if="!proEnabled">
                             <form class="menububble__form" v-if="isActive.image()" @submit.prevent.stop="commands.image(selectedImage)">
                                 <template>
-                                    <label for="widthInput">&nbsp;Size:&nbsp;</label>
-                                    <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @change='scaleImage(commands.image)'/>
+                                    <label for="widthInput">&nbsp;Size&nbsp;</label>
+                                    <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @input='scaleImage(commands.image)'/>
                                     <!-- <input type="submit" value="Update"> -->
                                 </template>
                             </form>
@@ -110,7 +110,7 @@
                     <template v-if="selectedVideo">
                         <form class="menububble__form" v-if="isActive.video()" @submit.prevent.stop="commands.video(selectedVideo)">
                             <label for="widthInput">&nbsp;Scale:&nbsp;</label>
-                            <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @change='scaleVideo(commands.video)'/>
+                            <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @input='scaleVideo(commands.video)'/>
                         </form>
                     </template>
                 </div>
@@ -478,8 +478,9 @@ export default {
             console.log('SELECT EDITOR')
         },
         hideBubble() {
+            console.log('Hide bubble')
             this.hideLinkMenu();
-            this.hideImageMenu();
+            // this.hideImageMenu();
         },
         addFluroNode(cssClass) {
             var pluginOptions = this.FluroNodePlugin.options.classes
@@ -520,6 +521,7 @@ export default {
             this.selectedImage = attrs
         },
         hideImageMenu() {
+            console.log('HIDE IMAGEMENU()')
             this.selectedImage = {}
         },
         updateImage(command) {
@@ -606,6 +608,7 @@ export default {
         showImagePrompt(command) {
             var self = this;
 
+            console.log('SHOW IMAGE - Check here if we are already')
             self.hideImageMenu()
 
             self.$fluro.global.select('image', { 

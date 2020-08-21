@@ -103,6 +103,7 @@
                 </v-btn>
             </div>
         </div>
+        
     </div>
 </template>
 <script>
@@ -212,8 +213,8 @@ export default {
             array.push({
                 title: "Status",
                 key: "status",
-                renderer:StatusCell,
-                shrink:true,
+                renderer: StatusCell,
+                shrink: true,
             });
 
             // <v-list-tile @click="editInPlace(item)" v-if="editInPlaceEnabled(item)">
@@ -381,18 +382,27 @@ export default {
 
             // if(this.multiple) {
 
+
             if (initialValue) {
                 if (_.isArray(initialValue) && initialValue.length) {
                     //this.selection = initialValue;//.slice();
-                    this.setSelection(initialValue);
+                    return this.setSelection(initialValue);
                 } else {
                     if (initialValue._id || initialValue.length) {
                         // console.log('CHECKINT WHAT IS IT', typeof initialValue)
-                        this.setSelection([initialValue]);
+                        return this.setSelection([initialValue]);
                         //this.selection = [initialValue];
                     }
                 }
             }
+
+
+            if (this.selection && this.selection.length) {
+                //Reset to empty array
+                console.log('Reset to empty')
+                this.setSelection([]);
+            }
+
         },
         create() {
             // console.log('SHOW MODAL', this.$fluro.modal)
@@ -483,10 +493,10 @@ export default {
     watch: {
         value(v) {
             var self = this;
-            // console.log('Value changed', v);
+            console.log('VALUE CHANGED');
             self.setInitialValue(v);
         },
-        terms: function(searchTerms) {
+        terms(searchTerms) {
             var self = this;
             self.results = [];
 
@@ -514,6 +524,10 @@ export default {
                     });
             }
         },
+        selection(s) {
+            console.log('SELECTION CHANGED')
+            this.model = s;
+        },
         model: function() {
             var self = this;
 
@@ -522,6 +536,8 @@ export default {
             } else {
                 this.$emit("input", self.model);
             }
+
+            console.log('MODEL CHANGED')
         },
         minimum(min) {
             console.log("CHANGESSS", min);

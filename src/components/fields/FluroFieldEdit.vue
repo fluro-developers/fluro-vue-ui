@@ -205,6 +205,15 @@
                         <fluro-content-form-field v-if="model.type == 'reference'" :field="fields.referenceType" v-model="model.params" />
                         <fluro-content-form-field :field="fields.directive" v-model="model" />
                         <fluro-content-form-field v-if="model.directive == 'app-size-select'" :field="fields.sizeAxis" v-model="model.params" />
+                        <template v-if="isAssetType">
+                          <fluro-content-form-field :field="fields.realm" v-model="model.params" />
+                          <!-- <pre>{{model.title}} {{model.params}}</pre> -->
+                            <!-- <fluro-content-form v-model="model.params" :fields="uploadFields"> -->
+                                <!-- <template v-slot:form="{formFields, fieldHash, model, update, options}"> -->
+                                    <!-- <fluro-content-form-field :field="fieldHash.enabled" v-model="model" /> -->
+                                <!-- </template> -->
+                            <!-- </fluro-content-form> -->
+                        </template>
                         <template v-if="model.directive == 'app-field-key-select' || model.directive == 'app-field-select'">
                             <fluro-content-form-field :field="fields.referenceType" v-model="model.params" />
                         </template>
@@ -903,6 +912,31 @@ export default {
         }
     },
     computed: {
+
+        isAssetType() {
+            var isReference = (this.model.type == 'reference');
+            if (!isReference) {
+                return;
+            }
+
+            var referenceType = this.modelParams.restrictType;
+
+            switch (referenceType) {
+                case 'audio':
+                case 'video':
+                case 'asset':
+                case 'image':
+                    return true;
+                    break;
+                default:
+                    return this.directive == 'upload';
+                    break;
+            }
+
+        },
+        modelParams() {
+            return this.model.params || {};
+        },
         fullPath() {
             return this.model.key;
         },
@@ -1027,6 +1061,7 @@ export default {
                     break;
             }
         },
+       
         ticketingFields() {
             var self = this;
 
@@ -1458,6 +1493,8 @@ export default {
                 type: "boolean"
             });
 
+
+
             addField("storeData", {
                 key: "storeData",
                 title: "Terms / Conditions Details",
@@ -1783,10 +1820,9 @@ export default {
                 minimum: 0,
                 maximum: 1,
                 type: "string",
-                directive:'select',
+                directive: 'select',
                 defaultValues: ['active'],
-                options: [
-                  {
+                options: [{
                         name: 'Reactivate if archived (Default)',
                         value: 'active',
                     },
@@ -1831,6 +1867,26 @@ export default {
                     restrictType: "realm"
                 }
             });
+
+
+            addField("realm", {
+                title: `Upload to realm`,
+                description: `Select the realm that files should be uploaded to.`,
+                minimum: 0,
+                maximum: 1,
+                type: "reference",
+                // directive: "realm-select",
+                params: {
+                    restrictType: "realm"
+                }
+            });
+
+
+
+
+
+
+
 
             addField("targetHouseholdRole", {
                 title: "Household Role",

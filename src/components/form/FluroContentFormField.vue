@@ -2049,12 +2049,19 @@ export default {
 																				break;
 
 																case 'upload':
+
 																				switch (self.context) {
 																								case 'admin':
 																												directive = 'content-select';
 																												break;
-																												// case 'builder':
+
+																								case 'publicForm':
+																								case 'builder':
+																												break;
 																								default:
+																												if (!self.webMode && window.adminPanelMode) {
+																																directive = 'content-select';
+																												}
 																												break;
 
 																				}
@@ -2720,8 +2727,17 @@ export default {
 
 								},
 								filedrop(e) {
-												console.log('FILEDROP AT FIELD LEVEL')
+
+
+
+
 												var self = this;
+
+
+
+
+
+
 												if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
 																e.preventDefault();
 																e.stopPropagation();
@@ -2744,6 +2760,10 @@ export default {
 												self.touch();
 
 												if (!list.length) return;
+
+
+
+
 
 
 
@@ -2879,10 +2899,21 @@ export default {
 												///////////////////////////////////////////////////
 
 												////console.log('Get the upload realm id', self.field);
-												var uploadRealmID = _.chain(self.field)
+												var uploadRealmID;
+												var uploadRealmIDs = _.chain(self.field)
 																.get('params.realm')
-																.first()
+																// .first()
 																.value();
+
+												if (_.isArray(uploadRealmIDs)) {
+																if (uploadRealmIDs.length) {
+																				uploadRealmID = uploadRealmIDs[0];
+																}
+												} else if (_.isString(uploadRealmIDs)) {
+																uploadRealmID = uploadRealmIDs;
+												} else if (_.isObject(uploadRealmIDs)) {
+																uploadRealmID = self.$fluro.utils.getStringID(uploadRealmIDs);
+												}
 
 												///////////////////////////////////////////////////
 

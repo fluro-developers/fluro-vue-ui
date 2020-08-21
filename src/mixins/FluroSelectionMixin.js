@@ -96,6 +96,7 @@ export default {
 
 
 
+
             // self.selection.length = 0;
             // _.each(array, function(item) {
             //     self.$set(self.selection, self.selection.length, item);
