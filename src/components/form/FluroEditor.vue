@@ -82,14 +82,14 @@
                         <div v-if="proEnabled">
                             <form class="menububble__form" v-if="isActive.image()" @submit.prevent.stop="commands.image(selectedImage)">
                                 <template v-if="constrain">
-                                    <label for="widthInput">&nbsp;Scale&nbsp;</label>
-                                    <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @input='scaleImage(commands.image)'/>
+                                    <label for="widthInput">&nbsp;Scale:&nbsp;</label>
+                                    <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @change='scaleImage(commands.image)' @blur='commands.image(selectedImage)'/>
                                 </template>
                                 <template v-else>
-                                    <label for="widthInput">&nbsp;Width&nbsp;</label>
-                                    <input class="number-input" type="text" v-model="selectedImage.width" placeholder="100%" ref="widthInput" @input='commands.image(selectedImage)'/>
-                                    <label for="heightInput">&nbsp;&nbsp;Height&nbsp;</label>
-                                    <input class="number-input" type="text" v-model="selectedImage.height" placeholder="100%" ref="heightInput" @input='commands.image(selectedImage)'/>&nbsp;
+                                    <label for="widthInput">&nbsp;Width:&nbsp;</label>
+                                    <input class="number-input" type="text" v-model="selectedImage.width" placeholder="100%" ref="widthInput" @change='commands.image(selectedImage)' @blur='commands.image(selectedImage)'/>
+                                    <label for="heightInput">&nbsp;&nbsp;Height:&nbsp;</label>
+                                    <input class="number-input" type="text" v-model="selectedImage.height" placeholder="100%" ref="heightInput" @change='commands.image(selectedImage)' @blur='commands.image(selectedImage)'/>&nbsp;
                                     <!-- <input type="submit" value="Update"> -->
                                 </template>
                                 <v-btn icon small flat @click.stop.prevent="constrain=!constrain">
@@ -100,8 +100,8 @@
                         <div v-if="!proEnabled">
                             <form class="menububble__form" v-if="isActive.image()" @submit.prevent.stop="commands.image(selectedImage)">
                                 <template>
-                                    <label for="widthInput">&nbsp;Size&nbsp;</label>
-                                    <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @input='scaleImage(commands.image)'/>
+                                    <label for="widthInput">&nbsp;Size:&nbsp;</label>
+                                    <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @change='scaleImage(commands.image)' @blur='commands.image(selectedImage)'/>
                                     <!-- <input type="submit" value="Update"> -->
                                 </template>
                             </form>
@@ -110,7 +110,7 @@
                     <template v-if="selectedVideo">
                         <form class="menububble__form" v-if="isActive.video()" @submit.prevent.stop="commands.video(selectedVideo)">
                             <label for="widthInput">&nbsp;Scale:&nbsp;</label>
-                            <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @input='scaleVideo(commands.video)'/>
+                            <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @change='scaleVideo(commands.video)'  @blur='commands.video(selectedVideo)'/>
                         </form>
                     </template>
                 </div>
@@ -430,6 +430,7 @@ export default {
             selectedImage: {},
             selectedVideo: {},
             scale: 100,
+            selectedNode: {},
         }
     },
     computed: {
@@ -478,9 +479,9 @@ export default {
             console.log('SELECT EDITOR')
         },
         hideBubble() {
-            console.log('Hide bubble')
             this.hideLinkMenu();
-            // this.hideImageMenu();
+            this.hideImageMenu();
+            this.hideVideoMenu();
         },
         addFluroNode(cssClass) {
             var pluginOptions = this.FluroNodePlugin.options.classes
@@ -518,11 +519,14 @@ export default {
         },
         showImageMenu(attrs) {
             //console.log("Image attrs",attrs)
+            if(attrs.width.includes("%")) {
+                this.scale = parseInt(attrs.width)
+            } 
             this.selectedImage = attrs
         },
         hideImageMenu() {
-            console.log('HIDE IMAGEMENU()')
             this.selectedImage = {}
+            this.selectedNode = null
         },
         updateImage(command) {
             //console.log("performing Update")
@@ -533,14 +537,18 @@ export default {
         scaleImage(command) {
             this.selectedImage.width = `${this.scale}%`
             this.selectedImage.height = 'auto'
-            command(this.selectedImage)  
+            this.selectedNode.height = this.selectedImage.height
+            this.selectedNode.width = this.selectedImage.width
         }, 
         showVideoMenu(attrs) {
-            //console.log("Image attrs",attrs)
+            if(attrs.width.includes("%")) {
+                this.scale = parseInt(attrs.width)
+            } 
             this.selectedVideo = attrs
         },
         hideVideoMenu() {
             this.selectedVideo = {}
+            this.selectedNode = null
         },
         updateVideo(command) {
             //console.log("performing Update")
@@ -550,7 +558,7 @@ export default {
         },
         scaleVideo(command) {
             this.selectedVideo.width = `${this.scale}%`
-            command(this.selectedVideo)  
+            this.selectedNode.width =  this.selectedVideo.width 
         }, 
         blurEditor($event) {
             // console.log('BLUR EDITOR')
@@ -608,7 +616,6 @@ export default {
         showImagePrompt(command) {
             var self = this;
 
-            console.log('SHOW IMAGE - Check here if we are already')
             self.hideImageMenu()
 
             self.$fluro.global.select('image', { 
@@ -1008,13 +1015,21 @@ export default {
             onFocus(event) {
                 self.focusEditor();
             },
-            onTransaction: ({ state }) => {
+            onTransaction: (data) => {
+                // console.log(data)
+                var state = data.state
+                var transaction = data.transaction
+
                 if(_.get(state, 'selection.node.type.name') == 'image') {
                     this.showImageMenu(_.get(state, 'selection.node.attrs'))
+                    this.selectedNode = _.get(state, 'selection.node')
                 }
                 if(_.get(state, 'selection.node.type.name') == 'video') {
                     this.showVideoMenu(_.get(state, 'selection.node.attrs'))
+                    this.selectedNode = _.get(state, 'selection.node')
                 }
+                
+                // console.log(JSON.stringify(this.selectedNode))
                 //console.log("OnTransaction State", state)
                 // if(!_.get(this, "options.disable.bubble")) {
                 //     _.set(this, "options.disable.bubble", false)
@@ -1190,13 +1205,32 @@ $color-white: #fff;
     }
 
     
-
+    .fluro-video-preview,
     .fluro-image-preview {
         max-width:100%;
         img {
             display:block;
         }
         display: inline-block;
+    }
+
+    .fluro-video-preview {
+        position: relative;
+    }
+
+    .fluro-video-preview::before {
+        content: '\f4e1';
+        z-index: 5;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate( -50%, -50% );
+        padding: 3px 15px 3px 25px;
+        color: white;
+        font-family: 'FontAwesome';
+        font-size: 50px !important;
+        background-color: rgba(23, 35, 34, 0.75);
+        border-radius: 5px 5px 5px 5px;
     }
 
     ul,
