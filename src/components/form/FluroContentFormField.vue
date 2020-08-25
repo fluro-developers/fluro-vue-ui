@@ -211,6 +211,7 @@
 																</v-input>
 												</template>
 												<template v-else-if="renderer == 'datepicker'">
+													<!-- DATE PICKER -->
 																<v-menu :fixed="true" v-model="modal" min-width="290px" :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
 																				<template v-slot:activator="{ on }">
 																								<v-text-field @blur="touch()" @focus="focussed()" :outline="showOutline" :success="success" :value="formattedDate" :persistent-hint="true" :hint="dateHint" :label="displayLabel" prepend-inner-icon="event" readonly v-on="on"></v-text-field>
@@ -225,6 +226,7 @@
 																								</v-date-picker>
 																				</v-card>
 																</v-menu>
+																<!-- <pre>{{fieldModel}}</pre> -->
 												</template>
 												<template v-else-if="renderer == 'timepicker'">
 																<v-dialog ref="dialog" v-model="modal" persistent :return-value.sync="fieldModel" lazy full-width width="290px">
@@ -1509,6 +1511,8 @@ export default {
 												set(value) {
 
 																var self = this;
+
+																// console.log('SET VALUE EMIT PLEASE', self.field.title)
 
 																if (self.field.type == 'void') {
 																				// //console.log('Void set nothing')

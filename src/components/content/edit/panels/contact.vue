@@ -468,6 +468,8 @@
 																																				<fluro-realm-select @input="updateSheetRealms($event, sheet.definitionName)" v-model="sheet.dataModel.realms" type="contactdetail" :definition="sheet.definitionName" />
 																																</v-input>
 																																<fluro-content-form :options="formOptions" @input="updateSheet($event, sheet.definitionName)" v-model="sheet.dataModel.data" :fields="sheet.fields" />
+																												
+<!-- <pre>{{sheet.dataModel.data}}</pre> -->
 																												</constrain>
 																								</v-container>
 																				</flex-column-body>
@@ -599,13 +601,13 @@ export default {
 
 								createPersona() {
 												var self = this;
-												
+
 												self.$fluro.global.create('persona', {
-													template:{
-														firstName:self.model.preferredName || self.model.firstName,
-														lastName:self.model.lastName,
-														collectionEmail:self.model.emails[0],
-													},
+																template: {
+																				firstName: self.model.preferredName || self.model.firstName,
+																				lastName: self.model.lastName,
+																				collectionEmail: self.model.emails[0],
+																},
 												})
 
 								},
@@ -779,7 +781,7 @@ export default {
 												self.$set(self.model.details[definitionName], 'data', entry);
 
 
-
+												console.log('UPDATE SHEET', definitionName, entry)
 
 												// if (!self.model.details[definitionName]) {
 												//     self.$set(self.model.details, definitionName, {
@@ -883,6 +885,7 @@ export default {
 																}
 
 																///////////////////////////////////////////////////////////////
+
 
 																self.$set(definition, 'dataModel', cleanedEntry);
 																// self.$set(self.details, definitionName, cleanedEntry);

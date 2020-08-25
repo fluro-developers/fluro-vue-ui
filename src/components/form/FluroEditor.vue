@@ -2,7 +2,37 @@
     <div class="fluro-editor">
         <editor-menu-bubble v-if="bubbleEnabled " :editor="editor" @hide="hideBubble" :keep-in-bounds="keepInBounds" v-slot="{ commands, isActive, getMarkAttrs, menu }">
             <div class="menububble" :class="{ 'active': menu.isActive }" :style="`left: ${menu.left}px; bottom: ${menu.bottom}px;`">
-                <div v-if="!specialityBubbleMenu">
+                <template v-if="selectedImage">
+                    <form class="menububble__form" v-if="isActive.image()" @submit.prevent.stop="commands.image(selectedImage)">
+                        <template v-if="proEnabled">
+                            <template v-if="constrain">
+                                <label for="widthInput">&nbsp;Scale:&nbsp;</label>
+                                <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @change='scaleImage(commands.image)' @blur='commands.image(selectedImage)' />
+                            </template>
+                            <template v-else>
+                                <label for="widthInput">&nbsp;Width:&nbsp;</label>
+                                <input class="number-input" type="text" v-model="selectedImage.width" placeholder="100%" ref="widthInput" @change='commands.image(selectedImage)' @blur='commands.image(selectedImage)' />
+                                <label for="heightInput">&nbsp;&nbsp;Height:&nbsp;</label>
+                                <input class="number-input" type="text" v-model="selectedImage.height" placeholder="100%" ref="heightInput" @change='commands.image(selectedImage)' @blur='commands.image(selectedImage)' />&nbsp;
+                                <!-- <input type="submit" value="Update"> -->
+                            </template>
+                            <v-btn icon small flat @click.stop.prevent="constrain=!constrain">
+                                <fluro-icon :icon="constrain?`lock`:`lock-open`" />
+                            </v-btn>
+                        </template>
+                        <template v-else>
+                            <label for="widthInput">&nbsp;Size:&nbsp;</label>
+                            <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @change='scaleImage(commands.image)' @blur='commands.image(selectedImage)' />
+                        </template>
+                    </form>
+                </template>
+                <template v-else-if="selectedVideo">
+                    <form class="menububble__form" v-if="isActive.video()" @submit.prevent.stop="commands.video(selectedVideo)">
+                        <label for="widthInput">&nbsp;Scale:&nbsp;</label>
+                        <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @change='scaleVideo(commands.video)' @blur='commands.video(selectedVideo)' />
+                    </form>
+                </template>
+                <template v-else>
                     <v-menu attach v-if="isEnabled('formats')" transition="slide-y-transition" offset-y>
                         <template v-slot:activator="{ on }">
                             <v-btn small icon :disabled="showSource" v-on="on">
@@ -75,45 +105,7 @@
                             <fluro-icon right icon="link" />
                         </v-btn>
                     </template>
-                </div>
-                <!-- Menu for Images and Videos -->
-                <div v-if="specialityBubbleMenu">
-                    <template v-if="selectedImage">
-                        <div v-if="proEnabled">
-                            <form class="menububble__form" v-if="isActive.image()" @submit.prevent.stop="commands.image(selectedImage)">
-                                <template v-if="constrain">
-                                    <label for="widthInput">&nbsp;Scale:&nbsp;</label>
-                                    <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @change='scaleImage(commands.image)' @blur='commands.image(selectedImage)'/>
-                                </template>
-                                <template v-else>
-                                    <label for="widthInput">&nbsp;Width:&nbsp;</label>
-                                    <input class="number-input" type="text" v-model="selectedImage.width" placeholder="100%" ref="widthInput" @change='commands.image(selectedImage)' @blur='commands.image(selectedImage)'/>
-                                    <label for="heightInput">&nbsp;&nbsp;Height:&nbsp;</label>
-                                    <input class="number-input" type="text" v-model="selectedImage.height" placeholder="100%" ref="heightInput" @change='commands.image(selectedImage)' @blur='commands.image(selectedImage)'/>&nbsp;
-                                    <!-- <input type="submit" value="Update"> -->
-                                </template>
-                                <v-btn icon small flat @click.stop.prevent="constrain=!constrain">
-                                    <fluro-icon :icon="constrain?`lock`:`lock-open`" />
-                                </v-btn>
-                            </form>
-                        </div>
-                        <div v-if="!proEnabled">
-                            <form class="menububble__form" v-if="isActive.image()" @submit.prevent.stop="commands.image(selectedImage)">
-                                <template>
-                                    <label for="widthInput">&nbsp;Size:&nbsp;</label>
-                                    <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @change='scaleImage(commands.image)' @blur='commands.image(selectedImage)'/>
-                                    <!-- <input type="submit" value="Update"> -->
-                                </template>
-                            </form>
-                        </div>
-                    </template>
-                    <template v-if="selectedVideo">
-                        <form class="menububble__form" v-if="isActive.video()" @submit.prevent.stop="commands.video(selectedVideo)">
-                            <label for="widthInput">&nbsp;Scale:&nbsp;</label>
-                            <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @change='scaleVideo(commands.video)'  @blur='commands.video(selectedVideo)'/>
-                        </form>
-                    </template>
-                </div>
+                </template>
             </div>
         </editor-menu-bubble>
         <editor-menu-bar :editor="editor" v-if="barEnabled">
@@ -193,26 +185,30 @@
                         </v-btn>
                     </template>
                     <v-list dense>
-                    	<!-- <v-list-tile @click.stop.prevent="showAssetPrompt(commands.asset)">
+                        <!-- <v-list-tile @click.stop.prevent="showAssetPrompt(commands.asset)">
                             <v-list-tile-content><span style="margin:0 !important" ><fluro-icon type="asset" />&nbsp;Add Asset Link</span></v-list-tile-content>
                         </v-list-tile> -->
                         <v-list-tile @click.stop.prevent="showImagePrompt(commands.image)">
-                            <v-list-tile-content><span style="margin:0 !important" ><fluro-icon type="image" />&nbsp;Add Image</span></v-list-tile-content>
+                            <v-list-tile-content><span style="margin:0 !important">
+                                    <fluro-icon type="image" />&nbsp;Add Image</span></v-list-tile-content>
                         </v-list-tile>
                         <v-list-tile @click.stop.prevent="showVideoPrompt(commands.video)">
-                            <v-list-tile-content><span style="margin:0 !important" ><fluro-icon type="video" />&nbsp;Add Video</span></v-list-tile-content>
+                            <v-list-tile-content><span style="margin:0 !important">
+                                    <fluro-icon type="video" />&nbsp;Add Video</span></v-list-tile-content>
                         </v-list-tile>
                         <v-list-tile :class="{ 'active': isActive.blockquote() }" @click.stop.prevent="commands.blockquote">
-                            <v-list-tile-content><span style="margin:0 !important" ><fluro-icon icon="quote-right" />&nbsp;Blockquote</span></v-list-tile-content>
+                            <v-list-tile-content><span style="margin:0 !important">
+                                    <fluro-icon icon="quote-right" />&nbsp;Blockquote</span></v-list-tile-content>
                         </v-list-tile>
                         <v-list-tile :class="{ 'active': isActive.code_block() }" @click.stop.prevent="commands.code_block">
-                            <v-list-tile-content><span style="margin:0 !important" ><fluro-icon icon="code" />&nbsp;Code</span></v-list-tile-content>
+                            <v-list-tile-content><span style="margin:0 !important">
+                                    <fluro-icon icon="code" />&nbsp;Code</span></v-list-tile-content>
                         </v-list-tile>
                         <v-list-tile :class="{ 'active': isActive.horizontal_rule() }" @click.stop.prevent="commands.horizontal_rule">
-                            <v-list-tile-content><span style="margin:0 !important" ><fluro-icon icon="horizontal-rule" />&nbsp;Horizontal Rule</span></v-list-tile-content>
+                            <v-list-tile-content><span style="margin:0 !important">
+                                    <fluro-icon icon="horizontal-rule" />&nbsp;Horizontal Rule</span></v-list-tile-content>
                         </v-list-tile>
-                     </v-list>
-                   
+                    </v-list>
                 </v-menu>
                 <!-- <pre>{{typographyOptions}}</pre> -->
                 <!-- <button class="menubar__button" :class="{ 'active': isActive.typography({ level: 'text-muted' }) }" @click="commands.typography({ level: 'text-muted' })">Muted</button> -->
@@ -427,10 +423,10 @@ export default {
             TypographyPlugin: new Typography(),
             FluroNodePlugin: new FluroNode(),
             FluroMarkPlugin: new FluroMark(),
-            selectedImage: {},
-            selectedVideo: {},
+            selectedImage:null,
+            selectedVideo:null,
             scale: 100,
-            selectedNode: {},
+            selectedNode:null,
         }
     },
     computed: {
@@ -445,7 +441,7 @@ export default {
             }
         },
         proEnabled() {
-            return this.$pro && this.$pro.enabled 
+            return this.$pro && this.$pro.enabled
         },
         typographyOptions() {
             return this.TypographyPlugin.options.levels;
@@ -519,18 +515,18 @@ export default {
         },
         showImageMenu(attrs) {
             //console.log("Image attrs",attrs)
-            if(attrs.width.includes("%")) {
+            if (attrs.width.includes("%")) {
                 this.scale = parseInt(attrs.width)
-            } 
+            }
             this.selectedImage = attrs
         },
         hideImageMenu() {
-            this.selectedImage = {}
+            this.selectedImage = null;
             this.selectedNode = null
         },
         updateImage(command) {
             //console.log("performing Update")
-            command(this.selectedImage)  
+            command(this.selectedImage)
             this.hideImageMenu()
             this.editor.focus()
         },
@@ -539,27 +535,27 @@ export default {
             this.selectedImage.height = 'auto'
             this.selectedNode.height = this.selectedImage.height
             this.selectedNode.width = this.selectedImage.width
-        }, 
+        },
         showVideoMenu(attrs) {
-            if(attrs.width.includes("%")) {
+            if (attrs.width.includes("%")) {
                 this.scale = parseInt(attrs.width)
-            } 
+            }
             this.selectedVideo = attrs
         },
         hideVideoMenu() {
-            this.selectedVideo = {}
+            this.selectedVideo = null;
             this.selectedNode = null
         },
         updateVideo(command) {
             //console.log("performing Update")
-            command(this.selectedVideo)  
+            command(this.selectedVideo)
             this.hideVideoMenu()
             this.editor.focus()
         },
         scaleVideo(command) {
             this.selectedVideo.width = `${this.scale}%`
-            this.selectedNode.width =  this.selectedVideo.width 
-        }, 
+            this.selectedNode.width = this.selectedVideo.width
+        },
         blurEditor($event) {
             // console.log('BLUR EDITOR')
             this.$emit('blur');
@@ -589,23 +585,22 @@ export default {
         showAssetPrompt(command) {
             var self = this;
 
-            self.$fluro.global.select('asset', { 
-                title: 'Select assets', 
-                minimum: 0, 
-                maximum: 0,
-                allDefinitions:true,
+            self.$fluro.global.select('asset', {
+                    title: 'Select assets',
+                    minimum: 0,
+                    maximum: 0,
+                    allDefinitions: true,
                 }, true)
                 .then(function(res) {
-                    if(res) {
+                    if (res) {
 
                         // var first = _.first(res)
                         _.each(res, function(item) {
-                        	command( {item} )
+                            command({ item })
                         })
-                        
+
                     }
-                }
-            )
+                })
 
 
             // const src = prompt('Enter the url of your image here')
@@ -618,26 +613,24 @@ export default {
 
             self.hideImageMenu()
 
-            self.$fluro.global.select('image', { 
-                title: 'Select an Image/Photo', 
-                minimum: 1, 
-                maximum: 1,
-                allDefinitions:true,
+            self.$fluro.global.select('image', {
+                    title: 'Select an Image/Photo',
+                    minimum: 1,
+                    maximum: 1,
+                    allDefinitions: true,
                 }, true)
                 .then(function(res) {
-                    if(res) {
+                    if (res) {
                         //console.log("res", res)
                         var first = _.first(res)
 
                         command({
-                            item: first._id, 
+                            item: first._id,
                             width: "100%",
                             height: "auto",
-                            } 
-                        )
+                        })
                     }
-                }
-            )
+                })
 
 
             // const src = prompt('Enter the url of your image here')
@@ -648,19 +641,18 @@ export default {
         showVideoPrompt(command) {
             var self = this;
 
-            self.$fluro.global.select('video', { 
-                title: 'Select a Video', 
-                minimum: 1, 
-                maximum: 1,
-                allDefinitions:true,
+            self.$fluro.global.select('video', {
+                    title: 'Select a Video',
+                    minimum: 1,
+                    maximum: 1,
+                    allDefinitions: true,
                 }, true)
                 .then(function(res) {
-                    if(res) {
+                    if (res) {
                         var first = _.first(res)
-                        command( {item: first._id, width: "100%"} )
+                        command({ item: first._id, width: "100%" })
                     }
-                }
-            )
+                })
 
 
             // const src = prompt('Enter the url of your image here')
@@ -1020,15 +1012,15 @@ export default {
                 var state = data.state
                 var transaction = data.transaction
 
-                if(_.get(state, 'selection.node.type.name') == 'image') {
+                if (_.get(state, 'selection.node.type.name') == 'image') {
                     this.showImageMenu(_.get(state, 'selection.node.attrs'))
                     this.selectedNode = _.get(state, 'selection.node')
                 }
-                if(_.get(state, 'selection.node.type.name') == 'video') {
+                if (_.get(state, 'selection.node.type.name') == 'video') {
                     this.showVideoMenu(_.get(state, 'selection.node.attrs'))
                     this.selectedNode = _.get(state, 'selection.node')
                 }
-                
+
                 // console.log(JSON.stringify(this.selectedNode))
                 //console.log("OnTransaction State", state)
                 // if(!_.get(this, "options.disable.bubble")) {
@@ -1069,6 +1061,7 @@ export default {
         this.editor.destroy()
     },
 }
+
 </script>
 <style lang="scss">
 $color-black: #000;
@@ -1204,13 +1197,15 @@ $color-white: #fff;
         }
     }
 
-    
+
     .fluro-video-preview,
     .fluro-image-preview {
-        max-width:100%;
+        max-width: 100%;
+
         img {
-            display:block;
+            display: block;
         }
+
         display: inline-block;
     }
 
@@ -1224,7 +1219,7 @@ $color-white: #fff;
         position: absolute;
         left: 50%;
         top: 50%;
-        transform: translate( -50%, -50% );
+        transform: translate(-50%, -50%);
         padding: 3px 15px 3px 25px;
         color: white;
         font-family: 'FontAwesome';
@@ -1570,4 +1565,5 @@ $color-white: #fff;
         border-right-color: $color-black;
     }
 }
+
 </style>

@@ -27,7 +27,7 @@
                                     <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.sort" v-model="model" />
                                 </v-flex>
                                 <v-flex shrink>
-                                    <v-btn icon  class="ma-0" v-tippy content="Advanced" @click="manualSort = !manualSort">
+                                    <v-btn icon class="ma-0" v-tippy content="Advanced" @click="manualSort = !manualSort">
                                         <fluro-icon :library="manualSort ? 'fas' : 'far'" icon="cogs" />
                                     </v-btn>
                                 </v-flex>
@@ -90,19 +90,30 @@
             </tab>
             <tab heading="Automation" v-if="resultSets.length">
                 <!-- <result-set-edit v-model="resultSets" /> -->
-                <slot>
-                    <flex-column-body style="background: #fafafa;">
-                        <v-container>
-                            <constrain sm>
-                                <div v-for="resultset in resultSets" :key="resultset._id">
-                                    <b>{{resultset.title}}</b> {{resultset.firstLine}}
-                                    <v-btn @click="editResultSet(resultset)">
-                                        <fluro-icon icon="pencil" />Edit</v-btn>
-                                </div>
-                            </constrain>
-                        </v-container>
-                    </flex-column-body>
-                </slot>
+                <flex-column-body style="background: #fafafa;">
+                    <v-container>
+                        <constrain sm>
+                            <fluro-panel v-for="resultset in resultSets" :key="resultset._id">
+                                <fluro-panel-title>
+                                    <v-layout align-center>
+                                        <v-flex>
+                                            <strong>{{resultset.title}}</strong>
+                                            <div>
+                                                {{resultset.firstLine}}
+                                            </div>
+                                        </v-flex>
+                                        <v-flex shrink>
+                                            <v-btn @click="editResultSet(resultset)">
+                                                Edit
+                                                <fluro-icon icon="pencil" right />
+                                            </v-btn>
+                                        </v-flex>
+                                    </v-layout>
+                                </fluro-panel-title>
+                            </fluro-panel>
+                        </constrain>
+                    </v-container>
+                </flex-column-body>
             </tab>
             <!-- <tab heading="Columns and Rendering">
                 <slot>
@@ -178,6 +189,7 @@ export default {
         editResultSet(item) {
 
 
+         // console.log('EDIT RESULT SET', item);
             item._type = 'resultset';
             this.$fluro.global
                 .edit(item, true)
