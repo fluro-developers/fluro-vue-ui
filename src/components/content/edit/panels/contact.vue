@@ -5,7 +5,7 @@
 								</template>
 								<tabset v-else :justified="true" :vertical="true">
 												<template v-slot:menuprefix>
-																<template v-if="context == 'edit' && $vuetify.breakpoint.mdAndUp">
+																<template v-if="context == 'edit' && $vuetify.breakpoint.smAndUp">
 																				<flex-column-header style="text-align:center">
 																								<div style="padding: 10px;max-width:200px;margin: auto;">
 																												<fluro-avatar-update :id="model._id" type="contact" />
@@ -468,8 +468,7 @@
 																																				<fluro-realm-select @input="updateSheetRealms($event, sheet.definitionName)" v-model="sheet.dataModel.realms" type="contactdetail" :definition="sheet.definitionName" />
 																																</v-input>
 																																<fluro-content-form :options="formOptions" @input="updateSheet($event, sheet.definitionName)" v-model="sheet.dataModel.data" :fields="sheet.fields" />
-																												
-<!-- <pre>{{sheet.dataModel.data}}</pre> -->
+																																<!-- <pre>{{sheet.dataModel.data}}</pre> -->
 																												</constrain>
 																								</v-container>
 																				</flex-column-body>

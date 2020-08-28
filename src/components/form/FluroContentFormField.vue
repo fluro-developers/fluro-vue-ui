@@ -211,7 +211,7 @@
 																</v-input>
 												</template>
 												<template v-else-if="renderer == 'datepicker'">
-													<!-- DATE PICKER -->
+																<!-- DATE PICKER -->
 																<v-menu :fixed="true" v-model="modal" min-width="290px" :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
 																				<template v-slot:activator="{ on }">
 																								<v-text-field @blur="touch()" @focus="focussed()" :outline="showOutline" :success="success" :value="formattedDate" :persistent-hint="true" :hint="dateHint" :label="displayLabel" prepend-inner-icon="event" readonly v-on="on"></v-text-field>
@@ -457,16 +457,19 @@
 																<v-input class="no-flex" :outline="showOutline" :success="success" :label="displayLabel" :required="required" :error-messages="errorMessages" :persistent-hint="true" :hint="fileHint">
 																				<div class="file-items" v-if="files && files.length">
 																								<div class="file-item" v-for="file in files">
-																												<v-layout row wrap>
+																												<v-layout row>
 																																<v-flex grow>
 																																				<strong>{{file.name}}</strong>
 																																				<div class="small"><span v-if="file.state == 'progress'">Uploaded {{file.progress}}% of </span><span class="muted">{{file.size | filesize}}</span></div>
 																																</v-flex>
 																																<v-flex shrink>
 																																				<template v-if="file.state == 'error'">
-																																								<v-btn icon>
-																																												<fluro-icon icon="exclamation" />
-																																								</v-btn>
+																																								<v-hover>
+																																												<v-btn icon @click="removeFile(file)" slot-scope="{ hover }">
+																																																<fluro-icon v-if="hover" icon="times" />
+																																																<fluro-icon v-else icon="exclamation" />
+																																												</v-btn>
+																																								</v-hover>
 																																				</template>
 																																				<template v-else-if="file.state == 'complete'">
 																																								<v-hover>
@@ -2924,7 +2927,7 @@ export default {
 												//If there is no Realm
 												if (!uploadRealmID) {
 																// if there is no realm id, grab the form's realm
-																var defaultRealmID = _.get(self.options, 'backupUploadRealm');
+																var defaultRealmID = _.get(self.options, 'backupUploadRealm') ;
 																if (defaultRealmID) {
 																				uploadRealmID = defaultRealmID
 																} else {
@@ -2937,7 +2940,7 @@ export default {
 												///////////////////////////////////////////////////
 
 												//console.log('Uploading to ', uploadRealmID)
-												return this.$fluro.api.post(`/file/attach/${uploadRealmID}`, body, config)
+												return this.$fluro.api.post(`/file/attach/${self.$fluro.utils.getStringID(uploadRealmID)}`, body, config)
 																.then(function(res) {
 																				////console.log('UPLOAD RESPONSE', res);
 																				file.state = 'complete';

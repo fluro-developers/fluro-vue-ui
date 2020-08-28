@@ -5,7 +5,7 @@
         </template>
         <tabset v-else :justified="true" :vertical="true">
             <tab :heading="`${readableTypeName} Info`">
-                <slot>
+                
                     <flex-column-body style="background: #fafafa;">
                         <v-container class="grid-list-xl">
                             <constrain sm>
@@ -53,7 +53,7 @@
                             </constrain>
                         </v-container>
                     </flex-column-body>
-                </slot>
+                
             </tab>
             <tab :heading="`Team Members`" v-if="model.rostered">
                 <flex-column-body style="background: #fafafa;">

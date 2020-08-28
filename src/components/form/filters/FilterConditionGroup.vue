@@ -1454,6 +1454,24 @@ export default {
 																/////////////////////////////////////////////////////
 
 																injectFields.push({
+																				title: "Unsubscribed from Promotional Emails",
+																				key: "_unsubscribeEmail",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "boolean",
+																});
+
+																injectFields.push({
+																				title: "Unsubscribed from Promotional SMS",
+																				key: "_unsubscribeSMS",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "boolean",
+																});
+
+																/////////////////////////////////////////////////////
+
+																injectFields.push({
 																				title: "Posts and Notes > Total linked posts to family members",
 																				key: "_familyPosts.all.length",
 																				maximum: 1,

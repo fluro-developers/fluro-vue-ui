@@ -82,6 +82,9 @@ export default {
 			console.log('ADD NEW POST')
 			var self = this;
 
+
+			var target = self.model || self.item;
+
 			//Load all the types of posts we can create
 			return self.$fluro.types.subTypes('post')
 				.then(function (definitions) {
@@ -114,7 +117,7 @@ export default {
 
 							var options = {
 								definition: answer.definition,
-								items: [self.model],
+								items: [target],
 							}
 
 							///////////////////////////

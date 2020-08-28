@@ -41,6 +41,16 @@
 																				</v-container>
 																</flex-column-body>
 												</tab>
+												<tab :heading="`${definition.title} Fields`" v-if="definition">
+																<flex-column-body style="background: #fafafa;">
+																				<v-container>
+																								<constrain sm>
+																												<h3 margin>{{definition.title}} Fields</h3>
+																												<fluro-content-form :options="editorOptions" v-model="model.data" :fields="definition.fields" />
+																								</constrain>
+																				</v-container>
+																</flex-column-body>
+												</tab>
 												<tab :heading="`${devices ? devices.length : 0} Devices`" :enabled="!!devicesEnabled">
 																<flex-column-body style="background: #fafafa;">
 																				<v-container fluid>

@@ -292,9 +292,21 @@ export default {
         };
     },
     created() {
+
+        var self = this;
+
+        if (self.options) {
+            if (!self.options.backupUploadRealm) {
+                self.options.backupUploadRealm = _.chain(self.definition)
+                    .get("realms")
+                    .first()
+                    .value()
+                    console.log('set backup realm', self.options.backupUploadRealm);
+            }
+        }
         // console.log('INTERACTION FORM VUE', Vue.$store._modulesNamespaceMap);
 
-        this.reset();
+        self.reset();
     },
     mounted() {
         this.validate();
