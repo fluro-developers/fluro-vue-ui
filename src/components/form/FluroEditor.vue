@@ -3,7 +3,7 @@
         <editor-menu-bubble v-if="bubbleEnabled " :editor="editor" @hide="hideBubble" :keep-in-bounds="keepInBounds" v-slot="{ commands, isActive, getMarkAttrs, menu }">
             <div class="menububble" :class="{ 'active': menu.isActive }" :style="`left: ${menu.left}px; bottom: ${menu.bottom}px;`">
                 <template v-if="selectedImage">
-                    <form class="menububble__form" v-if="isActive.image()" @submit.prevent.stop="commands.image(selectedImage)">
+                    <form class="menububble__form" v-if="isActive.image()" @submit.prevent.stop="scaleImage(commands.image)"> <!-- This function stops the page being submitted -->
                         <template v-if="proEnabled">
                             <template v-if="constrain">
                                 <label for="widthInput">&nbsp;Scale:&nbsp;</label>
@@ -27,7 +27,7 @@
                     </form>
                 </template>
                 <template v-else-if="selectedVideo">
-                    <form class="menububble__form" v-if="isActive.video()" @submit.prevent.stop="commands.video(selectedVideo)">
+                    <form class="menububble__form" v-if="isActive.video()" @submit.prevent.stop="scaleVideo(commands.video)"> <!-- This function stops the page being submitted -->
                         <label for="widthInput">&nbsp;Scale:&nbsp;</label>
                         <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @change='scaleVideo(commands.video)' @blur='commands.video(selectedVideo)' />
                     </form>
