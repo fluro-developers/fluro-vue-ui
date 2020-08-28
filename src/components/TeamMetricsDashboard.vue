@@ -202,11 +202,10 @@ export default {
         ageSpread() {
             var self = this
             var statbase = _.last(self.model.statsheets)
-            var ageSpread = statbase.data.ages.spread
-            var averageAge = statbase.data.ages.average
+            var ageSpread = _.get(statbase, "data.ages.spread")
+            var averageAge = _.get(statbase, "data.ages.average")
 
             var groupedAges = new Array(8).fill(0)
-
             _.each(ageSpread, function(value, key) {
                 // console.log("key", key, "value", value)
                 switch (true) {
