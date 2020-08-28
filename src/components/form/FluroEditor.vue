@@ -3,7 +3,7 @@
         <editor-menu-bubble v-if="bubbleEnabled " :editor="editor" @hide="hideBubble" :keep-in-bounds="keepInBounds" v-slot="{ commands, isActive, getMarkAttrs, menu }">
             <div class="menububble" :class="{ 'active': menu.isActive }" :style="`left: ${menu.left}px; bottom: ${menu.bottom}px;`">
                 <template v-if="selectedImage">
-                    <form class="menububble__form" v-if="isActive.image()" @submit.prevent.stop="scaleImage(commands.image)"> <!-- This function stops the page being submitted -->
+                    <form class="menububble__form" v-if="isActive.image()" s <!-- This function stops the page being submitted -->
                         <template v-if="proEnabled">
                             <template v-if="constrain">
                                 <label for="widthInput">&nbsp;Scale:&nbsp;</label>
@@ -11,9 +11,9 @@
                             </template>
                             <template v-else>
                                 <label for="widthInput">&nbsp;Width:&nbsp;</label>
-                                <input class="number-input" type="text" v-model="selectedImage.width" placeholder="100%" ref="widthInput" @change='commands.image(selectedImage)' @blur='commands.image(selectedImage)' />
+                                <input class="number-input" type="text" v-model="selectedImage.width" placeholder="100%" ref="widthInput" @change='scaleImage(commands.image)' @blur='commands.image(selectedImage)' />
                                 <label for="heightInput">&nbsp;&nbsp;Height:&nbsp;</label>
-                                <input class="number-input" type="text" v-model="selectedImage.height" placeholder="100%" ref="heightInput" @change='commands.image(selectedImage)' @blur='commands.image(selectedImage)' />&nbsp;
+                                <input class="number-input" type="text" v-model="selectedImage.height" placeholder="100%" ref="heightInput" @change='scaleImage(commands.image)' @blur='commands.image(selectedImage)' />&nbsp;
                                 <!-- <input type="submit" value="Update"> -->
                             </template>
                             <v-btn icon small flat @click.stop.prevent="constrain=!constrain">
