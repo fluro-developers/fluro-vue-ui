@@ -6,11 +6,7 @@
         <tabset v-else :justified="true" :vertical="true">
             <tab :heading="`${readableTypeName} Info`">
                 <flex-column-body>
-                    <!-- TESTING STUFF -->
-                    <!-- <pre>{{item}}</pre> -->
-                    
-                    <!-- <img preload-image aspect="56.25" ng-src="{{$root.asset.imageUrl(item.mainImage._id, 768, null, {from:item._id})}}" /> -->
-                    <!-- <fluro-image/> -->
+
                     <v-container>
                         <constrain sm>
                             <template v-if="item.mainImage">
@@ -117,12 +113,6 @@
                                 <v-flex>
                                     <h3 margin>Team Members</h3>
                                 </v-flex>
-                                <!-- <v-flex shrink>
-                                    <v-btn color="primary" :to="{name:'events.multi', query:{ids:[model._id]}}">
-                                        Open in Multi Planner
-                                        <fluro-icon right icon="game-board" />
-                                    </v-btn>
-                                </v-flex> -->
                             </v-layout>
                             <fluro-panel v-for="roster in item.rostered">
                                 <fluro-panel-title>
@@ -143,10 +133,11 @@
                                 </fluro-panel-title>
                                 <fluro-panel-body>
                                     <v-layout row wrap>
-                                        <v-flex xs6 sm4 md3 v-for="slot in roster.slots" v-if="slot.assignments && slot.assignments.length">
+                                        <template v-if="slot.assignments && slot.assignments.length">
+                                        <v-flex xs6 sm4 md3 v-for="slot in roster.slots" :key="slot._id">
                                             <v-container class="mb-2 pa-2">
                                                 <h5>{{slot.title}}</h5>
-                                                <div class="assignment-item" @click="$actions.open([assignment])" :class="assignment.confirmationStatus" v-for="assignment in slot.assignments">
+                                                <div class="assignment-item" @click="$actions.open([assignment])" :class="assignment.confirmationStatus" v-for="assignment in slot.assignments" :key="assignment._id">
                                                     <v-layout>
                                                         <v-flex>
                                                             {{assignment.contact && assignment.contact.title ? assignment.contact.title : assignment.contactName}}
@@ -158,6 +149,7 @@
                                                 </div>
                                             </v-container>
                                         </v-flex>
+                                        </template>
                                     </v-layout>
                                     <!-- <pre>{{roster}}</pre> -->
                                 </fluro-panel-body>
@@ -170,15 +162,8 @@
                 </flex-column-body>
             </tab>
             <template v-if="plans.length">
-                <tab :heading="plan.title" v-for="(plan, index) in plans">
+                <tab :heading="plan.title" v-for="(plan, index) in plans" :key="index">
                     <fluro-content-view :id="plans[index]" :embedded="true" type="plan" />
-                    <!-- <flex-column-body>
-                    <v-container>
-                        <constrain sm>
-                            <guest-list :event="item" />
-                        </constrain>
-                    </v-container>
-                </flex-column-body> -->
                 </tab>
             </template>
             <tab heading="Guest List">
@@ -199,18 +184,15 @@
                     </v-container>
                 </flex-column-body>
             </tab>
-
-
-            
-            <!--  <tab heading="Photos" :v-if="showPhotos">
+            <tab heading="Metrics">
                 <flex-column-body>
-                    <v-container>
-                        <constrain sm>
-                            <guest-list :event="item" />
-                        </constrain>
+                    <v-container fluid>
+                        <!-- <constrain sm> -->
+                        <eventtrack-metrics-dashboard :id="item" type="eventtrack" />
+                        <!-- </constrain> -->
                     </v-container>
                 </flex-column-body>
-            </tab> -->
+            </tab>
         </tabset>
     </flex-column>
 </template>
@@ -220,7 +202,7 @@
 import Vue from 'vue';
 import _ from 'lodash';
 
-
+import EventtrackMetricsDashboard from "../../../EventtrackMetricsDashboard.vue";
 import FluroContentView from '../FluroContentView.vue';
 import LocationViewMapComponent from '../../event/LocationViewMapComponent.vue';
 import FluroContentViewMixin from '../FluroContentViewMixin.js';
@@ -245,6 +227,7 @@ export default {
         GuestList,
         TicketList,
         LocationViewMapComponent,
+        EventtrackMetricsDashboard,
     },
     mixins: [FluroContentViewMixin],
     methods: {

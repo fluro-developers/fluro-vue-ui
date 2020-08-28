@@ -55,20 +55,6 @@
                     </flex-column-body>
                 </slot>
             </tab>
-            <!-- <tab :heading="`${definition.title} details`" v-if="definition && definition.fields && definition.fields.length">
-<slot>
-<flex-column-body style="background: #fafafa;">
-<v-container>
-<constrain sm>
-<h3 margin>{{definition.title}}</h3>
-
-<fluro-content-form :options="options" v-model="model.data" :fields="definition.fields">
-</fluro-content-form>
-</constrain>
-</v-container>
-</flex-column-body>
-</slot>
-      </tab>-->
             <tab :heading="`Team Members`" v-if="model.rostered">
                 <flex-column-body style="background: #fafafa;">
                     <v-container>
@@ -103,24 +89,26 @@
                                 </fluro-panel-title>
                                 <fluro-panel-body>
                                     <v-layout row wrap>
-                                        <v-flex xs6 sm4 md3 :key="index" v-for="(slot, index) in roster.slots" v-if="slot.assignments && slot.assignments.length">
-                                            <v-container class="mb-2 pa-2">
-                                                <h5>{{ slot.title }}</h5>
-                                                <div class="assignment-item" @click="$actions.open([assignment])" :class="assignment.confirmationStatus" :key="assignment._id" v-for="assignment in slot.assignments">
-                                                    <v-layout>
-                                                        <v-flex>{{ assignment.contact && assignment.contact.title ? assignment.contact.title : assignment.contactName }}</v-flex>
-                                                        <v-flex shrink>
-                                                            <fluro-icon right :icon="confirmationIcon(assignment)" />
-                                                        </v-flex>
-                                                    </v-layout>
-                                                </div>
-                                            </v-container>
-                                        </v-flex>
+                                        <template v-if="slot.assignments && slot.assignments.length">
+                                            <v-flex xs6 sm4 md3 :key="index" v-for="(slot, index) in roster.slots">
+                                                <v-container class="mb-2 pa-2">
+                                                    <h5>{{ slot.title }}</h5>
+                                                    <div class="assignment-item" @click="$actions.open([assignment])" :class="assignment.confirmationStatus" :key="assignment._id" v-for="assignment in slot.assignments">
+                                                        <v-layout>
+                                                            <v-flex>{{ assignment.contact && assignment.contact.title ? assignment.contact.title : assignment.contactName }}</v-flex>
+                                                            <v-flex shrink>
+                                                                <fluro-icon right :icon="confirmationIcon(assignment)" />
+                                                            </v-flex>
+                                                        </v-layout>
+                                                    </div>
+                                                </v-container>
+                                            </v-flex>
+                                        </template>
                                     </v-layout>
                                     <!-- <pre>{{roster}}</pre> -->
                                 </fluro-panel-body>
                             </fluro-panel>
-                            <v-btn block @click="createRoster(rosterType)" :loading="rosterType.loading" class="btn-ghost" v-for="rosterType in rosterTypes">Add {{ rosterType.title }}</v-btn>
+                            <v-btn block @click="createRoster(rosterType)" :loading="rosterType.loading" class="btn-ghost" v-for="rosterType in rosterTypes" :key="rosterType.title">Add {{ rosterType.title }}</v-btn>
                             <p></p>
                             <h3 margin>Reminders</h3>
                             <event-reminder-manager :slots="rosterSlots" :startDate="model.startDate" :endDate="model.endDate" v-model="model.reminders" />
@@ -159,9 +147,6 @@
                                         </v-container>
                                     </template>
                                 </fluro-content-form>
-                                <!-- <v-btn v-if="model._id && liveUrl" target="_blank" :href="liveUrl" block large color="primary">
-                                                                                                                                                                                                                        Watch on Fluro Live
-                </v-btn>-->
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.streamIntegrations" v-model="model" />
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.streamContent" v-model="model" />
                                 <fluro-panel>
@@ -169,9 +154,6 @@
                                         <v-input class="no-flex" label="RTMP Upstream URL">
                                             <div v-tippy content="Click to copy to clipboard" @click.stop.prevent="copyToClipboard('rtmpUrl')">
                                                 <v-layout align-center>
-                                                    <!-- <v-flex shrink>
-                                        <fluro-icon icon="copy" />
-                          </v-flex>-->
                                                     <v-flex class="copystring">{{ rtmpUrl }}</v-flex>
                                                 </v-layout>
                                                 <input type="hidden" ref="rtmpUrl" :value="rtmpUrl" />
@@ -180,66 +162,14 @@
                                         <v-input class="no-flex" label="RTMP Stream Key">
                                             <div v-tippy content="Click to copy to clipboard" @click.stop.prevent="copyToClipboard('streamKey')">
                                                 <v-layout align-center>
-                                                    <!-- <v-flex shrink>
-                                        <fluro-icon icon="copy" />
-                          </v-flex>-->
-                                                    <v-flex class="copystring">{{ streamKey }}</v-flex>
+                                                     <v-flex class="copystring">{{ streamKey }}</v-flex>
                                                 </v-layout>
                                                 <input type="hidden" ref="streamKey" :value="streamKey" />
                                             </div>
                                         </v-input>
-                                        <!-- <v-input class="no-flex" label="Fluro Live URL">
-                <div v-tippy content="Click to copy to clipboard" @click.stop.prevent="copyToClipboard('liveUrl')">
-                        <v-layout align-center>
-                                <v-flex class="copystring">{{liveUrl}}</v-flex>
-                        </v-layout>
-                        <input type="hidden" ref="liveUrl" :value="liveUrl">
-                </div>
-        </v-input>
-        <v-input class="no-flex" label="Video Stream URL">
-                <div v-tippy content="Click to copy to clipboard" @click.stop.prevent="copyToClipboard('streamUrl')">
-                        <v-layout align-center>
-                                <v-flex class="copystring">{{streamUrl}}</v-flex>
-                        </v-layout>
-                        <input type="hidden" ref="streamUrl" :value="streamUrl">
-                </div>
-                    </v-input>-->
                                     </fluro-panel-body>
                                 </fluro-panel>
                             </template>
-                            <!-- <v-layout row wrap> -->
-                            <!-- <v-flex xs12 sm6> -->
-                            <!-- <v-input class="no-flex"> -->
-                            <!-- <v-label>Checkin Opens</v-label> -->
-                            <!-- <p class="help-block">How many minutes earlier can users checkin</p> -->
-                            <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.checkinStartOffset" v-model="model.checkinData"></fluro-content-form-field> -->
-                            <!-- <div class="input-group">
-                        <input type="number" min="0" placeholder="Defaults to 90 mins" class="form-control" ng-model="item.checkinData.checkinStartOffset" />
-                        <div class="input-group-addon">Minutes earlier</div>
-              </div>-->
-                            <!-- </v-input> -->
-                            <!-- <p class="help-block">No checkins before</p> -->
-                            <!-- <p class="lead"> -->
-                            <!-- {{checkinStartDate | formatDate:'g:ia l j M':model.timezone}}<br /> -->
-                            <!-- <em class="text-muted small">{{model.timezone}}</em> -->
-                            <!-- </p> -->
-                            <!-- </v-flex> -->
-                            <!-- <v-flex xs12 sm6>
-        <v-input class="no-flex">
-                <v-label>Checkin Closes</v-label>
-                <p class="help-block">How many minutes after this event's end time can a user still checkin</p>
-                <div class="input-group">
-                        <input type="number" min="0" placeholder="Defaults to 90 mins" class="form-control" ng-model="model.checkinData.checkinEndOffset" />
-                        <div class="input-group-addon">Minutes later</div>
-                </div>
-        </v-input>
-        <p class="help-block">No checkins after</p>
-        <p class="lead">
-                {{checkinEndDate | formatDate:'g:ia l j M':model.timezone}}<br />
-                <em class="text-muted small">{{model.timezone}}</em>
-        </p>
-              </v-flex>-->
-                            <!-- </v-layout> -->
                         </constrain>
                     </v-container>
                 </flex-column-body>
@@ -260,7 +190,7 @@
                         </v-layout>
                         <fluro-panel>
                             <tabset :justified="true">
-                                <tab :heading="plan.title" v-for="(plan, index) in plans">
+                                <tab :heading="plan.title" v-for="(plan, index) in plans" :key="index">
                                     <!-- <fluro-content-edit :embedded="true" v-if="$fluro.access.canEditItem(plan)" v-model="plans[index]" :disableCacheClearOnSave="true" context="edit" type="plan" @cancel="closePlan" @success="planUpdated" /> -->
                                     <!-- v-else -->
                                     <fluro-content-view :id="plans[index]" :embedded="true" type="plan" />
@@ -380,39 +310,6 @@
                                     </v-container>
                                 </template>
                             </fluro-content-form>
-                            <!-- <v-layout row wrap> -->
-                            <!-- <v-flex xs12 sm6> -->
-                            <!-- <v-input class="no-flex"> -->
-                            <!-- <v-label>Checkin Opens</v-label> -->
-                            <!-- <p class="help-block">How many minutes earlier can users checkin</p> -->
-                            <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.checkinStartOffset" v-model="model.checkinData"></fluro-content-form-field> -->
-                            <!-- <div class="input-group">
-                        <input type="number" min="0" placeholder="Defaults to 90 mins" class="form-control" ng-model="item.checkinData.checkinStartOffset" />
-                        <div class="input-group-addon">Minutes earlier</div>
-              </div>-->
-                            <!-- </v-input> -->
-                            <!-- <p class="help-block">No checkins before</p> -->
-                            <!-- <p class="lead"> -->
-                            <!-- {{checkinStartDate | formatDate:'g:ia l j M':model.timezone}}<br /> -->
-                            <!-- <em class="text-muted small">{{model.timezone}}</em> -->
-                            <!-- </p> -->
-                            <!-- </v-flex> -->
-                            <!-- <v-flex xs12 sm6>
-        <v-input class="no-flex">
-                <v-label>Checkin Closes</v-label>
-                <p class="help-block">How many minutes after this event's end time can a user still checkin</p>
-                <div class="input-group">
-                        <input type="number" min="0" placeholder="Defaults to 90 mins" class="form-control" ng-model="model.checkinData.checkinEndOffset" />
-                        <div class="input-group-addon">Minutes later</div>
-                </div>
-        </v-input>
-        <p class="help-block">No checkins after</p>
-        <p class="lead">
-                {{checkinEndDate | formatDate:'g:ia l j M':model.timezone}}<br />
-                <em class="text-muted small">{{model.timezone}}</em>
-        </p>
-              </v-flex>-->
-                            <!-- </v-layout> -->
                         </constrain>
                     </v-container>
                 </flex-column-body>
