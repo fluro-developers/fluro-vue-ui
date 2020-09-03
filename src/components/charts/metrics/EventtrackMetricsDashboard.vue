@@ -8,7 +8,7 @@
                     <strong>Attendance</strong>
                 </fluro-panel-title>
                 <fluro-panel-body>
-                    <fluro-chart chartType="line" :options="eventData.options" v-model="eventData.model" :series="eventData.series" :axis="eventData.axis" />
+                    <fluro-chart chartType="line" :options="eventData.options" v-model="eventData.model" :series="eventData.series" :axis="eventData.axis" v-on:chart-event="chartClicked"/>
                 </fluro-panel-body>
             </fluro-panel>
             <event-age-gender-metrics :id="selectedEvent" v-if="selectedEvent"></event-age-gender-metrics>
@@ -150,6 +150,15 @@ export default {
                             break;
                     }
                 })
+            }
+        }
+    },
+    methods: {
+        chartClicked(data) {
+            var self = this
+            if(data.key == 'click'){
+                console.log("Clicked", data, self.model[data.config.dataPointIndex])
+                self.selectedEvent = self.model[data.config.dataPointIndex]._id
             }
         }
     },

@@ -133,8 +133,9 @@
                                 </fluro-panel-title>
                                 <fluro-panel-body>
                                     <v-layout row wrap>
-                                        <template v-if="slot.assignments && slot.assignments.length">
                                         <v-flex xs6 sm4 md3 v-for="slot in roster.slots" :key="slot._id">
+                                            <template v-if="slot.assignments && slot.assignments.length">
+                                        
                                             <v-container class="mb-2 pa-2">
                                                 <h5>{{slot.title}}</h5>
                                                 <div class="assignment-item" @click="$actions.open([assignment])" :class="assignment.confirmationStatus" v-for="assignment in slot.assignments" :key="assignment._id">
@@ -148,8 +149,9 @@
                                                     </v-layout>
                                                 </div>
                                             </v-container>
+                                            </template>
                                         </v-flex>
-                                        </template>
+                                        
                                     </v-layout>
                                     <!-- <pre>{{roster}}</pre> -->
                                 </fluro-panel-body>
@@ -184,13 +186,13 @@
                     </v-container>
                 </flex-column-body>
             </tab>
-            <!-- <tab heading="Metrics">
+            <tab heading="Metrics">
                 <flex-column-body>
                     <v-container fluid>
-                        <eventtrack-metrics-dashboard :id="item" type="eventtrack" />
+                        <event-age-gender-metrics :id="item"></event-age-gender-metrics>
                     </v-container>
                 </flex-column-body>
-            </tab> -->
+            </tab>
         </tabset>
     </flex-column>
 </template>
@@ -203,6 +205,7 @@ import _ from 'lodash';
 import FluroContentView from '../FluroContentView.vue';
 import LocationViewMapComponent from '../../event/LocationViewMapComponent.vue';
 import FluroContentViewMixin from '../FluroContentViewMixin.js';
+import EventAgeGenderMetrics from '../../../charts/metrics/EventAgeGenderMetrics.vue'
 import GuestList from '../../event/GuestList.vue';
 import TicketList from '../../event/TicketList.vue';
 
@@ -224,6 +227,7 @@ export default {
         GuestList,
         TicketList,
         LocationViewMapComponent,
+        EventAgeGenderMetrics
     },
     mixins: [FluroContentViewMixin],
     methods: {

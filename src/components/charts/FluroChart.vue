@@ -266,7 +266,7 @@ export default {
         chartEvent(options) {
             var self = this
             // console.log("FC Options", options)
-            self.$emit("chartEvent", options)
+            self.$emit("chart-event", options)
         },
         getGroupDate(date, format) {
             switch(format){
