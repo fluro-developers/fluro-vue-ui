@@ -67,8 +67,8 @@
                                 </v-btn>
                             </v-flex>
                         </v-layout>
-                        <template v-for="(eventtrack, index) in tracks">
-                            <team-track-teaser v-model="tracks[index]" />
+                        <template v-for="(eventtrack, index) in tracks" >
+                            <team-track-teaser v-model="tracks[index]" :key="index"/>
                         </template>
                     </v-container>
                 </flex-column-body>

@@ -31,7 +31,6 @@
                                 <fluro-panel-body>
                                     <fluro-chart chartType="pie" :options="genderBreakdown.options" v-model="genderBreakdown.model" :series="genderBreakdown.series" />
                                 </fluro-panel-body>
-                                </div>
                             </fluro-panel>
                         </v-flex>
                         <v-spacer/>

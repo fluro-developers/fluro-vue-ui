@@ -169,7 +169,7 @@
                                             <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.recurNth" v-model="model" />
                                         </v-flex>
                                         
-                                        <v-flex v-else v-if="model.recurNth != 'date'">
+                                        <v-flex v-if="model.recurNth != 'date'">
                                             <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.recurWeekday" v-model="model" />
                                         </v-flex>
                                     </v-layout>

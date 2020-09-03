@@ -21,7 +21,7 @@
           <v-container fluid>
             <constrain sm>
               <search-input placeholder="Search Members" :autofocus="true" v-model="keywords" />
-              <fluro-panel v-for="group in groups">
+              <fluro-panel v-for="group in groups" :key="group._id">
                 <fluro-panel-title>
                   <strong>{{group.contacts.length}} {{group.title}}</strong>
                   <span class="muted" v-if="searchWords">Matching: '{{searchWords}}'</span>

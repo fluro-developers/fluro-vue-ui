@@ -11,16 +11,18 @@
                     <fluro-chart chartType="line" :options="eventData.options" v-model="eventData.model" :series="eventData.series" :axis="eventData.axis" />
                 </fluro-panel-body>
             </fluro-panel>
-            
+            <event-age-gender-metrics :id="selectedEvent" v-if="selectedEvent"></event-age-gender-metrics>
         </template>
     </flex-column>
 </template>
 <script>
 import { moment } from 'fluro';
 import FluroChart from '../FluroChart.vue';
+import EventAgeGenderMetrics from './EventAgeGenderMetrics.vue'
 export default {
     components: {
         FluroChart,
+        EventAgeGenderMetrics
     },
     props: {
         id: {
@@ -55,6 +57,15 @@ export default {
                     model.series.expected.push(_.get(event, "tickets.distinct") || 0)
                 }
             })
+
+            
+            var latestEvent = _.chain(events)
+                .filter(function(o) {
+                    return moment(o.startDate) < moment()
+                })
+                .last(events)
+                .value()
+            self.selectedEvent = latestEvent._id
 
             var max = Math.max(_.max(model.series.attendance), _.max(model.series.expected))
 
@@ -126,7 +137,7 @@ export default {
                                 }
                             }).then(function(res) {
                                 resolve(res.data);
-                                console.log("Dataset", res.data)
+                                // console.log("Dataset", res.data)
                                 self.loading = false;
                             }, function(err) {
                                 reject(err);
@@ -145,6 +156,7 @@ export default {
     data() {
         return {
             loading: true,
+            selectedEvent: null
         }
     }
 }
