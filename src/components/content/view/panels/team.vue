@@ -66,7 +66,7 @@
 
 import Vue from "vue";
 import FluroContentViewMixin from "../FluroContentViewMixin.js";
-import TeamMetricsDashboard from "../../../TeamMetricsDashboard.vue";
+import TeamMetricsDashboard from "../../../charts/metrics/TeamMetricsDashboard.vue";
 import FluroTable from "../../../table/FluroTable.vue";
 import SearchInput from "../../../ui/SearchInput.vue";
 import ContactAvatar from "../../../table/cells/AvatarCell.vue";

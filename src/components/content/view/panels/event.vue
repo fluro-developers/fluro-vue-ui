@@ -184,15 +184,13 @@
                     </v-container>
                 </flex-column-body>
             </tab>
-            <tab heading="Metrics">
+            <!-- <tab heading="Metrics">
                 <flex-column-body>
                     <v-container fluid>
-                        <!-- <constrain sm> -->
                         <eventtrack-metrics-dashboard :id="item" type="eventtrack" />
-                        <!-- </constrain> -->
                     </v-container>
                 </flex-column-body>
-            </tab>
+            </tab> -->
         </tabset>
     </flex-column>
 </template>
@@ -202,7 +200,6 @@
 import Vue from 'vue';
 import _ from 'lodash';
 
-import EventtrackMetricsDashboard from "../../../EventtrackMetricsDashboard.vue";
 import FluroContentView from '../FluroContentView.vue';
 import LocationViewMapComponent from '../../event/LocationViewMapComponent.vue';
 import FluroContentViewMixin from '../FluroContentViewMixin.js';
@@ -227,7 +224,6 @@ export default {
         GuestList,
         TicketList,
         LocationViewMapComponent,
-        EventtrackMetricsDashboard,
     },
     mixins: [FluroContentViewMixin],
     methods: {

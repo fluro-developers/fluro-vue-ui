@@ -152,7 +152,7 @@ import NotificationTeamManager from "../components/NotificationTeamManager.vue";
 import FluroContentEditMixin from "../FluroContentEditMixin.js";
 //import FluroContentEdit from '../FluroContentEdit.vue';
 import TeamTrackTeaser from "../components/TeamTrackTeaser.vue";
-import TeamMetricsDashboard from "../../../TeamMetricsDashboard.vue";
+import TeamMetricsDashboard from "../../../charts/metrics/TeamMetricsDashboard.vue";
 
 // import { JSONView } from "vue-json-component";
 

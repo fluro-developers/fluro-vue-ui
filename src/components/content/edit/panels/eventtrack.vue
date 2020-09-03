@@ -216,6 +216,15 @@
             <tab heading="Events" v-if="eventList">
                 <component v-bind:is="eventList" />
             </tab>
+            <tab heading="Metrics" v-if="model._id">
+                <flex-column-body>
+                    <v-container fluid>
+                        <!-- <constrain sm> -->
+                        <eventtrack-metrics-dashboard :id="model._id" type="eventtrack" />
+                        <!-- </constrain> -->
+                    </v-container>
+                </flex-column-body>
+            </tab>
         </tabset>
     </flex-column>
 </template>
@@ -231,7 +240,7 @@ import MessagingEventManager from "../components/MessagingEventManager.vue";
 import ReminderEventManager from "../components/ReminderEventManager.vue";
 import DefaultRosterManager from "../components/DefaultRosterManager.vue";
 import FluroContentEditMixin from "../FluroContentEditMixin.js";
-
+import EventtrackMetricsDashboard from "../../../charts/metrics/EventtrackMetricsDashboard.vue";
 import TicketTypeManager from "../../event/TicketTypeManager.vue";
 
 /////////////////////////////////
@@ -242,7 +251,8 @@ export default {
         DefaultRosterManager,
         ReminderEventManager,
         MessagingEventManager,
-        LocationSelector
+        LocationSelector,
+        EventtrackMetricsDashboard
     },
     mixins: [FluroContentEditMixin],
     data() {

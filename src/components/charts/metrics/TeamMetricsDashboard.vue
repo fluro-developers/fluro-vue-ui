@@ -1,7 +1,8 @@
 <template>
-     <flex-column>
-    <!--    <fluro-page-preloader v-if="loading" contain />
-        
+    <flex-column>
+        <fluro-page-preloader v-if="loading" contain />
+        <!--  <template v-if="loading"> Loading Component <v-progress-circular indeterminate></v-progress-circular>
+        </template> -->
         <template v-else>
             <fluro-panel v-if="eventData.model.series.attendance.length">
                 <fluro-panel-title>
@@ -22,7 +23,7 @@
                 </fluro-panel>
                
                     <v-layout row>
-                        <v-flex xs12 lg4>
+                        <v-flex xs12 lg4 v-if="gender">
                             <fluro-panel>
                                 <fluro-panel-title>
                                     <strong>Gender</strong>
@@ -34,7 +35,7 @@
                             </fluro-panel>
                         </v-flex>
                         <v-spacer/>
-                        <v-flex xs12 lg8>
+                        <v-flex xs12 lg8 v-if="age">
                             <fluro-panel>
                                 <fluro-panel-title>
                                     <strong>Ages</strong>
@@ -48,12 +49,12 @@
                 
             </template>
             <!-- <div v-if="ageSpread.model.data.agespread.length"> -->
-   
+        </template>
     </flex-column>
 </template>
 <script>
 import { moment } from 'fluro';
-import FluroChart from './charts/FluroChart.vue';
+import FluroChart from '../FluroChart.vue';
 export default {
     components: {
         FluroChart,
@@ -190,22 +191,28 @@ export default {
                     colors: ['#00BFFF', '#FFC0CB', '#FFFF00', '#FFEBCD']
                 }
             }
-            _.each(_.get(stats, "data.genders"), function(value, key) {
+            var genders = _.get(stats, "data.genders")
+            _.each(genders, function(value, key) {
                 labels.push(key.replace(/\w\S*/g, function(txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }))
                 data.push(value)
             })
             _.set(returnData, 'model.series[gender]', { data, labels })
             // console.log("Gender Graph Data", returnData)
+            if(genders) {
+                self.genders = true
+            }
             return returnData
         },
         ageSpread() {
             var self = this
             var statbase = _.last(self.model.statsheets)
-            var ageSpread = statbase.data.ages.spread
-            var averageAge = statbase.data.ages.average
+            var ageSpread = _.get(statbase, "data.ages.spread")
+            var averageAge = _.get(statbase, "data.ages.average")
 
+            if (ageSpread) {
+                self.age = true
+            }
             var groupedAges = new Array(8).fill(0)
-
             _.each(ageSpread, function(value, key) {
                 // console.log("key", key, "value", value)
                 switch (true) {
@@ -350,6 +357,8 @@ export default {
     data() {
         return {
             loading: true,
+            age: false,
+            gender: false
         }
     }
 }

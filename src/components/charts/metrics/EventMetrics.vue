@@ -54,7 +54,7 @@
 </template>
 <script>
 import { moment } from 'fluro';
-import FluroChart from './charts/FluroChart.vue';
+import FluroChart from '../../charts/FluroChart.vue';
 export default {
     components: {
         FluroChart,
