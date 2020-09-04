@@ -17,24 +17,25 @@
                     <strong>{{selectedEvent.title}} - {{selectedEvent.startDate | formatDate('dddd Do MMM YYYY h:mma')}}</strong>
                 </fluro-panel-title>
                 <fluro-panel-body>
+                <div v-if="selectedEvent.headcount" >
+                    <b>Overall Head Count:</b> {{selectedEvent.headcount.average}}
+                </div>
                  <template v-if="selectedEvent.checkins">
                     <event-age-gender-metrics :id="selectedEvent._id"></event-age-gender-metrics>
+                    <h2>Checkins</h2>
                     <fluro-table :pageSize="30" :scrollable="false" :items="selectedEvent.checkins" :columns="columns"></fluro-table>
-                    <pre>{{selectedEvent}}</pre>
                 </template>
                 <template v-else>
-                    <div v-if="selectedEvent.headcount" >
-                        <b>Head Count:</b> {{selectedEvent.headcount.average}}
-                    </div>
                     <div class="muted">
                         <br />
                         Detailed demographic information not available as no Checkins found for this event.
                     </div>
                 </template>
-                <template>
-                    <!-- Post renderer goes here for selectedEvent.posts 
-                    <pre>{{selectedEvents.posts}}</pre>
-                    -->
+                <template v-if="selectedEvent.posts"> 
+                    <h2>Event Reports</h2>
+                    <div v-for="post in selectedEvent.posts" :key="post._id">
+                        <fluro-content-view :id="post._id" :embedded="true" :definition="post.definition" :type="post._type" />
+                    </div>
                 </template>    
                 </fluro-panel-body>
             </fluro-panel>
@@ -57,13 +58,15 @@ import EventAgeGenderMetrics from './EventAgeGenderMetrics.vue'
 import ContactAvatar from "../../table/cells/AvatarCell.vue";
 import FluroTable from "../../table/FluroTable.vue";
 import FluroContentViewMixin from "../../content/view/FluroContentViewMixin.js";
+import FluroContentView from "../../content/view/FluroContentView.vue";
 
 export default {
     components: {
         FluroChart,
         EventAgeGenderMetrics,
         ContactAvatar,
-        FluroTable
+        FluroTable,
+        FluroContentView
     },
     mixins: [FluroContentViewMixin],
     props: {

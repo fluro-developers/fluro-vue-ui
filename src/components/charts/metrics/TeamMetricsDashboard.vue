@@ -112,9 +112,10 @@ export default {
                 male: 0,
                 female: 0,
             }
-            _.each(stats.genders, function(value, stat){
+            _.each(stats.data.genders, function(value, stat){
                 genders[stat] = value
             })
+            console.log("Genders", genders, stats)
             _.each(genders, function(value, key) {
                 labels.push(key.replace(/\w\S*/g, function(txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }))
                 data.push(value)

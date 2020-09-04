@@ -89,7 +89,7 @@ export default {
                 labels.push(key.replace(/\w\S*/g, function(txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }))
                 data.push(value)
             })
-            console.log("genders", genders)
+            //console.log("genders", genders)
 
             _.set(returnData, 'model.series[gender]', { data, labels })
             // console.log("Gender Graph Data", returnData)
