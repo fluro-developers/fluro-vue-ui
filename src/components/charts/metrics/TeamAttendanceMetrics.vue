@@ -94,7 +94,7 @@ export default {
                 return event.startDate
             })
             var sortedEventData = []
-            console.log("events length", events.length)
+            //console.log("events length", events.length)
             _.each(events, function(event) {
                 //console.log("HERE", event)
                 var headcount = _.get(event, "headcount.average") || 0
@@ -109,7 +109,7 @@ export default {
             })
             self.sortedEventData = sortedEventData
 
-            console.log("axis length", model.axis.length)
+            //console.log("axis length", model.axis.length)
             var max = Math.max(_.max(model.series.attendance), _.max(model.series.expected))
 
             var returnData = {
@@ -157,7 +157,7 @@ export default {
                 }
             }
 
-            console.log("Event Graph Data", returnData)
+            //console.log("Event Graph Data", returnData)
             return returnData
         },
         columns() {
