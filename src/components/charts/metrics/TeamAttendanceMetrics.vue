@@ -38,14 +38,14 @@
                 </template>    
                 </fluro-panel-body>
             </fluro-panel>
-            <fluro-panel v-if="!selectedEvent">
+            <!-- <fluro-panel v-if="!selectedEvent">
                 <fluro-panel-title>
                     <strong>Member Attendance</strong>
                 </fluro-panel-title>
                 <fluro-panel-body>
 
                 </fluro-panel-body>
-            </fluro-panel>
+            </fluro-panel> -->
             <!-- <div v-if="ageSpread.model.data.agespread.length"> -->
         </template>
     </flex-column>
