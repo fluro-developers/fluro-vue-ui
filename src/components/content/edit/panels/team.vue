@@ -145,7 +145,7 @@
                 <flex-column-body style="background: #fafafa;">
                     <v-container class="grid-list-xl">
                         <constrain md>
-                            <team-attendance-metrics :id="model" type="team" />
+                            <team-attendance-metrics :group="model" type="team" />
                         </constrain>
                     </v-container>
                 </flex-column-body>

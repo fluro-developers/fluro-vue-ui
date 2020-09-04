@@ -39,12 +39,12 @@
                 </template>    
                 </fluro-panel-body>
             </fluro-panel>
-            <!-- <fluro-panel v-if="!selectedEvent">
+            <!-- <fluro-panel >
                 <fluro-panel-title>
                     <strong>Member Attendance</strong>
                 </fluro-panel-title>
                 <fluro-panel-body>
-
+                    <pre>{{attendance}}</pre>
                 </fluro-panel-body>
             </fluro-panel> -->
             <!-- <div v-if="ageSpread.model.data.agespread.length"> -->
@@ -70,7 +70,7 @@ export default {
     },
     mixins: [FluroContentViewMixin],
     props: {
-        id: {
+        group: {
             type: [Object, String],
         },
         type: {
@@ -78,7 +78,7 @@ export default {
         },
         config: {
             type: Object,
-        }
+        },
     },
     computed: {
         eventData() {
@@ -177,13 +177,59 @@ export default {
 
             return array;
         },
+        attendance() {
+            var self = this
+            var allContacts = {}
+            console.log(self.group)
+            _.each(self.model, function(event, key) {
+                
+                _.each (event.expectedContacts, function (contact){
+                    allContacts[contact._id] = contact
+                })
+                _.each (event.checkin, function (contact){
+                    allContacts[contact._id] = {
+                        _id: contact._id,
+                        title: contact.title,
+                        firstName: contact.firstName,
+                        lastName: contact.lastName
+                    }
+                })
+                
+            })
+
+            _.each(allContacts, function(contact){
+
+                var found = _.find(self.group.provisionalMembers, function(member){
+                    return member._id == contact._id
+                })
+                if(found) {
+                    contact.expected = true
+                }
+                var assignedContacts = _.map(self.group.assignments, function(assignment){
+                    return assignment.contacts
+                })
+                assignedContacts = _.flatten(assignedContacts)
+                if(_.find(assignedContacts, function (assignment){
+                    console.log("assignment", assignment)
+                    return assignment._id == contact._id
+                })) {
+                    contact.expected = true
+                }
+
+            })
+
+            allContacts = _.sortBy(allContacts, ['expected', 'lastName', 'firstName'])
+
+            
+            return allContacts
+        }
     },
     asyncComputed: {
         model: {
             // default: {},
             get() {
                 var self = this;
-                var id = self.$fluro.utils.getStringID(self.id);
+                var id = self.$fluro.utils.getStringID(self.group);
                 return new Promise(function(resolve, reject) {
                     //Load the chart data
                     switch (self.type) {
