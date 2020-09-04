@@ -22,7 +22,7 @@
                 </div>
                  <template v-if="selectedEvent.checkins">
                     <event-age-gender-metrics :id="selectedEvent._id"></event-age-gender-metrics>
-                    <h2>Checkins</h2>
+                    <h2 style="margin-top: 15px;">Checkins</h2>
                     <fluro-table :pageSize="30" :scrollable="false" :items="selectedEvent.checkins" :columns="columns"></fluro-table>
                 </template>
                 <template v-else>
@@ -32,7 +32,7 @@
                     </div>
                 </template>
                 <template v-if="selectedEvent.posts"> 
-                    <h2>Event Reports</h2>
+                    <h2 style="margin-top: 15px;">Event Reports</h2>
                     <div v-for="post in selectedEvent.posts" :key="post._id">
                         <fluro-content-view :id="post._id" :embedded="true" :definition="post.definition" :type="post._type" />
                     </div>
