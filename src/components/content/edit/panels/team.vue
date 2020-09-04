@@ -141,6 +141,15 @@
                     </v-container>
                 </flex-column-body>
             </tab>
+            <tab heading="Attendance History">
+                <flex-column-body style="background: #fafafa;">
+                    <v-container class="grid-list-xl">
+                        <constrain md>
+                            <team-attendance-metrics :id="model" type="team" />
+                        </constrain>
+                    </v-container>
+                </flex-column-body>
+            </tab>
         </tabset>
     </flex-column>
 </template>
@@ -153,6 +162,7 @@ import FluroContentEditMixin from "../FluroContentEditMixin.js";
 //import FluroContentEdit from '../FluroContentEdit.vue';
 import TeamTrackTeaser from "../components/TeamTrackTeaser.vue";
 import TeamMetricsDashboard from "../../../charts/metrics/TeamMetricsDashboard.vue";
+import TeamAttendanceMetrics from "../../../charts/metrics/TeamAttendanceMetrics.vue";
 
 // import { JSONView } from "vue-json-component";
 
@@ -166,6 +176,7 @@ import _ from "lodash";
 export default {
     components: {
         TeamMetricsDashboard,
+        TeamAttendanceMetrics,
         TeamTrackTeaser,
         NotificationTeamManager,
         GroupRoleManager

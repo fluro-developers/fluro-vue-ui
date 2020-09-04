@@ -4,14 +4,6 @@
         <!--  <template v-if="loading"> Loading Component <v-progress-circular indeterminate></v-progress-circular>
         </template> -->
         <template v-else>
-            <fluro-panel v-if="eventData.model.series.attendance.length">
-                <fluro-panel-title>
-                    <strong>Attendance</strong>
-                </fluro-panel-title>
-                <fluro-panel-body>
-                    <fluro-chart chartType="line" :options="eventData.options" v-model="eventData.model" :series="eventData.series" :axis="eventData.axis" />
-                </fluro-panel-body>
-            </fluro-panel>
             <template v-if="groupSize.model.series.groupsize.length">
                 <fluro-panel>
                     <fluro-panel-title>
@@ -23,7 +15,7 @@
                 </fluro-panel>
                
                     <v-layout row>
-                        <v-flex xs12 lg4 v-if="gender">
+                        <v-flex xs12 lg4>
                             <fluro-panel>
                                 <fluro-panel-title>
                                     <strong>Gender</strong>
@@ -34,7 +26,7 @@
                             </fluro-panel>
                         </v-flex>
                         <v-spacer/>
-                        <v-flex xs12 lg8 v-if="age">
+                        <v-flex xs12 lg8>
                             <fluro-panel>
                                 <fluro-panel-title>
                                     <strong>Ages</strong>
@@ -67,80 +59,6 @@ export default {
         }
     },
     computed: {
-        eventData() {
-            var self = this
-            var model = {
-                axis: [],
-                series: {
-                    attendance: [],
-                    expected: [],
-                }
-            }
-            var events = _.sortBy(self.model.events, function(event) {
-                return event.startDate
-            })
-            _.each(events, function(event) {
-                //console.log("HERE", event)
-                var headcount = _.get(event, "headcount.average") || 0
-                var checkins = _.get(event, "checkins.length") || 0
-                var attendance = Math.max(headcount, checkins, 0)
-                if (attendance > 0) {
-                    model.axis.push(event.startDate)
-                    model.series.attendance.push(attendance)
-                    model.series.expected.push(_.get(event, "stats.guestExpected") || 0)
-                }
-            })
-
-            var max = Math.max(_.max(model.series.attendance), _.max(model.series.expected))
-
-            var returnData = {
-                axis: {
-                    "title": "Date",
-                    "key": "date"
-                },
-                series: [{
-                        "title": "Attendance",
-                        "key": "attendance"
-                    },
-                    {
-                        "title": "Expected",
-                        "key": "expected",
-                    },
-                ],
-                model,
-                options: {
-                    yaxis: [{
-                            min: 0,
-                            max,
-                            title: {
-                                text: 'Attendance',
-                            },
-                            tooltip: {
-                                enabled: true,
-                                shared: true,
-                            },
-                            show: true,
-                        },
-                        {
-                            min: 0,
-                            max,
-                            opposite: true,
-                            title: {
-                                text: 'Expected'
-                            },
-                            tooltip: {
-                                enabled: true,
-                                shared: true,
-                            },
-                            show: true,
-                        }
-                    ],
-                }
-            }
-
-            // console.log("Event Graph Data", returnData)
-            return returnData
-        },
         groupSize() {
             var self = this;
             var model = {
@@ -190,7 +108,13 @@ export default {
                     colors: ['#00BFFF', '#FFC0CB', '#FFFF00', '#FFEBCD']
                 }
             }
-            var genders = _.get(stats, "data.genders")
+            var genders = {
+                male: 0,
+                female: 0,
+            }
+            _.each(stats.genders, function(value, stat){
+                genders[stat] = value
+            })
             _.each(genders, function(value, key) {
                 labels.push(key.replace(/\w\S*/g, function(txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }))
                 data.push(value)

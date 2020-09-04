@@ -63,11 +63,19 @@ export default {
                     colors: ['#FFC0CB', '#00BFFF', '#FFFF00', '#FFEBCD']
                 }
             }
-            var genders = _.get(stats, "genders")
+            var genders = {
+                female: 0,
+                male: 0,
+            }
+            _.each(stats.genders, function(value, stat){
+                genders[stat] = value
+            })
             _.each(genders, function(value, key) {
                 labels.push(key.replace(/\w\S*/g, function(txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }))
                 data.push(value)
             })
+            console.log("genders", genders)
+
             _.set(returnData, 'model.series[gender]', { data, labels })
             // console.log("Gender Graph Data", returnData)
             if(genders) {
