@@ -11,7 +11,15 @@
                             <strong>Gender</strong>
                         </fluro-panel-title>
                         <fluro-panel-body>
-                            <fluro-chart chartType="pie" :options="genderBreakdown.options" v-model="genderBreakdown.model" :series="genderBreakdown.series" />
+                            <template v-if="gender">
+                                <fluro-chart chartType="pie" :options="genderBreakdown.options" v-model="genderBreakdown.model" :series="genderBreakdown.series" />
+                            </template>
+                            <template v-else>
+                                <div class="muted">
+                                    Gender demographics are not available for this event.
+                                </div>
+                            </template>
+                            
                         </fluro-panel-body>
                     </fluro-panel>
                 </v-flex>
@@ -22,7 +30,14 @@
                             <strong>Ages</strong>
                         </fluro-panel-title>
                         <fluro-panel-body>
-                            <fluro-chart chartType="line" :options="ageSpread.options" v-model="ageSpread.model" :series="ageSpread.series" :axis="ageSpread.axis" />
+                            <template v-if="age">
+                                <fluro-chart chartType="line" :options="ageSpread.options" v-model="ageSpread.model" :series="ageSpread.series" :axis="ageSpread.axis" />
+                            </template>
+                            <template v-else>
+                                <div class="muted">
+                                    Age demographics are not available for this event.
+                                </div>
+                            </template>
                         </fluro-panel-body>
                     </fluro-panel>
                 </v-flex>
@@ -223,6 +238,8 @@ export default {
     data() {
         return {
             loading: true,
+            age: false,
+            gender: false
         }
     }
 }
