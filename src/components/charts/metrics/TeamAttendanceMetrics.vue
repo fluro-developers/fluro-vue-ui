@@ -210,7 +210,6 @@ export default {
                 })
                 assignedContacts = _.flatten(assignedContacts)
                 if(_.find(assignedContacts, function (assignment){
-                    console.log("assignment", assignment)
                     return assignment._id == contact._id
                 })) {
                     contact.expected = true
