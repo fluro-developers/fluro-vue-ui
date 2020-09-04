@@ -104,9 +104,6 @@ export default {
             var ageSpread = _.get(statbase, "ages")
             var averageAge = _.get(statbase, "averageAge")
 
-            if (ageSpread) {
-                self.age = true
-            }
             var groupedAges = new Array(8).fill(0)
             _.each(ageSpread, function(value, key) {
                 // console.log("key", key, "value", value)
@@ -226,6 +223,15 @@ export default {
                         resolve(res.data);
                         console.log("Event Gender Dataset", id, res.data)
                         self.loading = false;
+ 
+                        if (res.data.stats.ages) {
+                            self.age = true
+                        }
+
+                        if (res.data.stats.genders) {
+                            self.gender = true
+                        }
+
                     }, function(err) {
                         reject(err);
                         self.loading = false;
