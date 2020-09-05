@@ -67,8 +67,8 @@
                                 </v-btn>
                             </v-flex>
                         </v-layout>
-                        <template v-for="(eventtrack, index) in tracks">
-                            <team-track-teaser v-model="tracks[index]" />
+                        <template v-for="(eventtrack, index) in tracks" >
+                            <team-track-teaser v-model="tracks[index]" :key="index"/>
                         </template>
                     </v-container>
                 </flex-column-body>
@@ -141,6 +141,15 @@
                     </v-container>
                 </flex-column-body>
             </tab>
+            <tab heading="Attendance History">
+                <flex-column-body style="background: #fafafa;">
+                    <v-container class="grid-list-xl">
+                        <constrain md>
+                            <team-attendance-metrics :group="model" type="team" />
+                        </constrain>
+                    </v-container>
+                </flex-column-body>
+            </tab>
         </tabset>
     </flex-column>
 </template>
@@ -152,7 +161,8 @@ import NotificationTeamManager from "../components/NotificationTeamManager.vue";
 import FluroContentEditMixin from "../FluroContentEditMixin.js";
 //import FluroContentEdit from '../FluroContentEdit.vue';
 import TeamTrackTeaser from "../components/TeamTrackTeaser.vue";
-import TeamMetricsDashboard from "../../../TeamMetricsDashboard.vue";
+import TeamMetricsDashboard from "../../../charts/metrics/TeamMetricsDashboard.vue";
+import TeamAttendanceMetrics from "../../../charts/metrics/TeamAttendanceMetrics.vue";
 
 // import { JSONView } from "vue-json-component";
 
@@ -166,6 +176,7 @@ import _ from "lodash";
 export default {
     components: {
         TeamMetricsDashboard,
+        TeamAttendanceMetrics,
         TeamTrackTeaser,
         NotificationTeamManager,
         GroupRoleManager

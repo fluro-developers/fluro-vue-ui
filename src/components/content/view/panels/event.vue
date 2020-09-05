@@ -50,7 +50,7 @@
                                 <template v-if="item.assets && item.assets.length">
                                     <h3 margin>Downloads & Resources</h3>
                                     <list-group>
-                                        <list-group-item @click="$fluro.global.view(song, true)" :item="asset" v-for="(asset, index) in item.assets">
+                                        <list-group-item @click="$fluro.global.view(song, true)" :item="asset" v-for="(asset, index) in item.assets" :key="index">
                                             <template v-slot:right>
                                                 <v-btn class="ma-0" icon @click="$actions.open([asset])">
                                                     <fluro-icon icon="ellipsis-h" />
@@ -73,7 +73,7 @@
                                             <v-flex shrink>
                                                 <fluro-icon library="fas" left icon="map-marker-alt" />
                                             </v-flex>
-                                            <v-flex v-for="location in locations">
+                                            <v-flex v-for="location in locations" :key="location._id">
                                                 <strong>{{location.title}}</strong>
                                                 <div class="sm muted" v-if="location.selectedRooms.length"><strong>Rooms:</strong> {{location.selectedRooms | comma('title')}}</div>
                                                 <!-- <pre>{{location}}</pre> -->
@@ -92,7 +92,7 @@
                         <constrain sm>
                             <h3 margin>Songs</h3>
                             <list-group>
-                                <list-group-item @click="$fluro.global.view(song, true)" :item="song" v-for="(song, index) in songs">
+                                <list-group-item @click="$fluro.global.view(song, true)" :item="song" v-for="(song, index) in songs" :key="index">
                                     <template v-slot:right>
                                         <v-btn class="ma-0" icon @click="$actions.open([song])">
                                             <fluro-icon icon="ellipsis-h" />
@@ -114,7 +114,7 @@
                                     <h3 margin>Team Members</h3>
                                 </v-flex>
                             </v-layout>
-                            <fluro-panel v-for="roster in item.rostered">
+                            <fluro-panel v-for="roster in item.rostered" :key="roster._id">
                                 <fluro-panel-title>
                                     <v-layout align-center>
                                         <v-flex>
@@ -133,8 +133,9 @@
                                 </fluro-panel-title>
                                 <fluro-panel-body>
                                     <v-layout row wrap>
-                                        <template v-if="slot.assignments && slot.assignments.length">
                                         <v-flex xs6 sm4 md3 v-for="slot in roster.slots" :key="slot._id">
+                                            <template v-if="slot.assignments && slot.assignments.length">
+                                        
                                             <v-container class="mb-2 pa-2">
                                                 <h5>{{slot.title}}</h5>
                                                 <div class="assignment-item" @click="$actions.open([assignment])" :class="assignment.confirmationStatus" v-for="assignment in slot.assignments" :key="assignment._id">
@@ -148,8 +149,9 @@
                                                     </v-layout>
                                                 </div>
                                             </v-container>
+                                            </template>
                                         </v-flex>
-                                        </template>
+                                        
                                     </v-layout>
                                     <!-- <pre>{{roster}}</pre> -->
                                 </fluro-panel-body>
@@ -187,9 +189,7 @@
             <tab heading="Metrics">
                 <flex-column-body>
                     <v-container fluid>
-                        <!-- <constrain sm> -->
-                        <eventtrack-metrics-dashboard :id="item" type="eventtrack" />
-                        <!-- </constrain> -->
+                        <event-age-gender-metrics :id="item"></event-age-gender-metrics>
                     </v-container>
                 </flex-column-body>
             </tab>
@@ -202,10 +202,10 @@
 import Vue from 'vue';
 import _ from 'lodash';
 
-import EventtrackMetricsDashboard from "../../../EventtrackMetricsDashboard.vue";
 import FluroContentView from '../FluroContentView.vue';
 import LocationViewMapComponent from '../../event/LocationViewMapComponent.vue';
 import FluroContentViewMixin from '../FluroContentViewMixin.js';
+import EventAgeGenderMetrics from '../../../charts/metrics/EventAgeGenderMetrics.vue'
 import GuestList from '../../event/GuestList.vue';
 import TicketList from '../../event/TicketList.vue';
 
@@ -227,7 +227,7 @@ export default {
         GuestList,
         TicketList,
         LocationViewMapComponent,
-        EventtrackMetricsDashboard,
+        EventAgeGenderMetrics
     },
     mixins: [FluroContentViewMixin],
     methods: {

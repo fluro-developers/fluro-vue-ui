@@ -1,16 +1,9 @@
 <template>
-     <flex-column>
-    <!--    <fluro-page-preloader v-if="loading" contain />
-        
+    <flex-column>
+        <fluro-page-preloader v-if="loading" contain />
+        <!--  <template v-if="loading"> Loading Component <v-progress-circular indeterminate></v-progress-circular>
+        </template> -->
         <template v-else>
-            <fluro-panel v-if="eventData.model.series.attendance.length">
-                <fluro-panel-title>
-                    <strong>Attendance</strong>
-                </fluro-panel-title>
-                <fluro-panel-body>
-                    <fluro-chart chartType="line" :options="eventData.options" v-model="eventData.model" :series="eventData.series" :axis="eventData.axis" />
-                </fluro-panel-body>
-            </fluro-panel>
             <template v-if="groupSize.model.series.groupsize.length">
                 <fluro-panel>
                     <fluro-panel-title>
@@ -30,7 +23,6 @@
                                 <fluro-panel-body>
                                     <fluro-chart chartType="pie" :options="genderBreakdown.options" v-model="genderBreakdown.model" :series="genderBreakdown.series" />
                                 </fluro-panel-body>
-                                </div>
                             </fluro-panel>
                         </v-flex>
                         <v-spacer/>
@@ -48,12 +40,12 @@
                 
             </template>
             <!-- <div v-if="ageSpread.model.data.agespread.length"> -->
-   
+        </template>
     </flex-column>
 </template>
 <script>
 import { moment } from 'fluro';
-import FluroChart from './charts/FluroChart.vue';
+import FluroChart from '../FluroChart.vue';
 export default {
     components: {
         FluroChart,
@@ -67,80 +59,6 @@ export default {
         }
     },
     computed: {
-        eventData() {
-            var self = this
-            var model = {
-                axis: [],
-                series: {
-                    attendance: [],
-                    expected: [],
-                }
-            }
-            var events = _.sortBy(self.model.events, function(event) {
-                return event.startDate
-            })
-            _.each(events, function(event) {
-                //console.log("HERE", event)
-                var headcount = _.get(event, "headcount.average") || 0
-                var checkins = _.get(event, "checkins.length") || 0
-                var attendance = Math.max(headcount, checkins, 0)
-                if (attendance > 0) {
-                    model.axis.push(event.startDate)
-                    model.series.attendance.push(attendance)
-                    model.series.expected.push(_.get(event, "stats.guestExpected") || 0)
-                }
-            })
-
-            var max = Math.max(_.max(model.series.attendance), _.max(model.series.expected))
-
-            var returnData = {
-                axis: {
-                    "title": "Date",
-                    "key": "date"
-                },
-                series: [{
-                        "title": "Attendance",
-                        "key": "attendance"
-                    },
-                    {
-                        "title": "Expected",
-                        "key": "expected",
-                    },
-                ],
-                model,
-                options: {
-                    yaxis: [{
-                            min: 0,
-                            max,
-                            title: {
-                                text: 'Attendance',
-                            },
-                            tooltip: {
-                                enabled: true,
-                                shared: true,
-                            },
-                            show: true,
-                        },
-                        {
-                            min: 0,
-                            max,
-                            opposite: true,
-                            title: {
-                                text: 'Expected'
-                            },
-                            tooltip: {
-                                enabled: true,
-                                shared: true,
-                            },
-                            show: true,
-                        }
-                    ],
-                }
-            }
-
-            // console.log("Event Graph Data", returnData)
-            return returnData
-        },
         groupSize() {
             var self = this;
             var model = {
@@ -190,22 +108,35 @@ export default {
                     colors: ['#00BFFF', '#FFC0CB', '#FFFF00', '#FFEBCD']
                 }
             }
-            _.each(_.get(stats, "data.genders"), function(value, key) {
+            var genders = {
+                male: 0,
+                female: 0,
+            }
+            _.each(stats.data.genders, function(value, stat){
+                genders[stat] = value
+            })
+            console.log("Genders", genders, stats)
+            _.each(genders, function(value, key) {
                 labels.push(key.replace(/\w\S*/g, function(txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }))
                 data.push(value)
             })
             _.set(returnData, 'model.series[gender]', { data, labels })
             // console.log("Gender Graph Data", returnData)
+            if(genders) {
+                self.genders = true
+            }
             return returnData
         },
         ageSpread() {
             var self = this
             var statbase = _.last(self.model.statsheets)
-            var ageSpread = statbase.data.ages.spread
-            var averageAge = statbase.data.ages.average
+            var ageSpread = _.get(statbase, "data.ages.spread")
+            var averageAge = _.get(statbase, "data.ages.average")
 
+            if (ageSpread) {
+                self.age = true
+            }
             var groupedAges = new Array(8).fill(0)
-
             _.each(ageSpread, function(value, key) {
                 // console.log("key", key, "value", value)
                 switch (true) {
@@ -350,6 +281,8 @@ export default {
     data() {
         return {
             loading: true,
+            age: false,
+            gender: false
         }
     }
 }

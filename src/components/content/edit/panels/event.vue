@@ -316,6 +316,13 @@
                     </v-container>
                 </flex-column-body>
             </tab>
+            <tab heading="Metrics">
+                <flex-column-body>
+                    <v-container fluid>
+                        <event-age-gender-metrics :id="itemID"></event-age-gender-metrics>
+                    </v-container>
+                </flex-column-body>
+            </tab>
         </tabset>
     </flex-column>
 </template>
@@ -332,6 +339,7 @@ import GuestList from "../../event/GuestList.vue";
 import TicketList from "../../event/TicketList.vue";
 import TicketTypeManager from "../../event/TicketTypeManager.vue";
 import FluroContentView from "../../view/FluroContentView.vue";
+import EventAgeGenderMetrics from '../../../charts/metrics/EventAgeGenderMetrics.vue'
 
 /////////////////////////////////
 
@@ -350,7 +358,8 @@ export default {
         FluroContentView,
         // MessagingEventManager,
         LocationSelector,
-        LocationViewMapComponent
+        LocationViewMapComponent,
+        EventAgeGenderMetrics
     },
     props: {},
     mixins: [FluroContentEditMixin],

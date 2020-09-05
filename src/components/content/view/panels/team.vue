@@ -21,7 +21,7 @@
           <v-container fluid>
             <constrain sm>
               <search-input placeholder="Search Members" :autofocus="true" v-model="keywords" />
-              <fluro-panel v-for="group in groups">
+              <fluro-panel v-for="group in groups" :key="group._id">
                 <fluro-panel-title>
                   <strong>{{group.contacts.length}} {{group.title}}</strong>
                   <span class="muted" v-if="searchWords">Matching: '{{searchWords}}'</span>
@@ -66,7 +66,7 @@
 
 import Vue from "vue";
 import FluroContentViewMixin from "../FluroContentViewMixin.js";
-import TeamMetricsDashboard from "../../../TeamMetricsDashboard.vue";
+import TeamMetricsDashboard from "../../../charts/metrics/TeamMetricsDashboard.vue";
 import FluroTable from "../../../table/FluroTable.vue";
 import SearchInput from "../../../ui/SearchInput.vue";
 import ContactAvatar from "../../../table/cells/AvatarCell.vue";
