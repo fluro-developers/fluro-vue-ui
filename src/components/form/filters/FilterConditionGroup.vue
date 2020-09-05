@@ -550,9 +550,9 @@ export default {
 																return new Promise(function(resolve, reject) {
 
 																				return self.$fluro.api.get(`/tickets/filter/types`)
-																				.then(function(res) {
-																					return resolve(res.data);
-																				})
+																								.then(function(res) {
+																												return resolve(res.data);
+																								})
 																								.catch(reject);
 																})
 												}
@@ -940,9 +940,9 @@ export default {
 																_.map(self.ticketTypes, function(title) {
 																				return {
 																								title,
-																								name:title,
-																								text:title,
-																								value:title,
+																								name: title,
+																								text: title,
+																								value: title,
 																				};
 																})
 												);
@@ -2037,6 +2037,10 @@ export default {
 
 																//Add the ability to simply check if a definition has values
 												} else {
+
+
+																var eventLinkType;
+
 																// var definitionName = _.get(self.definition, 'definitionName');
 																switch (self.basicType) {
 																				case "process":
@@ -2145,34 +2149,8 @@ export default {
 
 																								///////////////////////////////////
 
-																								injectFields.push({
-																												title: "Event Track",
-																												key: "_event.track",
-																												maximum: 1,
-																												minimum: 0,
-																												type: "reference",
-																												typeSelect: "eventtrack"
-																								});
 
-																								injectFields.push({
-																												title: "Event Tags",
-																												key: "_event.tags",
-																												maximum: 1,
-																												minimum: 0,
-																												type: "reference",
-																												typeSelect: "tag"
-																								});
-
-																								injectFields.push({
-																												title: "Event Type / Definition",
-																												key: "_event.definition",
-																												maximum: 1,
-																												minimum: 0,
-																												type: "string",
-																												directive: "select",
-																												options: eventDefinitionOptions
-																								});
-
+																								eventLinkType = true;
 																								// {
 																								//  title: 'Event Type (Definition)',
 																								//  key: 'definition',
@@ -2209,6 +2187,13 @@ export default {
 																								//  ]
 																								// });
 
+																								break;
+																				case 'plan':
+																				case 'attendance':
+																				case "ticket":
+
+
+																								eventLinkType = true;
 																								break;
 																				case "family":
 																								injectFields.push({
@@ -2487,6 +2472,55 @@ export default {
 																								}
 																								break;
 																}
+												}
+												//////////////////////////////////////////////////////////////
+
+												if (eventLinkType) {
+																injectFields.push({
+																				title: "Event Track",
+																				key: "_event.track",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "reference",
+																				typeSelect: "eventtrack"
+																});
+
+																injectFields.push({
+																				title: "Event Tags",
+																				key: "_event.tags",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "reference",
+																				typeSelect: "tag"
+																});
+
+																injectFields.push({
+																				title: "Event Realms",
+																				key: "_event.realms",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "reference",
+																				typeSelect: "realm"
+																});
+
+																injectFields.push({
+																				title: "Event Type / Definition",
+																				key: "_event.definition",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "string",
+																				directive: "select",
+																				options: eventDefinitionOptions
+																});
+
+																injectFields.push({
+																				title: "Event Start Date",
+																				key: "_event.startDate",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "date"
+																});
+
 												}
 
 												//////////////////////////////////////////////////////////////

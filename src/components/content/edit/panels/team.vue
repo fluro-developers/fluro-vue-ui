@@ -417,6 +417,54 @@ export default {
 
             ///////////////////////////////////
 
+            var contentSelectActions;
+
+            if (self.$fluro.options) {
+
+                ///////////////////////////////////
+
+                console.log('PROMOTIONS')
+                contentSelectActions = [{
+                    title: '',
+                    key: '_id',
+                    renderer: 'button',
+                    shrink: true,
+                    tooltip: 'Promote to position',
+                    button: {
+                        icon: 'level-up',
+                        action(contact) {
+                            return new Promise(function(resolve, reject) {
+
+                                // console.log('POSITIONS', self.model.assignments)
+                                return self.$fluro.options(self.model.assignments, 'Promote to position', 'Select a position')
+                                    .then(function(position) {
+                                        // console.log('PROMOTE', position, contact)
+                                        if (!position.contacts) {
+                                            self.$set(position, 'contacts', []);
+                                        }
+
+                                        var index = self.model.provisionalMembers.indexOf(contact);
+                                        if (index != -1) {
+                                            self.model.provisionalMembers.splice(index);
+                                        }
+                                        position.contacts.push(contact);
+
+                                        self.$fluro.notify(`${contact.firstName} was promoted to ${position.title}`)
+
+                                        resolve();
+                                    }, reject)
+
+                                // self.deselect(row);
+                                // resolve();
+                            })
+
+                        },
+                    }
+                }]
+            }
+
+            ///////////////////////////////////
+
             addField("provisionalMembers", {
                 title: "Group Members",
                 minimum: 0,
@@ -424,7 +472,11 @@ export default {
                 type: "reference",
                 directive: "reference-select",
                 params: {
-                    restrictType: "contact"
+                    restrictType: "contact",
+                    contentSelect: {
+                        forceTableView: true,
+                        actions: contentSelectActions,
+                    },
                 }
             });
 

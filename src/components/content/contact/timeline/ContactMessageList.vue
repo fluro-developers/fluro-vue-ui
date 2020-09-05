@@ -24,7 +24,8 @@
                 <div class="entries">
                   <div v-for="entry in day.items" :key="entry._id">
                     <mailout-card :item="entry" v-if="entry._type == 'mailout'" />
-                    <text-message-card :item="entry" v-if="entry._type == 'sms'" />
+                    <text-message-card :item="entry" v-else-if="entry._type == 'sms'" />
+                    <email-message-card :item="entry" v-else />
                   </div>
                   <!--  <div @click="$fluro.global.json(entry.data, {title:entry.message, depth:5})" class="entry" v-for="entry in day.items" :key="entry._id">
                                             <v-layout>
@@ -59,6 +60,7 @@
 import _ from "lodash";
 import MailoutCard from "./cards/MailoutCard.vue";
 import TextMessageCard from "./cards/TextMessageCard.vue";
+import EmailMessageCard from "./cards/EmailMessageCard.vue";
 
 export default {
   props: {
@@ -68,7 +70,8 @@ export default {
   },
   components: {
     MailoutCard,
-    TextMessageCard
+    TextMessageCard,
+    EmailMessageCard,
   },
   data() {
     return {
@@ -80,7 +83,7 @@ export default {
       var self = this;
       var array = [];
 
-      array = _.chain(array.concat(self.sms, self.emails))
+      array = _.chain(array.concat(self.sms, self.emails, self.simple))
         .orderBy(function(entry) {
           return new Date(entry.date);
         })
@@ -109,6 +112,38 @@ export default {
             .then(function(res) {
               var mapped = _.map(res.data, function(entry) {
                 entry._type = "sms";
+                return entry;
+              });
+
+              resolve(mapped);
+              self.loading = false;
+            })
+            .catch(function(err) {
+              reject(err);
+              self.loading = false;
+            });
+          // https://api.staging.fluro.io/info/checkins?contact=592e50389d9129595a75cc4e
+        });
+      }
+    },
+    simple: {
+      default: [],
+      get() {
+        var self = this;
+        self.loading = true;
+
+        var contactID = self.$fluro.utils.getStringID(self.contact);
+        if (!contactID) {
+          Promise.resolve([]);
+          self.loading = false;
+        }
+
+        return new Promise(function(resolve, reject) {
+          self.$fluro.api
+            .get(`/contact/${contactID}/email`)
+            .then(function(res) {
+              var mapped = _.map(res.data, function(entry) {
+                entry._type = "simpleemail";
                 return entry;
               });
 

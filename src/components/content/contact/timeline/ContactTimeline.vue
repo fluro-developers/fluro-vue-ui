@@ -37,6 +37,9 @@
             <template v-else-if="entry._type == 'sms'">
               <text-message-card :item="entry" />
             </template>
+            <template v-else-if="entry._type == 'simpleemail'">
+              <email-message-card :item="entry" />
+            </template>
             <template v-else>
               <div class="timeline-card">
                 <pre>{{entry}}</pre>
@@ -80,6 +83,7 @@ import CheckinCard from "./cards/CheckinCard.vue";
 import LogCard from "./cards/LogCard.vue";
 import RosterCard from "./cards/RosterCard.vue";
 import TextMessageCard from "./cards/TextMessageCard.vue";
+import EmailMessageCard from "./cards/EmailMessageCard.vue";
 import GroupedCard from "./cards/GroupedCard.vue";
 
 export default {
@@ -100,6 +104,7 @@ export default {
     LogCard,
     RosterCard,
     TextMessageCard,
+    EmailMessageCard,
     GroupedCard
   },
   data() {

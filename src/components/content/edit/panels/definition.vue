@@ -305,8 +305,8 @@
 																																												<template v-slot:form="{formFields, fieldHash, model, update, options}">
 																																																<fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.allowAlternativePayments" v-model="model" />
 																																																<fluro-panel margin v-if="model.allowAlternativePayments">
-																																																	<!-- v-model="alternativePaymentMethodIndex" -->
-																																																				<tabset >
+																																																				<!-- v-model="alternativePaymentMethodIndex" -->
+																																																				<tabset>
 																																																								<tab :heading="method.title" :key="method.guid" v-for="(method, index) in alternativePaymentMethods">
 																																																												<fluro-panel-body>
 																																																																<fluro-content-form v-model="alternativePaymentMethods[index]" :fields="paymentMethodFields" />
@@ -558,96 +558,100 @@
 																																								<v-container fluid pa-0>
 																																												<fluro-accordion class="stacker">
 																																																<fluro-accordion-panel v-for="group in snippetGroups" :heading="group.title">
-																																																				<div class="snippet-row" v-tippy content="Click to copy" @click="copy(snippet)" v-for="snippet in group.snippets">
-																																																								<!-- <v-input class="no-flex"> -->
-																																																								<!-- <v-layout> -->
-																																																								<!-- <v-flex xs4> -->
-																																																								<label>{{snippet.title}}</label>
-																																																								<!-- </v-flex> -->
-																																																								<!-- <v-flex xs8> -->
-																																																								<div style="overflow: auto">
-																																																												<div class="snippet">{{snippet.code}}</div>
+																																																				<v-container fluid>
+																																																								<div class="snippet-row" v-tippy content="Click to copy" @click="copy(snippet)" v-for="snippet in group.snippets">
+																																																												<!-- <v-input class="no-flex"> -->
+																																																												<!-- <v-layout> -->
+																																																												<!-- <v-flex xs4> -->
+																																																												<label>{{snippet.title}}</label>
+																																																												<!-- </v-flex> -->
+																																																												<!-- <v-flex xs8> -->
+																																																												<div style="overflow: auto">
+																																																																<div class="snippet">{{snippet.code}}</div>
+																																																												</div>
+																																																												<!-- </v-flex> -->
+																																																												<!-- </v-layout> -->
+																																																												<!-- </v-input> -->
 																																																								</div>
-																																																								<!-- </v-flex> -->
-																																																								<!-- </v-layout> -->
-																																																								<!-- </v-input> -->
-																																																				</div>
+																																																				</v-container>
 																																																</fluro-accordion-panel>
 																																																<fluro-accordion-panel heading="Help / Utilities">
-																																																				<v-input class="no-flex">
-																																																								<v-label>Multiple value fields</v-label>
-																																																								<div class="help-snippet">
-																																																												<% for (var i = 0; i < get('items.length'); i++) { %><br />
-																																																												&lt;h3&gt;
-																																																												<%= get('items[i].title') %>&lt;/h3&gt;<br />
-																																																												<% } %>
-																																																								</div>
-																																																				</v-input>
-																																																				<v-input class="no-flex">
-																																																								<v-label>Icon URL</v-label>
-																																																								<p class="help-block">Font library, the icon name, and an optional color</p>
-																																																								<div class="help-snippet">
-																																																												<%= iconUrl('fab', 'facebook', 'fff') %>
-																																																								</div>
-																																																								<div class="help-snippet">
-																																																												<%= iconUrl('fas', 'arrow-right', 'ff0000') %>
-																																																								</div>
-																																																								<div class="help-snippet">
-																																																												<%= iconUrl('far', 'home') %>
-																																																								</div>
-																																																				</v-input>
-																																																				<v-input class="no-flex">
-																																																								<v-label>Image URL</v-label>
-																																																								<p class="help-block">Generated by providing a path to the image on the mailout data</p>
-																																																								<div class="help-snippet">
-																																																												<%= imageUrl('path.to.image', optionalWidth, optionalHeight, options) %>
-																																																								</div>
-																																																				</v-input>
-																																																				<v-input class="no-flex">
-																																																								<v-label>Image URL</v-label>
-																																																								<p class="help-block">Generated by providing a static ID</p>
-																																																								<div class="help-snippet">
-																																																												<%= imageUrl('5c872b1f2380ba45e486b033', 500, null, {static:true}) %>
-																																																								</div>
-																																																				</v-input>
-																																																				<v-input class="no-flex">
-																																																								<v-label>Poster URL</v-label>
-																																																								<div class="help-snippet">
-																																																												<%= posterUrl('path.to.video', optionalWidth, optionalHeight) %>
-																																																								</div>
-																																																				</v-input>
-																																																				<v-input class="no-flex">
-																																																								<v-label>Download URL</v-label>
-																																																								<div class="help-snippet">
-																																																												<%= downloadUrl('path.to.asset') %>
-																																																								</div>
-																																																				</v-input>
-																																																				<v-input class="no-flex">
-																																																								<v-label>Variable Dump</v-label>
-																																																								<div class="help-snippet">
-																																																												<%- pre('path.to.data') %>
-																																																								</div>
-																																																				</v-input>
-																																																				<v-input class="no-flex">
-																																																								<v-label>Escape HTML</v-label>
-																																																								<div class="help-snippet">
-																																																												<%- get('path.to.data') %>
-																																																								</div>
-																																																				</v-input>
-																																																				<v-input class="no-flex">
-																																																								<v-label>Unsubscribe link</v-label>
-																																																								<div class="help-snippet">
-																																																												<!-- <% if(get('mailout.mailoutType') != 'transactional') { %> -->
-																																																												<%- unsubscribe() %>
-																																																												<!-- <% } %> -->
-																																																								</div>
-																																																				</v-input>
-																																																				<v-input class="no-flex">
-																																																								<v-label>Open Tracker Code</v-label>
-																																																								<div class="help-snippet">
-																																																												<%- tracker %>
-																																																								</div>
-																																																				</v-input>
+																																																				<v-container fluid>
+																																																								<v-input class="no-flex">
+																																																												<v-label>Multiple value fields</v-label>
+																																																												<div class="help-snippet">
+																																																																<% for (var i = 0; i < get('items.length'); i++) { %><br />
+																																																																&lt;h3&gt;
+																																																																<%= get('items[i].title') %>&lt;/h3&gt;<br />
+																																																																<% } %>
+																																																												</div>
+																																																								</v-input>
+																																																								<v-input class="no-flex">
+																																																												<v-label>Icon URL</v-label>
+																																																												<p class="help-block">Font library, the icon name, and an optional color</p>
+																																																												<div class="help-snippet">
+																																																																<%= iconUrl('fab', 'facebook', 'fff') %>
+																																																												</div>
+																																																												<div class="help-snippet">
+																																																																<%= iconUrl('fas', 'arrow-right', 'ff0000') %>
+																																																												</div>
+																																																												<div class="help-snippet">
+																																																																<%= iconUrl('far', 'home') %>
+																																																												</div>
+																																																								</v-input>
+																																																								<v-input class="no-flex">
+																																																												<v-label>Image URL</v-label>
+																																																												<p class="help-block">Generated by providing a path to the image on the mailout data</p>
+																																																												<div class="help-snippet">
+																																																																<%= imageUrl('path.to.image', optionalWidth, optionalHeight, options) %>
+																																																												</div>
+																																																								</v-input>
+																																																								<v-input class="no-flex">
+																																																												<v-label>Image URL</v-label>
+																																																												<p class="help-block">Generated by providing a static ID</p>
+																																																												<div class="help-snippet">
+																																																																<%= imageUrl('5c872b1f2380ba45e486b033', 500, null, {static:true}) %>
+																																																												</div>
+																																																								</v-input>
+																																																								<v-input class="no-flex">
+																																																												<v-label>Poster URL</v-label>
+																																																												<div class="help-snippet">
+																																																																<%= posterUrl('path.to.video', optionalWidth, optionalHeight) %>
+																																																												</div>
+																																																								</v-input>
+																																																								<v-input class="no-flex">
+																																																												<v-label>Download URL</v-label>
+																																																												<div class="help-snippet">
+																																																																<%= downloadUrl('path.to.asset') %>
+																																																												</div>
+																																																								</v-input>
+																																																								<v-input class="no-flex">
+																																																												<v-label>Variable Dump</v-label>
+																																																												<div class="help-snippet">
+																																																																<%- pre('path.to.data') %>
+																																																												</div>
+																																																								</v-input>
+																																																								<v-input class="no-flex">
+																																																												<v-label>Escape HTML</v-label>
+																																																												<div class="help-snippet">
+																																																																<%- get('path.to.data') %>
+																																																												</div>
+																																																								</v-input>
+																																																								<v-input class="no-flex">
+																																																												<v-label>Unsubscribe link</v-label>
+																																																												<div class="help-snippet">
+																																																																<!-- <% if(get('mailout.mailoutType') != 'transactional') { %> -->
+																																																																<%- unsubscribe() %>
+																																																																<!-- <% } %> -->
+																																																												</div>
+																																																								</v-input>
+																																																								<v-input class="no-flex">
+																																																												<v-label>Open Tracker Code</v-label>
+																																																												<div class="help-snippet">
+																																																																<%- tracker %>
+																																																												</div>
+																																																								</v-input>
+																																																				</v-container>
 																																																</fluro-accordion-panel>
 																																												</fluro-accordion>
 																																								</v-container>
@@ -855,7 +859,7 @@ export default {
 																if (self.model.paymentDetails.paymentMethods && self.model.paymentDetails.paymentMethods.length) {
 
 																				var lastMethod = _.last(self.model.paymentDetails.paymentMethods);
-																				self.alternativePaymentMethodIndex = lastMethod.guid;//`${lastMethod.key}-${lastMethod.guid}`;
+																				self.alternativePaymentMethodIndex = lastMethod.guid; //`${lastMethod.key}-${lastMethod.guid}`;
 																}
 												})
 												// }
@@ -880,7 +884,7 @@ export default {
 
 												setTimeout(function() {
 																var lastMethod = _.last(self.model.paymentDetails.paymentMethods);
-																self.alternativePaymentMethodIndex = lastMethod.guid;//`${lastMethod.key}-${lastMethod.guid}`;
+																self.alternativePaymentMethodIndex = lastMethod.guid; //`${lastMethod.key}-${lastMethod.guid}`;
 												})
 								},
 				},
@@ -2221,7 +2225,7 @@ export default {
 																minimum: 1,
 																maximum: 1,
 																type: 'string',
-																description: `This is a unique key to store this field's data in the database. for this ${self.readableContentType}. This is usually automatically generated.`,
+																description: `This is a unique key to store this field's data in the database. for this ${self.readableContentType}. This is usually automatically generated. If you are customising or replacing an inherited definition you want to leave this key the same so that it replaces the inherited definition.`,
 																params: {
 																				persistentDescription: true,
 																},

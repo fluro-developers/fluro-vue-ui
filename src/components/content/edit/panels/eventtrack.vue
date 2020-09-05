@@ -747,13 +747,13 @@ export default {
             });
 
             addField("defaultStartTime", {
-                title: `Start Time (${self.$fluro.date.timestampToAmPm(self.model.defaultStartTime | '0000')})`,
+                title: `Start Time (${self.$fluro.date.timestampToAmPm(self.model.defaultStartTime)})`,
                 minimum: 0,
                 maximum: 1,
                 type: "string",
                 placeholder: "1300",
                 defaultValues: ['1000'],
-                //directive: 'timepicker',
+                directive: 'timepicker',
                 //description: moment(now).fromNow(),
             });
 

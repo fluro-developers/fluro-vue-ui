@@ -1,10 +1,18 @@
 <template>
     <!-- v-hide="onlyOneOption" -->
     <div class="realm-select" v-show="!singleOptionAvailable">
-        <v-btn :small="small" :block="block" class="pill mx-0" @click.native="showModal">
-            <fluro-realm-dots :realms="selection" />
-            <span class="label">{{selectionSummary}}</span>
-        </v-btn>
+        <template v-if="selectionAvailable">
+            <v-btn :small="small" :block="block" class="pill mx-0" @click.native="showModal">
+                <fluro-realm-dots :realms="selection" />
+                <span class="label">{{selectionSummary}}</span>
+            </v-btn>
+        </template>
+        <template v-else>
+            <v-btn :small="small" :block="block" class="pill mx-0" :disabled="true">
+                <fluro-realm-dots :realms="value" />
+                <span class="label">{{valueSummary}}</span>
+            </v-btn>
+        </template>
         <!-- <pre>{{type}} {{definition}}</pre> -->
     </div>
 </template>
@@ -26,8 +34,10 @@ import RealmSelectModal from './RealmSelectModal.vue';
 
 export default {
     computed: {
-
-        singleOption:{
+        selectionAvailable() {
+            return this.tree.length;
+        },
+        singleOption: {
             get() {
                 return this.singleOptionAvailable;
             },
@@ -43,10 +53,10 @@ export default {
                 return tree[0].definition || tree[0]._type;
             } else {
 
-            	if(this.filterDiscriminator) {
-            		return this.filterDiscriminator;
-            	}
-            	
+                if (this.filterDiscriminator) {
+                    return this.filterDiscriminator;
+                }
+
                 return 'realm';
             }
         },
@@ -55,6 +65,22 @@ export default {
         },
         plural() {
             return this.$fluro.types.readable(this.mainType, true, 'realm');
+        },
+        valueSummary() {
+            var self = this;
+            if (!self.value) {
+                return;
+            }
+
+            if (!self.value.length) {
+                return `Select ${self.plural}`
+            }
+
+            if (self.value.length > 3) {
+                return `${self.value.length} ${self.plural} selected`;
+            }
+
+            return _.map(self.value, 'title').join(', ');
         },
         selectionSummary() {
             var self = this;
@@ -82,9 +108,9 @@ export default {
         block: {
             type: Boolean,
         },
-        'action':{
-            type:String,
-            default:'create',
+        'action': {
+            type: String,
+            default: 'create',
         },
         'expanded': {
             type: Boolean,
@@ -147,8 +173,8 @@ export default {
                                 }
 
                                 //Include any kind of team
-                                if(self.filterDiscriminator == 'team') {
-                                	return (realmType._discriminatorType == 'team');
+                                if (self.filterDiscriminator == 'team') {
+                                    return (realmType._discriminatorType == 'team');
                                 }
 
                                 return (realmType.definition == self.filterDiscriminator)
@@ -174,11 +200,11 @@ export default {
                             //////////////////////////////////////
 
                             var initialIDs = _.chain(self.$fluro.utils.arrayIDs(self.value))
-                            .map(function(id) {
-                                return flattenedLookup[id];
-                            })
-                            .compact()
-                            .value();
+                                .map(function(id) {
+                                    return flattenedLookup[id];
+                                })
+                                .compact()
+                                .value();
 
                             //////////////////////////////////////
 
@@ -255,6 +281,7 @@ export default {
         }
     }
 }
+
 </script>
 <style scoped lang="scss">
 .label {
@@ -264,4 +291,5 @@ export default {
     ;
     white-space: nowrap;
 }
+
 </style>

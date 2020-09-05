@@ -93,6 +93,7 @@
                             <fluro-icon icon="align-right" />
                         </v-btn>
                     </template>
+
                     <form class="menububble__form" v-if="linkMenuIsActive" @submit.prevent="setLinkUrl(commands.link, linkUrl)">
                         <input class="link-input" type="text" v-model="linkUrl" placeholder="https://" ref="linkInput" @keydown.esc="hideLinkMenu" />
                         <v-btn small icon flat @click.stop.prevent="setLinkUrl(commands.link, null)">
@@ -178,7 +179,7 @@
                         </v-list-tile>
                     </v-list>
                 </v-menu>
-                <v-menu v-if="isEnabled('image')" :fixed="true" transition="slide-y-transition" offset-y>
+                <v-menu v-if="isEnabled('image') || isEnabled('video') || isEnabled('blockquote') || isEnabled('code_block') || isEnabled('horizontal_rule')" :fixed="true" transition="slide-y-transition" offset-y>
                     <template v-slot:activator="{ on }">
                         <v-btn small icon :disabled="showSource" v-on="on">
                             <fluro-icon icon="plus" />
@@ -188,11 +189,11 @@
                         <!-- <v-list-tile @click.stop.prevent="showAssetPrompt(commands.asset)">
                             <v-list-tile-content><span style="margin:0 !important" ><fluro-icon type="asset" />&nbsp;Add Asset Link</span></v-list-tile-content>
                         </v-list-tile> -->
-                        <v-list-tile @click.stop.prevent="showImagePrompt(commands.image)">
+                        <v-list-tile v-if="isEnabled('image')" @click.stop.prevent="showImagePrompt(commands.image)">
                             <v-list-tile-content><span style="margin:0 !important">
                                     <fluro-icon type="image" />&nbsp;Add Image</span></v-list-tile-content>
                         </v-list-tile>
-                        <v-list-tile @click.stop.prevent="showVideoPrompt(commands.video)">
+                        <v-list-tile v-if="isEnabled('video')" @click.stop.prevent="showVideoPrompt(commands.video)">
                             <v-list-tile-content><span style="margin:0 !important">
                                     <fluro-icon type="video" />&nbsp;Add Video</span></v-list-tile-content>
                         </v-list-tile>
@@ -464,10 +465,22 @@ export default {
     },
     methods: {
         isEnabled(tool) {
+
             //If we've specified a toolset
             if (this.options.toolset) {
                 return _.includes(this.options.toolset, tool);
             } else {
+
+                switch(tool) {
+                    case 'image':
+                    case 'video':
+                        if(this.$fluro.global.select) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    break;
+                }
                 return true;
             }
         },
@@ -948,9 +961,9 @@ export default {
 
 
 
-                // var json = function() { return window.hljs.getLanguage('json');} 
-                // var javascript = function() { return window.hljs.getLanguage('javascript');} 
-                // var scss = function() { return window.hljs.getLanguage('scss');} 
+                var json = function() { return window.hljs.getLanguage('json');} 
+                var javascript = function() { return window.hljs.getLanguage('javascript');} 
+                var scss = function() { return window.hljs.getLanguage('scss');} 
 
                 // // console.log('Got him', window.hljs, window.hljs.listLanguages());
                 // // var json = window.hljs.registerLanguage('json');

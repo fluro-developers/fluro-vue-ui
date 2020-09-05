@@ -89,10 +89,12 @@
                                 </fluro-panel-title>
                                 <fluro-panel-body>
                                     <v-layout row wrap>
-                                        <template v-if="slot.assignments && slot.assignments.length">
+                                         <template v-if="roster.slots && roster.slots.length">
                                             <v-flex xs6 sm4 md3 :key="index" v-for="(slot, index) in roster.slots">
+
                                                 <v-container class="mb-2 pa-2">
                                                     <h5>{{ slot.title }}</h5>
+
                                                     <div class="assignment-item" @click="$actions.open([assignment])" :class="assignment.confirmationStatus" :key="assignment._id" v-for="assignment in slot.assignments">
                                                         <v-layout>
                                                             <v-flex>{{ assignment.contact && assignment.contact.title ? assignment.contact.title : assignment.contactName }}</v-flex>

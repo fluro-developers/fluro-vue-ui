@@ -1,9 +1,10 @@
 <template>
 	<div class="accordion-panel" :class="{expanded:active}">
 		<div class="accordion-panel-title" @click="reactive.selectPanel(index)">
-			<v-layout>
+			<v-layout align-center>
 				<v-flex>
-					{{heading}}
+					<slot name="heading">{{heading}}</slot>
+					
 				</v-flex>
 				<v-flex shrink>
 					<fluro-icon :icon="active ? `angle-up` : `angle-down`" />
@@ -11,9 +12,9 @@
 			</v-layout>
 		</div>
 		<div class="accordion-panel-body">
-			<v-container fluid>
+			
 				<slot></slot>
-			</v-container>
+			
 		</div>
 	</div>
 </template>
@@ -40,7 +41,7 @@ export default {
 	// },
 	computed: {
 		active() {
-			console.log('CHECK', this.index, this.reactive.activePanelIndex);
+			// console.log('CHECK', this.index, this.reactive.activePanelIndex);
 			return parseInt(this.index) == parseInt(this.reactive.activePanelIndex);
 		}
 	},

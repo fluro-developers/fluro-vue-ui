@@ -11,25 +11,25 @@
                             <v-container>
                                 <constrain sm>
                                     <h3 margin>Mailout Basics</h3>
-                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
-                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.subject" v-model="model"></fluro-content-form-field>
+                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />
+                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.subject" v-model="model" />
                                     <fluro-panel>
                                         <fluro-panel-title>
                                             <strong>Sender Details</strong>
                                         </fluro-panel-title>
                                         <fluro-panel-body>
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.fromEmail" v-model="model"></fluro-content-form-field>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.fromEmail" v-model="model" />
                                             <v-layout>
                                                 <v-flex xs12 sm6>
-                                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.fromFirstName" v-model="model"></fluro-content-form-field>
+                                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.fromFirstName" v-model="model" />
                                                 </v-flex>
                                                 <v-flex xs12 sm6>
-                                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.fromLastName" v-model="model"></fluro-content-form-field>
+                                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.fromLastName" v-model="model" />
                                                 </v-flex>
                                             </v-layout>
                                         </fluro-panel-body>
                                     </fluro-panel>
-                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.mailoutType" v-model="model"></fluro-content-form-field>
+                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.mailoutType" v-model="model" />
                                     <fluro-card v-if="mailoutType == 'promotional'">
                                         <fluro-card-body>
                                             <h6>
@@ -79,7 +79,7 @@
                                         </fluro-panel-title>
                                         <fluro-panel-body v-if="expanded.contacts">
                                             <!-- <div class="sm muted">Select individual contacts to send this mailout to</div> -->
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.contacts" v-model="model"></fluro-content-form-field>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.contacts" v-model="model" />
                                         </fluro-panel-body>
                                     </fluro-panel>
                                     <fluro-panel>
@@ -95,7 +95,7 @@
                                         </fluro-panel-title>
                                         <fluro-panel-body v-if="expanded.teams">
                                             <!-- <div class="sm muted">Select groups and teams to send this mailout to</div> -->
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.teams" v-model="model"></fluro-content-form-field>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.teams" v-model="model" />
                                         </fluro-panel-body>
                                     </fluro-panel>
                                     <fluro-panel>
@@ -111,7 +111,7 @@
                                         </fluro-panel-title>
                                         <fluro-panel-body v-if="expanded.tickets">
                                             <!-- <div class="sm muted">Select ticketed contacts to send this mailout to</div> -->
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.tickets" v-model="model"></fluro-content-form-field>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.tickets" v-model="model" />
                                         </fluro-panel-body>
                                     </fluro-panel>
                                     <fluro-panel>
@@ -127,8 +127,8 @@
                                         </fluro-panel-title>
                                         <fluro-panel-body v-if="expanded.events">
                                             <!-- <div class="sm muted">Send to contacts at specific events</div> -->
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.data" v-model="model"></fluro-content-form-field>
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.events" v-model="model"></fluro-content-form-field>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.data" v-model="model" />
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.events" v-model="model" />
                                         </fluro-panel-body>
                                     </fluro-panel>
                                     <fluro-panel>
@@ -144,7 +144,7 @@
                                         </fluro-panel-title>
                                         <fluro-panel-body v-if="expanded.interactions">
                                             <!-- <div class="sm muted">Send to contacts at specific events</div> -->
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.interactions" v-model="model"></fluro-content-form-field>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.interactions" v-model="model" />
                                         </fluro-panel-body>
                                     </fluro-panel>
                                     <fluro-panel>
@@ -160,7 +160,7 @@
                                         </fluro-panel-title>
                                         <fluro-panel-body v-if="expanded.checkins">
                                             <!-- <div class="sm muted">Send to contacts at specific events</div> -->
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.checkins" v-model="model"></fluro-content-form-field>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.checkins" v-model="model" />
                                         </fluro-panel-body>
                                     </fluro-panel>
                                     <fluro-panel>
@@ -176,7 +176,7 @@
                                         </fluro-panel-title>
                                         <fluro-panel-body v-if="expanded.details">
                                             <!-- <div class="sm muted">Send to contacts at specific events</div> -->
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.details" v-model="model"></fluro-content-form-field>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.details" v-model="model" />
                                         </fluro-panel-body>
                                     </fluro-panel>
                                     <fluro-panel>
@@ -192,7 +192,7 @@
                                         </fluro-panel-title>
                                         <fluro-panel-body v-if="expanded.families">
                                             <!-- <div class="sm muted">Send to contacts at specific events</div> -->
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.families" v-model="model"></fluro-content-form-field>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.families" v-model="model" />
                                         </fluro-panel-body>
                                     </fluro-panel>
                                     <fluro-panel>
@@ -208,7 +208,7 @@
                                         </fluro-panel-title>
                                         <fluro-panel-body v-if="expanded.personas">
                                             <!-- <div class="sm muted">Send to contacts at specific events</div> -->
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.personas" v-model="model"></fluro-content-form-field>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.personas" v-model="model" />
                                         </fluro-panel-body>
                                     </fluro-panel>
                                     <fluro-panel>
@@ -224,7 +224,7 @@
                                         </fluro-panel-title>
                                         <fluro-panel-body v-if="expanded.collections">
                                             <!-- <div class="sm muted">Send to contacts at specific events</div> -->
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.collections" v-model="model"></fluro-content-form-field>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.collections" v-model="model" />
                                         </fluro-panel-body>
                                     </fluro-panel>
                                     <fluro-panel>
@@ -240,7 +240,7 @@
                                         </fluro-panel-title>
                                         <fluro-panel-body v-if="expanded.tags">
                                             <!-- <div class="sm muted">Send to contacts at specific events</div> -->
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.tags" v-model="model"></fluro-content-form-field>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="tags" v-model="model" />
                                         </fluro-panel-body>
                                     </fluro-panel>
                                     <fluro-panel>
@@ -256,25 +256,25 @@
                                         </fluro-panel-title>
                                         <fluro-panel-body v-if="expanded.realms">
                                             <!-- <div class="sm muted">Send to contacts at specific events</div> -->
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.selectedRealms" v-model="model"></fluro-content-form-field>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.selectedRealms" v-model="model" />
                                         </fluro-panel-body>
                                     </fluro-panel>
-                                    <!-- <fluro-panel>
-                                    <fluro-panel-title :class="{collapsed:!expanded.definitions}" @click.native="toggleExpand('definitions')">
-                                        <v-layout align-center>
-                                            <v-flex>
-                                            <h6>{{model.definitions.length}} Definitions</h6>
-                                           
-                                            </v-flex>
-                                            <v-flex shrink>
-                                                <fluro-icon icon="angle-down" class="chevron"/>
-                                            </v-flex>
-                                        </v-layout>
-                                    </fluro-panel-title>
-                                    <fluro-panel-body v-if="expanded.definitions">
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.definitions" v-model="model"></fluro-content-form-field>
-                                    </fluro-panel-body>
-                                </fluro-panel> -->
+                                   
+                                    <fluro-panel v-if="contactDefinitionOptions.length > 1">
+                                        <fluro-panel-title :class="{collapsed:!expanded.definitions}" @click.native="toggleExpand('definitions')">
+                                            <v-layout align-center>
+                                                <v-flex>
+                                                    <h6>{{model.definitionNames ? model.definitionNames.length : 0}} Contact Definitions</h6>
+                                                </v-flex>
+                                                <v-flex shrink>
+                                                    <fluro-icon icon="angle-down" class="chevron" />
+                                                </v-flex>
+                                            </v-layout>
+                                        </fluro-panel-title>
+                                        <fluro-panel-body v-if="expanded.definitions">
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.definitionNames" v-model="model" />
+                                        </fluro-panel-body>
+                                    </fluro-panel>
                                     <fluro-panel>
                                         <fluro-panel-title :class="{collapsed:!expanded.cards}" @click.native="toggleExpand('cards')">
                                             <v-layout align-center>
@@ -288,7 +288,7 @@
                                         </fluro-panel-title>
                                         <fluro-panel-body v-if="expanded.cards">
                                             <!-- <div class="sm muted">Send to contacts at specific events</div> -->
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.cards" v-model="model"></fluro-content-form-field>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.cards" v-model="model" />
                                         </fluro-panel-body>
                                     </fluro-panel>
                                     <fluro-panel>
@@ -304,7 +304,7 @@
                                         </fluro-panel-title>
                                         <fluro-panel-body v-if="expanded.query">
                                             <!-- <div class="sm muted">Send to contacts at specific events</div> -->
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.query" v-model="model"></fluro-content-form-field>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.query" v-model="model" />
                                         </fluro-panel-body>
                                     </fluro-panel>
                                 </constrain>
@@ -314,9 +314,9 @@
                 </template>
                 <template v-if="model._id && definition">
                     <tab heading="Preview">
-<flex-column style="border-left:1px solid #ddd">
-                        <mailout-render-preview :mailout="model._id" :definition="definition.definitionName" />
-                    </flex-column>
+                        <flex-column style="border-left:1px solid #ddd">
+                            <mailout-render-preview :mailout="model._id" :definition="definition.definitionName" />
+                        </flex-column>
                     </tab>
                     <tab heading="Testing" v-if="model.state != 'sent'">
                         <mailout-test-panel v-model="model" />
@@ -382,122 +382,113 @@ export default {
         },
     },
     computed: {
-    	contacts:{
-    		get() {
-    			return this.model.contacts || [];
-    		},
-    		set(array) {
-    			this.model.contacts = array;
-    		}
-    	},
-    	teams:{
-    		get() {
-    			return this.model.teams || [];
-    		},
-    		set(array) {
-    			this.model.teams = array;
-    		}
-    	},
-    	tickets:{
-    		get() {
-    			return this.model.tickets || [];
-    		},
-    		set(array) {
-    			this.model.tickets = array;
-    		}
-    	},
-    	events:{
-    		get() {
-    			return this.model.events || [];
-    		},
-    		set(array) {
-    			this.model.events = array;
-    		}
-    	},
-    	interactions:{
-    		get() {
-    			return this.model.interactions || [];
-    		},
-    		set(array) {
-    			this.model.interactions = array;
-    		}
-    	},
-    	cards:{
-    		get() {
-    			return this.model.cards || [];
-    		},
-    		set(array) {
-    			this.model.cards = array;
-    		}
-    	},
-    	checkins:{
-    		get() {
-    			return this.model.checkins || [];
-    		},
-    		set(array) {
-    			this.model.checkins = array;
-    		}
-    	},
-    	details:{
-    		get() {
-    			return this.model.details || [];
-    		},
-    		set(array) {
-    			this.model.details = array;
-    		}
-    	},
-    	families:{
-    		get() {
-    			return this.model.families || [];
-    		},
-    		set(array) {
-    			this.model.families = array;
-    		}
-    	},
-    	personas:{
-    		get() {
-    			return this.model.personas || [];
-    		},
-    		set(array) {
-    			this.model.personas = array;
-    		}
-    	},
+        contacts: {
+            get() {
+                return this.model.contacts || [];
+            },
+            set(array) {
+                this.model.contacts = array;
+            }
+        },
+        teams: {
+            get() {
+                return this.model.teams || [];
+            },
+            set(array) {
+                this.model.teams = array;
+            }
+        },
+        tickets: {
+            get() {
+                return this.model.tickets || [];
+            },
+            set(array) {
+                this.model.tickets = array;
+            }
+        },
+        events: {
+            get() {
+                return this.model.events || [];
+            },
+            set(array) {
+                this.model.events = array;
+            }
+        },
+        interactions: {
+            get() {
+                return this.model.interactions || [];
+            },
+            set(array) {
+                this.model.interactions = array;
+            }
+        },
+        cards: {
+            get() {
+                return this.model.cards || [];
+            },
+            set(array) {
+                this.model.cards = array;
+            }
+        },
+        checkins: {
+            get() {
+                return this.model.checkins || [];
+            },
+            set(array) {
+                this.model.checkins = array;
+            }
+        },
+        details: {
+            get() {
+                return this.model.details || [];
+            },
+            set(array) {
+                this.model.details = array;
+            }
+        },
+        families: {
+            get() {
+                return this.model.families || [];
+            },
+            set(array) {
+                this.model.families = array;
+            }
+        },
+        personas: {
+            get() {
+                return this.model.personas || [];
+            },
+            set(array) {
+                this.model.personas = array;
+            }
+        },
 
-    	collections:{
-    		get() {
-    			return this.model.collections || [];
-    		},
-    		set(array) {
-    			this.model.collections = array;
-    		}
-    	},
+        collections: {
+            get() {
+                return this.model.collections || [];
+            },
+            set(array) {
+                this.model.collections = array;
+            }
+        },
 
-    	tags:{
-    		get() {
-    			return this.model.tags || [];
-    		},
-    		set(array) {
-    			this.model.tags = array;
-    		}
-    	},
+        tags: {
+            get() {
+                return this.model.selectedTags || [];
+            },
+            set(array) {
+                this.model.selectedTags = array;
+            }
+        },
 
-    	selectedRealms:{
-    		get() {
-    			return this.model.selectedRealms || [];
-    		},
-    		set(array) {
-    			this.model.selectedRealms = array;
-    		}
-    	},
-
-    	definitions:{
-    		get() {
-    			return this.model.definitions || [];
-    		},
-    		set(array) {
-    			this.model.definitions = array;
-    		}
-    	},
+        selectedRealms: {
+            get() {
+                return this.model.selectedRealms || [];
+            },
+            set(array) {
+                this.model.selectedRealms = array;
+            }
+        },
         resultsEnabled() {
 
             var self = this;
@@ -525,9 +516,9 @@ export default {
                 families: self.expandedSettings._families || (self.model.families && self.model.families.length),
                 personas: self.expandedSettings._personas || (self.model.personas && self.model.personas.length),
                 collections: self.expandedSettings._collections || (self.model.collections && self.model.collections.length),
-                tags: self.expandedSettings._tags || (self.model.tags && self.model.tags.length),
+                tags: self.expandedSettings._tags || (self.model.selectedTags && self.model.selectedTags.length),
                 realms: self.expandedSettings._realms || (self.model.selectedRealms && self.model.selectedRealms.length),
-                definitions: self.expandedSettings._definitions || (self.model.definitions && self.model.definitions.length),
+                definitions: self.expandedSettings._definitions || (self.model.definitionNames && self.model.definitionNames.length),
                 query: self.expandedSettings._query || (self.model.query),
             }
         },
@@ -551,8 +542,8 @@ export default {
                 maximum: 1,
                 type: 'string',
                 placeholder: 'Eg. My awesome new email',
-                params:{
-                    autofocus:!self.model.title,
+                params: {
+                    autofocus: !self.model.title,
                 }
             })
 
@@ -565,7 +556,7 @@ export default {
                 placeholder: 'Eg. My awesome new email',
                 expressions: {
                     defaultValue() {
-                            return self.model.title;
+                        return self.model.title;
                     }
                     // : 'data.title',
                 }
@@ -755,6 +746,19 @@ export default {
                 },
             })
 
+
+
+            // if (self.contactDefinitionOptions && self.contactDefinitionOptions.length > 1) {
+            addField('definitionNames', {
+                title: 'Select Contact Definitions',
+                minimum: 0,
+                maximum: 0,
+                type: 'string',
+                directive: 'select',
+                options: self.contactDefinitionOptions,
+            })
+            // }
+
             addField('tags', {
                 title: 'Select Tags',
                 minimum: 0,
@@ -772,7 +776,7 @@ export default {
                 type: 'reference',
                 directive: 'realmselect',
                 params: {
-                    searchInheritable:false,
+                    searchInheritable: false,
                     // restrictType: 'realm',
                 },
             })
@@ -837,6 +841,39 @@ export default {
 
         },
     },
+    asyncComputed: {
+        contactDefinitionOptions: {
+            default: [],
+            get() {
+
+                var self = this;
+
+                ////////////////////////////////////////////
+
+                return new Promise(function(resolve, reject) {
+
+                    self.$fluro.types.subTypes('contact', true)
+                        .then(function(res) {
+                            var mapped = _.map(res, function(type) {
+                                return {
+                                    name: type.title,
+                                    title: type.title,
+                                    key: type.definitionName,
+                                    value: type.definitionName,
+                                }
+                            })
+
+                            resolve(mapped);
+                        })
+                        .catch(function(err) {
+                            reject(err);
+                        })
+
+
+                })
+            },
+        },
+    },
     data() {
         return {
             expandedSettings: {
@@ -893,6 +930,7 @@ export default {
         }
     },
 }
+
 </script>
 <style lang="scss">
 .mailout-recipients {
@@ -905,4 +943,5 @@ export default {
         }
     }
 }
+
 </style>

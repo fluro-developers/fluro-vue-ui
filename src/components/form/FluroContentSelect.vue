@@ -1,7 +1,7 @@
 <template>
     <div class="fluro-content-select" :class="{outlined:showOutline}">
         <template v-if="model.length">
-            <div class="fluro-content-list" v-if="model.length <= listLimit">
+            <div class="fluro-content-list" v-if="showBasicList">
                 <list-group>
                     <draggable v-model="model" v-bind="dragOptions" @start="drag=true" @end="drag=false">
                         <list-group-item @click="viewItem(item)" :item="item" v-for="(item, index) in model">
@@ -32,7 +32,7 @@
             </div>
             <div class="fluro-content-list" v-else>
                 <fluro-panel>
-                    <fluro-table style="max-height: 50vh" trackingKey="_id" :pageSize="25" :items="model" :columns="columns" />
+                    <fluro-table style="max-height: 50vh" trackingKey="_id" :pageSize="40" :items="model" :columns="columns" />
                 </fluro-panel>
                 <!-- <list-group>
           <list-group-item :item="item" v-for="(item, index) in limited">
@@ -95,15 +95,16 @@
                 </v-autocomplete>
             </div>
             <div class="content-select-search-buttons">
-                <v-btn small v-tippy :content="`Create new ${readableSingle}`" color="primary" icon class="ma-0 mr-1" v-if="canCreate" @click="create()">
-                    <fluro-icon icon="plus" />
+                <v-btn small v-tippy :content="`Create new ${readableSingle}`" color="primary" class="ma-0 mr-1" v-if="canCreate" @click="create()">
+                    <span>New</span>
+                    <fluro-icon icon="plus" right />
                 </v-btn>
-                <v-btn small v-tippy :content="`Browse for ${readablePlural}`" icon class="ma-0" @click="showModal">
-                    <fluro-icon icon="search" />
+                <v-btn small v-tippy :content="`Browse for ${readablePlural}`" class="ma-0" @click="showModal">
+                    <span>Find</span>
+                    <fluro-icon icon="search" right />
                 </v-btn>
             </div>
         </div>
-        
     </div>
 </template>
 <script>
@@ -191,6 +192,9 @@ export default {
         this.setInitialValue(this.value);
     },
     computed: {
+        showBasicList() {
+            return !this.options.forceTableView && (this.model.length <= this.listLimit)
+        },
         columns() {
 
             var self = this;
@@ -204,10 +208,26 @@ export default {
                 shrink: true,
             });
 
-            array.push({
-                title: "Title",
-                key: "title"
-            });
+            if (this.type == 'contact') {
+
+                array.push({
+                    title: "First Name",
+                    key: "firstName"
+                });
+
+                array.push({
+                    title: "Last Name",
+                    key: "lastName"
+                });
+
+
+            } else {
+                array.push({
+                    title: "Title",
+                    key: "title"
+                });
+            }
+
 
 
             array.push({
@@ -254,14 +274,31 @@ export default {
                 button: {
                     icon: 'times',
                     action(row) {
+
                         return new Promise(function(resolve, reject) {
-                            self.deselect(row);
-                            resolve();
+
+                            if (self.$fluro.confirm) {
+                                self.$fluro.confirm('Deselect', `Deselect ${row.title}?`)
+                                    .then(deselect).catch(reject);
+                            } else {
+                                deselect();
+                            }
+
+                            function deselect() {
+
+                                self.deselect(row);
+                                resolve();
+
+                            }
                         })
 
                     },
                 }
             })
+
+            if (self.options && self.options.actions && self.options.actions.length) {
+                array = array.concat(self.options.actions);
+            }
 
 
             return array;
@@ -297,7 +334,7 @@ export default {
             var restrictType = this.type ?
                 this.$fluro.types.readable(this.type, true) :
                 "items";
-            return this.placeholder || `Search for ${restrictType}`; //Search for ${this.label || 'items'}`;
+            return this.placeholder || `Quick search for ${restrictType}`; //Search for ${this.label || 'items'}`;
         },
         showOutline() {
             return this.outline || this.options.outline;

@@ -34,7 +34,7 @@ export default {
 					index = Math.max(index, 0);
 					index = Math.min(index, self.reactive.panels.length - 1);
 
-					console.log('SELECT PANEL', index);
+					// console.log('SELECT PANEL', index);
 					self.reactive.activePanelIndex = index;
 					// menuElement.scrollTo({
 					//     // top: 100,

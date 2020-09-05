@@ -1,42 +1,44 @@
 <template>
-	<div class="process-dots" v-if="linear">
-		<!-- <pre>{{states}}</pre> -->
-		<!-- <pre>{{mapped}}</pre> -->
-		<span v-tippy :content="state.title" :style="{color:state.color}" :key="state.key" v-for="state in mapped">
-            <fluro-icon :icon="state.icon" :library="state.library" />
-        </span>
-
-	</div>
+    <div class="process-dots" v-if="linear">
+        <!-- <pre>{{states}}</pre> -->
+        <!-- <pre>{{mapped}}</pre> -->
+        <!-- <v-layout> -->
+            <!-- <v-flex > -->
+                <span class="pill" v-tippy :content="state.title" :key="state.key" v-for="state in mapped" :style="{color:state.color}">
+                    <fluro-icon :icon="state.icon" :library="state.library" />
+                </span>
+            <!-- </v-flex> -->
+        <!-- </v-layout> -->
+    </div>
 </template>
 <script>
-
 export default {
-	props:{
-		card:{
-			type:Object,
-		},
-		definition:{
-			type:Object,
-		}
-	},
-	data() {
-		return {
-			model:this.card,
+    props: {
+        card: {
+            type: Object,
+        },
+        definition: {
+            type: Object,
+        }
+    },
+    data() {
+        return {
+            model: this.card,
             //JSON.parse(JSON.stringify(this.value)),
-		}
-	},
+        }
+    },
     // watch:{
     //     value(v) {
     //         this.model = JSON.parse(JSON.stringify(v));
     //     },
     // },
-	computed:{
+    computed: {
         linear() {
 
             // console.log('IS LINEAR?', this.definition.data);
             return _.get(this.definition, 'data.mode') != 'lanes';
         },
-		mapped() {
+        mapped() {
 
             var self = this;
 
@@ -84,18 +86,19 @@ export default {
                 .compact()
                 .value();
         },
-		states() {
-			return (_.get(this.definition, 'data.states') || []);
-		},
-		results() {
-			return this.model.results;
-		},
-	},
+        states() {
+            return (_.get(this.definition, 'data.states') || []);
+        },
+        results() {
+            return this.model.results;
+        },
+    },
 }
 
 </script>
 <style lang="scss" scoped>
-	.process-dots {
-		font-size: 12px;
-	}
+.process-dots {
+    font-size: 12px;
+}
+
 </style>

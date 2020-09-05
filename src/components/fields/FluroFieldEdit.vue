@@ -1574,6 +1574,16 @@ export default {
                         value: "input"
                     });
 
+                    inputOptions.push({
+                        title: "Select Dropdown",
+                        value: "select"
+                    });
+
+                    inputOptions.push({
+                        title: "Multiple Button Select",
+                        value: "button-select"
+                    });
+
                     // inputOptions.push({
                     //        title: 'Terms / Conditions Checkbox',
                     //        value: 'terms',

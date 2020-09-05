@@ -89,7 +89,7 @@
                                                     </div>
                                                     <template v-slot:right>
                                                         <!--  -->
-                                                        <v-btn small icon @click="manualLink(form)" :loading="linking[form.form._id]" v-tippy content="Link to an existing form submission">
+                                                        <v-btn v-if="canManualLink" small icon @click="manualLink(form)" :loading="linking[form.form._id]" v-tippy content="Link to an existing form submission">
                                                             <fluro-icon icon="link" />
                                                         </v-btn>
                                                         <v-btn small color="primary" @click="resend(form)" :loading="resending[form.form._id]">
@@ -146,6 +146,7 @@
                     <v-flex xs12 sm4 class="sidebar">
                         <flex-column-body>
                             <v-container>
+                                <!-- <pre>{{definition}}</pre> -->
                                 <v-input class="no-flex" v-if="model._id">
                                     <v-label>Progress</v-label>
                                     <div>
@@ -486,6 +487,9 @@ export default {
         // },
     },
     computed: {
+        canManualLink() {
+            return this.$fluro.access.canKnowOf('interaction');
+        },
         checkinColumns() {
 
             var array = [];

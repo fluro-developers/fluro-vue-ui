@@ -1,8 +1,6 @@
 <template>
     <flex-column class="tabset" :class="{justified, vertical}">
         <flex-column-header class="tabset-header" v-if="enabledTabs.length > 1 || persist">
-
-            
             <slot name="menuprefix"></slot>
             <div class="tabset-menu" ref="outer">
                 <div class="tabset-menu-inner" ref="inner">
@@ -56,7 +54,7 @@ export default {
             tabs: this.tabs,
             activeTabIndex: this.activeTabIndex,
             getActiveTabIndex: this.getActiveTabIndex,
-            tabset:this,
+            tabset: this,
         }
     },
     data() {
@@ -108,7 +106,7 @@ export default {
 
             //Select the first tab by default unless otherwise specified
 
-            
+
             if (!existingTabs && !self.activeTabIndex) {
                 self.activeTabIndex = tab.key;
                 tab.active = true;
@@ -247,8 +245,6 @@ export default {
 
 </script>
 <style lang="scss">
-
-
 .tabset {
     flex: 1;
     // border: 1px solid rgba(#000, 0.05);
@@ -363,13 +359,38 @@ export default {
                             overflow: hidden;
                             text-overflow: ellipsis;
                             flex: none;
+                            opacity: 0.6;
+
+
+
+                            // &.muted {
+                            //     opacity: 0.6;
+                            //     background: #ccc;
+                            // }
+
+                            // &:focus {
+                            //     outline: none !important;
+                            // }
+
+
+                            // &.active {
+                            //     opacity: 1;
+                            //     //background: #fff;
+                            //     border-left: 1px solid rgba(#000, 0.05);
+                            //     border-right: 1px solid rgba(#000, 0.05);
+                            //     border-top: 3px solid $primary;
+                            //     border-bottom: 1px solid transparent;
+                            // }
+
+
 
                             &.muted {
-                                opacity: 0.2;
-                                background: #bbb;
+                                opacity: 0.4;
+                                background: #ddd;
                             }
 
                             &.active {
+                             opacity: 1;
                                 background: #fafafa;
                                 border-left: 3px solid $primary;
                             }

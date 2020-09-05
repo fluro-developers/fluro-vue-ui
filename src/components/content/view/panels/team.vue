@@ -155,9 +155,27 @@ export default {
         renderer: ContactAvatar,
       });
 
+      // array.push({
+      //   title: "Name",
+      //   key: "title",
+      // });
+
+
       array.push({
-        title: "Name",
-        key: "title",
+        title: "First Name",
+        key: "firstName",
+        shrink:true,
+      });
+
+      array.push({
+        title: "Last Name",
+        key: "lastName",
+        shrink:true,
+      });
+
+      array.push({
+        title: "",
+        key: "",
       });
 
       return array;

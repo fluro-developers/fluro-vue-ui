@@ -156,8 +156,8 @@ export default {
     &.inactive {
         // opacity: 0.2;
         font-style:italic;
-        color: rgba(#000, 0.3);
-        background: rgba(#000,0.05);
+        color: rgba(#000, 0.5);
+        background: rgba(#000,0.02);
 
         .toggle-switch {
             .off {

@@ -100,7 +100,7 @@ export default {
                 array[0] = array[0].trim();
                 input = array.join("\n");
 
-                console.log('Beautify!!!', input.length)
+                //console.log('Beautify!!!', input.length)
 
                
 

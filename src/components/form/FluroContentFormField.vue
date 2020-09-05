@@ -307,7 +307,7 @@
 																<v-input class="no-flex" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
 																				<!--  -->
 																				<!-- CONTENT SELECT -->
-																				<fluro-content-select :context="context" :template="params.template" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :success="success" :required="required" :error-messages="errorMessages" :label="displayLabel" :outline="showOutline" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="placeholder" :minimum="minimum" @blur="touch()" @focus="focussed();" :type="restrictType" :lockFilter="referenceFilter" @input="elementValueChanged" :searchInheritable="searchInheritable" :maximum="maximum" v-model="fieldModel" />
+																				<fluro-content-select :options="params.contentSelect" :context="context" :template="params.template" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :success="success" :required="required" :error-messages="errorMessages" :label="displayLabel" :outline="showOutline" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="placeholder" :minimum="minimum" @blur="touch()" @focus="focussed();" :type="restrictType" :lockFilter="referenceFilter" @input="elementValueChanged" :searchInheritable="searchInheritable" :maximum="maximum" v-model="fieldModel" />
 																</v-input>
 												</template>
 												<template v-else-if="renderer == 'search-select'">
@@ -454,6 +454,7 @@
 																</v-input>
 												</template>
 												<template v-else-if="renderer == 'upload'">
+																<!-- UPLOAD -->
 																<v-input class="no-flex" :outline="showOutline" :success="success" :label="displayLabel" :required="required" :error-messages="errorMessages" :persistent-hint="true" :hint="fileHint">
 																				<div class="file-items" v-if="files && files.length">
 																								<div class="file-item" v-for="file in files">
@@ -1345,15 +1346,19 @@ export default {
 												return this.results;
 								},
 								canAddFile() {
-												if (this.canAddValue) {
-																return true;
+												if (!this.canAddValue) {
+																console.log('Cant add file')
+																return;
 												}
 
 												if (this.maximum == 1) {
-																if (!this.files || !this.files.length) {
-																				return true;
+																if (this.files && this.files.length) {
+																				console.log('already full', this.files)
+																				return;
 																}
 												}
+
+												return true;
 								},
 								canAddValue() {
 
@@ -1368,6 +1373,7 @@ export default {
 																return true;
 												}
 
+												console.log('Cant add value', this.total, this.maximum)
 												return false;
 								},
 								canRemoveValue() {
@@ -1503,6 +1509,8 @@ export default {
 																				// //console.log('Field not ready yet')
 																				return;
 																}
+
+
 
 																//Get the value for this field
 																var value = self.model[self.field.key];
@@ -1775,11 +1783,15 @@ export default {
 												return parseInt(this.field.maximum);
 								},
 								total() {
+
+												var v = 0;
+
 												if (this.multipleInput && this.fieldModel) {
-																var total = _.get(this.fieldModel, 'length');
-																// ////////console.log('COUNT>', this.title, total);
-																return total
+																v = _.get(this.fieldModel, 'length') || 0;
 												}
+
+												return v;
+
 								},
 								askCount() {
 												return Math.max(this.minimum, this.field.askCount);
@@ -2235,6 +2247,13 @@ export default {
 
 												/////////////////////////////////////
 
+												if (self.field.directive == 'timepicker') {
+																value = self.$fluro.date.militaryTimestamp(value, true)
+																// console.log('TIMEPICKER OUT >', value)
+												}
+
+												/////////////////////////////////////
+
 												if (self.dynamic && self.renderer == 'dynamicdate') {
 																if (value == 'DATE_NOW') {
 																				return value;
@@ -2317,6 +2336,32 @@ export default {
 																				}
 																				break;
 																case 'boolean':
+
+																				if (value) {
+																								switch (String(value).toLowerCase()) {
+																												case 'true':
+																												case 'y':
+																												case 'yes':
+																												case '1':
+																												case 't':
+																																console.log('convert boolean', String(value).toLowerCase())
+																																value = true;
+																																break;
+																												case 'false':
+																												case 'n':
+																												case 'no':
+																												case '0':
+																												case 'f':
+																												case 'undefined':
+																												case 'null':
+																												case '':
+																																console.log('convert boolean', String(value).toLowerCase())
+																																value = false;
+																																break;
+																								}
+																				}
+
+
 																				if (self.field.inverse) {
 																								value = !!!value;
 																				}
@@ -2324,6 +2369,53 @@ export default {
 																				if (!value) {
 																								value = false;
 																				}
+
+																				/////////////////////////////////////
+
+																				switch (self.directive) {
+																								case 'select':
+																								case 'button-select':
+
+																												var matchAgainstValue = value;
+
+																												///////////////////////////////////////////////////////
+
+																												if (self.selectOptions && self.selectOptions.length) {
+
+																																var firstMatch = self.selectOptions.find(function(v) {
+
+																																				var stringValue = String(v.value || v.key || v).toLowerCase();
+
+																																				switch (stringValue) {
+																																								case 'true':
+																																								case 'y':
+																																								case 'yes':
+																																								case '1':
+																																								case 't':
+																																												return matchAgainstValue;
+																																												break;
+																																								default:
+																																												return !matchAgainstValue;
+																																												break;
+																																				}
+
+
+
+																																});
+
+																																if (firstMatch) {
+																																				value = firstMatch.value || firstMatch.key || firstMatch;
+																																}
+
+																												}
+
+																												///////////////////////////////////////////////////////
+
+																												break;
+																				}
+
+																				/////////////////////////////////////
+
 																				break;
 												}
 
@@ -2344,6 +2436,14 @@ export default {
 																				var transformed = self.expressions.transform.set(value);
 																				value = transformed;
 																}
+												}
+
+
+												/////////////////////////////////////
+
+												if (self.field.directive == 'timepicker') {
+																value = self.$fluro.date.militaryTimestamp(value)
+																// console.log('TIMEPICKER IN >', value)
 												}
 
 												//////////////////////////////////
@@ -2450,6 +2550,32 @@ export default {
 																				}
 																				break;
 																case 'boolean':
+
+																				if (value) {
+																								switch (String(value).toLowerCase()) {
+																												case 'true':
+																												case 'y':
+																												case 'yes':
+																												case '1':
+																												case 't':
+
+																																console.log('convert boolean', String(value).toLowerCase())
+																																value = true;
+																																break;
+																												case 'false':
+																												case 'n':
+																												case 'no':
+																												case '0':
+																												case 'f':
+																												case 'undefined':
+																												case 'null':
+																												case '':
+																																console.log('convert boolean', String(value).toLowerCase())
+																																value = false;
+																																break;
+																								}
+																				}
+
 																				if (self.field.inverse) {
 																								value = !value;
 																				}
@@ -2927,7 +3053,7 @@ export default {
 												//If there is no Realm
 												if (!uploadRealmID) {
 																// if there is no realm id, grab the form's realm
-																var defaultRealmID = _.get(self.options, 'backupUploadRealm') ;
+																var defaultRealmID = _.get(self.options, 'backupUploadRealm');
 																if (defaultRealmID) {
 																				uploadRealmID = defaultRealmID
 																} else {
@@ -3096,7 +3222,7 @@ export default {
 												var self = this;
 
 												if (self.multipleInput && !self.canAddValue) {
-																console.log('reached limit')
+																// console.log('reached limit')
 																return;
 												}
 												if (!self.isSelectedValue(value)) {
@@ -3887,7 +4013,8 @@ function checkValidInput(self, input) {
 												break;
 								case 'url':
 
-												if (!url(input)) {
+												var relativeURL = _.startsWith(input, '#') || _.startsWith(input, '/');
+												if (!relativeURL && !url(input)) {
 																errors.push(`Must be a valid url eg. https://...`);
 												}
 

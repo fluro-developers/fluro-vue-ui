@@ -169,11 +169,16 @@
 																				<tab tooltip="Messaging" :icon="{icon:'envelope'}">
 																								<contact-message-list :contact="model" />
 																				</tab>
+																				
 																				<tab tooltip="Transactions" :icon="{type:'transaction'}">
 																								<contact-transaction-list :contact="model" />
 																				</tab>
 																				<tab tooltip="Posts and Notes" :icon="{type:'post'}">
 																								<contact-post-thread :contact="model" />
+																				</tab>
+
+																				<tab tooltip="Notifications" :icon="{icon:'bell'}">
+																								<contact-notification-list :contact="model" />
 																				</tab>
 																</tabset>
 																<!-- <tabset :justified="true">
@@ -550,6 +555,7 @@ import ContactMessageList from '../../contact/timeline/ContactMessageList.vue';
 import ContactTransactionList from '../../contact/timeline/ContactTransactionList.vue';
 import ContactCheckinList from '../../contact/timeline/ContactCheckinList.vue';
 import ContactInteractionList from '../../contact/timeline/ContactInteractionList.vue';
+import ContactNotificationList from '../../contact/timeline/ContactNotificationList.vue';
 import ContactPostThread from '../../contact/timeline/ContactPostThread.vue';
 
 
@@ -585,6 +591,7 @@ export default {
 								ContactMessageList,
 								ContactTransactionList,
 								ContactInteractionList,
+								ContactNotificationList,
 								ContactCheckinList,
 								ContactPostThread,
 								ContactGroupManager,

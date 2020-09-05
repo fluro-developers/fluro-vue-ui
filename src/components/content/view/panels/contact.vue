@@ -11,11 +11,11 @@
           <div class="muted">{{item.gender}}</div>
           <div class="muted">{{item.age}}</div>
           <Div>
-            <v-btn small class="ma-0" @click="$fluro.global.view(item, true)">
+            <v-btn v-if="$fluro.access.canViewItem(item)" small class="ma-0" @click="$fluro.global.view(item, true)">
               View Profile
               <fluro-icon icon="view" />
             </v-btn>
-            <v-btn small class="ma-0" @click="$fluro.global.edit(item, true)">
+            <v-btn v-if="$fluro.access.canEditItem(item)" small class="ma-0" @click="$fluro.global.edit(item, true)">
               Edit Profile
               <fluro-icon icon="pencil" />
             </v-btn>

@@ -1,5 +1,5 @@
 <template>
-    <flex-column class="contact-interaction-list">
+    <flex-column class="contact-notification-list">
         <template v-if="loading">
             <fluro-page-preloader contain />
         </template>
@@ -22,26 +22,29 @@
                             <div class="day" v-for="day in month.days">
                                 <div class="day-label">{{day.date | formatDate('ddd D')}}</div>
                                 <div class="entries">
-                                    <div @click="$fluro.global.view(entry, true)" class="entry" v-for="entry in day.items" :key="entry._id">
+                                    <div @click="$fluro.global.json(entry)" class="entry" :class="{read:entry.read}" v-for="entry in day.items" :key="entry._id">
                                         <fluro-realm-bar :realm="entry.realms"/>
-                                        <v-layout>
-                                            <v-flex>
+                                        <!-- <v-layout> -->
+                                            <!-- <v-flex> -->
                                                 <strong>{{entry.title}}</strong>
+                                                <div>
+                                                    {{entry.body}}
+                                                </div>
                                                 <!-- <div>{{entry.formattedAmount}}</div> -->
                                                 <!-- <pre>{{entry}}</pre> -->
 
                                                 <!-- <fluro-content-render :fields="sheet.fullDefinition.fields" v-model="entry" /> -->
 
                                                 <div class="text-muted sm">
-                                                    {{entry.created | formatDate('dddd D MMM YYYY')}} ({{entry.created | timeago}})
+                                                  {{entry.summary}} - {{entry.date | formatDate('dddd D MMM YYYY')}} ({{entry.date | timeago}})
                                                 </div>
-                                            </v-flex>
-                                             <v-flex shrink>
+                                            <!-- </v-flex> -->
+                                            <!--  <v-flex shrink>
                                                 <v-btn icon small @click.prevent.stop="$actions.open([entry])">
                                                     <fluro-icon icon="ellipsis-h"/>
                                                 </v-btn>
-                                             </v-flex>
-                                        </v-layout>
+                                             </v-flex> -->
+                                        <!-- </v-layout> -->
                                     </div>
                                 </div>
                             </div>
@@ -72,12 +75,8 @@ export default {
     },
     computed: {
         timeline() {
-
-
             var self = this;
-
-
-            return self.$fluro.date.timeline(self.items, 'created');
+            return self.$fluro.date.timeline(self.items, 'date');
         }
     },
     asyncComputed: {
@@ -98,8 +97,24 @@ export default {
 
                 return new Promise(function(resolve, reject) {
 
-                    self.$fluro.api.get(`/info/interactions?contact=${contactID}`).then(function(res) {
+                    self.$fluro.api.get(`/contact/${contactID}/notifications`).then(function(res) {
                             var mapped = _.map(res.data, function(entry) {
+
+                                var pieces = [];
+
+                                if(entry.sent) {
+                                    pieces.push('Sent');
+                                }
+
+                                if(entry.collected) {
+                                    pieces.push('Collected');
+                                }
+
+                                if(entry.read) {
+                                    pieces.push('Read and Acknowledged');
+                                }
+
+                                entry.summary = pieces.join(', ');
                                 // entry.formattedAmount = self.$fluro.utils.formatCurrency(entry.amount, entry.currency);
                                 return entry;
                             })
@@ -120,5 +135,8 @@ export default {
 }
 </script>
 <style lang="scss">
-
+.entry.read {
+    opacity: 0.5;
+    background:#eee;
+}
 </style>

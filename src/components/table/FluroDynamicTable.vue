@@ -5,6 +5,7 @@
 		<!-- <pre>{{dataType}}</pre> -->
 		<!--         <pre>{{structureColumns}}</pre>
  -->
+ <!-- <pre>{{actionsEnabled}}</pre> -->
 		<!-- <pre>{{sort}}</pre> -->
 		<!-- <pre>{{filterCheckString}}</pre> -->
 		<!-- {{startDate}} -->
@@ -431,9 +432,9 @@ export default {
 		clicked: {
 			type: Function,
 			default () {
-				// console.log('default')
+				// //console.log('default')
 				return function(item, column) {
-					// console.log('clicked', item, column);
+					// //console.log('clicked', item, column);
 				}
 			}
 		},
@@ -615,7 +616,7 @@ export default {
 
 						}
 
-						// console.log('FILTER', filter);
+						// //console.log('FILTER', filter);
 						if (filter.comparator) {
 							var column = {
 								title: filter.title || _.startCase(filter.key),
@@ -638,7 +639,7 @@ export default {
 										column.type = columnDataType
 									break;
 							}
-							// console.log('FILTER COMPARATOR', filter);
+							// //console.log('FILTER COMPARATOR', filter);
 							// switch(filter.comparator) {
 							//     case 'datesameday':
 							//     case 'datenotyear':
@@ -669,9 +670,9 @@ export default {
 					if (column.allowDuplicates) {
 						array.push(column)
 					} else {
-						// console.log('COLUMN', column)
+						// //console.log('COLUMN', column)
 						if (!_.some(array, { key: column.key })) {
-							// console.log('COLUMNS', column);
+							// //console.log('COLUMNS', column);
 							array.push(column);
 						}
 					}
@@ -710,7 +711,7 @@ export default {
 				results = self.groupByColumn(self.page.slice(), self.groupingColumn);
 			}
 
-			// console.log('RESULTS', results);
+			// //console.log('RESULTS', results);
 			return results;
 		},
 
@@ -750,7 +751,7 @@ export default {
 		//     return FilterService.activeFilterComparators(this.filterConfig);
 		// },
 		rowCheckString() {
-			// console.log('RECOMPUTE ROWS')
+			// //console.log('RECOMPUTE ROWS')
 			var rows = this.rows || [];
 			var ids = _.map(rows, '_id').join('');
 			var keys = _.keys(rows[0]);
@@ -809,7 +810,7 @@ export default {
 				var set = this.availablePages[this.currentPage - 1];
 			}
 
-			// console.log('RAW', set)
+			//console.log('RAW', set, this.availablePages)
 
 			return set || [];
 		},
@@ -927,7 +928,7 @@ export default {
 
 						self.loadingKeys = false;
 					}, function(err) {
-						console.log('Error', err);
+						//console.log('Error', err);
 						resolve([]);
 						self.loadingKeys = false;
 
@@ -941,11 +942,11 @@ export default {
 		},
 	},
 	// created() {
-	// 	console.log('DynamicTable - Created', this.$fluro)
+	// 	//console.log('DynamicTable - Created', this.$fluro)
 	// //     this.$fluro.addEventListener('cache.reset', this.updateCacheKey);
 	// },
 	// mounted() {
-	// 	console.log('DynamicTable - Mounted', this.$fluro)
+	// 	//console.log('DynamicTable - Mounted', this.$fluro)
 	// },
 	// beforeDestroy() {
 	//     this.$fluro.removeEventListener('cache.reset', this.updateCacheKey);
@@ -965,7 +966,7 @@ export default {
 			this.$emit('additionalColumns', this.extraColumns);
 		},
 		pagePopulationString(str) {
-			// console.log('POPULATION STRING CHANGED')
+			// //console.log('POPULATION STRING CHANGED')
 			this.loading = true;
 			this.populatePage()
 		},
@@ -980,7 +981,7 @@ export default {
 		// },
 		//COMMENTED DUE TO MOVE TO MIXIN
 		// search: _.debounce(function(newValue) {
-		//     // console.log('Search changed!')
+		//     // //console.log('Search changed!')
 		//     this.debouncedSearch = newValue;
 		//     // this.refine();
 		// }, 500),
@@ -1103,7 +1104,7 @@ export default {
 							var groupingTitle = _.get(groupingObjectValue, 'title') || _.get(groupingObjectValue, 'name') || groupingKey || '';
 							var sortKey = String(groupingTitle || '').toLowerCase();
 
-							// console.log('Group by column', column.key, row, groupingObjectValue, groupingTitle, groupingKey)
+							// //console.log('Group by column', column.key, row, groupingObjectValue, groupingTitle, groupingKey)
 							var existing = set[groupingKey];
 							if (!existing) {
 								existing = set[groupingKey] = {
@@ -1185,7 +1186,7 @@ export default {
 			//////////////////////////////////////
 
 			if (self.dataType == 'node') {
-				console.log('Node > Show raw page')
+				//console.log('Node > Show raw page')
 				self.page = self.rawPage.slice();
 				self.loading = false;
 				return;
@@ -1206,6 +1207,7 @@ export default {
 			// }, {});
 
 
+			// //console.log('POPULATE PAGE ITEMS', dataType)
 
 			renderColumns = renderColumns.slice();
 			if (self.groupingColumn) {
@@ -1221,10 +1223,11 @@ export default {
 
 				if (!rawPage || !rawPage.length) {
 					self.loading = false;
+					// //console.log('no raw page')
 					return resolve([]);
 				}
 
-				var fields = ['title', '_type', 'definition']
+				var fields = ['title', '_type', 'definition', 'subject', 'date']
 
 				if (self.searchInheritable) {
 					fields.push('account');
@@ -1273,7 +1276,7 @@ export default {
 					.flattenDeep()
 					.compact()
 					.map(function(key) {
-						// console.log('KEY SPLIT', key);
+						// //console.log('KEY SPLIT', key);
 						return key.split('|')[0];
 					})
 					.map(function(key) {
@@ -1301,6 +1304,7 @@ export default {
 
 				/////////////////////////////////////////////////
 
+				// //console.log('make request');
 				self.$fluro.api.post(`/content/${dataType}/multiple`, {
 						ids,
 						select: _.uniq(fields),
@@ -1321,7 +1325,7 @@ export default {
 
 						/////////////////////////////////////////
 
-						// console.log('Look for ids', ids);
+						// //console.log('Look for ids', ids);
 						var pageItems = _.chain(rawPage)
 							.map(function(rawRow, i) {
 								var entry = lookup[rawRow._id]
@@ -1343,7 +1347,7 @@ export default {
 
 								entry = Object.assign({}, rawRow, entry);
 								// _.merge(rawRow, entry);
-								// console.log('MERGED',  entry);
+								// //console.log('MERGED',  entry);
 								return entry
 
 							})
@@ -1376,20 +1380,20 @@ export default {
 			self.populatePageItems(self.rawPage, self.dataType, self.renderColumns)
 				.then(function(res) {
 					self.page = res;
-					// console.log('>> Page is populated', res)
+					// //console.log('>> Page is populated', res)
 					self.loading = false;
 				})
 				.catch(function(err) {
-					console.log('Error', err);
+					//console.log('Error', err);
 					self.page = [];
 					self.loading = false;
 				});
 
 		}, 500),
 		checkboxClick(item, $event, itemIndex) {
-			// console.log('ITEM INDEX', itemIndex, item, $event);
+			// //console.log('ITEM INDEX', itemIndex, item, $event);
 			return this.toggleSelection(item, $event, itemIndex);
-			// //console.log('Checkbox click!');
+			// ////console.log('Checkbox click!');
 			return this.selectionController.toggle(item);
 		},
 		toggleSelection(item, $event, itemIndex, isolateOnClick) {
@@ -1403,7 +1407,7 @@ export default {
 					//Set the selection to just this item
 
 					this.selectionController.setSelection([item]);
-					//console.log('SET SELECTION', item)
+					////console.log('SET SELECTION', item)
 					return
 				} else {
 					//Select/Deselect this item
@@ -1496,7 +1500,7 @@ export default {
 				return;
 			}
 
-			// console.log('COLUMN', column);
+			// //console.log('COLUMN', column);
 			if (!column.key || !column.key.length) {
 				return;
 			}
@@ -1508,7 +1512,7 @@ export default {
 			var currentDirection = self.sort.sortDirection;
 			var sortDirection = alreadyActive ? (currentDirection == 'asc' ? 'desc' : 'asc') : 'asc';
 
-			// console.log('SORT SET', self.sort)
+			// //console.log('SORT SET', self.sort)
 
 			self.setSort({
 				sortKey,
@@ -1533,7 +1537,7 @@ export default {
 
 
 
-			//// console.log('iTEM ISSUE', item)
+			//// //console.log('iTEM ISSUE', item)
 			classes.push('status-' + item.status);
 
 			if (item.paymentStatus) {
@@ -1571,7 +1575,7 @@ export default {
 		setPage(pageNumber) {
 
 			if (this.currentPage == pageNumber) {
-				//console.log('Already at page', pageNumber)
+				////console.log('Already at page', pageNumber)
 				return;
 			}
 
@@ -1580,14 +1584,14 @@ export default {
 
 			var topElement = this.$refs.top;
 			if (topElement) {
-				// console.log('SCROLL INTO VIEW')
+				// //console.log('SCROLL INTO VIEW')
 				topElement.scrollIntoView({
 					// block:'center',
 					// behavior:'smooth',
 				});
 			}
 
-			// console.log('Recreate page!')
+			// //console.log('Recreate page!')
 			this.$emit('page', pageNumber);
 		},
 		firstPage() {
@@ -1598,7 +1602,7 @@ export default {
 			this.currentPage = this.totalPages;
 		},
 		nextPage() {
-			//console.log(this.currentPage, this.totalPages);
+			////console.log(this.currentPage, this.totalPages);
 			this.currentPage < this.totalPages ? this.setPage(this.currentPage + 1) : this.setPage(this.totalPages);
 		},
 		previousPage() {
@@ -1629,10 +1633,10 @@ export default {
 			var self = this;
 
 			if (self.allInGroupSelected(items)) {
-				// console.log('Toggle set select', items.length)
+				// //console.log('Toggle set select', items.length)
 				self.selectionController.deselectMultiple(items)
 			} else {
-				// console.log('Toggle set deselect', items.length)
+				// //console.log('Toggle set deselect', items.length)
 				self.selectionController.selectMultiple(items)
 			}
 		},
@@ -1641,7 +1645,7 @@ export default {
 				return;
 			}
 
-			// //console.log('Toggle All', this.page);
+			// ////console.log('Toggle All', this.page);
 			if (this.allSelected) {
 				this.selectionController.deselectMultiple(this.page)
 

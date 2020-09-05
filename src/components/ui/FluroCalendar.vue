@@ -237,7 +237,7 @@ export default {
                     break;
             }
 
-            console.log('DATE CHANGED', date);
+           // console.log('DATE CHANGED', date);
             this.$emit('input', date);
 
         },
@@ -367,7 +367,7 @@ export default {
 
             var self = this;
 
-            console.log('events', events.length)
+            //console.log('events', events.length)
             var data = _.chain(events)
                 .map(function(event) {
 
@@ -542,7 +542,7 @@ export default {
 
         },
         selectEvent(event) {
-            console.log('SELECT', this, event)
+            // console.log('SELECT', this, event)
             this.$emit('select', event);
         },
         today() {
@@ -577,7 +577,7 @@ export default {
                     newMoment = self.$fluro.date.moment(self.now).subtract(1, 'day');
                     break;
             }
-            console.log('NEW MOMENT', self.now, newMoment.toDate());
+            // console.log('NEW MOMENT', self.now, newMoment.toDate());
 
             if (!newMoment) {
                 return;
@@ -604,7 +604,7 @@ export default {
                     newMoment = self.$fluro.date.moment(self.now).add(1, 'day');
                     break;
             }
-            console.log('NEW MOMENT', self.now, newMoment.toDate());
+            // console.log('NEW MOMENT', self.now, newMoment.toDate());
 
             if (!newMoment) {
                 return;

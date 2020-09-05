@@ -7,7 +7,7 @@
                 <v-label>{{group.title}}</v-label>
                 <list-group>
                     <template v-for="team in group.teams">
-                        <list-group-item :item="team" :firstLine="team.positions | comma">
+                        <list-group-item @click="$fluro.global.view(team)" :item="team" :firstLine="team.positions | comma">
                             <template v-slot:right>
                                 <v-menu :left="true" v-model="actionIndexes[team._id]" :fixed="true" transition="slide-y-transition" offset-y>
                                     <template v-slot:activator="{ on }">
