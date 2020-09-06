@@ -48,6 +48,12 @@ export default {
 																}
 												}
 								},
+								fields: {
+												type: Array,
+												default () {
+																return [];
+												}
+								}
 				},
 
 				watch: {
@@ -70,6 +76,7 @@ export default {
 												perPage: this.perPage,
 												pageIndex: this.index,
 												criteria: this.criteria,
+												fields:this.fields,
 								})
 
 								return {

@@ -3874,7 +3874,7 @@ function checkNumericInputError(input, minimumValue, maximumValue, numberType, c
 								}
 				}
 
-				if (typeof maximumValue != 'undefined') {
+				if (typeof maximumValue != 'undefined' && parseInt(maximumValue) != 0) {
 								maximumValue = parseFunction(maximumValue);
 								if (input > maximumValue) {
 												return `Must be less than ${currency && self ? self.$fluro.utils.formatCurrency(maximumValue, currency) : maximumValue}`
