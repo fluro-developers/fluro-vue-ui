@@ -722,7 +722,7 @@ export default {
 
 
         tagsAvailable() {
-            if(this.typeName != 'tag') {
+            if(this.typeName == 'tag') {
                 return false;
             }
 

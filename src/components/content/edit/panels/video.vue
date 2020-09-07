@@ -47,13 +47,15 @@
                                         <fluro-video :cacheKey="videoCacheKey" :item="model" />
                                     </v-container>
                                     <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.poster" v-model="model"></fluro-content-form-field>
+                                    
+                                    <template v-if="definition && definition.fields && definition.fields.length">
+                                        <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
+                                    </template>
+
                                     <template v-if="!hideBody && !fullBody">
                                         <v-input label="Body / Caption" class="no-flex">
                                             <fluro-editor v-model="model.body" :options="editorOptions" placeholder="Type your text in here"></fluro-editor>
                                         </v-input>
-                                    </template>
-                                    <template v-if="definition && definition.fields && definition.fields.length">
-                                        <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
                                     </template>
                                     <fluro-privacy-select v-model="model.privacy" />
                                 </constrain>

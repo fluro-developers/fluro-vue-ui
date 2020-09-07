@@ -28,6 +28,10 @@ export default {
 												type: String,
 												required: true,
 								},
+								cumulative: {
+												type: Boolean,
+												default:false,
+								},
 								criteria: {
 												type: Object,
 												default () {
@@ -60,6 +64,9 @@ export default {
 								criteria(c) {
 												this.dataSource.criteria = c;
 								},
+								cumulative(c) {
+												this.dataSource.cumulative = c;
+								},
 								type(c) {
 												this.dataSource.type = c;
 								},
@@ -76,7 +83,8 @@ export default {
 												perPage: this.perPage,
 												pageIndex: this.index,
 												criteria: this.criteria,
-												fields:this.fields,
+												fields: this.fields,
+												cumulative:this.cumulative,
 								})
 
 								return {
