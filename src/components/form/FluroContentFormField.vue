@@ -165,6 +165,8 @@
 																<template v-else>
 																				<v-checkbox :outline="showOutline" :success="success" :mandatory="required" :persistent-hint="true" :label="displayLabel" v-model="fieldModel" @change="elementValueChanged($event, true)" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
 																</template>
+
+																<!-- <pre>MODEL {{fieldModel}}</pre> -->
 												</template>
 												<template v-else-if="renderer == 'number'">
 																<!-- type="number" -->
@@ -1515,8 +1517,11 @@ export default {
 																//Get the value for this field
 																var value = self.model[self.field.key];
 
+																// console.log('GET clean going in', self.field.title, value);
+																var cleaned = self.cleanOutput(value);
+																// console.log('GET clean going out', self.field.title, cleaned);
 
-																return self.cleanOutput(value);
+																return cleaned;
 
 												},
 												set(value) {
@@ -1534,7 +1539,9 @@ export default {
 
 																//Clean the input
 																// console.log('Before clean', value)
+																// console.log('SET clean going in', self.field.title, value);
 																value = self.cleanInput(value);
+																// console.log('SET clean going out', self.field.title, value);
 
 																//////////////////////////////////
 																//If there is a change
@@ -2337,14 +2344,16 @@ export default {
 																				break;
 																case 'boolean':
 
+																				//If there is a value of some sort
 																				if (value) {
+
 																								switch (String(value).toLowerCase()) {
 																												case 'true':
 																												case 'y':
 																												case 'yes':
 																												case '1':
 																												case 't':
-																																console.log('convert boolean', String(value).toLowerCase())
+																																// console.log('convert boolean to true > ', value)
 																																value = true;
 																																break;
 																												case 'false':
@@ -2355,20 +2364,23 @@ export default {
 																												case 'undefined':
 																												case 'null':
 																												case '':
-																																console.log('convert boolean', String(value).toLowerCase())
+																																// console.log('convert boolean to false > ', value)
 																																value = false;
 																																break;
 																								}
-																				}
-
-
-																				if (self.field.inverse) {
-																								value = !!!value;
-																				}
-
-																				if (!value) {
+																				} else {
+																								// console.log('boolean false', value);
 																								value = false;
 																				}
+
+																				/////////////////////////////////////
+
+																				//If we need to inverse
+																				if (self.field.inverse) {
+																								value = !value;
+																				}
+
+																				// console.log('BOOLEAN', this.field.title, self.field.inverse ? 'invert to' : 'normal', value);
 
 																				/////////////////////////////////////
 
@@ -2551,7 +2563,10 @@ export default {
 																				break;
 																case 'boolean':
 
+																console.log('BOOLEAN CHECK IN', value)
 																				if (value) {
+
+
 																								switch (String(value).toLowerCase()) {
 																												case 'true':
 																												case 'y':
@@ -2559,7 +2574,7 @@ export default {
 																												case '1':
 																												case 't':
 
-																																console.log('convert boolean', String(value).toLowerCase())
+																																// console.log('convert boolean to true > ', value)
 																																value = true;
 																																break;
 																												case 'false':
@@ -2570,23 +2585,20 @@ export default {
 																												case 'undefined':
 																												case 'null':
 																												case '':
-																																console.log('convert boolean', String(value).toLowerCase())
+																																// console.log('convert boolean to false > ', value)
 																																value = false;
 																																break;
 																								}
+																				} else {
+																								// console.log('boolean false', value)
+																								value = false;
 																				}
 
 																				if (self.field.inverse) {
 																								value = !value;
 																				}
 
-																				if (!value) {
-																								value = false;
-																				}
-
-																				//Ensure it's a boolean
-																				(value = !!value);
-
+																				// console.log('BOOLEAN', this.field.title, self.field.inverse ? 'invert to' : 'normal', value);
 																				break;
 												}
 
