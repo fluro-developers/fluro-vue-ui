@@ -141,7 +141,25 @@
 																				<v-container>
 																								<constrain sm>
 																												<h5 margin>Redirects</h5>
+
+
+																										<!-- 		<div class="form-group">
+				<label>Path forwarding / Redirects</label>
+				<p class="help-block">Add redirects to 301 users to another address, the 'to' address can be an absolute url or another path on this applications domain name</p>
+				<redirect-select ng-model="item.pathForwards"></redirect-select>
+			</div>
+
+
+			<div v-if="showLegacyRedirects">
+				<hr/>
+				<label>Legacy Path forwarding / Redirects <em class="text-muted">(deprecated)</em></label>
+				<legacy-redirect-select ng-model="item.pathRedirects"></legacy-redirect-select>
+			</div>
+
+
+			 -->
 																												<redirect-manager v-model="model.pathForwards" />
+																												
 																								</constrain>
 																				</v-container>
 																</flex-column-body>
@@ -380,17 +398,20 @@ export default {
 																minimum: 0,
 																maximum: 1,
 																type: "string",
-																description: "Specify which API URL this application should use. If left blank, the default fluro api url will be used.",
-																placeholder: "https://api.fluro.io"
+																description: "Don't change this unless you know what you are doing. Specify which API URL this application should use. If left blank, the default fluro api url will be used.",
+																placeholder: "https://api.fluro.io",
+																params:{
+																	persistentDescription:true,
+																}
 												});
 
 												addField("timezone", {
-																title: "Timezone",
+																title: "Application Timezone",
 																minimum: 0,
 																maximum: 1,
 																type: "string",
 																directive: "timezone-select",
-																description: "Which timezone should be used for this application"
+																description: "Which timezone should be used for this application. If none selected it will default to the account timezone"
 												});
 
 												addField("gaTrackingCode", {

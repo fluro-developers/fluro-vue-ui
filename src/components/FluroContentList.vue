@@ -30,7 +30,7 @@ export default {
 								},
 								cumulative: {
 												type: Boolean,
-												default:false,
+												default: false,
 								},
 								criteria: {
 												type: Object,
@@ -76,6 +76,9 @@ export default {
 								index(c) {
 												this.dataSource.pageIndex = c;
 								},
+								fields(c) {
+												this.dataSource.fields = c;
+								},
 				},
 				data() {
 
@@ -84,7 +87,7 @@ export default {
 												pageIndex: this.index,
 												criteria: this.criteria,
 												fields: this.fields,
-												cumulative:this.cumulative,
+												cumulative: this.cumulative,
 								})
 
 								return {

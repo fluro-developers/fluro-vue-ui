@@ -16,7 +16,7 @@
 								<fluro-page-preloader v-if="showLoading" contain />
 								<v-container class="flex-center" v-if="!sorted.length">
 												<slot name="emptytext">
-																No results were found matching your criteria
+																No items
 												</slot>
 								</v-container>
 								<template v-else>
