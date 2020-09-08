@@ -1,6 +1,5 @@
 <template>
     <flex-column class="content-view">
-        <!-- {{loadingModel}} -- {{loadingConfig}} -->
         <fluro-page-preloader v-if="loading" contain />
         <template v-else-if="model">
             <flex-column-header class="border-bottom">
@@ -42,18 +41,13 @@
                     </template>
                 </page-header>
             </flex-column-header>
-            <!-- BOOM TEST {{model}}  -->
-            <!-- <pre>TESTING NOW? {{id}} {{model}}</pre> -->
-            <!-- <flex-column-body> -->
             <component :item="model" v-bind:is="component" :config="config" v-if="component" />
-            <!-- <pre>{{component}}</pre> -->
-            <!-- </flex-column-body> -->
         </template>
     </flex-column>
 </template>
 <script>
 import Vue from "vue";
-import DynamicImportService from "../../../DynamicImportService.js";
+// import DynamicImportService from "../../../DynamicImportService.js";
 import _ from "lodash";
 
 export default {
@@ -186,213 +180,213 @@ export default {
         }
     },
     asyncComputed: {
-     /**
-        component: {
-            default: null,
-            get() {
-                var self = this;
-                if (!self.type) {
-                    // console.log('No type name yet!')
-                    return Promise.resolve(null);
-                }
+        /**
+           component: {
+               default: null,
+               get() {
+                   var self = this;
+                   if (!self.type) {
+                       // console.log('No type name yet!')
+                       return Promise.resolve(null);
+                   }
 
-                //////////////////////////////////////////
+                   //////////////////////////////////////////
 
-                switch (self.type) {
-                    case "academic":
-                        break;
-                    case "application":
-                        break;
-                    case "article":
-                        return DynamicImportService.load(
-                            "./panels/article.vue",
-                            function() {
-                                return import("./panels/article.vue");
-                            }
-                        );
-                        break;
-                    case "team":
-                        return DynamicImportService.load(
-                            "./panels/team.vue",
-                            function() {
-                                return import("./panels/team.vue");
-                            }
-                        );
-                        break;
-                    case "asset":
-                        return DynamicImportService.load(
-                            "./panels/asset.vue",
-                            function() {
-                                return import("./panels/asset.vue");
-                            }
-                        );
-                        break;
-                    case "attendance":
-                        break;
-                    case "audio":
-                        return DynamicImportService.load(
-                            "./panels/audio.vue",
-                            function() {
-                                return import("./panels/audio.vue");
-                            }
-                        );
-                        break;
-                    case "capability":
-                        break;
-                    case "checkin":
-                        break;
-                    case "code":
-                        break;
-                    case "collection":
-                        return DynamicImportService.load(
-                            "./panels/collection.vue",
-                            function() {
-                                return import(
-                                    "./panels/collection.vue"
-                                );
-                            }
-                        );
-                        break;
-                    case "component":
-                        break;
-                    case "contact":
-                        return DynamicImportService.load(
-                            "./panels/contact.vue",
-                            function() {
-                                return import("./panels/contact.vue");
-                            }
-                        );
-                        break;
-                    case "contactdetail":
-                        return DynamicImportService.load(
-                            "./panels/contactdetail.vue",
-                            function() {
-                                return import(
-                                    "./panels/contactdetail.vue"
-                                );
-                            }
-                        );
-                        break;
-                    case "definition":
-                        break;
-                    case "event":
-                        return DynamicImportService.load(
-                            "./panels/event.vue",
-                            function() {
-                                return import("./panels/event.vue");
-                            }
-                        );
-                        break;
-                    case "eventtrack":
-                        break;
-                    case "family":
-                        return DynamicImportService.load(
-                            "./panels/family.vue",
-                            function() {
-                                return import("./panels/family.vue");
-                            }
-                        );
-                        break;
-                    case "image":
-                        return DynamicImportService.load(
-                            "./panels/image.vue",
-                            function() {
-                                return import("./panels/image.vue");
-                            }
-                        );
-                        break;
-                    case "integration":
-                        break;
-                    case "location":
-                        break;
-                    case "interaction":
-                        return DynamicImportService.load(
-                            "./panels/interaction.vue",
-                            function() {
-                                return import(
-                                    "./panels/interaction.vue"
-                                );
-                            }
-                        );
-                        break;
-                    case "mailout":
-                        return DynamicImportService.load(
-                            "./panels/mailout.vue",
-                            function() {
-                                return import("./panels/mailout.vue");
-                            }
-                        );
-                        break;
-                    case "persona":
-                        break;
-                    case "plan":
-                        return DynamicImportService.load(
-                            "./panels/plan.vue",
-                            function() {
-                                return import("./panels/plan.vue");
-                            }
-                        );
-                        break;
-                    case "policy":
-                        break;
-                    case "post":
-                        return DynamicImportService.load(
-                            "./panels/post.vue",
-                            function() {
-                                return import("./panels/post.vue");
-                            }
-                        );
-                        break;
-                    case "process":
-                        break;
-                    case "query":
-                        return DynamicImportService.load(
-                            "./panels/query.vue",
-                            function() {
-                                return import("./panels/query.vue");
-                            }
-                        );
-                        break;
-                    case "realm":
-                        break;
-                    case "role":
-                        break;
-                    case "roster":
-                        break;
-                    case "tag":
-                        return DynamicImportService.load(
-                            "./panels/tag.vue",
-                            function() {
-                                return import("./panels/tag.vue");
-                            }
-                        );
-                        break;
-                    case "team":
-                        break;
-                    case "ticket":
-                        return DynamicImportService.load(
-                            "./panels/ticket.vue",
-                            function() {
-                                return import("./panels/ticket.vue");
-                            }
-                        );
-                        break;
-                    case "timetrigger":
-                        break;
-                    case "video":
-                        return DynamicImportService.load(
-                            "./panels/video.vue",
-                            function() {
-                                return import("./panels/video.vue");
-                            }
-                        );
-                        break;
-                }
+                   switch (self.type) {
+                       case "academic":
+                           break;
+                       case "application":
+                           break;
+                       case "article":
+                           return DynamicImportService.load(
+                               "./panels/article.vue",
+                               function() {
+                                   return import("./panels/article.vue");
+                               }
+                           );
+                           break;
+                       case "team":
+                           return DynamicImportService.load(
+                               "./panels/team.vue",
+                               function() {
+                                   return import("./panels/team.vue");
+                               }
+                           );
+                           break;
+                       case "asset":
+                           return DynamicImportService.load(
+                               "./panels/asset.vue",
+                               function() {
+                                   return import("./panels/asset.vue");
+                               }
+                           );
+                           break;
+                       case "attendance":
+                           break;
+                       case "audio":
+                           return DynamicImportService.load(
+                               "./panels/audio.vue",
+                               function() {
+                                   return import("./panels/audio.vue");
+                               }
+                           );
+                           break;
+                       case "capability":
+                           break;
+                       case "checkin":
+                           break;
+                       case "code":
+                           break;
+                       case "collection":
+                           return DynamicImportService.load(
+                               "./panels/collection.vue",
+                               function() {
+                                   return import(
+                                       "./panels/collection.vue"
+                                   );
+                               }
+                           );
+                           break;
+                       case "component":
+                           break;
+                       case "contact":
+                           return DynamicImportService.load(
+                               "./panels/contact.vue",
+                               function() {
+                                   return import("./panels/contact.vue");
+                               }
+                           );
+                           break;
+                       case "contactdetail":
+                           return DynamicImportService.load(
+                               "./panels/contactdetail.vue",
+                               function() {
+                                   return import(
+                                       "./panels/contactdetail.vue"
+                                   );
+                               }
+                           );
+                           break;
+                       case "definition":
+                           break;
+                       case "event":
+                           return DynamicImportService.load(
+                               "./panels/event.vue",
+                               function() {
+                                   return import("./panels/event.vue");
+                               }
+                           );
+                           break;
+                       case "eventtrack":
+                           break;
+                       case "family":
+                           return DynamicImportService.load(
+                               "./panels/family.vue",
+                               function() {
+                                   return import("./panels/family.vue");
+                               }
+                           );
+                           break;
+                       case "image":
+                           return DynamicImportService.load(
+                               "./panels/image.vue",
+                               function() {
+                                   return import("./panels/image.vue");
+                               }
+                           );
+                           break;
+                       case "integration":
+                           break;
+                       case "location":
+                           break;
+                       case "interaction":
+                           return DynamicImportService.load(
+                               "./panels/interaction.vue",
+                               function() {
+                                   return import(
+                                       "./panels/interaction.vue"
+                                   );
+                               }
+                           );
+                           break;
+                       case "mailout":
+                           return DynamicImportService.load(
+                               "./panels/mailout.vue",
+                               function() {
+                                   return import("./panels/mailout.vue");
+                               }
+                           );
+                           break;
+                       case "persona":
+                           break;
+                       case "plan":
+                           return DynamicImportService.load(
+                               "./panels/plan.vue",
+                               function() {
+                                   return import("./panels/plan.vue");
+                               }
+                           );
+                           break;
+                       case "policy":
+                           break;
+                       case "post":
+                           return DynamicImportService.load(
+                               "./panels/post.vue",
+                               function() {
+                                   return import("./panels/post.vue");
+                               }
+                           );
+                           break;
+                       case "process":
+                           break;
+                       case "query":
+                           return DynamicImportService.load(
+                               "./panels/query.vue",
+                               function() {
+                                   return import("./panels/query.vue");
+                               }
+                           );
+                           break;
+                       case "realm":
+                           break;
+                       case "role":
+                           break;
+                       case "roster":
+                           break;
+                       case "tag":
+                           return DynamicImportService.load(
+                               "./panels/tag.vue",
+                               function() {
+                                   return import("./panels/tag.vue");
+                               }
+                           );
+                           break;
+                       case "team":
+                           break;
+                       case "ticket":
+                           return DynamicImportService.load(
+                               "./panels/ticket.vue",
+                               function() {
+                                   return import("./panels/ticket.vue");
+                               }
+                           );
+                           break;
+                       case "timetrigger":
+                           break;
+                       case "video":
+                           return DynamicImportService.load(
+                               "./panels/video.vue",
+                               function() {
+                                   return import("./panels/video.vue");
+                               }
+                           );
+                           break;
+                   }
 
-                return Promise.resolve(null);
-            }
-        },
-        /**/
+                   return Promise.resolve(null);
+               }
+           },
+           /**/
         config: {
             default: null,
             get() {

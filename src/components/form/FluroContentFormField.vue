@@ -2380,7 +2380,7 @@ export default {
 																								value = !value;
 																				}
 
-																				// console.log('BOOLEAN', this.field.title, self.field.inverse ? 'invert to' : 'normal', value);
+																				// //console.log('BOOLEAN', this.field.title, self.field.inverse ? 'invert to' : 'normal', value);
 
 																				/////////////////////////////////////
 
@@ -2563,7 +2563,7 @@ export default {
 																				break;
 																case 'boolean':
 
-																console.log('BOOLEAN CHECK IN', value)
+																//console.log('BOOLEAN CHECK IN', value)
 																				if (value) {
 
 
@@ -2598,7 +2598,7 @@ export default {
 																								value = !value;
 																				}
 
-																				// console.log('BOOLEAN', this.field.title, self.field.inverse ? 'invert to' : 'normal', value);
+																				// //console.log('BOOLEAN', this.field.title, self.field.inverse ? 'invert to' : 'normal', value);
 																				break;
 												}
 

@@ -714,7 +714,10 @@ export default {
                 minimum: 1,
                 maximum: 1,
                 type: "string",
-                placeholder: "Event title"
+                placeholder: "Event title",
+                params:{
+                    autofocus:!self.model.title,
+                }
             });
 
             addField("firstLine", {

@@ -1,20 +1,80 @@
 {
-	"root": true,
-	"parserOptions": {
-		"parser": "babel-eslint"
-	},
-	"env": {
-		"browser": true
-	},
-	"extends": [
-		"xo/esnext",
-		"plugin:vue/recommended"
-	],
-	"plugins": [
-		"vue"
-	],
-	"rules": {
-		"linebreak-style": "off",
-		"vue/html-indent": ["error", "tab"]
-	}
+    "root": true,
+    "parserOptions":
+    {
+        "parser": "babel-eslint"
+    },
+    "env":
+    {
+        "browser": true
+    },
+    "extends": [
+        "xo/esnext",
+        "plugin:vue/recommended"
+    ],
+    "plugins": [
+        "vue"
+    ],
+    "rules":
+    {
+
+        "vue/html-self-closing":"off",
+       "vue/singleline-html-element-content-newline":"off",
+       "vue/no-multi-spaces":"off",
+       "vue/no-parsing-error":"off",
+       "vue/html-self-closing":"off",
+       "prefer-destructuring":"off",
+       "vue/require-default-prop":"off",
+       "quotes":"off",
+       "no-var":"off",
+       "handle-callback-err":"off",
+
+      
+       "eqeqeq":"off",
+       "no-lonely-if":"off",
+       "vue/order-in-components":"off",
+       "operator-linebreak":"off",
+    
+
+
+        "linebreak-style": "off",
+        "vue/max-attributes-per-line":"off",
+        "vue/html-indent":"off",
+        "vue/attributes-order":"off",
+        "vue/mustache-interpolation-spacing":"off",
+        "no-console": "off",
+        "indent": "off",
+        "no-extra-semi": "off",
+        "object-curly-spacing": "off",
+        "no-unused-vars": "off",
+        "no-mixed-spaces-and-tabs": "off",
+        "vue/no-unused-vars": "off",
+        "vue/return-in-computed-property": "off",
+        "no-extra-boolean-cast": "off",
+        "no-unreachable": "off",
+        "no-debugger": "off",
+        "comma-spacing": "off",
+        "space-infix-ops": "off",
+        "brace-style": "off",
+        "space-before-function-paren": "off",
+        "space-before-blocks": "off",
+        "semi": "off",
+        "camelcase": "off",
+        "no-undef": "off",
+        "brace-style": "off",
+        "key-spacing": "off",
+        "indent": "off",
+        "semi": "off",
+        "comma-spacing": "off",
+        "comma-dangle": "off",
+        "eol-last": "off",
+        "no-multiple-empty-lines": "off",
+        "padded-blocks": "off",
+        "prefer-arrow-callback": "off",
+        "spaced-comment": "off",
+        "capitalized-comments": "off",
+        "no-multi-assign": "off",
+        "padding-line-between-statements": "off",
+        "semi": "off"
+    }
 }

@@ -232,7 +232,7 @@ import FluroInlineEdit from "../../form/FluroInlineEdit.vue";
 import FluroContentFormField from "../../form/FluroContentFormField.vue";
 import Changelog from "./components/Changelog.vue";
 
-import DynamicImportService from "../../../DynamicImportService.js";
+// import DynamicImportService from "../../../DynamicImportService.js";
 
 export default {
     props: {
