@@ -28,6 +28,7 @@
        "quotes":"off",
        "no-var":"off",
        "handle-callback-err":"off",
+       "no-useless-rename":"off",
 
       
        "eqeqeq":"off",

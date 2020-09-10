@@ -81,7 +81,7 @@
                                 <help title="More Actions" :body="`View more actions that are relevant to this ${definitionTitle}`" />
                             </v-btn>
                             <v-btn class="mx-0 ml-2" @click="cancel" v-if="!embedded">Close</v-btn>
-                            <v-btn class="mx-0 ml-2" :loading="state == 'processing'" :disabled="hasErrors" @click="submit" color="primary">{{saveText}}</v-btn>
+                            <v-btn class="mx-0 ml-2" :loading="state == 'processing'" :disabled="hasErrors" @click="submit()" color="primary">{{saveText}}</v-btn>
                         </template>
                         <template v-slot:rightmobile>
                             <v-btn small icon v-if="model._id" class="ma-0" @click="$actions.open([model])">
@@ -90,7 +90,7 @@
                         </template>
                     </page-header>
                 </flex-column-header>
-                <component @errorMessages="validate" ref="form" :context="context" @refresh="refresh" @input="updateModel" v-bind:is="component" :type="typeConfig" :config="config" v-model="model" @file="fileChanged" :definition="definition" v-if="component"></component>
+                <component @errorMessages="validate" ref="form" :context="context" @refresh="refresh" @input="updateModel" v-bind:is="component" :type="typeConfig" :config="config" v-model="model" @file="fileChanged" :definition="definition" v-if="component" :save="submit"></component>
                 <template v-if="showFooter">
                     <template v-if="$vuetify.breakpoint.xsOnly">
                         <flex-column-footer>
@@ -111,7 +111,7 @@
                                     </v-flex>
                                     <v-spacer />
                                     <v-flex>
-                                        <v-btn class="mr-0" block :loading="state == 'processing'" :disabled="hasErrors" @click="submit" color="primary">{{saveText}}</v-btn>
+                                        <v-btn class="mr-0" block :loading="state == 'processing'" :disabled="hasErrors" @click="submit()" color="primary">{{saveText}}</v-btn>
                                     </v-flex>
                                 </v-layout>
                             </v-container>
@@ -561,34 +561,13 @@ export default {
                 requestData
             );
         },
-        submit() {
+        submit(capture) {
             var self = this;
-            self.validateAllFields();
-
-            if (self.hasErrors) {
-                console.log("WE HAVE ERRORS", self.errorMessages);
-                // self.$notify()
-                //Gotta finish the stuff first!
-                return;
-            }
-
-            if (self.typeName == "realm") {} else {
-                if (!self.model.realms || !self.model.realms.length) {
-                    return self.showRealmsPopup();
-                }
-            }
-
-            self.state = "processing";
 
             /////////////////////////////////
 
             var requestData = Object.assign({}, self.model);
             delete requestData.__v;
-
-            var definedType =
-                requestData.definition || self.definitionName || self.typeName;
-            // requestData.realms = self.realms;
-            // requestData.tags = self.tags;
 
             /////////////////////////////////
 
@@ -597,124 +576,194 @@ export default {
                 context = "edit";
             }
 
-            if (
-                self.typeName == "attendance" &&
-                (!requestData.title || !requestData.title.length)
-            ) {
-                requestData.title = `${requestData.event.title} headcount`;
-            }
+            /////////////////////////////////
 
-            console.log("SENDING TO SERVER", context, self.model);
+            var promise = new Promise(function(resolve, reject) {
 
-            switch (context) {
-                case "edit":
-                    self
-                        .submitUpdate()
-                        .then(self.editSuccess)
-                        .catch(self.editFailed);
+                self.validateAllFields();
 
-                    break;
-                default:
-                    //Preprocess our create request
-                    requestData = self.preprocessCreateData(requestData);
+                /////////////////////////////////
+                /////////////////////////////////
 
-                    if (self.uploadForSave) {
-                        var file = self.file;
+                if (self.hasErrors) {
+                    console.log("WE HAVE ERRORS", self.errorMessages);
+                    // self.$notify()
+                    //Gotta finish the stuff first!
+                    return reject();
+                }
 
-                        if (!file) {
-                            // console.log('SELF UPDATE CREATE', requestData);
-                            self.$fluro.notify(`Please select a file to upload`);
-                            self.state = "ready";
-                            return;
-                        }
+                if (self.typeName == "realm") {} else {
+                    if (!self.model.realms || !self.model.realms.length) {
+                        self.showRealmsPopup();
+                        return reject();
+                    }
+                }
 
-                        var REPLACEMENT_UPLOAD_URL = "/file/upload";
+                self.state = "processing";
 
-                        //If the file is uploaded with an external integration
-                        if (requestData.externalIntegration) {
-                            var externalIntegrationID = requestData.externalIntegration;
-                            if (externalIntegrationID._id) {
-                                externalIntegrationID = externalIntegrationID._id;
+                /////////////////////////////////
+
+
+
+                var definedType = requestData.definition || self.definitionName || self.typeName;
+                // requestData.realms = self.realms;
+                // requestData.tags = self.tags;
+
+                /////////////////////////////////
+
+
+
+                if (
+                    self.typeName == "attendance" &&
+                    (!requestData.title || !requestData.title.length)
+                ) {
+                    requestData.title = `${requestData.event.title} headcount`;
+                }
+
+                console.log("SENDING TO SERVER", context, self.model);
+
+                switch (context) {
+                    case "edit":
+                        self.submitUpdate().then(resolve)
+                        break;
+                    default:
+                        //Preprocess our create request
+                        requestData = self.preprocessCreateData(requestData);
+
+                        if (self.uploadForSave) {
+                            var file = self.file;
+
+                            if (!file) {
+                                // console.log('SELF UPDATE CREATE', requestData);
+                                self.$fluro.notify(`Please select a file to upload`);
+                                self.state = "ready";
+                                return reject();
                             }
 
-                            REPLACEMENT_UPLOAD_URL = `/file/integration/upload/${externalIntegrationID}`;
-                        }
+                            var REPLACEMENT_UPLOAD_URL = "/file/upload";
 
-                        /////////////////////////////////////////////
+                            //If the file is uploaded with an external integration
+                            if (requestData.externalIntegration) {
+                                var externalIntegrationID = requestData.externalIntegration;
+                                if (externalIntegrationID._id) {
+                                    externalIntegrationID = externalIntegrationID._id;
+                                }
 
-                        if (self.definitionName) {
-                            requestData.definition = self.definitionName;
-                        }
-
-                        /////////////////////////////////////////////
-
-                        //Change the state to uploading
-                        file.state = "uploading";
-
-                        //Create a new form object
-                        var formData = new FormData();
-                        formData.append("json", JSON.stringify(requestData));
-                        formData.append("file", file.file, file.name);
-
-                        var body = formData;
-                        var requestConfig = {
-                            headers: {
-                                "Content-Type": "multipart/form-data"
+                                REPLACEMENT_UPLOAD_URL = `/file/integration/upload/${externalIntegrationID}`;
                             }
-                            // onUploadProgress: progressEvent => {
 
-                            //     let percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
-                            //     // do whatever you like with the percentage complete
-                            //     // maybe dispatch an action that will update a progress bar or something
-                            //     file.progress = percentCompleted;
-                            //     file.bytesLoaded = progressEvent.loaded;
-                            //     file.bytesTotal = progressEvent.total;
+                            /////////////////////////////////////////////
 
-                            //     ///////////////////////////////////////////////////
+                            if (self.definitionName) {
+                                requestData.definition = self.definitionName;
+                            }
 
-                            //     //Update the bytes loaded from all the files in the array
-                            //     self.bytesLoaded = _.reduce(self.files, function(set, file) {
-                            //         if (file.state == 'complete') {
-                            //             set += file.size || file.bytesTotal || 0;
-                            //         } else {
-                            //             set += file.bytesLoaded || 0;
-                            //         }
-                            //         return set;
-                            //     }, 0)
+                            /////////////////////////////////////////////
 
-                            //     ///////////////////////////////////////////////////
+                            //Change the state to uploading
+                            file.state = "uploading";
 
-                            //     self.$forceUpdate();
-                            // }
-                        };
+                            //Create a new form object
+                            var formData = new FormData();
+                            formData.append("json", JSON.stringify(requestData));
+                            formData.append("file", file.file, file.name);
+
+                            var body = formData;
+                            var requestConfig = {
+                                headers: {
+                                    "Content-Type": "multipart/form-data"
+                                }
+                                // onUploadProgress: progressEvent => {
+
+                                //     let percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
+                                //     // do whatever you like with the percentage complete
+                                //     // maybe dispatch an action that will update a progress bar or something
+                                //     file.progress = percentCompleted;
+                                //     file.bytesLoaded = progressEvent.loaded;
+                                //     file.bytesTotal = progressEvent.total;
+
+                                //     ///////////////////////////////////////////////////
+
+                                //     //Update the bytes loaded from all the files in the array
+                                //     self.bytesLoaded = _.reduce(self.files, function(set, file) {
+                                //         if (file.state == 'complete') {
+                                //             set += file.size || file.bytesTotal || 0;
+                                //         } else {
+                                //             set += file.bytesLoaded || 0;
+                                //         }
+                                //         return set;
+                                //     }, 0)
+
+                                //     ///////////////////////////////////////////////////
+
+                                //     self.$forceUpdate();
+                                // }
+                            };
+
+                            //////////////////////////////////////////////////////////////
+
+                            //Create a new item
+                            return self.$fluro.api
+                                .post(REPLACEMENT_UPLOAD_URL, body, requestConfig)
+                                .then(resolve, reject);
+                        }
 
                         //////////////////////////////////////////////////////////////
 
-                        //Create a new item
-                        return self.$fluro.api
-                            .post(REPLACEMENT_UPLOAD_URL, body, requestConfig)
-                            .then(self.createSuccess)
-                            .catch(self.createFailed);
-                    }
+                        if (definedType == "family") {
+                            //Create a new item
+                            self.$fluro.api
+                                .post(`/family`, requestData)
+                                .then(resolve, reject);
 
-                    //////////////////////////////////////////////////////////////
+                        } else {
+                            //Create a new item
+                            self.$fluro.api
+                                .post(`/content/${definedType}`, requestData)
+                                .then(resolve, reject);
+                        }
 
-                    if (definedType == "family") {
-                        //Create a new item
-                        self.$fluro.api
-                            .post(`/family`, requestData)
-                            .then(self.createSuccess)
-                            .catch(self.createFailed);
-                    } else {
-                        //Create a new item
-                        self.$fluro.api
-                            .post(`/content/${definedType}`, requestData)
-                            .then(self.createSuccess)
-                            .catch(self.createFailed);
-                    }
+                        break;
+                }
 
+            })
+
+            //////////////////////////////////////////////////////////////
+
+            if (capture) {
+
+                return new Promise(function(resolve, reject) {
+                    promise.then(function(res) {
+
+                        //Update with our new details
+                        _.assign(self.model, res.data);                    
+                        resolve(res.data);
+                        self.state = "ready";
+                    }, function(err) {
+                        self.state = "ready";
+                        reject(err);
+                    })
+
+                })
+
+            }
+
+
+            switch (context) {
+                case "edit":
+                    promise.then(self.editSuccess, self.editFailed);
+                    break;
+                default:
+                    promise.then(self.createSuccess, self.createFailed);
                     break;
             }
+
+            return promise;
+
+
+            //////////////////////////////////////////////////////////////
+
+
         }
     },
     computed: {
@@ -722,7 +771,7 @@ export default {
 
 
         tagsAvailable() {
-            if(this.typeName == 'tag') {
+            if (this.typeName == 'tag') {
                 return false;
             }
 
@@ -740,7 +789,7 @@ export default {
 
 
         showDeveloperDocs() {
-         return this.typeName == 'component';
+            return this.typeName == 'component';
         },
         showPadlock() {
 

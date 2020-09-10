@@ -11,7 +11,7 @@
                             <template v-slot:right>
                                 <v-menu :left="true" v-model="actionIndexes[team._id]" :fixed="true" transition="slide-y-transition" offset-y>
                                     <template v-slot:activator="{ on }">
-                                        <v-btn class="ma-0" icon small flat v-on="on">
+                                        <v-btn @click.stop.prevent class="ma-0" icon small flat v-on="on">
                                             <fluro-icon v-if="actionIndexes[team._id]" icon="times" />
                                             <fluro-icon v-else icon="ellipsis-h" />
                                         </v-btn>

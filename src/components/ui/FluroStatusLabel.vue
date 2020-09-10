@@ -31,6 +31,7 @@ export default {
 
     &.draft,
     &.trial,
+    &.sent,
     &.sandbox,
     &.scheduled,
     &.yellow,
@@ -39,6 +40,7 @@ export default {
         color: #f0974e !important;
     }
 
+    &.delivered,
     &.click,
     &.open,
     &.live,
@@ -52,6 +54,8 @@ export default {
     }
 
 
+    &.error,
+    &.failed,
     &.red,
     &.danger {
 

@@ -97,7 +97,7 @@ export default {
 				},
 				computed: {
 								callbackCodeURL() {
-												return `${this.$fluro.apiURL}/integrate/oauth/${this.model._id || 'INTEGRATION_ID'}/calback?code=YOURCODE`;
+												return `${this.$fluro.apiURL}/integrate/oauth/${this.model._id || 'INTEGRATION_ID'}/callback?code=YOURCODE`;
 								},
 								fieldsOutput() {
 

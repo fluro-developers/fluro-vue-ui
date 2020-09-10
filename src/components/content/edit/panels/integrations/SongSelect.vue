@@ -34,7 +34,8 @@
 																</ul>
 												</fluro-panel-body>
 								</fluro-panel>
-								<fluro-panel v-if="!model._id">
+								<fluro-panel v-if="false">
+												<!-- !model._id"> -->
 												<fluro-panel-body class="border-top">
 																Please save this integration to continue
 												</fluro-panel-body>
@@ -159,54 +160,34 @@ export default {
 								}
 				},
 				methods: {
-								authorize(url) {
+
+					authorize(url) {
 
 												var self = this;
 
-												console.log('Authorize!');
+												self.processing = true
+
+												/////////////////////////////////
 
 												if (self.saveCallback) {
-
-																console.log('SAve first')
-																self.saveCallback().then(function(res) {
-
-																				console.log('Saved!', res);
-																				authorize(res);
-																})
+																return self.saveCallback(true)
+																				.then(function(res) {
+																								return redirectToURL(res);
+																				}, function(err) {
+																								self.processing = false;
+																								return;
+																				})
 												} else {
-																authorize();
+																if (self.model._id) {
+																				return redirectToURL();
+																}
 												}
 
+												/////////////////////////////////
 
-												function authorize(result) {
+												function redirectToURL(result) {
 
-
-																console.log('Authorize now');
-
-																//The url we want to redirect the user to
-																var url;
-
-
-																var modelID = self.model._id || result.data._id;
-
-																//Check the module of the integration
-																// switch (self.model.module) {
-																// case 'songselect':
-																url = `${self.$fluro.apiURL}/integrate/songselect/${modelID}/oauth?mode=${self.model.publicDetails.mode || 'prod'}`;
-																// break;
-																// case 'pushpay':
-																// url = `${self.$fluro.apiURL}/integrate/pushpay/${modelID}/oauth?mode=${self.model.publicDetails.mode}`;
-																// break;
-																// default:
-																// break;
-																// }
-																//////////////////////////////////
-
-																//Tell the front end we are trying to load their
-																//url
-																self.processing = true
-
-																//Visit the url
+																var url = self.$fluro.api.generateEndpointURL(`/integrate/songselect/${self.model._id}/oauth?mode=${self.model.publicDetails.mode || 'prod'}`);
 																if (process.browser) {
 																				window.location.href = url;
 																}

@@ -197,7 +197,7 @@ export default {
 												if (self.cacheKey && String(self.cacheKey.length)) {
 																params.cacheKey = self.cacheKey;
 												}
-												return self.$fluro.asset.posterUrl(self.item, self.posterWidth, self.posterHeight, params);
+												return self.$fluro.asset.posterUrl(self.item, self.posterWidth || self.computedWidth, self.posterHeight || self.computedHeight, params);
 								},
 								assetUrl() {
 												var self = this;

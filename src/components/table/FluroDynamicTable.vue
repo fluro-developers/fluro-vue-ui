@@ -1723,9 +1723,9 @@ export default {
 		overflow: auto;
 		height: 100%;
 
-		overscroll-behavior-x: none !important;
-		overscroll-behavior-y: none !important;
-		overscroll-behavior: none !important;
+		// overscroll-behavior-x: none !important;
+		// overscroll-behavior-y: none !important;
+		// overscroll-behavior: none !important;
 
 		table {
 			width: 100%;

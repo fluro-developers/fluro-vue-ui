@@ -1,7 +1,7 @@
 <template>
     <div>
-        <!--   Model:
-  <pre>{{model}}</pre> -->
+          <!-- Model: -->
+  <!-- <pre>{{chartOptions}}</pre> -->
         <apexchart :type="chartType" :height="height" :width="width" :options="chartOptions" :series="model.series.data"></apexchart>
     </div>
 </template>
@@ -25,18 +25,18 @@ export default {
             if (!_.get(chartOpt, "colors")) {
                 _.set(chartOpt, "colors", self.model.colors)
             }
-            if(!_.get(chartOpt, 'chart.toolbar')) {
+            if (!_.get(chartOpt, 'chart.toolbar')) {
 
-	            _.set(chartOpt, "chart.toolbar", {
-	                show: true,
-	                offsetX: 0,
-	                offsetY: 0,
-	                tools: {
-	                    download: true,
-	                },
-	            })
-        	}
-           
+                _.set(chartOpt, "chart.toolbar", {
+                    show: true,
+                    offsetX: 0,
+                    offsetY: 0,
+                    tools: {
+                        download: true,
+                    },
+                })
+            }
+
             if (!_.get(chartOpt, "responsive")) {
                 _.set(chartOpt, "responsive", [{
                     breakpoint: 480,
@@ -49,49 +49,49 @@ export default {
             }
             _.set(chartOpt, "chart.events", {
                 zoomed(chartContext, event) {
-                        //console.log("context", chartContext, "options", options)
+                    //console.log("context", chartContext, "options", options)
                     self.$emit("chartEvent", { key: 'zoom', event })
                 },
                 click(event, chartContext, config) {
-                    self.$emit("chartEvent", { key: 'click', event, config })  
+                    self.$emit("chartEvent", { key: 'click', event, config })
                 },
-                markerClick(event, chartContext, { seriesIndex, dataPointIndex, config}) {
-                    self.$emit("chartEvent", { key: 'markerClick', event, seriesIndex, dataPointIndex, config })  
+                markerClick(event, chartContext, { seriesIndex, dataPointIndex, config }) {
+                    self.$emit("chartEvent", { key: 'markerClick', event, seriesIndex, dataPointIndex, config })
                 },
                 dataPointSelection(event, chartContext, config) {
                     console.log("datapointSelection", event, config)
-                    self.$emit("chartEvent", { key: 'dataPointSelection', event, config })    
+                    self.$emit("chartEvent", { key: 'dataPointSelection', event, config })
                 },
                 legendClick(chartContext, seriesIndex, config) {
                     console.log("datapointSelection", event, config)
-                    self.$emit("chartEvent", { key: 'dataPointSelection', event, seriesIndex })    
+                    self.$emit("chartEvent", { key: 'dataPointSelection', event, seriesIndex })
                 },
-                scrolled(chartContext, {xaxis}) {
-                    self.$emit("chartEvent", { key: 'chartContext', xaxis })    
+                scrolled(chartContext, { xaxis }) {
+                    self.$emit("chartEvent", { key: 'chartContext', xaxis })
                 },
-                beforeZoom(chartContext, {xaxis}) {
-                    self.$emit("chartEvent", { key: 'beforeZoom', xaxis })    
+                beforeZoom(chartContext, { xaxis }) {
+                    self.$emit("chartEvent", { key: 'beforeZoom', xaxis })
                 },
                 dataPointMouseLeave(event, chartContext, config) {
-                    self.$emit("chartEvent", { key: 'dataPointMouseLeave', event, config })    
+                    self.$emit("chartEvent", { key: 'dataPointMouseLeave', event, config })
                 },
                 dataPointMouseEnter(event, chartContext, config) {
-                    self.$emit("chartEvent", { key: 'dataPointMouseEnter', event, config })    
+                    self.$emit("chartEvent", { key: 'dataPointMouseEnter', event, config })
                 },
-                selection(chartContext, {xaxis, yaxis}) {
-                    self.$emit("chartEvent", { key: 'selection', xaxis, yaxis })    
+                selection(chartContext, { xaxis, yaxis }) {
+                    self.$emit("chartEvent", { key: 'selection', xaxis, yaxis })
                 },
                 mouseMove(event, chartContext, config) {
-                    self.$emit("chartEvent", { key: 'mouseMove',event, config })    
-                }, 
+                    self.$emit("chartEvent", { key: 'mouseMove', event, config })
+                },
                 updated(chartContext, config) {
-                    self.$emit("chartEvent", { key: 'updated', config })     
+                    self.$emit("chartEvent", { key: 'updated', config })
                 },
                 mounted(chartContext, config) {
-                    self.$emit("chartEvent", { key: 'mounted', config })     
+                    self.$emit("chartEvent", { key: 'mounted', config })
                 },
                 beforeMounted(chartContext, config) {
-                    self.$emit("chartEvent", { key: 'beforeMounted', config })     
+                    self.$emit("chartEvent", { key: 'beforeMounted', config })
                 }
             })
             if (self.annotations) {

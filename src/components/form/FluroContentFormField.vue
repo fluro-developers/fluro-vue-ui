@@ -165,7 +165,6 @@
 																<template v-else>
 																				<v-checkbox :outline="showOutline" :success="success" :mandatory="required" :persistent-hint="true" :label="displayLabel" v-model="fieldModel" @change="elementValueChanged($event, true)" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
 																</template>
-
 																<!-- <pre>MODEL {{fieldModel}}</pre> -->
 												</template>
 												<template v-else-if="renderer == 'number'">
@@ -2563,7 +2562,7 @@ export default {
 																				break;
 																case 'boolean':
 
-																//console.log('BOOLEAN CHECK IN', value)
+																				//console.log('BOOLEAN CHECK IN', value)
 																				if (value) {
 
 

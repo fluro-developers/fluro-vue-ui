@@ -13,31 +13,28 @@
                         <fluro-chart chartType="line" :options="groupSize.options" v-model="groupSize.model" :series="groupSize.series" :axis="groupSize.axis" />
                     </fluro-panel-body>
                 </fluro-panel>
-               
-                    <v-layout row>
-                        <v-flex xs12 lg4>
-                            <fluro-panel>
-                                <fluro-panel-title>
-                                    <strong>Gender</strong>
-                                </fluro-panel-title>
-                                <fluro-panel-body>
-                                    <fluro-chart chartType="pie" :options="genderBreakdown.options" v-model="genderBreakdown.model" :series="genderBreakdown.series" />
-                                </fluro-panel-body>
-                            </fluro-panel>
-                        </v-flex>
-                        <v-spacer/>
-                        <v-flex xs12 lg8>
-                            <fluro-panel>
-                                <fluro-panel-title>
-                                    <strong>Ages</strong>
-                                </fluro-panel-title>
-                                <fluro-panel-body>
-                                    <fluro-chart chartType="line" :options="ageSpread.options" v-model="ageSpread.model" :series="ageSpread.series" :axis="ageSpread.axis" />
-                                </fluro-panel-body>
-                            </fluro-panel>
-                        </v-flex>
-                    </v-layout>
-                
+                <v-layout row wrap>
+                    <v-flex shrink>
+                        <fluro-panel class="gender">
+                            <fluro-panel-title>
+                                <strong>Gender</strong>
+                            </fluro-panel-title>
+                            <fluro-panel-body>
+                                <fluro-chart chartType="donut" :options="genderBreakdown.options" v-model="genderBreakdown.model" :series="genderBreakdown.series" />
+                            </fluro-panel-body>
+                        </fluro-panel>
+                    </v-flex>
+                    <v-flex>
+                        <fluro-panel class="age">
+                            <fluro-panel-title>
+                                <strong>Ages</strong>
+                            </fluro-panel-title>
+                            <fluro-panel-body>
+                                <fluro-chart chartType="line" :options="ageSpread.options" v-model="ageSpread.model" :series="ageSpread.series" :axis="ageSpread.axis" />
+                            </fluro-panel-body>
+                        </fluro-panel>
+                    </v-flex>
+                </v-layout>
             </template>
             <!-- <div v-if="ageSpread.model.data.agespread.length"> -->
         </template>
@@ -105,14 +102,27 @@ export default {
                     key: "gender"
                 }],
                 options: {
-                    colors: ['#00BFFF', '#FFC0CB', '#FFFF00', '#FFEBCD']
+                    // chart: {
+                    //     width: 200,
+
+                    // },
+
+                    colors: ['#00BFFF', '#FFC0CB', '#FFFF00', '#FFEBCD'],
+                    legend: {
+                        show: false,
+                    },
+                    // plotOptions: {
+                    //     pie: {
+                    //         customScale: 0.7
+                    //     },
+                    // },
                 }
             }
             var genders = {
                 male: 0,
                 female: 0,
             }
-            _.each(stats.data.genders, function(value, stat){
+            _.each(stats.data.genders, function(value, stat) {
                 genders[stat] = value
             })
             console.log("Genders", genders, stats)
@@ -122,7 +132,7 @@ export default {
             })
             _.set(returnData, 'model.series[gender]', { data, labels })
             // console.log("Gender Graph Data", returnData)
-            if(genders) {
+            if (genders) {
                 self.genders = true
             }
             return returnData
@@ -288,5 +298,13 @@ export default {
 }
 
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
+.gender {
+
+    // @media(min-width: 1000px) {
+    //     max-width: 300px !important;
+    //     border: 5px solid yellow !important;
+    // }
+}
+
 </style>

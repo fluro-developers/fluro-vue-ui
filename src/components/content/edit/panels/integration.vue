@@ -40,6 +40,10 @@
 																																<template v-if="model.module == 'stripeconnect'">
 																																				<stripe-connect v-model="model" />
 																																</template>
+
+																																<template v-if="model.module == 'youtube'">
+																																				<youtubeapi :saveCallback="save" v-model="model" />
+																																</template>
 																																<div v-show="false">
 																																				<pre>{{model.privateDetails}}</pre>
 																																				<pre>{{model.publicDetails}}</pre>
@@ -109,6 +113,7 @@ import PayPal from './integrations/PayPal.vue';
 import GoogleOAuth from './integrations/GoogleOAuth.vue';
 import FacebookOAuth from './integrations/FacebookOAuth.vue';
 import StripeConnect from './integrations/StripeConnect.vue';
+import YoutubeAPI from './integrations/YoutubeAPI.vue';
 
 
 
@@ -123,28 +128,13 @@ export default {
 								's3': AWSS3,
 								'songselect': SongSelect,
 								'googleoauth': GoogleOAuth,
+								'youtubeapi':YoutubeAPI,
 								'facebook': FacebookOAuth,
 								'stripe-connect': StripeConnect,
 
 				},
 				methods: {
-								authenticate() {
-												var self = this;
-												var moduleName = self.model.module;
-												if (!self.model._id) {
-																return self.$fluro.error({
-																				message: "Please save before authenticating"
-																});
-												}
-
-												switch (moduleName) {
-																case "youtube":
-																				if (process.browser) {
-																								window.location.href = `${self.$fluro.apiURL}/integrate/${moduleName}/${self.model._id}/oauth`;
-																				}
-																				break;
-												}
-								},
+							
 								modelUpdated() {
 												this.update(this.model);
 								}
@@ -195,6 +185,10 @@ export default {
 																				title: "Stripe Connect",
 																				value: "stripeconnect"
 																},
+																{
+																				title: "Youtube",
+																				value: "youtube"
+																},
 																/**
 																{
 																																				title: "PushPay",
@@ -228,7 +222,10 @@ export default {
 																title: "Title",
 																minimum: 1,
 																maximum: 1,
-																type: "string"
+																type: "string",
+																params:{
+																	autofocus:!self.model.title,
+																}
 												});
 
 												// ///////////////////////////////////

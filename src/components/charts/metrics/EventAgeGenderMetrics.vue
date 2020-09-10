@@ -4,30 +4,39 @@
         <!--  <template v-if="loading"> Loading Component <v-progress-circular indeterminate></v-progress-circular>
         </template> -->
         <template v-else>
-            <v-layout row>
-                <v-flex xs12 lg4>
-                    <fluro-panel>
+            <fluro-panel>
+                <fluro-panel-body>
+                    <div class="field-group">
+                        <label>Overall Attendance</label>
+                        <div class="bignumber">
+                            {{model.stats.combinedHeadcountCheckins}}
+                        </div>
+                    <div class="muted font-sm">{{model.stats.headcount}} Headcount. {{model.stats.checkin}} Checked in</div>
+                    </div>
+                </fluro-panel-body>
+            </fluro-panel>
+            <v-layout row wrap>
+                <v-flex shrink>
+                    <fluro-panel class="gender">
                         <fluro-panel-title>
-                            <strong>Gender</strong>
+                            <strong>Gender Breakdown</strong>
                         </fluro-panel-title>
                         <fluro-panel-body>
                             <template v-if="gender">
-                                <fluro-chart chartType="pie" :options="genderBreakdown.options" v-model="genderBreakdown.model" :series="genderBreakdown.series" />
+                                <fluro-chart chartType="donut" :options="genderBreakdown.options" v-model="genderBreakdown.model" :series="genderBreakdown.series" />
                             </template>
                             <template v-else>
                                 <div class="muted">
                                     Gender demographics are not available for this event.
                                 </div>
                             </template>
-                            
                         </fluro-panel-body>
                     </fluro-panel>
                 </v-flex>
-                <v-spacer/>
-                <v-flex xs12 lg8>
-                    <fluro-panel>
+                <v-flex>
+                    <fluro-panel class="ages">
                         <fluro-panel-title>
-                            <strong>Ages</strong>
+                            <strong>Age Breakdown</strong>
                         </fluro-panel-title>
                         <fluro-panel-body>
                             <template v-if="age">
@@ -75,6 +84,9 @@ export default {
                     key: "gender"
                 }],
                 options: {
+                    legend: {
+                        show: false,
+                    },
                     colors: ['#FFC0CB', '#00BFFF', '#FFFF00', '#FFEBCD']
                 }
             }
@@ -82,7 +94,7 @@ export default {
                 female: 0,
                 male: 0,
             }
-            _.each(stats.genders, function(value, stat){
+            _.each(stats.genders, function(value, stat) {
                 genders[stat] = value
             })
             _.each(genders, function(value, key) {
@@ -93,7 +105,7 @@ export default {
 
             _.set(returnData, 'model.series[gender]', { data, labels })
             // console.log("Gender Graph Data", returnData)
-            if(genders) {
+            if (genders) {
                 self.genders = true
             }
             return returnData
@@ -223,7 +235,7 @@ export default {
                         resolve(res.data);
                         console.log("Event Gender Dataset", id, res.data)
                         self.loading = false;
- 
+
                         if (res.data.stats.ages) {
                             self.age = true
                         }
@@ -251,5 +263,33 @@ export default {
 }
 
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
+
+.bignumber {
+ font-size: 3em;
+ font-weight: bold;
+}
+
+.field-group {
+        display: block;
+        margin-bottom: 1.5em;
+
+        label {
+         opacity: 0.7;
+            display: block;
+            font-weight: 700;
+            margin-bottom: 0.3em;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.8em;
+            // opacity:0.5;
+        }
+    }
+
+
+// .gender {
+//     max-width:300px;
+//     flex:none;
+// }
+
 </style>

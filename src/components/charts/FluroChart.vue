@@ -9,26 +9,25 @@
                 <h3>{{title}}</h3>
             </slot>
             <slot name="graph">
-            	<div v-if="dataSource">
-	                <div v-if="normalisedChartType=='pie'">
-	                    <fluro-pie-chart @chartEvent="chartEvent" v-model="chartData" :annotations="annotations" :options="compiledOptions" :chartType="cleansedChartType" :height="height" :width="width" />
-	                </div>
-	                <div v-else-if="normalisedChartType=='line'">
-	                    <fluro-line-chart @chartEvent="chartEvent" v-model="chartData" :annotations="annotations" :options="compiledOptions" :chartType="cleansedChartType" :height="height" :width="width" />
-	                </div>
-	                <div v-else-if="normalisedChartType=='synced'">
-	                    <fluro-synced-chart @chartEvent="chartEvent" v-model="chartData" :annotations="annotations" :options="compiledOptions" :chartType="cleansedChartType" :height="height" :width="width" />
-	                </div>
-            	</div>
+                <div v-if="dataSource">
+                    <div v-if="normalisedChartType=='pie'">
+                        <fluro-pie-chart @chartEvent="chartEvent" v-model="chartData" :annotations="annotations" :options="compiledOptions" :chartType="cleansedChartType" :height="height" :width="width" />
+                    </div>
+                    <div v-else-if="normalisedChartType=='line'">
+                        <fluro-line-chart @chartEvent="chartEvent" v-model="chartData" :annotations="annotations" :options="compiledOptions" :chartType="cleansedChartType" :height="height" :width="width" />
+                    </div>
+                    <div v-else-if="normalisedChartType=='synced'">
+                        <fluro-synced-chart @chartEvent="chartEvent" v-model="chartData" :annotations="annotations" :options="compiledOptions" :chartType="cleansedChartType" :height="height" :width="width" />
+                    </div>
+                </div>
             </slot>
             <slot name="footer"></slot>
         </template>
     </div>
 </template>
 <script>
-
 import _ from 'lodash';
-import {moment} from 'fluro';
+import { moment } from 'fluro';
 import FluroPieChart from './FluroPieChart.vue'
 import FluroLineChart from './FluroLineChart.vue'
 import FluroSyncedChart from './FluroSyncedChart.vue'
@@ -40,31 +39,31 @@ import ReportingComputationalMixin from './mixins/ReportingComputationalMixin.js
 export default {
     mixins: [ReportingColorsMixin, ReportingComputationalMixin],
     computed: {
-    	compiledOptions: function() {
-    		var self = this
-    		var options = self.options
+        compiledOptions: function() {
+            var self = this
+            var options = self.options
             if (!_.get(options, 'colors')) {
-                options.colors = self.colors    
+                options.colors = self.colors
             }
-    		
-    		_.each(self.series, function (ser) {
-    			//console.log("FC Processing series", ser)
-    			if (ser.AOT){
-    				options._AOT = true
-    			}
-    		})
-    		//console.log("FC compiledOptions", options)
-    		return options
-    	},
-    	cleansedChartType: function() {
-    		var self = this;
-    		var type = self.chartType
-    		if(type == 'column') {
-    			type = 'bar'
-    		}
-    		return type
 
-    	},
+            _.each(self.series, function(ser) {
+                //console.log("FC Processing series", ser)
+                if (ser.AOT) {
+                    options._AOT = true
+                }
+            })
+            //console.log("FC compiledOptions", options)
+            return options
+        },
+        cleansedChartType: function() {
+            var self = this;
+            var type = self.chartType
+            if (type == 'column') {
+                type = 'bar'
+            }
+            return type
+
+        },
         normalisedChartType: function() {
             var self = this
             var type = self.chartType
@@ -86,20 +85,21 @@ export default {
             return type
         },
         groupChartData: function() {
-         
-        	var self = this
-        	var dataSource = self.dataSource
+
+            var self = this
+            var dataSource = self.dataSource
             // console.log("Datasource", dataSource)
             // console.log("Series", self.series)
 
-         
-            if(!self.groupBy){
+
+            if (!self.groupBy) {
                 return dataSource
             }
+
             function groupData(groupFormat, datasource) {
 
                 var returnDatasource = {}
-                        
+
                 _.each(dataSource.axis, function(entryDate, key) {
                     // console.log("in the each", entryDate, key)
                     var groupingKey = self.getGroupDate(entryDate, groupFormat)
@@ -107,12 +107,12 @@ export default {
                     if (!currentGroupedEntry) {
 
                         currentGroupedEntry = {}
-                        
+
                     }
 
-                    _.each(self.series, function(ser){
+                    _.each(self.series, function(ser) {
                         var currentTotal = _.get(currentGroupedEntry, ser.key) || 0
-                        _.set(currentGroupedEntry, ser.key, currentTotal + _.get(datasource, `series.${ser.key}` )[key])
+                        _.set(currentGroupedEntry, ser.key, currentTotal + _.get(datasource, `series.${ser.key}`)[key])
 
                     })
                     _.set(returnDatasource, groupingKey, currentGroupedEntry)
@@ -130,44 +130,44 @@ export default {
                 series: {}
             }
 
-            _.each(self.series, function(ser){
+            _.each(self.series, function(ser) {
                 _.set(returnData, `series.${ser.key}`, [])
             })
 
-            _.each(groupedData, function (entry, key) {
+            _.each(groupedData, function(entry, key) {
                 // console.log("groupedData Entry", entry, key)
                 returnData.axis.push(moment.utc(key).format())
-                _.each(self.series, function(ser){
+                _.each(self.series, function(ser) {
                     var series = _.get(returnData, `series.${ser.key}`)
                     series.push(_.get(entry, ser.key))
                 })
             })
 
             // console.log("returnData", returnData)
-        	return returnData
+            return returnData
 
         },
         chartData: function() {
             var self = this
             //console.log("FLUROCHART chartType", self.chartType, self.normalisedChartType)
             var chrtdata
-        	var colorCount = 0
-        	_.each(self.series, function(ser) {
-        		if (_.get(ser, "color")) {
-        			self.colors[colorCount] = _.get(ser, "color")
-        		}
-        		colorCount = colorCount + 1
-        	}) 
+            var colorCount = 0
+            _.each(self.series, function(ser) {
+                if (_.get(ser, "color")) {
+                    self.colors[colorCount] = _.get(ser, "color")
+                }
+                colorCount = colorCount + 1
+            })
             switch (self.normalisedChartType) {
                 case "pie":
-                	
+
                     chrtdata = _.first(_.map(self.series, function(ser) {
                         //console.log("Ser incoming", ser, self.dataSource)
                         return {
                             series: {
                                 name: _.get(ser, "title"),
                                 data: _.get(self.dataSource, `series["${ser.key}"].data`),
-                                
+
                             },
                             labels: _.get(self.dataSource, `series["${ser.key}"].labels`),
                         }
@@ -208,7 +208,7 @@ export default {
             type: Object,
         },
         groupBy: {
-        	type: String,
+            type: String,
         },
         endpoint: {
             type: String,
@@ -269,38 +269,38 @@ export default {
             self.$emit("chart-event", options)
         },
         getGroupDate(date, format) {
-            switch(format){
+            switch (format) {
                 case 'year':
-                case 'week': 
+                case 'week':
                 default:
                     return moment(date).startOf(format).toDate()
                     break;
             }
-            
+
         }
     },
     data() {
         return {
             loading: true,
             model: this.value,
-           	colors: [
-				'#008FFB', 
-				'#00E396', 
-				'#FEB019', 
-				'#FF4560', 
-				'#775DD0', 
-				'#7adc12',
-				'#f34be2',
-				'#b76b1a',
-				'#ff7800',
+            colors: [
+                '#008FFB',
+                '#00E396',
+                '#FEB019',
+                '#FF4560',
+                '#775DD0',
+                '#7adc12',
+                '#f34be2',
+                '#b76b1a',
+                '#ff7800',
 
-			],
+            ],
         }
     },
     watch: {
-    	value(v) {
-    		this.model = v
-    	}
+        value(v) {
+            this.model = v
+        }
     },
     asyncComputed: {
         dataSource: {
@@ -309,44 +309,44 @@ export default {
                 var self = this;
                 /////////////////////////////
                 return new Promise(function(resolve, reject) {
-               
-                		 if (self.model) {
-                        	//console.log('FLUROCHART - We have a supplied datasource!', self.model);
-                        	resolve(self.model );
-                        	self.loading = false
-                        	return
-               		     }
-               			
 
-                        var endpoint = self.endpoint;
-                        var series = _.map(self.series, function(ser) {
-                            return ser.key
-                        })
-                        if (!endpoint) {
-                            endpoint = `chart/data/${self.definition}/${self.chartType}?series=${JSON.stringify(series)}`
+                    if (self.model) {
+                        //console.log('FLUROCHART - We have a supplied datasource!', self.model);
+                        resolve(self.model);
+                        self.loading = false
+                        return
+                    }
+
+
+                    var endpoint = self.endpoint;
+                    var series = _.map(self.series, function(ser) {
+                        return ser.key
+                    })
+                    if (!endpoint) {
+                        endpoint = `chart/data/${self.definition}/${self.chartType}?series=${JSON.stringify(series)}`
+                    }
+                    if (self.axis) {
+                        endpoint = endpoint + `&axis=${self.axis.key}`
+                    }
+                    /////////////////////////////
+                    //console.log("endpoint", endpoint)
+                    //Get the start and end date for the data we want/need
+                    var startDate = self.datePeriod.start;
+                    var endDate = self.datePeriod.end;
+                    //Load the data from the API
+                    self.$fluro.api.get(endpoint, {
+                        params: {
+                            startDate: startDate,
+                            endDate: endDate,
                         }
-                        if (self.axis) {
-                            endpoint = endpoint + `&axis=${self.axis.key}`
-                        }
-                        /////////////////////////////
-                        //console.log("endpoint", endpoint)
-                        //Get the start and end date for the data we want/need
-                        var startDate = self.datePeriod.start;
-                        var endDate = self.datePeriod.end;
-                        //Load the data from the API
-                        self.$fluro.api.get(endpoint, {
-                            params: {
-                                startDate: startDate,
-                                endDate: endDate,
-                            }
-                        }).then(function(res) {
-                            resolve(res.data);
-                            self.loading = false;
-                        }, function(err) {
-                            reject(err);
-                            self.loading = false;
-                        });
-                     
+                    }).then(function(res) {
+                        resolve(res.data);
+                        self.loading = false;
+                    }, function(err) {
+                        reject(err);
+                        self.loading = false;
+                    });
+
                 })
             }
         },

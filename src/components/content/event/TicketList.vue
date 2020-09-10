@@ -1,7 +1,7 @@
 <template>
     <div>
         <fluro-page-preloader v-if="loading" contain />
-        <fluro-panel>
+        <fluro-panel v-else-if="tickets.length">
             <fluro-panel-title>
                 <v-layout align-center>
                     <v-flex>

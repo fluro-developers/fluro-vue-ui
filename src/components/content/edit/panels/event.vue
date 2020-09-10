@@ -5,55 +5,53 @@
         </template>
         <tabset v-else :justified="true" :vertical="true">
             <tab :heading="`${readableTypeName} Info`">
-                
-                    <flex-column-body style="background: #fafafa;">
-                        <v-container class="grid-list-xl">
-                            <constrain sm>
-                                <h3 margin>Event Details</h3>
-                                <!-- <pre>{{model}}</pre> -->
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.firstLine" v-model="model"></fluro-content-form-field>
-                                <!-- <p class="lead" v-if="dateModel.startDate">{{dateModel | readableEventDate}}</p> -->
-                                <v-layout row wrap>
-                                    <v-flex xs12 sm4>
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="fieldHash.startDate" v-model="dateModel"></fluro-content-form-field>
-                                    </v-flex>
-                                    <v-flex xs12 sm4>
-                                        <!-- <template> -->
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="fieldHash.endDate" v-model="dateModel"></fluro-content-form-field>
-                                        <!-- </template> -->
-                                    </v-flex>
-                                    <v-flex xs12 sm4>
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.timezone" v-model="model"></fluro-content-form-field>
-                                    </v-flex>
-                                </v-layout>
-                                <fluro-panel v-if="differentTimezoneThanUser">
-                                    <fluro-panel-body>
-                                        <v-input class="no-flex">
-                                            <v-label>Local Time</v-label>
-                                            <div>
-                                                {{ model.startDate | formatDate("h:mma - dddd D MMM Y", model.timezone) }}
-                                                <em class="text-muted">({{ model.timezone }})</em>
-                                            </div>
-                                        </v-input>
-                                    </fluro-panel-body>
-                                </fluro-panel>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.mainImage" v-model="model"></fluro-content-form-field>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.body" v-model="model"></fluro-content-form-field>
-                                <fluro-panel v-if="definition && definition.fields && definition.fields.length">
-                                    <fluro-panel-title>
-                                        <strong>{{ definition.title }} Information</strong>
-                                    </fluro-panel-title>
-                                    <fluro-panel-body>
-                                        <!-- <pre>{{model.data}}</pre> -->
-                                        <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields"></fluro-content-form>
-                                    </fluro-panel-body>
-                                </fluro-panel>
-                                <fluro-content-form-field :override-label="definition && definition.definitionName && definition.definitionName == 'service' ? 'Service Time / Event Track' : 'Event Track'" :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.track" v-model="model"></fluro-content-form-field>
-                            </constrain>
-                        </v-container>
-                    </flex-column-body>
-                
+                <flex-column-body style="background: #fafafa;">
+                    <v-container class="grid-list-xl">
+                        <constrain sm>
+                            <h3 margin>Event Details</h3>
+                            <!-- <pre>{{model}}</pre> -->
+                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
+                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.firstLine" v-model="model"></fluro-content-form-field>
+                            <!-- <p class="lead" v-if="dateModel.startDate">{{dateModel | readableEventDate}}</p> -->
+                            <v-layout row wrap>
+                                <v-flex xs12 sm4>
+                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="fieldHash.startDate" v-model="dateModel"></fluro-content-form-field>
+                                </v-flex>
+                                <v-flex xs12 sm4>
+                                    <!-- <template> -->
+                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="fieldHash.endDate" v-model="dateModel"></fluro-content-form-field>
+                                    <!-- </template> -->
+                                </v-flex>
+                                <v-flex xs12 sm4>
+                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.timezone" v-model="model"></fluro-content-form-field>
+                                </v-flex>
+                            </v-layout>
+                            <fluro-panel v-if="differentTimezoneThanUser">
+                                <fluro-panel-body>
+                                    <v-input class="no-flex">
+                                        <v-label>Local Time</v-label>
+                                        <div>
+                                            {{ model.startDate | formatDate("h:mma - dddd D MMM Y", model.timezone) }}
+                                            <em class="text-muted">({{ model.timezone }})</em>
+                                        </div>
+                                    </v-input>
+                                </fluro-panel-body>
+                            </fluro-panel>
+                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.mainImage" v-model="model"></fluro-content-form-field>
+                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.body" v-model="model"></fluro-content-form-field>
+                            <fluro-panel v-if="definition && definition.fields && definition.fields.length">
+                                <fluro-panel-title>
+                                    <strong>{{ definition.title }} Information</strong>
+                                </fluro-panel-title>
+                                <fluro-panel-body>
+                                    <!-- <pre>{{model.data}}</pre> -->
+                                    <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields"></fluro-content-form>
+                                </fluro-panel-body>
+                            </fluro-panel>
+                            <fluro-content-form-field :override-label="definition && definition.definitionName && definition.definitionName == 'service' ? 'Service Time / Event Track' : 'Event Track'" :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.track" v-model="model"></fluro-content-form-field>
+                        </constrain>
+                    </v-container>
+                </flex-column-body>
             </tab>
             <tab :heading="`Team Members`" v-if="model.rostered">
                 <flex-column-body style="background: #fafafa;">
@@ -89,12 +87,10 @@
                                 </fluro-panel-title>
                                 <fluro-panel-body>
                                     <v-layout row wrap>
-                                         <template v-if="roster.slots && roster.slots.length">
+                                        <template v-if="roster.slots && roster.slots.length">
                                             <v-flex xs6 sm4 md3 :key="index" v-for="(slot, index) in roster.slots">
-
                                                 <v-container class="mb-2 pa-2">
                                                     <h5>{{ slot.title }}</h5>
-
                                                     <div class="assignment-item" @click="$actions.open([assignment])" :class="assignment.confirmationStatus" :key="assignment._id" v-for="assignment in slot.assignments">
                                                         <v-layout>
                                                             <v-flex>{{ assignment.contact && assignment.contact.title ? assignment.contact.title : assignment.contactName }}</v-flex>
@@ -164,7 +160,7 @@
                                         <v-input class="no-flex" label="RTMP Stream Key">
                                             <div v-tippy content="Click to copy to clipboard" @click.stop.prevent="copyToClipboard('streamKey')">
                                                 <v-layout align-center>
-                                                     <v-flex class="copystring">{{ streamKey }}</v-flex>
+                                                    <v-flex class="copystring">{{ streamKey }}</v-flex>
                                                 </v-layout>
                                                 <input type="hidden" ref="streamKey" :value="streamKey" />
                                             </div>
@@ -246,7 +242,7 @@
                     </v-container>
                 </flex-column-body>
             </tab>
-            <tab :heading="`Tickets`">
+            <tab :heading="`Registrations & Tickets`">
                 <flex-column-body style="background: #fafafa;">
                     <v-container>
                         <!-- <constrain sm> -->
@@ -316,10 +312,18 @@
                     </v-container>
                 </flex-column-body>
             </tab>
-            <tab heading="Metrics">
+            <tab heading="Reporting & Metrics">
                 <flex-column-body>
-                    <v-container fluid>
+                    <v-container fluid grid-list-xl>
+                        <constrain>
+                        <h3 margin>Event Metrics</h3>
                         <event-age-gender-metrics :id="itemID"></event-age-gender-metrics>
+
+                        <fluro-post-feed :parent="itemID"/>
+
+                         <guest-list :event="model" />
+                     </constrain>
+                        
                     </v-container>
                 </flex-column-body>
             </tab>
@@ -340,6 +344,7 @@ import TicketList from "../../event/TicketList.vue";
 import TicketTypeManager from "../../event/TicketTypeManager.vue";
 import FluroContentView from "../../view/FluroContentView.vue";
 import EventAgeGenderMetrics from '../../../charts/metrics/EventAgeGenderMetrics.vue'
+import FluroPostFeed from '../../../FluroPostFeed.vue'
 
 /////////////////////////////////
 
@@ -359,7 +364,8 @@ export default {
         // MessagingEventManager,
         LocationSelector,
         LocationViewMapComponent,
-        EventAgeGenderMetrics
+        EventAgeGenderMetrics,
+        FluroPostFeed,
     },
     props: {},
     mixins: [FluroContentEditMixin],
@@ -473,7 +479,7 @@ export default {
 
                     //////////////////////////////////////////////
 
-                    
+
 
                     self.$fluro.global.edit(roster, true).then(function(updated) {
                         _.assign(roster, updated)
@@ -715,8 +721,8 @@ export default {
                 maximum: 1,
                 type: "string",
                 placeholder: "Event title",
-                params:{
-                    autofocus:!self.model.title,
+                params: {
+                    autofocus: !self.model.title,
                 }
             });
 

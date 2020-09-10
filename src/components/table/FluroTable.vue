@@ -279,6 +279,10 @@ var INITIAL = true;
 
 export default {
 				props: {
+								disablePageScroll: {
+												type: Boolean,
+												default:false,
+								},
 								showFooter: {
 												type: Boolean,
 								},
@@ -1733,6 +1737,8 @@ export default {
 												//// console.log('iTEM ISSUE', item)
 												classes.push('status-' + item.status);
 
+												
+
 												return classes;
 
 								},
@@ -1745,13 +1751,15 @@ export default {
 												this.currentPage = pageNumber;
 												// this.pageChange();
 
-												var topElement = this.$refs.top;
-												if (topElement) {
-																// console.log('SCROLL INTO VIEW')
-																topElement.scrollIntoView({
-																				// block:'center',
-																				// behavior:'smooth',
-																});
+												if (!this.disablePageScroll) {
+																var topElement = this.$refs.top;
+																if (topElement) {
+																				// console.log('SCROLL INTO VIEW')
+																				topElement.scrollIntoView({
+																								// block:'center',
+																								// behavior:'smooth',
+																				});
+																}
 												}
 
 												this.$emit('page', pageNumber);
@@ -1864,9 +1872,9 @@ export default {
 
 								height: 100%;
 
-								overscroll-behavior-x: none !important;
-								overscroll-behavior-y: none !important;
-								overscroll-behavior: none !important;
+								// overscroll-behavior-x: none !important;
+								// overscroll-behavior-y: none !important;
+								// overscroll-behavior: none !important;
 
 								table {
 												width: 100%;
@@ -1949,6 +1957,7 @@ export default {
 
 												&.ticket-status-collected,
 												&.status-archived,
+												&.status-absent,
 												&.status-deceased {
 
 																&,

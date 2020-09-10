@@ -11,7 +11,9 @@
                     <fluro-chart chartType="line" :options="eventData.options" v-model="eventData.model" :series="eventData.series" :axis="eventData.axis" v-on:chart-event="chartClicked"/>
                 </fluro-panel-body>
             </fluro-panel>
+            <v-container fluid pa-0 grid-list-xl>
             <event-age-gender-metrics :id="selectedEvent" v-if="selectedEvent"></event-age-gender-metrics>
+        </v-container>
         </template>
     </flex-column>
 </template>

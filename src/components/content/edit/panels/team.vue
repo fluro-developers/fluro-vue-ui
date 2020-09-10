@@ -67,8 +67,8 @@
                                 </v-btn>
                             </v-flex>
                         </v-layout>
-                        <template v-for="(eventtrack, index) in tracks" >
-                            <team-track-teaser v-model="tracks[index]" :key="index"/>
+                        <template v-for="(eventtrack, index) in tracks">
+                            <team-track-teaser v-model="tracks[index]" :key="index" />
                         </template>
                     </v-container>
                 </flex-column-body>
@@ -133,22 +133,30 @@
                 </flex-column-body>
             </tab>
             <tab heading="Metrics">
-                <flex-column-body style="background: #fafafa;">
-                    <v-container class="grid-list-xl">
-                        <constrain md>
-                            <team-metrics-dashboard :id="model" type="team" />
-                        </constrain>
-                    </v-container>
-                </flex-column-body>
-            </tab>
-            <tab heading="Attendance History">
-                <flex-column-body style="background: #fafafa;">
-                    <v-container class="grid-list-xl">
-                        <constrain md>
-                            <team-attendance-metrics :group="model" type="team" />
-                        </constrain>
-                    </v-container>
-                </flex-column-body>
+             <flex-column  style="background: #fafafa;">
+                <tabset  :justified="true">
+                    <tab heading="Group Size">
+                     <flex-column-body>
+                        <v-container fluid class="grid-list-xl">
+                            <constrain md>
+                                <h3 margin>Group Metrics</h3>
+                                <team-metrics-dashboard :id="model" type="team" />
+                            </constrain>
+                        </v-container>
+                       </flex-column-body>
+                    </tab>
+                    <tab heading="Attendance">
+                        <flex-column-body>
+                            <v-container fluid class="grid-list-xl">
+                                <constrain md>
+                                   
+                                    <team-attendance-metrics :group="model" type="team" />
+                                </constrain>
+                            </v-container>
+                        </flex-column-body>
+                    </tab>
+                </tabset>
+               </flex-column>
             </tab>
         </tabset>
     </flex-column>
@@ -456,7 +464,7 @@ export default {
 
                                         var index = self.model.provisionalMembers.indexOf(contact);
                                         if (index != -1) {
-                                            self.model.provisionalMembers.splice(index);
+                                            self.model.provisionalMembers.splice(index, 1);
                                         }
                                         position.contacts.push(contact);
 

@@ -1,6 +1,6 @@
 <template>
     <td :class="{wrap:shouldWrap, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}">
-        
+        <!-- <pre>{{column}}</pre> -->
         
         <!-- <pre>{{formattedArray}}</pre> -->
         <!-- <pre>{{rawValue}} {{column.key}}</pre> -->
