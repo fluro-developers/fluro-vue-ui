@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="submit" :disabled="state == 'processing'">
+    <form @submit.prevent.stop="submit" :disabled="state == 'processing'">
         <fluro-content-form ref="form" v-model="model" :fields="fields" />
         <div class="actions">
             <template v-if="state == 'processing'">
@@ -84,6 +84,16 @@ export default {
         FluroButton,
         FluroContentForm
     },
+    watch: {
+        value(v) {
+            if (this.model != v) {
+                this.model = v;
+            }
+        },
+        model(v) {
+            this.$emit('input', v);
+        }
+    },
     mounted() {
         var self = this;
         self.$watch(function() {
@@ -125,7 +135,13 @@ export default {
             self.state = "ready";
             self.$emit("reset");
         },
-        submit() {
+        submit(event) {
+
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
             var self = this;
             self.validate();
             self.state = "processing";
