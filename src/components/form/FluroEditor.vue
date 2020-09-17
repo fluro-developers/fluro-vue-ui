@@ -3,7 +3,7 @@
         <editor-menu-bubble v-if="bubbleEnabled " :editor="editor" @hide="hideBubble" :keep-in-bounds="keepInBounds" v-slot="{ commands, isActive, getMarkAttrs, menu }">
             <div class="menububble" :class="{ 'active': menu.isActive }" :style="`left: ${menu.left}px; bottom: ${menu.bottom}px;`">
                 <template v-if="selectedImage">
-                    <form class="menububble__form" v-if="isActive.image()" s <!-- This function stops the page being submitted -->
+                    <form class="menububble__form" v-if="isActive.image()"> <!-- This function stops the page being submitted -->
                         <template v-if="proEnabled">
                             <template v-if="constrain">
                                 <label for="widthInput">&nbsp;Scale:&nbsp;</label>
@@ -94,8 +94,16 @@
                         </v-btn>
                     </template>
 
-                    <form class="menububble__form" v-if="linkMenuIsActive" @submit.prevent="setLinkUrl(commands.link, linkUrl)">
-                        <input class="link-input" type="text" v-model="linkUrl" placeholder="https://" ref="linkInput" @keydown.esc="hideLinkMenu" />
+                    <form class="menububble__form" v-if="linkMenuIsActive" @submit.prevent="setLinkUrl(commands.link, linkattrs)">
+                        <label for="widthInput">&nbsp;URL:&nbsp;</label>
+                        <input class="link-input" type="text" v-model="linkattrs.href" placeholder="https://" ref="linkInput" @keydown.esc="hideLinkMenu" />
+                        <label for="widthInput">&nbsp;Target:&nbsp;</label>
+                        <input class="link-input" type="text" v-model="linkattrs.target" placeholder="_blank" ref="linkInput" @keydown.esc="hideLinkMenu" />
+                        <label for="widthInput">&nbsp;Class:&nbsp;</label>
+                        <input class="link-input" type="text" v-model="linkattrs.class" placeholder="" ref="linkInput" @keydown.esc="hideLinkMenu" />
+                        <v-btn icon small flat @click.stop.prevent="setLinkUrl(commands.link, linkattrs)">
+                                <fluro-icon icon="check" />
+                            </v-btn>
                         <v-btn small icon flat @click.stop.prevent="setLinkUrl(commands.link, null)">
                             <fluro-icon icon="unlink" />
                         </v-btn>
@@ -363,7 +371,7 @@ import Token from './tiptap/token';
 import Alignment from './tiptap/alignment';
 import Typography from './tiptap/typography';
 
-
+import Link from './tiptap/customlink.js'
 
 // import hljs from 'highlight.js/lib/highlight';
 // import html from 'highlight.js/lib/languages/html';
@@ -391,7 +399,7 @@ import {
     Bold,
     Code,
     Italic,
-    Link,
+    //Link,  //Use the CustomLink class instead
     Strike,
     Underline,
     History,
@@ -419,7 +427,11 @@ export default {
             navigatedUserIndex: 0,
             insertMention: () => {},
             observer: null,
-            linkUrl: null,
+            linkattrs: {
+                href: null,
+                target: null,
+                class: null
+            },
             linkMenuIsActive: false,
             TypographyPlugin: new Typography(),
             FluroNodePlugin: new FluroNode(),
@@ -511,18 +523,22 @@ export default {
             return this.FluroMarkPlugin.options.classes
         },
         showLinkMenu(attrs) {
-            this.linkUrl = attrs.href
+            this.linkattrs = attrs
             this.linkMenuIsActive = true
             this.$nextTick(() => {
                 this.$refs.linkInput.focus()
             })
         },
         hideLinkMenu() {
-            this.linkUrl = null
+            this.linkattrs = {
+                href: null,
+                class: null,
+                target: null
+            }
             this.linkMenuIsActive = false
         },
-        setLinkUrl(command, url) {
-            command({ href: url })
+        setLinkUrl(command, linkattrs) {
+            command(linkattrs)
             this.hideLinkMenu()
             this.editor.focus()
         },
