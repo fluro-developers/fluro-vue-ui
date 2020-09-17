@@ -21,14 +21,11 @@ export default class CustomLink extends Link {
             href: dom.getAttribute('href'),
             target: dom.getAttribute('target'),
             class: dom.getAttribute('class')
- 
-        }),
+         }),
         },
       ],
       toDOM: node => ['a', {
         ...node.attrs,
-        //target: '__blank',
-        rel: 'noopener noreferrer nofollow',
       }, 0],
     }
   }

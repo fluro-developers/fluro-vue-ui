@@ -103,7 +103,11 @@
                         <input class="link-input" type="text" v-model="linkattrs.class" placeholder="" ref="linkInput" @keydown.esc="hideLinkMenu" />
                         <v-btn icon small flat @click.stop.prevent="setLinkUrl(commands.link, linkattrs)">
                                 <fluro-icon icon="check" />
-                            </v-btn>
+                        </v-btn>
+                        <v-btn icon small flat @click.stop.prevent="popupLinkSelector(commands.link)">
+                                <fluro-icon icon="plus" />
+                        </v-btn>
+
                         <v-btn small icon flat @click.stop.prevent="setLinkUrl(commands.link, null)">
                             <fluro-icon icon="unlink" />
                         </v-btn>
@@ -536,6 +540,29 @@ export default {
                 target: null
             }
             this.linkMenuIsActive = false
+        },
+        popupLinkSelector(command) {
+            var self = this
+            self.$fluro.global.select('asset', {
+                    title: 'Select an Image/Photo',
+                    minimum: 1,
+                    maximum: 1,
+                    allDefinitions: true,
+                }, true)
+                .then(function(res) {
+                    if (res) {
+                        //console.log("res", res)
+                        var first = _.first(res)
+
+                       setLinkUrl(command, {
+                           href: self.$fluro.asset.downloadUrl(first),
+                           class: null,
+                           target: null,
+                       })
+                    }
+                })
+
+
         },
         setLinkUrl(command, linkattrs) {
             command(linkattrs)
