@@ -191,10 +191,10 @@ export default {
                     title: "Youtube",
                     value: "youtube"
                 },
-                // {
-                //     title: "Simple rtmp",
-                //     value: "rtmp"
-                // },                
+                {
+                    title: "Simple rtmp",
+                    value: "rtmp"
+                },                
                 // {
                 //     title: "PushPay",
                 //     value: "pushpay"
