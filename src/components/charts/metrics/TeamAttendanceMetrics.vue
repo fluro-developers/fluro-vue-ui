@@ -197,7 +197,7 @@ import ContactAvatar from "../../table/cells/AvatarCell.vue";
 import FluroTable from "../../table/FluroTable.vue";
 import FluroContentViewMixin from "../../content/view/FluroContentViewMixin.js";
 import FluroContentView from "../../content/view/FluroContentView.vue";
-import DateBrowseMixin from '@/mixins/DateBrowseMixin';
+import DateBrowseMixin from '../mixins/DateBrowseMixin';
 import TickCell from '../../table/cells/TickCell.vue';
 
 
