@@ -10,7 +10,7 @@
 				</div>
 </template>
 <script>
-import { FluroTable } from 'fluro-vue-ui';
+import FluroTable from '../../../table/FluroTable.vue';
 
 export default {
 				props: {
@@ -98,7 +98,7 @@ export default {
 												// 				},
 												// 				set(value) {
 
-																	
+
 
 												// 					return value
 												// 				},

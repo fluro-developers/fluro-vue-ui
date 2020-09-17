@@ -24,6 +24,7 @@ module.exports = {
         'fluro-vue': 'fluro-vue',
         'vuex-map-fields': 'vuex-map-fields',
         'prosemirror-commands': 'prosemirror-commands',
+        'prosemirror-state':'prosemirror-state',
 
 
         "tippy.js": "tippy.js",
