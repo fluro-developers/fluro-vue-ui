@@ -66,7 +66,7 @@
 																																				</v-card>
 																																</v-menu>
 																												</th>
-																												<th @click="toggleSort(column)" :class="[column.classes, {'shrink':column.shrink, sortable:isSortable(column), 'sorting':sort.sortKey == column.key, 'tiny':column.tiny, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}]" v-for="column in columns">
+																												<th @click="toggleSort(column)" :class="[column.classes, {'shrink':column.shrink, sortable:isSortable(column), 'sorting':sort.sortKey == column.key, 'tiny':column.tiny, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}]" v-tippy :content="column.tooltip" v-for="column in columns">
 																																<div class="sort-icon" v-if="isActiveSort(column.key)">
 																																				<fluro-icon library="fas" icon="caret-down" v-if="sort.sortDirection == 'desc'" />
 																																				<fluro-icon library="fas" icon="caret-up" v-if="sort.sortDirection == 'asc'" />
@@ -281,7 +281,7 @@ export default {
 				props: {
 								disablePageScroll: {
 												type: Boolean,
-												default:false,
+												default: false,
 								},
 								showFooter: {
 												type: Boolean,
@@ -1737,7 +1737,7 @@ export default {
 												//// console.log('iTEM ISSUE', item)
 												classes.push('status-' + item.status);
 
-												
+
 
 												return classes;
 

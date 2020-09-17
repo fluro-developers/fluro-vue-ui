@@ -46,6 +46,9 @@
               </v-btn>
             </v-flex>
             <v-flex shrink>
+              <v-btn small class="my-0 mr-0" @click="dismiss()">Back</v-btn>
+            </v-flex>
+            <v-flex shrink>
               <v-btn color="primary" small class="my-0 mr-0" @click="close(selector.selection)">Done</v-btn>
             </v-flex>
           </v-layout>

@@ -3,7 +3,8 @@
         <editor-menu-bubble v-if="bubbleEnabled " :editor="editor" @hide="hideBubble" :keep-in-bounds="keepInBounds" v-slot="{ commands, isActive, getMarkAttrs, menu }">
             <div class="menububble" :class="{ 'active': menu.isActive }" :style="`left: ${menu.left}px; bottom: ${menu.bottom}px;`">
                 <template v-if="selectedImage">
-                    <form class="menububble__form" v-if="isActive.image()"> <!-- This function stops the page being submitted -->
+                    <form class="menububble__form" v-if="isActive.image()">
+                        <!-- This function stops the page being submitted -->
                         <template v-if="proEnabled">
                             <template v-if="constrain">
                                 <label for="widthInput">&nbsp;Scale:&nbsp;</label>
@@ -27,7 +28,8 @@
                     </form>
                 </template>
                 <template v-else-if="selectedVideo">
-                    <form class="menububble__form" v-if="isActive.video()" @submit.prevent.stop="scaleVideo(commands.video)"> <!-- This function stops the page being submitted -->
+                    <form class="menububble__form" v-if="isActive.video()" @submit.prevent.stop="scaleVideo(commands.video)">
+                        <!-- This function stops the page being submitted -->
                         <label for="widthInput">&nbsp;Scale:&nbsp;</label>
                         <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @change='scaleVideo(commands.video)' @blur='commands.video(selectedVideo)' />
                     </form>
@@ -93,8 +95,7 @@
                             <fluro-icon icon="align-right" />
                         </v-btn>
                     </template>
-
-                    <form class="menububble__form" v-if="linkMenuIsActive" @submit.prevent="setLinkUrl(commands.link, linkattrs)">
+                    <!-- <form class="menububble__form" v-if="linkMenuIsActive" @submit.prevent="setLinkUrl(commands.link, linkattrs)">
                         <label for="widthInput">&nbsp;URL:&nbsp;</label>
                         <input class="link-input" type="text" v-model="linkattrs.href" placeholder="https://" ref="linkInput" @keydown.esc="hideLinkMenu" />
                         <label for="widthInput">&nbsp;Target:&nbsp;</label>
@@ -102,22 +103,29 @@
                         <label for="widthInput">&nbsp;Class:&nbsp;</label>
                         <input class="link-input" type="text" v-model="linkattrs.class" placeholder="" ref="linkInput" @keydown.esc="hideLinkMenu" />
                         <v-btn icon small flat @click.stop.prevent="setLinkUrl(commands.link, linkattrs)">
-                                <fluro-icon icon="check" />
+                            <fluro-icon icon="check" />
                         </v-btn>
                         <v-btn icon small flat @click.stop.prevent="popupLinkSelector(commands.link)">
-                                <fluro-icon icon="plus" />
+                            <fluro-icon icon="plus" />
                         </v-btn>
-
                         <v-btn small icon flat @click.stop.prevent="setLinkUrl(commands.link, null)">
                             <fluro-icon icon="unlink" />
                         </v-btn>
-                    </form>
-                    <template v-else>
-                        <v-btn small flat :class="{ 'active': isActive.link() }" @click.stop.prevent="showLinkMenu(getMarkAttrs('link'))">
-                            <span>{{ isActive.link() ? 'Update Link' : 'Link'}}</span>
-                            <fluro-icon right icon="link" />
+                    </form> -->
+                    <!-- <template v-else> -->
+                    <template v-if="isActive.link()">
+                        <v-btn v-tippy content="Link options" small flat @click.stop.prevent="showLinkMenu(commands.link, getMarkAttrs('link'))">
+                            <!-- Link Options -->
+                            <!-- <span>{{ isActive.link() ? 'Update Link' : 'Link'}}</span> -->
+                            <fluro-icon icon="link" />
                         </v-btn>
                     </template>
+                    <v-btn v-else v-tippy content="Add link" small flat @click.stop.prevent="addLinkMenu(commands.link, getMarkAttrs('link'))">
+                        <!-- Add Link -->
+                        <!-- <span>{{ isActive.link() ? 'Update Link' : 'Link'}}</span> -->
+                        <fluro-icon icon="link" />
+                    </v-btn>
+                    <!-- </template> -->
                 </template>
             </div>
         </editor-menu-bubble>
@@ -375,6 +383,7 @@ import Token from './tiptap/token';
 import Alignment from './tiptap/alignment';
 import Typography from './tiptap/typography';
 
+// import FluroEditorLinkModal from './FluroEditorLinkModal.vue';
 import Link from './tiptap/customlink.js'
 
 // import hljs from 'highlight.js/lib/highlight';
@@ -440,10 +449,10 @@ export default {
             TypographyPlugin: new Typography(),
             FluroNodePlugin: new FluroNode(),
             FluroMarkPlugin: new FluroMark(),
-            selectedImage:null,
-            selectedVideo:null,
+            selectedImage: null,
+            selectedVideo: null,
             scale: 100,
-            selectedNode:null,
+            selectedNode: null,
         }
     },
     computed: {
@@ -487,15 +496,15 @@ export default {
                 return _.includes(this.options.toolset, tool);
             } else {
 
-                switch(tool) {
+                switch (tool) {
                     case 'image':
                     case 'video':
-                        if(this.$fluro.global.select) {
+                        if (this.$fluro.global.select) {
                             return true;
                         } else {
                             return false;
                         }
-                    break;
+                        break;
                 }
                 return true;
             }
@@ -526,12 +535,206 @@ export default {
         getFluroMarks() {
             return this.FluroMarkPlugin.options.classes
         },
-        showLinkMenu(attrs) {
-            this.linkattrs = attrs
-            this.linkMenuIsActive = true
-            this.$nextTick(() => {
-                this.$refs.linkInput.focus()
-            })
+        addLinkMenu(command, attrs) {
+
+            var self = this;
+
+
+
+            self.$fluro.options([{
+                        title: 'Website or URL',
+                        value: ''
+                    },
+                    {
+                        title: 'Asset / File',
+                        value: 'asset',
+                    },
+                    {
+                        title: 'Audio file',
+                        value: 'audio',
+                    },
+                    // {
+                    //     title: 'Video',
+                    //     value: 'video',
+                    // },
+                    // {
+                    //     title: 'Image',
+                    //     value: 'image',
+                    // },
+
+                ], 'Add Link')
+                .then(function(res) {
+                    console.log('RES', res)
+
+                    switch (res.value) {
+                        case 'asset':
+                        case 'image':
+                        case 'audio':
+                        case 'video':
+
+                            return self.$fluro.global.select(res.value, {
+                                    title: 'Select file',
+                                    minimum: 1,
+                                    maximum: 1,
+                                    allDefinitions: true,
+                                }, true)
+                                .then(function(files) {
+
+                                    var firstFile = files[0];
+                                    var href = self.$fluro.asset.downloadUrl(firstFile, { withoutToken: true })
+
+                                    console.log('HREF IS', href)
+                                    self.showLinkMenu(command, attrs, {
+                                        href,
+                                        target: attrs.target,
+                                        class: attrs.class,
+                                    });
+                                })
+
+                            break;
+                        default:
+                            self.showLinkMenu(command, attrs, {
+                                href: '',
+                                target: attrs.target,
+                                class: attrs.class,
+                            });
+                            break;
+                    }
+                });
+        },
+        showLinkMenu(command, attrs, model) {
+
+            if (!model) {
+                model = {
+                    href: attrs.href,
+                    target: attrs.target,
+                    class: attrs.class,
+                }
+            }
+
+
+            var self = this;
+
+            self.$fluro.prompt([{
+                        title: 'URL',
+                        key: 'href',
+                        type: 'url',
+                        placeholder: 'https://www.something.com/',
+                        minimum: 1,
+                        maximum: 1,
+                        defaultValues: ['https://'],
+                        params: {
+                            autofocus: true,
+                        },
+                        //directive:'url',
+                    },
+
+                    {
+                        title: 'Open in',
+                        key: 'target',
+                        type: 'string',
+                        directive: 'select',
+                        minimum: 1,
+                        maximum: 1,
+                        defaultValues: [''],
+                        options: [{
+                                name: 'Same Window',
+                                value: '',
+                            },
+                            {
+                                name: 'New Window',
+                                value: '_blank',
+                            },
+                        ]
+                    },
+
+                    {
+                        title: 'Style',
+                        key: 'class',
+                        type: 'string',
+                        directive: 'select',
+                        minimum: 1,
+                        maximum: 1,
+                        options: [{
+                                name: 'None',
+                                value: '',
+                            },
+                            {
+                                name: 'Extra Small Button',
+                                value: 'btn btn-standard btn-xs',
+                            },
+                            {
+                                name: 'Small Button',
+                                value: 'btn btn-standard btn-sm',
+                            },
+                            {
+                                name: 'Regular Button',
+                                value: 'btn btn-standard btn-md',
+                            },
+                            {
+                                name: 'Large Button',
+                                value: 'btn btn-standard btn-lg',
+                            },
+                            {
+                                name: 'Extra Large Button',
+                                value: 'btn btn-standard btn-xl',
+                            },
+
+
+                        ]
+                    },
+                ], 'Link Options', model)
+                .then(function(res) {
+
+
+                    if (!res.target) {
+                        res.target = '';
+                    }
+
+                    if (!res.class) {
+                        res.class = '';
+                    }
+
+
+                    self.setLinkUrl(command, res);
+                    // this.linkattrs = attrs
+                    // this.linkMenuIsActive = true
+                    // this.$nextTick(() => {
+                    //     this.$refs.linkInput.focus()
+                    // })
+
+                })
+
+
+
+
+
+            // this.linkattrs = attrs
+            // this.linkMenuIsActive = true
+            // this.$nextTick(() => {
+            //     this.$refs.linkInput.focus()
+            // })
+
+            // self.$fluro.modal({
+            //     component: FluroEditorLinkModal,
+            //     options: {
+            //         attrs,
+            //         // selector: instance, //Vue(FluroSelector),
+            //         // type: definedType,
+            //         // allDefinitions: options.allDefinitions,
+            //         // searchInheritable: options.searchInheritable,
+            //         // filter: options.filter,
+            //     }
+            // })
+
+
+
+            // self.$fluro.
+            // this.linkattrs = attrs
+            // this.linkMenuIsActive = true
+            // this.$nextTick(() => {
+            //     this.$refs.linkInput.focus()
+            // })
         },
         hideLinkMenu() {
             this.linkattrs = {
@@ -541,29 +744,29 @@ export default {
             }
             this.linkMenuIsActive = false
         },
-        popupLinkSelector(command) {
-            var self = this
-            self.$fluro.global.select('asset', {
-                    title: 'Select an Image/Photo',
-                    minimum: 1,
-                    maximum: 1,
-                    allDefinitions: true,
-                }, true)
-                .then(function(res) {
-                    if (res) {
-                        //console.log("res", res)
-                        var first = _.first(res)
+        // popupLinkSelector(command) {
+        //     var self = this
+        //     self.$fluro.global.select('asset', {
+        //             title: 'Select an Image/Photo',
+        //             minimum: 1,
+        //             maximum: 1,
+        //             allDefinitions: true,
+        //         }, true)
+        //         .then(function(res) {
+        //             if (res) {
+        //                 //console.log("res", res)
+        //                 var first = _.first(res)
 
-                       setLinkUrl(command, {
-                           href: self.$fluro.asset.downloadUrl(first),
-                           class: null,
-                           target: null,
-                       })
-                    }
-                })
+        //                 self.setLinkUrl(command, {
+        //                     href: self.$fluro.asset.downloadUrl(first, { withoutToken: true }),
+        //                     class: null,
+        //                     target: null,
+        //                 })
+        //             }
+        //         })
 
 
-        },
+        // },
         setLinkUrl(command, linkattrs) {
             command(linkattrs)
             this.hideLinkMenu()
@@ -1004,9 +1207,9 @@ export default {
 
 
 
-                var json = function() { return window.hljs.getLanguage('json');} 
-                var javascript = function() { return window.hljs.getLanguage('javascript');} 
-                var scss = function() { return window.hljs.getLanguage('scss');} 
+                var json = function() { return window.hljs.getLanguage('json'); }
+                var javascript = function() { return window.hljs.getLanguage('javascript'); }
+                var scss = function() { return window.hljs.getLanguage('scss'); }
 
                 // // console.log('Got him', window.hljs, window.hljs.listLanguages());
                 // // var json = window.hljs.registerLanguage('json');
@@ -1438,6 +1641,47 @@ $color-white: #fff;
         }
     }
 
+    .btn {
+        text-decoration: none;
+        background: rgba(#000, 0.05);
+        border-radius: 100px;
+    }
+
+    .btn-xxs {
+        font-size: 0.7em;
+        padding: 0.25em 0.5em;
+    }
+
+    .btn-xs {
+        font-size: 0.8em;
+        padding: 0.5em 1em;
+    }
+
+    .btn-sm {
+        font-size: 0.9em;
+        padding: 0.85em 1.5em;
+    }
+
+    .btn-md {
+        font-size: 1em;
+        padding: 1em 2em;
+    }
+
+    .btn-lg {
+        font-size: 1.2em;
+        padding: 1.25em 2.5em;
+    }
+
+    .btn-xl {
+        font-size: 1.3em;
+        padding: 1.5em 3em;
+    }
+
+    .btn-xxl {
+        font-size: 1.5em;
+        padding: 1.515em 3.3em;
+    }
+
 
     mention {
         display: inline;
@@ -1449,6 +1693,9 @@ $color-white: #fff;
         padding: 0.3rem 0.5rem;
         white-space: nowrap;
     }
+
+
+
 
     pre {
         box-shadow: none;

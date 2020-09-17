@@ -11,7 +11,7 @@
                         <div class="bignumber">
                             {{model.stats.combinedHeadcountCheckins}}
                         </div>
-                    <div class="muted font-sm">{{model.stats.headcount}} Headcount. {{model.stats.checkin}} Checked in</div>
+                    <div class="muted font-sm"><span v-if="model.stats.headcount">{{model.stats.headcount}} Headcount.&nbsp;</span><span v-if="model.stats.checkin">{{model.stats.checkin}} Checked in</span></div>
                     </div>
                 </fluro-panel-body>
             </fluro-panel>

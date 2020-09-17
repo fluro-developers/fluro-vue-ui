@@ -1,5 +1,5 @@
 <template>
-    <td :class="{wrap:shouldWrap, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}">
+    <td :style="style" @click="cellclick" :class="{wrap:shouldWrap, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right', 'no-padding':column.padding === false}">
         <!-- <pre>{{column}}</pre> -->
         
         <!-- <pre>{{formattedArray}}</pre> -->
@@ -79,7 +79,7 @@ import DateCell from './cells/DateCell.vue';
 import RealmDotCell from './cells/RealmDotCell.vue';
 import TimeagoCell from './cells/TimeagoCell.vue';
 import AvatarCell from './cells/AvatarCell.vue';
-
+import ChartCell from './cells/ChartCell.vue';
 
 
 /////////////////////////////////
@@ -94,6 +94,13 @@ export default {
         },
     },
     methods: {
+        cellclick() {
+            if(!this.column.click) {
+                return;
+            }
+
+            this.column.click(this.row);
+        },
         clicked(item) {
             if (!item._id) {
                 return;
@@ -104,6 +111,9 @@ export default {
         }
     },
     computed: {
+        style() {
+            return this.column.style;
+        },
         characterCount() {
             return String(this.rawValue).length;
         },
@@ -128,6 +138,10 @@ export default {
 
             var renderer = this.column.renderer
             switch (this.column.renderer) {
+                case 'chart':
+                return ChartCell;
+                    break;
+                break;
                 case 'contactAvatar':
                     return AvatarCell;
                     break;
@@ -611,6 +625,14 @@ export default {
     overflow: hidden;
     white-space: pre-line;
     text-overflow: ellipsis;
+}
+
+.no-padding {
+    padding:0 !important;
+}
+
+td.align-bottom {
+    vertical-align: bottom !important;
 }
 
 </style>

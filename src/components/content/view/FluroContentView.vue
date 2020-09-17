@@ -39,6 +39,17 @@
                                                         </v-btn>
                                                 </template>
                                         </template>
+                                        <template v-slot:rightmobile>
+                                          <v-btn v-tippy content="More actions" v-if="model._id" icon class="mr-0" small @click="$actions.open([model])">
+                                                                <fluro-icon icon="ellipsis-h" />
+                                                        </v-btn>
+                                                        <v-btn v-tippy content="Edit" v-if="canEdit" icon small @click="edit">
+                                                                <fluro-icon icon="pencil" />
+                                                        </v-btn>
+                                                        <v-btn v-tippy content="Download" v-if="canDownload" icon small :href="$fluro.asset.downloadUrl(model)" target="_blank">
+                                                                <fluro-icon icon="cloud-download" />
+                                                        </v-btn>
+                                        </template>
                                 </page-header>
                         </flex-column-header>
                         <component :item="model" v-bind:is="component" :config="config" v-if="component" />

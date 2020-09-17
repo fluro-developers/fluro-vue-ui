@@ -552,6 +552,7 @@
 																				</div>
 																</v-menu>
 												</template>
+											
 												<template v-else>
 																<template v-if="multipleInput">
 																				<v-input :outline="showOutline" :label="displayLabel" :success="success" class="no-flex">
@@ -574,12 +575,12 @@
 																												</draggable>
 																								</template>
 																								<template v-if="canAddValue">
-																												<v-text-field @focus="focussed();" :mask="params.mask" :autofocus="shouldAutofocus" class="faint" @input="elementValueChanged" append-inner-icon="plus" :outline="showOutline" :success="success" browser-autocomplete="off" append-icon="plus" :required="required" :label="multiLabel" v-model="proposedValue" @keyup.enter.native.stop.prevent="addProposedValue()" @blur="addProposedValue()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="hint" :placeholder="placeholder" />
+																												<v-text-field :type="directive == 'password' ? 'password' : 'text'" @focus="focussed();" :mask="params.mask" :autofocus="shouldAutofocus" class="faint" @input="elementValueChanged" append-inner-icon="plus" :outline="showOutline" :success="success" browser-autocomplete="off" append-icon="plus" :required="required" :label="multiLabel" v-model="proposedValue" @keyup.enter.native.stop.prevent="addProposedValue()" @blur="addProposedValue()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="hint" :placeholder="placeholder" />
 																								</template>
 																				</v-input>
 																</template>
 																<template v-if="!multipleInput">
-																				<v-text-field :mask="params.mask" :autofocus="shouldAutofocus" :outline="showOutline" :success="success" browser-autocomplete="off" :required="required" :label="displayLabel" @input="elementValueChanged" v-model="fieldModel" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="placeholder" />
+																				<v-text-field :type="directive == 'password' ? 'password' : 'text'" :mask="params.mask" :autofocus="shouldAutofocus" :outline="showOutline" :success="success" browser-autocomplete="off" :required="required" :label="displayLabel" @input="elementValueChanged" v-model="fieldModel" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="placeholder" />
 																</template>
 												</template>
 								</template>

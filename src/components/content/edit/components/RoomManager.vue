@@ -9,7 +9,10 @@
                             <span class="muted" style="padding-bottom:0px">{{room.description}}</span>
                         </v-flex>
                         <v-flex shrink>
-                            <v-btn @click="remove(index)">
+                            <v-btn class="my-0" icon @click="edit(index)">
+                                <fluro-icon icon="pencil"/>
+                            </v-btn>
+                            <v-btn class="my-0" icon @click="remove(index)">
                                 <fluro-icon icon="times" />
                             </v-btn>
                         </v-flex>
@@ -88,6 +91,15 @@ export default {
 
             this.proposed = {};
         },
+        edit(index) {
+            var self = this;
+            self.$fluro.prompt(self.fields, 'Edit room', self.model[index])
+            .then(function(res) {
+
+                self.$set(self.model, index, res);
+                // _.assign(self.model[index], res);
+            });
+        },
         remove(index) {
             this.model.splice(index, 1);
         }
@@ -117,6 +129,14 @@ export default {
                         maximum: 1,
                         type: 'string',
                         key: 'description',
+                    },
+                    {
+                        title: 'External ID',
+                        minimum: 0,
+                        maximum: 1,
+                        type: 'string',
+                        description:'An ID used to link with external services, like booking systems or image recognition services',
+                        key: 'externalID',
                     },
                     // {
                     //     title: 'Add',

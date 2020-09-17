@@ -601,7 +601,7 @@ export default {
                     var hasPosts = (event.posts && event.posts.length);
                     var hasCheckins = (event.checkins && event.checkins.length);
 
-                    if (!hasPosts || !hasCheckins) {
+                    if (!hasPosts && !hasCheckins) {
                         return;
                     }
                     return event;
@@ -751,16 +751,25 @@ export default {
                 fixed: true,
                 shrink: true,
                 classes: 'sticky-first border-right',
+                click(row) {
+                    console.log('Clicked', row)
+                    self.$fluro.global.view(row, true);
+                }
             });
 
 
-            // array.push({
-            //     title: "Name",
-            //     key: "title",
-            //     fixed:true,
-            //     shrink:true,
-            //     classes:'border-right sticky-first',
-            // });
+            array.push({
+                title: "%",
+                key: "percentWeeks",
+                fixed:true,
+                shrink:true,
+                type:'number',
+                sortType:'number',
+                classes:'border-right',
+                align:'center',
+                tooltip:'Percentage of attendance',
+                suffix:'%'
+            });
 
 
             _.each(sourceArray, function(entry) {
@@ -773,6 +782,7 @@ export default {
                     renderer,
                     //classes,
                     align: 'center',
+                    sortType:'boolean',
                     shrink: true,
                     tiny: true,
                 })

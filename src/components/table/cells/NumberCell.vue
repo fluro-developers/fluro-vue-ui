@@ -1,6 +1,6 @@
 <template>
     <div class="number-cell-text" :class="{muted:empty}">
-        {{data}}
+        {{prefix}}{{data}}{{suffix}}
         </div>
 </template>
 <script>
@@ -21,6 +21,12 @@ export default {
             if(parseInt(this.data) == 0) {
                 return true;
             }
+        },
+        suffix() {
+            return this.column.suffix;
+        },
+        prefix() {
+            return this.column.prefix;
         }
     }
 }
