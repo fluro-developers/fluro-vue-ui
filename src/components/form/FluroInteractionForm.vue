@@ -1403,6 +1403,11 @@ export default {
 
             function submitRequest(paymentDetails) {
                 if (paymentDetails) {
+
+                    if(self.debugMode) {
+                        paymentDetails.sandbox = true;
+                    }
+
                     interactionData.payment = paymentDetails;
                     console.log("SUBMIT REQUEST", interactionData);
                 }

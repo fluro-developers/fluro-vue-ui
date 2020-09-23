@@ -119,10 +119,9 @@
                                             <fluro-icon right icon="paper-plane" />
                                         </v-btn>
                                     </template>
-                                    
                                     <fluro-panel v-if="showAdvanced">
                                         <fluro-panel-body>
-                                            <h5 margin>{{isManagedUser ? 'Managed User Persona' : 'General Fluro User'}}</h5>
+                                            <h5 margin>{{isManagedUser ? 'Whitelabel User Persona' : 'General Fluro User'}}</h5>
                                             <p v-if="isManagedUser">
                                                 This user will exist only within the <strong>{{user.account.title}}</strong> account and can only sign in to <strong>{{user.account.title}}</strong> applications and websites. These kinds of user personas are typically used for white labelled apps or for young children that might not have an email address.
                                             </p>
@@ -131,10 +130,10 @@
                                             </p>
                                             <template v-if="!model._id">
                                                 <v-btn class="ma-0" tag="span" @click="createManaged = true" v-if="!isManagedUser">
-                                                    Change to a Whitelabel 'Managed' persona
+                                                    Change to a Whitelabel / Managed user
                                                 </v-btn>
                                                 <v-btn class="ma-0" tag="span" @click="createManaged = false" v-if="isManagedUser">
-                                                    Change to a 'Fluro' persona
+                                                    Change to a General Fluro user
                                                 </v-btn>
                                             </template>
                                         </fluro-panel-body>
@@ -296,6 +295,11 @@ export default {
         }
     },
     watch: {
+        isManagedUser(b) {
+            if (b) {
+                this.model.collectionEmail = '';
+            }
+        },
         title(val) {
             this.$set(this.model, "title", this.title);
             this.update(this.model);
@@ -311,9 +315,13 @@ export default {
     asyncComputed: {},
     computed: {
         showAdvanced() {
-            if(this.isManagedUser) {
-             return true;
-            } 
+            if (this.isManagedUser) {
+                return true;
+            }
+
+            // if (!this.model._id) {
+            //     return true;
+            // }
 
             return (!this.model._id && this.$pro && this.$pro.enabled);
         },

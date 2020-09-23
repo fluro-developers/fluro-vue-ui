@@ -51,8 +51,8 @@
                             <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.nth" v-model="model"></fluro-content-form-field>
                             <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.weekday" v-model="model"></fluro-content-form-field>
                             <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.timestamp" v-model="model"></fluro-content-form-field>
-                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.nextDate" v-model="model"></fluro-content-form-field>
                             <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.timezone" v-model="model"></fluro-content-form-field>
+                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.nextDate" v-model="model"></fluro-content-form-field>                            
                         </constrain>
                     </v-container>
                 </flex-column-body>
@@ -316,11 +316,12 @@ export default {
                 minimum: 0,
                 maximum: 1,
                 type: "date",
-                description: ""
+                directive:'datetimepicker',
+                description: "The next date this result set is scheduled to export"
             });
 
             addField("timezone", {
-                title: "Description",
+                title: "Timezone",
                 minimum: 0,
                 maximum: 1,
                 type: "string",

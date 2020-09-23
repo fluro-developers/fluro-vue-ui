@@ -128,15 +128,18 @@ export default {
                         set['confirmed'].contacts.push(guest);
                     }
 
-                    if (guest.attendance.guestDeclined) {
-                        set['declined'].contacts.push(guest);
-                    }
+                    
 
                     if (guest.attendance.ticket) {
                         set['ticket'].contacts.push(guest);
                     }
 
-                    if (guest.attendance.checkin) {
+                    if (guest.attendance.guestDeclined) {
+                        set['declined'].contacts.push(guest);
+                        return set;
+                    }
+
+                    if (guest.attendance.checkin ) {
                         set['checkin'].contacts.push(guest);
                     } else {
                         set['absent'].contacts.push(guest);

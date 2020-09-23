@@ -1035,6 +1035,11 @@ export default {
             return self.editingKey; // || !self.model.key;
         },
         advancedOptions() {
+
+            if(this.showAdvancedOptions) {
+                return true;
+            }
+            
             if (this.model.options && this.model.options.length) {
                 return true;
             }

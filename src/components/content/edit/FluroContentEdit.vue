@@ -403,6 +403,10 @@ export default {
         editFailed(err) {
             var self = this;
 
+            if(!err) {
+                return
+            }
+
             // console.log('ERROR MESSAGE HAPPENED')
             //Dispatch an error
             var humanMessage = self.$fluro.utils.errorMessage(err);
@@ -440,6 +444,11 @@ export default {
         },
         createFailed(err) {
             var self = this;
+
+            if(!err) {
+                return;
+            }
+            
             console.log("ERROR MESAGE HAPPEND");
             //Dispatch an error
             var humanMessage = self.$fluro.utils.errorMessage(err);
@@ -559,7 +568,7 @@ export default {
             return self.$fluro.api.put(
                 `/content/${definedType}/${requestData._id}?replaceData=true`,
                 requestData
-            );
+            )
         },
         submit(capture) {
             var self = this;
@@ -624,7 +633,7 @@ export default {
 
                 switch (context) {
                     case "edit":
-                        self.submitUpdate().then(resolve)
+                        self.submitUpdate().then(resolve, reject);
                         break;
                     default:
                         //Preprocess our create request
@@ -1448,7 +1457,10 @@ export default {
                     });
 
                     promise.catch(function(err) {
-                        self.$fluro.error(err);
+                        if(err) {
+                             self.$fluro.error(err);
+                        }
+                       
                         // // console.log('ERROR', err.response);
                         // if (err.response.status === 404) {
                         //     console.log('RESOLVE THE 404')

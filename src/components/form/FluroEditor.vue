@@ -634,7 +634,7 @@ export default {
                         key: 'target',
                         type: 'string',
                         directive: 'select',
-                        minimum: 1,
+                        minimum: 0,
                         maximum: 1,
                         defaultValues: [''],
                         options: [{
@@ -653,7 +653,7 @@ export default {
                         key: 'class',
                         type: 'string',
                         directive: 'select',
-                        minimum: 1,
+                        minimum: 0,
                         maximum: 1,
                         options: [{
                                 name: 'None',
@@ -661,23 +661,23 @@ export default {
                             },
                             {
                                 name: 'Extra Small Button',
-                                value: 'btn btn-standard btn-xs',
+                                value: 'btn btn-standard btn-primary btn-xs',
                             },
                             {
                                 name: 'Small Button',
-                                value: 'btn btn-standard btn-sm',
+                                value: 'btn btn-standard btn-primary btn-sm',
                             },
                             {
                                 name: 'Regular Button',
-                                value: 'btn btn-standard btn-md',
+                                value: 'btn btn-standard btn-primary btn-md',
                             },
                             {
                                 name: 'Large Button',
-                                value: 'btn btn-standard btn-lg',
+                                value: 'btn btn-standard btn-primary btn-lg',
                             },
                             {
                                 name: 'Extra Large Button',
-                                value: 'btn btn-standard btn-xl',
+                                value: 'btn btn-standard btn-primary btn-xl',
                             },
 
 
@@ -1383,6 +1383,7 @@ $color-white: #fff;
 
 
     table {
+        width:100%;
         border-collapse: collapse;
 
         th,

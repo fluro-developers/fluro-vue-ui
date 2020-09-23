@@ -552,7 +552,6 @@
 																				</div>
 																</v-menu>
 												</template>
-											
 												<template v-else>
 																<template v-if="multipleInput">
 																				<v-input :outline="showOutline" :label="displayLabel" :success="success" class="no-flex">
@@ -4025,9 +4024,17 @@ function checkValidInput(self, input) {
 												break;
 								case 'url':
 
-												var relativeURL = _.startsWith(input, '#') || _.startsWith(input, '/');
-												if (!relativeURL && !url(input)) {
-																errors.push(`Must be a valid url eg. https://...`);
+												// var relativeURL = _.startsWith(input, '#') || _.startsWith(input, '/');
+												var specialURL = _.includes(input, '://') ||
+																_.startsWith(input, '/') ||
+																_.startsWith(input, '#') ||
+																_.startsWith(input, 'mailto:') ||
+																_.startsWith(input, 'tel:') ||
+																_.startsWith(input, 'sms:');
+
+
+												if (!specialURL && !url(input)) {
+																errors.push(`Must be a valid url eg. (https://...)`);
 												}
 
 												break;

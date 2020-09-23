@@ -20,9 +20,7 @@
             </page-header>
         </flex-column-header>
         <flex-column-body>
-
             <v-container>
-
                 <v-layout>
                     <v-flex xs12 sm6>
                         <div class="form-group">
@@ -37,14 +35,11 @@
                         </div>
                     </v-flex>
                 </v-layout>
-
                 <div class="form-group">
-                            <label>Sent To</label>
-                            <div>{{item.email}}</div>
-                        </div>
-
+                    <label>Sent To</label>
+                    <div>{{item.email}}</div>
+                </div>
                 <v-layout>
-                    
                     <v-flex xs12 sm6>
                         <div class="form-group">
                             <label>State</label>
@@ -52,7 +47,6 @@
                         </div>
                     </v-flex>
                 </v-layout>
-
                 <v-layout>
                     <v-flex xs12 sm6>
                         <div class="form-group">
@@ -67,7 +61,6 @@
                         </div>
                     </v-flex>
                 </v-layout>
-
                 <fluro-panel>
                     <fluro-panel-title>Tracked Events</fluro-panel-title>
                     <fluro-table :enableSelection="false" defaultSort="date" defaultSortType="date" :pageSize="25" style="max-height:50vh;" :items="item.trackedEvents" :columns="columns" />
@@ -82,7 +75,26 @@ import FluroModalMixin from '../../mixins/ModalMixin';
 import FluroTable from '../table/FluroTable.vue';
 import DateCell from '../table/cells/DateCell.vue';
 import TimeagoCell from '../table/cells/TimeagoCell.vue';
+import Vue from 'vue';
 
+
+var MailoutCorrespondenceTitleCell = Vue.extend({
+    props: {
+        'row': {
+            type: Object,
+        },
+        'column': {
+            type: Object,
+        },
+        'data': {
+            // type: Object,
+        },
+    },
+    template: `<div>
+    <strong>{{row.title}}</strong>
+    <div class="muted font-xs">{{row.url}}</div>
+    </div>`,
+})
 
 
 export default {
@@ -91,25 +103,26 @@ export default {
             type: Object
         }
     },
-    components:{
+    components: {
         FluroTable,
     },
     mixins: [FluroModalMixin],
-    computed:{
+    computed: {
         columns() {
             return [{
-                title:'Event',
-                key:'title',
+                title: 'Event',
+                key: 'title',
+                renderer: MailoutCorrespondenceTitleCell,
             }, {
-                title:'Date',
-                key:'date',
-                sortType:'date',
-                renderer:DateCell,
+                title: 'Date',
+                key: 'date',
+                sortType: 'date',
+                renderer: DateCell,
             }, {
-                title:'When',
-                key:'date',
-                sortType:'date',
-                renderer:TimeagoCell,
+                title: 'When',
+                key: 'date',
+                sortType: 'date',
+                renderer: TimeagoCell,
             }]
         },
         item() {
@@ -117,6 +130,7 @@ export default {
         },
     },
 }
+
 </script>
 <style lang="scss" scoped>
 </style>

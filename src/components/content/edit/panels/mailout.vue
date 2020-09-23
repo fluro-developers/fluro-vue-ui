@@ -231,7 +231,7 @@
                                         <fluro-panel-title :class="{collapsed:!expanded.tags}" @click.native="toggleExpand('tags')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{tags.length}} Tags</h6>
+                                                    <h6>{{selectedTags.length}} Tags</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -240,7 +240,7 @@
                                         </fluro-panel-title>
                                         <fluro-panel-body v-if="expanded.tags">
                                             <!-- <div class="sm muted">Send to contacts at specific events</div> -->
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="tags" v-model="model" />
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.selectedTags" v-model="model" />
                                         </fluro-panel-body>
                                     </fluro-panel>
                                     <fluro-panel>
@@ -472,7 +472,7 @@ export default {
             }
         },
 
-        tags: {
+        selectedTags: {
             get() {
                 return this.model.selectedTags || [];
             },
@@ -759,7 +759,7 @@ export default {
             })
             // }
 
-            addField('tags', {
+            addField('selectedTags', {
                 title: 'Select Tags',
                 minimum: 0,
                 maximum: 0,

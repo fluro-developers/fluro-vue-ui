@@ -32,13 +32,16 @@ export default {
 												type: Boolean,
 												default: false,
 								},
+								cacheKey: {
+												type: [String, Number],
+								},
 								criteria: {
 												type: Object,
 												default () {
 																return {
 																				sort: {
 																								key: 'created',
-																								direction: 'dsc',
+																								direction: 'desc',
 																								type: 'date',
 																				},
 																				filter: {
@@ -71,14 +74,19 @@ export default {
 												this.dataSource.type = c;
 								},
 								perPage(c) {
+									// console.log('per page changed', c);
 												this.dataSource.perPage = c;
 								},
 								index(c) {
 												this.dataSource.pageIndex = c;
 								},
 								fields(c) {
+										// console.log('fields changed', c);
 												this.dataSource.fields = c;
 								},
+								cacheKey(c) {
+									this.dataSource.cacheKey = c;
+								}
 				},
 				data() {
 
@@ -88,6 +96,7 @@ export default {
 												criteria: this.criteria,
 												fields: this.fields,
 												cumulative: this.cumulative,
+												cacheKey:this.cacheKey,
 								})
 
 								return {
