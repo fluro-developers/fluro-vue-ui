@@ -1,5 +1,6 @@
 <template>
 				<div @click="clicked($event)" :data-field-key="key" class="fluro-content-form-field" v-if="isVisible" v-bind="attributes" :class="fieldClass">
+								<!-- 	<pre>{{fieldModel}}</pre> -->
 								<pre v-if="!field">FATAL - NO FIELD SPECIFIED</pre>
 								<template v-if="ready && model">
 												<template v-if="officeUseOnly">
@@ -159,10 +160,12 @@
 												</template>
 												<template v-else-if="renderer == 'checkbox'">
 																<div class="terms" :class="{'has-error':errorMessages.length}" v-if="savedTerms">
+																				<!--   -->
 																				<v-checkbox :outline="showOutline" :success="success" :mandatory="required" :persistent-hint="true" :label="displayLabel" v-model="fieldModel" @change="elementValueChanged($event, true)" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
 																				<div class="conditions">{{field.params.storeData}}</div>
 																</div>
 																<template v-else>
+																				<!-- @change="elementValueChanged($event, true)" -->
 																				<v-checkbox :outline="showOutline" :success="success" :mandatory="required" :persistent-hint="true" :label="displayLabel" v-model="fieldModel" @change="elementValueChanged($event, true)" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
 																</template>
 																<!-- <pre>MODEL {{fieldModel}}</pre> -->
@@ -250,7 +253,7 @@
 												</template>
 												<template v-else-if="renderer == 'datetimepicker'">
 																<!-- <pre>{{fieldModel}}</pre> -->
-																<fluro-date-time-picker :outline="showOutline" :min="minDate" :max="maxDate" :success="success" format="ddd D MMM - h:mma " timePickerFormat="ampm" :label="displayLabel" :placeholder="placeholder" :hint="field.description" v-model="fieldModel" @blur="touch()" @focus="modalFocussed();" />
+																<fluro-date-time-picker :outline="showOutline" :large="!params.small" :min="minDate" :max="maxDate" :success="success" format="ddd D MMM - h:mma " timePickerFormat="ampm" :label="displayLabel" :placeholder="placeholder" :hint="field.description" v-model="fieldModel" @blur="touch()" @focus="modalFocussed();" />
 												</template>
 												<template v-else-if="renderer == 'timezoneselect'">
 																<template v-if="mobile">
@@ -332,13 +335,13 @@
 																								<template v-if="webMode">
 																												<fluro-button @click="addValue('')">
 																																{{multiLabel}}
-																																<fluro-icon icon="plus" />
+																																<fluro-icon icon="plus" right />
 																												</fluro-button>
 																								</template>
 																								<template v-else>
 																												<v-btn color="primary" class="ml-0" @click="addValue('')">
 																																{{multiLabel}}
-																																<fluro-icon icon="plus" />
+																																<fluro-icon icon="plus" right />
 																												</v-btn>
 																								</template>
 																				</template>
@@ -359,13 +362,13 @@
 																												<template v-if="webMode">
 																																<fluro-button @click="addValue('')">
 																																				{{multiLabel}}
-																																				<fluro-icon icon="plus" />
+																																				<fluro-icon icon="plus" right />
 																																</fluro-button>
 																												</template>
 																												<template v-else>
 																																<v-btn color="primary" class="ml-0" @click="addValue('')">
 																																				{{multiLabel}}
-																																				<fluro-icon icon="plus" />
+																																				<fluro-icon icon="plus" right />
 																																</v-btn>
 																												</template>
 																								</template>
@@ -400,13 +403,13 @@
 																												<template v-if="webMode">
 																																<fluro-button @click="addValue('')">
 																																				{{multiLabel}}
-																																				<fluro-icon icon="plus" />
+																																				<fluro-icon icon="plus" right />
 																																</fluro-button>
 																												</template>
 																												<template v-else>
 																																<v-btn color="primary" class="ml-0" @click="addValue('')">
 																																				{{multiLabel}}
-																																				<fluro-icon icon="plus" />
+																																				<fluro-icon icon="plus" right />
 																																</v-btn>
 																												</template>
 																								</template>
@@ -437,13 +440,13 @@
 																												<template v-if="webMode">
 																																<fluro-button @click="addValue('')">
 																																				{{multiLabel}}
-																																				<fluro-icon icon="plus" />
+																																				<fluro-icon icon="plus" right />
 																																</fluro-button>
 																												</template>
 																												<template v-else>
 																																<v-btn color="primary" class="ml-0" @click="addValue('')">
 																																				{{multiLabel}}
-																																				<fluro-icon icon="plus" />
+																																				<fluro-icon icon="plus" right />
 																																</v-btn>
 																												</template>
 																								</template>
@@ -1502,12 +1505,12 @@ export default {
 																var self = this;
 
 																if (self.field.type == 'void') {
-																				//console.log('Void get nothing')
+																				// console.log('Void get nothing')
 																				return false;
 																}
 
 																if (!self.field.key || !self.field.key.length) {
-																				// //console.log('Field not ready yet')
+																				//	console.log('Field not ready yet')
 																				return;
 																}
 
@@ -1527,7 +1530,7 @@ export default {
 
 																var self = this;
 
-																// console.log('SET VALUE EMIT PLEASE', self.field.title)
+
 
 																if (self.field.type == 'void') {
 																				// //console.log('Void set nothing')
@@ -1542,14 +1545,23 @@ export default {
 																value = self.cleanInput(value);
 																// console.log('SET clean going out', self.field.title, value);
 
+																// console.log('SET VALUE EMIT PLEASE', value)
 																//////////////////////////////////
 																//If there is a change
 																if (self.model[self.field.key] != value) {
 
 																				self.$set(self.model, self.field.key, value);
-																				// console.log('Set a new value on the field model', self.fieldModel, value, self.model[self.field.key])
 																				self.$emit('input', self.model);
+																				// console.log('Emit', value, self.model[self.field.key])
 																				//self.$forceUpdate();
+																} else {
+
+																				// if(self.field.type == 'boolean') {
+																				// 	self.$set(self.model, self.field.key, value);
+																				// 				self.$emit('input', self.model);
+																				// 				console.log('change', self.field.key, self.model[self.field.key], value);
+																				// }
+
 																}
 																//  else {
 																// 	//console.log('Value is already same thing!')
@@ -2148,6 +2160,17 @@ export default {
 								}
 				},
 				methods: {
+								// checkboxInput(bool) {
+
+
+								// 				var self = this;
+
+								// 				// if (setTouched) {
+								// 				self.touch()
+								// 				self.fieldModel = bool;
+
+								// 				// }
+								// },
 								toggleCollapsed(object) {
 
 												if (!object._collapsed) {
@@ -2335,7 +2358,11 @@ export default {
 																case 'decimal':
 																				if (value != undefined && value != null) {
 																								if (String(value).length) {
-																												value = Number(value); //parseInt(parseFloat(value).toFixed(2)) / 100;
+																												if (self.params.disableRounding) {
+																																value = Number(parseFloat(value));
+																												} else {
+																																value = Number(parseFloat(value).toFixed(2));
+																												}
 																								} else {
 																												value = null;
 																								}
@@ -2553,7 +2580,12 @@ export default {
 																case 'decimal':
 																				if (value != undefined && value != null) {
 																								if (String(value).length) {
-																												value = Number(parseFloat(value).toFixed(2));
+																												if (self.params.disableRounding) {
+																																value = Number(parseFloat(value));
+																												} else {
+																																value = Number(parseFloat(value).toFixed(2));
+																												}
+
 																												// value = Number(value); //parseInt(parseFloat(value).toFixed(2)) / 100;
 																								} else {
 																												value = 0;
@@ -3381,7 +3413,7 @@ export default {
 																self.touch()
 												}
 
-												// //console.log('ELEMENT VALUE CHANGED', self.field.title, self.field.key)
+												// console.log('ELEMENT VALUE CHANGED', self.field.title, self.field.key, self.fieldModel)
 								},
 
 								valueChange(event, setTouched) {
@@ -3451,7 +3483,9 @@ export default {
 
 
 
-
+								if (!self.model) {
+												console.log('NO MODEL BIG ISSUE', self.model, self.field.key);
+								}
 								var cleaned = self.fixCorruptedData(self.model[self.field.key]);
 								if (typeof cleaned != typeof self.model[self.field.key] || cleaned != self.model[self.field.key]) {
 												self.$set(self.model, self.field.key, cleaned);
@@ -4003,7 +4037,10 @@ function checkValidInput(self, input) {
 
 																if (_.isArray(input)) {
 																				var someInvalidEmails = _.some(input, function(str) {
-																								return !email(str);
+
+																								//Trim the string
+																								str = str ? String(str).toLowerCase().trim() : '';
+																								return !email(str) && str.length;
 																				});
 
 																				if (someInvalidEmails) {
@@ -4011,31 +4048,82 @@ function checkValidInput(self, input) {
 																								errors.push('All emails must be valid', input);
 																				}
 																} else {
-																				if (!email(input) && String(input).length) {
+
+																				//Ensure that we lowercase and trim the string before we test it
+																				input = input ? String(input).toLowerCase().trim() : '';
+																				if (!email(input) && input.length) {
 																								errors.push('Must be a valid email', input);
 																				}
+
 																}
 												} else {
-																if (!email(input) && String(input).length) {
-																				errors.push('Must be a valid email', input);
+
+																//Ensure that we lowercase and trim the string before we test it
+																input = input ? String(input).toLowerCase().trim() : '';
+																if (!email(input) && input.length) {
+																				errors.push(`'${input}' is not a valid email address`, input);
 																}
 												}
 
 												break;
 								case 'url':
 
-												// var relativeURL = _.startsWith(input, '#') || _.startsWith(input, '/');
-												var specialURL = _.includes(input, '://') ||
-																_.startsWith(input, '/') ||
-																_.startsWith(input, '#') ||
-																_.startsWith(input, 'mailto:') ||
-																_.startsWith(input, 'tel:') ||
-																_.startsWith(input, 'sms:');
+
+												//////////////////////////////////////////////
+
+												function checkIsURL(string) {
+
+																if (!string || !string.length) {
+																				return;
+																}
+
+																string = string ? String(string).toLowerCase().trim() : '';
+
+																// var relativeURL = _.startsWith(input, '#') || _.startsWith(input, '/');
+																var specialURL = _.includes(string, '://') ||
+																				_.startsWith(input, '/') ||
+																				_.startsWith(input, '#') ||
+																				_.startsWith(input, 'mailto:') ||
+																				_.startsWith(input, 'tel:') ||
+																				_.startsWith(input, 'sms:');
 
 
-												if (!specialURL && !url(input)) {
-																errors.push(`Must be a valid url eg. (https://...)`);
+																if (!specialURL && !url(string)) {
+																				return false;
+																}
+
+																return true;
 												}
+
+												//////////////////////////////////////////////
+
+												if (self.multipleInput) {
+
+																//If an array was provided
+																if (_.isArray(input)) {
+
+																				//Check to see if any of the urls are invalid
+																				var someInvalidURLs = _.some(input, function(str) {
+																								return !checkIsURL(str) && str.length;
+																				});
+
+																				if (!someInvalidURLs) {
+																								errors.push('All URLs must be valid eg. (https://...)', input);
+																				}
+																} else {
+																				if (!checkIsURL(input) && input.length) {
+																								errors.push('All URLs must be valid eg. (https://...)', input);
+																				}
+																}
+
+												} else {
+																if (!checkIsURL(input) && input.length) {
+																				errors.push('Must be a valid URL eg. (https://...)', input);
+																}
+												}
+
+
+
 
 												break;
 								case 'boolean':

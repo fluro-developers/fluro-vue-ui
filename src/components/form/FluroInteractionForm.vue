@@ -367,7 +367,12 @@ export default {
                 return;
             }
 
-            console.log('ADMIN?', element.ownerDocument.defaultView.adminPanelMode);
+            if (!element.ownerDocument.defaultView) {
+                console.log('NO DEFAULT VIEW');
+                return;
+            }
+
+            // console.log('ADMIN?', element.ownerDocument.defaultView.adminPanelMode);
 
             return !element.ownerDocument.defaultView.adminPanelMode;
         },

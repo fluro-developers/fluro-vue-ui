@@ -6,7 +6,7 @@
             <!-- :value="formattedDatetime" -->
         <v-input slot="activator" class="no-flex" :label="label" :hint="hint" :persistent-hint="true"  :disabled="disabled" :loading="loading" :error-messages="errorMessages" :error-count="errorCount" :error="error" :hide-details="hideDetails">
             
-                <v-btn block large color="#e0e0e0" class="mx-0">
+                <v-btn block :large="large" color="#e0e0e0" class="mx-0">
                     <fluro-icon left icon="calendar-alt"/>{{readable}}
                 </v-btn>
             
@@ -124,6 +124,10 @@ export default {
         clearText: {
             type: String,
             default: 'CLEAR'
+        },
+        large:{
+            type:Boolean,
+            default:true,
         },
         okText: {
             type: String,
