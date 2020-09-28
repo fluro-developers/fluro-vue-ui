@@ -38,12 +38,48 @@
                         <!-- <pre>{{options}}</pre> -->
                         <!-- <pre>{{errorMessages}}</pre> -->
                         <!-- <pre>{{showPaymentForm}}</pre> -->
-                       
                         <!-- <pre>GUESSSS {{context}} {{ options }}</pre> -->
                         <fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" @errorMessages="validate" @input="modelChanged" ref="form" :options="options" v-model="dataModel" :fields="fields" />
                         <div class="payment" v-if="showPaymentForm">
-                            <v-container>
+                            <v-container v-if="requirePayment">
                                 <h2>Payment Summary</h2>
+                                <v-layout align-center>
+                                    <v-flex class="modifier-title">
+                                        <strong>Amount</strong>
+                                    </v-flex>
+                                    <v-flex shrink v-if="baseAmount">
+                                        <strong>
+                                            {{ formattedBaseAmount }}
+                                        </strong>
+                                    </v-flex>
+                                </v-layout>
+                                <div class="modifier" v-for="modifier in activeModifiers">
+                                    <v-layout align-center>
+                                        <v-flex class="modifier-title">{{ modifier.title }}</v-flex>
+                                        <v-flex shrink>{{ modifier.description }}</v-flex>
+                                        <v-flex shrink>{{ modifier.formattedTotal }}</v-flex>
+                                    </v-layout>
+                                </div>
+                                <div>
+                                    <v-layout align-center>
+                                        <v-flex>
+                                            <h3>Total</h3>
+                                        </v-flex>
+                                        <v-flex shrink>
+                                            <h3>
+                                                {{ formattedTotal }}
+                                                <span class="muted">
+                                                    {{ currency.toUpperCase() }}
+                                                </span>
+                                            </h3>
+                                        </v-flex>
+                                    </v-layout>
+                                </div>
+                            </v-container>
+                            <v-container v-if="allowPayment">
+                                <h2>Payment</h2>
+                                <fluro-content-form-field @input="modelChanged" :options="options" :field="allowedAmountInput" v-model="dataModel" />
+                                
                                 <v-layout align-center>
                                     <v-flex class="modifier-title">
                                         <strong>Amount</strong>
@@ -303,7 +339,7 @@ export default {
                     .get("realms")
                     .first()
                     .value()
-                    console.log('set backup realm', self.options.backupUploadRealm);
+                console.log('set backup realm', self.options.backupUploadRealm);
             }
         }
         // console.log('INTERACTION FORM VUE', Vue.$store._modulesNamespaceMap);
@@ -396,6 +432,31 @@ export default {
         },
         mobile() {
             return this.$vuetify.breakpoint.xsOnly;
+        },
+        allowedUserAmount() {
+            return parseInt(this.dataModel.userAmount || 0)
+        },
+        allowedMinimumAmount() {
+            return parseInt(this.paymentDetails.minAmount || 0)
+        },
+        allowedMaximumAmount() {
+            return parseInt(this.paymentDetails.maxAmount || 0)
+        },
+        allowedAmountInput() {
+            return {
+                title: "Please enter an amount",
+                key: "userAmount",
+                type: "number",
+                directive: 'currency',
+                minimum: 0,
+                maximum: 1,
+                params: {
+                    currency: this.currency,
+                    minValue: this.allowedMinimumAmount,
+                    maxValue: this.allowedMaximumAmount,
+                },
+
+            };
         },
         receiptInput() {
             return {
@@ -561,7 +622,16 @@ export default {
             return this.$fluro.utils.currencySymbol(self.currency);
         },
         baseAmount() {
-            return this.paymentDetails.amount;
+
+            if (this.requirePayment) {
+                return this.paymentDetails.amount;
+            }
+
+            if (this.allowPayment) {
+                return Math.max(this.allowedMinimumAmount, this.allowedUserAmount);
+            }
+
+            return 0;
         },
         formattedBaseAmount() {
             var self = this;
@@ -1409,7 +1479,7 @@ export default {
             function submitRequest(paymentDetails) {
                 if (paymentDetails) {
 
-                    if(self.debugMode) {
+                    if (self.debugMode) {
                         paymentDetails.sandbox = true;
                     }
 

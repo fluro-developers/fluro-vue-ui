@@ -1,92 +1,73 @@
 <template>
     <div>
         <!-- <currency-input v-model="model"/> -->
-        <v-currency-field 
-        :prefix="prefix"
-        :suffix="suffix"
-        :label="label"
-        :required="required"
-        :autofocus="autofocus"
-        :outline="outline"
-        :success="success"
-        @blur="blur"
-        :error-messages="errorMessages"
-        :persistent-hint="persistentHint"
-        :hint="hint"
-        :placeholder="placeholder"
-        :min="min"
-        :max="max"
-
-        v-model="model"/>
-
-        <!--      -->
+        <v-currency-field :prefix="prefix" :suffix="suffix" :label="label" :required="required" :autofocus="autofocus" :outline="outline" :success="success" @blur="blur" :error-messages="errorMessages" :persistent-hint="persistentHint" :hint="hint" :placeholder="placeholder" :min="minValue" :max="maxValue" v-model="model" />      
     </div>
 </template>
 <script>
-
 import Vue from 'vue';
 
 
- // Vue.component('v-currency-field', VCurrencyField);
-import  {VCurrencyField}  from 'v-currency-field';
+// Vue.component('v-currency-field', VCurrencyField);
+import { VCurrencyField } from 'v-currency-field';
 
 
 export default {
-    methods:{
+    methods: {
         blur(event) {
             this.$emit('blur', event);
         }
     },
-	components:{
-		VCurrencyField,
-	},
+    components: {
+        VCurrencyField,
+    },
     props: {
-        currency:{
-            type:String,
-            default:'USD',
+        currency: {
+            type: String,
+            default: 'USD',
         },
-        hint:{
-            type:String,
+        hint: {
+            type: String,
         },
-        placeholder:{
-            type:String,
+        placeholder: {
+            type: String,
         },
-        persistentHint:{
-            type:Boolean,
+        persistentHint: {
+            type: Boolean,
         },
-        errorMessages:{
-            type:Array,
+        errorMessages: {
+            type: Array,
         },
-        label:{
-            type:String,
+        label: {
+            type: String,
         },
-        required:{
-            type:Boolean,
+        required: {
+            type: Boolean,
         },
-        success:{
-            type:Boolean,
+        success: {
+            type: Boolean,
         },
-        autofocus:{
-            type:Boolean,
+        autofocus: {
+            type: Boolean,
         },
-        outline:{
-            type:Boolean,
+        outline: {
+            type: Boolean,
         },
-        outline:{
-            type:Boolean,
+        outline: {
+            type: Boolean,
         },
-        'hideSuffix':{
-            type:Boolean,
+        'hideSuffix': {
+            type: Boolean,
         },
         'value': {
             type: Number,
-            default() {
+            default () {
                 return 0;
             }
         },
         'min': {
             type: Number,
-            default() {
+            default () {
                 return 0;
             }
         },
@@ -94,25 +75,41 @@ export default {
             type: Number,
         },
     },
-    computed:{
+    computed: {
+        minValue() {
+            var min = parseInt(this.min || 0) / 100;
+
+            if (!min) {
+                return;
+            }
+            return min;
+        },
+        maxValue() {
+            var max = parseInt(this.max || 0) / 100;
+
+            if (!max) {
+                return;
+            }
+            return max;
+        },
         prefix() {
             return this.$fluro.utils.currencySymbol(this.currency);
 
         },
         suffix() {
-            if(this.hideSuffix) {
+            if (this.hideSuffix) {
                 return;
             }
-            
+
             return String(this.currency || '').toUpperCase();
         },
     },
     data() {
-    	return {
-    		model:(this.value / 100),
-    	}
+        return {
+            model: (this.value / 100),
+        }
     },
-    watch:{
+    watch: {
         model(v) {
 
             v = parseFloat(v);
@@ -123,7 +120,7 @@ export default {
         }
     }
 }
+
 </script>
 <style lang="scss">
-	
 </style>

@@ -509,6 +509,8 @@
 												</template>
 												<template v-else-if="renderer == 'currency' && !multipleInput">
 																<fluro-currency-input :currency="params.currency" :hideSuffix="params.hideSuffix" :min="minValue" :max="maxValue" :label="displayLabel" :required="required" v-model="fieldModel" :autofocus="shouldAutofocus" :outline="showOutline" :success="success" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="placeholder" />
+
+																<!-- <pre>{{fieldModel}}</pre> -->
 												</template>
 												<template v-else-if="renderer == 'app-menu-select'">
 																<fluro-app-menu-select :field="field" v-model="fieldModel" :options="options" :label="displayLabel" />
@@ -3915,7 +3917,7 @@ function checkNumericInputError(input, minimumValue, maximumValue, numberType, c
 								minimumValue = parseFunction(minimumValue);
 								if (input < minimumValue) {
 												//console.log('MINIMUM', minimumValue, input, input < minimumValue)
-												return `Must be at least ${currency && self ? self.$fluro.utils.formatCurrency(maximumValue, currency) : minimumValue}`
+												return `Must be at least ${currency && self ? self.$fluro.utils.formatCurrency(minimumValue, currency) : minimumValue}`
 								}
 				}
 

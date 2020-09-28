@@ -1472,7 +1472,10 @@ export default {
 																minimum: 0,
 																maximum: 1,
 																type: 'number',
+																directive:'currency',
+
 																params: {
+																	currency:self.model.paymentDetails.currency,
 																				persistentDescription: true,
 																},
 																// expressions:{
@@ -1481,7 +1484,7 @@ export default {
 																//         return value * 100;
 																//     }
 																// },
-																suffix: `(${self.$fluro.utils.formatCurrency(paymentDetails.minAmount, paymentDetails.currency)})`,
+																// suffix: `(${self.$fluro.utils.formatCurrency(paymentDetails.minAmount, paymentDetails.currency)})`,
 																description: `The minimum amount required for payment to create this type of content`,
 												})
 
@@ -1490,7 +1493,10 @@ export default {
 																minimum: 0,
 																maximum: 1,
 																type: 'number',
+																directive:'currency',
+
 																params: {
+																	currency:self.model.paymentDetails.currency,
 																				persistentDescription: true,
 																},
 																// expressions:{
@@ -1499,7 +1505,7 @@ export default {
 																//         return value * 100;
 																//     }
 																// },
-																suffix: `(${self.$fluro.utils.formatCurrency(paymentDetails.maxAmount, paymentDetails.currency)})`,
+																// suffix: `(${self.$fluro.utils.formatCurrency(paymentDetails.maxAmount, paymentDetails.currency)})`,
 																description: `The maximum amount that can be charged when creating this type of content`,
 												})
 

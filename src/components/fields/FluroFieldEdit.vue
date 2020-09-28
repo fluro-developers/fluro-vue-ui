@@ -206,12 +206,12 @@
                         <fluro-content-form-field :field="fields.directive" v-model="model" />
                         <fluro-content-form-field v-if="model.directive == 'app-size-select'" :field="fields.sizeAxis" v-model="model.params" />
                         <template v-if="isAssetType">
-                          <fluro-content-form-field :field="fields.realm" v-model="model.params" />
-                          <!-- <pre>{{model.title}} {{model.params}}</pre> -->
+                            <fluro-content-form-field :field="fields.realm" v-model="model.params" />
+                            <!-- <pre>{{model.title}} {{model.params}}</pre> -->
                             <!-- <fluro-content-form v-model="model.params" :fields="uploadFields"> -->
-                                <!-- <template v-slot:form="{formFields, fieldHash, model, update, options}"> -->
-                                    <!-- <fluro-content-form-field :field="fieldHash.enabled" v-model="model" /> -->
-                                <!-- </template> -->
+                            <!-- <template v-slot:form="{formFields, fieldHash, model, update, options}"> -->
+                            <!-- <fluro-content-form-field :field="fieldHash.enabled" v-model="model" /> -->
+                            <!-- </template> -->
                             <!-- </fluro-content-form> -->
                         </template>
                         <template v-if="model.directive == 'app-field-key-select' || model.directive == 'app-field-select'">
@@ -1036,10 +1036,10 @@ export default {
         },
         advancedOptions() {
 
-            if(this.showAdvancedOptions) {
+            if (this.showAdvancedOptions) {
                 return true;
             }
-            
+
             if (this.model.options && this.model.options.length) {
                 return true;
             }
@@ -1066,7 +1066,7 @@ export default {
                     break;
             }
         },
-       
+
         ticketingFields() {
             var self = this;
 
@@ -1268,6 +1268,22 @@ export default {
                 type: "string"
             });
 
+
+
+            addField("maximum", {
+                title: "Max Answers",
+                description: "Maximum amount of answers that can be provided for this field (usually 1 answer is necessary)",
+                minimum: 0,
+                maximum: 1,
+                type: "integer",
+                params: {
+                    minValue: 0
+                }
+            });
+
+
+
+
             addField("minimum", {
                 title: "Minimum Answers",
                 description: "Minimum amount of answers that can be provided for this field (Setting this to a number higher than 0 will make this field required)",
@@ -1291,7 +1307,7 @@ export default {
 
             addField("minValue", {
                 title: "Minimum Amount",
-                description: "Minimum amount that can be input",
+                description: self.model.directive == 'currency' ? 'Minimum amount in cents that can be input' : "Minimum amount that can be input",
                 minimum: 0,
                 maximum: 1,
                 type: self.model.type,
@@ -1302,7 +1318,7 @@ export default {
             });
             addField("maxValue", {
                 title: "Maximum Amount",
-                description: "Maximum amount that can be input",
+                description: self.model.directive == 'currency' ? 'Maximum amount in cents that can be input' : "Maximum amount that can be input",
                 minimum: 0,
                 maximum: 1,
                 type: self.model.type,
@@ -1311,6 +1327,11 @@ export default {
                     currency: self.model.params.currency
                 }
             });
+
+
+
+
+
 
             addField("minDate", {
                 title: "Earliest Date",
