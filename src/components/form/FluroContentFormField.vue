@@ -1111,7 +1111,12 @@ export default {
 												return _.get(this, 'field.params.minValue');
 								},
 								maxValue() {
-												return _.get(this, 'field.params.maxValue');
+												var integer = _.get(this, 'field.params.maxValue');
+												if(!integer || !parseFloat(integer) || isNaN(integer)) {
+													return;
+												} 
+
+												return integer;
 								},
 								minDate() {
 												return _.get(this, 'field.params.minDate');

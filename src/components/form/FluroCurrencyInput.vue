@@ -1,11 +1,11 @@
 <template>
     <div>
         <!-- <currency-input v-model="model"/> -->
-        <v-currency-field :prefix="prefix" :suffix="suffix" :label="label" :required="required" :autofocus="autofocus" :outline="outline" :success="success" @blur="blur" :error-messages="errorMessages" :persistent-hint="persistentHint" :hint="hint" :placeholder="placeholder" :min="minValue" :max="maxValue" v-model="model" />      
-    <div style="display: none;">
-    <pre>{{min}} - {{max}}</pre>
-    <pre>{{minValue}} - {{maxValue}}</pre>
-   </div>
+        <v-currency-field :prefix="prefix" :suffix="suffix" :label="label" :required="required" :autofocus="autofocus" :outline="outline" :success="success" @blur="blur" :error-messages="errorMessages" :persistent-hint="persistentHint" :hint="hint" :placeholder="placeholder" :min="minValue" :max="maxValue" v-model="model" />
+        <div style="display: none;">
+            <pre>{{min}} - {{max}}</pre>
+            <pre>{{minValue}} - {{maxValue}}</pre>
+        </div>
     </div>
 </template>
 <script>
@@ -91,7 +91,7 @@ export default {
         maxValue() {
             var max = parseInt(this.max || 0) / 100;
 
-            if (!max) {
+            if (!max || max == 0) {
                 return;
             }
             return max;

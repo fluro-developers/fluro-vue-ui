@@ -80,7 +80,7 @@
                                 <h2>Payment</h2>
                                 <fluro-content-form-field @input="modelChanged" :options="options" :field="allowedAmountInput" v-model="dataModel" />
                                 
-                                <v-layout align-center>
+                                <!-- <v-layout align-center>
                                     <v-flex class="modifier-title">
                                         <strong>Amount</strong>
                                     </v-flex>
@@ -89,7 +89,7 @@
                                             {{ formattedBaseAmount }}
                                         </strong>
                                     </v-flex>
-                                </v-layout>
+                                </v-layout> -->
                                 <div class="modifier" v-for="modifier in activeModifiers">
                                     <v-layout align-center>
                                         <v-flex class="modifier-title">{{ modifier.title }}</v-flex>
