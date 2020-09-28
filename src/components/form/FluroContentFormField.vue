@@ -1555,7 +1555,7 @@ export default {
 																//If there is a change
 																if (self.model[self.field.key] != value) {
 
-																				console.log('SET VALUE TO', value)
+																				// console.log('SET VALUE TO', value)
 																				self.$set(self.model, self.field.key, value);
 																				self.$emit('input', self.model);
 																				// console.log('Emit', value, self.model[self.field.key])

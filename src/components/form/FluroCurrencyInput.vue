@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- <currency-input v-model="model"/> -->
-        <v-currency-field :prefix="prefix" :suffix="suffix" :label="label" :required="required" :autofocus="autofocus" :outline="outline" :success="success" @blur="blur" :error-messages="errorMessages" :persistent-hint="persistentHint" :hint="hint" :placeholder="placeholder" :min="minValue" :max="maxValue" v-model="model" />
+        <v-currency-field :prefix="prefix" :suffix="suffix" :label="label" :required="required" :autofocus="autofocus" :outline="outline" :success="success" @blur="blur" :error-messages="errorMessages" :persistent-hint="persistentHint" :hint="hint" :placeholder="placeholder" :min="minValue" :max="maxValue" v-model="currencyModel" />
         <div style="display: none;">
             <pre>{{min}} - {{max}}</pre>
             <pre>{{minValue}} - {{maxValue}}</pre>
@@ -20,7 +20,7 @@ export default {
     methods: {
         blur(event) {
 
-         console.log('BLURR', this.model, this.value);
+            console.log('BLURR', this.model, this.value);
             this.$emit('blur', event);
         }
     },
@@ -82,6 +82,16 @@ export default {
         },
     },
     computed: {
+        currencyModel: {
+            get() {
+                return this.model;
+            },
+            set(v) {
+
+                console.log('Setting currency model to', v);
+                this.model = v;
+            },
+        },
         minValue() {
             var min = parseInt(this.min || 0) / 100;
 
