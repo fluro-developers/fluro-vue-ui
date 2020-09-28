@@ -483,7 +483,7 @@ export default {
 
             var modifiers = self.paymentDetails.modifiers;
             if (!modifiers || !modifiers.length) {
-                console.log("No modifiers");
+                // console.log("No modifiers");
                 return modifications;
             }
 
