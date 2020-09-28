@@ -342,6 +342,7 @@ export default {
                 console.log('set backup realm', self.options.backupUploadRealm);
             }
         }
+
         // console.log('INTERACTION FORM VUE', Vue.$store._modulesNamespaceMap);
 
         self.reset();
@@ -450,6 +451,7 @@ export default {
                 directive: 'currency',
                 minimum: 0,
                 maximum: 1,
+                defaultValues:['0'],
                 params: {
                     currency: this.currency,
                     minValue: this.allowedMinimumAmount,

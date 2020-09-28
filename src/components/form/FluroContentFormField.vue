@@ -509,8 +509,6 @@
 												</template>
 												<template v-else-if="renderer == 'currency' && !multipleInput">
 																<fluro-currency-input :currency="params.currency" :hideSuffix="params.hideSuffix" :min="minValue" :max="maxValue" :label="displayLabel" :required="required" v-model="fieldModel" :autofocus="shouldAutofocus" :outline="showOutline" :success="success" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="placeholder" />
-
-																
 												</template>
 												<template v-else-if="renderer == 'app-menu-select'">
 																<fluro-app-menu-select :field="field" v-model="fieldModel" :options="options" :label="displayLabel" />
@@ -1112,9 +1110,9 @@ export default {
 								},
 								maxValue() {
 												var integer = _.get(this, 'field.params.maxValue');
-												if(!integer || !parseFloat(integer) || isNaN(integer)) {
-													return;
-												} 
+												if (!integer || !parseFloat(integer) || isNaN(integer)) {
+																return;
+												}
 
 												return integer;
 								},
@@ -1552,11 +1550,12 @@ export default {
 																value = self.cleanInput(value);
 																// console.log('SET clean going out', self.field.title, value);
 
-																// console.log('SET VALUE EMIT PLEASE', value)
+
 																//////////////////////////////////
 																//If there is a change
 																if (self.model[self.field.key] != value) {
 
+																				console.log('SET VALUE TO', value)
 																				self.$set(self.model, self.field.key, value);
 																				self.$emit('input', self.model);
 																				// console.log('Emit', value, self.model[self.field.key])
