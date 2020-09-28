@@ -1526,9 +1526,9 @@ export default {
 																//Get the value for this field
 																var value = self.model[self.field.key];
 
-																// console.log('GET clean going in', self.field.title, value);
+																console.log('GET clean going in', self.field.title, value);
 																var cleaned = self.cleanOutput(value);
-																// console.log('GET clean going out', self.field.title, cleaned);
+																console.log('GET clean going out', self.field.title, cleaned);
 
 																return cleaned;
 
@@ -1548,9 +1548,9 @@ export default {
 
 																//Clean the input
 																// console.log('Before clean', value)
-																// console.log('SET clean going in', self.field.title, value);
+																console.log('SET clean going in', self.field.title, value);
 																value = self.cleanInput(value);
-																// console.log('SET clean going out', self.field.title, value);
+																console.log('SET clean going out', self.field.title, value);
 
 																// console.log('SET VALUE EMIT PLEASE', value)
 																//////////////////////////////////
