@@ -19,6 +19,8 @@ import { VCurrencyField } from 'v-currency-field';
 export default {
     methods: {
         blur(event) {
+
+         console.log('BLURR', this.model, this.value);
             this.$emit('blur', event);
         }
     },
