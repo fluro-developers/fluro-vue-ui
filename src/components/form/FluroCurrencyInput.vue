@@ -1,7 +1,12 @@
 <template>
     <div>
         <!-- <currency-input v-model="model"/> -->
+      
+        <!-- <input v-currency v-model="currencyModel"/> -->
+        <!-- <v-text-field :type="directive == 'password' ? 'password' : 'text'" :mask="params.mask" :autofocus="shouldAutofocus" :outline="showOutline" :success="success" browser-autocomplete="off" :required="required" :label="displayLabel" @input="elementValueChanged" v-model="fieldModel" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="placeholder" /> -->
+      <client-only>
         <v-currency-field :prefix="prefix" :suffix="suffix" :label="label" :required="required" :autofocus="autofocus" :outline="outline" :success="success" @blur="blur" :error-messages="errorMessages" :persistent-hint="persistentHint" :hint="hint" :placeholder="placeholder" @input="changed" :value="currencyModel" :min="minValue" :max="maxValue"  />
+        </client-only>
         <!-- v-model="currencyModel" -->
         <div style="display: none;">
             <pre>Currency Model:{{currencyModel}}</pre>
@@ -15,20 +20,26 @@
 import Vue from 'vue';
 
 
+// import { CurrencyDirective } from 'vue-currency-input'
+
+// import VueCurrencyInput from 'vue-currency-input'
 // Vue.component('v-currency-field', VCurrencyField);
 import { VCurrencyField } from 'v-currency-field';
 
 
 export default {
+    // directives: {
+    //     currency: CurrencyDirective
+    // },
     methods: {
-        changed(event) {
+        // changed(event) {
 
-            var parsed = parseFloat(event)
-            // var parsedInt = parseInt(event);
+        //     var parsed = parseFloat(event)
+        //     // var parsedInt = parseInt(event);
 
-            this.currencyModel = parsed;
-            // console.log('INPUT FIELD CHANGED', event, parsed, parsedInt);
-        },
+        //     this.currencyModel = parsed;
+        //     // console.log('INPUT FIELD CHANGED', event, parsed, parsedInt);
+        // },
         blur(event) {
 
             //console.log('BLURR', this.model, this.value);
@@ -145,7 +156,7 @@ export default {
     },
     data() {
         return {
-            model:this.value,
+            model: this.value,
         }
     },
     watch: {
