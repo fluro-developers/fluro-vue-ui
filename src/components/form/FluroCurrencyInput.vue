@@ -5,7 +5,7 @@
         <!-- <input v-currency v-model="currencyModel"/> -->
         <!-- <v-text-field :type="directive == 'password' ? 'password' : 'text'" :mask="params.mask" :autofocus="shouldAutofocus" :outline="showOutline" :success="success" browser-autocomplete="off" :required="required" :label="displayLabel" @input="elementValueChanged" v-model="fieldModel" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="placeholder" /> -->
       <client-only>
-        <v-currency-field :prefix="prefix" :suffix="suffix" :label="label" :required="required" :autofocus="autofocus" :outline="outline" :success="success" @blur="blur" :error-messages="errorMessages" :persistent-hint="persistentHint" :hint="hint" :placeholder="placeholder" @input="changed" :value="currencyModel" :min="minValue" :max="maxValue"  />
+        <v-currency-field :prefix="prefix" :suffix="suffix" :label="label" :required="required" :autofocus="autofocus" :outline="outline" :success="success" @blur="blur" :error-messages="errorMessages" :persistent-hint="persistentHint" :hint="hint" :placeholder="placeholder" v-model="currencyModel" :min="minValue" :max="maxValue"  />
         </client-only>
         <!-- v-model="currencyModel" -->
         <div style="display: none;">
