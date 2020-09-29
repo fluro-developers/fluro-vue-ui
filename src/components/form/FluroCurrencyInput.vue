@@ -24,8 +24,10 @@ export default {
         changed(event) {
 
             var parsed = parseFloat(event)
-            var parsedInt = parseInt(event);
-            console.log('INPUT FIELD CHANGED', event, parsed, parsedInt);
+            // var parsedInt = parseInt(event);
+
+            this.currencyModel = parsed;
+            // console.log('INPUT FIELD CHANGED', event, parsed, parsedInt);
         },
         blur(event) {
 
