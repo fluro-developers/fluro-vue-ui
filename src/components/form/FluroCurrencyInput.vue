@@ -1,7 +1,8 @@
 <template>
     <div>
         <!-- <currency-input v-model="model"/> -->
-        <v-currency-field :prefix="prefix" :suffix="suffix" :label="label" :required="required" :autofocus="autofocus" :outline="outline" :success="success" @blur="blur" :error-messages="errorMessages" :persistent-hint="persistentHint" :hint="hint" :placeholder="placeholder" @change="changed" :min="minValue" :max="maxValue" v-model="currencyModel" />
+        <v-currency-field :prefix="prefix" :suffix="suffix" :label="label" :required="required" :autofocus="autofocus" :outline="outline" :success="success" @blur="blur" :error-messages="errorMessages" :persistent-hint="persistentHint" :hint="hint" :placeholder="placeholder" @input="changed" :value="currencyModel" :min="minValue" :max="maxValue"  />
+        <!-- v-model="currencyModel" -->
         <div style="display: none;">
             <pre>Currency Model:{{currencyModel}}</pre>
             <pre>Actual Model: {{model}}</pre>
@@ -21,7 +22,10 @@ import { VCurrencyField } from 'v-currency-field';
 export default {
     methods: {
         changed(event) {
-            console.log('CHANGED', event);
+
+            var parsed = parseFloat(event)
+            var parsedInt = parseInt(event);
+            console.log('INPUT FIELD CHANGED', event, parsed, parsedInt);
         },
         blur(event) {
 
