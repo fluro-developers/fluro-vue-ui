@@ -1,6 +1,6 @@
 {
 				"name": "fluro-vue-ui",
-				"version": "2.2.52",
+				"version": "2.2.53",
 				"description": "A package that contains helpful Fluro UI components and mixins",
 				"main": "src/index.js",
 				"scripts": {
@@ -47,7 +47,7 @@
 								"expression-eval": "^2.0.0",
 								"fluro": "^2.1.31",
 								"rollup-plugin-alias": "^2.2.0",
-								"v-currency-field": "^3.0.7",
+								"v-currency-field": "3.0.7",
 								"vue-range-slider": "^0.6.0",
 								"vue-vimeo-player": "^0.1.0",
 								"vue-youtube": "^1.4.0",
