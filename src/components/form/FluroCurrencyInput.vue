@@ -3,6 +3,8 @@
         <!-- <currency-input v-model="model"/> -->
         <v-currency-field :prefix="prefix" :suffix="suffix" :label="label" :required="required" :autofocus="autofocus" :outline="outline" :success="success" @blur="blur" :error-messages="errorMessages" :persistent-hint="persistentHint" :hint="hint" :placeholder="placeholder" :min="minValue" :max="maxValue" v-model="currencyModel" />
         <div style="display: none;">
+            <pre>Currency Model:{{currencyModel}}</pre>
+            <pre>Actual Model: {{model}}</pre>
             <pre>{{min}} - {{max}}</pre>
             <pre>{{minValue}} - {{maxValue}}</pre>
         </div>
@@ -20,7 +22,7 @@ export default {
     methods: {
         blur(event) {
 
-            console.log('BLURR', this.model, this.value);
+            //console.log('BLURR', this.model, this.value);
             this.$emit('blur', event);
         }
     },
@@ -84,9 +86,21 @@ export default {
     computed: {
         currencyModel: {
             get() {
-                return this.model;
+
+                var v = this.model;
+                v = parseFloat(v);
+                v = Math.max(v, 0);
+                v = v / 100;
+
+                console.log('GETTING currency model to', v);
+                return v;
             },
             set(v) {
+
+                v = parseFloat(v);
+                v = Math.max(v, 0);
+                v = parseInt(v * 100);
+
 
                 console.log('Setting currency model to', v);
                 this.model = v;
@@ -122,15 +136,15 @@ export default {
     },
     data() {
         return {
-            model: (this.value / 100),
+            model:this.value,
         }
     },
     watch: {
         model(v) {
 
-            v = parseFloat(v);
-            v = Math.max(v, 0);
-            v = parseInt(v * 100);
+            // v = parseFloat(v);
+            // v = Math.max(v, 0);
+            // v = parseInt(v * 100);
             console.log('Input changed', v)
             this.$emit('input', v);
         }
