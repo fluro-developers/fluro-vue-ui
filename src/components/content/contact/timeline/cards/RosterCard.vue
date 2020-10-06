@@ -1,5 +1,5 @@
 <template>
-  <div class="timeline-entry border-top" @click="$fluro.global.edit(item, true)">
+  <div class="timeline-entry border-top" @click="$fluro.global.edit(event, true)">
     <fluro-realm-bar :realm="item.realms" />
     <v-layout>
       <v-flex shrink>
@@ -12,7 +12,8 @@
       <v-flex>
         <v-container pa-2>
           <strong>{{title}}</strong>
-          <div class="summary" @click.prevent.stop="$fluro.global.edit(event, true)">
+           <!-- @click.prevent.stop="$fluro.global.edit(event, true)" -->
+          <div class="summary">
             <strong>{{event.title}}</strong>
             - {{datestring}}
           </div>

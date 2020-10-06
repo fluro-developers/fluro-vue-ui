@@ -36,6 +36,7 @@
                                 <tabset>
                                     <tab heading="Filter Criteria" index="criteria" v-if="model.filterType">
                                         <fluro-panel-body>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.filterSearch" v-model="model" />
                                             <!-- <fluro-panel-title>
                                                 
                                             </fluro-panel-title> -->
@@ -75,6 +76,7 @@
                                         <tabset>
                                             <tab heading="Explorer">
                                                 <fluro-panel-body>
+
                                                     <json-view :highlightMouseoverNode="true" :deep="3" :data="sample" />
                                                 </fluro-panel-body>
                                             </tab>
@@ -189,7 +191,7 @@ export default {
         editResultSet(item) {
 
 
-         // console.log('EDIT RESULT SET', item);
+            // console.log('EDIT RESULT SET', item);
             item._type = 'resultset';
             this.$fluro.global
                 .edit(item, true)
@@ -400,7 +402,16 @@ export default {
 
             // console.log('TYPE OPTIONS', self.typeOptions);
 
-            addField("filterType", {
+            addField("filterSearch", {
+                title: "Matches Keywords",
+                minimum: 0,
+                maximum: 1,
+                type: "string",
+                description: "Search keywords that items must match to be included in results",
+            });
+
+
+             addField("filterType", {
                 title: "Content type to retrieve",
                 minimum: 0,
                 maximum: 1,

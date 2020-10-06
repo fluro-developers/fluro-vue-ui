@@ -1,5 +1,6 @@
 <template>
 	<div class="fluro-table-wrapper">
+
 		<!-- <pre>{{selectionController.selectionMaximum}}</pre> -->
 		<!-- <pre>{{fluro}}</pre> -->
 		<!-- <pre>{{dataType}}</pre> -->
@@ -519,6 +520,9 @@ export default {
 	},
 
 	computed: {
+		joins() {
+			return _.map(this.extraColumns, 'key');
+		},	
 		availableGroupingKeys() {
 
 			var currentFilterColumns = _.chain(this.activeFilterRows)
@@ -716,7 +720,7 @@ export default {
 		},
 
 		reloadRequired() {
-			return `${this.cacheKey}-${this.dataType}-${this.filterCheckString} ${this.dateWatchString} ${this.sort.sortKey} ${this.sort.sortDirection} ${this.sort.sortType} ${this.groupingColumn ? this.groupingColumn.key : ''}  ${this.debouncedSearch}`;
+			return `${this.cacheKey}-${this.dataType}-${this.filterCheckString} ${this.dateWatchString} ${this.joins} ${this.sort.sortKey} ${this.sort.sortDirection} ${this.sort.sortType} ${this.groupingColumn ? this.groupingColumn.key : ''}  ${this.debouncedSearch}`;
 		},
 		selectionEnabled() {
 			return (!(this.enableSelection === false) && this.selectionController) ? true : false;
@@ -960,6 +964,7 @@ export default {
 	},
 	watch: {
 		columns(columns) {
+			console.log('COLUMNS', columns);
 			this.structureColumns = _.compact(columns)
 		},
 		extraColumns() {

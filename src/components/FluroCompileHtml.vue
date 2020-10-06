@@ -47,8 +47,38 @@ export default {
                 return;
             }
 
+
+            // //console.log('COMPILE THE FUNCTION BEFORE', self.javascript.length)
+            //     var component = Function('_', script)(_);
+            //     component.props = {
+            //         scroll: {
+            //             type: Object,
+            //             default () {
+            //                 return self.scroll;
+            //             },
+            //         },
+            //         data: {
+            //             type: Object,
+            //             default () {
+            //                 return {};
+            //             }
+            //         }
+            //     }
+
+
+
+
+
+            var components;
+            if(self.$parent && self.$parent.$options) {
+                components = self.$parent.$options.components;
+            }
+
+
+
             let DynamicComponent = Vue.extend({
                 template: `<div>${self.template}</div>`,
+                components,
                 data() {
                     return self.context || {};
                 },

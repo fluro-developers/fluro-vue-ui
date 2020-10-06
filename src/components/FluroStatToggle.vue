@@ -9,7 +9,7 @@
     </span>
 </template>
 <script>
-import _ from 'lodash';
+// import _ from 'lodash';
 
 
 
@@ -91,10 +91,14 @@ export default {
     },
     computed: {
         pastTense() {
-            if (_.endsWith(this.stat, 'e')) {
-                return `${this.stat}d`;
+
+            var statString = this.stat;
+            var lastCharacter = statString[statString.length];
+
+            if (lastCharacter == 'e') {
+                return `${statString}d`;
             } else {
-                return `${this.stat}ed`;
+                return `${statString}ed`;
             }
         },
         readable() {

@@ -389,6 +389,7 @@ export default {
             self.state = "ready";
 
             self.cacheClearRequired = true;
+            // console.log('CLEAR CACHE ON SAVE?', self.disableCacheClearOnSave)
             if (!self.disableCacheClearOnSave) {
                 self.$fluro.resetCache();
             }
@@ -565,10 +566,7 @@ export default {
                 requestData.definition || self.definitionName || self.typeName;
 
             console.log("SUBMIT UPDATE", self.model, requestData);
-            return self.$fluro.api.put(
-                `/content/${definedType}/${requestData._id}?replaceData=true`,
-                requestData
-            )
+            return self.$fluro.api.put(`/content/${definedType}/${requestData._id}?replaceData=true`, requestData)
         },
         submit(capture) {
             var self = this;

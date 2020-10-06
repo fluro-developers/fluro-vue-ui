@@ -4,6 +4,7 @@
             <fluro-page-preloader contain />
         </template>
         <template v-else>
+
             <!-- :vertical="true" -->
             <tabset :justified="true" :vertical="true">
                 <tab heading="Results">
@@ -13,7 +14,7 @@
                     <flex-column-body style="background: #fafafa;">
                         <v-container fluid>
                             <constrain sm>
-                             <h3 margin>Feed URLs</h3>
+                                <h3 margin>Feed URLs</h3>
                                 <v-btn large block :href="jsonURL" target="_blank">
                                     JSON API Feed
                                     <fluro-icon right icon="brackets-curly" />
@@ -116,7 +117,13 @@ export default {
         item: {
             type: Object,
             required: true
-        }
+        },
+        cacheKey:{
+            type:Number,
+            default() {
+                return 0;
+            }
+        },
     },
     components: {
         FluroTable,
@@ -126,6 +133,9 @@ export default {
     },
     mixins: [FluroContentViewMixin],
     methods: {
+        refresh() {
+            this.cacheBuster++;
+        },
         exportCSV() {
 
             var self = this;
@@ -142,7 +152,7 @@ export default {
             self.$fluro.api.post(`/export/query/${self.item._id}/csv`)
                 .then(function(res) {
 
-                 var downloadURL = self.$fluro.api.generateEndpointURL(res.data.download);
+                    var downloadURL = self.$fluro.api.generateEndpointURL(res.data.download);
                     // var CurrentFluroToken = self.$fluro.auth.getCurrentToken();
 
                     // var downloadURL = `${res.data.download}`
@@ -150,7 +160,7 @@ export default {
                     // if (CurrentFluroToken) {
                     //     window.open(`${downloadURL}?access_token=${CurrentFluroToken}`);
                     // } else {
-                        window.open(`${downloadURL}`);
+                    window.open(`${downloadURL}`);
                     // }
 
                     self.exporting = false;
@@ -169,9 +179,10 @@ export default {
             get() {
                 var self = this;
                 self.loading = true;
+
+                var cb = self.cacheBuster;
                 return new Promise(function(resolve, reject) {
-                    self.$fluro.content
-                        .query(self.item, {})
+                    self.$fluro.content.query(self.item, {cb}, { cache: false })
                         .then(function(result) {
                             resolve(result);
                             self.loading = false;
@@ -187,12 +198,9 @@ export default {
                 self.loadingResultSetData = true;
                 console.log("Self.item", self.item);
                 return new Promise(function(resolve, reject) {
-                    self.$fluro.api
-                        .get(
-                            `/query/${self.$fluro.utils.getStringID(
-                self.item
-              )}/resultsets/metadata`, {}
-                        )
+
+                    
+                    self.$fluro.api.get(`/query/${self.$fluro.utils.getStringID(self.item)}/resultsets/metadata`, {cache:false})
                         .then(function(result) {
                             var returnData = _.map(result.data, function(entry) {
                                 entry.historicaltimeline = self.$fluro.date.timeline(
@@ -208,6 +216,11 @@ export default {
                         .catch(reject);
                 });
             }
+        }
+    },
+    watch:{
+        cacheKey(k) {
+            this.cacheBuster = k;
         }
     },
     computed: {
@@ -234,7 +247,7 @@ export default {
             var params = {
                 noCache: true,
                 template: '57d8cbe4e17968d83736c6df',
-                limit:100,
+                limit: 100,
             };
 
 
@@ -310,7 +323,8 @@ export default {
         return {
             loading: true,
             exporting: false,
-            loadingResultSetData: true
+            loadingResultSetData: true,
+            cacheBuster:this.cacheKey,
         };
     }
 };

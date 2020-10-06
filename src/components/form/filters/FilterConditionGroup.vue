@@ -1451,6 +1451,41 @@ export default {
 																				]
 																});
 
+																injectFields.push({
+																				title: "Fluro Login > Email Address",
+																				key: "_persona.email",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "string",
+																});
+
+
+																injectFields.push({
+																				title: "Fluro Login > Last Login",
+																				key: "_persona.lastLogin",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "date",
+																});
+
+																injectFields.push({
+																				title: "Fluro Login > First Name",
+																				key: "_persona.firstName",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "string",
+																});
+
+																injectFields.push({
+																				title: "Fluro Login > Last Name",
+																				key: "_persona.lastName",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "string",
+																});
+
+
+
 																/////////////////////////////////////////////////////
 
 																injectFields.push({
@@ -2043,6 +2078,17 @@ export default {
 
 																// var definitionName = _.get(self.definition, 'definitionName');
 																switch (self.basicType) {
+																				case 'persona':
+																								// injectFields.push({
+																								// 				title: "Contact",
+																								// 				key: "_contact.definition",
+																								// 				maximum: 1,
+																								// 				minimum: 0,
+																								// 				type: "string",
+																								// 				directive: "select",
+																								// 				options: contactDefinitionOptions
+																								// });
+																								break;
 																				case "process":
 																								//Extra filters for process cards
 
@@ -2062,6 +2108,8 @@ export default {
 																												directive: "select",
 																												options: contactDefinitionOptions
 																								});
+
+																								
 
 																								injectFields.push({
 																												title: "Contact Definition (At time of checkin)",

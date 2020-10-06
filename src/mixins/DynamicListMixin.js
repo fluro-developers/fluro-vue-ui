@@ -150,12 +150,16 @@ export default {
 
 			/////////////////////////////////////////////////////////////
 
-			if (this.select) {
-				filterCriteria.select = this.select;
+			if (self.select) {
+				filterCriteria.select = self.select;
 			}
 
-			if (this.populateAll) {
-				filterCriteria.populateAll = this.populateAll;
+			if (self.joins) {
+				filterCriteria.joins = self.joins;
+			}
+
+			if (self.populateAll) {
+				filterCriteria.populateAll = self.populateAll;
 			}
 			/////////////////////////////////////////////////////////////
 			/////////////////////////////////////////////////////////////
@@ -182,6 +186,9 @@ export default {
 
 			//Include the timezone of the current requesting user
 			filterCriteria.timezone = self.$fluro.date.defaultTimezone;
+
+
+			console.log('FILTER ROWS', self.renderColumns, self.select)
 
 			/////////////////////////////////////////////////////////////
 			/////////////////////////////////////////////////////////////
@@ -231,8 +238,8 @@ export default {
 			return this.includeArchivedByDefault
 		},
 		reloadRequired() {
-			console.log('RELOAD REQUIRED', this.searchInheritable)
-			return `${this.cacheKey}-${this.searchInheritable}-${this.dataType}-${this.filterCheckString} ${this.dateWatchString} ${this.sort.sortKey} ${this.sort.sortDirection} ${this.sort.sortType} ${this.groupingColumn ? this.groupingColumn.key : ''}  ${this.debouncedSearch}`;
+			console.log('RELOAD REQUIRED', this.searchInheritable, this.joins)
+			return `${this.cacheKey}-${this.searchInheritable}-${this.dataType}-${this.joins}-${this.filterCheckString} ${this.dateWatchString} ${this.sort.sortKey} ${this.sort.sortDirection} ${this.sort.sortType} ${this.groupingColumn ? this.groupingColumn.key : ''}  ${this.debouncedSearch}`;
 		},
 		activeFilters() {
 			return FilterService.activeFilters(this.filterConfig);

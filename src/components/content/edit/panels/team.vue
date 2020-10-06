@@ -50,6 +50,17 @@
                     </v-container>
                 </flex-column-body>
             </tab>
+            <tab :heading="`${model.awaitingApproval.length} Interested`">
+                <flex-column-body style="background: #fafafa;">
+                    <v-container class="grid-list-xl">
+                        <constrain sm>
+                            <h3>Awaiting Approval</h3>
+                            <p>Contacts who have registered their interest but have not yet been accepted as a member of this group</p>
+                            <fluro-content-form-field class="py-3" :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.awaitingApproval" v-model="model" />
+                        </constrain>
+                    </v-container>
+                </flex-column-body>
+            </tab>
             <tab heading="Recurring Events" v-if="model._id">
                 <flex-column v-if="loadingTracks">
                     <fluro-page-preloader contain />
@@ -133,30 +144,29 @@
                 </flex-column-body>
             </tab>
             <tab heading="Metrics">
-             <flex-column  style="background: #fafafa;">
-                <tabset  :justified="true">
-                    <tab heading="Group Size">
-                     <flex-column-body>
-                        <v-container fluid class="grid-list-xl">
-                            <constrain md>
-                                <h3 margin>Group Metrics</h3>
-                                <team-metrics-dashboard :id="model" type="team" />
-                            </constrain>
-                        </v-container>
-                       </flex-column-body>
-                    </tab>
-                    <tab heading="Attendance">
-                        <flex-column-body>
-                            <v-container fluid class="grid-list-xl">
-                                <constrain md>
-                                   
-                                    <team-attendance-metrics :group="model" type="team" />
-                                </constrain>
-                            </v-container>
-                        </flex-column-body>
-                    </tab>
-                </tabset>
-               </flex-column>
+                <flex-column style="background: #fafafa;">
+                    <tabset :justified="true">
+                        <tab heading="Group Size">
+                            <flex-column-body>
+                                <v-container fluid class="grid-list-xl">
+                                    <constrain md>
+                                        <h3 margin>Group Metrics</h3>
+                                        <team-metrics-dashboard :id="model" type="team" />
+                                    </constrain>
+                                </v-container>
+                            </flex-column-body>
+                        </tab>
+                        <tab heading="Attendance">
+                            <flex-column-body>
+                                <v-container fluid class="grid-list-xl">
+                                    <constrain md>
+                                        <team-attendance-metrics :group="model" type="team" />
+                                    </constrain>
+                                </v-container>
+                            </flex-column-body>
+                        </tab>
+                    </tabset>
+                </flex-column>
             </tab>
         </tabset>
     </flex-column>
@@ -199,6 +209,10 @@ export default {
 
         if (!self.model.provisionalMembers) {
             self.$set(self.model, "provisionalMembers", []);
+        }
+
+        if (!self.model.awaitingApproval) {
+            self.$set(self.model, "awaitingApproval", []);
         }
 
         if (!self.model.tracks) {
@@ -437,12 +451,12 @@ export default {
             ///////////////////////////////////
 
             var contentSelectActions;
+            var approvalActions;
 
             if (self.$fluro.options) {
 
                 ///////////////////////////////////
 
-                console.log('PROMOTIONS')
                 contentSelectActions = [{
                     title: '',
                     key: '_id',
@@ -480,6 +494,33 @@ export default {
                         },
                     }
                 }]
+
+
+                ///////////////////////////////////
+
+                approvalActions = [{
+                    title: '',
+                    key: '_id',
+                    renderer: 'button',
+                    shrink: true,
+                    tooltip: 'Approve as member',
+                    button: {
+                        icon: 'check',
+                        action(contact) {
+                            return new Promise(function(resolve, reject) {
+                                var index = self.model.awaitingApproval.indexOf(contact);
+                                if (index != -1) {
+                                    self.model.awaitingApproval.splice(index, 1);
+                                }
+
+                                self.model.provisionalMembers.push(contact);
+                                self.$fluro.notify(`${contact.firstName} was moved to 'Members'`)
+                                resolve();
+                            })
+
+                        },
+                    }
+                }]
             }
 
             ///////////////////////////////////
@@ -495,6 +536,22 @@ export default {
                     contentSelect: {
                         forceTableView: true,
                         actions: contentSelectActions,
+                    },
+                }
+            });
+
+
+            addField("awaitingApproval", {
+                title: "Contacts awaiting approval",
+                minimum: 0,
+                maximum: 0,
+                type: "reference",
+                directive: "reference-select",
+                params: {
+                    restrictType: "contact",
+                    contentSelect: {
+                        forceTableView: true,
+                        actions: approvalActions,
                     },
                 }
             });
