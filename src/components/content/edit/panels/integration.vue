@@ -44,6 +44,9 @@
                                 <template v-if="model.module == 'youtube'">
                                     <youtubeapi :saveCallback="save" v-model="model" />
                                 </template>
+                                <template v-if="model.module == 'facebook'">
+                                    <facebookapi :saveCallback="save" v-model="model" />
+                                </template>
                                 <template v-if="model.module == 'rtmp'">
                                     <rtmp :saveCallback="save" v-model="model" />
                                 </template>
@@ -117,6 +120,7 @@ import GoogleOAuth from './integrations/GoogleOAuth.vue';
 import FacebookOAuth from './integrations/FacebookOAuth.vue';
 import StripeConnect from './integrations/StripeConnect.vue';
 import YoutubeAPI from './integrations/YoutubeAPI.vue';
+import FacebookAPI from './integrations/FacebookAPI.vue';
 import rtmp from './integrations/rtmp.vue'
 
 /////////////////////////////////
@@ -133,6 +137,7 @@ export default {
         'youtubeapi':YoutubeAPI,
         'facebook': FacebookOAuth,
         'stripe-connect': StripeConnect,
+        'facebookapi': FacebookAPI,
         rtmp,
     },
     methods: {
@@ -203,14 +208,10 @@ export default {
                 //     title: "Xero",
                 //     value: "xero"
                 // }, 
-                // {
-                //     title: "Youtube API",
-                //     value: "youtube"
-                // }, 
-                // {
-                //     title: "Facebook API",
-                //     value: "facebook"
-                // }
+                {
+                    title: "Facebook Live",
+                    value: "facebook"
+                }
             );
             return array;
         },
