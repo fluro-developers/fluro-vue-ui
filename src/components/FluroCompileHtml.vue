@@ -1,5 +1,5 @@
 <template>
-    <component :is="component"/>
+    <component :is="component" />
     <!-- <component :is="component" v-if="component"></component> -->
 <!-- </div> -->
 </template>
@@ -8,13 +8,13 @@ import Vue from 'vue';
 
 export default {
     props: {
-        'template': {
+        template: {
             type:String,
             default() {
                 return '';
             },
         },
-        'context': {
+        context: {
             type: Object,
             default() {
                 return {}
@@ -28,8 +28,8 @@ export default {
     },
 
     watch: {
-        'template':'render',
-        'context':'render',
+        template:'render',
+        context:'render',
     },
     // mounted() {
     //     this.render();
@@ -70,13 +70,13 @@ export default {
 
 
             var components;
-            if(self.$parent && self.$parent.$options) {
+            if (self.$parent && self.$parent.$options) {
                 components = self.$parent.$options.components;
             }
 
 
 
-            let DynamicComponent = Vue.extend({
+            const DynamicComponent = Vue.extend({
                 template: `<div>${self.template}</div>`,
                 components,
                 data() {
