@@ -233,7 +233,7 @@ export default {
                     var endpoint = `chart/event/${id}`
                     self.$fluro.api.get(endpoint, {}).then(function(res) {
                         resolve(res.data);
-                        console.log("Event Gender Dataset", id, res.data)
+                        //console.log("Event Gender Dataset", id, res.data)
                         self.loading = false;
 
                         if (res.data.stats.ages) {
