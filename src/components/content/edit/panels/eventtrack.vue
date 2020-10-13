@@ -73,6 +73,27 @@
                                     </v-layout>
                                 </fluro-panel-body>
                             </fluro-panel>
+                            <fluro-panel>
+                                <fluro-panel-title>
+                                    <strong>Live Stream Defaults</strong>
+                                </fluro-panel-title>
+                                <fluro-panel-body>
+                                    <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.defaultStreamEnabled" v-model="model" />
+                                    <template v-if="model.defaultStreamEnabled">
+                                        <v-layout>
+                                            <v-flex xs6>
+                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultStreamStartOffset" v-model="model" />
+                                            </v-flex>
+                                            <v-flex xs6>
+                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultStreamEndOffset" v-model="model" />
+                                            </v-flex>
+                                        </v-layout>
+                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultStreamIntegrations" v-model="model" />
+                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultStreamContent" v-model="model" />
+                                    </template>
+                                </fluro-panel-body>
+                            </fluro-panel>
+                            
                             <location-selector v-model="model" :allLocations="locations" locationsPath="defaultLocations" roomsPath="defaultRooms" />
                             <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultPlans" v-model="model" />
                             <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultBody" v-model="model" />
@@ -281,6 +302,9 @@ export default {
 
         if (!self.model.defaultRosters) {
             self.$set(self.model, "defaultRosters", []);
+        }
+        if (!self.model.defaultStreamEnabled) {
+            self.$set(self.model, "defaultStreamEnabled", false);
         }
     },
     /**
@@ -843,6 +867,57 @@ export default {
                 }
             });
 
+            addField("defaultStreamEnabled", {
+                title: "Default Stream Enabled",
+                description: "Whether events on this track have live streaming enabled",
+                minimum: 0,
+                maximum: 1,
+                type: "boolean",
+            });
+
+            addField("defaultStreamContent", {
+                title: "Prerecorded Stream Content",
+                description: "Select or create the video you want to stream",
+                minimum: 0,
+                maximum: 1,
+                type: "reference",
+                directive: "reference-select",
+                params: {
+                    restrictType: "video"
+                }
+            });
+
+            addField("defaultStreamIntegrations", {
+                title: "Default Stream Integrations",
+                description: "Select the integrations to restream to",
+                minimum: 0,
+                maximum: 0,
+                type: "reference",
+                directive: "reference-select",
+                params: {
+                    restrictType: "integration"
+                }
+            });
+
+            addField("defaultStreamStartOffset", {
+                title: "Default LiveStream Open Offset (minutes)",
+                minimum: 0,
+                maximum: 1,
+                type: "integer",
+                placeholder: "30"
+                //directive: 'timepicker',
+                //description: moment(now).fromNow(),
+            });
+
+            addField("defaultStreamEndOffset", {
+                title: "Default Live Stream Close Offset (minutes)",
+                minimum: 0,
+                maximum: 1,
+                type: "integer",
+                placeholder: "30"
+                //directive: 'timepicker',
+                //description: moment(now).fromNow(),
+            });
             ///////////////////////////////////
 
             function addField(key, details) {

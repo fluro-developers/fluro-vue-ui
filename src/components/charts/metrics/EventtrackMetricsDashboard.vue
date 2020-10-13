@@ -3,6 +3,10 @@
         <fluro-page-preloader v-if="loading" contain />
         
         <template v-else>
+            <!-- <pre>{{postData}}</pre> -->
+            <v-container fluid pa-0 grid-list-xl>
+                <event-age-gender-metrics :id="selectedEvent" v-if="selectedEvent"></event-age-gender-metrics>
+            </v-container>
             <fluro-panel v-if="eventData.model.series.attendance.length">
                 <fluro-panel-title>
                     <strong>Attendance</strong>
@@ -11,9 +15,17 @@
                     <fluro-chart chartType="line" :options="eventData.options" v-model="eventData.model" :series="eventData.series" :axis="eventData.axis" v-on:chart-event="chartClicked"/>
                 </fluro-panel-body>
             </fluro-panel>
-            <v-container fluid pa-0 grid-list-xl>
-            <event-age-gender-metrics :id="selectedEvent" v-if="selectedEvent"></event-age-gender-metrics>
-        </v-container>
+
+            <fluro-panel v-if="eventData.model.series.attendance.length">
+                <fluro-panel-title>
+                    <strong>Reported Stats</strong>
+                </fluro-panel-title>
+
+                <fluro-panel-body>
+                    <fluro-chart chartType="bar" :options="postData.options" v-model="postData.model" :series="postData.series" :axis="postData.axis" />
+                </fluro-panel-body>
+
+            </fluro-panel>
         </template>
     </flex-column>
 </template>
@@ -32,6 +44,14 @@ export default {
         },
         type: {
             type: String,
+        },
+        startDate: {
+            type: Date,
+            default: function () { return moment().subtract(1, 'year').toDate()},
+        }, 
+        endDate: {
+            type: Date,
+            default: function () { return moment().toDate()},
         }
     },
     computed: {
@@ -119,7 +139,116 @@ export default {
             // console.log("Event Graph Data", returnData)
             return returnData
         },
+        postStats() {
+            var self = this
 
+            var keys = []
+
+            var posts = _.chain(self.model)
+                .map(function (event){
+                    return event.posts
+                })
+                .flatten()
+                .map(function (post){
+                    return post.data
+                })
+                .reduce(function(set, value, key){
+                    //console.log("set", set, "value", value, "key", key)
+                    _.each(value, function(val, id){
+                        //console.log(val, typeof val)
+                        if (typeof val == "number") {
+                            set[id] = id
+                        }
+                    })
+                    return set
+                }, {})
+                
+                .value()
+
+
+
+            return posts
+
+        },
+        postData() {
+            var self = this
+            var model = {
+                axis: [],
+                series: {
+                }
+            }
+
+            var returnDataSeries = [
+                // {
+                //         "title": "Attendance",
+                //         "key": "attendance"
+                //     },
+                //     {
+                //         "title": "Expected",
+                //         "key": "expected",
+                //     },
+                ]
+
+            _.each(self.postStats, function (val){
+                model.series[val] = []
+                returnDataSeries.push({
+                    "title": val,
+                    "key": val
+                })
+            })
+            var events = _.sortBy(self.model, function(event) {
+                return event.startDate
+            })
+            _.each(events, function(event) {
+                //console.log("HERE", event)
+                    model.axis.push(event.startDate)
+                    _.each(self.postStats, function (val){
+                        model.series[val].push(_.get(event, `posts[0].data.${val}`))
+                    })
+
+                })
+
+
+            var returnData = {
+                axis: {
+                    "title": "Date",
+                    "key": "date"
+                },
+                series: returnDataSeries,
+                model,
+                options: {
+                    yaxis: [{
+                            min: 0,
+                            
+                            // title: {
+                            //     text: 'Attendance',
+                            // },
+                            tooltip: {
+                                enabled: true,
+                                shared: true,
+                            },
+                            show: false,
+                        },
+                        {
+                            min: 0,
+                            // max,
+                            opposite: true,
+                            // title: {
+                            //     text: 'Expected'
+                            // },
+                            tooltip: {
+                                enabled: true,
+                                shared: true,
+                            },
+                            show: false,
+                        }
+                    ],
+                }
+            }
+
+            // console.log("Event Graph Data", returnData)
+            return returnData
+        },
     },
     asyncComputed: {
         model: {
@@ -134,8 +263,8 @@ export default {
                             var endpoint = `chart/track/${id}`
                             self.$fluro.api.get(endpoint, {
                                 params: {
-                                    startDate: moment().subtract(1, 'year').toDate(),
-                                    endDate: moment().toDate(),
+                                    startDate: self.startDate,
+                                    endDate: self.endDate,
                                 }
                             }).then(function(res) {
                                 resolve(res.data);
@@ -159,7 +288,7 @@ export default {
         chartClicked(data) {
             var self = this
             if(data.key == 'click'){
-                console.log("Clicked", data, self.model[data.config.dataPointIndex])
+                // console.log("Clicked", data, self.model[data.config.dataPointIndex])
                 self.selectedEvent = self.model[data.config.dataPointIndex]._id
             }
         }
