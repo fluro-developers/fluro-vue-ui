@@ -188,7 +188,7 @@ export default {
 			filterCriteria.timezone = self.$fluro.date.defaultTimezone;
 
 
-			console.log('FILTER ROWS', self.renderColumns, self.select)
+			// console.log('FILTER ROWS', self.renderColumns, self.select)
 
 			/////////////////////////////////////////////////////////////
 			/////////////////////////////////////////////////////////////
@@ -238,7 +238,7 @@ export default {
 			return this.includeArchivedByDefault
 		},
 		reloadRequired() {
-			console.log('RELOAD REQUIRED', this.searchInheritable, this.joins)
+			// console.log('RELOAD REQUIRED', this.searchInheritable, this.joins)
 			return `${this.cacheKey}-${this.searchInheritable}-${this.dataType}-${this.joins}-${this.filterCheckString} ${this.dateWatchString} ${this.sort.sortKey} ${this.sort.sortDirection} ${this.sort.sortType} ${this.groupingColumn ? this.groupingColumn.key : ''}  ${this.debouncedSearch}`;
 		},
 		activeFilters() {

@@ -60,24 +60,24 @@
 																				</v-card>
 																				<template v-if="!fieldModel || !fieldModel.length">
 																								<template v-if="webMode">
-																												<fluro-button block size="lg" @click="addValue({})" v-if="canAddValue">
+																												<fluro-button block size="lg" @click="addValue()" v-if="canAddValue">
 																																{{addLabel}}
 																												</fluro-button>
 																								</template>
 																								<template v-else>
-																												<v-btn class="ml-0" block large color="primary" @click="addValue({})" v-if="canAddValue">
+																												<v-btn class="ml-0" block large color="primary" @click="addValue()" v-if="canAddValue">
 																																{{addLabel}}
 																												</v-btn>
 																								</template>
 																				</template>
 																				<template v-else>
 																								<template v-if="webMode">
-																												<fluro-button @click="addValue({})" v-if="canAddValue">
+																												<fluro-button @click="addValue()" v-if="canAddValue">
 																																{{addLabel}}
 																												</fluro-button>
 																								</template>
 																								<template v-else>
-																												<v-btn class="ml-0" color="primary" @click="addValue({})" v-if="canAddValue">
+																												<v-btn class="ml-0" color="primary" @click="addValue()" v-if="canAddValue">
 																																{{addLabel}}
 																												</v-btn>
 																								</template>
@@ -507,6 +507,12 @@
 																				</label>
 																</v-input>
 												</template>
+												<template v-else-if="renderer == 'academic-select'">
+																<v-select :persistent-hint="true" :outline="showOutline" :success="success" :return-object="true" :label="displayLabel" no-data-text="No options available" :multiple="false" v-model="academicModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
+																<div v-if="gradeOptions && gradeOptions.length">
+																				<v-select :outline="showOutline" :success="success" label="Grade" :multiple="false" v-model="model['academicGrade']" item-text="title" :items="gradeOptions" @blur="touch()" @focus="focussed()" />
+																</div>
+												</template>
 												<template v-else-if="renderer == 'currency' && !multipleInput">
 																<fluro-currency-input :currency="params.currency" :hideSuffix="params.hideSuffix" :min="minValue" :max="maxValue" :label="displayLabel" :required="required" v-model="fieldModel" :autofocus="shouldAutofocus" :outline="showOutline" :success="success" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="placeholder" />
 												</template>
@@ -539,6 +545,9 @@
 												</template>
 												<template v-else-if="renderer == 'app-font-select'">
 																<fluro-app-font-select :field="field" v-model="fieldModel" :options="options" :label="displayLabel" />
+												</template>
+												<template v-else-if="renderer == 'app-filter-select'">
+																<fluro-app-filter-select :field="field" v-model="fieldModel" :parentModel="model" :options="options" :label="displayLabel" />
 												</template>
 												<template v-else-if="renderer == 'color' && !multipleInput">
 																<!-- COLOR COLOR -->
@@ -818,6 +827,8 @@ export default {
 								value(val) {
 
 												if (this.model != val) {
+
+
 																// console.log('New value for field', val, this)
 																// val = this.fixCorruptedData(val);
 																// //console.log('SET VALUE OF THING', val);
@@ -845,7 +856,35 @@ export default {
 								// 'isNew':'checkNew',
 				},
 				computed: {
+								academicModel: {
+												get() {
+																return this.fieldModel;
+												},
+												set(s) {
+																this.fieldModel = s;
 
+																//Just in case they name it something different
+																if (this.field.key != 'academicCalendar') {
+																				//Fill in the gap and ensure we save the academic calendar also
+																				this.$set(this.model, 'academicCalendar', s);
+																}
+												}
+								},
+								gradeOptions() {
+												var self = this;
+
+												var fieldModel = self.fieldModel;
+												if (fieldModel && fieldModel.grades && fieldModel.grades.length) {
+																return _.map(fieldModel.grades, function(grade) {
+																				return {
+																								title: grade.title,
+																								text: grade.title,
+																								name: grade.title,
+																								value: grade.key,
+																				}
+																})
+												}
+								},
 								dateModelDay: {
 												get() {
 
@@ -1019,6 +1058,10 @@ export default {
 												}
 
 												if (!element.ownerDocument) {
+																return;
+												}
+
+												if (!element.ownerDocument.defaultView) {
 																return;
 												}
 
@@ -1535,8 +1578,6 @@ export default {
 
 																var self = this;
 
-
-
 																if (self.field.type == 'void') {
 																				// //console.log('Void set nothing')
 																				self.$emit('input', self.model);
@@ -1796,9 +1837,20 @@ export default {
 																actualOptions = self.asyncOptions;
 												}
 
+
+												var options = actualOptions.slice();
+												if (!self.field.minimum && self.field.maximum == 1) {
+																options.unshift({
+																				name: 'None',
+																				title: 'None',
+																				text: 'None',
+																				value: '',
+																})
+												}
+
 												////////////////////////////////////////
 
-												return actualOptions;
+												return options;
 								},
 								minimum() {
 												return Math.max(parseInt(this.field.minimum), 0);
@@ -1929,10 +1981,11 @@ export default {
 
 																												//If the minimum required is 1
 																												if (this.minimum == 1) {
+
 																																errors.push(`Requires at least 1 ${valueType}`)
 																												} else {
 																																//Provide at least X ${valueType}s
-																																//
+
 																																//console.log('ANSWERS IS', numberOfAnswersProvided, this.minimum, this.maximum)
 																																errors.push(`Please provide at least ${this.minimum} ${valueType}s`)
 																												}
@@ -2039,8 +2092,10 @@ export default {
 																case 'app-theme-select':
 																case 'app-block-select':
 																case 'app-font-select':
+																case 'app-filter-select':
 																case 'app-size-select':
 																case 'app-style-select':
+																case 'academic-select':
 																				break;
 																case 'value':
 																				directive = 'value';
@@ -2137,10 +2192,13 @@ export default {
 																								case 'reference':
 																												switch (self.context) {
 																																case 'admin':
+																																				// case 'builder':
 																																				directive = 'content-select';
 																																				break;
 																																				// case 'builder':
 																																default:
+
+																																				console.log('CONTEXT IS', self.context)
 																																				directive = 'select';
 																																				break;
 
@@ -2204,6 +2262,7 @@ export default {
 												var self = this;
 
 
+												// console.log('CREATE DEFAULTS', self.field.key, self.field.title)
 
 
 												///////////////////////////////////////////////
@@ -2211,6 +2270,11 @@ export default {
 												var value = self.model[self.field.key];
 												// //console.log('Create defaults for', self.field.title, value);
 												var hasExistingValue = (value !== undefined && value !== null && value !== '');
+
+												if (self.field.type == 'group' && value == {}) {
+																hasExistingValue = false;
+																// console.log('CREATE DEFAULTS FOR GROUP')
+												}
 
 												//We already have a value
 												if (hasExistingValue) {
@@ -2472,6 +2536,12 @@ export default {
 
 												var self = this;
 
+												//////////////////////////////////
+
+
+												if (value && value.value === '') {
+																value = null;
+												}
 
 												//////////////////////////////////
 
@@ -3361,28 +3431,121 @@ export default {
 
 								},
 								addValue(value) {
-												//console.log('ADD ANOTHER VALUE', value)
 
-												// this.fieldModel.push(value);
-												// ////////console.log('Add', this.fieldModel, this.maximum);
-												// 
-												//THIS WORKS BUT COMPUTED PROPERTIES BELOW DONT
-												// if(this.fieldModel.length >= this.maximum) {
-												//     return;
-												// }
-												// this.$set(this.model, this.field.key, [value]);
+												var self = this;
 
-												if (!this.fieldModel) {
-																this.fieldModel = [];
-																//console.log('Create Field Model');
+												//If we have defaults disabled
+												if (self.disableDefaults) {
+
+																//If it's a group with sub fields
+																if (self.type == 'group' || self.renderer == 'embedded') {
+
+																				_.each(self.field.fields, function(field) {
+																								createDefaultValueForField(field, value);
+																				});
+																}
+
+																function createDefaultValueForField(field, source) {
+
+																				// self.$set(value, field.key, newDefaultValue);
+																				switch (field.type) {
+																								case 'group':
+
+																												//If it's purely a visual group
+																												if (!field.asObject) {
+																																//Loop through each field and add the defaults to the original source
+																																_.each(field.fields, function(subfield) {
+																																				createDefaultValueForField(subfield, source);
+																																});
+																												} else {
+
+																																//If it's a sub object group
+																																if (field.maximum == 1) {
+																																				var defaultValue = {};
+																																				_.each(field.fields, function(subfield) {
+																																								createDefaultValueForField(subfield, defaultValue);
+																																				});
+
+																																				//Apply it
+																																				self.$set(source, field.key, defaultValue);
+																																} else {
+
+																																				var numberOfValues = Math.max(field.askCount, field.minimum);
+
+																																				var multipleValues = [];
+
+																																				_.times(numberOfValues, function(i) {
+																																								var defaultValue = {};
+																																								_.each(field.fields, function(subfield) {
+																																												createDefaultValueForField(subfield, defaultValue);
+																																								});
+																																								multipleValues.push(defaultValue)
+																																				})
+
+																																				//Apply it
+																																				self.$set(source, field.key, multipleValues);
+																																}
+																												}
+
+																												break;
+																								default:
+																												var defaults = field.type == 'reference' ? field.defaultReferences : field.defaultValues;
+																												if (defaults && defaults.length) {
+																																if (field.maximum == 1) {
+																																				self.$set(source, field.key, JSON.parse(JSON.stringify(defaults[0])));
+																																} else {
+																																				self.$set(source, field.key, JSON.parse(JSON.stringify(defaults)));
+																																}
+																												}
+																												break;
+																				}
+
+																				// //So loop through all the child fields and create them
+																				// _.each(parentField.fields, function(field) {
+
+
+																				// 				if (field.type == 'group') {
+
+
+																				// 								var defaultObject = createDefaultValueForGroup(field, {});
+
+																				// 								console.log('Create default object', field.key, field.title, defaultObject);
+																				// 								self.$set(value, field.key, defaultObject);
+																				// 								return;
+																				// 				}
+
+																				// 				// //If it's a group
+																				// 				// if(field.type == 'group') {
+																				// 				// 	 var groupModel = {};
+																				// 				// 	 createDefaultValueForGroup()
+																				// 				// }
+
+																				// 				//Get our default values
+																				// 				
+
+
+																				// 				//If there are default values set them on the value
+																				// 				if (defaults && defaults.length) {
+																				// 								if (field.maximum == 1) {
+																				// 												self.$set(value, field.key, JSON.parse(JSON.stringify(defaults[0])));
+																				// 								} else {
+																				// 												self.$set(value, field.key, JSON.parse(JSON.stringify(defaults)));
+																				// 								}
+																				// 				}
+																				// })
+
+																}
 												}
 
-												// if (this.total < this.maximum) {
-												if (this.canAddValue) {
-																this.fieldModel.push(value);
-																////////console.log('ADD VALUE NOW', this.fieldModel)
-																// Vue.set(this.fieldModel, this.total, value);
-																this.valueChange();
+												if (!self.fieldModel) {
+																self.fieldModel = [];
+												}
+
+												if (self.canAddValue) {
+
+
+																self.fieldModel.push(value);
+																self.valueChange();
 												}
 								},
 								removeValue(index, forceAllow) {
@@ -3841,34 +4004,34 @@ export default {
 				beforeCreate: function() {
 
 
-								var self = this;
+						var self = this;
 
 
 
 
-								Promise.all([
-																DynamicImportService.load('./FluroContentForm.vue', function() {
-																				return import('./FluroContentForm.vue')
-																}),
-																DynamicImportService.load('./FluroContentFormField.vue', function() {
-																				return import('./FluroContentFormField.vue')
-																}),
-																DynamicImportService.load('./FluroEditor.vue', function() {
-																				return import('./FluroEditor.vue')
-																}),
-																DynamicImportService.load('./FluroCodeEditor.vue', function() {
-																				return import('./FluroCodeEditor.vue')
-																}),
-												])
-												.then(function(results) {
+						Promise.all([
+														DynamicImportService.load('./FluroContentForm.vue', function() {
+																		return import('./FluroContentForm.vue')
+														}),
+														DynamicImportService.load('./FluroContentFormField.vue', function() {
+																		return import('./FluroContentFormField.vue')
+														}),
+														DynamicImportService.load('./FluroEditor.vue', function() {
+																		return import('./FluroEditor.vue')
+														}),
+														DynamicImportService.load('./FluroCodeEditor.vue', function() {
+																		return import('./FluroCodeEditor.vue')
+														}),
+										])
+										.then(function(results) {
 
-																// //console.log('Set Components', results);
-																self.$options.components.FluroContentForm = results[0];
-																self.$options.components.FluroContentFormField = results[1];
-																self.$options.components.FluroEditor = results[2];
-																self.$options.components.FluroCodeEditor = results[3];
-																self.ready = true;
-												})
+														// //console.log('Set Components', results);
+														self.$options.components.FluroContentForm = results[0];
+														self.$options.components.FluroContentFormField = results[1];
+														self.$options.components.FluroEditor = results[2];
+														self.$options.components.FluroCodeEditor = results[3];
+														self.ready = true;
+										})
 				},
 				/**/
 				validations: {

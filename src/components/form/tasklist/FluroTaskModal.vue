@@ -164,16 +164,20 @@ export default {
             /////////////////////////////////////
 
             var definitionName;
+            var postAttachTo;
 
             switch (option) {
                 case "complete":
                     definitionName = self.task.postComplete;
+                    postAttachTo = self.task.postCompleteAttach;
                     break;
                 case "pending":
                     definitionName = self.task.postPending;
+                    postAttachTo = self.task.postPendingAttach;
                     break;
                 case "failed":
                     definitionName = self.task.postFailed;
+                    postAttachTo = self.task.postFailedAttach;
                     break;
             }
 
@@ -187,12 +191,60 @@ export default {
             /////////////////////////////////////
             /////////////////////////////////////
 
-            // console.log('GOTTA DO A TASK', definitionName, AddPostModal);
+            console.log("Do a task", self.card.item, self.card, postAttachTo);
 
-            // self.$fluro.content.type(definitionName)
-            //     .then(function(form) {
+            var referencedItem = self.card.item;
+            var postTargetItem = referencedItem || self.card;
+            var postTargetItems;
+            var keyContacts = self.card.contacts;
 
-            console.log("Do a task", self.card.item, self.card);
+
+            if (referencedItem) {
+                switch (referencedItem._type) {
+                    case 'interaction':
+                    case 'post':
+                        if (!postAttachTo) {
+                            if (keyContacts && keyContacts.length) {
+                                postAttachTo = 'contacts';
+                                console.log('ATTACH TO CONTACTS AS A PREFERENCE')
+                            }
+                        }
+                        break;
+                }
+            }
+
+            /////////////////////////////////////
+            /////////////////////////////////////
+            /////////////////////////////////////
+
+            switch (postAttachTo) {
+                case 'contact':
+
+                    if (referencedItem && referencedItem._type == 'contact') {
+                        postTargetItem = referencedItem;
+                        console.log('Attach to referenced contact');
+                    } else {
+                        if (keyContacts && keyContacts.length) {
+                            console.log('Attach to first key contact');
+                            postTargetItem = keyContacts[0];
+                        }
+                    }
+                    break;
+                case 'contacts':
+                    if (keyContacts && keyContacts.length) {
+                        postTargetItem = null;
+                        postTargetItems = keyContacts;
+                        console.log('Attach to ALL contacts');
+                    }
+                    break;
+                case 'card':
+                    postTargetItem = referencedItem;
+                    console.log('Attach to the card directly')
+                    break;
+            }
+
+            /////////////////////////////////////
+            /////////////////////////////////////
 
             var promise = self.$fluro
                 .modal({
@@ -204,7 +256,8 @@ export default {
                         // definition:{
                         //     definitionName,
                         // },
-                        item: self.card.item || self.card
+                        item: postTargetItem,
+                        items: postTargetItems,
                         // title:'something',
                         // description:'desc',
                         // options:[]

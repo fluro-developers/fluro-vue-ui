@@ -23,7 +23,7 @@
                                 <div class="pseudo-field" :class="{active:configureDefaults && !field}" @click="showDefaultFieldOptions()">Form Configuration</div>
                             </template>
                             <draggable class="field-editor-children" handle=".handle" element="ul" @sort="sorted" v-model="model" :options="treeOptions">
-                                <fluro-field-editor-item :top="model" :mouseover="mouseover" :mouseleave="mouseleave" :parent="model" :leaf="model[index]" :selected="field" :select="clicked" @duplicate="duplicateField" @injected="injectField" @copypath="copyFieldPath" @deleted="deleteField" v-for="(leaf, index) in model" :key="leaf.guid" />
+                                <fluro-field-editor-item :top="model" :mouseover="mouseover" :mouseleave="mouseleave" :parent="psuedoParent" :parentGroup="psuedoParent"  :leaf="model[index]" :selected="field" :select="clicked" @duplicate="duplicateField" @injected="injectField" @copypath="copyFieldPath" @deleted="deleteField" v-for="(leaf, index) in model" :key="leaf.guid" />
                             </draggable>
                             <template v-if="formMode">
                                 <div class="pseudo-field" :class="{active:configurePayment && !field}" @click="showPaymentOptions()">Payment Options</div>
@@ -322,6 +322,13 @@ export default {
         self.recursiveGUID(self.model);
     },
     computed: {
+        psuedoParent() {
+            return {
+                title:'FORM',
+                type:'group',
+                fields:this.model,
+            }
+        },
         allFields() {
             var self = this;
 

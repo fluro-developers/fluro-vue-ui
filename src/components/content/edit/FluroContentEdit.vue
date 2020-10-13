@@ -1430,7 +1430,7 @@ export default {
             default: null,
             get() {
                 var self = this;
-                // console.log('TYPE IS', self.type);
+                console.log('TYPE IS', self.type);
 
                 //////////////////////////////////////////////
 

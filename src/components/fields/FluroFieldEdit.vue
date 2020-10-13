@@ -214,12 +214,20 @@
                             <!-- </template> -->
                             <!-- </fluro-content-form> -->
                         </template>
+                        <!-- <template v-if="model.directive == 'academic-select'">
+                            ACADEMIC SELECT
+                        </template> -->
                         <template v-if="model.directive == 'app-field-key-select' || model.directive == 'app-field-select'">
                             <fluro-content-form-field :field="fields.referenceType" v-model="model.params" />
                         </template>
                         <template v-if="model.directive == 'app-type-select'">
                             <fluro-content-form-field :field="fields.referenceType" v-model="model.params" />
                             <fluro-content-form-field :field="fields.includeDefinedTypes" v-model="model.params" />
+                        </template>
+                        <template v-if="model.directive == 'app-filter-select'">
+                            <fluro-content-form-field :field="fields.referenceType" v-model="model.params" />
+                            <fluro-content-form-field :field="fields.dynamicReferenceType" v-model="model.params" />
+                            <!-- <fluro-content-form-field :field="fields.allDefinitions" v-model="model.params" /> -->
                         </template>
                         <template v-if="model.type == 'boolean'">
                             <fluro-content-form-field :field="fields.storeCopy" v-model="model.params" />
@@ -297,6 +305,9 @@
                                     </template>
                                     <template v-else-if="model.directive == 'code'">
                                         <fluro-content-form-field @input="resetRequired(fields.codeDefaultValues)" :field="fields.codeDefaultValues" v-model="model" />
+                                    </template>
+                                    <template v-else-if="model.directive == 'app-filter-select'">
+                                        <fluro-content-form-field @input="resetRequired(fields.defaultValues)" :field="fields.filterDefaultValues" v-model="model" />
                                     </template>
                                     <template v-else>
                                         <fluro-content-form-field @input="resetRequired(fields.defaultValues)" :field="fields.defaultValues" v-model="model" />
@@ -594,6 +605,10 @@ export default {
                 self.$set(model, "params", {});
             }
 
+            if(!model.params.restrictType) {
+                self.$set(model.params, "restrictType", null);
+            }
+
             if (!model.params.ticketing) {
                 self.$set(model.params, "ticketing", { enabled: false, events: [] });
             }
@@ -809,7 +824,7 @@ export default {
             self.previousField = field;
             setTimeout(function() {
                 if (self.previousField == field) {
-                    console.log("NEEDS RESET!");
+                    // console.log("NEEDS RESET!");
                     self.previousField = false;
                     self.$emit("reset");
                 }
@@ -821,10 +836,13 @@ export default {
             var self = this;
             self.editingKey = false;
 
+
+
             // self.stopListener();
 
-            var model = v;
+            // console.log('NEW MODEL', v)
 
+            var model = v;
             self.setDefaults(model);
 
             self.model = model;
@@ -833,6 +851,11 @@ export default {
 
             // self.startListener();
         }
+    },
+
+    created() {
+        var self = this;
+        self.setDefaults(self.model);
     },
     mounted() {
         var self = this;
@@ -1050,7 +1073,7 @@ export default {
             return this.model.type != "reference" && this.model.type != "group";
         },
         restrictType() {
-            return this.model && this.model.params && this.model.params.restrictType;
+            return this.modelParams ? this.modelParams.restrictType : null;
         },
         requiresOptions() {
             if (this.model.type == "reference") {
@@ -1207,6 +1230,22 @@ export default {
                 directive: "code",
                 params: {
                     syntax: self.model.params.syntax
+                }
+            });
+
+            addField("filterDefaultValues", {
+                title: "Default Value(s)",
+                key: "defaultValues",
+                description: "Add default filter configuration",
+                minimum: 0,
+                maximum: 0,
+                type: "object",
+                directive: "app-filter-select",
+                defaultValues:[{}],
+                params: {
+                    restrictType: self.model.params.restrictType,
+                    dynamicReferenceType:self.model.dynamicReferenceType,
+                    allDefinitions:self.model.params.allDefinitions,
                 }
             });
 
@@ -1491,6 +1530,31 @@ export default {
                 options: self.referenceOptions
             });
 
+            addField("dynamicReferenceType", {
+                key: "dynamicReferenceType",
+                title: "Dynamic Reference Type",
+                description: "Infer the reference type for this filter from the value in another field",
+                minimum: 0,
+                maximum: 1,
+                type: "string",
+                //directive: "select",
+                //options: self.referenceOptions
+            });
+
+             addField("allDefinitions", {
+                key: "allDefinitions",
+                title: "Include all definitions",
+                description: "Include all definitions in results",
+                minimum: 0,
+                maximum: 1,
+                type: "boolean",
+                //directive: "select",
+                //options: self.referenceOptions
+            });
+
+
+           
+
             addField("includeDefinedTypes", {
                 title: "Include defined types",
                 description: "Include any extended definitions of this type",
@@ -1593,6 +1657,16 @@ export default {
                         title: "File Upload",
                         value: "upload"
                     });
+
+
+
+                    console.log('CHECK WHAT THE TYPE IS', self.restrictType)
+                    if (self.restrictType == 'academic') {
+                        inputOptions.push({
+                            title: "Academic Calendar Select",
+                            value: "academic-select"
+                        });
+                    }
                     break;
                 case "boolean":
                     inputOptions.push({
@@ -1758,6 +1832,14 @@ export default {
                         title: "Website Builder Field Select",
                         value: "app-field-select"
                     });
+
+                    inputOptions.push({
+                        title: "Filter Configuration",
+                        value: "app-filter-select"
+                    });
+
+
+
                 }
             }
 

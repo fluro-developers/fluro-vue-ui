@@ -41,7 +41,7 @@
                         <!-- <pre>GUESSSS {{context}} {{ options }}</pre> -->
                         <fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" @errorMessages="validate" @input="modelChanged" ref="form" :options="options" v-model="dataModel" :fields="fields" />
                         <div class="payment" v-if="showPaymentForm">
-                            <v-container v-if="requirePayment">
+                            <v-container fluid v-if="requirePayment">
                                 <h2>Payment Summary</h2>
                                 <v-layout align-center>
                                     <v-flex class="modifier-title">

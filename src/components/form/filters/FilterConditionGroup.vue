@@ -1,6 +1,6 @@
 <template>
 				<div class="filter-group-outer" :class="{mini:mini, large:!mini}">
-								<v-container ref="element" :class="[{'pa-2': mini}, model.operator]">
+								<v-container ref="element" :class="[{'pa-0': mini}, model.operator]">
 												<v-layout row v-if="model.filters.length > 1">
 																<v-flex d-flex align-center>
 																				<template v-if="mini">
@@ -1485,6 +1485,15 @@ export default {
 																});
 
 
+																injectFields.push({
+																				title: "Fluro Login > Creation Date",
+																				key: "_persona.created",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "date",
+																});
+
+
 
 																/////////////////////////////////////////////////////
 
@@ -2109,7 +2118,7 @@ export default {
 																												options: contactDefinitionOptions
 																								});
 
-																								
+
 
 																								injectFields.push({
 																												title: "Contact Definition (At time of checkin)",
@@ -2625,6 +2634,15 @@ $color-and: $success;
 				}
 
 				&.mini {
+
+								.layout {
+												margin: -2px !important;
+								}
+
+								.flex {
+												padding: 2px !important;
+								}
+
 								.operator {
 												font-weight: 700;
 												// letter-spacing: 0.1em;

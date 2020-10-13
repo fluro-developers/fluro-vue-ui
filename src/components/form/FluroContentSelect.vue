@@ -398,7 +398,7 @@ export default {
                     //Update the item with what we know about it now
                     _.assign(item, res);
 
-                    console.log("Updated!", item);
+                    // console.log("Updated!", item);
                 });
             }
         },
@@ -436,7 +436,7 @@ export default {
 
             if (this.selection && this.selection.length) {
                 //Reset to empty array
-                console.log('Reset to empty')
+                // console.log('Reset to empty')
                 this.setSelection([]);
             }
 
@@ -530,7 +530,7 @@ export default {
     watch: {
         value(v) {
             var self = this;
-            console.log('VALUE CHANGED');
+            // console.log('VALUE CHANGED');
             self.setInitialValue(v);
         },
         terms(searchTerms) {
@@ -562,7 +562,7 @@ export default {
             }
         },
         selection(s) {
-            console.log('SELECTION CHANGED')
+            // console.log('SELECTION CHANGED')
             this.model = s;
         },
         model: function() {

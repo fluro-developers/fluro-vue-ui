@@ -144,7 +144,7 @@ export default {
     watch: {
         model(newModel, oldModel) {
             if (this.watchEnabled) {
-                console.log('emit change for', this)
+                // console.log('emit change for', this)
                 this.$emit("input", this.model);
             }
         },
@@ -153,7 +153,7 @@ export default {
 
             //If the model has been changed
             if (self.model != v) {
-                // console.log('new value is set', self)
+                // console.log('A new form model has been selected', v)
 
                 self.watchEnabled = false;
                 self.model = v;
@@ -336,7 +336,7 @@ export default {
         },
 
         update(input, valueThatWasChanged) {
-            // console.log('form model changed from update callback', input, valueThatWasChanged);
+            console.log('form model changed from update callback', input, valueThatWasChanged);
             // this.$forceUpdate();
             // this.$emit('input', this.model);
             // ///console.log('form model changed');

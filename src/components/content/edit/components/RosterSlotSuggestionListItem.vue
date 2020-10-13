@@ -11,10 +11,11 @@
                     <v-flex>
                         <div>
                             <strong>{{model.title}}</strong>
-                            <div class="summary">{{summary}}</div>
+                           
+                            <div class="summary" v-if="!manual">{{summary}}</div>
                         </div>
                     </v-flex>
-                    <v-flex shrink >
+                    <v-flex shrink>
                         <div class="btn-group">
                             <span class="btn" @click.stop.prevent="$actions.open([model])" xs>
                                 <fluro-icon icon="ellipsis-h" />
@@ -82,6 +83,9 @@ import _ from 'lodash';
 
 export default {
     props: {
+        manual: {
+            type: Boolean,
+        },
         assignmentSlot: {
             type: Object,
         },
@@ -286,6 +290,7 @@ export default {
         }
     }
 }
+
 </script>
 <style lang="scss">
 .suggestion-list-item {
@@ -359,4 +364,5 @@ export default {
 
 
 }
+
 </style>

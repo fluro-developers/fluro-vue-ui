@@ -56,8 +56,7 @@
     </flex-column>
 </template>
 <script>
-
-	import _ from 'lodash';
+import _ from 'lodash';
 
 
 import ModalMixin from '../../../mixins/ModalMixin';
@@ -166,132 +165,191 @@ export default {
                 .value();
 
 
-                array.unshift({
-                    name:'None',
-                    value:'',
-                })
+            array.unshift({
+                name: 'None',
+                value: '',
+            })
 
             return array;
+        },
+        postAttachOptions() {
+            return [{
+                    name: 'The Referenced Item',
+                    value: '',
+                },
+                {
+                    name: 'The Primary Key Contact',
+                    value: 'contact',
+                },
+                {
+                    name: 'Each Key Contact',
+                    value: 'contacts',
+                },
+                {
+                    name: 'The Card Itself',
+                    value: 'card',
+                }
+            ]
         },
         completeFields() {
             var self = this;
 
             return [{
-                type: 'group',
-                asObject: true,
-                minimum: 1,
-                maximum: 1,
-                askCount: 1,
-                key: 'instructions',
-                fields: [{
-                        title: 'Complete Label',
-                        description: 'Set what label should be used when referring to this task being complete',
-                        key: 'completeLabel',
-                        type: 'string',
-                        minimum: 0,
-                        maximum: 1,
-                        params: {
-                            persistentDescription: true,
+                    type: 'group',
+                    asObject: true,
+                    minimum: 1,
+                    maximum: 1,
+                    askCount: 1,
+                    key: 'instructions',
+                    fields: [{
+                            title: 'Complete Label',
+                            description: 'Set what label should be used when referring to this task being complete',
+                            key: 'completeLabel',
+                            type: 'string',
+                            minimum: 0,
+                            maximum: 1,
+                            params: {
+                                persistentDescription: true,
+                            },
                         },
+                        {
+                            title: 'Instructions',
+                            description: 'Add extra detail about what this task means when it is marked as complete',
+                            key: 'completeDescription',
+                            type: 'string',
+                            directive: 'textarea',
+                            minimum: 0,
+                            maximum: 1,
+                            params: {
+                                persistentDescription: true,
+                            }
+                        },
+
+
+
+
+                    ]
+                }, {
+                    title: 'Complete Post Type',
+                    description: 'Ask for a post to be created for extra details when this task is marked as complete',
+                    params: {
+                        persistentDescription: true,
                     },
-                    {
-                        title: 'Instructions',
-                        description: 'Add extra detail about what this task means when it is marked as complete',
-                        key: 'completeDescription',
-                        type: 'string',
-                        directive: 'textarea',
-                        minimum: 0,
-                        maximum: 1,
-                        params: {
-                            persistentDescription: true,
+                    key: 'postComplete',
+                    type: 'string',
+                    directive: 'select',
+                    minimum: 0,
+                    maximum: 1,
+                    options: self.postOptions,
+                },
+
+                {
+                    title: 'Complete Post Attach',
+                    description: 'Where should the post be attached to?',
+                    params: {
+                        persistentDescription: true,
+                    },
+                    key: 'postCompleteAttach',
+                    type: 'string',
+                    directive: 'select',
+                    minimum: 1,
+                    maximum: 1,
+                    options: self.postAttachOptions,
+                    expressions: {
+                        show() {
+                            return self.model.postComplete
                         }
                     },
-
-
-
-
-                ]
-            }, {
-                title: 'Complete Post Type',
-                description: 'Ask for a post to be created for extra details when this task is marked as complete',
-                params: {
-                    persistentDescription: true,
                 },
-                key: 'postComplete',
-                type: 'string',
-                directive: 'select',
-                minimum: 0,
-                maximum: 1,
-                options: self.postOptions,
-            }, ]
+            ]
         },
         pendingFields() {
             var self = this;
 
             return [{
-                type: 'group',
-                asObject: true,
-                minimum: 1,
-                maximum: 1,
-                askCount: 1,
-                key: 'instructions',
-                className: 'form-group',
-                fields: [{
-                        title: `Disable '${self.pendingLabel}' Option`,
-                        description: `Disable the ability for this task to be marked as '${self.pendingLabel}'`,
-                        key: 'pendingDisabled',
-                        type: 'boolean',
-                        minimum: 0,
-                        maximum: 1,
-                    },
-                    {
-                        type: 'group',
-                        expressions: {
-                            hide: 'model.pendingDisabled'
+                    type: 'group',
+                    asObject: true,
+                    minimum: 1,
+                    maximum: 1,
+                    askCount: 1,
+                    key: 'instructions',
+                    className: 'form-group',
+                    fields: [{
+                            title: `Disable '${self.pendingLabel}' Option`,
+                            description: `Disable the ability for this task to be marked as '${self.pendingLabel}'`,
+                            key: 'pendingDisabled',
+                            type: 'boolean',
+                            minimum: 0,
+                            maximum: 1,
                         },
-                        fields: [{
-                                title: 'Pending Label',
-                                description: 'Set what label should be used when referring to this task being in progress or',
-                                key: 'pendingLabel',
-                                params: {
-                                    persistentDescription: true,
-                                },
-                                type: 'string',
-                                minimum: 0,
-                                maximum: 1,
+                        {
+                            type: 'group',
+                            expressions: {
+                                hide: 'model.pendingDisabled'
                             },
-                            {
-                                title: 'Instructions',
-                                description: 'Add extra detail about what this task means when it is marked as pending',
-                                key: 'pendingDescription',
-                                params: {
-                                    persistentDescription: true,
+                            fields: [{
+                                    title: 'Pending Label',
+                                    description: 'Set what label should be used when referring to this task being in progress or',
+                                    key: 'pendingLabel',
+                                    params: {
+                                        persistentDescription: true,
+                                    },
+                                    type: 'string',
+                                    minimum: 0,
+                                    maximum: 1,
                                 },
-                                type: 'string',
-                                directive: 'textarea',
-                                minimum: 0,
-                                maximum: 1,
-                            },
-                        ]
-                    }
-                ]
+                                {
+                                    title: 'Instructions',
+                                    description: 'Add extra detail about what this task means when it is marked as pending',
+                                    key: 'pendingDescription',
+                                    params: {
+                                        persistentDescription: true,
+                                    },
+                                    type: 'string',
+                                    directive: 'textarea',
+                                    minimum: 0,
+                                    maximum: 1,
+                                },
+                            ]
+                        }
+                    ]
 
-            }, {
-                title: 'Pending Post Type',
-                description: 'Ask for a post to be created for extra details when this task is marked as pending',
-                key: 'postPending',
-                params: {
-                    persistentDescription: true,
+                }, {
+                    title: 'Pending Post Type',
+                    description: 'Ask for a post to be created for extra details when this task is marked as pending',
+                    key: 'postPending',
+                    params: {
+                        persistentDescription: true,
+                    },
+                    type: 'string',
+                    directive: 'select',
+                    minimum: 0,
+                    maximum: 1,
+                    options: self.postOptions,
+                    expressions: {
+                        hide: 'data.instructions.pendingDisabled',
+                    },
                 },
-                type: 'string',
-                directive: 'select',
-                minimum: 0,
-                maximum: 1,
-                options: self.postOptions,
-                expressions: {
-                    hide: 'data.instructions.pendingDisabled',
+
+                {
+                    title: 'Pending Post Attach',
+                    description: 'Where should the post be attached to?',
+                    params: {
+                        persistentDescription: true,
+                    },
+                    key: 'postPendingAttach',
+                    type: 'string',
+                    directive: 'select',
+                    minimum: 1,
+                    maximum: 1,
+                    options: self.postAttachOptions,
+                    expressions: {
+                        show() {
+                            return self.model.postPending
+                        }
+                    },
                 },
-            }]
+            ]
         },
 
         failedFields() {
@@ -299,69 +357,88 @@ export default {
             var self = this;
 
             return [{
-                type: 'group',
-                asObject: true,
-                minimum: 1,
-                maximum: 1,
-                askCount: 1,
-                key: 'instructions',
-                fields: [{
-                        title: `Disable '${self.failedLabel}' Option`,
-                        description: `Disable the ability for this task to be marked as '${self.failedLabel}'`,
-                        key: 'failedDisabled',
-                        type: 'boolean',
-                        minimum: 0,
-                        maximum: 1,
-                    },
-                    {
-                        type: 'group',
-                        expressions: {
-                            hide: 'model.failedDisabled'
+                    type: 'group',
+                    asObject: true,
+                    minimum: 1,
+                    maximum: 1,
+                    askCount: 1,
+                    key: 'instructions',
+                    fields: [{
+                            title: `Disable '${self.failedLabel}' Option`,
+                            description: `Disable the ability for this task to be marked as '${self.failedLabel}'`,
+                            key: 'failedDisabled',
+                            type: 'boolean',
+                            minimum: 0,
+                            maximum: 1,
                         },
-                        fields: [{
-                                title: 'Label',
-                                description: `Set what label should be used when referring to this task being '${self.failedLabel}'`,
-                                key: 'failedLabel',
-                                type: 'string',
-                                params: {
-                                    persistentDescription: true,
-                                },
-                                minimum: 0,
-                                maximum: 1,
+                        {
+                            type: 'group',
+                            expressions: {
+                                hide: 'model.failedDisabled'
                             },
-                            {
-                                title: 'Instructions',
-                                description: `Add extra detail about what this task means when it is marked as '${self.failedLabel}'`,
-                                key: 'failedDescription',
-                                type: 'string',
-                                params: {
-                                    persistentDescription: true,
+                            fields: [{
+                                    title: 'Label',
+                                    description: `Set what label should be used when referring to this task being '${self.failedLabel}'`,
+                                    key: 'failedLabel',
+                                    type: 'string',
+                                    params: {
+                                        persistentDescription: true,
+                                    },
+                                    minimum: 0,
+                                    maximum: 1,
                                 },
-                                directive: 'textarea',
-                                minimum: 0,
-                                maximum: 1,
-                            },
-                        ]
+                                {
+                                    title: 'Instructions',
+                                    description: `Add extra detail about what this task means when it is marked as '${self.failedLabel}'`,
+                                    key: 'failedDescription',
+                                    type: 'string',
+                                    params: {
+                                        persistentDescription: true,
+                                    },
+                                    directive: 'textarea',
+                                    minimum: 0,
+                                    maximum: 1,
+                                },
+                            ]
+                        },
+
+
+                    ]
+                }, {
+                    title: 'Failed Post Type',
+                    description: `Ask for a post to be created for extra details when this task is marked as '${self.failedLabel}'`,
+                    params: {
+                        persistentDescription: true,
                     },
-
-
-                ]
-            }, {
-                title: 'Failed Post Type',
-                description: `Ask for a post to be created for extra details when this task is marked as '${self.failedLabel}'`,
-                params: {
-                    persistentDescription: true,
+                    key: 'postFailed',
+                    expressions: {
+                        hide: 'data.instructions.failedDisabled',
+                    },
+                    type: 'string',
+                    directive: 'select',
+                    minimum: 0,
+                    maximum: 1,
+                    options: self.postOptions,
                 },
-                key: 'postFailed',
-                expressions: {
-                    hide: 'data.instructions.failedDisabled',
+                {
+                    title: 'Failed Post Attach',
+                    description: 'Where should the post be attached to?',
+                    params: {
+                        persistentDescription: true,
+                    },
+                    key: 'postFailedAttach',
+                    type: 'string',
+                    directive: 'select',
+                    minimum: 1,
+                    maximum: 1,
+                    options: self.postAttachOptions,
+                    expressions: {
+                        show() {
+                            return self.model.postFailed
+                        }
+                    },
                 },
-                type: 'string',
-                directive: 'select',
-                minimum: 0,
-                maximum: 1,
-                options: self.postOptions,
-            }]
+            ]
         },
         instructions() {
             return this.model.instructions || {};
@@ -386,6 +463,7 @@ export default {
         // },
     },
 }
+
 </script>
 <style lang="scss">
 .fluro-task-edit-modal {
@@ -422,4 +500,5 @@ export default {
     }
 
 }
+
 </style>

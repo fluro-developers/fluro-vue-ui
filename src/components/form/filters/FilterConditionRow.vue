@@ -1004,7 +1004,8 @@ export default {
 																																								"active",
 																																								"draft",
 																																								"archived",
-																																								"deceased"
+																																								"deceased",
+																																								// 'deleted',
 																																				]);
 																																				break;
 																																case "purchase":
@@ -1013,7 +1014,8 @@ export default {
 																																								"cancelled",
 																																								"expired",
 																																								"failed",
-																																								"archived"
+																																								"archived",
+																																								// 'deleted',
 																																				]);
 																																				break;
 																																default:
@@ -1021,7 +1023,8 @@ export default {
 																																								"active",
 																																								"draft",
 																																								"archived",
-																																								"template"
+																																								"template",
+																																								// 'deleted',
 																																				]);
 																																				break;
 																												}
@@ -1320,6 +1323,15 @@ export default {
 
 				.v-select__slot {
 								overflow: hidden;
+				}
+
+
+				.layout {
+								margin: -2px !important;
+				}
+
+				.flex {
+								padding: 2px !important;
 				}
 
 				.v-select,

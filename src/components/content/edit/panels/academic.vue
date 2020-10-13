@@ -45,6 +45,8 @@
                                     </fluro-panel-body>
                                 </fluro-panel>
                                 <!--  -->
+
+                                <!-- <pre>{{model}}</pre> -->
                             </constrain>
                         </v-container>
                     </flex-column-body>
@@ -103,6 +105,7 @@ export default {
         GradeManager,
     },
     created() {
+
     },
     mixins: [FluroContentEditMixin],
     computed: {
@@ -119,6 +122,9 @@ export default {
                 minimum: 1,
                 maximum: 1,
                 type: 'string',
+                params:{
+                    autofocus:!self.model.title
+                },
             });
 
 

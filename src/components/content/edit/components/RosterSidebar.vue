@@ -34,7 +34,7 @@
                                     <template v-else>
                                         <label>Search Results</label>
                                         <list-group>
-                                            <roster-slot-suggestion-list-item v-for="(contact, index) in searchResults" @click.native="selectSuggestion(searchResults[index])" v-model="searchResults[index]" :assignmentSlot="slot" :event="event" />
+                                            <roster-slot-suggestion-list-item v-for="(contact, index) in searchResults" :manual="true" @click.native="selectSuggestion(searchResults[index])" v-model="searchResults[index]" :assignmentSlot="slot" :event="event" />
                                         </list-group>
                                     </template>
                                 </v-container>
@@ -231,7 +231,8 @@ export default {
             self.$fluro.api.get(`/content/contact/search/${string}`, {
                     params: {
                         limit: 10,
-                    }
+                    },
+                    cache:false,
                 })
                 .then(function(res) {
                     self.searchResults = self.filterPossible(res.data);

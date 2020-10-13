@@ -433,14 +433,9 @@
 																																				</fluro-panel>
 																																				<fluro-panel v-if="model.parentType == 'roster'">
 																																								<tabset justified>
-																																												<tab heading="Roster Settings">
-																																																<fluro-panel-body>
-																																																				<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.weight" v-model="model" />
-																																																				<fluro-content-form v-model="model.data" :fields="rosterFields" />
-																																																</fluro-panel-body>
-																																												</tab>
-																																												<tab heading="Default Slots">
-																																																<roster-slot-manager v-model="model.data.slots" />
+																																											
+																																												<tab heading="Default Positions">
+																																																<roster-slot-manager :autoCreate="false" v-model="model.data.slots" />
 																																												</tab>
 																																												<tab heading="Reminders">
 																																																<fluro-panel-body>
@@ -448,8 +443,11 @@
 																																																				<definition-reminder-manager :slots="model.data.slots" v-model="model.data.defaultReminders" />
 																																																</fluro-panel-body>
 																																												</tab>
-																																												<tab heading="Roster Restrictions">
+																																												<tab heading="Advanced">
 																																																<fluro-panel-body>
+
+																																																		<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.weight" v-model="model" />
+																																																				<fluro-content-form v-model="model.data" :fields="rosterFields" />
 																																																				<fluro-content-form v-model="model.data" :fields="restrictionFields" />
 																																																</fluro-panel-body>
 																																												</tab>

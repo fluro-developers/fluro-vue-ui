@@ -11,9 +11,7 @@
                             <fluro-confirm-button @click="remove(index)" content="Remove">
                                 <template v-slot:default="{ confirming }">
                                     <v-btn flat block :color="confirming ? 'red' : ''" style="transition: all 0.1s;width:100%;">
-                                        {{
-                                        confirming ? "Confirm?" : "Remove"
-                                        }}
+                                        {{ confirming ? "Confirm?" : "Remove" }}
                                     </v-btn>
                                 </template>
                             </fluro-confirm-button>
@@ -30,6 +28,7 @@
                         <v-flex>
                             <fluro-content-form ref="form" v-model="proposed" :fields="fields" />
                             <!-- :options="options" -->
+                            <!-- <pre>{{proposed}}</pre> -->
                         </v-flex>
                         <v-flex shrink>
                             <v-btn type="submit" @click="add()">Add</v-btn>
@@ -58,10 +57,15 @@ import FluroContentForm from "../../../form/FluroContentForm.vue";
 import draggable from "vuedraggable";
 import _ from "lodash";
 
+import Vue from 'vue';
+
 export default {
     props: {
         value: {
-            type: Array
+            type: Array,
+            default() {
+                return [];
+            }
         }
     },
     components: {
@@ -77,6 +81,11 @@ export default {
             drag: false
         };
     },
+    watch:{
+        model(v) {
+            this.$emit('input', v);
+        }
+    },
     methods: {
         add() {
             var clone = JSON.parse(JSON.stringify(this.proposed));
@@ -90,7 +99,8 @@ export default {
 
             this.model.push(clone);
 
-            this.proposed = {};
+            this.proposed.title = '';
+            this.proposed.description = '';
         },
         remove(index) {
             this.model.splice(index, 1);
