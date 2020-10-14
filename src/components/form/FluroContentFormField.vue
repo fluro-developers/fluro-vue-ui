@@ -1,6 +1,6 @@
 <template>
 				<div @click="clicked($event)" :data-field-key="key" class="fluro-content-form-field" v-if="isVisible" v-bind="attributes" :class="fieldClass">
-								<!-- 	<pre>{{fieldModel}}</pre> -->
+								
 								<pre v-if="!field">FATAL - NO FIELD SPECIFIED</pre>
 								<template v-if="ready && model">
 												<template v-if="officeUseOnly">
@@ -60,24 +60,24 @@
 																				</v-card>
 																				<template v-if="!fieldModel || !fieldModel.length">
 																								<template v-if="webMode">
-																												<fluro-button block size="lg" @click="addValue()" v-if="canAddValue">
+																												<fluro-button block size="lg" @click="addValue({})" v-if="canAddValue">
 																																{{addLabel}}
 																												</fluro-button>
 																								</template>
 																								<template v-else>
-																												<v-btn class="ml-0" block large color="primary" @click="addValue()" v-if="canAddValue">
+																												<v-btn class="ml-0" block large color="primary" @click="addValue({})" v-if="canAddValue">
 																																{{addLabel}}
 																												</v-btn>
 																								</template>
 																				</template>
 																				<template v-else>
 																								<template v-if="webMode">
-																												<fluro-button @click="addValue()" v-if="canAddValue">
+																												<fluro-button @click="addValue({})" v-if="canAddValue">
 																																{{addLabel}}
 																												</fluro-button>
 																								</template>
 																								<template v-else>
-																												<v-btn class="ml-0" color="primary" @click="addValue()" v-if="canAddValue">
+																												<v-btn class="ml-0" color="primary" @click="addValue({})" v-if="canAddValue">
 																																{{addLabel}}
 																												</v-btn>
 																								</template>
@@ -91,6 +91,7 @@
 																				</template>
 																				<template v-else>
 																								<draggable v-model="fieldModel" handle=".handle" v-bind="dragOptions" @start="drag=true" @end="drag=false">
+																											
 																												<v-card :key="object.guid" v-for="(object, index) in fieldModel">
 																																<v-toolbar class="elevation-0">
 																																				<v-btn small icon flat class="handle">
@@ -3433,6 +3434,8 @@ export default {
 								addValue(value) {
 
 												var self = this;
+
+												console.log('ADD VALUE!!!', value)
 
 												//If we have defaults disabled
 												if (self.disableDefaults) {

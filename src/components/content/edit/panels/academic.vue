@@ -164,12 +164,13 @@ export default {
     },
     methods: {
         toggleAutoGraduate() {
+            console.log('TOGGLE')
             var self = this;
             if (!self.model.autoGraduate) {
-                self.model.autoGraduate = true;
+                self.$set(self.model, 'autoGraduate', true);
             }
             else {
-                self.model.autoGraduate = false;
+                self.$set(self.model, 'autoGraduate', false);
             }
         }
     },

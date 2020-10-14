@@ -3,7 +3,7 @@
 								<slot :nextPage="nextPage" :previousPage="previousPage" :setPage="setPage" :pageIndex="pageIndex" :currentPage="currentPage" :perPage="perPage" :items="items" :page="page" :totalPages="totalPages" :previousPageEnabled="previousPageEnabled" :nextPageEnabled="nextPageEnabled" />
 								<!-- <pre>previousPageEnabled {{previousPageEnabled}}</pre> -->
 								<!-- <pre>nextPageEnabled {{nextPageEnabled}}</pre> -->
-							<!-- 	<pre>totalPages {{totalPages}}</pre>
+								<!-- 	<pre>totalPages {{totalPages}}</pre>
 								<pre>pageIndex {{pageIndex}}</pre> -->
 								<!-- <pre>items.length {{items.length}}</pre> -->
 								<!-- <pre>page.length {{page.length}}</pre> -->
@@ -80,14 +80,14 @@ export default {
 												this.dataSource.pageIndex = c;
 								},
 								fields(c) {
-										// console.log('fields changed', c);
+												// console.log('fields changed', c);
 												this.dataSource.fields = c;
 								},
 								cacheKey(c) {
-									this.dataSource.cacheKey = c;
+												this.dataSource.cacheKey = c;
 								},
 								loading(val) {
-										this.$emit('loading', val);
+												this.$emit('loading', val);
 								}
 				},
 				data() {
@@ -98,7 +98,7 @@ export default {
 												criteria: this.criteria,
 												fields: this.fields,
 												cumulative: this.cumulative,
-												cacheKey:this.cacheKey,
+												cacheKey: this.cacheKey,
 								})
 
 								return {
