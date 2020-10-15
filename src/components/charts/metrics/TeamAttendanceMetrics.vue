@@ -54,8 +54,8 @@
 						</div>
 					</tab>
 					<tab heading="Reported Stats">
-					  <pre>{{postStats}}</pre>  
-					  <pre>{{postData}}</pre>  
+					  <!-- <pre>{{postStats}}</pre>  
+					  <pre>{{postData}}</pre>   -->
 						<fluro-chart
 							chartType="bar"
 							:options="postData.options"
