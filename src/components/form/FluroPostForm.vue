@@ -204,7 +204,7 @@ export default {
         },
         hasErrors() {
             // console.log('Has Errors?', this.errorMessages)
-            return this.errorMessages.length ? true : false;
+            return (this.errorMessages || []).length ? true : false;
         },
 
         displayTitle() {
@@ -251,7 +251,15 @@ export default {
     methods: {
 
         validate() {
-            this.errorMessages = _.get(this.$refs, 'form.errorMessages');
+
+            var errors = [];
+
+            if (this.$refs.form) {
+                errors = this.$refs.form.errorMessages;
+            }
+
+            this.errorMessages = errors;
+
         },
         clear() {
             this.reset()
@@ -260,13 +268,13 @@ export default {
             var self = this;
             //Reset the model
             self.$set(self.model, 'data', {});
-           
+
 
             // self.$set(self.model, 'data', {});
             var form = self.$refs.form;
-            if(form) {
-             console.log('RESET FORM NOW')
-             form.reset();
+            if (form) {
+                console.log('RESET FORM NOW')
+                form.reset();
             }
 
             self.state = 'ready';
