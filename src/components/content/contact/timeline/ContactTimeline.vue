@@ -4,9 +4,65 @@
             <fluro-page-preloader contain />
         </template>
         <template v-else>
-            <!-- <v-sparkline v-if="points && points.length" :color="color" :fill="true" :height="60" :padding="0" :value="values" :smooth="4" auto-draw /> -->
-            <!-- <v-sparkline v-if="points && points.length" :padding="0" :value="points" :smooth="4" auto-draw /> -->
+            <!-- -->
             <fluro-timeline v-model="array">
+                <template v-slot:above>
+                    <v-label>Activity Heartbeat</v-label>
+                    <p></p>
+                    <!-- <v-sheet color="rgba(0, 0, 0, .12)">
+                        <v-sparkline :value="test" color="rgba(255, 255, 255, .7)" height="100" padding="24" stroke-linecap="round" smooth>
+                            <template v-slot:label="item">
+                                ${{ item.value }}
+                            </template>
+                        </v-sparkline>
+                    </v-sheet> -->
+                    <div class="pulse">
+                        <div class="labels">
+                            <v-layout>
+                                <v-flex>
+                                    <v-label>{{months[0]}}</v-label>
+                                </v-flex>
+                                <v-spacer />
+                                <v-flex class="text-xs-right">
+                                    <v-label>{{months[months.length-1]}}</v-label>
+                                </v-flex>
+                            </v-layout>
+                        </div>
+                        <!-- :labels="months" -->
+                        <v-sparkline v-if="points && points.length" :lineWidth="0" :gradient="['#6378f6', '#eee']" :fill="true" :height="40" :padding="0" :value="points" :smooth="3" auto-draw>
+                            <!-- <template v-slot:label="item, label">
+                                {{label.value}}
+                            </template> -->
+                        </v-sparkline>
+                        <!-- <pre>{{months}}</pre> -->
+                    </div>
+
+                   
+                    <v-container grid-list-md fluid pa-0>
+                    <v-layout row wrap>
+                        <v-flex>
+                            <div class="pill-box">
+                                <v-label>Created</v-label>
+                                <div>{{firstInteraction | timeago}}</div>
+                            </div>
+                        </v-flex>
+                       
+                        <v-flex>
+                            <div class="pill-box">
+                                <v-label>Last Activity</v-label>
+                                <div>{{lastActivity | timeago}}</div>
+                            </div>
+                        </v-flex>
+                       <!--  <v-flex>
+                            <div class="pill-box">
+                                <v-label>Avg over past 12 months</v-label>
+                                <div>{{frequency}} actions/month</div>
+                            </div>
+                        </v-flex> -->
+                        
+                    </v-layout>
+                   </v-container>
+                </template>
                 <template v-slot:card="{entry}">
                     <template v-if="entry.grouped">
                         <!-- <grouped-card :item="entry"/> -->
@@ -87,6 +143,11 @@ import RosterCard from "./cards/RosterCard.vue";
 import TextMessageCard from "./cards/TextMessageCard.vue";
 import EmailMessageCard from "./cards/EmailMessageCard.vue";
 import GroupedCard from "./cards/GroupedCard.vue";
+import moment from 'moment';
+
+
+const MONTH_KEY = 'MMM YYYY';
+
 
 export default {
     props: {
@@ -112,14 +173,82 @@ export default {
     data() {
         return {
             loading: false,
-            model: this.value
+            model: this.value,
+            months: [],
+            // test: [
+            //     423,
+            //     446,
+            //     675,
+            //     510,
+            //     590,
+            //     610,
+            //     760
+            // ]
         };
     },
+    mounted() {
+
+        const getMonths = (start, end) =>
+            Array.from({ length: end.diff(start, 'month') + 1 }).map((_, index) =>
+                moment(start).add(index, 'month').format(MONTH_KEY),
+            );
+
+        this.months = getMonths(moment().subtract(24, 'months'), moment());
+
+
+
+
+    },
     computed: {
+
+        firstInteraction() {
+            return this.model.created || (_.last(this.array) || {}).date;
+        },
+        lastActivity() {
+            return (_.first(this.array) || {}).date;
+        },
+        frequency() {
+            return Math.round(_.sum(this.points) / this.points.length);
+        },
         points() {
 
-            
-            return [0, 100, 230, 20, 200]
+            var self = this;
+
+            ////////////////////////////////////////
+
+            var points = _.chain(self.array)
+                .reduce(function(set, entry, index) {
+                    var date = moment(entry.date).format(MONTH_KEY);
+
+                    var existing = set[date];
+                    if (!existing) {
+                        existing = set[date] = {
+                            index,
+                            date,
+                            count: 0,
+                        };
+                    }
+
+                    existing.count++;
+
+                    return set;
+                }, {})
+                .value();
+
+
+            ////////////////////////////////////////
+
+            // return points;
+            var counts = _.map(self.months, function(dateKey) {
+
+                var entry = points[dateKey];
+
+                return entry ? entry.count : 0;
+            })
+            // console.log('POINTS', counts);
+
+            return counts;
+
         }
     },
     asyncComputed: {
@@ -139,6 +268,8 @@ export default {
                     self.$fluro.api
                         .get(`/contact/${contactID}/timeline`)
                         .then(function(res) {
+
+                            
                             resolve(res.data);
                             self.loading = false;
                         })
@@ -159,6 +290,40 @@ export default {
     .timeline-wrapper {
         max-width: 960px;
         margin: auto;
+    }
+}
+
+.pulse {
+    padding: 0;
+    background: #fff; //rgba(#000,0.3);
+    border-radius: 10px;
+    margin-bottom: 25px;
+    overflow: hidden;
+    // border: 1px solid #ccc;
+
+    // box-shadow: 0 3px 15px rgba(#000, 0.2);
+    // border:1px solid rgba(#000,0.1);
+
+    .labels {
+        padding: 15px 15px 0;
+    }
+
+    svg {
+
+        display: block;
+    }
+
+}
+
+.pill-box {
+    padding: 15px;
+    background: #fff; //rgba(#000,0.3);
+    border-radius: 10px;
+    margin-bottom: 25px;
+    box-shadow: 0 1px 2px rgba(#000, 0.1);
+
+    div {
+     font-size:1.3em;
     }
 }
 

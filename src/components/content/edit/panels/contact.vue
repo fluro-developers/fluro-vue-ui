@@ -169,14 +169,15 @@
 																				<tab tooltip="Messaging" :icon="{icon:'envelope'}">
 																								<contact-message-list :contact="model" />
 																				</tab>
-																				
 																				<tab tooltip="Transactions" :icon="{type:'transaction'}">
 																								<contact-transaction-list :contact="model" />
 																				</tab>
 																				<tab tooltip="Posts and Notes" :icon="{type:'post'}">
 																								<contact-post-thread :contact="model" />
 																				</tab>
-
+																				<tab tooltip="Upcoming" :icon="{type:'assignment'}">
+																								<contact-assignment-thread :contact="model" />
+																				</tab>
 																				<tab tooltip="Notifications" :icon="{icon:'bell'}">
 																								<contact-notification-list :contact="model" />
 																				</tab>
@@ -557,6 +558,7 @@ import ContactCheckinList from '../../contact/timeline/ContactCheckinList.vue';
 import ContactInteractionList from '../../contact/timeline/ContactInteractionList.vue';
 import ContactNotificationList from '../../contact/timeline/ContactNotificationList.vue';
 import ContactPostThread from '../../contact/timeline/ContactPostThread.vue';
+import ContactAssignmentThread from '../../contact/timeline/ContactAssignmentThread.vue';
 
 
 
@@ -594,6 +596,7 @@ export default {
 								ContactNotificationList,
 								ContactCheckinList,
 								ContactPostThread,
+								ContactAssignmentThread,
 								ContactGroupManager,
 								ContactProcessManager,
 								ContactCapabilityManager,
@@ -1146,7 +1149,7 @@ export default {
 																maximum: 1,
 																type: 'boolean',
 																directive: 'select',
-																defaultValues: [false],
+																defaultValues: [true],
 																options: [{
 																								name: `It's a Guess`,
 																								value: false,

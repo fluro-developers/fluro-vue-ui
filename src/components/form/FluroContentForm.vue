@@ -2,11 +2,11 @@
     <div class="fluro-content-form" v-if="ready && model">
         <slot name="form" :parent="formModel" :context="context" :form-fields="formFields" :field-hash="fieldHash" :model="model" :update="update" :options="options">
             <v-container fluid class="grid-list-lg" pa-0 :key="`${field.key}-${index}`" v-for="(field, index) in fields">
-                <fluro-content-form-field :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="fields[index]" @input="update" v-model="model" />
+                <fluro-content-form-field :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="fields[index]" :key="`field-${field.key}-${index}`" @input="update" v-model="model" />
             </v-container>
         </slot>
 
-        <!-- <pre>{{model}}</pre> -->
+       
     </div>
 </template>
 <script>
@@ -153,12 +153,9 @@ export default {
 
             //If the model has been changed
             if (self.model != v) {
-                // console.log('A new form model has been selected', v)
-
                 self.watchEnabled = false;
                 self.model = v;
                 self.reset();
-
                 self.$nextTick(function() {
                     self.watchEnabled = true;
                 });
@@ -245,7 +242,7 @@ export default {
         },
         reset() {
             var self = this;
-            // ///console.log('Form reset() THIS SHOULD ONLY HAPPEN IF THE ORIGINAL PROP IS CHANGED')
+            // console.log('Form reset() THIS SHOULD ONLY HAPPEN IF THE ORIGINAL PROP IS CHANGED')
 
             /////////////////////////////////////////////////
 
@@ -336,7 +333,9 @@ export default {
         },
 
         update(input, valueThatWasChanged) {
-            console.log('form model changed from update callback', input, valueThatWasChanged);
+
+
+            // console.log('form model changed from update callback', input, valueThatWasChanged);
             // this.$forceUpdate();
             // this.$emit('input', this.model);
             // ///console.log('form model changed');

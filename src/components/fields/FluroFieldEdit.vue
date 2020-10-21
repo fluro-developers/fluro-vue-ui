@@ -165,6 +165,8 @@
             <tab heading="Field Settings" index="options">
                 <flex-column-body ref="scrollbox">
                     <v-container>
+
+                        <!-- <pre>{{model.directive}}</pre> -->
                         <!-- <v-layout row wrap> -->
                         <!-- <v-flex xs12> -->
                         <fluro-content-form-field ref="title" :field="fields.title" v-model="model" />
@@ -204,6 +206,7 @@
                         <fluro-content-form-field :field="fields.type" v-model="model" />
                         <fluro-content-form-field v-if="model.type == 'reference'" :field="fields.referenceType" v-model="model.params" />
                         <fluro-content-form-field :field="fields.directive" v-model="model" />
+                        <!-- <pre>{{model.directive}}</pre> -->
                         <fluro-content-form-field v-if="model.directive == 'app-size-select'" :field="fields.sizeAxis" v-model="model.params" />
                         <template v-if="isAssetType">
                             <fluro-content-form-field :field="fields.realm" v-model="model.params" />
@@ -608,6 +611,10 @@ export default {
             if(!model.params.restrictType) {
                 self.$set(model.params, "restrictType", null);
             }
+
+            // if(!model.directive) {
+            //     self.$set(model, "directive", 'input');
+            // }
 
             if (!model.params.ticketing) {
                 self.$set(model.params, "ticketing", { enabled: false, events: [] });

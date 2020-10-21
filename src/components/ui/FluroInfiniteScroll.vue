@@ -69,7 +69,7 @@ export default {
                 integer = Math.max(integer, 0);
                 integer = Math.min(integer, this.total - 1);
                 this.currentIndex = integer;
-                console.log('PAGE', integer)
+                // console.log('PAGE', integer)
             }
         },
     },

@@ -387,7 +387,9 @@ export default {
         webMode() {
 
             var self = this;
-            console.log(self.mounted)
+            if(!self.mounted) {
+             return;
+            }
 
             if (!self.$fluro.app) {
                 console.log('NO APP');
@@ -1508,12 +1510,13 @@ export default {
                 request.then(
                     function(interaction) {
                         self.state = "success";
+                        self.$emit("success", interaction);
                         self.dataModel = {
                             data: {}
                         };
 
                         self.result = interaction;
-                        self.$emit("success", interaction);
+                        
                     },
                     function(err) {
                         //Dispatch an error

@@ -9,7 +9,7 @@
                     </v-flex>
                     <v-flex shrink>
                         <v-btn class="ma-0" small color="primary" :loading="exporting" @click="exportItems()">
-                            Export
+                            Export All {{tickets.length}}
                             <fluro-icon right library="fas" icon="share" />
                         </v-btn>
                     </v-flex>

@@ -2,11 +2,13 @@
     <!-- <flex-column> -->
     <flex-column-body scroll-parent>
         <div class="timeline-wrapper">
+            <slot name="above"/>
             <template v-if="massive">
                 <!-- MASSIVE -->
                 <fluro-infinite-scroll :perPage="1" :startPage="1" :buffer="2" :items="months">
                     <template slot-scope="props">
-                        <div class="year">
+                        <div class="year year-massive">
+                            <!-- <div class="year-label">{{year.title}}</div> -->
                             <div class="month" v-for="month in props.page">
                                 <div class="month-label">{{month.title}} {{month.year}}</div>
                                 <div class="day" v-for="day in month.days">
@@ -38,6 +40,7 @@
                     </template>
                 </fluro-infinite-scroll>
             </template>
+            <slot name="below"/>
         </div>
     </flex-column-body>
     <!-- </flex-column> -->
@@ -225,6 +228,10 @@ export default {
 
 .year {
     border-left: 1px solid rgba(#000, 0.1);
+}
+
+.year-massive {
+    
 }
 
 .year-label {

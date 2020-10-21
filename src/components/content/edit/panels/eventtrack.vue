@@ -868,8 +868,8 @@ export default {
             });
 
             addField("defaultStreamEnabled", {
-                title: "Default Stream Enabled",
-                description: "Whether events on this track have live streaming enabled",
+                title: "Stream Enabled",
+                description: "Whether events on this track should have live streaming enabled by default",
                 minimum: 0,
                 maximum: 1,
                 type: "boolean",

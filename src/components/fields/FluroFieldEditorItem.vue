@@ -240,6 +240,10 @@ export default {
                     return;
                 }
 
+                if(field.type == 'group' && !field.asObject) {
+                    return;
+                }
+
                 return field.key == self.model.key;
             });
 

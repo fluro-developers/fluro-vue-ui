@@ -1,6 +1,5 @@
 <template>
 				<div @click="clicked($event)" :data-field-key="key" class="fluro-content-form-field" v-if="isVisible" v-bind="attributes" :class="fieldClass">
-								
 								<pre v-if="!field">FATAL - NO FIELD SPECIFIED</pre>
 								<template v-if="ready && model">
 												<template v-if="officeUseOnly">
@@ -91,7 +90,6 @@
 																				</template>
 																				<template v-else>
 																								<draggable v-model="fieldModel" handle=".handle" v-bind="dragOptions" @start="drag=true" @end="drag=false">
-																											
 																												<v-card :key="object.guid" v-for="(object, index) in fieldModel">
 																																<v-toolbar class="elevation-0">
 																																				<v-btn small icon flat class="handle">
@@ -219,7 +217,8 @@
 																<!-- DATE PICKER -->
 																<v-menu :fixed="true" v-model="modal" min-width="290px" :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
 																				<template v-slot:activator="{ on }">
-																								<v-text-field @blur="touch()" @focus="focussed()" :outline="showOutline" :success="success" :value="formattedDate" :persistent-hint="true" :hint="dateHint" :label="displayLabel" prepend-inner-icon="event" readonly v-on="on"></v-text-field>
+																								<!-- :value="textDate"  -->
+																								<v-text-field @blur="touch()" @focus="focussed()" :outline="showOutline" :success="success" v-model="textDate" :persistent-hint="true" :hint="dateHint" :label="displayLabel" prepend-inner-icon="event" v-on="on"></v-text-field>
 																				</template>
 																				<v-card>
 																								<v-date-picker @blur="touch()" @focus="focussed()" attach @change="modal = false" v-model="dateStringModel" no-title scrollable>
@@ -419,6 +418,7 @@
 																								<v-textarea :outline="showOutline" :success="success" :required="required" :label="displayLabel" v-model="fieldModel" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="placeholder" />
 																				</template>
 																</v-input>
+																<pre>{{fieldModel}}</pre>
 												</template>
 												<template v-else-if="renderer == 'wysiwyg'">
 																<v-input class="no-flex" :outline="showOutline" :success="success" :required="required" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description">
@@ -690,7 +690,7 @@ export default {
 												actualDateModelMonth: null,
 												actualDateModelYear: null,
 
-
+												textDate: '',
 												ready: true,
 												hasInitialValue: false,
 												asyncOptionsLoading: false,
@@ -718,6 +718,23 @@ export default {
 								}
 				},
 				watch: {
+								textDate: _.debounce(function(dateString) {
+
+												var self = this;
+												if (self.field.type == 'date') {
+																return;
+												}
+												var d = new Date(dateString);
+												var isValid = d instanceof Date && !isNaN(d);
+												// console.log('Text Date Changed', d, isValid);
+
+												if (isValid) {
+																this.fieldModel = d;
+												}
+
+
+
+								}, 900),
 								'keywords': _.debounce(function() {
 
 												var self = this;
@@ -1221,6 +1238,7 @@ export default {
 																// new Date(dateString);
 												},
 								},
+
 								formattedDate() {
 
 												var self = this;
@@ -1667,7 +1685,19 @@ export default {
 												return this.field.fields;
 								},
 								officeUseOnly() {
-												return _.get(this.field, 'params.disableWebform') && this.context != 'admin';
+
+												var isWebForm = _.get(this.field, 'params.disableWebform');
+												var isNotAdminContext = this.context != 'admin';
+
+												if (this.context == 'raw') {
+																return;
+												}
+
+												if (isWebForm && isNotAdminContext) {
+																return true;
+												}
+
+
 								},
 								type() {
 
@@ -1841,12 +1871,17 @@ export default {
 
 												var options = actualOptions.slice();
 												if (!self.field.minimum && self.field.maximum == 1) {
-																options.unshift({
-																				name: 'None',
-																				title: 'None',
-																				text: 'None',
-																				value: '',
-																})
+
+																var match = _.find(actualOptions, { value: '' });
+
+																if (!match) {
+																				options.unshift({
+																								name: 'None',
+																								title: 'None',
+																								text: 'None',
+																								value: '',
+																				})
+																}
 												}
 
 												////////////////////////////////////////
@@ -2027,6 +2062,8 @@ export default {
 																				return this.field.directive;
 																				break;
 												}
+
+												console.log('DIRECTIVE', this.field.directive)
 								},
 								renderer() {
 
@@ -2192,6 +2229,7 @@ export default {
 																												break;
 																								case 'reference':
 																												switch (self.context) {
+																																case 'raw':
 																																case 'admin':
 																																				// case 'builder':
 																																				directive = 'content-select';
@@ -2263,7 +2301,7 @@ export default {
 												var self = this;
 
 
-												// console.log('CREATE DEFAULTS', self.field.key, self.field.title)
+
 
 
 												///////////////////////////////////////////////
@@ -2299,6 +2337,7 @@ export default {
 												///////////////////////////////////////////////
 												///////////////////////////////////////////////
 												///////////////////////////////////////////////
+
 												///////////////////////////////////////////////
 
 												//There are no defaults set for this field
@@ -2526,6 +2565,9 @@ export default {
 																				/////////////////////////////////////
 
 																				break;
+																// default:
+																				// return value ? value : '';
+																				// break;
 												}
 
 												/////////////////////////////////////
@@ -2948,10 +2990,12 @@ export default {
 												this.reset()
 								},
 								reset() {
-												//console.log('reset field', this.field.title)
+												// console.log('reset field', this.field.title, this.fieldModel, this.model)
 												//Clear files
 												this.files = [];
 												this.$v.$reset();
+
+												// console.log('RESET', )
 
 
 								},
@@ -3560,8 +3604,16 @@ export default {
 												}
 								},
 								touch() {
+
+												var self = this;
+												if (self.field.type == 'date') {
+
+																if (self.formattedDate) {
+																				self.textDate = self.formattedDate;
+																}
+												}
 												//console.log('touch the field!')
-												this.$v.model.$touch()
+												self.$v.model.$touch()
 
 								},
 								clicked($event) {

@@ -4,25 +4,23 @@
             <fluro-page-preloader contain />
         </template>
         <template v-else>
-            <!-- <pre>{{activeTabIndex}} {{item.state}} {{resultsEnabled}}</pre> -->
+           
             <tabset v-model="activeTabIndex" :justified="true">
-               <!--  <tab heading="Results" v-if="item.state == 'sent'" index="sentresults">
+                <!--  <tab heading="Results" v-if="item.state == 'sent'" index="sentresults">
                      <mailout-results-panel v-model="item"/>
                     
                 </tab> -->
-                <tab heading="Rendered Preview" index="preview">
+                <tab key="preview" heading="Rendered Preview" index="preview">
                     <mailout-render-preview :mailout="item._id" :definition="item.definition" />
                 </tab>
-                <tab heading="Test" v-if="item.state != 'sent'" index="test">
-                    <mailout-test-panel v-model="item"/>
+                <tab key="test" heading="Test" v-if="item.state != 'sent'" index="test">
+                    <mailout-test-panel v-model="item" />
                 </tab>
-                <tab :heading="sendHeading" v-if="item.state != 'sent'" index="preflight">
-                    <mailout-preflight-panel v-model="item"/>
-                    
+                <tab key="preflight" :heading="sendHeading" v-if="item.state != 'sent'" index="preflight">
+                    <mailout-preflight-panel @published="published" v-model="item" />
                 </tab>
-                <tab heading="Results" v-if="resultsEnabled" index="results">
-                     <mailout-results-panel v-model="item"/>
-                    
+                <tab key="results" heading="Results" v-if="resultsEnabled" index="results">
+                    <mailout-results-panel v-model="item" />
                 </tab>
             </tabset>
         </template>
@@ -59,6 +57,7 @@ let InfoCell = Vue.extend({
         },
     },
     methods: {
+
         info() {
             this.$fluro.modal({
                 component: CorrespondenceInfoModal,
@@ -103,26 +102,25 @@ export default {
     },
     mixins: [FluroContentViewMixin],
     methods: {
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+        published(state) {
+
+            var self = this;
+
+            // setTimeout(function() {
+
+
+                switch (self.item.state) {
+                    case 'sent':
+                        self.activeTabIndex = 'results';
+                        break;
+                }
+
+                console.log('Published event', state, self.activeTabIndex, self.item.state)
+
+            // }, 100)
+        },
     },
-    
-    
     computed: {
-        
-        
-        
-        
-        
-        
         definitionName() {
             return this.item.definition;
         },
@@ -168,12 +166,13 @@ export default {
         var state = this.item.state;
 
         return {
-            activeTabIndex: state == 'sent' ? 'results' :'preview',
+            activeTabIndex: state == 'sent' ? 'results' : 'preview',
             search: '',
-            
+
         }
     },
 }
+
 </script>
 <style scoped lang="scss">
 .row-item {
@@ -214,4 +213,5 @@ export default {
         line-height: 50px;
     }
 }
+
 </style>

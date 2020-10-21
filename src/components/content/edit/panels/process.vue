@@ -23,6 +23,7 @@
                                 <!-- <pre>{{model}}</pre> -->
                                 <constrain sm>
                                     <template v-if="reference">
+
                                         <fluro-panel>
                                             <!--  <fluro-panel-title class="border-bottom">
                                                     <v-layout align-center>
@@ -622,11 +623,16 @@ export default {
 
             return {
                 key: "item",
-                title: "Referenced Item",
+                title: "Reference Item",
                 description: "Select an item to add to this process",
                 minimum: 0,
                 maximum: 1,
-                type: "reference"
+                type: "reference",
+                // expressions:{
+                //     defaultValue() {
+                //         return self.contacts[0];
+                //     }
+                // }
                 // params:{
                 //     restrictType
                 // }

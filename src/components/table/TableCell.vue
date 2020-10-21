@@ -17,8 +17,9 @@
                     </div>
                 </template>
             </template>
-            <div v-else-if="formattedArray" style="max-width: 600px; white-space: normal;">
+            <div v-else-if="formattedArray" class="formatted-array">
                 <template v-for="entry in formattedArray">
+                  
                     <a class="inline-tag" v-if="entry._id" @click.stop.prevent="clicked(entry)" :style="{color:entry.color, backgroundColor:entry.bgColor}">
                         <template v-if="entry._type == 'event'">
                             <fluro-icon type="event" /> {{entry.title}} <span class="text-muted">// {{entry | readableEventDate}}</span>
@@ -39,6 +40,7 @@
                             <fluro-icon v-if="entry._type" :type="entry._type" /> {{entry.title}} <template v-if="entry.appendage"> - {{entry.appendage}}</template>
                         </template>
                     </a>
+               
                     <template v-else-if="renderer">
                         <component :data="entry" :is="renderer" :row="row" :column="column" />
                     </template>
@@ -105,12 +107,21 @@ export default {
             if (!item._id) {
                 return;
             }
-            console.log('Sub item click', item);
+            // console.log('Sub item click', item);
             this.$actions.open([item]);
             // this.$fluro.global.view(item);
         }
     },
     computed: {
+        // cellStyle() {
+
+        //     var self = this;
+
+        //     return {
+        //         'maxWidth':'300px',
+        //         'white-space':self.formattedArray.length > 5 ? 'normal' : 'nowrap',
+        //     }
+        // },
         style() {
             return this.column.style;
         },
@@ -118,6 +129,10 @@ export default {
             return String(this.rawValue).length;
         },
         shouldWrap() {
+            if((this.formattedArray || []).length > 4) {
+                return true;
+            }
+
             return this.column.wrap || _.isString(this.rawValue) && this.characterCount > 100;
         },
         complexTitle() {
@@ -625,7 +640,12 @@ export default {
     overflow: hidden;
     white-space: pre-line;
     text-overflow: ellipsis;
+
+     .formatted-array {
+        min-width: 300px;   
+    }
 }
+
 
 .no-padding {
     padding:0 !important;

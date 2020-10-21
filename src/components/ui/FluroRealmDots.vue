@@ -47,6 +47,10 @@ export default {
                 if(!realm) {
                     return;
                 }
+
+                if(realm.status == 'deleted') {
+                    return;
+                }
                 
                 if(realm._discriminatorType) {
                     // console.log('REALM', realm.title)

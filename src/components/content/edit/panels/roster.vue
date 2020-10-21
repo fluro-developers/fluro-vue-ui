@@ -42,10 +42,6 @@
                                 <div class="pseudo-slot" @click="addSlot(slot)" v-for="slot in possibleSlots">Add {{slot.title}}</div>
                                 <v-btn block color="primary" @click="createSlot()">Add a new position</v-btn>
                             </constrain>
-                            <!-- <pre>{{selected}}</pre> -->
-                            <!-- <pre>{{definition}}</pre> -->
-                            <!-- <roster-main v-model="model" :definition="definition"></roster-main> -->
-                            <!-- <default-roster-manager :config="config" v-model="model.defaultRosters" :rosterOptions="rosterDefinitions.definitions" /> -->
                         </v-container>
                     </flex-column-body>
                     <flex-column class="sidebar" v-if="selected">
@@ -57,7 +53,8 @@
                 <flex-column-body style="background: #fafafa;">
                     <v-container>
                         <constrain md>
-                            <reminder-event-manager :config="config" v-model="model.reminders" :allAssignmentOptions="model.slots" />
+                            <event-reminder-manager :slots="model.slots" :startDate="startDate" :endDate="endDate" v-model="model.reminders" />
+                            <!-- <reminder-event-manager :config="config" v-model="model.reminders" :allAssignmentOptions="model.slots" /> -->
                         </constrain>
                     </v-container>
                 </flex-column-body>
@@ -77,7 +74,7 @@
 <script>
 /////////////////////////////////
 // import RosterMain from '../components/RosterMain.vue';
-import ReminderEventManager from "../components/ReminderEventManager.vue";
+// import ReminderEventManager from "../components/ReminderEventManager.vue";
 import FluroContentEditMixin from "../FluroContentEditMixin.js";
 
 import RosterSidebar from "../components/RosterSidebar.vue";
@@ -91,11 +88,11 @@ import _ from "lodash";
 
 export default {
     mixins: [FluroContentEditMixin],
-    components: { ReminderEventManager, RosterSidebar },
+    components: { RosterSidebar },
     methods: {
         isSelected(slot) {
             var self = this;
-            return self.selected && self.selected.slot == slot; 
+            return self.selected && self.selected.slot == slot;
         },
         createSlot() {
             var self = this;
@@ -190,7 +187,7 @@ export default {
             var self = this;
             console.log("ADD SLOT", slot);
 
-            if(!self.model.slots) {
+            if (!self.model.slots) {
                 self.$set(self.model, 'slots', []);
             }
 
@@ -364,8 +361,14 @@ export default {
         // }
     },
     computed: {
+        startDate() {
+            return new Date(this.model.event.startDate)
+        },
+        endDate() {
+            return new Date(this.model.event.endDate)
+        },
         reminderCount() {
-         return (this.model.reminders || []).length
+            return (this.model.reminders || []).length
         },
         existingSlotNames() {
             var self = this;

@@ -4,9 +4,9 @@
             <fluro-page-preloader contain />
         </template>
         <template v-else>
-            <tabset :justified="true" :vertical="true">
+            <tabset v-model="tabIndex" :justified="true" :vertical="true">
                 <template v-if="model.state != 'sent'">
-                    <tab heading="Basic Details">
+                    <tab heading="Basic Details" index="basic">
                         <flex-column-body style="background: #fafafa;">
                             <v-container>
                                 <constrain sm>
@@ -259,7 +259,6 @@
                                             <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.selectedRealms" v-model="model" />
                                         </fluro-panel-body>
                                     </fluro-panel>
-                                   
                                     <fluro-panel v-if="contactDefinitionOptions.length > 1">
                                         <fluro-panel-title :class="{collapsed:!expanded.definitions}" @click.native="toggleExpand('definitions')">
                                             <v-layout align-center>
@@ -312,23 +311,26 @@
                         </flex-column-body>
                     </tab>
                 </template>
+
                 <template v-if="model._id && definition">
-                    <tab heading="Preview">
+                    <tab key="preview" heading="Preview" index="preview">
                         <flex-column style="border-left:1px solid #ddd">
                             <mailout-render-preview :mailout="model._id" :definition="definition.definitionName" />
                         </flex-column>
                     </tab>
-                    <tab heading="Testing" v-if="model.state != 'sent'">
+                    <tab key="testing" heading="Testing" index="testing" v-if="model.state != 'sent'">
                         <mailout-test-panel v-model="model" />
                     </tab>
-                    <tab heading="Send and Publish" v-if="model.state != 'sent'">
-                        <mailout-preflight-panel v-model="model" />
+                    <tab key="preflight" heading="Send and Publish" index="preflight" v-if="model.state != 'sent'">
+                        <mailout-preflight-panel @published="published" v-model="model" />
                     </tab>
-                    <tab heading="Results" v-if="resultsEnabled">
+                    <tab key="results" heading="Results" index="results" v-if="resultsEnabled">
                         <mailout-results-panel v-model="model" />
                     </tab>
                 </template>
             </tabset>
+
+             
         </template>
         <!-- <flex-column-body> -->
         <!-- <pre>{{model}}</pre> -->
@@ -379,6 +381,9 @@ export default {
 
 
             console.log('TOGGLE', key, self.expandedSettings);
+        },
+        published() {
+            self.tabIndex = 'results';
         },
     },
     computed: {
@@ -874,7 +879,18 @@ export default {
             },
         },
     },
+    created() {
+        var tabIndex = 'basic';
+
+        if (this.model.state == 'sent') {
+            tabIndex = 'results';
+        }
+
+        this.tabIndex = tabIndex;
+    },
     data() {
+
+
         return {
             expandedSettings: {
                 _contacts: false,
@@ -882,6 +898,7 @@ export default {
                 _events: false,
                 _tickets: false,
             },
+            tabIndex: '',
             editorOptions: {
                 editor: {
                     tokens: [{

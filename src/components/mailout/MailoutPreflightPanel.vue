@@ -1,6 +1,6 @@
 <template>
     <flex-column>
-        <fluro-page-preloader contain v-if="preflightProcessing"/>
+        <fluro-page-preloader contain v-if="preflightProcessing" />
         <flex-column-body style="background: #fafafa;" v-else>
             <v-container>
                 <constrain sm>
@@ -126,13 +126,12 @@
     </flex-column>
 </template>
 <script>
-
 import _ from 'lodash';
 
 import FluroContentFormField from '../form/FluroContentFormField.vue';
 
 export default {
-    components:{
+    components: {
         FluroContentFormField,
     },
     props: {
@@ -145,35 +144,53 @@ export default {
         publish() {
 
             var self = this;
-
             var publishDate = this.item.publishDate ? new Date(this.item.publishDate) : null;
-            self.publishProcessing = true;
 
-            self.$fluro.api.get(`/mailout/${self.item._id}/publish`, {
-                    params: {
-                        date: publishDate,
-                    }
-                })
-                .then(function(res) {
-                    self.item.state = res.data.state;
-                    self.item.publishDate = res.data.publishDate;
-                    self.publishProcessing = false;
-                    self.checkIfCountdownIsNeeded();
-                    // self.checkIfResultsAreNeeded();
+            ///////////////////////////////
 
-                    switch (res.data.state) {
-                        case 'scheduled':
-                            self.$fluro.notify(`Your mailout has been scheduled successfully`);
-                            break;
-                        case 'sent':
-                            self.$fluro.notify(`Your mailout has been published`);
-                            break;
-                    }
-                })
-                .catch(function(err) {
-                    self.$fluro.error(err);
-                    self.publishProcessing = false;
-                })
+            if (publishDate) {
+                return publishConfirmed();
+            } else {
+
+                return self.$fluro.confirm('Ready to send? ').then(function() {
+                    publishConfirmed();
+                });
+            }
+
+            ///////////////////////////////
+
+            function publishConfirmed() {
+                self.publishProcessing = true;
+
+                self.$fluro.api.get(`/mailout/${self.item._id}/publish`, {
+                        params: {
+                            date: publishDate,
+                        }
+                    })
+                    .then(function(res) {
+                        self.item.state = res.data.state;
+                        self.item.publishDate = res.data.publishDate;
+                        self.publishProcessing = false;
+                        self.checkIfCountdownIsNeeded();
+                        // self.checkIfResultsAreNeeded();
+
+                        switch (res.data.state) {
+                            case 'scheduled':
+                                self.$fluro.notify(`Your mailout has been scheduled successfully`);
+                                break;
+                            case 'sent':
+                                self.$fluro.notify(`Your mailout has been published`);
+                                break;
+                        }
+
+                        self.$emit('published', self.item.state);
+                    })
+                    .catch(function(err) {
+                        self.$fluro.error(err);
+                        self.publishProcessing = false;
+                    })
+            }
+
         },
         abort() {
 
@@ -244,6 +261,8 @@ export default {
                 this.stopCountdown();
                 this.duration = 0;
             }
+
+            console.log('ITEM STATE', this.item.state);
         },
         stopCountdown() {
             if (this.timer) {
@@ -270,11 +289,11 @@ export default {
         },
     },
     watch: {
-        item:{
+        item: {
             handler(i) {
                 this.$emit('input', i)
             },
-            deep:true,
+            deep: true,
         },
         'item.state': function() {
             this.checkIfCountdownIsNeeded()
@@ -295,7 +314,7 @@ export default {
     beforeDestroy() {
         this.stopCountdown();
     },
-    computed:{
+    computed: {
         publishDateField() {
             return {
                 // title: 'When to send?',
@@ -305,7 +324,7 @@ export default {
                 maximum: 1,
                 directive: 'datetimepicker',
                 // description: this.publishDateHint,
-                placeholder: 'Send Immediately',
+                placeholder: 'Schedule',
                 // defaultValues:[new Date()],
                 // directive:'datetimeselect',
             }
@@ -351,6 +370,7 @@ export default {
         }
     },
 }
+
 </script>
 <style lang="scss" scoped>
 </style>
