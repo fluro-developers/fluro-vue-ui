@@ -258,12 +258,13 @@ export default {
 
         validate() {
 
-            var self = this;
-            var errors = [];
-
-            if (self.$refs.form) {
-                errors = this.$refs.form.errorMessages;
+           var form = this.$refs.form;
+            if (!form) {
+                return [];
             }
+
+            var errors = [];
+            errors = errors.concat(form.errorMessages);
 
             this.errorMessages = errors;
 
