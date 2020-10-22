@@ -6,6 +6,7 @@
             </v-container>
         </slot>
 
+
        
     </div>
 </template>
@@ -336,12 +337,13 @@ export default {
 
 
             // console.log('form model changed from update callback', input, valueThatWasChanged);
-            // this.$forceUpdate();
+            // 
             // this.$emit('input', this.model);
             // ///console.log('form model changed');
             this.$emit('input', this.model);
             // JSON.parse(JSON.stringify(this.model)));
-        }
+           
+        },
 
         // update: function(input, valueThatWasChanged) {
 

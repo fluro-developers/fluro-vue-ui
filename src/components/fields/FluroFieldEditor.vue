@@ -653,7 +653,7 @@ export default {
 
             _.each(fields, function(field) {
                 if (!field.guid) {
-                    field.guid = self.$fluro.utils.guid();
+                    self.$set(field,'guid', self.$fluro.utils.guid());
                 }
 
                 self.recursiveGUID(field.fields);
@@ -981,10 +981,17 @@ export default {
 
             var index = parent.indexOf(field);
             var copy = JSON.parse(JSON.stringify(field));
+            // self.recursiveGUID(copy.fields);
+
+
+            // console.log('NEW KEYS', field, copy)
             copy.guid = self.$fluro.utils.guid();
             copy.title = "";
             copy.key = "";
             parent.splice(index + 1, 0, copy);
+
+
+
 
             //Seld the first field
             self.field = copy;

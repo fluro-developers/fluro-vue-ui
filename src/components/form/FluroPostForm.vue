@@ -127,6 +127,7 @@ export default {
         },
     },
     data() {
+
         return {
             model: {
                 data: {},
@@ -138,9 +139,6 @@ export default {
             mounted: false,
         }
     },
-    created() {
-
-    },
     mounted() {
         var self = this;
         self.$watch(function() {
@@ -150,15 +148,7 @@ export default {
         this.mounted = true;
     },
     computed: {
-        // dataModel: {
-        //     get() {
-        //         return this.model.data;
-        //     },
-        //     set(d) {
-        //      console.log('Set data model', d)
-        //         this.model.data = d;
-        //     }
-        // },
+
         userAvatarID() {
             return this.user ? this.user.persona || this.user._id : null;
         },
@@ -266,19 +256,20 @@ export default {
         },
         reset() {
             var self = this;
-            //Reset the model
-            self.$set(self.model, 'data', {});
+
+
 
 
             // self.$set(self.model, 'data', {});
             var form = self.$refs.form;
             if (form) {
-                console.log('RESET FORM NOW')
                 form.reset();
             }
 
             self.state = 'ready';
             self.$emit('reset');
+
+            self.model.data = {}
         },
         submit() {
 
@@ -293,8 +284,23 @@ export default {
 
             self.state = 'processing';
 
+            // if(this.webMode) {
+            // disableUserContext
+            // }
+
+            var requestOptions;
+            if (self.webMode) {
+                //Create the post as the managed user
+                requestOptions = {
+                    application: true
+                }
+
+            }
+
             //Create the post
-            self.$fluro.content.submitPost(this.target, this.type, this.model)
+            self.$fluro.content.submitPost(this.target, this.type, this.model, {
+                    requestOptions,
+                })
                 .then(function(post) {
                     // console.log('Created the post!', post);
 

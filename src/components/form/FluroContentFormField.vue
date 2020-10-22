@@ -150,7 +150,6 @@
 																				</template>
 																				<template v-else>
 																								<template v-for="subfield in fields">
-																												<!-- <pre>{{subfield.title}} {{subfield.key}}</pre> -->
 																												<fluro-content-form-field :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" class="flex" :field="subfield" @input="elementValueChanged" v-model="model" />
 																												<!-- <fluro-content-form-field :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" class="flex" :field="subfield" @input="elementValueChanged" v-model="fieldModel" /> -->
 																								</template>
@@ -167,7 +166,6 @@
 																				<!-- @change="elementValueChanged($event, true)" -->
 																				<v-checkbox :outline="showOutline" :success="success" :mandatory="required" :persistent-hint="true" :label="displayLabel" v-model="fieldModel" @change="elementValueChanged($event, true)" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
 																</template>
-																<!-- <pre>MODEL {{fieldModel}}</pre> -->
 												</template>
 												<template v-else-if="renderer == 'number'">
 																<!-- type="number" -->
@@ -218,6 +216,7 @@
 																<v-menu :fixed="true" v-model="modal" min-width="290px" :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
 																				<template v-slot:activator="{ on }">
 																								<!-- :value="textDate"  -->
+																						
 																								<v-text-field @blur="touch()" @focus="focussed()" :outline="showOutline" :success="success" v-model="textDate" :persistent-hint="true" :hint="dateHint" :label="displayLabel" prepend-inner-icon="event" v-on="on"></v-text-field>
 																				</template>
 																				<v-card>
@@ -230,7 +229,6 @@
 																								</v-date-picker>
 																				</v-card>
 																</v-menu>
-																<!-- <pre>{{fieldModel}}</pre> -->
 												</template>
 												<template v-else-if="renderer == 'timepicker'">
 																<v-dialog ref="dialog" v-model="modal" persistent :return-value.sync="fieldModel" lazy full-width width="290px">
@@ -252,7 +250,6 @@
 																</v-dialog>
 												</template>
 												<template v-else-if="renderer == 'datetimepicker'">
-																<!-- <pre>{{fieldModel}}</pre> -->
 																<fluro-date-time-picker :outline="showOutline" :large="!params.small" :min="minDate" :max="maxDate" :success="success" format="ddd D MMM - h:mma " timePickerFormat="ampm" :label="displayLabel" :placeholder="placeholder" :hint="field.description" v-model="fieldModel" @blur="touch()" @focus="modalFocussed();" />
 												</template>
 												<template v-else-if="renderer == 'timezoneselect'">
@@ -283,16 +280,6 @@
 																<v-select :persistent-hint="true" :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="definitionOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
 												</template>
 												<template v-else-if="renderer == 'select'">
-																<!-- <v-menu :fixed="true" v-model="modal" min-width="290px" transition="slide-y-transition" offset-y> -->
-																<!-- <template v-slot:activator="{ on }"> -->
-																<!-- <v-input :label="displayLabel" :persistent-hint="true" class="no-flex"> -->
-																<!-- <v-text-field @blur="touch()" @focus="focussed()" :outline="showOutline" :success="success" :persistent-hint="true" :hint="field.description" :label="displayLabel" v-on="on"></v-text-field> -->
-																<!-- </v-input> -->
-																<!-- </template> -->
-																<!-- <div> -->
-																<!-- <pre>{{selectOptions}}</pre> -->
-																<!-- </div> -->
-																<!-- </v-menu> -->
 																<template v-if="useBasicDropdown">
 																				<!-- :fixed="true"  -->
 																				<v-select :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
@@ -415,10 +402,10 @@
 																								</template>
 																				</template>
 																				<template v-if="!multipleInput">
-																								<v-textarea :outline="showOutline" :success="success" :required="required" :label="displayLabel" v-model="fieldModel" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="placeholder" />
+																								<v-textarea :outline="showOutline" :success="success" :required="required" :label="displayLabel" v-model="model[field.key]" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="placeholder" />
 																				</template>
+																			
 																</v-input>
-																<pre>{{fieldModel}}</pre>
 												</template>
 												<template v-else-if="renderer == 'wysiwyg'">
 																<v-input class="no-flex" :outline="showOutline" :success="success" :required="required" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description">
@@ -596,7 +583,6 @@
 																</template>
 												</template>
 								</template>
-								<!-- <pre>{{field.title}} is dirty? {{dirty}} {{$v.model.$dirty}} {{hasInitialValue}}</pre> -->
 				</div>
 </template>
 <script>
@@ -721,12 +707,11 @@ export default {
 								textDate: _.debounce(function(dateString) {
 
 												var self = this;
-												if (self.field.type == 'date') {
+												if (self.field.type != 'date') {
 																return;
 												}
 												var d = new Date(dateString);
 												var isValid = d instanceof Date && !isNaN(d);
-												// console.log('Text Date Changed', d, isValid);
 
 												if (isValid) {
 																this.fieldModel = d;
@@ -847,7 +832,7 @@ export default {
 												if (this.model != val) {
 
 
-																// console.log('New value for field', val, this)
+
 																// val = this.fixCorruptedData(val);
 																// //console.log('SET VALUE OF THING', val);
 																//Set the new model
@@ -1585,7 +1570,6 @@ export default {
 
 																//Get the value for this field
 																var value = self.model[self.field.key];
-
 																// console.log('GET clean going in', self.field.title, value);
 																var cleaned = self.cleanOutput(value);
 																// console.log('GET clean going out', self.field.title, cleaned);
@@ -1608,6 +1592,7 @@ export default {
 																// console.log('Before clean', value)
 																// console.log('SET clean going in', self.field.title, value);
 																value = self.cleanInput(value);
+
 																// console.log('SET clean going out', self.field.title, value);
 
 
@@ -1619,16 +1604,25 @@ export default {
 																				self.$set(self.model, self.field.key, value);
 																				self.$emit('input', self.model);
 																				// console.log('Emit', value, self.model[self.field.key])
-																				//self.$forceUpdate();
-																} else {
+																				//
+																				// } else {
 
+																				// console.log('SAME VALUE', self.model[self.field.key], value)
 																				// if(self.field.type == 'boolean') {
 																				// 	self.$set(self.model, self.field.key, value);
 																				// 				self.$emit('input', self.model);
 																				// 				console.log('change', self.field.key, self.model[self.field.key], value);
 																				// }
 
+
+																				// self.$forceUpdate();
+																				// console.log('EMIT CHANGE')
 																}
+
+
+
+
+
 																//  else {
 																// 	//console.log('Value is already same thing!')
 																// 	self.$emit('input', self.model);
@@ -2301,7 +2295,7 @@ export default {
 												var self = this;
 
 
-
+												// console.log('CREATE DEFAULTS', self.field.key, self.field.title)
 
 
 												///////////////////////////////////////////////
@@ -2337,12 +2331,11 @@ export default {
 												///////////////////////////////////////////////
 												///////////////////////////////////////////////
 												///////////////////////////////////////////////
-
 												///////////////////////////////////////////////
 
 												//There are no defaults set for this field
 												if (!self.defaultValues || !self.defaultValues.length) {
-																// //console.log('NO DEFAULT VALUES FOR', self.field.title)
+																// console.log('NO DEFAULT VALUES FOR', self.field.title)
 																return;
 												}
 
@@ -2565,9 +2558,6 @@ export default {
 																				/////////////////////////////////////
 
 																				break;
-																// default:
-																				// return value ? value : '';
-																				// break;
 												}
 
 												/////////////////////////////////////
@@ -2979,6 +2969,7 @@ export default {
 																self.hasInitialValue = false;
 												} else {
 																self.hasInitialValue = true;
+																// console.log('HAS INITIAL VALUE', self.fieldModel)
 												}
 
 												// //console.log('')
@@ -2986,16 +2977,14 @@ export default {
 								clear() {
 												this.fieldModel = null;
 												this.modal = false;
-												//console.log('RESET INSIDE CLEAR()')
+
 												this.reset()
 								},
 								reset() {
-												// console.log('reset field', this.field.title, this.fieldModel, this.model)
+												//console.log('reset field', this.field.title)
 												//Clear files
 												this.files = [];
 												this.$v.$reset();
-
-												// console.log('RESET', )
 
 
 								},

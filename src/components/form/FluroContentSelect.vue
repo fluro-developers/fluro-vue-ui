@@ -574,15 +574,15 @@ export default {
                 this.$emit("input", self.model);
             }
 
-            console.log('MODEL CHANGED')
+            // console.log('MODEL CHANGED')
         },
         minimum(min) {
-            console.log("CHANGESSS", min);
+            // console.log("CHANGESSS", min);
             var self = this;
             self.selectionMinimum = min;
         },
         maximum(max) {
-            console.log("CHANGESSS", max);
+            // console.log("CHANGESSS", max);
             var self = this;
             self.selectionMaximum = max;
         }

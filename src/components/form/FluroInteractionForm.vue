@@ -79,7 +79,6 @@
                             <v-container v-if="allowPayment">
                                 <h2>Payment</h2>
                                 <fluro-content-form-field @input="modelChanged" :options="options" :field="allowedAmountInput" v-model="dataModel" />
-                                
                                 <!-- <v-layout align-center>
                                     <v-flex class="modifier-title">
                                         <strong>Amount</strong>
@@ -387,8 +386,8 @@ export default {
         webMode() {
 
             var self = this;
-            if(!self.mounted) {
-             return;
+            if (!self.mounted) {
+                return;
             }
 
             if (!self.$fluro.app) {
@@ -453,7 +452,7 @@ export default {
                 directive: 'currency',
                 minimum: 0,
                 maximum: 1,
-                defaultValues:['0'],
+                defaultValues: ['0'],
                 params: {
                     currency: this.currency,
                     minValue: this.allowedMinimumAmount,
@@ -1488,7 +1487,6 @@ export default {
                     }
 
                     interactionData.payment = paymentDetails;
-                    console.log("SUBMIT REQUEST", interactionData);
                 }
 
                 /////////////////////////////////
@@ -1498,6 +1496,15 @@ export default {
                     definition: self.$fluro.utils.getStringID(self.definition),
                     process: self.$fluro.utils.getStringID(self.linkedProcess)
                 };
+
+                /////////////////////////////////
+
+               
+                if (self.webMode) {
+                    //Create the post as the managed user
+                    submissionConfig.application = true;
+                    console.log('Submit as web user')
+                }
 
                 /////////////////////////////////
 
@@ -1516,7 +1523,7 @@ export default {
                         };
 
                         self.result = interaction;
-                        
+
                     },
                     function(err) {
                         //Dispatch an error
