@@ -132,11 +132,18 @@ export default {
             model: {
                 data: {},
             },
+            postType: this.type,
             serverErrors: '',
             errorMessages: [],
             thread: [],
             state: 'ready',
             mounted: false,
+        }
+    },
+    watch: {
+        type(t) {
+         console.log('POST TYPE CHANGED', t);
+            this.postType = t;
         }
     },
     mounted() {
@@ -205,8 +212,8 @@ export default {
             return `Add ${this.form.title}`;
         },
         allowed() {
-            var canCreate = this.$fluro.access.can('create', this.type, 'post', this.webMode);
-            var canSubmit = this.$fluro.access.can('submit', this.type, 'post', this.webMode);
+            var canCreate = this.$fluro.access.can('create', this.postType, 'post', this.webMode);
+            var canSubmit = this.$fluro.access.can('submit', this.postType, 'post', this.webMode);
             return canCreate || canSubmit;
         },
         user() {
@@ -234,7 +241,16 @@ export default {
         form: {
             default: [],
             get() {
-                return this.$fluro.content.type(this.type);
+
+                var self = this;
+                return new Promise(function(resolve, reject) {
+                    self.$fluro.content.type(self.postType).then(function(res) {
+                            console.log('Get the post type', self.postType, res)
+                            return resolve(res);
+                        })
+                        .catch(reject);
+
+                });
             }
         }
     },
@@ -242,9 +258,10 @@ export default {
 
         validate() {
 
+            var self = this;
             var errors = [];
 
-            if (this.$refs.form) {
+            if (self.$refs.form) {
                 errors = this.$refs.form.errorMessages;
             }
 
@@ -298,7 +315,7 @@ export default {
             }
 
             //Create the post
-            self.$fluro.content.submitPost(this.target, this.type, this.model, {
+            self.$fluro.content.submitPost(this.target, this.postType, this.model, {
                     requestOptions,
                 })
                 .then(function(post) {
