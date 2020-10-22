@@ -170,22 +170,22 @@ export default {
             }
 
             if (!self.$fluro.app) {
-                console.log('NO APP');
+                console.log('POST FORM > NO APP');
                 return;
             }
             var element = self.$el;
             if (!element) {
-                console.log('NO ELEMENT');
+                console.log('POST FORM > NO ELEMENT');
                 return;
             }
 
             if (!element.ownerDocument) {
-                console.log('NO DOCUMENT');
+                console.log('POST FORM > NO DOCUMENT');
                 return;
             }
 
             if (!element.ownerDocument.defaultView) {
-                console.log('NO DEFAULT VIEW');
+                console.log('POST FORM > NO DEFAULT VIEW');
                 return;
             }
 
@@ -258,6 +258,7 @@ export default {
 
         validate() {
 
+          console.log('post validate');
            var form = this.$refs.form;
             if (!form) {
                 return [];
