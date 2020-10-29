@@ -68,31 +68,31 @@ export default {
 </script>
 <style lang="scss">
 .parallax-item {
-
+    height:100%;
     width: 100%;
 
-    &:before {
-        content: '';
-        position: absolute;
-        display: block;
-        width: 50px;
-        height: 50px;
-        border-radius: 100%;
-        background: #000;
-        left: 0;
-        top: 0;
-    }
+    // &:before {
+    //     content: '';
+    //     position: absolute;
+    //     display: block;
+    //     width: 50px;
+    //     height: 50px;
+    //     border-radius: 100%;
+    //     background: #000;
+    //     left: 0;
+    //     top: 0;
+    // }
 
-    &:after {
-        content: '';
-        position: absolute;
-        display: block;
-        width: 50px;
-        height: 50px;
-        border-radius: 100%;
-        background: #000;
-        right: 0;
-        bottom: 0;
-    }
+    // &:after {
+    //     content: '';
+    //     position: absolute;
+    //     display: block;
+    //     width: 50px;
+    //     height: 50px;
+    //     border-radius: 100%;
+    //     background: #000;
+    //     right: 0;
+    //     bottom: 0;
+    // }
 }
 </style>

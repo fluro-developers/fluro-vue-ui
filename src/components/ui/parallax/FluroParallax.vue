@@ -65,7 +65,7 @@ export default {
                 return node;
             }
 
-            return self.getScrollParent(node.parentNode) || document.body;
+            return self.getScrollParent(node.parentNode) || document.scrollingElement;
         },
         mount() {
 
@@ -295,7 +295,7 @@ export default {
 .parallax {
     display: block;
     position: relative;
-    background: #ccc;
+    //background: #ccc;
 
     pre {
         display: block;
