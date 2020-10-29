@@ -60,12 +60,12 @@ export default {
             const isScrollable = overflowY !== 'visible' && overflowY !== 'hidden';
 
             if (!node) {
-                return null;
+                return document.scrollingElement;// || document.body || document;;
             } else if (isScrollable && node.scrollHeight >= node.clientHeight) {
                 return node;
             }
 
-            return self.getScrollParent(node.parentNode) || document.scrollingElement;
+            return self.getScrollParent(node.parentNode);
         },
         mount() {
 
