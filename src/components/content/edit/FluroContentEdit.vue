@@ -12,8 +12,9 @@
                 <flex-column-header class="border-bottom">
                     <page-header :type="typeName">
                         <template v-slot:left>
+                          
                             <!-- <pre>{{clickTitleEdit}} -- {{typeName}}</pre> -->
-                            <fluro-inline-edit :enabled="clickTitleEdit">
+                            <fluro-inline-edit :autofocus="autofocusTitle" :enabled="clickTitleEdit">
                                 <template v-slot:default>
                                     <h3>
                                         {{title}}
@@ -22,7 +23,7 @@
                                     <v-label v-if="summary">{{summary}}</v-label>
                                 </template>
                                 <template v-slot:edit="{props, blur, focus}">
-                                    <input block @focus="focus($event)" v-model="model.title" @keyup.enter="blur" @blur="blur" />
+                                    <input block @focus="focus($event)" placeholder="Enter a title for this content" v-model="model.title" @keyup.enter="blur" @blur="blur" />
                                 </template>
                             </fluro-inline-edit>
                         </template>
@@ -231,6 +232,9 @@ import FluroStatusSelect from "../../form/FluroStatusSelect.vue";
 import FluroInlineEdit from "../../form/FluroInlineEdit.vue";
 import FluroContentFormField from "../../form/FluroContentFormField.vue";
 import Changelog from "./components/Changelog.vue";
+// import EventTrackUpdateModal from "./panels/eventtrack/EventTrackUpdateModal.vue";
+
+
 
 // import DynamicImportService from "../../../DynamicImportService.js";
 
@@ -404,7 +408,7 @@ export default {
         editFailed(err) {
             var self = this;
 
-            if(!err) {
+            if (!err) {
                 return
             }
 
@@ -446,10 +450,10 @@ export default {
         createFailed(err) {
             var self = this;
 
-            if(!err) {
+            if (!err) {
                 return;
             }
-            
+
             console.log("ERROR MESAGE HAPPEND");
             //Dispatch an error
             var humanMessage = self.$fluro.utils.errorMessage(err);
@@ -548,8 +552,7 @@ export default {
             }
 
             console.log("AUTOSAVE");
-            self
-                .submitUpdate()
+            self.submitUpdate()
                 .then(function(res) {
                     self.state = "ready";
                 })
@@ -565,8 +568,52 @@ export default {
             var definedType =
                 requestData.definition || self.definitionName || self.typeName;
 
-            console.log("SUBMIT UPDATE", self.model, requestData);
+            // console.log("SUBMIT UPDATE", self.model, requestData);
+
+            // return new Promise(function(resolve, reject) {
+
             return self.$fluro.api.put(`/content/${definedType}/${requestData._id}?replaceData=true`, requestData)
+            // .then(function(res) {
+
+            //     if (!res.data) {
+            //         return reject(res);
+            //     }
+
+            //     resolve(res);
+
+            //     //Emit an update
+            //     // self.$emit('updateSuccess', res.data);
+
+            //     // switch (res.data._type) {
+            //     //     case 'eventtrack':
+
+
+
+            //     //         self.$fluro.modal({
+            //     //                 component: EventTrackUpdateModal,
+            //     //                 options: {
+            //     //                     model: res.data,
+            //     //                     // fixed:true,
+            //     //                     size: 'lg',
+            //     //                     // template: options.template,
+            //     //                     // top: true,
+            //     //                     // definedType: typeName,
+            //     //                 },
+            //     //             })
+            //     //             .then(function() {
+            //     //                 resolve(res);
+            //     //             }, function(err) {
+            //     //                 resolve(res);
+            //     //             })
+            //     //         break;
+            //     //     default:
+            //     //         return resolve(res);
+            //     //         break;
+            //     // }
+
+            // }, reject);
+            // })
+            // return self.$fluro.api.put(`/content/${definedType}/${requestData._id}?replaceData=true`, requestData)
         },
         submit(capture) {
             var self = this;
@@ -743,7 +790,7 @@ export default {
                     promise.then(function(res) {
 
                         //Update with our new details
-                        _.assign(self.model, res.data);                    
+                        _.assign(self.model, res.data);
                         resolve(res.data);
                         self.state = "ready";
                     }, function(err) {
@@ -844,6 +891,10 @@ export default {
         hideFooter() {
             var self = this;
             return self.typeName == "definition";
+        },
+        autofocusTitle() {
+         var self = this;
+            return (self.typeName == 'article') && (!self.model._id || !self.model.title);
         },
         summary() {
             var self = this;
@@ -1455,10 +1506,10 @@ export default {
                     });
 
                     promise.catch(function(err) {
-                        if(err) {
-                             self.$fluro.error(err);
+                        if (err) {
+                            self.$fluro.error(err);
                         }
-                       
+
                         // // console.log('ERROR', err.response);
                         // if (err.response.status === 404) {
                         //     console.log('RESOLVE THE 404')

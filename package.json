@@ -1,6 +1,6 @@
 {
 				"name": "fluro-vue-ui",
-				"version": "2.2.81",
+				"version": "2.2.82",
 				"description": "A package that contains helpful Fluro UI components and mixins",
 				"main": "src/index.js",
 				"scripts": {
@@ -34,18 +34,16 @@
 								"js-beautify": "^1.11.0",
 								"vue2-ace-editor": "0.0.15",
 								"vuedraggable": "^2.23.2",
-								"prosemirror-commands": "^1.1.4",
 								"tippy.js": "*",
 								"tiptap": "*",
 								"vuex-map-fields": "^1.4.0",
-								"tiptap-commands": "^1.13.0",
+								"tiptap-commands": "*",
 								"tiptap-extensions": "*",
-								"tiptap-utils": "^1.9.0"
+								"tiptap-utils": "*"
 				},
 				"dependencies": {
 								"@google/markerclusterer": "*",
 								"expression-eval": "^2.0.0",
-								"fluro": "^2.1.31",
 								"rollup-plugin-alias": "^2.2.0",
 								"v-currency-field": "3.0.7",
 								"vue-range-slider": "^0.6.0",

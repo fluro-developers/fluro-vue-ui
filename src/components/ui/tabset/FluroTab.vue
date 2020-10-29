@@ -65,7 +65,7 @@ export default {
     watch: {
         'tabset.activeTabIndex': function(index) {
             this.active = this.key == index;
-            console.log('Active is now', index, this.active)
+            // console.log('Active is now', index, this.active)
         },
         active: 'emitActive',
     },

@@ -1251,7 +1251,6 @@ export default {
                 return [];
             }
 
-            console.log('form validate');
             var errors = [];
             errors = errors.concat(form.errorMessages);
 

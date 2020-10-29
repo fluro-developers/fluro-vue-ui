@@ -216,8 +216,8 @@
 																<v-menu :fixed="true" v-model="modal" min-width="290px" :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
 																				<template v-slot:activator="{ on }">
 																								<!-- :value="textDate"  -->
-																						
-																								<v-text-field @blur="touch()" @focus="focussed()" :outline="showOutline" :success="success" v-model="textDate" :persistent-hint="true" :hint="dateHint" :label="displayLabel" prepend-inner-icon="event" v-on="on"></v-text-field>
+																								<v-text-field @blur="touch()" @focus="focussed()" @keyup.enter="checkTextDateImmediate" @input="checkTextDate" :outline="showOutline" :success="success" v-model="textDate" :persistent-hint="true" :hint="dateHint" :label="displayLabel" prepend-inner-icon="event" v-on="on" />
+																								<!-- <pre>{{formattedDate}} -- {{textDate}}</pre> -->
 																				</template>
 																				<v-card>
 																								<v-date-picker @blur="touch()" @focus="focussed()" attach @change="modal = false" v-model="dateStringModel" no-title scrollable>
@@ -251,6 +251,7 @@
 												</template>
 												<template v-else-if="renderer == 'datetimepicker'">
 																<fluro-date-time-picker :outline="showOutline" :large="!params.small" :min="minDate" :max="maxDate" :success="success" format="ddd D MMM - h:mma " timePickerFormat="ampm" :label="displayLabel" :placeholder="placeholder" :hint="field.description" v-model="fieldModel" @blur="touch()" @focus="modalFocussed();" />
+												<!-- <pre>{{fieldModel}}</pre> -->
 												</template>
 												<template v-else-if="renderer == 'timezoneselect'">
 																<template v-if="mobile">
@@ -404,7 +405,6 @@
 																				<template v-if="!multipleInput">
 																								<v-textarea :outline="showOutline" :success="success" :required="required" :label="displayLabel" v-model="model[field.key]" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="placeholder" />
 																				</template>
-																			
 																</v-input>
 												</template>
 												<template v-else-if="renderer == 'wysiwyg'">
@@ -675,8 +675,6 @@ export default {
 												actualDateModelDay: null,
 												actualDateModelMonth: null,
 												actualDateModelYear: null,
-
-												textDate: '',
 												ready: true,
 												hasInitialValue: false,
 												asyncOptionsLoading: false,
@@ -685,6 +683,7 @@ export default {
 												modal: false,
 												model: this.value, // this.value, // this.value, // Vue.observable(this.value), //JSON.parse(JSON.stringify(this.value)),
 												// model: this.value,
+												textDate: '',
 												proposedValue: null,
 												pseudoModel: null,
 												color: null,
@@ -704,22 +703,11 @@ export default {
 								}
 				},
 				watch: {
-								textDate: _.debounce(function(dateString) {
+								formattedDate(dateString) {
 
 												var self = this;
-												if (self.field.type != 'date') {
-																return;
-												}
-												var d = new Date(dateString);
-												var isValid = d instanceof Date && !isNaN(d);
-
-												if (isValid) {
-																this.fieldModel = d;
-												}
-
-
-
-								}, 900),
+												self.textDate = dateString;
+								},
 								'keywords': _.debounce(function() {
 
 												var self = this;
@@ -829,14 +817,19 @@ export default {
 								},
 								value(val) {
 
+
+
 												if (this.model != val) {
 
 
 
 																// val = this.fixCorruptedData(val);
-																// //console.log('SET VALUE OF THING', val);
+																if (this.field.key == 'logo') {
+																				console.log('SET THE MODEL TO', val);
+																}
 																//Set the new model
 																this.model = val;
+
 																// this.model = Object.assign({}, val);
 
 																if (this.model) {
@@ -855,10 +848,54 @@ export default {
 																}
 												}
 
+
+
 								},
 								// 'isNew':'checkNew',
 				},
 				computed: {
+								// textDate: {
+								// 				get() {
+
+								// 								var self = this;
+								// 								if (self.field.type != 'date') {
+								// 												console.log('TEXTDATE > IS NOT A DATE')
+								// 												return;
+								// 								}
+
+								// 								if (self.multipleInput) {
+								// 												console.log('TEXTDATE > IS MULTIPLE')
+								// 												return;
+								// 								}
+
+								// 								return self.textualDate;
+								// 								// self.textualDate;
+								// 								// var dateString = self.fieldModel;
+								// 								// var d = new Date(dateString);
+								// 								// var isValid = d instanceof Date && !isNaN(d);
+								// 								// return d;
+								// 				},
+								// 				set(dateString) {
+								// 								var self = this;
+								// 								if (self.field.type != 'date') {
+								// 												self.textualDate = null;
+								// 												return;
+								// 								}
+
+								// 								//////////////////////////////////////
+
+								// 								self.textualDate = dateString;
+
+								// 								//////////////////////////////////////
+
+								// 								//See if we can make sense of the date
+								// 								var d = new Date(dateString);
+								// 								var isValid = d instanceof Date && !isNaN(d);
+								// 								if (isValid) {
+								// 												self.fieldModel = d;
+								// 								}
+								// 				}
+								// },
 								academicModel: {
 												get() {
 																return this.fieldModel;
@@ -1517,7 +1554,7 @@ export default {
 																				if (this.asObject || this.renderer == 'embedded') {
 																								if (this.multipleInput) {
 																												classes.push(`multiple-input`);
-																												classes.push(`multiple-input-values-${this.fieldModel.length}`)
+																												classes.push(`multiple-input-values-${this.fieldModel ? this.fieldModel.length : null}`)
 																								}
 																				}
 																				break;
@@ -1602,6 +1639,7 @@ export default {
 
 																				// console.log('SET VALUE TO', value)
 																				self.$set(self.model, self.field.key, value);
+
 																				self.$emit('input', self.model);
 																				// console.log('Emit', value, self.model[self.field.key])
 																				//
@@ -1613,6 +1651,7 @@ export default {
 																				// 				self.$emit('input', self.model);
 																				// 				console.log('change', self.field.key, self.model[self.field.key], value);
 																				// }
+
 
 
 																				// self.$forceUpdate();
@@ -2257,6 +2296,32 @@ export default {
 								}
 				},
 				methods: {
+								checkTextDateImmediate() {
+												var self = this;
+												var dateString = this.textDate;
+
+												if (self.field.type != 'date') {
+																return;
+												}
+
+
+												if (!dateString) {
+																self.fieldModel = null;
+																return;
+												}
+
+												//////////////////////////////////////
+
+												//See if we can make sense of the date
+												var d = new Date(dateString);
+												var isValid = d instanceof Date && !isNaN(d);
+												if (isValid) {
+																self.fieldModel = d;
+												}
+								},
+								checkTextDate: _.debounce(function() {
+												this.checkTextDateImmediate();
+								}, 2000),
 								// checkboxInput(bool) {
 
 
@@ -2294,10 +2359,6 @@ export default {
 
 												var self = this;
 
-
-												// console.log('CREATE DEFAULTS', self.field.key, self.field.title)
-
-
 												///////////////////////////////////////////////
 
 												var value = self.model[self.field.key];
@@ -2311,7 +2372,6 @@ export default {
 
 												//We already have a value
 												if (hasExistingValue) {
-																// //console.log(self.field.title, 'ALREADY HAS A VALUE', value)
 																return;
 												}
 
@@ -2334,10 +2394,8 @@ export default {
 												///////////////////////////////////////////////
 
 												//There are no defaults set for this field
-												if (!self.defaultValues || !self.defaultValues.length) {
-																// console.log('NO DEFAULT VALUES FOR', self.field.title)
-																return;
-												}
+
+
 
 												////////////////////////////////////////////
 
@@ -2346,6 +2404,7 @@ export default {
 												////////////////////////////////////////////
 
 												if (singleInput) {
+
 																//Get the first default value
 																var defaultValue = _.first(self.defaultValues);
 
@@ -2356,7 +2415,7 @@ export default {
 																}
 												} else {
 
-																var defaultArray = _.map(defaultValues, self.cleanInput);
+																var defaultArray = _.map(self.defaultValues, self.cleanInput);
 																// console.log('CREATE DEFAULTS', defaultArray);
 
 																//Add all our default values
@@ -2750,6 +2809,10 @@ export default {
 
 												var output;
 
+
+												if (self.field.key == 'logo') {
+																console.log('Fix corrupted data', input)
+												}
 												////////////////////////////////////////////
 
 												function getPlaceholders() {
@@ -2781,8 +2844,13 @@ export default {
 												var singleInput = !multipleInput;
 												var isArray = _.isArray(input);
 
+
+
 												//We're expecting multiple answers
 												if (multipleInput) {
+
+																// console.log('IS A GROUP OBJECT', self.field.title, self.field.key, input);
+
 																//But the existing value is not an array
 																if (!isArray) {
 																				switch (self.field.type) {
@@ -2800,9 +2868,12 @@ export default {
 																												//We aren't an array but we should be
 																												if (self.field.asObject) {
 																																if (input) {
+
+																																				console.log('WERE NOT AN ARRAY BUT WE SHOULD BE!!', isArray, input)
 																																				//We are an object so insert the object into the array
 																																				output = [input];
 																																} else {
+																																				console.log('GET PLACEHOLDERS')
 																																				output = getPlaceholders();
 																																}
 																												}
@@ -3592,15 +3663,15 @@ export default {
 																this.valueChange();
 												}
 								},
+								// touchDate() {
+								// 	this.checkTextDate();
+								// 	this.touch();
+								// },
 								touch() {
 
 												var self = this;
-												if (self.field.type == 'date') {
 
-																if (self.formattedDate) {
-																				self.textDate = self.formattedDate;
-																}
-												}
+
 												//console.log('touch the field!')
 												self.$v.model.$touch()
 
@@ -3697,8 +3768,16 @@ export default {
 
 
 								if (!self.model) {
-												console.log('NO MODEL BIG ISSUE', self.model, self.field.key);
+												// console.log('NO MODEL BIG ISSUE', self.model, self.field.key);
 								}
+
+
+								// console.log('FIX CORRUPED', self.model[self.field.key], JSON.parse(JSON.stringify(self.model)));
+
+								if (self.field.key == 'logo') {
+												console.log('CREATED KEY NOW', self.field.title, self.field.maximum, self.model[self.field.key]);
+								}
+
 								var cleaned = self.fixCorruptedData(self.model[self.field.key]);
 								if (typeof cleaned != typeof self.model[self.field.key] || cleaned != self.model[self.field.key]) {
 												self.$set(self.model, self.field.key, cleaned);
@@ -3722,6 +3801,7 @@ export default {
 
 								///////////////////////////////////////////////
 
+								self.textDate = self.formattedDate;
 								self.createDefaults();
 								self.checkInitialValue();
 

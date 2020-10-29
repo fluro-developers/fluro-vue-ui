@@ -187,7 +187,7 @@ export default {
 
 												function redirectToURL(result) {
 
-																var url = self.$fluro.api.generateEndpointURL(`/integrate/songselect/${self.model._id}/oauth?mode=${self.model.publicDetails.mode || 'prod'}`);
+																var url = self.$fluro.api.generateEndpointURL(`/integrate/songselect/${self.model._id}/oauth`, {mode:self.model.publicDetails.mode || 'prod'});
 																if (process.browser) {
 																				window.location.href = url;
 																}

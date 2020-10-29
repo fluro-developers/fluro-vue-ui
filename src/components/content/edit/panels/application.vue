@@ -127,7 +127,7 @@
 																												<h5 margin>Advanced</h5>
 																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.apipath" v-model="model" />
 																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.timezone" v-model="model" />
-																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.gaTrackingCode" v-model="model" />
+																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.gaTrackingCode" v-model="model.data" />
 																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.supportEmail" v-model="model" />
 																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.favicon" v-model="model" />
 																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.headerInject" v-model="model" />
@@ -141,9 +141,7 @@
 																				<v-container>
 																								<constrain sm>
 																												<h5 margin>Redirects</h5>
-
-
-																										<!-- 		<div class="form-group">
+																												<!-- 		<div class="form-group">
 				<label>Path forwarding / Redirects</label>
 				<p class="help-block">Add redirects to 301 users to another address, the 'to' address can be an absolute url or another path on this applications domain name</p>
 				<redirect-select ng-model="item.pathForwards"></redirect-select>
@@ -159,7 +157,6 @@
 
 			 -->
 																												<redirect-manager v-model="model.pathForwards" />
-																												
 																								</constrain>
 																				</v-container>
 																</flex-column-body>
@@ -213,6 +210,11 @@ export default {
 																})
 												},
 								},
+				},
+				created() {
+								if (!this.model.data) {
+												this.model.data = {}
+								}
 				},
 				computed: {
 								pushDevices() {
@@ -400,8 +402,8 @@ export default {
 																type: "string",
 																description: "Don't change this unless you know what you are doing. Specify which API URL this application should use. If left blank, the default fluro api url will be used.",
 																placeholder: "https://api.fluro.io",
-																params:{
-																	persistentDescription:true,
+																params: {
+																				persistentDescription: true,
 																}
 												});
 

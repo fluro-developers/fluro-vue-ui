@@ -109,7 +109,15 @@ export default {
             this.$emit("cancel");
         },
         edit() {
-            this.$fluro.global.edit(this.model);
+
+          var self = this;
+
+            self.$fluro.global.edit(self.model)
+            .then(function(response) {
+
+              console.log('Edited')
+              self.refresh();
+            });
         }
     },
 
@@ -442,12 +450,14 @@ export default {
                 var self = this;
                 self.loadingModel = true;
 
+                // var cache = false;
+
                 return new Promise(function(resolve, reject) {
                     self.$fluro.content.get(self.itemID, {
                             appendContactDetail: "all",
                             appendAssignments: "all",
                             type: self.type,
-                            //cacheKey:self.cacheKey,
+                            cacheKey:self.cacheKey,
                         })
                         .then(function(res) {
                             if (!res.data) {

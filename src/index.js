@@ -1,4 +1,4 @@
-console.log('fluro-vue-ui 2.2.81')
+console.log('fluro-vue-ui 2.2.82')
 
 /////////////////////////////////////////////////////
 
@@ -94,6 +94,11 @@ import FluroConstrain from './components/ui/FluroConstrain.vue';
 import FluroRealmBar from './components/ui/FluroRealmBar.vue';
 import FluroTabset from './components/ui/tabset/FluroTabset.vue';
 import FluroTab from './components/ui/tabset/FluroTab.vue';
+
+import FluroParallax from './components/ui/parallax/FluroParallax.vue';
+import FluroParallaxItem from './components/ui/parallax/FluroParallaxItem.vue';
+
+
 import FluroAccordion from './components/ui/accordion/FluroAccordion.vue';
 import FluroAccordionPanel from './components/ui/accordion/FluroAccordionPanel.vue';
 import FluroContentBrowser from './components/form/FluroContentBrowser.vue';
@@ -193,15 +198,20 @@ function install(Vue, options) {
 	/////////////////////////////////////////////
 
 	//Request the user to answer some questions
-	fluro.prompt = function(fields, title, model, description) {
+	fluro.prompt = function(fields, title, model, description, options) {
+
+		if(!options) {
+			options = {};
+		}
+
+		options.title = title;
+		options.fields = fields;
+		options.model = model;
+		options.description = description;
+
 		return fluro.modal({
 			component: FluroPromptDialog,
-			options: {
-				title,
-				fields,
-				model,
-				description,
-			}
+			options,
 		})
 	}
 
@@ -303,6 +313,10 @@ export { FluroInlineEdit as FluroInlineEdit };
 export { FluroConfirmButton as FluroConfirmButton };
 export { FluroTrendChart as FluroTrendChart };
 export { FluroTable as FluroTable };
+
+
+export { FluroParallax as FluroParallax };
+export { FluroParallaxItem as FluroParallaxItem };
 
 export { TableHeaderCheckbox as TableHeaderCheckbox };
 export { TableRowCheckbox as TableRowCheckbox };

@@ -24,39 +24,20 @@
                 </flex-column-header> -->
                 <div class="plan-table-wrapper">
                     <!-- <v-menu attach :nudge-left="10" offset-x left :close-on-content-click="false" transition="slide-x-transition" @click.native.stop> -->
-                    <v-menu
-                        style="position:relative"
-                        attach
-                        offset-x
-                        left
-                        :close-on-content-click="false"
-                        transition="slide-x-transition"
-                        @click.native.stop
-                    >
+                    <v-menu style="position:relative" attach offset-x left :close-on-content-click="false" transition="slide-x-transition" @click.native.stop>
                         <template v-slot:activator="{ on }">
                             <div v-on="on" class="cog-btn">
-                                <v-btn
-                                    v-tippy
-                                    content="Configure Columns"
-                                    class="ma-0"
-                                    small
-                                    icon
-                                >
+                                <v-btn v-tippy content="Configure Columns" class="ma-0" small icon>
                                     <fluro-icon icon="cog" />
                                 </v-btn>
                             </div>
                         </template>
                         <v-card tile>
-                            <v-container  style="min-width:300px;background: #f0f2f5;" pa-3>
-                            	
+                            <v-container style="min-width:300px;background: #f0f2f5;" pa-3>
                                 <!-- <v-list style="max-height: 50vh;" class="scroll-y" dense> -->
                                 <!-- <v-list-tile> -->
                                 <!-- <v-list-tile-content> -->
-                                <fluro-content-form-field
-                                    @input="updateColumns"
-                                    :field="columnEditField"
-                                    v-model="model"
-                                />
+                                <fluro-content-form-field @input="updateColumns" :field="columnEditField" v-model="model" />
                                 <!-- </v-list-tile-content> -->
                                 <!-- </v-list-tile> -->
                                 <!-- </v-list> -->
@@ -72,82 +53,34 @@
                                         <fluro-icon icon="clock" />
                                     </th>
                                     <th class="detail">Detail</th>
-                                    <th
-                                        v-for="(column, key) in columns"
-                                        :key="key"
-                                    >
+                                    <th v-for="(column, key) in columns" :key="key">
                                         {{ column.title }}
                                     </th>
                                     <th>
-                                        <div
-                                            style="width:28px; height: 22px;"
-                                        ></div>
+                                        <div style="width:28px; height: 22px;"></div>
                                         <!-- <v-menu attach :nudge-left="10" offset-x left bottom v-model="actionsOpen" > -->
                                     </th>
                                 </tr>
                             </thead>
                             <!-- <tbody> -->
-                            <draggable
-                                tag="tbody"
-                                handle=".handle"
-                                v-model="model.schedules"
-                                v-bind="dragOptions"
-                                @start="drag = true"
-                                @end="drag = false"
-                                @sort="calculateDurations()"
-                            >
+                            <draggable tag="tbody" handle=".handle" v-model="model.schedules" v-bind="dragOptions" @start="drag = true" @end="drag = false" @sort="calculateDurations()">
                                 <!-- :teams="model.teams" -->
-                                <plan-row
-                                    @delete="remove(index)"
-                                    @swap="swap(index)"
-                                    @duplicate="duplicate(index)"
-                                    @add="addFromRow"
-                                    v-model="model.schedules[index]"
-                                    :index="index"
-                                    :plan="model"
-                                    v-for="(row, index) in model.schedules"
-                                    :key="row.guid"
-                                />
+                                <plan-row @delete="remove(index)" @swap="swap(index)" @duplicate="duplicate(index)" @add="addFromRow" v-model="model.schedules[index]" :index="index" :plan="model" v-for="(row, index) in model.schedules" :key="row.guid" />
                             </draggable>
                             <tfoot>
                                 <tr>
                                     <th colspan="2"></th>
                                     <td>
-                                        <v-btn
-                                            v-tippy
-                                            content="Add Row"
-                                            style="border: 1px solid #ddd; background: #fff;"
-                                            class="ma-2"
-                                            @click="add('row')"
-                                        >
+                                        <v-btn v-tippy content="Add Row" style="border: 1px solid #ddd; background: #fff;" class="ma-2" @click="add('row')">
                                             <fluro-icon icon="plus" />
                                         </v-btn>
-                                        <v-btn
-                                            v-tippy
-                                            content="Add Songs"
-                                            style="border: 1px solid #ddd; background: #fff;"
-                                            class="ma-2"
-                                            @click="add('song')"
-                                        >
+                                        <v-btn v-tippy content="Add Songs" style="border: 1px solid #ddd; background: #fff;" class="ma-2" @click="add('song')">
                                             <fluro-icon icon="music" />
                                         </v-btn>
-                                        <v-btn
-                                            v-tippy
-                                            content="Add Section"
-                                            style="border: 1px solid #ddd; background: #fff;"
-                                            class="ma-2"
-                                            @click="add('breaker')"
-                                        >
+                                        <v-btn v-tippy content="Add Section" style="border: 1px solid #ddd; background: #fff;" class="ma-2" @click="add('breaker')">
                                             <fluro-icon icon="megaphone" />
                                         </v-btn>
-                                        <v-btn
-                                            v-tippy
-                                            content="Add Start Time"
-                                            style="border: 1px solid #ddd; background: #fff;"
-                                            class="ma-2"
-                                            @click="add('start')"
-                                            v-if="startRowIndex == -1"
-                                        >
+                                        <v-btn v-tippy content="Add Start Time" style="border: 1px solid #ddd; background: #fff;" class="ma-2" @click="add('start')" v-if="startRowIndex == -1">
                                             <fluro-icon icon="clock" />
                                         </v-btn>
                                         <!-- <v-btn @click="add('song')" v-tippy content="Add songs">
@@ -234,11 +167,7 @@
                         <v-container>
                             <constrain sm>
                                 <h3 margin>{{ definition.title }}</h3>
-                                <fluro-content-form
-                                    :options="options"
-                                    v-model="model.data"
-                                    :fields="definition.fields"
-                                >
+                                <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields">
                                 </fluro-content-form>
                             </constrain>
                         </v-container>
@@ -275,8 +204,8 @@ export default {
 
         self.calculateDurations();
     },
-    watch:{
-        'times':'calculateDurations',
+    watch: {
+        'times': 'calculateDurations',
     },
     methods: {
 
@@ -293,19 +222,18 @@ export default {
             var eventStartDate = _.get(self.model, 'event.startDate');
             var planStartDate = _.get(self.model, 'startDate');
             // var startDate = (planStartDate ? new Date(planStartDate) : false) || (eventStartDate ? new Date(eventStartDate) : false) || new Date(); 
-            var startDate = (eventStartDate ? new Date(eventStartDate) : false) || (planStartDate ? new Date(planStartDate) : false) || new Date(); 
+            var startDate = (eventStartDate ? new Date(eventStartDate) : false) || (planStartDate ? new Date(planStartDate) : false) || new Date();
 
             //////////////////////////////////////////////////
 
             function newTime(elapsed) {
                 var clonedDate = new Date(JSON.parse(JSON.stringify(startDate)));
                 if (elapsed < 0) {
-                    clonedDate.setTime(startDate.getTime() - (-1*elapsed));
+                    clonedDate.setTime(startDate.getTime() - (-1 * elapsed));
+                } else {
+                    clonedDate.setTime(startDate.getTime() + elapsed);
                 }
-                else {
-                    clonedDate.setTime(startDate.getTime() + elapsed); 
-                }
-                
+
                 return self.$fluro.date.formatDate(clonedDate, 'h:mma');
             }
 
@@ -334,7 +262,7 @@ export default {
                 self.$set(row, 'elapsedTime', elapsed);
                 return elapsed;
             }, 0)
-           
+
         },
         updateColumns() {
             this.$set(this.model, "teams", this.model.teams.slice());
@@ -342,8 +270,7 @@ export default {
         selectSongs() {
             var self = this;
             return self.$fluro.global.select(
-                "song",
-                { minimum: 0, maximum: 0 },
+                "song", { minimum: 0, maximum: 0 },
                 true
             );
         },
@@ -388,42 +315,36 @@ export default {
 
             switch (type) {
                 case "breaker":
-                    return [
-                        {
-                            title: "Section",
-                            type: "breaker",
-                            duration: 0,
-                            links: [],
-                            notes: {},
-                            isNew: true,
-                            guid: self.$fluro.utils.guid()
-                        }
-                    ];
+                    return [{
+                        title: "Section",
+                        type: "breaker",
+                        duration: 0,
+                        links: [],
+                        notes: {},
+                        isNew: true,
+                        guid: self.$fluro.utils.guid()
+                    }];
                     break;
                 case "start":
-                    return [
-                        {
-                            title: "Event Start",
-                            type: "start",
-                            duration: 0,
-                            links: [],
-                            notes: {},
-                            isNew: true,
-                            guid: self.$fluro.utils.guid()
-                        }
-                    ];
-                    break;                
+                    return [{
+                        title: "Event Start",
+                        type: "start",
+                        duration: 0,
+                        links: [],
+                        notes: {},
+                        isNew: true,
+                        guid: self.$fluro.utils.guid()
+                    }];
+                    break;
                 default:
-                    return [
-                        {
-                            title: "New item",
-                            duration: 300,
-                            links: [],
-                            notes: {},
-                            isNew: true,
-                            guid: self.$fluro.utils.guid()
-                        }
-                    ];
+                    return [{
+                        title: "New item",
+                        duration: 300,
+                        links: [],
+                        notes: {},
+                        isNew: true,
+                        guid: self.$fluro.utils.guid()
+                    }];
                     break;
             }
         },
@@ -532,11 +453,11 @@ export default {
             return this.model.schedules[this.startRowIndex];
         },
         startRowIndex() {
-            var  self = this;
-            var index = _.findIndex(self.model.schedules, {type:'start'});
+            var self = this;
+            var index = _.findIndex(self.model.schedules, { type: 'start' });
             return index
         },
-        
+
         fieldsOutput() {
             var self = this;
             var array = [];
@@ -603,6 +524,7 @@ export default {
         };
     }
 };
+
 </script>
 <style lang="scss">
 .plan-table-wrapper {
@@ -650,9 +572,9 @@ export default {
         font-weight: 500;
         background: rgba(#000, 0.1);
         border-radius: 100px;
-        padding: 2px 4px;
+        padding: 2px 6px;
         display: inline-block;
-        margin: 0 4px;
+        margin: 0 4px 0 0;
     }
 
     .cell {
@@ -738,6 +660,7 @@ export default {
             }
 
             &:nth-child(odd) {
+
                 th:first-child,
                 th:last-child {
                     background: #fcfcfc;
@@ -971,6 +894,7 @@ export default {
 
         /* safari and ios need the tfoot itself to be position:sticky also */
         tfoot {
+
             th,
             td {
                 position: -webkit-sticky;
@@ -1008,6 +932,7 @@ export default {
 
         thead,
         tfoot {
+
             th:first-child,
             th:last-child {
                 z-index: 5;
@@ -1030,7 +955,7 @@ export default {
         td .fluro-editor-textarea {
             min-height: 0;
 
-            & > div {
+            &>div {
                 // font-size: 11px;
                 border-radius: 0 !important;
                 padding: $cell-padding !important;
@@ -1039,4 +964,5 @@ export default {
         }
     }
 }
+
 </style>

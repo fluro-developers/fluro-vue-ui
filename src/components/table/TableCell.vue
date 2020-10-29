@@ -84,6 +84,9 @@ import AvatarCell from './cells/AvatarCell.vue';
 import ChartCell from './cells/ChartCell.vue';
 
 
+
+
+
 /////////////////////////////////
 
 export default {
@@ -172,6 +175,16 @@ export default {
                 case 'date':
                 case 'datetime':
                     this.column.type = 'date';
+                    return DateCell;
+                    break;
+               case 'time':
+                    this.column.type = 'date';
+                    this.column.format = 'h:mma';
+                    return DateCell;
+                    break;
+                case 'weekday':
+                    this.column.type = 'date';
+                    this.column.format = 'dddd';
                     return DateCell;
                     break;
                 case 'timeago':

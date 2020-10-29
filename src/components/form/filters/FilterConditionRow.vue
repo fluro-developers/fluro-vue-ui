@@ -27,8 +27,10 @@
 																				<v-text-field single-line label v-model="model.key"></v-text-field>
 																</template>
 												</v-flex>
-												<v-flex xs12 sm3>
+												<v-flex xs12 sm3 >
+													<div v-tippy :content="comparatorsCaption">
 																<v-select single-line dense ref="inputComparator" v-model="modelComparator" item-text="title" item-value="operator" :items="comparators" />
+												</div>
 												</v-flex>
 												<template v-if="comparator && inputType != 'none'">
 																<v-flex xs12 sm5 v-if="inputType == 'daterange'">
@@ -125,13 +127,22 @@
 																												</template>
 																								</template>
 																								<template v-else>
+																												<!-- <template v-if="requiresManualInput">
+																																<template v-if="$vuetify.breakpoint.xsOnly">
+																																				<v-select class="small-input" multiple dense v-model="model.values" :loading="loadingValues" :items="cleanedValueSelection"></v-select>
+																																</template>
+																																<template v-else>
+																																				<v-autocomplete class="small-input" multiple dense v-model="model.values" :loading="loadingValues" :items="cleanedValueSelection"></v-autocomplete>
+																																</template>
+																												</template>
+																												<template v-else> -->
 																												<template v-if="$vuetify.breakpoint.xsOnly">
 																																<v-select class="small-input" multiple dense v-model="model.values" :loading="loadingValues" :items="cleanedValueSelection"></v-select>
 																												</template>
 																												<template v-else>
-																																<!-- STRING TEXT -->
 																																<v-autocomplete class="small-input" multiple dense v-model="model.values" :loading="loadingValues" :items="cleanedValueSelection"></v-autocomplete>
 																												</template>
+																												<!-- </template> -->
 																								</template>
 																				</template>
 																</v-flex>
@@ -468,7 +479,23 @@ export default {
 								useBasicReferenceSelect() {
 												var self = this;
 
-												if (!self.referenceSelectField) {
+												if (!self.rows || !self.rows.length) {
+
+																if (!self.selector) {
+																				return;
+																}
+
+																if (self.selector.typeSelect) {
+																				return self.selector.typeSelect;
+																}
+
+																if (self.selector.params && self.selector.params.restrictType) {
+
+																				return self.selector.params.restrictType;
+																}
+												}
+
+												if (self.referenceSelectField) {
 																return;
 												}
 
@@ -477,6 +504,12 @@ export default {
 												}
 
 												return self.selector.typeSelect || false;
+								},
+								comparatorsCaption() {
+
+
+												return this.comparator ? this.comparator.title : null;
+
 								},
 								keyCaption() {
 												if (this.model.title) {
@@ -722,6 +755,15 @@ export default {
 												}
 								},
 								requiresManualInput() {
+
+												if (!this.rows || !this.rows.length) {
+																if (this.dataType == 'reference') {
+																				return true;
+																}
+												}
+
+												//////////////////////////////////
+
 												switch (this.model.comparator) {
 																case "startswith":
 																case "endswith":
@@ -731,6 +773,19 @@ export default {
 																case "contains":
 																case "excludes":
 																				return true;
+																				break;
+																case '==':
+																case '!=':
+																case 'in':
+																case 'notin':
+
+																				if (!this.rows || !this.rows.length) {
+																								switch (this.dataType) {
+																												case "string":
+																																return true;
+																																break;
+																								}
+																				}
 																				break;
 												}
 								},

@@ -147,6 +147,10 @@
                                 </fluro-content-form>
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.streamIntegrations" v-model="model" />
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.streamContent" v-model="model" />
+                                
+                                <v-btn large color="primary" @click="openLivestreamPanel()">
+                                    Open Livestream Manager <fluro-icon right icon="video"/>
+                                </v-btn>
                                 <fluro-panel>
                                     <fluro-panel-body>
                                         <v-input class="no-flex" label="RTMP Upstream URL">
@@ -370,6 +374,20 @@ export default {
     props: {},
     mixins: [FluroContentEditMixin],
     methods: {
+        openLivestreamPanel() {
+            var self = this;
+            // if(self.model._id) {
+            //     self.$router.push({ name: 'stream', params: { id: self.model._id } });
+            // } else {
+                self.save().then(function(response) {
+
+                    var event = response.data ||  response;
+                    var eventID = self.$fluro.utils.getStringID(event);
+
+                    self.$router.push({ name: 'stream', params: { id:eventID } });
+                });
+            // }
+        },
         editRoster(roster) {
             var self = this;
 

@@ -165,7 +165,6 @@
             <tab heading="Field Settings" index="options">
                 <flex-column-body ref="scrollbox">
                     <v-container>
-
                         <!-- <pre>{{model.directive}}</pre> -->
                         <!-- <v-layout row wrap> -->
                         <!-- <v-flex xs12> -->
@@ -341,6 +340,8 @@
                                     <fluro-content-form-field :field="fields.targetTagsRemove" v-model="model.params" />
                                     <fluro-content-form-field :field="fields.targetCapabilities" v-model="model.params" />
                                     <fluro-content-form-field :field="fields.targetReactions" v-model="model.params" />
+
+
                                 </fluro-panel-body>
                             </fluro-panel>
                             <fluro-panel v-if="model.directive == 'embedded' && restrictType == 'contact'">
@@ -608,7 +609,7 @@ export default {
                 self.$set(model, "params", {});
             }
 
-            if(!model.params.restrictType) {
+            if (!model.params.restrictType) {
                 self.$set(model.params, "restrictType", null);
             }
 
@@ -1248,11 +1249,11 @@ export default {
                 maximum: 0,
                 type: "object",
                 directive: "app-filter-select",
-                defaultValues:[{}],
+                defaultValues: [{}],
                 params: {
                     restrictType: self.model.params.restrictType,
-                    dynamicReferenceType:self.model.dynamicReferenceType,
-                    allDefinitions:self.model.params.allDefinitions,
+                    dynamicReferenceType: self.model.dynamicReferenceType,
+                    allDefinitions: self.model.params.allDefinitions,
                 }
             });
 
@@ -1548,7 +1549,7 @@ export default {
                 //options: self.referenceOptions
             });
 
-             addField("allDefinitions", {
+            addField("allDefinitions", {
                 key: "allDefinitions",
                 title: "Include all definitions",
                 description: "Include all definitions in results",
@@ -1560,7 +1561,7 @@ export default {
             });
 
 
-           
+
 
             addField("includeDefinedTypes", {
                 title: "Include defined types",
@@ -1665,9 +1666,6 @@ export default {
                         value: "upload"
                     });
 
-
-
-                    console.log('CHECK WHAT THE TYPE IS', self.restrictType)
                     if (self.restrictType == 'academic') {
                         inputOptions.push({
                             title: "Academic Calendar Select",
@@ -2101,7 +2099,17 @@ export default {
                 maximum: 0,
                 type: "reference",
                 params: {
-                    restrictType: "definition"
+                    restrictType: "definition",
+                    referenceFilter: {
+                        operator: 'and',
+                        filters: [{
+                                key: 'parentType',
+                                comparator: '==',
+                                value: 'process',
+                            },
+                        ]
+                    },
+
                 }
             });
 

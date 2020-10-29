@@ -51,7 +51,9 @@ export default {
 	},
 	methods: {
 		checkDismiss() {
-			if((this.options || {}).backdrop) {
+			if((this.options || {}).disableBackdrop) {
+				return;
+			}  else {
 				return this.dismiss();
 			}
 		},

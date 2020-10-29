@@ -1,15 +1,13 @@
 <template>
     <flex-column>
-
-                <div class="file-drop-area" :class="{active:dragging}" @dragover.prevent.stop="fileover" @dragleave.prevent.stop="fileout" @drop.prevent.stop="filedrop">
-
-        <template v-if="loading">
-            <fluro-page-preloader contain />
-        </template>
-        <template v-else>
-            <!-- :vertical="true" -->
-            <tabset :justified="true" :vertical="true">
-                <!--  <template v-slot:menuprefix>
+        <div class="file-drop-area" :class="{active:dragging}" @dragover.prevent.stop="fileover" @dragleave.prevent.stop="fileout" @drop.prevent.stop="filedrop">
+            <template v-if="loading">
+                <fluro-page-preloader contain />
+            </template>
+            <template v-else>
+                <!-- :vertical="true" -->
+                <tabset :justified="true" :vertical="true">
+                    <!--  <template v-slot:menuprefix>
                     <template v-if="context == 'edit' && $vuetify.breakpoint.mdAndUp">
                         <flex-column-header style="text-align:center">
                             <div style="padding: 10px; max-width:200px; margin: auto;">
@@ -21,59 +19,59 @@
                         </flex-column-header>
                     </template>
                 </template> -->
-                <tab heading="Details">
-                    <!-- <slot> -->
-                    <flex-column-body style="background: #fafafa;">
-                        <v-container fluid>
-                            <constrain sm>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
-                                <fluro-content-form-field v-if="!model.assetType" :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.assetType" v-model="model"></fluro-content-form-field>
-                                <fluro-content-form-field v-if="isSoundCloud" :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.external" v-model="model"></fluro-content-form-field>
-                                <iframe v-if="isSoundCloud" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" :src="`https://w.soundcloud.com/player/?url=${soundCloudURL}`"></iframe>
-                                <div v-if="isUpload">
-                                    <template v-if="model._id">
-                                        <template v-if="replace">
-                                            <asset-replace-upload  ref="replaceForm"  v-model="model" @input="assetReplaced" />
+                    <tab heading="Details">
+                        <!-- <slot> -->
+                        <flex-column-body style="background: #fafafa;">
+                            <v-container fluid>
+                                <constrain sm>
+                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />
+                                    <fluro-content-form-field v-if="!model._id" :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.assetType" v-model="model" />
+                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.external" v-model="model" />
+                                    <iframe v-if="isSoundCloud" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" :src="`https://w.soundcloud.com/player/?url=${soundCloudURL}`"></iframe>
+                                    <div v-if="isUpload">
+                                        <template v-if="model._id">
+                                            <template v-if="replace">
+                                                <asset-replace-upload ref="replaceForm" v-model="model" @input="assetReplaced" />
+                                            </template>
+                                            <template v-else>
+                                                <v-layout>
+                                                    <v-flex>
+                                                        <v-input class="no-flex">
+                                                            <v-label>Asset File</v-label>
+                                                            <div>{{model.filename}}</div>
+                                                            <div>
+                                                                <v-btn class="ma-0" @click="replace = true">
+                                                                    Replace with a new file
+                                                                    <fluro-icon right library="fas" icon="cloud-upload" />
+                                                                </v-btn>
+                                                            </div>
+                                                        </v-input>
+                                                    </v-flex>
+                                                </v-layout>
+                                            </template>
                                         </template>
                                         <template v-else>
-                                            <v-layout>
-                                                <v-flex>
-                                                    <v-input class="no-flex">
-                                                        <v-label>Asset File</v-label>
-                                                        <div>{{model.filename}}</div>
-                                                        <div>
-                                                            <v-btn class="ma-0" @click="replace = true">
-                                                                Replace with a new file
-                                                                <fluro-icon right library="fas" icon="cloud-upload" />
-                                                            </v-btn>
-                                                        </div>
-                                                    </v-input>
-                                                </v-flex>
-                                            </v-layout>
+                                            <asset-replace-upload ref="replaceForm" v-model="model" @file="fileSelected" />
                                         </template>
-                                    </template>
-                                    <template v-else>
-                                        <asset-replace-upload  ref="replaceForm"  v-model="model" @file="fileSelected" />
-                                    </template>
-                                </div>
-                                <v-input label="Body" class="no-flex pt-2">
-                                    <fluro-editor v-model="model.body" placeholder="Type your text in here"></fluro-editor>
-                                </v-input>
-                                <fluro-privacy-select v-model="model.privacy" />
-                            </constrain>
-                        </v-container>
-                    </flex-column-body>
-                </tab>
-                <tab :heading="`${definition.title} Information`" v-if="definition && definition.fields && definition.fields.length">
-                    <flex-column-body style="background: #fafafa;">
-                        <v-container fluid>
-                            <constrain sm>
-                                <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
-                            </constrain>
-                        </v-container>
-                    </flex-column-body>
-                </tab>
-                <!-- <tab heading="Advanced / Metadata" v-if="hasMeta">
+                                    </div>
+                                    <v-input label="Body" class="no-flex pt-2">
+                                        <fluro-editor v-model="model.body" placeholder="Type your text in here"></fluro-editor>
+                                    </v-input>
+                                    <fluro-privacy-select v-model="model.privacy" />
+                                </constrain>
+                            </v-container>
+                        </flex-column-body>
+                    </tab>
+                    <tab :heading="`${definition.title} Information`" v-if="definition && definition.fields && definition.fields.length">
+                        <flex-column-body style="background: #fafafa;">
+                            <v-container fluid>
+                                <constrain sm>
+                                    <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
+                                </constrain>
+                            </v-container>
+                        </flex-column-body>
+                    </tab>
+                    <!-- <tab heading="Advanced / Metadata" v-if="hasMeta">
                     <flex-column-body style="background: #fafafa;">
                         <v-container fluid>
                             <constrain sm>
@@ -101,9 +99,9 @@
                         </v-container>
                     </flex-column-body>
                 </tab> -->
-            </tabset>
-        </template>
-    </div>
+                </tabset>
+            </template>
+        </div>
     </flex-column>
 </template>
 <script>
@@ -174,12 +172,16 @@ export default {
 
             addField('external', {
                 type: 'group',
-                minimum: 0,
+                minimum: 1,
                 maximum: 1,
                 asObject: true,
-                fields: [
-                {
-                    key:'soundcloud',
+                expressions: {
+                    show() {
+                        return self.model.assetType && self.model.assetType != 'upload';
+                    }
+                },
+                fields: [{
+                    key: 'soundcloud',
                     title: 'SoundCloud URL',
                     minimum: 0,
                     maximum: 1,
@@ -200,17 +202,17 @@ export default {
         },
         isSoundCloud() {
             var self = this;
-            var assetType = _.get(self.model, 'assetType');
-            return (assetType == 'soundcloud');
+            return self.model.assetType == 'soundcloud';
         },
         isUpload() {
             var self = this;
-            var assetType = _.get(self.model, 'assetType');
-            return (assetType == 'upload');
+
+            return self.model.assetType == 'upload';
         },
         soundCloudURL() {
             var self = this;
-            return _.get(self.model,'external.soundcloud');
+            return self.isSoundCloud && self.model.external && self.model.external.soundcloud
+            // return _.get(self.model,'external.soundcloud');
         }
     },
     methods: {
@@ -226,6 +228,7 @@ export default {
         }
     },
 }
+
 </script>
 <style lang="scss">
 .media-preview {
@@ -242,6 +245,7 @@ export default {
         margin: auto;
     }
 }
+
 </style>
 <style lang="scss" scoped>
 .color-swatch {
@@ -251,4 +255,5 @@ export default {
     margin: 0 1px 1px 0;
     display: inline-block;
 }
+
 </style>

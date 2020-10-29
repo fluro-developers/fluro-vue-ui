@@ -346,6 +346,11 @@ export default {
 												get() {
 
 																var self = this;
+
+																if (!self.model) {
+																				console.log('ISSUE WITH FIELD BUT NO MODEL', self.field.title, self.field);
+																				return;
+																}
 																var value = self.model[self.key];
 																var stringValue = String(value).toLowerCase().trim();
 

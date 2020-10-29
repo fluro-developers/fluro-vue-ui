@@ -30,6 +30,7 @@
         </v-container>
         <v-container pa-2>
           <!-- <div>{{item.state}}</div> -->
+          <div v-if="item.body">{{item.body}}</div>
           <fluro-content-render :fields="definedFields" v-model="item.data" />
           <!-- <pre>{{item}}</pre> -->
           <!-- <div class="summary">{{summary}}</div> -->
@@ -57,6 +58,9 @@ export default {
   },
   computed: {
     definedFields() {
+      if(!this.item || !this.item.fullDefinition) {
+        return [];
+      }
       return this.item.fullDefinition.fields;
     },
     author() {

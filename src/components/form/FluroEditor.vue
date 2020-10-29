@@ -3,18 +3,18 @@
         <editor-menu-bubble v-if="bubbleEnabled " :editor="editor" @hide="hideBubble" :keep-in-bounds="keepInBounds" v-slot="{ commands, isActive, getMarkAttrs, menu }">
             <div class="menububble" :class="{ 'active': menu.isActive }" :style="`left: ${menu.left}px; bottom: ${menu.bottom}px;`">
                 <template v-if="selectedImage">
-                    <form class="menububble__form" v-if="isActive.image()">
+                    <form class="menububble__form" @submit.prevent.stop="" v-if="isActive.image()">
                         <!-- This function stops the page being submitted -->
                         <template v-if="proEnabled">
                             <template v-if="constrain">
                                 <label for="widthInput">&nbsp;Scale:&nbsp;</label>
-                                <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @change='scaleImage(commands.image)' @blur='commands.image(selectedImage)' />
+                                <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @change="scaleImage(commands.image)" @blur="commands.image(selectedImage)" />
                             </template>
                             <template v-else>
                                 <label for="widthInput">&nbsp;Width:&nbsp;</label>
-                                <input class="number-input" type="text" v-model="selectedImage.width" placeholder="100%" ref="widthInput" @change='scaleImage(commands.image)' @blur='commands.image(selectedImage)' />
+                                <input class="number-input" type="text" v-model="selectedImage.width" placeholder="100%" ref="widthInput" @change="scaleImage(commands.image)" @blur="commands.image(selectedImage)" />
                                 <label for="heightInput">&nbsp;&nbsp;Height:&nbsp;</label>
-                                <input class="number-input" type="text" v-model="selectedImage.height" placeholder="100%" ref="heightInput" @change='scaleImage(commands.image)' @blur='commands.image(selectedImage)' />&nbsp;
+                                <input class="number-input" type="text" v-model="selectedImage.height" placeholder="100%" ref="heightInput" @change="scaleImage(commands.image)" @blur="commands.image(selectedImage)" />&nbsp;
                                 <!-- <input type="submit" value="Update"> -->
                             </template>
                             <v-btn icon small flat @click.stop.prevent="constrain=!constrain">
@@ -23,7 +23,7 @@
                         </template>
                         <template v-else>
                             <label for="widthInput">&nbsp;Size:&nbsp;</label>
-                            <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @change='scaleImage(commands.image)' @blur='commands.image(selectedImage)' />
+                            <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @change="scaleImage(commands.image)" @blur="commands.image(selectedImage)" />
                         </template>
                     </form>
                 </template>
@@ -31,7 +31,7 @@
                     <form class="menububble__form" v-if="isActive.video()" @submit.prevent.stop="scaleVideo(commands.video)">
                         <!-- This function stops the page being submitted -->
                         <label for="widthInput">&nbsp;Scale:&nbsp;</label>
-                        <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @change='scaleVideo(commands.video)' @blur='commands.video(selectedVideo)' />
+                        <input class="number-input" type="number" v-model="objectScale" placeholder="100" ref="widthInput" @change="scaleVideo(commands.video)" @blur="commands.video(selectedVideo)" />
                     </form>
                 </template>
                 <template v-else>
@@ -353,6 +353,7 @@
         </template>
         <template v-if="!showSource">
             <editor-content class="fluro-editor-textarea" :editor="editor" />
+            {{showSuggestions}}
             <!-- Suggestions -->
             <div class="suggestion-list" v-show="showSuggestions" ref="suggestions">
                 <template v-if="filteredUsers.length">
@@ -371,7 +372,7 @@
 <script>
 // Import the editor
 
-import tippy from 'tippy.js';
+import tippy, { sticky } from 'tippy.js'
 import FluroCodeEditor from './FluroCodeEditor.vue';
 import Mention from './tiptap/mentions.js';
 import FluroNode from './tiptap/fluroNode';
@@ -402,6 +403,7 @@ import {
     CodeBlock,
     HardBreak,
     Heading,
+    // Mention,
     HorizontalRule,
     OrderedList,
     // Image,
@@ -439,7 +441,8 @@ export default {
             filteredUsers: [],
             navigatedUserIndex: 0,
             insertMention: () => {},
-            observer: null,
+
+            // observer: null,
             linkattrs: {
                 href: null,
                 target: null,
@@ -938,6 +941,8 @@ export default {
             if (user) {
                 this.selectUser(user)
             }
+
+            this.popup = null;
         },
         // we have to replace our suggestion text with a mention
         // so it's important to pass also the position of your suggestion text
@@ -950,50 +955,76 @@ export default {
                 attrs: {
                     id: user._id,
                     mentionID: user.mentionID,
-                    label: user.title,
+                    label: user.firstName,
                 },
             })
             this.editor.focus()
         },
-        // renders a popup with suggestions
-        // tiptap provides a virtualNode object for using popper.js (or tippy.js) for popups
+
+
+
+        // renderPopup(node) {
+        //     if (this.popup) {
+        //         return
+        //     }
+        //     // ref: https://atomiks.github.io/tippyjs/v6/all-props/
+        //     this.popup = tippy('.page', {
+        //         content: this.$refs.suggestions,
+        //         getReferenceClientRect: node.getBoundingClientRect,
+        //         appendTo: () => document.body,
+        //         interactive: true,
+        //         sticky: true, // make sure position of tippy is updated when content changes
+        //         plugins: [sticky],
+        //         content: this.$refs.suggestions,
+        //         trigger: 'mouseenter', // manual
+        //         showOnCreate: true,
+        //         theme: 'dark',
+        //         placement: 'top-start',
+        //         inertia: true,
+        //         duration: [400, 200],
+        //     })
+        // },
         renderPopup(node) {
             if (this.popup) {
                 return
             }
-            this.popup = tippy(node, {
-                content: this.$refs.suggestions,
-                trigger: 'mouseenter',
+
+            var referenceElement = this.$refs.suggestions;
+            console.log('Reference Element', referenceElement)
+            // ref: https://atomiks.github.io/tippyjs/v6/all-props/
+
+            var thing = node;
+            this.popup = tippy('.fluro-editor-textarea', {
+                content:referenceElement,
+                getReferenceClientRect: node.getBoundingClientRect,
+                appendTo: () => document.body,
                 interactive: true,
+                sticky: true, // make sure position of tippy is updated when content changes
+                plugins: [sticky],
+                trigger: 'mouseenter', // manual
+                showOnCreate: true,
                 theme: 'dark',
                 placement: 'top-start',
                 inertia: true,
                 duration: [400, 200],
-                showOnInit: true,
-                arrow: true,
-                arrowType: 'round',
+                allowHTML: true,
             })
-            // we have to update tippy whenever the DOM is updated
-            if (MutationObserver) {
-                this.observer = new MutationObserver(() => {
-                    this.popup.popperInstance.scheduleUpdate()
-                })
-                this.observer.observe(this.$refs.suggestions, {
-                    childList: true,
-                    subtree: true,
-                    characterData: true,
-                })
-            }
         },
         destroyPopup() {
+
             if (this.popup) {
-                this.popup.destroy()
-                this.popup = null
+                if (this.popup[0]) {
+                    this.popup[0].destroy();
+                }
             }
-            if (this.observer) {
-                this.observer.disconnect()
-            }
+
+            this.popup = null
+
+            console.log('DESTROY')
         },
+
+
+
     },
     props: {
         'codeEditorHeight': {
@@ -1037,17 +1068,120 @@ export default {
         var self = this;
         var placeholderText = self.placeholder;
 
-        var MentionPlugin = new Mention({
+
+        ////////////////////////////////////////////
+
+        /**
+                var MentionPlugin = new Mention({
+                    // a list of all suggested items
+                    items: function() {
+                        return [];
+                    },
+                    onEnter(props) {
+                        var {
+                            items,
+                            query,
+                            range,
+                            command,
+                            virtualNode,
+                        } = props;
+
+                        self.query = query
+                        self.filteredUsers = items
+                        self.suggestionRange = range
+                        self.renderPopup(virtualNode)
+                        // we save the command for inserting a selected mention
+                        // self allows us to call it inside of our custom popup
+                        // via keyboard navigation and on click
+                        self.insertMention = command
+                        console.log('onEnter');
+                    },
+                    // is called when a suggestion has changed
+                    onChange(props) {
+
+                        var {
+                            items,
+                            query,
+                            range,
+                            command,
+                            virtualNode,
+                        } = props;
+
+                        var mentionInstance = this;
+
+                        console.log('On Change')
+
+                        self.$fluro.content.mention(query, self.options.mentions).then(function(personas) {
+                                mentionInstance.query = query
+                                mentionInstance.filteredUsers = personas
+                                mentionInstance.suggestionRange = range
+                                mentionInstance.navigatedUserIndex = 0
+                                mentionInstance.renderPopup(virtualNode)
+                            })
+                            .catch(function(err) {
+                                console.log('Error', err);
+                                // this.query = query
+                                // this.filteredUsers = items
+                                // this.suggestionRange = range
+                                // this.navigatedUserIndex = 0
+                                // this.renderPopup(virtualNode)
+                            });
+                    },
+                    // is called when a suggestion is cancelled
+                    onExit() {
+
+                        console.log('onExit')
+                        // reset all saved values
+                        self.query = null
+                        self.filteredUsers = []
+                        self.suggestionRange = null
+                        self.navigatedUserIndex = 0
+                        self.destroyPopup()
+                    },
+                    // is called on every keyDown event while a suggestion is active
+                    onKeyDown(props) {
+                        var { event } = props;
+                        // pressing up arrow
+                        if (event.keyCode === 38) {
+                            self.upHandler()
+                            return true
+                        }
+                        // pressing down arrow
+                        if (event.keyCode === 40) {
+                            self.downHandler()
+                            return true
+                        }
+                        // pressing enter
+                        if (event.keyCode === 13) {
+                            self.enterHandler()
+                            return true
+                        }
+                        return false
+                    },
+                });
+
+        /**/
+
+
+
+        var MentionExtension = new Mention({
             // a list of all suggested items
-            items: function() {
-                return [];
-                // return [
-                //     { id: 1, name: 'Philipp Kühn' },
-                //     { id: 2, name: 'Hans Pagel' },
-                //     { id: 3, name: 'Kris Siepert' },
-                //     { id: 4, name: 'Justin Schueler' },
-                // ]
+            items: async () => {
+                await new Promise(resolve => {
+                    setTimeout(resolve, 500)
+                })
+                return [
+                    { id: 1, name: 'Sven Adlung' },
+                    { id: 2, name: 'Patrick Baber' },
+                    { id: 3, name: 'Nick Hirche' },
+                    { id: 4, name: 'Philip Isik' },
+                    { id: 5, name: 'Timo Isik' },
+                    { id: 6, name: 'Philipp Kühn' },
+                    { id: 7, name: 'Hans Pagel' },
+                    { id: 8, name: 'Sebastian Schrama' },
+                ]
             },
+            allowSpaces: false,
             // is called when a suggestion starts
             onEnter: ({
                 items,
@@ -1056,6 +1190,8 @@ export default {
                 command,
                 virtualNode,
             }) => {
+
+                console.log('EVENT > ON ENTER')
                 this.query = query
                 this.filteredUsers = items
                 this.suggestionRange = range
@@ -1073,26 +1209,17 @@ export default {
                 virtualNode,
             }) => {
 
-                var mentionInstance = this;
-
-                self.$fluro.content.mention(query, self.options.mentions).then(function(personas) {
-                        mentionInstance.query = query
-                        mentionInstance.filteredUsers = personas
-                        mentionInstance.suggestionRange = range
-                        mentionInstance.navigatedUserIndex = 0
-                        mentionInstance.renderPopup(virtualNode)
-                    })
-                    .catch(function(err) {
-                        //console.log('Error', err);
-                        // this.query = query
-                        // this.filteredUsers = items
-                        // this.suggestionRange = range
-                        // this.navigatedUserIndex = 0
-                        // this.renderPopup(virtualNode)
-                    });
+                console.log('EVENT > ON CHANGE')
+                this.query = query
+                this.filteredUsers = items
+                this.suggestionRange = range
+                this.navigatedUserIndex = 0
+                this.renderPopup(virtualNode)
             },
             // is called when a suggestion is cancelled
             onExit: () => {
+
+                console.log('EVENT > ON EXIT')
                 // reset all saved values
                 this.query = null
                 this.filteredUsers = []
@@ -1102,18 +1229,15 @@ export default {
             },
             // is called on every keyDown event while a suggestion is active
             onKeyDown: ({ event }) => {
-                // pressing up arrow
-                if (event.keyCode === 38) {
+                if (event.key === 'ArrowUp') {
                     this.upHandler()
                     return true
                 }
-                // pressing down arrow
-                if (event.keyCode === 40) {
+                if (event.key === 'ArrowDown') {
                     this.downHandler()
                     return true
                 }
-                // pressing enter
-                if (event.keyCode === 13) {
+                if (event.key === 'Enter') {
                     this.enterHandler()
                     return true
                 }
@@ -1123,21 +1247,57 @@ export default {
             // this function is optional because there is basic filtering built-in
             // you can overwrite it if you prefer your own filtering
             // in this example we use fuse.js with support for fuzzy search
-            // onFilter: (items, query) => {
+            onFilter: async (items, query) => {
+                if (!query) {
+                    return items
+                }
+                await new Promise(resolve => {
+                    setTimeout(resolve, 500)
+                })
 
-            //     //console.log('SEARCH', items, query);
+                console.log('On Filter')
 
-            //     if (!query) {
-            //         return items
-            //     }
-            //     const fuse = new Fuse(items, {
-            //         threshold: 0.2,
-            //         keys: ['name'],
-            //     })
-            //     return fuse.search(query)
-            // },
-        });
+                // var mentionInstance = this;
 
+                return self.$fluro.content.mention(query, self.options.mentions);
+
+                // return new Promise(function(resolve, reject) {
+
+                //     self.$fluro.content.mention(query, self.options.mentions)
+                //         .then(function(personas) {
+                //             // self.query = query
+                //             // self.filteredUsers = personas
+                //             // self.suggestionRange = range
+                //             // self.navigatedUserIndex = 0
+                //             // self.renderPopup(virtualNode)
+
+                //             resolve(personas);
+                //         })
+                //         .catch(function(err) {
+                //             console.log('Error', err);
+                //             // this.query = query
+                //             // this.filteredUsers = items
+                //             // this.suggestionRange = range
+                //             // this.navigatedUserIndex = 0
+                //             // this.renderPopup(virtualNode)
+
+                //             reject(err);
+                //         });
+
+                // })
+                // return Promise.resolve(items);
+                // resolve(items);
+
+                // });
+
+                // return items;
+                // const fuse = new Fuse(items, {
+                //     threshold: 0.2,
+                //     keys: ['name'],
+                // })
+                // return fuse.search(query).map(item => item.item)
+            },
+        })
         ///////////////////////////////////
         ///////////////////////////////////
         ///////////////////////////////////
@@ -1169,10 +1329,11 @@ export default {
             new TableCell(),
             new TableRow(),
             new Token(),
+            MentionExtension,
             this.FluroNodePlugin,
             this.FluroMarkPlugin,
             this.TypographyPlugin,
-            MentionPlugin,
+            // MentionPlugin,
             new Placeholder({
                 emptyClass: 'placeholder-text',
                 emptyNodeText: self.placeholder,
@@ -1317,6 +1478,8 @@ export default {
     },
 
     beforeDestroy() {
+        this.destroyPopup()
+
         this.editor.destroy()
     },
 }
@@ -1383,7 +1546,7 @@ $color-white: #fff;
 
 
     table {
-        width:100%;
+        width: 100% !important;
         border-collapse: collapse;
 
         th,
@@ -1519,7 +1682,7 @@ $color-white: #fff;
 }
 
 .fluro-editor-toolbar {
-    margin-bottom: 10px;
+    // margin-bottom: 10px;
 
     .v-menu {
         display: inline;
@@ -1684,6 +1847,7 @@ $color-white: #fff;
     }
 
 
+    .mention,
     mention {
         display: inline;
         background: rgba($color-black, 0.1);
@@ -1811,16 +1975,21 @@ $color-white: #fff;
     border: 2px solid rgba($color-black, 0.1);
     font-size: 0.8rem;
     font-weight: bold;
+    background: rgba(#000, 0.05);
+    background: #fff;
 
-    &__no-results {
+    .suggestion-list__no-results {
+        // &__no-results {
         padding: 0.2rem 0.5rem;
     }
 
-    &__item {
+    .suggestion-list__item {
+        // &__item {
         border-radius: 5px;
         padding: 0.2rem 0.5rem;
         margin-bottom: 0.2rem;
         cursor: pointer;
+        font-weight: normal;
 
         &:last-child {
             margin-bottom: 0;
@@ -1828,7 +1997,9 @@ $color-white: #fff;
 
         &.is-selected,
         &:hover {
-            background-color: rgba($color-white, 0.2);
+         font-weight: bold;
+            background-color: rgba($primary, 0.1); // rgba($color-white, 0.2);
+            color: $primary;
         }
 
         &.is-empty {

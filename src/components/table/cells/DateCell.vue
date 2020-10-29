@@ -1,20 +1,20 @@
 <template>
     <div>
         <template v-if="isArray">
-            <span class="inline-tag" v-for="date in rendered" :content="date | timeago" v-tippy>{{date | formatDate(format)}}</span>
+            <span class="inline-tag" v-for="date in rendered" :content="date | timeago" v-tippy>{{formatted(date)}}</span>
         </template>
         <template v-else-if="rendered">
-            <span class="inline-tag" v-if="rendered" :content="rendered | timeago" v-tippy>{{rendered | formatDate(format)}}</span>
+            <span :class="{'inline-tag':!column.format}" v-if="rendered" :content="rendered | timeago" v-tippy>{{formatted(rendered)}}</span>
         </template>
+        <div class="font-xs muted" v-if="showTimezone">{{row.timezone}}</div>
     </div>
 </template>
 <script>
-
 import _ from 'lodash';
 
 
 function mapDate(entry) {
-    if(!entry) {
+    if (!entry) {
         return;
     }
     var date = new Date(entry);
@@ -26,6 +26,9 @@ function mapDate(entry) {
         return `Invalid date ${entry}`
     }
 }
+
+
+
 
 
 
@@ -41,9 +44,32 @@ export default {
             // type: Object,
         },
     },
+    methods: {
+        formatted(date) {
+
+            var self = this;
+
+            if (self.showTimezone) {
+                return self.$fluro.date.formatDate(date, self.format, self.timezone);
+            } else {
+                return self.$fluro.date.formatDate(date, self.format)
+            }
+        },
+    },
     computed: {
+        showTimezone() {
+            var timezone = this.row.timezone;
+            if (!timezone) {
+                return;
+            }
+
+            return this.$fluro.date.isDifferentTimezoneThanUser(timezone);
+        },
+        timezone() {
+            return this.row.timezone;
+        },
         format() {
-            if(this.column && this.column.format) {
+            if (this.column && this.column.format) {
                 return this.column.format;
             }
 
@@ -53,7 +79,7 @@ export default {
             return _.isArray(this.data);
         },
         rendered() {
-           
+
 
             var self = this;
 
@@ -61,12 +87,11 @@ export default {
                 return;
             }
 
-
             // ////////////////////////
             // ////////////////////////
 
 
-            if(_.isArray(self.data)) {
+            if (_.isArray(self.data)) {
                 var array = _.chain(self.data)
                     .compact()
                     .map(mapDate)
@@ -78,16 +103,18 @@ export default {
                     return;
                 }
             } else {
-               
+
                 return self.data ? mapDate(self.data) : false;
             }
 
         },
     }
 }
+
 </script>
 <style scoped lang="scss">
-    span {
+span {
     white-space: nowrap;
-    }
+}
+
 </style>

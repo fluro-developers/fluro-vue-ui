@@ -26,7 +26,7 @@
 																				<thead>
 																								<tr>
 																												<th class="first shrink checkbox-cell" v-if="selectionEnabled">
-																																<v-menu @click.native.stop offset-y>
+																																<v-menu @click.native.stop offset-y attach>
 																																				<template v-slot:activator="{ on }">
 																																								<div v-on="on">
 																																												<div is="table-header-checkbox" :all="allSelected" :some="someSelected" />

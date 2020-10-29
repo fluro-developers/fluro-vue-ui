@@ -321,18 +321,23 @@ export default {
 												}
 								},
 								addRule(group) {
+
+												var useComparator = this.rows && this.rows.length ? DEFAULT_COMPARATOR : '==';
 												group.filters.push({
 																operator: "and",
 																guid: this.$fluro.utils.guid(),
 																filters: [{
-																				comparator: DEFAULT_COMPARATOR
+																				comparator: useComparator,
 																}]
 												});
 								},
 								addCondition(group) {
+
+												var useComparator = this.rows && this.rows.length ? DEFAULT_COMPARATOR : '==';
+
 												group.filters.push({
 																guid: this.$fluro.utils.guid(),
-																comparator: DEFAULT_COMPARATOR
+																comparator: useComparator
 												});
 								},
 								duplicateEntry(group, i) {
@@ -1111,15 +1116,15 @@ export default {
 																												type: "reference",
 																												typeSelect: "tag"
 																								},
-																								{
-																												title: "Definition",
-																												key: "definition",
-																												maximum: 0,
-																												minimum: 0,
-																												type: "string",
-																												directive: "select",
-																												options: teamDefinitionOptions
-																								},
+																								// {
+																								// 				title: "Definition",
+																								// 				key: "definition",
+																								// 				maximum: 0,
+																								// 				minimum: 0,
+																								// 				type: "string",
+																								// 				directive: "select",
+																								// 				options: teamDefinitionOptions
+																								// },
 																								{
 																												title: "Title",
 																												key: "title",

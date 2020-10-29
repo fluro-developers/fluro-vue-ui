@@ -18,11 +18,13 @@
                 <constrain xs>
                     <v-layout>
                         <v-btn block @click="dismiss()">
-                            Cancel
+                            {{cancelText}}
+                            <!-- Cancel -->
                         </v-btn>
                         <v-spacer />
                         <v-btn block type="submit" color="primary">
-                            Continue
+                            {{confirmText}}
+                            <!-- Continue -->
                         </v-btn>
                     </v-layout>
                 </constrain>
@@ -51,6 +53,12 @@ export default {
         }
     },
     computed: {
+        cancelText() {
+            return this.options.cancelText || 'Cancel';
+        },
+        confirmText() {
+            return this.options.confirmText || 'Continue';
+        },
         description() {
             return this.options.description;
         },
