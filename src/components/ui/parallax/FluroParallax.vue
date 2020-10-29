@@ -21,7 +21,7 @@ export default {
                     maxY: 100,
                     enableY: true,
                     enableX: false,
-                    global:false,
+                    global: false,
                 }
             }
         },
@@ -59,11 +59,10 @@ export default {
             const overflowY = isElement && window.getComputedStyle(node).overflowY;
             const isScrollable = overflowY !== 'visible' && overflowY !== 'hidden';
 
-            if (!node) {
 
-                var doc = (self.$el.ownerDocument || document);
-                var win = doc.defaultView;
-                return win;// || document.body || document;;
+            if (!node) {
+                return;
+
             } else if (isScrollable && node.scrollHeight >= node.clientHeight) {
                 return node;
             }
@@ -121,7 +120,7 @@ export default {
 
         },
         addListeners() {
-            // console.log('Add listeners')
+
             var self = this;
             var element = self.$el;
 
@@ -138,8 +137,20 @@ export default {
                 case 'none':
                     break;
                 default:
-                    self.scrollparent = self.getScrollParent(element);
-                    self.scrollparent.addEventListener('scroll', self.scrollUpdate);
+
+                    var scrollParent = self.getScrollParent(element);
+
+                    var doc = (self.$el.ownerDocument || document);
+                    if (!scrollParent || String(scrollParent.tagName).toLowerCase() == 'html') {
+                        var window = doc.defaultView;
+                        scrollParent = window;   
+                    }
+                    
+
+                    scrollParent.addEventListener('scroll', self.scrollUpdate);
+
+                    self.scrollparent = scrollParent;
+
                     self.scrollUpdate({ target: self.scrollparent });
                     break;
             }
@@ -169,13 +180,13 @@ export default {
             var element = self.$el;
 
             var domRect = element.getBoundingClientRect();
-            var containerRect = self.scrollparent.getBoundingClientRect();
+            var containerRect = self.scrollparent.getBoundingClientRect ? self.scrollparent.getBoundingClientRect() : {x:0, y:0, width:window ? window.innerWidth : 0, height:window ? window.innerHeight : 0};
 
 
             var scrollX = (domRect.x) * -1 + (containerRect.width + containerRect.x);
             var scrollY = (domRect.y) * -1 + (containerRect.height + containerRect.y);
-            var scrollXLimit = (domRect.width) + containerRect.width;// + (domRect.x +containerRect.width)); //domRect.width;// / (e.target.scrollWidth * e.target.clientWidth);
-            var scrollYLimit = (domRect.height) + containerRect.height;// + (domRect.y +containerRect.height )); //domRect.height;// - e.target.scrollTop) * 2;//domRect.height;// / (e.target.scrollHeight * e.target.clientHeight);
+            var scrollXLimit = (domRect.width) + containerRect.width; // + (domRect.x +containerRect.width)); //domRect.width;// / (e.target.scrollWidth * e.target.clientWidth);
+            var scrollYLimit = (domRect.height) + containerRect.height; // + (domRect.y +containerRect.height )); //domRect.height;// - e.target.scrollTop) * 2;//domRect.height;// / (e.target.scrollHeight * e.target.clientHeight);
 
             if (self.global) {
                 scrollY = e.target.scrollTop;
@@ -296,6 +307,7 @@ export default {
         }
     }
 }
+
 </script>
 <style lang="scss">
 .parallax {
@@ -341,4 +353,5 @@ export default {
         }
     }
 }
+
 </style>
