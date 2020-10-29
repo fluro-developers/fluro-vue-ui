@@ -60,7 +60,10 @@ export default {
             const isScrollable = overflowY !== 'visible' && overflowY !== 'hidden';
 
             if (!node) {
-                return document.scrollingElement;// || document.body || document;;
+
+                var doc = (self.$el.ownerDocument || document);
+                var win = doc.defaultView;
+                return win;// || document.body || document;;
             } else if (isScrollable && node.scrollHeight >= node.clientHeight) {
                 return node;
             }
@@ -136,8 +139,6 @@ export default {
                     break;
                 default:
                     self.scrollparent = self.getScrollParent(element);
-
-                    console.log('SCROLLPARENT', self.scrollparent, document.scrollingElement, document.body, document.html)
                     self.scrollparent.addEventListener('scroll', self.scrollUpdate);
                     self.scrollUpdate({ target: self.scrollparent });
                     break;
@@ -162,11 +163,14 @@ export default {
         },
         scrollUpdate(e) {
 
+
+
             var self = this;
             var element = self.$el;
 
             var domRect = element.getBoundingClientRect();
             var containerRect = self.scrollparent.getBoundingClientRect();
+
 
             var scrollX = (domRect.x) * -1 + (containerRect.width + containerRect.x);
             var scrollY = (domRect.y) * -1 + (containerRect.height + containerRect.y);
