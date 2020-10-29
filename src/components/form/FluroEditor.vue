@@ -353,7 +353,7 @@
         </template>
         <template v-if="!showSource">
             <editor-content class="fluro-editor-textarea" :editor="editor" />
-            {{showSuggestions}}
+           
             <!-- Suggestions -->
             <div class="suggestion-list" v-show="showSuggestions" ref="suggestions">
                 <template v-if="filteredUsers.length">
