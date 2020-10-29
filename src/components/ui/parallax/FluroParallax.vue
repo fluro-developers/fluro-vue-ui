@@ -136,6 +136,8 @@ export default {
                     break;
                 default:
                     self.scrollparent = self.getScrollParent(element);
+
+                    console.log('SCROLLPARENT', self.scrollparent, document.scrollingElement, document.body, document.html)
                     self.scrollparent.addEventListener('scroll', self.scrollUpdate);
                     self.scrollUpdate({ target: self.scrollparent });
                     break;
