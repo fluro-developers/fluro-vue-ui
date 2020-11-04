@@ -1,13 +1,14 @@
 <template>
     <div class="fluro-content-form" v-if="ready && model">
+        
         <slot name="form" :parent="formModel" :context="context" :form-fields="formFields" :field-hash="fieldHash" :model="model" :update="update" :options="options">
             <v-container fluid class="grid-list-lg" pa-0 :key="`${field.key}-${index}`" v-for="(field, index) in fields">
                 <fluro-content-form-field :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="fields[index]" :key="`field-${field.key}-${index}`" @input="update" v-model="model" />
-           
-
-
+                 <!-- <pre>{{model[field.key]}}</pre> -->
             </v-container>
         </slot>
+
+
 
 
 
@@ -83,19 +84,6 @@ export default {
         }
     },
     computed: {
-        // fields() {
-
-        //     var self = this;
-
-        //     return _.map(self.fields, function(field) {
-        //         if (!field.guid) {
-        //             field.guid = self.$fluro.utils.guid();
-        //             return field;
-        //         }
-        //         return field;
-
-        //     })
-        // },
         fieldsOutput() {
             return this.fields;
         },
@@ -117,8 +105,6 @@ export default {
                     return errorMessages.length;
                 })
                 .map(function(field) {
-                    // ///console.log('ERROR MESSAGES', field);
-                    // ///console.log('ERROR MESSAGE', field);
                     return {
                         title: field.errorTitle,
                         messages: field.errorMessages
@@ -148,10 +134,13 @@ export default {
     },
     watch: {
         model(newModel, oldModel) {
+
             if (this.watchEnabled) {
-                // console.log('emit change for', this)
+                
                 this.$emit("input", this.model);
+                // console.log('form chagned')
             }
+
         },
         value(v) {
             var self = this;
@@ -166,7 +155,7 @@ export default {
                 });
             }
 
-            // console.log('Form value set', val)
+           
             //    // var newModel = Object.assign({}, val) //input;
             //    this.$set(this, 'model', val);
             //    this.reset();
@@ -181,60 +170,7 @@ export default {
             this.$emit("errorMessages", messages);
         }
     },
-    /**
-    beforeCreate: function() {
-        var self = this;
-
-        Promise.all([
-            DynamicImportService.load(
-                "./FluroContentForm.vue",
-                function() {
-                    return import("./FluroContentForm.vue");
-                }
-            ),
-            DynamicImportService.load(
-                "./FluroContentFormField.vue",
-                function() {
-                    return import("./FluroContentFormField.vue");
-                }
-            )
-        ]).then(function(results) {
-            // ///console.log('Set Components', results);
-            self.$options.components.FluroContentForm = results[0];
-            self.$options.components.FluroContentFormField = results[1];
-            self.ready = true;
-        });
-
-        // Promise.all([
-        //                import('./FluroContentForm.vue'),
-        //                import('./FluroContentFormField.vue'),
-        //        ])
-        //        .then(function(results) {
-        //                self.$options.components.FluroContentForm = results[0].default
-        //                self.$options.components.FluroContentFormField = results[1].default
-        //                self.ready = true;
-        //                /////console.log('Imported Components Dynamically', results)
-        //        })
-        // Promise.all([
-        //                DynamicImportService.load('./FluroContentForm.vue', function() {
-        //                        return import('./FluroContentForm.vue')
-        //                }),
-        //                DynamicImportService.load('./FluroContentFormField.vue', function() {
-        //                        return import('./FluroContentFormField.vue')
-        //                }),
-        //        ])
-        //        .then(function(results) {
-
-        //                // ///console.log('Set Components', results);
-        // self.$options.components.FluroContentForm = results[0];
-        // self.$options.components.FluroContentFormField = results[1];
-        //                self.ready = true;
-        //        })
-    },
-    /**/
     created() {
-        // console.log('CONTENT FORM WAS CREATED')
-        ///console.log('Reset on creation!')
         this.reset();
     },
     methods: {
@@ -247,7 +183,6 @@ export default {
         },
         reset() {
             var self = this;
-            // console.log('Form reset() THIS SHOULD ONLY HAPPEN IF THE ORIGINAL PROP IS CHANGED')
 
             /////////////////////////////////////////////////
 
@@ -336,44 +271,10 @@ export default {
 
             // }
         },
-
         update(input, valueThatWasChanged) {
-
-
             // console.log('form model changed from update callback', input, valueThatWasChanged);
-            // 
-            // this.$emit('input', this.model);
-            // ///console.log('form model changed');
-            this.$emit('input', this.model);
-            // JSON.parse(JSON.stringify(this.model)));
-           
+            this.$emit('input', this.model);           
         },
-
-        // update: function(input, valueThatWasChanged) {
-
-        //     var self = this;
-        //     self.model = input;
-        //     // ///console.log('Update -> model')
-
-        //     //If there is already a debouncer
-        //     if (debouncer) {
-        //         //Stop it
-        //         clearTimeout(debouncer);
-        //     }
-
-        //     if (!self.debounce) {
-        //         ///console.log('')
-        //         return self.$emit('input', this.model);
-        //     }
-
-        //     //Start a new debouncer
-        //     debouncer = setTimeout(() => self.dispatch(), self.debounce);
-        // },
-        // dispatch() {
-
-        //        // ///console.log('Update -> dispatch')
-        //        this.$emit('input', this.model);
-        // }
     }
 };
 

@@ -1,7 +1,11 @@
 <template>
     <!-- <div> -->
         <!-- <pre>{{data}}</pre> -->
-    <div v-if="context != 'print'"><fluro-realm-dots v-if="$vuetify.breakpoint.smAndUp" :realms="data"/><fluro-realm-bar v-if="$vuetify.breakpoint.xsOnly" :realm="data"/></div>
+    <div v-if="context != 'print'">
+        <fluro-realm-dots v-if="$vuetify.breakpoint.smAndUp" :realms="realms"/>
+        <fluro-realm-bar v-if="$vuetify.breakpoint.xsOnly" :realm="realms"/>
+
+    </div>
     <!-- </div> -->
 </template>
 <script>
@@ -19,6 +23,15 @@ export default {
         'data': {
             // type: Object,
         },
+    },
+    computed:{
+        realms() {
+            if(this.row._type == 'realm') {
+                return [this.row];
+            }
+
+            return this.data;
+        }
     }
 }
 </script>

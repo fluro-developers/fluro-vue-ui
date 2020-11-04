@@ -56,7 +56,14 @@ export default {
         getScrollParent(node) {
             var self = this;
             const isElement = node instanceof HTMLElement;
-            const overflowY = isElement && window.getComputedStyle(node).overflowY;
+
+
+            var doc = (node.ownerDocument || document);
+            var win = doc.defaultView;
+
+
+
+            const overflowY = isElement && win.getComputedStyle(node).overflowY;
             const isScrollable = overflowY !== 'visible' && overflowY !== 'hidden';
 
 
@@ -141,15 +148,47 @@ export default {
                     var scrollParent = self.getScrollParent(element);
 
                     var doc = (self.$el.ownerDocument || document);
-                    if (!scrollParent || String(scrollParent.tagName).toLowerCase() == 'html') {
-                        var window = doc.defaultView;
-                        scrollParent = window;   
+                    var win = doc.defaultView;
+
+                    if (scrollParent) {
+
+                        switch (String(scrollParent.tagName).toLowerCase()) {
+                            case 'body':
+                            case 'html':
+                            case undefined:
+                            case null:
+                                scrollParent = doc.defaultView;
+                                break;
+                        }
+                        
+                    } else {
+                        scrollParent = doc;
                     }
-                    
 
                     scrollParent.addEventListener('scroll', self.scrollUpdate);
 
+                    // console.log('scroll attach to', scrollParent);
                     self.scrollparent = scrollParent;
+                    //  // else {
+                    //     doc.body.addEventListener('scroll', self.scrollUpdate);
+                    //     doc.documentElement.addEventListener('scroll', self.scrollUpdate);
+                    //     win.addEventListener('scroll', self.scrollUpdate);
+                    // // }
+
+                    // } || String(scrollingElement.tagName).toLowerCase() == 'html' || String(scrollingElement.tagName).toLowerCase() == 'body') {
+                    //  scrollParent = doc.scrollingElement;
+
+                    // } 
+
+                    // || String(scrollingElement.tagName).toLowerCase() == 'body' || String(scrollingElement.tagName).toLowerCase() == 'html') {
+                    //     win = doc.defaultView;
+                    //     scrollParent = win;
+                    // }
+
+
+                    // console.log('SC', doc.scrollingElement, win)
+
+
 
                     self.scrollUpdate({ target: self.scrollparent });
                     break;
@@ -169,18 +208,35 @@ export default {
                 self.mouseparent.removeEventListener('mousemove', self.cursorUpdate);
             }
 
+            // var doc = (element.ownerDocument || document);
+
+            // if (doc) {
+            //     var win = doc.defaultView;
+            //     doc.body.removeEventListener('scroll', self.scrollUpdate);
+            //     doc.documentElement.removeEventListener('scroll', self.scrollUpdate);
+            //     win.removeEventListener('scroll', self.scrollUpdate);
+            // }
+
+
+
 
 
         },
         scrollUpdate(e) {
 
-
+            var target = e.currentTarget || e.target;
 
             var self = this;
             var element = self.$el;
 
+
+            var doc = (element.ownerDocument || document);
+            var win = doc.defaultView;
+
+
+
             var domRect = element.getBoundingClientRect();
-            var containerRect = self.scrollparent.getBoundingClientRect ? self.scrollparent.getBoundingClientRect() : {x:0, y:0, width:window ? window.innerWidth : 0, height:window ? window.innerHeight : 0};
+            var containerRect = self.scrollparent.getBoundingClientRect ? self.scrollparent.getBoundingClientRect() : { x: 0, y: 0, width: win ? win.innerWidth : 0, height: win ? win.innerHeight : 0 };
 
 
             var scrollX = (domRect.x) * -1 + (containerRect.width + containerRect.x);
@@ -189,10 +245,10 @@ export default {
             var scrollYLimit = (domRect.height) + containerRect.height; // + (domRect.y +containerRect.height )); //domRect.height;// - e.target.scrollTop) * 2;//domRect.height;// / (e.target.scrollHeight * e.target.clientHeight);
 
             if (self.global) {
-                scrollY = e.target.scrollTop;
-                scrollX = e.target.scrollLeft;
-                scrollXLimit = e.target.scrollWidth - e.target.clientWidth;
-                scrollYLimit = e.target.scrollHeight - e.target.clientHeight;
+                scrollY = target.scrollTop;
+                scrollX = target.scrollLeft;
+                scrollXLimit = target.scrollWidth - target.clientWidth;
+                scrollYLimit = target.scrollHeight - target.clientHeight;
             }
 
 

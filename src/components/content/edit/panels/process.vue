@@ -54,14 +54,17 @@
                                             </fluro-panel-body>
                                         </fluro-panel>
                                     </template>
-                                    <template v-else-if="definition && definition.fields && definition.fields.length">
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="fieldHash.title" v-model="model" />
-                                        <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields"></fluro-content-form>
-                                    </template>
                                     <template v-else>
                                         <h3 margin>{{title}}</h3>
                                         <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="referenceItemField" v-model="model"></fluro-content-form-field>
                                     </template>
+                                    <fluro-panel v-if="definition && definition.fields && definition.fields.length">
+                                        <fluro-panel-body>
+                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="fieldHash.title" v-model="model" />
+                                        <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields"></fluro-content-form>
+                                    </fluro-panel-body>
+                                    </fluro-panel>
+                                    
                                     <fluro-panel v-if="model.taskCount && model.taskCount.checkinsExpected">
                                         <fluro-panel-title class="border-bottom">
                                             <strong>{{model.taskCount.checkinsCompleted}} of {{model.taskCount.checkinsExpected}} checkins complete</strong>

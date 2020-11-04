@@ -35,13 +35,15 @@
                             <fluro-panel>
                                 <tabset>
                                     <tab heading="Filter Criteria" index="criteria" v-if="model.filterType">
-                                        <fluro-panel-body>
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.filterSearch" v-model="model" />
-                                            <!-- <fluro-panel-title>
+                                     
+                                                <fluro-panel-body style="background: #eee;">
+                                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.filterSearch" v-model="model" />
+                                                    <!-- <fluro-panel-title>
                                                 
                                             </fluro-panel-title> -->
-                                            <filter-condition-group :rows="rows" :useSample="true" :mini="true" v-model="model.filterConfiguration" :type="model.filterType" :debounce="filterDebounce" />
-                                        </fluro-panel-body>
+                                                    <filter-condition-group :rows="rows" :useSample="true" :mini="true" v-model="model.filterConfiguration" :type="model.filterType" :debounce="filterDebounce" />
+                                                </fluro-panel-body>
+                                          
                                     </tab>
                                     <tab heading="Query" index="query" v-else>
                                         <flex-column style="min-height:600px;">
@@ -61,6 +63,7 @@
                                     </tab>
                                 </tabset>
                             </fluro-panel>
+                            <fluro-privacy-select v-model="model.privacy" />
                         </constrain>
                     </v-container>
                     <!-- <v-container class="border-top"> -->
@@ -411,7 +414,7 @@ export default {
             });
 
 
-             addField("filterType", {
+            addField("filterType", {
                 title: "Content type to retrieve",
                 minimum: 0,
                 maximum: 1,

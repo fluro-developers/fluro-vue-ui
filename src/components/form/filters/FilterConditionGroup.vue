@@ -2504,6 +2504,41 @@ export default {
 																												]
 																								});
 																								break;
+																				case 'account':
+
+																								_.each([
+																												'team',
+																												'definition',
+																												'contact',
+																												'application',
+																												'event',
+																												'realm',
+																												'checkin',
+																												'mailout',
+																												'video',
+																												'image',
+																												'asset',
+																												'persona',
+																												'sitemodel',
+																												'site',
+																								], function(metricType) {
+
+																									var matchingDefinition = self.$fluro.types.glossary[metricType];
+
+																												injectFields.push({
+																																title: `Metrics > ${matchingDefinition.plural}`,
+																																key: `data.metrics.storage.${metricType}`,
+																																maximum: 0,
+																																minimum: 1,
+																																type: "integer"
+																												});
+
+																								})
+
+
+
+
+																								break;
 																				default:
 																								switch (self.type) {
 																												case "photo":

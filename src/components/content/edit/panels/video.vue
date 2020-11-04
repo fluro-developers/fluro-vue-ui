@@ -19,7 +19,7 @@
                                         <!-- If we already exist -->
                                         <template v-if="model._id">
                                             <template v-if="replace">
-                                                <asset-replace-upload ref="replaceForm"  v-model="model" @input="assetReplaced" />
+                                                <asset-replace-upload ref="replaceForm" v-model="model" @input="assetReplaced" />
                                             </template>
                                             <template v-else>
                                                 <v-input :label="model.filename" class="no-flex">
@@ -33,7 +33,7 @@
                                             </template>
                                         </template>
                                         <template v-else>
-                                            <asset-replace-upload ref="replaceForm"  v-model="model" @file="fileSelected" />
+                                            <asset-replace-upload ref="replaceForm" v-model="model" @file="fileSelected" />
                                         </template>
                                     </template>
                                     <template v-else>
@@ -47,11 +47,18 @@
                                         <fluro-video :cacheKey="videoCacheKey" :item="model" />
                                     </v-container>
                                     <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.poster" v-model="model"></fluro-content-form-field>
-                                    
+                                    <fluro-panel v-if="definition && definition.fields && definition.fields.length">
+                                        <fluro-panel-title>
+                                            <strong>{{definition.title}} Information</strong>
+                                        </fluro-panel-title>
+                                        <fluro-panel-body>
+                                            <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
+                                        </fluro-panel-body>
+                                    </fluro-panel>
+                                    <!-- 
                                     <template v-if="definition && definition.fields && definition.fields.length">
                                         <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
-                                    </template>
-
+                                    </template> -->
                                     <template v-if="!hideBody && !fullBody">
                                         <v-input label="Body / Caption" class="no-flex">
                                             <fluro-editor v-model="model.body" :options="editorOptions" placeholder="Type your text in here"></fluro-editor>

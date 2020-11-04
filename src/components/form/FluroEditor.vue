@@ -353,7 +353,6 @@
         </template>
         <template v-if="!showSource">
             <editor-content class="fluro-editor-textarea" :editor="editor" />
-           
             <!-- Suggestions -->
             <div class="suggestion-list" v-show="showSuggestions" ref="suggestions">
                 <template v-if="filteredUsers.length">
@@ -513,7 +512,7 @@ export default {
             }
         },
         select() {
-            console.log('SELECT EDITOR')
+            //console.log('SELECT EDITOR')
         },
         hideBubble() {
             this.hideLinkMenu();
@@ -567,7 +566,7 @@ export default {
 
                 ], 'Add Link')
                 .then(function(res) {
-                    console.log('RES', res)
+                    //console.log('RES', res)
 
                     switch (res.value) {
                         case 'asset':
@@ -586,7 +585,7 @@ export default {
                                     var firstFile = files[0];
                                     var href = self.$fluro.asset.downloadUrl(firstFile, { withoutToken: true })
 
-                                    console.log('HREF IS', href)
+                                    //console.log('HREF IS', href)
                                     self.showLinkMenu(command, attrs, {
                                         href,
                                         target: attrs.target,
@@ -757,7 +756,7 @@ export default {
         //         }, true)
         //         .then(function(res) {
         //             if (res) {
-        //                 //console.log("res", res)
+        //                 ////console.log("res", res)
         //                 var first = _.first(res)
 
         //                 self.setLinkUrl(command, {
@@ -776,7 +775,7 @@ export default {
             this.editor.focus()
         },
         showImageMenu(attrs) {
-            //console.log("Image attrs",attrs)
+            ////console.log("Image attrs",attrs)
             if (attrs.width.includes("%")) {
                 this.scale = parseInt(attrs.width)
             }
@@ -787,7 +786,7 @@ export default {
             this.selectedNode = null
         },
         updateImage(command) {
-            //console.log("performing Update")
+            ////console.log("performing Update")
             command(this.selectedImage)
             this.hideImageMenu()
             this.editor.focus()
@@ -809,7 +808,7 @@ export default {
             this.selectedNode = null
         },
         updateVideo(command) {
-            //console.log("performing Update")
+            ////console.log("performing Update")
             command(this.selectedVideo)
             this.hideVideoMenu()
             this.editor.focus()
@@ -819,23 +818,23 @@ export default {
             this.selectedNode.width = this.selectedVideo.width
         },
         blurEditor($event) {
-            // console.log('BLUR EDITOR')
+            // //console.log('BLUR EDITOR')
             this.$emit('blur');
 
         },
         focusEditor($event) {
-            // console.log('FOCUS EDITOR')
+            // //console.log('FOCUS EDITOR')
             this.$emit('focus');
 
         },
 
         blurCode($event) {
-            // console.log('BLUR CODE')
+            // //console.log('BLUR CODE')
             this.$emit('blur');
 
         },
         focusCode($event) {
-            // console.log('FOCUS CODE')
+            // //console.log('FOCUS CODE')
             this.$emit('focus');
 
         },
@@ -883,7 +882,7 @@ export default {
                 }, true)
                 .then(function(res) {
                     if (res) {
-                        //console.log("res", res)
+                        ////console.log("res", res)
                         var first = _.first(res)
 
                         command({
@@ -948,7 +947,7 @@ export default {
         // so it's important to pass also the position of your suggestion text
         selectUser(user) {
 
-            //console.log('SELECT USER', user);
+            ////console.log('SELECT USER', user);
 
             this.insertMention({
                 range: this.suggestionRange,
@@ -970,7 +969,7 @@ export default {
         //     // ref: https://atomiks.github.io/tippyjs/v6/all-props/
         //     this.popup = tippy('.page', {
         //         content: this.$refs.suggestions,
-        //         getReferenceClientRect: node.getBoundingClientRect,
+        //         getReferenceClientRect: node.getBoundingClientRect(),
         //         appendTo: () => document.body,
         //         interactive: true,
         //         sticky: true, // make sure position of tippy is updated when content changes
@@ -985,29 +984,51 @@ export default {
         //     })
         // },
         renderPopup(node) {
-            if (this.popup) {
+
+
+            var self = this;
+
+            if (self.popup) {
                 return
             }
 
             var referenceElement = this.$refs.suggestions;
-            console.log('Reference Element', referenceElement)
+            // //console.log('Reference Element', referenceElement)
             // ref: https://atomiks.github.io/tippyjs/v6/all-props/
 
-            var thing = node;
-            this.popup = tippy('.fluro-editor-textarea', {
-                content:referenceElement,
-                getReferenceClientRect: node.getBoundingClientRect,
-                appendTo: () => document.body,
+
+
+            var suggestionElement = document.querySelector('.mention-suggestion') || node;
+            var textArea = self.$el || document.body;
+            var domRect = suggestionElement.getBoundingClientRect();
+            if (!domRect) {
+                return;
+            }
+
+
+
+
+
+
+            // //console.log('NODE', node);
+            // '.fluro-editor-textarea',
+            this.popup = tippy('.mention-suggestion', {
+                content: referenceElement,
+                offset: [domRect.x + domRect.width, domRect.y + domRect.height],
+                //getReferenceClientRect: suggestionElement.getBoundingClientRect,
+                // appendTo: () => textArea,
+                appendTo: document.body,
                 interactive: true,
                 sticky: true, // make sure position of tippy is updated when content changes
                 plugins: [sticky],
-                trigger: 'mouseenter', // manual
+                // trigger: 'mouseenter', // manual
                 showOnCreate: true,
                 theme: 'dark',
-                placement: 'top-start',
+                // placement: 'bottom-end',
                 inertia: true,
                 duration: [400, 200],
                 allowHTML: true,
+                zIndex: 999999999999,
             })
         },
         destroyPopup() {
@@ -1166,22 +1187,25 @@ export default {
 
         var MentionExtension = new Mention({
             // a list of all suggested items
-            items: async () => {
-                await new Promise(resolve => {
-                    setTimeout(resolve, 500)
-                })
-                return [
-                    { id: 1, name: 'Sven Adlung' },
-                    { id: 2, name: 'Patrick Baber' },
-                    { id: 3, name: 'Nick Hirche' },
-                    { id: 4, name: 'Philip Isik' },
-                    { id: 5, name: 'Timo Isik' },
-                    { id: 6, name: 'Philipp Kühn' },
-                    { id: 7, name: 'Hans Pagel' },
-                    { id: 8, name: 'Sebastian Schrama' },
-                ]
+            // items: async () => {
+            //     await new Promise(resolve => {
+            //         setTimeout(resolve, 500)
+            //     })
+            //     return [
+            //         // { id: 1, name: '' },
+            //         // { id: 2, name: 'Patrick Baber' },
+            //         // { id: 3, name: 'Nick Hirche' },
+            //         // { id: 4, name: 'Philip Isik' },
+            //         // { id: 5, name: 'Timo Isik' },
+            //         // { id: 6, name: 'Philipp Kühn' },
+            //         // { id: 7, name: 'Hans Pagel' },
+            //         // { id: 8, name: 'Sebastian Schrama' },
+            //     ]
+            // },
+            items() {
+                return [];
             },
-            allowSpaces: false,
+            // allowSpaces: false,
             // is called when a suggestion starts
             onEnter: ({
                 items,
@@ -1191,7 +1215,7 @@ export default {
                 virtualNode,
             }) => {
 
-                console.log('EVENT > ON ENTER')
+                //console.log('EVENT > ON ENTER')
                 this.query = query
                 this.filteredUsers = items
                 this.suggestionRange = range
@@ -1202,24 +1226,36 @@ export default {
                 this.insertMention = command
             },
             // is called when a suggestion has changed
-            onChange: ({
+            onChange: _.debounce(async ({
                 items,
                 query,
                 range,
                 virtualNode,
             }) => {
 
-                console.log('EVENT > ON CHANGE')
-                this.query = query
-                this.filteredUsers = items
-                this.suggestionRange = range
-                this.navigatedUserIndex = 0
-                this.renderPopup(virtualNode)
-            },
+                var scope = this;
+
+                return new Promise(function(resolve, reject) {
+
+
+                    self.$fluro.content.mention(query, self.options.mentions)
+                        .then(function(items) {
+                            //console.log('EVENT > ON CHANGE')
+                            scope.query = query
+                            scope.filteredUsers = items
+                            scope.suggestionRange = range
+                            scope.navigatedUserIndex = 0
+                            scope.renderPopup(virtualNode)
+
+                            resolve();
+                        })
+                        .catch(reject);
+                })
+            }, 400),
             // is called when a suggestion is cancelled
             onExit: () => {
 
-                console.log('EVENT > ON EXIT')
+                //console.log('EVENT > ON EXIT')
                 // reset all saved values
                 this.query = null
                 this.filteredUsers = []
@@ -1247,56 +1283,61 @@ export default {
             // this function is optional because there is basic filtering built-in
             // you can overwrite it if you prefer your own filtering
             // in this example we use fuse.js with support for fuzzy search
-            onFilter: async (items, query) => {
-                if (!query) {
-                    return items
-                }
-                await new Promise(resolve => {
-                    setTimeout(resolve, 500)
-                })
+            onFilter(items, query) {
+                return items;
+            }
+            // onFilter:_.debounce(async (items, query) => {
 
-                console.log('On Filter')
 
-                // var mentionInstance = this;
+            //     if (!query) {
+            //         return []
+            //     }
+            //     // await new Promise(resolve => {
+            //     //     setTimeout(resolve, 500)
+            //     // })
 
-                return self.$fluro.content.mention(query, self.options.mentions);
+            //     //console.log('On Filter', query)
 
-                // return new Promise(function(resolve, reject) {
+            //     // var mentionInstance = this;
 
-                //     self.$fluro.content.mention(query, self.options.mentions)
-                //         .then(function(personas) {
-                //             // self.query = query
-                //             // self.filteredUsers = personas
-                //             // self.suggestionRange = range
-                //             // self.navigatedUserIndex = 0
-                //             // self.renderPopup(virtualNode)
+            //     return Promise.resolve(self.$fluro.content.mention(query, self.options.mentions));
 
-                //             resolve(personas);
-                //         })
-                //         .catch(function(err) {
-                //             console.log('Error', err);
-                //             // this.query = query
-                //             // this.filteredUsers = items
-                //             // this.suggestionRange = range
-                //             // this.navigatedUserIndex = 0
-                //             // this.renderPopup(virtualNode)
+            //     // return new Promise(function(resolve, reject) {
 
-                //             reject(err);
-                //         });
+            //     //     self.$fluro.content.mention(query, self.options.mentions)
+            //     //         .then(function(personas) {
+            //     //             // self.query = query
+            //     //             // self.filteredUsers = personas
+            //     //             // self.suggestionRange = range
+            //     //             // self.navigatedUserIndex = 0
+            //     //             // self.renderPopup(virtualNode)
 
-                // })
-                // return Promise.resolve(items);
-                // resolve(items);
+            //     //             resolve(personas);
+            //     //         })
+            //     //         .catch(function(err) {
+            //     //             //console.log('Error', err);
+            //     //             // this.query = query
+            //     //             // this.filteredUsers = items
+            //     //             // this.suggestionRange = range
+            //     //             // this.navigatedUserIndex = 0
+            //     //             // this.renderPopup(virtualNode)
 
-                // });
+            //     //             reject(err);
+            //     //         });
 
-                // return items;
-                // const fuse = new Fuse(items, {
-                //     threshold: 0.2,
-                //     keys: ['name'],
-                // })
-                // return fuse.search(query).map(item => item.item)
-            },
+            //     // })
+            //     // return Promise.resolve(items);
+            //     // resolve(items);
+
+            //     // });
+
+            //     // return items;
+            //     // const fuse = new Fuse(items, {
+            //     //     threshold: 0.2,
+            //     //     keys: ['name'],
+            //     // })
+            //     // return fuse.search(query).map(item => item.item)
+            // }, 900),
         })
         ///////////////////////////////////
         ///////////////////////////////////
@@ -1372,14 +1413,14 @@ export default {
                 var javascript = function() { return window.hljs.getLanguage('javascript'); }
                 var scss = function() { return window.hljs.getLanguage('scss'); }
 
-                // // console.log('Got him', window.hljs, window.hljs.listLanguages());
+                // // //console.log('Got him', window.hljs, window.hljs.listLanguages());
                 // // var json = window.hljs.registerLanguage('json');
                 // var json1 = window.hljs.getLanguage('json');
                 // // var scss = window.hljs.registerLanguage('scss');
                 // // var javascript = window.hljs.registerLanguage('javascript');
 
-                // console.log('JSON 1', json1);
-                // console.log('JSON 2', json2);
+                // //console.log('JSON 1', json1);
+                // //console.log('JSON 2', json2);
 
                 // var highlightLanguages = {
                 //     scss,
@@ -1395,7 +1436,7 @@ export default {
                 //     html,
                 // }
 
-                // console.log('GOT Languages', window, highlightLanguages)
+                // //console.log('GOT Languages', window, highlightLanguages)
                 //Add Code highlighting to the extension list
                 enabledExtensions.push(new CodeBlockHighlight({
                     languages: [json, javascript, scss],
@@ -1410,7 +1451,7 @@ export default {
         this.editor = new Editor({
             // editorProps:[{
             //     transformPastedHTML:function(string) {
-            //         //console.log('FUNNEL', string)
+            //         ////console.log('FUNNEL', string)
             //         return string;
             //     }
             // }],
@@ -1428,7 +1469,7 @@ export default {
                 self.focusEditor();
             },
             onTransaction: (data) => {
-                // console.log(data)
+                // //console.log(data)
                 var state = data.state
                 var transaction = data.transaction
 
@@ -1441,8 +1482,8 @@ export default {
                     this.selectedNode = _.get(state, 'selection.node')
                 }
 
-                // console.log(JSON.stringify(this.selectedNode))
-                //console.log("OnTransaction State", state)
+                // //console.log(JSON.stringify(this.selectedNode))
+                ////console.log("OnTransaction State", state)
                 // if(!_.get(this, "options.disable.bubble")) {
                 //     _.set(this, "options.disable.bubble", false)
                 // }
@@ -1466,7 +1507,7 @@ export default {
 
             // so cursor doesn't jump to start on typing
             if (value !== this.editor.getHTML()) {
-                //console.log('SET CONTENT TO', this.model)
+                ////console.log('SET CONTENT TO', this.model)
                 this.editor.setContent(value)
             }
 
@@ -1966,7 +2007,12 @@ $color-white: #fff;
 }
 
 .mention-suggestion {
-    color: rgba($color-black, 0.6);
+    // color: rgba($color-black, 0.6);
+    border: 1px dotted $primary;
+    //background: rgba($primary, 0.1);
+    color: $primary;
+    padding: 2px;
+    border-radius: 9px;
 }
 
 .suggestion-list {
@@ -1997,7 +2043,7 @@ $color-white: #fff;
 
         &.is-selected,
         &:hover {
-         font-weight: bold;
+            font-weight: bold;
             background-color: rgba($primary, 0.1); // rgba($color-white, 0.2);
             color: $primary;
         }

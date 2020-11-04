@@ -1063,6 +1063,21 @@ export default {
 																																								// 'deleted',
 																																				]);
 																																				break;
+																																case "account":
+																																				return (self.possibleValues = [
+																																								"active",
+																																								"cancelled",
+																																								"cancelling",
+																																								"disconnected",
+																																								"exempt",
+																																								"on_hold",
+																																								"onhold",
+																																								"suspended",
+																																								"trial",
+																																								"trial_error",
+																																								// 'deleted',
+																																				]);
+																																				break;
 																																case "purchase":
 																																				return (self.possibleValues = [
 																																								"active",

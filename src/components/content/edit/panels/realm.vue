@@ -70,9 +70,9 @@ export default {
 				created() {
 
 								var self = this;
-								if (self.user && self.user.accountType == 'administrator') {
-												return;
-								}
+								// if (self.user && self.user.accountType == 'administrator') {
+								// 				return;
+								// }
 								self.requireParent = (!self.model._id && (!self.model.trail || !self.model.trail.length));
 				},
 				mixins: [FluroContentEditMixin],
@@ -174,7 +174,7 @@ export default {
 
 												addField('parent', {
 																title: 'Parent Realm',
-																minimum: 0,
+																minimum: 1,
 																maximum: 1,
 																type: 'string',
 																directive: 'select',

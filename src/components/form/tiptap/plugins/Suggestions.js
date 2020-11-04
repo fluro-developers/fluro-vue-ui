@@ -64,7 +64,7 @@ function triggerCharacter({
 
     }
 
-      console.log('MATCH TEST?', match, position)
+      // console.log('MATCH TEST?', match, position)
 
     return position
   }

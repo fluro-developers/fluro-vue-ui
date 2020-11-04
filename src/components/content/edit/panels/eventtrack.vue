@@ -165,7 +165,7 @@
                                     <v-layout row wrap>
                                         <v-flex xs12 sm6>
                                             <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.nextRecurDate" v-model="model" />
-                                            <p class="muted">{{nextRecurDateFromNow}}</p>
+                                            <!-- <p class="muted">{{nextRecurDateFromNow}}</p> -->
                                         </v-flex>
                                         <v-flex xs12 sm6>
                                             <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.archiveDate" v-model="model" />
@@ -661,9 +661,10 @@ export default {
                 minimum: 1,
                 maximum: 1,
                 type: "date",
-                directive: "datetimepicker",
+                directive: "datepicker",
                 //description: moment(now).fromNow(),
-                defaultValues: [now]
+                defaultValues: [now],
+                
             });
 
             addField("archiveDate", {
@@ -671,14 +672,17 @@ export default {
                 minimum: 0,
                 maximum: 1,
                 type: "date",
-                directive: "datetimepicker"
+                directive: "datepicker",
+                
+               
+                 
                 //description: moment(now).fromNow(),
             });
 
             ///////////////////////////////////
 
             addField("recurDefinition", {
-                title: "Definition",
+                title: "Event Type / Definition",
                 minimum: 0,
                 maximum: 1,
                 type: "string",

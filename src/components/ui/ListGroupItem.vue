@@ -1,7 +1,7 @@
 <template>
 				<component :is="componentType" class="list-group-item" :href="href" :target="target" :to="to" @click="clicked" :class="isSelected ? 'active selected' : ''">
 								<div>
-												<fluro-realm-bar v-if="item" :realm="item.realms" />
+												<fluro-realm-bar v-if="item" :realm="item._type == 'realm' ? [item] : item.realms" />
 												<slot name="left">
 																<fluro-item-image v-if="item" :item="item" />
 												</slot>

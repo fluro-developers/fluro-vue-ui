@@ -24,7 +24,8 @@ module.exports = {
         'fluro-vue': 'fluro-vue',
         'vuex-map-fields': 'vuex-map-fields',
         'prosemirror-commands': 'prosemirror-commands',
-        'prosemirror-state':'prosemirror-state',
+        'prosemirror-state': 'prosemirror-state',
+        'prosemirror-view': 'prosemirror-view',
 
 
         "tippy.js": "tippy.js",
@@ -32,6 +33,7 @@ module.exports = {
         "tiptap-commands": "tiptap-commands",
         "tiptap-extensions": "tiptap-extensions",
         "tiptap-utils": "tiptap-utils",
+
 
         //Brace Stuff
         'brace/ext/language_tools': 'brace/ext/language_tools',
@@ -46,28 +48,41 @@ module.exports = {
         'brace/theme/chrome': 'brace/theme/chrome',
     },
     module: {
-        rules: [{
+
+
+
+        rules: [
+
+            /**
+            {
                 test: /\.(s*)css$/,
                 use: [
-                    // 
-                    /**
-                    //Uncomment this to build for website builder
+                    MiniCssExtractPlugin.loader,
+                    // 'vue-style-loader',
+                    { loader: 'css-loader' },
+                    { loader: 'sass-loader' },
 
                     {
-                        loader: MiniCssExtractPlugin.loader,
+                        loader: 'sass-resources-loader',
                         options: {
-                            publicPath: './dev', // path.join(__dirname, './dev')
-                        }
+                            resources: [
+                                './src/variables.scss',
+                            ]
+                        },
                     },
-                    /**/
+                ]
+            },
+            /**/
+            /**/
+            {
+                // test: /\.(scss|sass|css)$/,
 
-                    
-                    // { loader: 'css-loader', options: { url: false, sourceMap: false } },
-                    // { loader: 'sass-loader', options: { sourceMap: false } }
+                test: /\.(s*)css$/,
+                use: [
+                   
 
-                    /**/
+
                     'vue-style-loader',
-                    // MiniCssExtractPlugin.loader,
                     'css-loader',
                     'sass-loader',
                     {
@@ -78,9 +93,12 @@ module.exports = {
                             ]
                         },
                     },
-
+                    
                 ],
-            }, {
+            }, 
+
+            /**/
+            {
                 test: /\.vue$/,
                 loader: 'vue-loader'
             },
@@ -94,18 +112,21 @@ module.exports = {
     },
     plugins: [
         new VueLoaderPlugin(),
-        // new VuetifyLoaderPlugin(),
-        // ... Vue Loader plugin omitted
         new MiniCssExtractPlugin({
-            filename: "../extracted/flurovueui.css",
+            filename: 'EXTRACTED.css',
+            chunkFilename: "[name].css"
         })
     ],
+
+
     optimization: {
         splitChunks: {
+           
             cacheGroups: {
                 styles: {
                     name: 'styles',
-                    test: /\.css$/,
+                     test: /\.(s*)css$/,
+                    // test: /\.css$/,
                     chunks: 'all',
                     enforce: true,
                 },
@@ -114,3 +135,30 @@ module.exports = {
     },
 
 };
+
+
+
+
+// module.exports = {
+//   // other options...
+//   module: {
+//     rules: [
+//       // ... other rules omitted
+//       {
+//         test: /\.css$/,
+//         use: [
+//           process.env.NODE_ENV !== 'production'
+//             ? 'vue-style-loader'
+//             : MiniCssExtractPlugin.loader,
+//           'css-loader'
+//         ]
+//       }
+//     ]
+//   },
+//   plugins: [
+//     // ... Vue Loader plugin omitted
+//     new MiniCssExtractPlugin({
+//       filename: 'style.css'
+//     })
+//   ]
+// }

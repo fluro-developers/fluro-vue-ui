@@ -12,7 +12,6 @@
                 <flex-column-header class="border-bottom">
                     <page-header :type="typeName">
                         <template v-slot:left>
-                          
                             <!-- <pre>{{clickTitleEdit}} -- {{typeName}}</pre> -->
                             <fluro-inline-edit :autofocus="autofocusTitle" :enabled="clickTitleEdit">
                                 <template v-slot:default>
@@ -72,7 +71,7 @@
                             </template>
                             <help title="Realm Selector" :body="`Everything in Fluro needs to be kept somewhere, choose one or more realms for this ${definitionTitle}. This will affect who has access to view and edit this ${definitionTitle}`" />
                             <!-- <pre>{{typeName}} - {{definitionName}}</pre> -->
-                            <fluro-realm-select ref="realmSelector" v-tippy :content="`Select where this ${definitionTitle} should be stored`" v-if="typeName != 'realm'" v-model="model.realms" :type="typeName" :definition="definitionName" />
+                            <fluro-realm-select ref="realmSelector" v-tippy :content="`Select where this ${definitionTitle} should be stored`" v-if="realmSelectorRelevant" v-model="model.realms" :type="typeName" :definition="definitionName" />
                             <fluro-tag-select class="mx-0 ml-2" v-if="tagsAvailable" v-model="model.tags">
                                 <help title="Tag Selector" :body="`Add tags to describe and make it easier to find this ${definitionTitle} when searching later`" />
                             </fluro-tag-select>
@@ -294,22 +293,22 @@ export default {
         }
     },
     mounted() {
-        // console.log('MOUNTED');
+        // //console.log('MOUNTED');
         var self = this;
         self.addListeners();
     },
     activated() {
-        // console.log('ACTIVATED')
+        // //console.log('ACTIVATED')
         var self = this;
         self.addListeners();
     },
     deactivated() {
-        // console.log('DEACTIVATED')
+        // //console.log('DEACTIVATED')
         var self = this;
         self.removeListeners();
     },
     beforeDestroy() {
-        // console.log('DESTROYED')
+        // //console.log('DESTROYED')
         var self = this;
         self.removeListeners();
     },
@@ -319,7 +318,7 @@ export default {
         showRealmsPopup() {
             var realmSelector = this.$refs.realmSelector;
 
-            console.log("Show Realms?", realmSelector);
+            //console.log("Show Realms?", realmSelector);
 
             if (!realmSelector) {
                 return;
@@ -358,14 +357,14 @@ export default {
             }
         },
         addListeners() {
-            // console.log('ADD LISTENERS')
+            // //console.log('ADD LISTENERS')
             var self = this;
             if (process.browser) {
                 document.addEventListener("keydown", self.keypress, false);
             }
         },
         removeListeners() {
-            // console.log('REMOVE LISTENERS')
+            // //console.log('REMOVE LISTENERS')
             var self = this;
             if (process.browser) {
                 document.removeEventListener("keydown", self.keypress);
@@ -383,17 +382,18 @@ export default {
         },
         editSuccess(result) {
             var self = this;
+            console.log('Edit success!')
 
             //Reload the terminology!
             if (result.data._type == "definition") {
-                console.log("Reload glossary");
+                //console.log("Reload glossary");
                 self.$fluro.global.reloadTerminology();
             }
 
             self.state = "ready";
 
             self.cacheClearRequired = true;
-            // console.log('CLEAR CACHE ON SAVE?', self.disableCacheClearOnSave)
+            // //console.log('CLEAR CACHE ON SAVE?', self.disableCacheClearOnSave)
             if (!self.disableCacheClearOnSave) {
                 self.$fluro.resetCache();
             }
@@ -401,7 +401,7 @@ export default {
             // self.reset(true);
             self.$emit("success", result.data);
 
-            // console.log('RESULT WAS', result);
+            // //console.log('RESULT WAS', result);
             //Print a success message to the screen
             self.$fluro.notify(`${result.data.title} was updated successfully`);
         },
@@ -412,7 +412,7 @@ export default {
                 return
             }
 
-            // console.log('ERROR MESSAGE HAPPENED')
+            console.log('ERROR MESSAGE HAPPENED', err)
             //Dispatch an error
             var humanMessage = self.$fluro.utils.errorMessage(err);
             self.$fluro.error(err);
@@ -422,20 +422,16 @@ export default {
         },
         createSuccess(result) {
             var self = this;
-            console.log("CREATE SUCCESS", result);
+            //console.log("CREATE SUCCESS", result);
 
             //Reload the terminology!
             if (result.data._type == "definition") {
-                console.log("Reload glossary");
+                //console.log("Reload glossary");
                 self.$fluro.global.reloadTerminology();
             }
 
             self.cacheClearRequired = true;
-            console.log(
-                "CREATE CLEAR?",
-                self.cacheClearRequired,
-                self.disableCacheClearOnSave
-            );
+
             if (!self.disableCacheClearOnSave) {
                 self.$fluro.resetCache();
             }
@@ -443,7 +439,7 @@ export default {
             self.reset(true);
             self.$emit("success", result.data);
 
-            // console.log('RESULT WAS', result);
+            // //console.log('RESULT WAS', result);
             //Print a success message to the screen
             self.$fluro.notify(`${result.data.title} was created successfully`);
         },
@@ -454,7 +450,7 @@ export default {
                 return;
             }
 
-            console.log("ERROR MESAGE HAPPEND");
+            //console.log("ERROR MESAGE HAPPEND");
             //Dispatch an error
             var humanMessage = self.$fluro.utils.errorMessage(err);
             self.$fluro.error(err);
@@ -463,7 +459,7 @@ export default {
             self.$emit("error", err);
         },
         fileChanged(file) {
-            console.log("FILE CHANGE HEARD", file);
+            //console.log("FILE CHANGE HEARD", file);
             this.file = file;
         },
         updateModel() {
@@ -496,7 +492,7 @@ export default {
             this.validate();
         },
         reset(suppressEvent) {
-            console.log("RESET");
+            //console.log("RESET");
             var self = this;
 
             /////////////////////////////////
@@ -551,7 +547,7 @@ export default {
                 return;
             }
 
-            console.log("AUTOSAVE");
+            //console.log("AUTOSAVE");
             self.submitUpdate()
                 .then(function(res) {
                     self.state = "ready";
@@ -568,7 +564,7 @@ export default {
             var definedType =
                 requestData.definition || self.definitionName || self.typeName;
 
-            // console.log("SUBMIT UPDATE", self.model, requestData);
+            // //console.log("SUBMIT UPDATE", self.model, requestData);
 
             // return new Promise(function(resolve, reject) {
 
@@ -630,6 +626,7 @@ export default {
                 context = "edit";
             }
 
+
             /////////////////////////////////
 
             var promise = new Promise(function(resolve, reject) {
@@ -646,7 +643,8 @@ export default {
                     return reject();
                 }
 
-                if (self.typeName == "realm") {} else {
+
+                if (self.realmSelectorRelevant) {
                     if (!self.model.realms || !self.model.realms.length) {
                         self.showRealmsPopup();
                         return reject();
@@ -674,7 +672,7 @@ export default {
                     requestData.title = `${requestData.event.title} headcount`;
                 }
 
-                console.log("SENDING TO SERVER", context, self.model);
+                //console.log("SENDING TO SERVER", context, self.model);
 
                 switch (context) {
                     case "edit":
@@ -688,7 +686,7 @@ export default {
                             var file = self.file;
 
                             if (!file) {
-                                // console.log('SELF UPDATE CREATE', requestData);
+                                // //console.log('SELF UPDATE CREATE', requestData);
                                 self.$fluro.notify(`Please select a file to upload`);
                                 self.state = "ready";
                                 return reject();
@@ -803,6 +801,7 @@ export default {
             }
 
 
+
             switch (context) {
                 case "edit":
                     promise.then(self.editSuccess, self.editFailed);
@@ -823,7 +822,17 @@ export default {
     computed: {
 
 
+        realmSelectorRelevant() {
 
+            switch (this.typeName) {
+                case 'realm':
+                case 'account':
+                    return;
+                    break;
+            }
+
+            return true;
+        },
         tagsAvailable() {
             if (this.typeName == 'tag') {
                 return false;
@@ -893,7 +902,7 @@ export default {
             return self.typeName == "definition";
         },
         autofocusTitle() {
-         var self = this;
+            var self = this;
             return (self.typeName == 'article') && (!self.model._id || !self.model.title);
         },
         summary() {
@@ -1481,12 +1490,12 @@ export default {
             default: null,
             get() {
                 var self = this;
-                console.log('TYPE IS', self.type);
+                //console.log('TYPE IS', self.type);
 
                 //////////////////////////////////////////////
 
                 if (!self.type || !self.type.length) {
-                    console.log("NO CONFIG LOADED");
+                    //console.log("NO CONFIG LOADED");
                     // self.loading = false;
                     return Promise.reject({});
                 }
@@ -1499,9 +1508,9 @@ export default {
                     var promise = self.$fluro.api.get(`/defined/type/${self.type}`);
 
                     promise.then(function(res) {
-                        // console.log('RESO', res);
+                        // //console.log('RESO', res);
                         resolve(res.data);
-                        // console.log('CONFIG LOADED', res.data);
+                        // //console.log('CONFIG LOADED', res.data);
                         self.loading = false;
                     });
 
@@ -1510,9 +1519,9 @@ export default {
                             self.$fluro.error(err);
                         }
 
-                        // // console.log('ERROR', err.response);
+                        // // //console.log('ERROR', err.response);
                         // if (err.response.status === 404) {
-                        //     console.log('RESOLVE THE 404')
+                        //     //console.log('RESOLVE THE 404')
                         //     return resolve(null);
                         // }
 
@@ -1520,10 +1529,10 @@ export default {
                     });
                 });
                 // .then(function(res) {
-                //     console.log('RESI', res);
+                //     //console.log('RESI', res);
                 // })
                 // .catch(function(err) {
-                //     console.log('ERRESI', err);
+                //     //console.log('ERRESI', err);
                 // })
             }
         }
@@ -1532,11 +1541,11 @@ export default {
         // 'changeString': _.debounce(function(newModel, oldModel) {
 
         //     if (!oldModel) {
-        //         console.log('no old model')
+        //         //console.log('no old model')
         //         return;
         //     }
 
-        //     console.log('MODEL SAVED', oldModel)
+        //     //console.log('MODEL SAVED', oldModel)
         //     this.autosave();
 
         // }, 1000),
@@ -1547,7 +1556,7 @@ export default {
         // 'model': {
         //     handler: function(val, oldVal) {
 
-        //         // console.log('MODEL CHANGED', val);
+        //         // //console.log('MODEL CHANGED', val);
         //         this.$emit('input', val);
         //     },
         //     deep: true,

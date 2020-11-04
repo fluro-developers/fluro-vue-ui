@@ -1,6 +1,6 @@
 <template>
     <div class="button-cell text-xs-center">
-        <v-btn class="ma-0" small @click="run" :color="column.button.color" :icon="!column.button.text" v-tippy :content="column.button.tooltip" :loading="processing">
+        <v-btn class="ma-0" small @click.stop.prevent="run" :color="column.button.color" :icon="!column.button.text" v-tippy :content="column.button.tooltip" :loading="processing">
             {{column.button.text}}
             <fluro-icon :icon="column.button.icon" v-if="column.button.icon" :right="column.button.text" />
         </v-btn>

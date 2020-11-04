@@ -60,6 +60,7 @@ export default {
             }
 
             return {
+                // transform: `translateZ(-${self.depth}px) scale(${scale})`,
                 transform: `translateZ(-${self.depth}px) scale(${scale})`,
             }
         }

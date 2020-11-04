@@ -6,9 +6,9 @@
 												<youtube-embed :video-id="mediaID" />
 								</div>
 								<div class="fluro-video-embed" v-if="provider == 'upload'">
-												<video class="embed-responsive-item" :preload="preloadStyle" :poster="posterUrl" controls>
-																<source :src="assetUrl" >
-																	<!-- :type="item.mimetype" -->
+												<video class="embed-responsive-item" :preload="preloadStyle" :poster="posterUrl" :autoplay="autoplay" :muted="muted" :playsinline="playsinline" :controls="controls">
+																<source :src="assetUrl">
+																<!-- :type="item.mimetype" -->
 												</video>
 								</div>
 								<div class="fluro-video-embed" v-if="provider == 'embed'" v-html="item.external.embed">
@@ -50,6 +50,25 @@ export default {
 								}
 				},
 				props: {
+								controls: {
+												type: [Boolean, String],
+												default:true,
+								},
+								autoplay: {
+												type: [Boolean, String],
+								},
+								muted: {
+												type: [Boolean, String],
+												default:false,
+								},
+								loop: {
+												type: [Boolean, String],
+												default:false,
+								},
+								playsinline: {
+												type: [Boolean, String],
+												default:false,
+								},
 								item: Object,
 								width: {
 												type: Number,
@@ -99,6 +118,7 @@ export default {
 				//     }
 				// },
 				computed: {
+						
 								preloadStyle() {
 												var self = this;
 

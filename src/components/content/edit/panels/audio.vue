@@ -24,6 +24,7 @@
                         <flex-column-body style="background: #fafafa;">
                             <v-container fluid>
                                 <constrain sm>
+                                
                                     <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />
                                     <fluro-content-form-field v-if="!model._id" :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.assetType" v-model="model" />
                                     <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.external" v-model="model" />
@@ -54,19 +55,31 @@
                                             <asset-replace-upload ref="replaceForm" v-model="model" @file="fileSelected" />
                                         </template>
                                     </div>
+
+                                   
+                                    <fluro-panel v-if="definition && definition.fields && definition.fields.length">
+                                      <fluro-panel-title>
+                                       <strong>{{definition.title}} Information</strong>
+                                      </fluro-panel-title>
+                                        <fluro-panel-body>
+                                            <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
+                                        </fluro-panel-body>
+                                    </fluro-panel>
+
+
                                     <v-input label="Body" class="no-flex pt-2">
                                         <fluro-editor v-model="model.body" placeholder="Type your text in here"></fluro-editor>
                                     </v-input>
                                     <fluro-privacy-select v-model="model.privacy" />
-                                </constrain>
-                            </v-container>
-                        </flex-column-body>
+                                    <!-- </constrain> -->
+                                    <!-- </v-container> -->
+                                    <!--  </flex-column-body>
                     </tab>
                     <tab :heading="`${definition.title} Information`" v-if="definition && definition.fields && definition.fields.length">
-                        <flex-column-body style="background: #fafafa;">
-                            <v-container fluid>
-                                <constrain sm>
-                                    <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
+                        <flex-column-body style="background: #fafafa;"> -->
+                                    <!-- <v-container fluid> -->
+                                    <!-- <constrain sm> -->
+                                    
                                 </constrain>
                             </v-container>
                         </flex-column-body>

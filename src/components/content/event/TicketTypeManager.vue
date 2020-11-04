@@ -151,8 +151,8 @@ export default {
       }
 
      
-      var fraction = Math.ceil(value / limit);
-      var percentage = (fraction * 100);
+      var fraction = value / limit;
+      var percentage = Math.ceil(fraction * 100);
 
       if(!fraction || !percentage) {
         return '';

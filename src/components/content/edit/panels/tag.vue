@@ -42,7 +42,6 @@
 
 import FluroEditor from '../../../form/FluroEditor.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin.js';
-import GradeManager from '../components/GradeManager.vue';
 
 /////////////////////////////////
 
@@ -53,7 +52,6 @@ import Vue from 'vue';
 export default {
     components: {
         FluroEditor,
-        GradeManager,
     },
     created() {
     },

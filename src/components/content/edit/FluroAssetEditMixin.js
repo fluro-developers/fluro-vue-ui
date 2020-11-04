@@ -1,35 +1,41 @@
-
-
-
 import AssetReplaceUpload from './components/AssetReplaceUpload.vue';
 
 
 
 export default {
-	data() {
-		return {
-			file:null,
-			dragging:false,
-		}
-	},
-	methods:{
-		fileSelected(file) {
-			var self = this;
-			console.log('file selected inside asset form!');
-			self.file = file;
-			self.$emit('file', file);
-		},
-		fileDropped(file) {
-			var self = this;
-			
-			console.log('DROPPED', this.$refs.replaceForm)
-			if(!this.$refs.replaceForm || !this.$refs.replaceForm.fileSelected) {
-				return console.log('DROP ERROR NO REPLACE FORM')
-			}
+    data() {
+        return {
+            file: null,
+            dragging: false,
+        }
+    },
+    methods: {
+        fileSelected(file) {
+            var self = this;
+            console.log('file selected inside asset form!');
+            self.file = file;
+            self.$emit('file', file);
+        },
+        fileDropped(file) {
+            var self = this;
 
-			this.$refs.replaceForm.filesSelected([file]);
-		},
-		filedrop(e) {
+
+            if (self.model.assetType != 'upload') {
+                self.model.assetType = 'upload';
+            }
+            self.$nextTick(function() {
+
+
+                console.log('DROPPED', self.$refs.replaceForm)
+                if (!self.$refs.replaceForm || !self.$refs.replaceForm.fileSelected) {
+                    return console.log('DROP ERROR NO REPLACE FORM')
+                }
+
+                self.$refs.replaceForm.filesSelected([file]);
+
+            })
+        },
+        filedrop(e) {
             console.log('FILEDROP AT EDIT LEVEL')
             var self = this;
             if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
@@ -54,7 +60,7 @@ export default {
             }
             this.dragging = true;
         },
-	},
+    },
     components: {
         AssetReplaceUpload,
     },

@@ -65,16 +65,16 @@
                                     <!-- <label>{{titleLabel}}</label> -->
                                     <!-- <input class="form-control" placeholder="{{titleLabel}}" ng-model="item.title"> -->
                                     <!-- </div> -->
-                                    <template v-if="definition && definition.fields && definition.fields.length">
-                                        <!-- <fluro-panel> -->
-                                        <!-- <fluro-panel-title> -->
-                                        <!-- <h5>{{definition.title}} Information</h5> -->
-                                        <!-- </fluro-panel-title> -->
-                                        <!-- <fluro-panel-body> -->
-                                        <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
-                                        <!-- </fluro-panel-body> -->
-                                        <!-- </fluro-panel> -->
-                                    </template>
+                                     <fluro-panel v-if="definition && definition.fields && definition.fields.length">
+                                      <fluro-panel-title>
+                                       <strong>{{definition.title}} Information</strong>
+                                      </fluro-panel-title>
+                                        <fluro-panel-body>
+                                            <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
+                                        </fluro-panel-body>
+                                    </fluro-panel>
+
+                                    
                                     <template v-if="!hideBody && !fullBody">
                                         <v-input label="Body / Caption" class="no-flex">
                                             <fluro-editor v-model="model.body" :options="editorOptions" placeholder="Type your text in here"></fluro-editor>
