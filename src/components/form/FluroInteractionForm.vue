@@ -1397,7 +1397,8 @@ export default {
 
             //Set a default title
             if (!interactionData.title) {
-                interactionData.title = this.definition.title;
+                console.log('IF no title')
+                interactionData.title = self.definition.title;
             }
 
             /////////////////////////////////
