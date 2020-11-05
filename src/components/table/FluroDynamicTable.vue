@@ -1309,7 +1309,7 @@ export default {
 
 				/////////////////////////////////////////////////
 
-				// //console.log('make request');
+				console.log('make multiple request');
 				self.$fluro.api.post(`/content/${dataType}/multiple`, {
 						ids,
 						select: _.uniq(fields),

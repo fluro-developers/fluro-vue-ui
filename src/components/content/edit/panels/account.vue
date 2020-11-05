@@ -568,7 +568,7 @@ addField('howDidTheyHear', {
                 type: 'integer',
                 description: "An integer in the smallest currency unit (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a 0-decimal currency) defaults to 0",
                 directive: 'currency',
-                minimum: 1,
+                minimum: 0,
                 maximum: 1,
                 params: {
                     currency: self.model.creditCurrency,

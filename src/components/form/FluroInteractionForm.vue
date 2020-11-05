@@ -1106,7 +1106,9 @@ export default {
     },
     methods: {
         createEwayToken(done) {
+            
             var self = this;
+
             //Get the Public Encryption Key
             var key = self.paymentIntegration.publicDetails.publicKey;
 
@@ -1115,8 +1117,8 @@ export default {
             //Get the card details from our form
             var cardDetails = {};
             cardDetails.name = self.dataModel.cardName;
-            cardDetails.number = self.dataModel.cardNumber;
-            cardDetails.cvc = self.dataModel.cardCVC;
+            cardDetails.number = eCrypt.encryptValue(self.dataModel.cardNumber, key);
+            cardDetails.cvc = eCrypt.encryptValue(self.dataModel.cardCVC, key);
             cardDetails.exp_month = String(self.dataModel.cardExpMonth);
             cardDetails.exp_year = String(self.dataModel.cardExpYear).slice(-2);
 
@@ -1128,9 +1130,11 @@ export default {
 
             if (self.debugMode) {
                 return done({
-                    message: `EWay can not be used with sandbox testing keys. Please add an additional testing integration.`
+                    message: `EWay can not be used with sandbox testing keys. Please test in live mode or use another payment integration.`
                 });
             }
+
+            ///////////////////////
 
             return done(null, cardDetails);
         },
@@ -1407,6 +1411,8 @@ export default {
                 /////////////////////////////////
                 /////////////////////////////////
 
+                console.log('SELECTED PAYMENT METHOD', self.selectedPaymentMethod);
+
                 if (self.selectedPaymentMethod && self.selectedPaymentMethod != 'card') {
                     paymentDetails.method = self.selectedPaymentMethod;
                     return submitRequest(paymentDetails);
@@ -1435,6 +1441,7 @@ export default {
 
                         /////////////////////////////////////////////
 
+                        console.log('create eway token')
                         return self.createEwayToken(function(err, token) {
                             if (err) {
                                 self.serverErrors = self.$fluro.utils.errorMessage(err);
@@ -1444,6 +1451,7 @@ export default {
                                 return;
                             }
 
+                            console.log('Eway token', token);
                             //Include the payment details
                             paymentDetails.details = token;
                             return submitRequest(paymentDetails);
