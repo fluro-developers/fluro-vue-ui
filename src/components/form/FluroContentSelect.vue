@@ -105,8 +105,6 @@
                 </v-btn>
             </div>
         </div>
-
-
     </div>
 </template>
 <script>
@@ -449,9 +447,34 @@ export default {
 
             //////////////////////////////////////
 
+            var createType = self.type;
+
+
+
+            // switch (createType) {
+            //     case 'definition':
+
+            //         console.log('CREATE PARENT TYPE TEMPLATE', self.createParentType);
+
+            //         self.$fluro.global.create(self.type, {
+            //             options: false,
+            //             template: {
+
+            //                 parentType: self.createParentType,
+            //             },
+            //         }, true);
+            //         break;
+            //     default:
+            //         self.$fluro.global.create(self.type, { options: true }, true);
+            //         break;
+            // }
+
+
+
             self.$fluro.global
                 .create(
                     self.type, {
+                        options: true,
                         disableCacheClearOnSave: true,
                         template: JSON.parse(JSON.stringify(self.template || {}))
                     },

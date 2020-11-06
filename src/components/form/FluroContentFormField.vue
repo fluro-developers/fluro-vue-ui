@@ -251,7 +251,7 @@
 												</template>
 												<template v-else-if="renderer == 'datetimepicker'">
 																<fluro-date-time-picker :outline="showOutline" :large="!params.small" :min="minDate" :max="maxDate" :success="success" format="ddd D MMM - h:mma " timePickerFormat="ampm" :label="displayLabel" :placeholder="placeholder" :hint="field.description" v-model="fieldModel" @blur="touch()" @focus="modalFocussed();" />
-												<!-- <pre>{{fieldModel}}</pre> -->
+																<!-- <pre>{{fieldModel}}</pre> -->
 												</template>
 												<template v-else-if="renderer == 'timezoneselect'">
 																<template v-if="mobile">
@@ -563,8 +563,9 @@
 																																								<fluro-icon icon="arrows" left />
 																																				</span>
 																																				<v-flex style="padding:0 !important;">{{entry}}</v-flex>
-																																				<span v-if="type == 'email'" @click="copyToClipboard(entry)">
-																																								<fluro-icon icon="copy" right />
+																																				<!-- v-if="type == 'email'"  -->
+																																				<span v-tippy content="Click to copy" @click="copyToClipboard(entry)">
+																																								<fluro-icon icon="copy" />
 																																				</span>
 																																				<span @click="removeValue(index, true)">
 																																								<fluro-icon icon="trash-alt" right />

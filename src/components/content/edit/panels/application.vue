@@ -21,7 +21,7 @@
 																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.forwards" v-model="model" />
 																																				</fluro-panel-body>
 																																</fluro-panel>
-																																<fluro-panel>
+																																<fluro-panel v-if="$pro.enabled">
 																																				<fluro-panel-title>
 																																								<strong>Native Application</strong>
 																																								<div class="font-sm">Information for this application if published as a native iOS / Android Application</div>
@@ -80,6 +80,20 @@
 																												<div class="grid-list-xl">
 																																<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.forceSSL" v-model="model" />
 																																<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.authenticationStyle" v-model="model" />
+																																<fluro-panel v-if="$pro.enabled">
+																																				<fluro-panel-body>
+																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.origins" v-model="model.privateDetails" />
+																																								<v-layout>
+																																												<v-flex>
+																																																<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.blacklist" v-model="model.privateDetails" />
+																																												</v-flex>
+																																												<v-spacer/>
+																																												<v-flex>
+																																																<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.whitelist" v-model="model.privateDetails" />
+																																												</v-flex>
+																																								</v-layout>
+																																				</fluro-panel-body>
+																																</fluro-panel>
 																																<!--  <div v-if="definition && definition.fields && definition.fields.length">
                                     <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields">
                                     </fluro-content-form>
@@ -215,6 +229,10 @@ export default {
 								if (!this.model.data) {
 												this.model.data = {}
 								}
+
+								if (!this.model.privateDetails) {
+												this.model.privateDetails = {}
+								}
 				},
 				computed: {
 								pushDevices() {
@@ -328,7 +346,7 @@ export default {
 												// ///////////////////////////////////
 
 												addField("domain", {
-																title: "Domain Name",
+																title: "Primary Domain Name",
 																minimum: 1,
 																maximum: 1,
 																type: "string",
@@ -336,13 +354,63 @@ export default {
 																placeholder: "Eg. website.com"
 												});
 
+
+
+												addField("origins", {
+																title: "Allowed CORS Origins",
+																minimum: 0,
+																maximum: 0,
+																type: "string",
+																description: `By default '${self.model.domain}' will be the only origin allowed to sign in to this application. To add additional origins enter them below. Include port numbers but do not include trailing slash.`,
+																placeholder: "eg. http://www.example.com",
+																params: {
+																				persistentDescription: true,
+																}
+												});
+
+												addField("blacklist", {
+																title: "Blacklist IPs",
+																minimum: 0,
+																maximum: 0,
+																type: "string",
+																description: `IP addresses on this list will be blocked from using this application access token.`,
+																placeholder: "eg. 0.0.0.0",
+																params: {
+																				persistentDescription: true,
+																}
+												});
+
+												addField("whitelist", {
+																title: "Whitelist IPs",
+																minimum: 0,
+																maximum: 0,
+																type: "string",
+																description: `IP addresses that are not included in this list will be blocked from using this application access token.`,
+																placeholder: "eg. 0.0.0.0",
+																params: {
+																				persistentDescription: true,
+																},
+																expressions: {
+																				show() {
+																								return !self.model.blacklist || !self.model.blacklist.length
+																				}
+																},
+												});
+
+
+
+
+
 												addField("forwards", {
 																title: "Forwarding Domains",
 																minimum: 0,
 																maximum: 0,
 																type: "string",
-																description: "Add domain names that should redirect to the primary domain name",
-																placeholder: "Eg. www.website.com"
+																description: "Additional domains that should forward to your primary domain",
+																placeholder: "eg. website.net",
+																params: {
+																				persistentDescription: true,
+																}
 												});
 
 												addField("bundleIDs", {
@@ -385,7 +453,7 @@ export default {
 																type: "string",
 																directive: "select",
 																options: [{
-																								title: "Application",
+																								title: "Standalone Application (Recommended)",
 																								value: "application"
 																				},
 																				{
