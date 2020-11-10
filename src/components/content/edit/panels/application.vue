@@ -13,10 +13,13 @@
 																																<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />
 																																<fluro-panel>
 																																				<fluro-panel-title>
-																																								<strong>Website Configuration</strong>
+																																								<strong>Configuration</strong>
 																																								<div class="font-sm">Information for accessing this application in your browser</div>
 																																				</fluro-panel-title>
 																																				<fluro-panel-body>
+																																								<template v-if="showDeployment">
+																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.deployment" v-model="model" />
+																																								</template>
 																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.domain" v-model="model" />
 																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.forwards" v-model="model" />
 																																				</fluro-panel-body>
@@ -87,7 +90,7 @@
 																																												<v-flex>
 																																																<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.blacklist" v-model="model.privateDetails" />
 																																												</v-flex>
-																																												<v-spacer/>
+																																												<v-spacer />
 																																												<v-flex>
 																																																<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.whitelist" v-model="model.privateDetails" />
 																																												</v-flex>
@@ -233,8 +236,27 @@ export default {
 								if (!this.model.privateDetails) {
 												this.model.privateDetails = {}
 								}
+
+								if (!this.model._id) {
+												var defaultDistribution = _.get(this.definition, 'data.defaultDistribution');
+												if (defaultDistribution) {
+																this.model.deployment = defaultDistribution;
+												}
+								}
+
 				},
 				computed: {
+								showDeployment() {
+												if (this.definition) {
+																switch (this.definition.definitionName) {
+																				case 'checkinStation':
+																								return true;
+																								break;
+																}
+												}
+
+												return !_.get(this.model, 'data.source')
+								},
 								pushDevices() {
 												var self = this;
 
@@ -352,6 +374,53 @@ export default {
 																type: "string",
 																description: "Add a domain name for this application (without https://)",
 																placeholder: "Eg. website.com"
+												});
+
+
+
+												///////////////////////////////////
+
+												var deploymentOptions = [];
+
+												deploymentOptions.push({
+																name: 'Fluro - Classic Admin',
+																value: 'io.fluro.admin'
+												});
+
+												deploymentOptions.push({
+																name: 'Fluro - Classic Website',
+																value: 'io.fluro.webrender'
+												});
+
+												deploymentOptions.push({
+																name: 'Fluro - Remap Tool',
+																value: 'io.fluro.remap'
+												});
+
+												if (self.definition) {
+																if (self.definition.definitionName == 'checkinStation') {
+
+																				deploymentOptions = [];
+																				deploymentOptions.push({
+																								name: 'Checkin - Self First',
+																								value: 'io.fluro.checkin.self'
+																				});
+
+																				deploymentOptions.push({
+																								name: 'Checkin - Parent First',
+																								value: 'io.fluro.checkin.parent'
+																				});
+																}
+												}
+
+												addField("deployment", {
+																title: "Application Deployment",
+																minimum: 0,
+																maximum: 1,
+																type: "string",
+																directive: 'select',
+																description: "Select an application to deploy",
+																options: deploymentOptions,
 												});
 
 

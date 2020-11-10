@@ -1041,7 +1041,7 @@ export default {
 
             this.popup = null
 
-            console.log('DESTROY')
+            // console.log('DESTROY')
         },
 
 

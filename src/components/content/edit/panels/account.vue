@@ -18,63 +18,116 @@
                         </flex-column-header>
                     </template>
                 </template> -->
-
-
                 <!-- <tab heading="Account Information"> -->
-                    <flex-column-body style="background: #fafafa;">
-                        <v-container fluid>
-                            <constrain sm>
-                                <!-- <pre>{{model}}</pre> -->
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.legalName" v-model="model" />
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.primaryContacts" v-model="model" />
-                                <fluro-panel>
-                                    <tabset :justified="true">
-                                        <tab heading="Basic Information">
-                                            <fluro-panel-body>
-                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.shortName" v-model="model" />
-                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.prefix" v-model="model" />
-                                                <v-layout>
-                                                    <v-flex>
-                                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultEmailAddress" v-model="model" />
-                                                    </v-flex>
-                                                    <v-spacer />
-                                                    <v-flex>
-                                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultPhoneNumber" v-model="model" />
-                                                    </v-flex>
-                                                </v-layout>
-                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.countryCode" v-model="model" />
-                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.timezone" v-model="model" />
-                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.notificationPreference" v-model="model" />
-                                            </fluro-panel-body>
-                                        </tab>
-                                        <tab heading="Advanced">
-                                            <fluro-panel-body>
-                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultEmailTemplate" v-model="model" />
-                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.color" v-model="model" />
-                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.parentAccounts" v-model="model" />
-                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.inheritRealms" v-model="model" />
-                                            </fluro-panel-body>
-                                        </tab>
-                                    </tabset>
-                                </fluro-panel>
-                                <fluro-panel>
-                                    <fluro-panel-title><strong>
-                                            CRM Information
-                                        </strong>
-                                    </fluro-panel-title>
-                                    <fluro-panel-body>
-                                     <v-container grid-list-xl pa-0 fluid>
-                                       <v-layout>
+                <flex-column-body style="background: #fafafa;">
+                    <v-container fluid>
+                        <constrain sm>
+                            <!-- <pre>{{model}}</pre> -->
+                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />
+                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.legalName" v-model="model" />
+                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.primaryContacts" v-model="model" />
+                            <fluro-panel>
+                                <tabset :justified="true">
+                                    <tab heading="Basic Information">
+                                        <fluro-panel-body>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.shortName" v-model="model" />
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.prefix" v-model="model" />
+                                            <v-layout>
+                                                <v-flex>
+                                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultEmailAddress" v-model="model" />
+                                                </v-flex>
+                                                <v-spacer />
+                                                <v-flex>
+                                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultPhoneNumber" v-model="model" />
+                                                </v-flex>
+                                            </v-layout>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.countryCode" v-model="model" />
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.timezone" v-model="model" />
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.notificationPreference" v-model="model" />
+                                        </fluro-panel-body>
+                                    </tab>
+                                    <tab heading="Advanced">
+                                        <fluro-panel-body>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultEmailTemplate" v-model="model" />
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.color" v-model="model" />
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.parentAccounts" v-model="model" />
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.inheritRealms" v-model="model" />
+                                        </fluro-panel-body>
+                                    </tab>
+                                </tabset>
+                            </fluro-panel>
+                            <fluro-panel>
+                                <fluro-panel-title><strong>
+                                        Products
+                                    </strong>
+                                </fluro-panel-title>
+                                <fluro-panel-body class="border-bottom" v-for="product in model.data.products" v-if="product.actual">
+                                    <v-container pa-0 fluid>
+                                        <v-layout>
+                                            <v-flex>
+                                                <h5>{{product.actual.title}}</h5>
+                                            </v-flex>
+                                            <v-flex shrink>
+                                                <h5 v-if="isDiscounted(product)" style="text-decoration: line-through; opacity:0.5;">{{getNormalPriceForProduct(product, true)}} {{product.actualPaymentOption.title}}</h5>
+                                                <h5>{{getDiscountedPriceForProduct(product, true)}} {{product.actualPaymentOption.title}}</h5>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-container>
+                                    <v-layout v-if="product.actualPaymentOption">
+                                        <v-flex xs3>
+                                            <strong>Plan</strong>
+                                        </v-flex>
+                                        <v-flex>
+                                            {{product.actualPaymentOption.title}}
+                                        </v-flex>
+                                    </v-layout>
+                                    <v-layout v-if="product.actualTier">
+                                        <v-flex xs3>
+                                            <strong>Current Tier</strong>
+                                        </v-flex>
+                                        <v-flex>
+                                            {{product.actualTier.title}}
+                                        </v-flex>
+                                    </v-layout>
+                                    <v-layout>
+                                        <v-flex xs3>
+                                            <strong>Next Bill</strong>
+                                        </v-flex>
+                                        <v-flex>
+                                            <fluro-inline-edit>
+                                                <template v-slot:default>
+                                                    <div> {{product.productExpiry | formatDate('h:mma ddd D MMM YYYY')}} <span class="font-sm muted">{{product.productExpiry | timeago}}</span></div>
+                                                </template>
+                                                <template v-slot:edit="{props, blur, focus}">
+                                                    <fluro-content-form-field @input="update" :options="options" :field="fieldHash.productExpiry" v-model="model.data.products[product._id]" />
+                                                    <!-- <input block @focus="focus($event)" placeholder="Enter a title for this content" v-model="model.title" @keyup.enter="blur" @blur="blur" /> -->
+                                                </template>
+                                            </fluro-inline-edit>
+                                        </v-flex>
+                                    </v-layout>
+                                    <div v-if="product.discounts">
+                                        <v-label>Discounts Applied</v-label>
+                                        <v-layout v-for="discount in product.discounts">
+                                            <v-flex xs3>
+                                                <strong>{{discount.title}}</strong>
+                                            </v-flex>
+                                            <v-flex>
+                                                <span v-if="discount.percent">{{discount.percent}}%</span>
+                                                <span v-if="discount.amount">{{$fluro.utils.formatCurrency(discount.amount, product.currency)}}</span>
+                                            </v-flex>
+                                        </v-layout>
+                                    </div>
+                                    <!-- <pre>{{product}}</pre> -->
+                                    <!-- <v-container grid-list-xl pa-0 fluid>
+                                        <v-layout>
                                             <v-flex xs6>
                                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.howDidTheyHear" v-model="model.internal" />
                                             </v-flex>
-                                            <!-- <v-spacer />
+                                            <v-spacer />
                                             <v-flex xs6>
-                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.appProvider" v-model="model.internal" />
-                                            </v-flex> -->
+                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.goals" v-model="model.internal" />
+                                            </v-flex>
                                         </v-layout>
-
                                         <v-layout>
                                             <v-flex xs6>
                                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.previousSoftware" v-model="model.internal" />
@@ -93,32 +146,67 @@
                                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.websiteProvider" v-model="model.internal" />
                                             </v-flex>
                                         </v-layout>
-                                       </v-container>
-
-                                        
-                                    </fluro-panel-body>
-                                </fluro-panel>
-                                <fluro-panel>
-                                    <fluro-panel-title><strong>
-                                            Account Credit
-                                        </strong>
-                                    </fluro-panel-title>
-                                    <fluro-panel-body>
+                                    </v-container> -->
+                                </fluro-panel-body>
+                            </fluro-panel>
+                            <fluro-panel>
+                                <fluro-panel-title><strong>
+                                        CRM Information
+                                    </strong>
+                                </fluro-panel-title>
+                                <fluro-panel-body>
+                                    <v-container grid-list-xl pa-0 fluid>
                                         <v-layout>
-                                            <v-flex>
-                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.creditAmount" v-model="model" />
+                                            <v-flex xs6>
+                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.howDidTheyHear" v-model="model.internal" />
                                             </v-flex>
                                             <v-spacer />
-                                            <v-flex>
-                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.creditCurrency" v-model="model" />
+                                            <v-flex xs6>
+                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.goals" v-model="model.internal" />
                                             </v-flex>
                                         </v-layout>
-                                        <v-btn class="ma-0" color="primary" :loading="processing" @click="addCredit()">Add Credit</v-btn>
-                                    </fluro-panel-body>
-                                </fluro-panel>
-                            </constrain>
-                        </v-container>
-                    </flex-column-body>
+                                        <v-layout>
+                                            <v-flex xs6>
+                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.previousSoftware" v-model="model.internal" />
+                                            </v-flex>
+                                            <v-spacer />
+                                            <v-flex xs6>
+                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.appProvider" v-model="model.internal" />
+                                            </v-flex>
+                                        </v-layout>
+                                        <v-layout>
+                                            <v-flex xs6>
+                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.givingProvider" v-model="model.internal" />
+                                            </v-flex>
+                                            <v-spacer />
+                                            <v-flex xs6>
+                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.websiteProvider" v-model="model.internal" />
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-container>
+                                </fluro-panel-body>
+                            </fluro-panel>
+                            <fluro-panel>
+                                <fluro-panel-title><strong>
+                                        Account Credit
+                                    </strong>
+                                </fluro-panel-title>
+                                <fluro-panel-body>
+                                    <v-layout>
+                                        <v-flex>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.creditAmount" v-model="model" />
+                                        </v-flex>
+                                        <v-spacer />
+                                        <v-flex>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.creditCurrency" v-model="model" />
+                                        </v-flex>
+                                    </v-layout>
+                                    <v-btn class="ma-0" color="primary" :loading="processing" @click="addCredit()">Add Credit</v-btn>
+                                </fluro-panel-body>
+                            </fluro-panel>
+                        </constrain>
+                    </v-container>
+                </flex-column-body>
                 <!-- </tab> -->
                 <!-- <tab :heading="`${definition.title} Information`" v-if="definition && definition.fields && definition.fields.length">
                     <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
@@ -132,6 +220,7 @@
 
 import FluroEditor from '../../../form/FluroEditor.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin.js';
+import FluroInlineEdit from "../../../form/FluroInlineEdit.vue";
 
 /////////////////////////////////
 
@@ -142,6 +231,7 @@ import Vue from 'vue';
 export default {
     components: {
         FluroEditor,
+        FluroInlineEdit,
     },
     created() {
         if (!this.model.internal) {
@@ -334,7 +424,17 @@ export default {
 
 
 
-addField('howDidTheyHear', {
+            addField('productExpiry', {
+                title: 'Product Expiry Date',
+                type: 'date',
+                directive: 'datetimepicker',
+                minimum: 1,
+                maximum: 1,
+            });
+
+
+
+            addField('howDidTheyHear', {
                 title: 'How did they hear about us',
                 type: 'string',
                 directive: 'select',
@@ -358,6 +458,10 @@ addField('howDidTheyHear', {
                         value: 'referral',
                     },
                     {
+                        name: 'Customer Referral',
+                        value: 'customer',
+                    },
+                    {
                         name: 'Advertisement',
                         value: 'advertisement',
                     },
@@ -366,8 +470,75 @@ addField('howDidTheyHear', {
                         value: 'emailfooter',
                     },
                     {
-                        name: 'Custom / Other',
+                        name: 'Other',
                         value: 'other',
+                    },
+                ]
+            });
+
+
+            addField('goals', {
+                title: 'Goals and Dreams',
+                type: 'string',
+                directive: 'select',
+                // directive:'button-select',
+                minimum: 0,
+                maximum: 0,
+                options: [{
+                        name: 'New Website',
+                        value: 'website',
+                    },
+                    {
+                        name: 'Native App',
+                        value: 'app',
+                    },
+                    {
+                        name: 'Analytics / Insights',
+                        value: 'analytics',
+                    },
+                    {
+                        name: 'Checkin / Attendance',
+                        value: 'checkin',
+                    },
+                    {
+                        name: 'Service Planning',
+                        value: 'planning',
+                    },
+                    {
+                        name: 'Volunteer Management',
+                        value: 'volunteers',
+                    },
+                    {
+                        name: 'Small Group Management',
+                        value: 'groups',
+                    },
+                    {
+                        name: 'Scheduling / Rostering',
+                        value: 'rostering',
+                    },
+                    {
+                        name: 'Form Building',
+                        value: 'forms',
+                    },
+
+                    {
+                        name: 'Photo / Media Management',
+                        value: 'media',
+                    },
+
+                    {
+                        name: 'Processes and Workflows',
+                        value: 'processes',
+                    },
+
+                    {
+                        name: 'Email Communications',
+                        value: 'mailout',
+                    },
+
+                    {
+                        name: 'SMS Communications',
+                        value: 'sms',
                     },
                 ]
             });
@@ -433,7 +604,7 @@ addField('howDidTheyHear', {
                         name: 'Subsplash',
                         value: 'subsplash',
                     },
-                    
+
 
                     {
                         name: 'Fluro',
@@ -552,7 +723,7 @@ addField('howDidTheyHear', {
                         name: 'Church Community Builder',
                         value: 'ccb',
                     },
-                    
+
                     {
                         name: 'Custom / Other',
                         value: 'other',
@@ -603,6 +774,58 @@ addField('howDidTheyHear', {
         },
     },
     methods: {
+        isDiscounted(product) {
+            return this.getNormalPriceForProduct(product) != this.getDiscountedPriceForProduct(product);
+        },
+        getNormalPriceForProduct(product, readable) {
+            var self = this;
+
+            if (!product.actualTier) {
+                return 0;
+            }
+
+            var price = product.actualTier.cost || 0;
+            var adjustment = parseFloat(product.actualPaymentOption.adjustment || 0) || 100;
+            var adjustedPrice = adjustment ? (price * product.actualPaymentOption.adjustment) / 100 : price;
+
+            if (readable) {
+                return self.$fluro.utils.formatCurrency(adjustedPrice, product.currency);
+            }
+            return adjustedPrice;
+        },
+        getDiscountedPriceForProduct(product, readable) {
+
+            var self = this;
+
+            var adjustedPrice = self.getNormalPriceForProduct(product);
+
+            var runningTotal = adjustedPrice;
+            _.each(product.discounts, function(discount, id) {
+                switch (discount.type) {
+                    case 'percent':
+                        //Get the percentage
+                        var deduction = (parseFloat(discount.percent || 0) * adjustedPrice / 100);
+
+                        console.log('DISCOUNT', deduction, discount.percent + '%');
+                        runningTotal = Math.max(runningTotal - deduction, 0);
+                        break;
+                    default:
+
+                        var deduction = parseInt(discount.amount || 0);
+                        console.log('DISCOUNT AMOUNT', deduction);
+                        runningTotal = Math.max(runningTotal - deduction, 0);
+                        break;
+                }
+            });
+
+
+            if (readable) {
+                return self.$fluro.utils.formatCurrency(runningTotal, product.currency);
+            }
+
+
+            return runningTotal;
+        },
         addCredit() {
             var self = this;
             var account = self.$fluro.utils.getStringID(self.model);

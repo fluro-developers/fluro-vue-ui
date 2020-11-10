@@ -43,6 +43,34 @@ export default {
 																type: 'string',
 												})
 
+												// array.push({
+												// 				title: '',
+												// 				key: 'exclude',
+												// 				renderer: 'boolean',
+												// 				button: {
+												// 								icon: 'trash-alt',
+												// 								action(row) {
+												// 												return new Promise(function(resolve, reject) {
+												// 																console.log('Delete', row);
+												// 																self.$fluro.confirm('Remove', `Are you sure you want to remove this redirect`, {
+												// 																								confirmColor: 'error',
+												// 																								confirmText: 'Confirm Remove',
+												// 																				})
+												// 																				.then(function() {
+												// 																								self.remove(row)
+												// 																				}, reject);
+
+
+												// 												})
+
+												// 								},
+												// 				},
+												// 				shrink: true,
+
+												// })
+
+
+
 												array.push({
 																title: '',
 																key: '_id',
