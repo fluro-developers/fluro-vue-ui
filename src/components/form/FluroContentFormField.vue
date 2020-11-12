@@ -212,7 +212,7 @@
 																</v-input>
 												</template>
 												<template v-else-if="renderer == 'datepicker'">
-																<pre>{{fieldModel}}</pre>
+																<!-- <pre>{{fieldModel}}</pre> -->
 																<!-- DATE PICKER -->
 																<v-menu :fixed="true" v-model="modal" min-width="290px" :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
 																				<template v-slot:activator="{ on }">
@@ -2484,7 +2484,7 @@ export default {
 																												return new Date().toISOString();
 																								} else {
 
-																										console.log('DATE VALUE', value)
+																										// console.log('DATE VALUE', value)
 																												return new Date(value);
 																								}
 																				}

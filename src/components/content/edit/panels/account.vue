@@ -183,6 +183,10 @@
                                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.websiteProvider" v-model="model.internal" />
                                             </v-flex>
                                         </v-layout>
+
+
+                                                                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.customerLanguage" v-model="model.internal" />
+
                                     </v-container>
                                 </fluro-panel-body>
                             </fluro-panel>
@@ -544,6 +548,18 @@ export default {
             });
 
 
+            /////////////////////////////////////
+
+            addField('customerLanguage', {
+                title: 'Customer Desired Outcomes',
+                type: 'string',
+                directive: 'textarea',
+                // directive:'button-select',
+                minimum: 0,
+                maximum: 1,
+            });
+
+            /////////////////////////////////////
 
             addField('givingProvider', {
                 title: 'Giving Provider',
@@ -750,10 +766,14 @@ export default {
                 title: 'Currency',
                 type: 'string',
                 description: "The currency used to renew this account eg(aud, usd, gbp)",
-                directive: 'input',
+                directive: 'select',
                 minimum: 1,
                 maximum: 1,
                 defaultValues: ['aud'],
+                options:[{
+                    name:'AUD',
+                    value:'aud',
+                }]
             });
 
 

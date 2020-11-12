@@ -392,11 +392,11 @@ export default {
 
             self.state = "ready";
 
-            self.cacheClearRequired = true;
+            //self.cacheClearRequired = true;
             // //console.log('CLEAR CACHE ON SAVE?', self.disableCacheClearOnSave)
-            if (!self.disableCacheClearOnSave) {
-                self.$fluro.resetCache();
-            }
+            // if (!self.disableCacheClearOnSave) {
+            //     self.$fluro.resetCache();
+            // }
 
             // self.reset(true);
             self.$emit("success", result.data);
@@ -899,7 +899,7 @@ export default {
         },
         hideFooter() {
             var self = this;
-            return self.typeName == "definition";
+            return !self.$pro.enabled;//self.typeName == "definition";
         },
         autofocusTitle() {
             var self = this;

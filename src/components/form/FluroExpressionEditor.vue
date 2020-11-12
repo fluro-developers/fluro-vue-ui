@@ -42,7 +42,7 @@ export default {
         import("brace/theme/chrome")
       ]).then(
         function(results) {
-          console.log("Loaded brace extras");
+          // console.log("Loaded brace extras");
           self.ready = true;
         },
         function(err) {

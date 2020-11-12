@@ -48,10 +48,14 @@ export default {
         },
         mainType() {
             var tree = this.tree;
+
+
             if (tree.length == 1) {
                 //(Campuses)
                 return tree[0].definition || tree[0]._type;
             } else {
+
+
 
                 if (this.filterDiscriminator) {
                     return this.filterDiscriminator;
@@ -140,6 +144,7 @@ export default {
         }
     },
     asyncComputed: {
+
         tree: {
             default: [],
             get() {
@@ -195,7 +200,11 @@ export default {
                                 return realm;
                             });
 
-                            // console.log('FLATTENED', flattened)
+
+                            var plainRealms = _.filter(flattenedLookup, function(realm) {
+                                return realm.basic;
+                            });
+
 
                             //////////////////////////////////////
 
@@ -222,16 +231,20 @@ export default {
                                 // console.log('SET INITIAL', initialIDs, self)
                                 self.setSelection(initialIDs);
                             } else {
+
                                 if (flattenedIDs.length == 1) {
                                     // console.log('SET FLATTENED', flattenedIDs);
                                     self.setSelection(flattenedIDs);
+                                } else if(plainRealms.length == 1) {
+                                    self.setSelection(plainRealms);
+                                    console.log('PLAIN REALMS 1')
                                 }
+
                             }
 
                             if (flattenedIDs.length == 1) {
                                 singleOption = true;
                             }
-
 
                             self.singleOption = singleOption;
                             self.loading = false;

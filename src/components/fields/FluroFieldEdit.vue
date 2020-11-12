@@ -52,18 +52,22 @@
         </flex-column-footer>-->
             </tab>
             <tab heading="Expressions" index="expressions">
+
+
                 <flex-column-body>
                     <v-container class="border-bottom" style="background: #fff;">
                         <label>
                             <strong>Expressions and Logic</strong>
                         </label>
-                        <div class="sm muted">Expressions are short pieces of javascript that can be used to alter the properties of this field depending on changes made in other fields</div>
+                        <div class="sm muted">Expressions are short snippets of javascript that can be used to alter the properties of this field depending on changes made in other fields</div>
                         <v-btn class="ml-0" small href="https://support.fluro.io/kb/advanced-form-expressions-guide" target="_blank">
                             Click here for more information
                             <fluro-icon icon="external-link" right />
                         </v-btn>
                     </v-container>
                     <v-container class="border-bottom" style="background: #fff;">
+
+                         <pre>{{popup}}</pre>
                         <fluro-panel>
                             <fluro-panel-title>
                                 <strong>Variables</strong>
@@ -90,6 +94,7 @@
                     <v-container>
                         <!-- <template v-if="model.hideExpression && model.hideExpression.length"> -->
                         <!-- <template v-if="true"> -->
+
                         <div class="expression-group" :class="{active:model.expressions.show}">
                             <v-input label="Show group if" hint="Show this group only if this expression returns true " :persistent-hint="true" class="no-flex">
                                 <v-layout>
@@ -97,14 +102,14 @@
                                         <fluro-expression-editor v-model="model.expressions.show" />
                                     </v-flex>
                                     <v-flex shrink>
-                                        <v-menu :left="true" v-model="popup.show" :top="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
+                                        <v-menu :left="true" v-model="popup['show']" :top="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
                                             <template v-slot:activator="{ on }">
                                                 <v-btn icon small class="ma-0 ml-1" v-on="on">
                                                     <fluro-icon icon="bullseye" />
                                                 </v-btn>
                                             </template>
                                             <div>
-                                                <expression-field-select :context="model" @click="injectExpression($event, 'show')" v-model="expressionFields" />
+                                                <expression-field-select :conditional="true" :context="model" @click="injectExpression($event, 'show')" v-model="expressionFields" />
                                             </div>
                                         </v-menu>
                                     </v-flex>
@@ -118,14 +123,14 @@
                                         <fluro-expression-editor v-model="model.hideExpression" />
                                     </v-flex>
                                     <v-flex shrink>
-                                        <v-menu :left="true" v-model="popup.hideExpression" :top="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
+                                        <v-menu :left="true" v-model="popup['hideExpression']" :top="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
                                             <template v-slot:activator="{ on }">
                                                 <v-btn icon small class="ma-0 ml-1" v-on="on">
                                                     <fluro-icon icon="bullseye" />
                                                 </v-btn>
                                             </template>
                                             <div>
-                                                <expression-field-select :context="model" @click="injectExpression($event, 'hideExpression')" v-model="expressionFields" />
+                                                <expression-field-select :conditional="true" :context="model" @click="injectExpression($event, 'hideExpression')" v-model="expressionFields" />
                                             </div>
                                         </v-menu>
                                     </v-flex>
@@ -428,14 +433,14 @@
                                         <fluro-expression-editor v-model="model.expressions.show" />
                                     </v-flex>
                                     <v-flex shrink>
-                                        <v-menu :left="true" :top="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
+                                        <v-menu :left="true" v-model="popup.show" :top="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
                                             <template v-slot:activator="{ on }">
                                                 <v-btn icon small class="ma-0 ml-1" v-on="on">
                                                     <fluro-icon icon="bullseye" />
                                                 </v-btn>
                                             </template>
                                             <div>
-                                                <expression-field-select :context="model" @click="injectExpression($event, 'show')" v-model="expressionFields" />
+                                                <expression-field-select :conditional="true"  :context="model" @click="injectExpression($event, 'show')" v-model="expressionFields" />
                                             </div>
                                         </v-menu>
                                     </v-flex>
@@ -449,14 +454,14 @@
                                         <fluro-expression-editor v-model="model.expressions.hide" />
                                     </v-flex>
                                     <v-flex shrink>
-                                        <v-menu :left="true" :top="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
+                                        <v-menu :left="true" v-model="popup.hide" :top="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
                                             <template v-slot:activator="{ on }">
                                                 <v-btn icon small class="ma-0 ml-1" v-on="on">
                                                     <fluro-icon icon="bullseye" />
                                                 </v-btn>
                                             </template>
                                             <div>
-                                                <expression-field-select :context="model" @click="injectExpression($event, 'hide')" v-model="expressionFields" />
+                                                <expression-field-select :conditional="true"  :context="model" @click="injectExpression($event, 'hide')" v-model="expressionFields" />
                                             </div>
                                         </v-menu>
                                     </v-flex>
@@ -470,7 +475,7 @@
                                         <fluro-expression-editor v-model="model.expressions.defaultValue" />
                                     </v-flex>
                                     <v-flex shrink>
-                                        <v-menu :left="true" v-model="popup.defaultValue" :top="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
+                                        <v-menu :left="true" v-model="popup['defaultValue']" :top="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
                                             <template v-slot:activator="{ on }">
                                                 <v-btn icon small class="ma-0 ml-1" v-on="on">
                                                     <fluro-icon icon="bullseye" />
@@ -491,7 +496,7 @@
                                         <fluro-expression-editor v-model="model.expressions.value" />
                                     </v-flex>
                                     <v-flex shrink>
-                                        <v-menu :left="true" v-model="popup.value" :top="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
+                                        <v-menu :left="true" v-model="popup['value']" :top="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
                                             <template v-slot:activator="{ on }">
                                                 <v-btn icon small class="ma-0 ml-1" v-on="on">
                                                     <fluro-icon icon="bullseye" />
@@ -512,14 +517,14 @@
                                         <fluro-expression-editor v-model="model.expressions.required" />
                                     </v-flex>
                                     <v-flex shrink>
-                                        <v-menu :left="true" v-model="popup.required" :top="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
+                                        <v-menu :left="true"  v-model="popup['required']" :top="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
                                             <template v-slot:activator="{ on }">
                                                 <v-btn icon small class="ma-0 ml-1" v-on="on">
                                                     <fluro-icon icon="bullseye" />
                                                 </v-btn>
                                             </template>
                                             <div>
-                                                <expression-field-select :context="model" @click="injectExpression($event, 'required')" v-model="expressionFields" />
+                                                <expression-field-select :conditional="true"  :context="model" @click="injectExpression($event, 'required')" v-model="expressionFields" />
                                             </div>
                                         </v-menu>
                                     </v-flex>
@@ -780,7 +785,10 @@ export default {
         },
         injectExpression($event, target) {
             var self = this;
-            self.popup[target] = false;
+
+            console.log('TARGEt', self.popup, target)
+            self.$set(self.popup, target, false);
+
 
             var currentValue = self.model.expressions[target];
 
@@ -1240,6 +1248,19 @@ export default {
                     syntax: self.model.params.syntax
                 }
             });
+
+            // addField("dateDefaultValues", {
+            //     title: "Default Value(s)",
+            //     key: "defaultValues",
+            //     description: "add a default date for this field",
+            //     minimum: 0,
+            //     maximum: 0,
+            //     type: "string",
+            //     directive: "code",
+            //     params: {
+            //         syntax: self.model.params.syntax
+            //     }
+            // });
 
             addField("filterDefaultValues", {
                 title: "Default Value(s)",

@@ -433,7 +433,6 @@
 																																				</fluro-panel>
 																																				<fluro-panel v-if="model.parentType == 'roster'">
 																																								<tabset justified>
-																																											
 																																												<tab heading="Default Positions">
 																																																<roster-slot-manager :autoCreate="false" v-model="model.data.slots" />
 																																												</tab>
@@ -445,8 +444,7 @@
 																																												</tab>
 																																												<tab heading="Advanced">
 																																																<fluro-panel-body>
-
-																																																		<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.weight" v-model="model" />
+																																																				<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.weight" v-model="model" />
 																																																				<fluro-content-form v-model="model.data" :fields="rosterFields" />
 																																																				<fluro-content-form v-model="model.data" :fields="restrictionFields" />
 																																																</fluro-panel-body>
@@ -1470,10 +1468,10 @@ export default {
 																minimum: 0,
 																maximum: 1,
 																type: 'number',
-																directive:'currency',
+																directive: 'currency',
 
 																params: {
-																	currency:self.model.paymentDetails.currency,
+																				currency: self.model.paymentDetails.currency,
 																				persistentDescription: true,
 																},
 																// expressions:{
@@ -1491,10 +1489,10 @@ export default {
 																minimum: 0,
 																maximum: 1,
 																type: 'number',
-																directive:'currency',
+																directive: 'currency',
 
 																params: {
-																	currency:self.model.paymentDetails.currency,
+																				currency: self.model.paymentDetails.currency,
 																				persistentDescription: true,
 																},
 																// expressions:{

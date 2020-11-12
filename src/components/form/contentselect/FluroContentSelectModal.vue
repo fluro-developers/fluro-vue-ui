@@ -370,7 +370,7 @@ export default {
                 case "node":
                     array = array.concat([
                         { title: "", key: "_id", renderer: TypeImageCell, shrink: true },
-                        { title: "Title", key: "title", renderer: TitleCell }
+                        { title: "Title", key: "title", renderer: TitleCell, additionalFields:['firstLine'] }
                     ]);
                     break;
                 case "image":
@@ -410,9 +410,15 @@ export default {
                         }
                     ]);
                     break;
+                case "family":
+                    array = array.concat([
+                        { title: "Title", key: "title", renderer: TitleCell, additionalFields:['firstLine'] },
+                        { title: "Address", key: "address.addressLine1"}
+                    ]);
+                    break;
                 default:
                     array = array.concat([
-                        { title: "Title", key: "title", renderer: TitleCell }
+                        { title: "Title", key: "title", renderer: TitleCell, additionalFields:['firstLine'] }
                     ]);
                     break;
             }

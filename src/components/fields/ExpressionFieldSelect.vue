@@ -18,7 +18,7 @@
                     <div class="accordion-panel-content" v-if="field == selected">
                         <!-- <pre>TESTING: {{field.isArray}} {{field.type}}</pre> -->
                         <!-- <v-container> -->
-                        <!-- <pre>{{field.examples}}</pre> -->
+                        <!-- <pre>{{field}}</pre> -->
                         <div class="example" @click="selectExample(example, field)" v-for="example in field.examples">
                             <div class="example-code">{{example.path}}</div>
                             <div class="example-description">{{example.description}}</div>
@@ -42,6 +42,9 @@ export default {
         },
         context: {
             type: Object
+        },
+        conditional: {
+            type: Boolean,
         }
     },
     data() {
@@ -98,7 +101,7 @@ export default {
                 return;
             }
 
-            self.fields = getFieldDescriptions(self.contextField, self.model);
+            self.fields = getFieldDescriptions(self.contextField, self.model, self.conditional);
 
             // extractFieldsFromDefinitionFields(self.contextField, self.model, '0', true);
         }
@@ -118,7 +121,7 @@ function simplify(f) {
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-function getFieldDescriptions(contextField, fields) {
+function getFieldDescriptions(contextField, fields, conditional) {
     var trail = [];
     var titles = [];
     var results = [];
@@ -200,7 +203,7 @@ function getFieldDescriptions(contextField, fields) {
     ///////////////////////////////////////////
     //Find the current
     var thisField = _.find(results, { guid: contextField.guid });
-    var currentTrail = thisField ? thisField.parentTrail : thisField.trail;//"";
+    var currentTrail = thisField ? thisField.parentTrail : thisField.trail; //"";
 
     ///////////////////////////////////////////
     return _.chain(results)
@@ -426,10 +429,96 @@ function getFieldDescriptions(contextField, fields) {
                             break;
                     }
                 } else {
-                    examples.push({
-                        path: `${field.contextualPath}`,
-                        description: `Returns the value of '${field.title}'`
-                    });
+
+
+
+                    if (conditional) {
+                        switch (field.type) {
+                            case 'boolean':
+                                examples.push({
+                                    path: `${field.contextualPath}`,
+                                    description: `Returns true '${field.title}' has been ticked`
+                                });
+
+                                examples.push({
+                                    path: `!${field.contextualPath}`,
+                                    description: `Returns true '${field.title}' has not been ticked`
+                                });
+                                break;
+                            case 'date':
+
+                                examples.push({
+                                    path: `${field.contextualPath}`,
+                                    description: `Returns the value of '${field.title}'`
+                                });
+                                examples.push({
+                                    path: `new Date(${field.contextualPath}) <= Date.now()`,
+                                    description: `Returns true if the date value of '${field.title}' is in the past`
+                                });
+
+                                examples.push({
+                                    path: `new Date(${field.contextualPath}) > Date.now()`,
+                                    description: `Returns true if the date value of '${field.title}' is in the future`
+                                });
+
+
+                                break;
+                            case 'number':
+                            case 'integer':
+                            case "decimal":
+                            case "float":
+
+                                examples.push({
+                                    path: `${field.contextualPath}`,
+                                    description: `Returns the value of '${field.title}'`
+                                });
+
+                                examples.push({
+                                    path: `${field.contextualPath} <= 10`,
+                                    description: `Returns true if the value of '${field.title}' is less than or equal to 10`
+                                });
+
+                                examples.push({
+                                    path: `${field.contextualPath} == 6`,
+                                    description: `Returns true if the value of '${field.title}' is exactly 6`
+                                });
+
+
+
+                                break;
+                            case 'reference':
+                            case 'group':
+                                examples.push({
+                                    path: `${field.contextualPath}`,
+                                    description: `Returns the literal value of the object '${field.title}'`
+                                });
+                            break;
+
+                            default:
+
+                                examples.push({
+                                    path: `${field.contextualPath}`,
+                                    description: `Returns the value of '${field.title}'`
+                                });
+
+                                examples.push({
+                                    path: `${field.contextualPath} == '${exampleValue}'`,
+                                    description: `Returns true if the value is exactly equal to ${exampleValue}`
+                                });
+                                examples.push({
+                                    path: `${field.contextualPath} == String('${exampleValue}').toLowerCase()`,
+                                    description: `Returns true if the value is exactly equal to ${exampleValue} (Case insensitive)`
+                                });
+
+                                examples.push({
+                                    path: `String(${field.contextualPath}).toLowerCase().includes('abc') `,
+                                    description: `Returns true if ${field.title} contains the characters 'abc' (Case insensitive)`
+                                });
+                                break;
+
+
+                        }
+                    }
                 }
             }
 
@@ -529,6 +618,7 @@ function getFieldDescriptions(contextField, fields) {
             display: inline-block;
             padding: 3px;
             border-radius: 3px;
+            cursor:pointer;
         }
 
         .example-description {

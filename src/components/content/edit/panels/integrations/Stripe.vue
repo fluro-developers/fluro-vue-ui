@@ -34,6 +34,7 @@
 												</fluro-panel-title>
 												<fluro-panel-body>
 																<v-container pa-0 grid-list-xl>
+																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.entityName" v-model="model.publicDetails" />
 																				<v-layout>
 																								<v-flex xs12 sm6>
 																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.paymentPrefix" v-model="model.privateDetails" />
@@ -79,12 +80,24 @@ export default {
 												var self = this;
 												var array = [];
 
+												array.push({
+																key: 'entityName',
+																title: "Legal Entity Name",
+																description: `Specify a legal entity name for receipts sent from payments made with this gateway. (If left blank, will default to the account Legal Entity Name)`,
+																placeholder: ``,
+																minimum: 0,
+																maximum: 1,
+																type: "string",
+																params:{
+																	persistentDescription:true,
+																},
+												});
 
 												array.push({
 																key: 'paymentSuffix',
 																title: "Payment Title Suffix",
 																description: `Append a prefix to the title of all transactions made through this payment gateway.`,
-																placeholder: `eg. ${self.model.title}`,
+																placeholder: `eg. ${self.model.title || ''}`,
 																minimum: 0,
 																maximum: 1,
 																type: "string",
@@ -97,7 +110,7 @@ export default {
 																key: 'paymentPrefix',
 																title: "Payment Title Prefix",
 																description: `Append a suffix to the title of all transactions made through this payment gateway.`,
-																placeholder: `eg. ${self.model.title}`,
+																placeholder: `eg. ${self.model.title || ''}`,
 																minimum: 0,
 																maximum: 1,
 																type: "string",
