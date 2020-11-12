@@ -201,8 +201,8 @@
 import _ from "lodash";
 import Vue from "vue";
 // import Expressions from "expression-eval";
-import {parse as ExpressionParse} from "expression-eval";
-import {eval as ExpressionEval} from "expression-eval";
+import { parse as ExpressionParse } from "expression-eval";
+import { eval as ExpressionEval } from "expression-eval";
 import { mapFields } from "vuex-map-fields";
 var hasBeenReset;
 
@@ -515,7 +515,7 @@ export default {
                         parseFloat: parseFloat,
                         Boolean: Boolean,
                         Number: Number,
-                        moment:self.$fluro.date.moment,
+                        moment: self.$fluro.date.moment,
                         create(Class, ...rest) {
                             return new Class(...rest)
                         }
@@ -1115,7 +1115,7 @@ export default {
     },
     methods: {
         createEwayToken(done) {
-            
+
             var self = this;
 
             //Get the Public Encryption Key
@@ -1193,13 +1193,13 @@ export default {
         },
         debugLog() {
             // return;
-            // if (this.debugMode) {
-            console.log(
-                _.map(arguments, function(v) {
-                    return v;
-                }).join(" ")
-            );
-            // }
+            if (this.debugMode) {
+                console.log(
+                    _.map(arguments, function(v) {
+                        return v;
+                    }).join(" ")
+                );
+            }
         },
         evaluate(expression, context) {
             var self = this;
@@ -1214,12 +1214,12 @@ export default {
                 // console.log('tRY PARSE', ast);
                 result = ExpressionEval(ast, context);
             } catch (err) {
-                self.debugLog('EXPRESSION EVALUATE ERROR', expression, err);
+                self.debugLog('EXPRESSION EVALUATE ERROR', err, expression, context);
             } finally {
 
-                console.log('EXPRESSION RESULT', result);//, ast, expression, context);
+                // console.log('EXPRESSION RESULT', result);//, ast, expression, context);
 
-                // self.debugLog('EXPRESSION RESULT', result, ast, expression, context)
+                self.debugLog('EXPRESSION RESULT', result, context)
                 return result;
             }
         },
@@ -1524,7 +1524,7 @@ export default {
 
                 /////////////////////////////////
 
-               
+
                 if (self.webMode) {
                     //Create the post as the managed user
                     submissionConfig.application = true;
