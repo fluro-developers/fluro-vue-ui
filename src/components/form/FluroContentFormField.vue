@@ -605,7 +605,9 @@ import { Chrome } from 'vue-color';
 
 //Allow custom html to be injected at runtime
 
-import Expressions from 'expression-eval';
+// import Expressions from 'expression-eval';
+import { parse as ExpressionParse } from "expression-eval";
+import { eval as ExpressionEval } from "expression-eval";
 
 ////////////////////////////////////////////////////////
 
@@ -2484,7 +2486,7 @@ export default {
 																												return new Date().toISOString();
 																								} else {
 
-																										// console.log('DATE VALUE', value)
+																												// console.log('DATE VALUE', value)
 																												return new Date(value);
 																								}
 																				}
@@ -3379,17 +3381,23 @@ export default {
 																String: String,
 																Array: Array,
 																Date: Date,
+																Boolean: Boolean,
+																parseInt: parseInt,
+																parseFloat: parseFloat,
 																moment: self.$fluro.date.moment,
 																//Include helper function
 																matchInArray: this.$fluro.utils.matchInArray,
+																create(Class, ...rest) {
+																				return new Class(...rest)
+																}
 												}
 
 												var ast;
 												var result;
 
 												try {
-																ast = Expressions.parse(expression);
-																result = Expressions.eval(ast, context);
+																ast = ExpressionParse(expression);
+																result = ExpressionEval(ast, context);
 												} catch (err) {
 																// ////console.log('EXPRESSION', expression, err);
 												} finally {
