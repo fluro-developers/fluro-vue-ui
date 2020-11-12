@@ -101,6 +101,8 @@ export default {
             }
 
             var existingTabs = self.tabs.length;
+
+           
             self.tabs.push(tab);
 
 
@@ -119,7 +121,7 @@ export default {
         selectTab(index) {
 
 
-            console.log('Select', index)
+            // console.log('Select', index)
             var self = this;
 
             // index = Math.max(index, 0);

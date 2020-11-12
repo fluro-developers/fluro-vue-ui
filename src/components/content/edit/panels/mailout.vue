@@ -315,6 +315,7 @@
                 <template v-if="model._id && definition">
                     <tab key="preview" heading="Preview" index="preview">
                         <flex-column style="border-left:1px solid #ddd">
+                            
                             <mailout-render-preview :mailout="model._id" :definition="definition.definitionName" />
                         </flex-column>
                     </tab>

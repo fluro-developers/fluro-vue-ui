@@ -200,7 +200,9 @@
 <script>
 import _ from "lodash";
 import Vue from "vue";
-import Expressions from "expression-eval";
+// import Expressions from "expression-eval";
+import {parse as ExpressionParse} from "expression-eval";
+import {eval as ExpressionEval} from "expression-eval";
 import { mapFields } from "vuex-map-fields";
 var hasBeenReset;
 
@@ -495,6 +497,7 @@ export default {
             //Loop through each modifier
             var activeModifiers = _.chain(modifiers)
                 .map(function(modifier) {
+
                     //Create a new context for this modifier
                     var context = {
                         date: date,
@@ -511,7 +514,11 @@ export default {
                         parseInt: parseInt,
                         parseFloat: parseFloat,
                         Boolean: Boolean,
-                        Number: Number
+                        Number: Number,
+                        moment:self.$fluro.date.moment,
+                        create(Class, ...rest) {
+                            return new Class(...rest)
+                        }
                     };
 
                     /////////////////////////////////////////////////////
@@ -541,8 +548,10 @@ export default {
                     //If the condition returns false then just stop here and go to the next modifier
                     if (!parsedCondition) {
                         //Modifier is not active
-                        // self.debugLog('CONDITION DOES NOT MATCH', parsedCondition)
+                        // self.debugLog('CONDITION DOES NOT MATCH', parsedCondition, modifier.condition)
                         return;
+                    } else {
+                        // self.debugLog('CONDITION DOES MATCH', parsedCondition)
                     }
 
                     /////////////////////////////////////////
@@ -1197,12 +1206,19 @@ export default {
             var ast;
             var result;
 
+
+            // console.log('EXPRESSIONS')
             try {
-                ast = Expressions.parse(expression);
-                result = Expressions.eval(ast, context);
+                ast = ExpressionParse(expression);
+
+                // console.log('tRY PARSE', ast);
+                result = ExpressionEval(ast, context);
             } catch (err) {
-                // self.debugLog('EXPRESSION', expression, err);
+                self.debugLog('EXPRESSION EVALUATE ERROR', expression, err);
             } finally {
+
+                console.log('EXPRESSION RESULT', result);//, ast, expression, context);
+
                 // self.debugLog('EXPRESSION RESULT', result, ast, expression, context)
                 return result;
             }

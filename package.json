@@ -1,6 +1,6 @@
 {
 				"name": "fluro-vue-ui",
-				"version": "2.2.98",
+				"version": "2.2.99",
 				"description": "A package that contains helpful Fluro UI components and mixins",
 				"main": "src/index.js",
 				"scripts": {
@@ -43,7 +43,7 @@
 				},
 				"dependencies": {
 								"@google/markerclusterer": "*",
-								"expression-eval": "^2.0.0",
+								"expression-eval": "^3.1.2",
 								"rollup-plugin-alias": "^2.2.0",
 								"v-currency-field": "3.0.7",
 								"vue-range-slider": "^0.6.0",

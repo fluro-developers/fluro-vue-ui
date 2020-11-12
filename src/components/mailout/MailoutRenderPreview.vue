@@ -1,5 +1,6 @@
 <template>
     <flex-column style="background: #ccc; position:relative;">
+       
         <fluro-page-preloader contain v-if="!loaded" />
         <iframe ref="iframe" @load="loaded = true" class="mailout-preview-frame" :src="url" />
     </flex-column>
