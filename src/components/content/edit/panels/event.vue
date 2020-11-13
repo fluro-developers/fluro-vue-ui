@@ -147,9 +147,9 @@
                                 </fluro-content-form>
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.streamIntegrations" v-model="model" />
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.streamContent" v-model="model" />
-                                
                                 <v-btn large color="primary" @click="openLivestreamPanel()">
-                                    Open Livestream Manager <fluro-icon right icon="video"/>
+                                    Open Livestream Manager
+                                    <fluro-icon right icon="video" />
                                 </v-btn>
                                 <fluro-panel>
                                     <fluro-panel-body>
@@ -246,19 +246,24 @@
                     </v-container>
                 </flex-column-body>
             </tab>
-            <tab :heading="`Registrations & Tickets`">
+            <tab :heading="`Tickets & Registrations`">
                 <flex-column-body style="background: #fafafa;">
                     <v-container>
                         <!-- <constrain sm> -->
-                        <h3 margin>Registrations &amp; Tickets</h3>
-                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.forms" v-model="model"></fluro-content-form-field>
+                        <h3 margin>Tickets and Registration Forms</h3>
+
+                        <fluro-panel v-if="(model.forms && model.forms.length) || !model.publicTicketingEnabled">
+
+                            <fluro-panel-body>
+                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.forms" v-model="model"></fluro-content-form-field>
+                            </fluro-panel-body>
+                        </fluro-panel>
                         <!-- </constrain> -->
-                        <ticket-type-manager v-model="model"></ticket-type-manager>
                         <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.publicTicketingEnabled" v-model="model"></fluro-content-form-field>
+                        <ticket-type-manager v-model="model" />
                         <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.publicTicketingConfirmationMessage" v-model="model"></fluro-content-form-field>
-                        <!-- <pre>{{model.ticketTypes}}</pre> -->
-                        <!-- <pre>{{model.ticketLimit}}</pre> -->
                         <ticket-list :event="model" />
+                        
                     </v-container>
                 </flex-column-body>
             </tab>
@@ -320,14 +325,11 @@
                 <flex-column-body>
                     <v-container fluid grid-list-xl>
                         <constrain>
-                        <h3 margin>Event Metrics</h3>
-                        <event-age-gender-metrics :id="itemID"></event-age-gender-metrics>
-
-                        <fluro-post-feed :parent="itemID"/>
-
-                         <guest-list :event="model" />
-                     </constrain>
-                        
+                            <h3 margin>Event Metrics</h3>
+                            <event-age-gender-metrics :id="itemID"></event-age-gender-metrics>
+                            <fluro-post-feed :parent="itemID" />
+                            <guest-list :event="model" />
+                        </constrain>
                     </v-container>
                 </flex-column-body>
             </tab>
@@ -379,13 +381,13 @@ export default {
             // if(self.model._id) {
             //     self.$router.push({ name: 'stream', params: { id: self.model._id } });
             // } else {
-                self.save().then(function(response) {
+            self.save().then(function(response) {
 
-                    var event = response.data ||  response;
-                    var eventID = self.$fluro.utils.getStringID(event);
+                var event = response.data || response;
+                var eventID = self.$fluro.utils.getStringID(event);
 
-                    self.$router.push({ name: 'stream', params: { id:eventID } });
-                });
+                self.$router.push({ name: 'stream', params: { id: eventID } });
+            });
             // }
         },
         editRoster(roster) {
@@ -989,7 +991,7 @@ export default {
             ///////////////////////////////////
 
             addField("publicTicketingEnabled", {
-                title: "Enable Public Ticketing",
+                title: "Enable Basic Public Ticketing",
                 description: "Enable ticketing for the public to register for this event",
                 minimum: 0,
                 maximum: 1,
@@ -997,7 +999,7 @@ export default {
             });
 
             addField("publicTicketingConfirmationMessage", {
-                title: "Ticket Confirmation Message",
+                title: "Public Ticket Confirmation Message",
                 description: "Customise the message to be sent at the top of the digital tickets email",
                 minimum: 0,
                 maximum: 1,
@@ -1038,15 +1040,16 @@ export default {
             });
 
             addField("forms", {
-                title: "Registration Forms",
-                description: "Manage registration forms that can be used to register for this event",
+                title: self.model.publicTicketingEnabled ? "Advanced Custom Registration Forms" : 'Forms',
+                description: self.model.publicTicketingEnabled ? 'Add your own custom form': "Link forms to this event.",
                 minimum: 0,
                 maximum: 0,
                 type: "reference",
                 directive: "reference-select",
                 params: {
                     restrictType: "form"
-                }
+                },
+                
             });
 
             addField("expectTeams", {

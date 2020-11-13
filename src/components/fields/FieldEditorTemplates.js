@@ -12,6 +12,7 @@ templates.push({
         maximum: 1,
         askCount: 1,
         type: 'string',
+        directive:'input',
         key: '',
     }
 });
@@ -52,6 +53,9 @@ templates.push({
         key: '',
         params: {
             restrictType: 'contact',
+            ticketing:{
+                enabled:true,
+            }
         },
         fields: [{
                 title: 'Names',

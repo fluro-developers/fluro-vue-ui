@@ -35,6 +35,7 @@ export default {
     &.sandbox,
     &.scheduled,
     &.yellow,
+    &.partial_refund,
     &.warning {
         background: #fff3b9 !important;
         color: #f0974e !important;
@@ -63,6 +64,7 @@ export default {
         color: #bb0010 !important;
     }
 
+    &.refund,
     &.archived,
     &.unsubscribe,
     &.sent {

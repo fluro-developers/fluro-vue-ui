@@ -13,9 +13,9 @@
                         <fluro-icon icon="arrows" />
                     </div>
                 </v-flex>
-                <v-flex shrink v-if="ticketed" v-tippy content="Ticketing Enabled">
+                <v-flex shrink v-if="ticketed">
                     <fluro-help absolute uid="field.editor.item.ticket" title="Ticketed Contact" body="Contacts created here have ticketing enabled. This means that tickets will be created upon submission of this form" />
-                    <div class="icon ticket">
+                    <div class="icon ticket" v-tippy content="Ticketing is enabled">
                         <fluro-icon library="fas" icon="ticket" />
                     </div>
                 </v-flex>
@@ -240,7 +240,7 @@ export default {
                     return;
                 }
 
-                if(field.type == 'group' && !field.asObject) {
+                if (field.type == 'group' && !field.asObject) {
                     return;
                 }
 
@@ -342,14 +342,16 @@ export default {
                 }
             });
 
-            actions.push({
-                title: `Copy Field Path`,
-                icon: "code",
-                click() {
-                    console.log("emit copy event");
-                    self.$emit("copypath", self.fieldPath, self.model, self.parent.fields);
-                }
-            });
+            if (self.$pro && self.$pro.enabled) {
+                actions.push({
+                    title: `Copy Field Path`,
+                    icon: "code",
+                    click() {
+                        console.log("emit copy event");
+                        self.$emit("copypath", self.fieldPath, self.model, self.parent.fields);
+                    }
+                });
+            }
 
             actions.push({
                 title: `Delete ${type}`,

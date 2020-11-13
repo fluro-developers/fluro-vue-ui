@@ -3,7 +3,7 @@
     <fluro-panel-title>
       <v-layout align-center>
         <v-flex>
-          <h5>Ticket Types</h5>
+          <h5>Ticket Capacity</h5>
         </v-flex>
         <v-flex shrink>
           <v-btn class="ma-0" small color="primary" @click="addTicketType()">
@@ -31,7 +31,7 @@
           </thead>
           <tbody>
             <tr>
-              <th>All/Any Tickets</th>
+              <th>Any/All Tickets</th>
               <td>
                 <input v-model="model.ticketLimit" type="number" min="0" />
               </td>

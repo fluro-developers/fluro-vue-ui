@@ -17,6 +17,22 @@ export default {
         inverseScale: {
             type: Boolean,
             default: false,
+        },
+        maxX:{
+            type:Number,
+            default:100,
+        },
+        maxY:{
+            type:Number,
+            default:100,
+        },
+        minX:{
+            type:Number,
+            default:0,
+        },
+        minY:{
+            type:Number,
+            default:0,
         }
     },
     data() {
@@ -39,7 +55,7 @@ export default {
             // var parentX = self.inverseScale ? 100 - self.$parent.x : self.$parent.x; // /100;
             var parentY = self.inverseScale ? 100 - self.$parent.y : self.$parent.y; // /100;
 
-          
+            
             if (self.scale != 1 && self.$parent.source != 'mouse') {
                 var upperLimitY = minScaleFactor * self.scale;
                 var lowerLimitY = minScaleFactor;
@@ -61,7 +77,7 @@ export default {
 
             return {
                 // transform: `translateZ(-${self.depth}px) scale(${scale})`,
-                transform: `translateZ(-${self.depth}px) scale(${scale})`,
+                transform: self.depth ? `translateZ(-${self.depth}px) scale(${scale})` : `scale(${scale})`,
             }
         }
     }

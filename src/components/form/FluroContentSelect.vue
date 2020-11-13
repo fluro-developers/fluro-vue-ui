@@ -6,6 +6,9 @@
                     <draggable v-model="model" v-bind="dragOptions" @start="drag=true" @end="drag=false">
                         <list-group-item @click="viewItem(item)" :item="item" v-for="(item, index) in model">
                             <template v-slot:right>
+                                <fluro-status-label :value="item.status" v-if="item.status"/>
+                                <fluro-status-label :value="item.paymentStatus" v-if="item.paymentStatus"/>
+
                                 <v-menu :left="true" v-model="actionIndexes[index]" :fixed="true" transition="slide-y-transition" offset-y>
                                     <template v-slot:activator="{ on }">
                                         <v-btn class="ma-0" @click.prevent.stop icon small flat v-on="on">
@@ -26,6 +29,7 @@
                                     </v-list>
                                 </v-menu>
                             </template>
+
                         </list-group-item>
                     </draggable>
                 </list-group>
@@ -111,6 +115,8 @@
 import draggable from "vuedraggable";
 import FluroSelectionMixin from "../../mixins/FluroSelectionMixin.js";
 import FluroContentSelectModal from "./contentselect/FluroContentSelectModal.vue";
+import FluroStatusLabel from "../ui/FluroStatusLabel.vue";
+
 import FluroTable from "../table/FluroTable.vue";
 import TypeImageCell from '../table/cells/TypeImageCell.vue';
 import StatusCell from '../table/cells/StatusCell.vue';
@@ -122,6 +128,7 @@ export default {
         draggable,
         FluroContentSelectModal,
         FluroTable,
+        FluroStatusLabel,
     },
     mixins: [FluroSelectionMixin],
     props: {

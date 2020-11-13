@@ -1,5 +1,5 @@
 <template>
-				<component :is="componentType" class="list-group-item" :href="href" :target="target" :to="to" @click="clicked" :class="isSelected ? 'active selected' : ''">
+				<component :is="componentType" class="list-group-item" :href="href" :target="target" :to="to" @click="clicked" :class="[isSelected ? 'active selected' : '', extraClasses]">
 								<div>
 												<fluro-realm-bar v-if="item" :realm="item._type == 'realm' ? [item] : item.realms" />
 												<slot name="left">
@@ -19,6 +19,7 @@
 								<div v-if="selectable">
 												<fluro-icon class="tick-icon" icon="check" />
 								</div>
+								<!-- <pre>{{item}}</pre> -->
 								<!-- WOOOOTT -->
 								<!-- <pre>{{item}}</pre> -->
 				</component>
@@ -91,6 +92,36 @@ export default {
 												return self.item.title;
 
 								},
+								extraClasses() {
+												var self = this;
+												var array = [];
+
+												if (!self.item) {
+																return;
+												}
+
+												switch (self.item._type) {
+																case 'transaction':
+																				switch (self.item.paymentStatus) {
+																								case 'refund':
+																								case 'partial_refund':
+																												array.push('archived');
+																												break;
+																								case 'failed':
+																												array.push('error');
+																												break;
+																				}
+																				break;
+												}
+
+												if (self.item.status) {
+																array.push(`status-${self.item.status}`)
+												}
+
+
+
+												return array;
+								},
 								renderFirstLine() {
 
 												var self = this;
@@ -117,6 +148,16 @@ export default {
 																				if (self.item.definition) {
 																								pieces.push(self.$fluro.types.readable(self.item.definition));
 																				}
+
+
+																				return _.compact(pieces).join(', ');
+																				break;
+																case 'transaction':
+
+																				pieces.push(self.$fluro.utils.formatCurrency(self.item.amount, self.item.currency));
+																				pieces.push(self.item.mode == 'sandbox' ? 'Sandbox / Test Payment' : 'Live Payment');
+																				pieces.push(self.item.module);
+
 
 
 																				return _.compact(pieces).join(', ');
@@ -172,6 +213,24 @@ export default {
 				transition: background 0.3s;
 				transition: color 0.3s;
 				text-decoration: none;
+
+
+				&.status-archived {
+								background: #eee;
+								opacity: 0.8;
+				}
+
+				&.status-deleted {
+								background: rgba($danger, 0.1);
+								opacity: $danger;
+								text-decoration: line-through;
+				}
+
+				&.status-error,
+				&.status-failed {
+								//background: rgba($danger, 0.1);
+								//color: $danger;
+				}
 
 
 				.tick-icon {

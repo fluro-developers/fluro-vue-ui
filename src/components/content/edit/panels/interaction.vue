@@ -4,7 +4,7 @@
             <fluro-page-preloader contain />
         </template>
         <tabset v-else :justified="true" :vertical="true">
-            <tab>
+            <tab heading="Submission">
                 <flex-column-body style="background: #fafafa;">
                     <v-container grid-list-xl>
                         <constrain sm>
@@ -19,10 +19,12 @@
                                             <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.contact" v-model="model" />
                                         </fluro-panel-body>
                                     </fluro-panel>
-                                    <template v-else>
-                                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.contact" v-model="model" />
-                                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.contacts" v-model="model" />
-                                    </template>
+                                    <fluro-panel v-else>
+                                        <fluro-panel-body>
+                                            <!-- <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.contact" v-model="model" /> -->
+                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.contacts" v-model="model" />
+                                        </fluro-panel-body>
+                                    </fluro-panel>
                                     <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.event" v-model="model" />
                                     <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.emails" v-model="model" />
                                 </template>
@@ -44,6 +46,14 @@
                                 </tabset>
                             </fluro-panel>
                         </constrain>
+                    </v-container>
+                </flex-column-body>
+            </tab>
+            <tab heading="Transactions & Payments" v-if="paymentsEnabled">
+                <flex-column-body style="background: #fafafa;">
+                    <v-container grid-list-xl>
+
+                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.transactions" v-model="model" />
                     </v-container>
                 </flex-column-body>
             </tab>
@@ -69,6 +79,16 @@ export default {
     },
     asyncComputed: {},
     computed: {
+        paymentsEnabled() {
+
+            if (!this.definition || !this.definition.paymentDetails) {
+                return;
+            }
+
+
+            return this.definition.paymentDetails.required || this.definition.paymentDetails.allow;
+
+        },
         askDOB() {
             return (
                 _.get(this.definition, "data.askDOB") ||
@@ -215,6 +235,19 @@ export default {
                 type: "reference",
                 params: {
                     restrictType: "event",
+                    allDefinitions: true
+                }
+            });
+
+
+            addField("transactions", {
+                title: "Transactions",
+                description: "Payments and transactions relevant to this form submission",
+                minimum: 0,
+                maximum: 0,
+                type: "reference",
+                params: {
+                    restrictType: "transaction",
                     allDefinitions: true
                 }
             });

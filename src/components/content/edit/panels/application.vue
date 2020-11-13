@@ -44,11 +44,11 @@
 																				</v-container>
 																</flex-column-body>
 												</tab>
-												<tab :heading="`${definition.title} Fields`" v-if="definition">
+												<tab :heading="`${definition.title} Options`" v-if="definition">
 																<flex-column-body style="background: #fafafa;">
 																				<v-container>
 																								<constrain sm>
-																												<h3 margin>{{definition.title}} Fields</h3>
+																												<h3 margin>{{definition.title}} Options</h3>
 																												<fluro-content-form :options="editorOptions" v-model="model.data" :fields="definition.fields" />
 																								</constrain>
 																				</v-container>

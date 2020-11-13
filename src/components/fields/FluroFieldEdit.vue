@@ -30,7 +30,7 @@
                             </v-flex>
                             <v-spacer />
                             <v-flex xs6>
-                                <fluro-content-form-field :field="fields.askCount" v-model="model" />
+                                <fluro-content-form-field @input="resetRequired(fields.askCount)" :field="fields.askCount" v-model="model" />
                             </v-flex>
                         </v-layout>
                         <fluro-content-form-field :field="fields.className" v-model="model" />
@@ -253,7 +253,7 @@
                                 <template v-if="model.directive == 'embedded'">
                                     <v-spacer />
                                     <v-flex xs6>
-                                        <fluro-content-form-field :field="fields.askCount" v-model="model" />
+                                        <fluro-content-form-field @input="resetRequired(fields.askCount)" :field="fields.askCount" v-model="model" />
                                     </v-flex>
                                 </template>
                             </v-layout>
@@ -1074,6 +1074,7 @@ export default {
             return self.editingKey; // || !self.model.key;
         },
         advancedOptions() {
+            return true;
 
             if (this.showAdvancedOptions) {
                 return true;
