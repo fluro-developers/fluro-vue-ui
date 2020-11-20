@@ -1192,7 +1192,7 @@ export default {
             return Stripe.card.createToken(stripeCardDetails, done);
         },
         debugLog() {
-            // return;
+            return;
             if (this.debugMode) {
                 console.log(
                     _.map(arguments, function(v) {

@@ -381,6 +381,11 @@ export default {
                         { title: "Height", key: "height", sortType: "number" }
                     ]);
                     break;
+                case "academic":
+                    array = array.concat([
+                       { title: "Title", key: "title", renderer: TitleCell, additionalFields:['grades'] }
+                    ]);
+                    break;
                 case "interaction":
                     array = array.concat([{
                             title: "Title",

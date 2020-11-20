@@ -222,7 +222,7 @@ export default {
                 }
                 if (!_.get(chartOpt, "stroke")) {
                     _.set(chartOpt, "stroke", {
-                        width:3,
+                        width: 3,
                         curve: 'smooth',
                     })
                 }

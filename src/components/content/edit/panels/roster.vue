@@ -3,72 +3,81 @@
         <template v-if="loading">
             <fluro-page-preloader contain />
         </template>
-        <tabset v-else :justified="true" :vertical="true">
-            <tab heading="Team Members">
-                <flex-row>
+        <template v-else>
+            <flex-column-body style="background: #fafafa;" v-if="!event">
+                <v-container>
+                    <constrain md>
+                        <fluro-content-form-field v-model="model" :field="eventField" />
+                    </constrain>
+                </v-container>
+            </flex-column-body>
+            <tabset v-else :justified="true" :vertical="true">
+                <tab heading="Team Members">
+                    <flex-row>
+                        <flex-column-body style="background: #fafafa;">
+                            <v-container>
+                                <constrain>
+                                    <fluro-panel class="slot-panel" :class="{selected:isSelected(slot)}" :key="slot.title" v-for="slot in model.slots" @click.native="select(slot)">
+                                        <fluro-panel-title>
+                                            <v-layout align-center>
+                                                <v-flex>
+                                                    <strong>{{slot.title}}</strong>
+                                                    <span class="text-muted">{{getSummary(slot)}}</span>
+                                                </v-flex>
+                                                <v-flex shrink>
+                                                    <v-btn class="ma-0" small icon>
+                                                        <fluro-icon icon="pencil" />
+                                                    </v-btn>
+                                                    <v-btn v-if="!slot.assignments || !slot.assignments.length" @click.prevent.stop="trash(slot)" class="ma-0 ml-1" small icon>
+                                                        <fluro-icon icon="trash-alt" />
+                                                    </v-btn>
+                                                </v-flex>
+                                            </v-layout>
+                                        </fluro-panel-title>
+                                        <fluro-panel-body v-if="slot.assignments && slot.assignments.length">
+                                            <div class="assignments">
+                                                <div class="assignment-item" :class="assignment.confirmationStatus" v-for="assignment in slot.assignments">
+                                                    <v-layout align-center>
+                                                        <v-flex shrink style="padding-right:5px;">
+                                                            <fluro-avatar :id="assignment.contact" type="contact" />
+                                                        </v-flex>
+                                                        <v-flex>{{assignment.contact && assignment.contact.title ? assignment.contact.title : assignment.contactName}}</v-flex>
+                                                    </v-layout>
+                                                </div>
+                                            </div>
+                                        </fluro-panel-body>
+                                    </fluro-panel>
+                                    <div class="pseudo-slot" @click="addSlot(slot)" v-for="slot in possibleSlots">Add {{slot.title}}</div>
+                                    <v-btn block color="primary" @click="createSlot()">Add a new position</v-btn>
+                                </constrain>
+                            </v-container>
+                        </flex-column-body>
+                        <flex-column class="sidebar" v-if="selected">
+                            <roster-sidebar v-model="selected" />
+                        </flex-column>
+                    </flex-row>
+                </tab>
+                <tab :heading="`${reminderCount} Scheduled Reminders`">
                     <flex-column-body style="background: #fafafa;">
                         <v-container>
-                            <constrain>
-                                <fluro-panel class="slot-panel" :class="{selected:isSelected(slot)}" :key="slot.title" v-for="slot in model.slots" @click.native="select(slot)">
-                                    <fluro-panel-title>
-                                        <v-layout align-center>
-                                            <v-flex>
-                                                <strong>{{slot.title}}</strong>
-                                                <span class="text-muted">{{getSummary(slot)}}</span>
-                                            </v-flex>
-                                            <v-flex shrink>
-                                                <v-btn class="ma-0" small icon>
-                                                    <fluro-icon icon="pencil" />
-                                                </v-btn>
-                                                <v-btn v-if="!slot.assignments || !slot.assignments.length" @click.prevent.stop="trash(slot)" class="ma-0 ml-1" small icon>
-                                                    <fluro-icon icon="trash-alt" />
-                                                </v-btn>
-                                            </v-flex>
-                                        </v-layout>
-                                    </fluro-panel-title>
-                                    <fluro-panel-body v-if="slot.assignments && slot.assignments.length">
-                                        <div class="assignments">
-                                            <div class="assignment-item" :class="assignment.confirmationStatus" v-for="assignment in slot.assignments">
-                                                <v-layout align-center>
-                                                    <v-flex shrink style="padding-right:5px;">
-                                                        <fluro-avatar :id="assignment.contact" type="contact" />
-                                                    </v-flex>
-                                                    <v-flex>{{assignment.contact && assignment.contact.title ? assignment.contact.title : assignment.contactName}}</v-flex>
-                                                </v-layout>
-                                            </div>
-                                        </div>
-                                    </fluro-panel-body>
-                                </fluro-panel>
-                                <div class="pseudo-slot" @click="addSlot(slot)" v-for="slot in possibleSlots">Add {{slot.title}}</div>
-                                <v-btn block color="primary" @click="createSlot()">Add a new position</v-btn>
+                            <constrain md>
+                                <event-reminder-manager :slots="model.slots" :startDate="startDate" :endDate="endDate" v-model="model.reminders" />
+                                <!-- <reminder-event-manager :config="config" v-model="model.reminders" :allAssignmentOptions="model.slots" /> -->
                             </constrain>
                         </v-container>
                     </flex-column-body>
-                    <flex-column class="sidebar" v-if="selected">
-                        <roster-sidebar v-model="selected" />
-                    </flex-column>
-                </flex-row>
-            </tab>
-            <tab :heading="`${reminderCount} Scheduled Reminders`">
-                <flex-column-body style="background: #fafafa;">
-                    <v-container>
-                        <constrain md>
-                            <event-reminder-manager :slots="model.slots" :startDate="startDate" :endDate="endDate" v-model="model.reminders" />
-                            <!-- <reminder-event-manager :config="config" v-model="model.reminders" :allAssignmentOptions="model.slots" /> -->
-                        </constrain>
-                    </v-container>
-                </flex-column-body>
-            </tab>
-            <tab :heading="`${definition.title} Information`" v-if="definition && definition.fields && definition.fields.length">
-                <flex-column-body style="background: #fafafa;">
-                    <v-container>
-                        <constrain sm>
-                            <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
-                        </constrain>
-                    </v-container>
-                </flex-column-body>
-            </tab>
-        </tabset>
+                </tab>
+                <tab :heading="`${definition.title} Information`" v-if="definition && definition.fields && definition.fields.length">
+                    <flex-column-body style="background: #fafafa;">
+                        <v-container>
+                            <constrain sm>
+                                <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
+                            </constrain>
+                        </v-container>
+                    </flex-column-body>
+                </tab>
+            </tabset>
+        </template>
     </flex-column>
 </template>
 <script>
@@ -361,6 +370,23 @@ export default {
         // }
     },
     computed: {
+        eventField() {
+            return {
+                title: 'Select an event',
+                _type: 'event',
+                key:'event',
+                minimum: 0,
+                maximum: 1,
+                type: 'reference',
+                params: {
+                    restrictType: 'event',
+                    allDefinitions: true,
+                },
+            }
+        },
+        event() {
+            return this.model.event;
+        },
         startDate() {
             return new Date(this.model.event.startDate)
         },

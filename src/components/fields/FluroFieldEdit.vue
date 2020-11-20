@@ -67,7 +67,7 @@
                     </v-container>
                     <v-container class="border-bottom" style="background: #fff;">
 
-                         <pre>{{popup}}</pre>
+                         <!-- <pre>{{popup}}</pre> -->
                         <fluro-panel>
                             <fluro-panel-title>
                                 <strong>Variables</strong>

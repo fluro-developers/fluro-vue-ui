@@ -151,7 +151,9 @@ export default {
             anniversaryField: {
                 key: "anniversary",
                 type: "date",
-                title: "Anniversary Date"
+                title: "Anniversary Date",
+                maximum:1,
+                minimum:0,
             },
             actionIndexes: {},
             model: this.value,
@@ -192,10 +194,7 @@ export default {
         },
         anniversaryDate(row) {
             if (row.anniversary) {
-                return `${this.$fluro.date.formatDate(
-          row.anniversary,
-          "D MMM"
-        )} (${this.$fluro.date.timeago(row.anniversary)})`;
+                return `${this.$fluro.date.formatDate(row.anniversary, "D MMM")} (${this.$fluro.date.timeago(row.anniversary)})`;
             }
         },
         add() {

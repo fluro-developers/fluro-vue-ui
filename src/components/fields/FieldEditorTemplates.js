@@ -109,7 +109,7 @@ templates.push({
                 maximum: 1,
                 key: 'dob',
                 type: 'date',
-                directive: 'date-select',
+                directive: 'dob-select',
 
             },
             {

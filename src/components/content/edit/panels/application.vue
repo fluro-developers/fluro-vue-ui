@@ -17,11 +17,17 @@
 																																								<div class="font-sm">Information for accessing this application in your browser</div>
 																																				</fluro-panel-title>
 																																				<fluro-panel-body>
+																																								<!-- <v-layout> -->
+																																								<!-- <v-flex xs12 sm6> -->
+																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.domain" v-model="model" />
+																																								<!-- </v-flex> -->
+																																								<!-- <v-flex xs12 sm6> -->
+																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.forwards" v-model="model" />
+																																								<!-- </v-flex> -->
+																																								<!-- </v-layout> -->
 																																								<template v-if="showDeployment">
 																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.deployment" v-model="model" />
 																																								</template>
-																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.domain" v-model="model" />
-																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.forwards" v-model="model" />
 																																				</fluro-panel-body>
 																																</fluro-panel>
 																																<fluro-panel v-if="$pro.enabled">
@@ -81,23 +87,41 @@
 																				<v-container>
 																								<constrain sm>
 																												<div class="grid-list-xl">
-																																<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.forceSSL" v-model="model" />
 																																<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.authenticationStyle" v-model="model" />
-																																<fluro-panel v-if="$pro.enabled">
+																																<fluro-panel v-if="model.authenticationStyle == 'application'">
 																																				<fluro-panel-body>
-																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.origins" v-model="model.privateDetails" />
-																																								<v-layout>
-																																												<v-flex>
-																																																<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.blacklist" v-model="model.privateDetails" />
-																																												</v-flex>
-																																												<v-spacer />
-																																												<v-flex>
-																																																<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.whitelist" v-model="model.privateDetails" />
-																																												</v-flex>
-																																								</v-layout>
+																																								<v-input class="no-flex" hint="Use this key to authenticate with the API as this application" :persistent-hint="true" label="Authentication API Key">
+																																												<div v-tippy content="Click to copy to clipboard" @click.stop.prevent="$fluro.global.copyToClipBoard(apiKey)">
+																																																<v-layout align-center>
+																																																				<!-- <v-flex shrink>
+                                                        <fluro-icon icon="copy" />
+                                                    </v-flex> -->
+																																																				<v-flex class="copystring">{{apiKey}}</v-flex>
+																																																</v-layout>
+																																																<input type="hidden" ref="apiKey" :value="apiKey">
+																																												</div>
+																																								</v-input>
 																																				</fluro-panel-body>
-																																</fluro-panel>
-																																<!--  <div v-if="definition && definition.fields && definition.fields.length">
+																																				<fluro-panel-body  class="border-top">
+																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.forceSSL" v-model="model" />
+																																				</fluro-panel-body>
+																																			</fluro-panel>
+																																			
+																																				<fluro-panel>
+																																								<fluro-panel-body v-if="$pro.enabled">
+																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.origins" v-model="model.privateDetails" />
+																																												<v-layout>
+																																																<v-flex>
+																																																				<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.blacklist" v-model="model.privateDetails" />
+																																																</v-flex>
+																																																<v-spacer />
+																																																<v-flex>
+																																																				<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.whitelist" v-model="model.privateDetails" />
+																																																</v-flex>
+																																												</v-layout>
+																																								</fluro-panel-body>
+																																				</fluro-panel>
+																																				<!--  <div v-if="definition && definition.fields && definition.fields.length">
                                     <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields">
                                     </fluro-content-form>
                 </div>-->
@@ -246,6 +270,13 @@ export default {
 
 				},
 				computed: {
+								apiKey() {
+												if (this.model._id && this.model.authenticationStyle == 'application') {
+																return this.model.apikey;
+												} else {
+																return '(Will be generated after save)';
+												}
+								},
 								showDeployment() {
 												if (this.definition) {
 																switch (this.definition.definitionName) {
@@ -414,7 +445,7 @@ export default {
 												}
 
 												addField("deployment", {
-																title: "Application Deployment",
+																title: "Application Type / Deployment",
 																minimum: 0,
 																maximum: 1,
 																type: "string",
@@ -471,7 +502,7 @@ export default {
 
 
 												addField("forwards", {
-																title: "Forwarding Domains",
+																title: "Additional Domains",
 																minimum: 0,
 																maximum: 0,
 																type: "string",

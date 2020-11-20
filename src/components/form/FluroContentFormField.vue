@@ -188,6 +188,7 @@
 																								</v-flex>
 																								<v-spacer />
 																								<v-flex>
+																												<!-- <pre>{{dateYearOptions}}</pre> -->
 																												<v-select label="Year" :error-messages="errorMessages" :outline="showOutline" :success="success" :required="required" v-model="dateModelYear" item-text="title" :items="dateYearOptions" @blur="touch()" @focus="focussed()" />
 																								</v-flex>
 																				</v-layout>
@@ -497,7 +498,9 @@
 																</v-input>
 												</template>
 												<template v-else-if="renderer == 'academic-select'">
-																<v-select :persistent-hint="true" :outline="showOutline" :success="success" :return-object="true" :label="displayLabel" no-data-text="No options available" :multiple="false" v-model="academicModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
+																
+																<v-select :persistent-hint="true" :outline="showOutline" :success="success" :return-object="true" :label="displayLabel" no-data-text="No options available" :multiple="false" v-model="academicModel" item-text="title" :items="academicCalendarOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
+																
 																<div v-if="gradeOptions && gradeOptions.length">
 																				<v-select :outline="showOutline" :success="success" label="Grade" :multiple="false" v-model="model['academicGrade']" item-text="title" :items="gradeOptions" @blur="touch()" @focus="focussed()" />
 																</div>
@@ -1077,14 +1080,14 @@ export default {
 								dateYearOptions() {
 
 												var year = new Date().getFullYear();
-
-
-												return RANGE(year - 120, year).map(function(v) {
-																return {
-																				title: v,
-																				value: String(v),
-																}
-												})
+												return RANGE(year - 110, year)
+																.reverse()
+																.map(function(v) {
+																				return {
+																								title: v,
+																								value: String(v),
+																				}
+																})
 								},
 								webMode() {
 
@@ -1836,7 +1839,13 @@ export default {
 												return timezones;
 								},
 
+								academicCalendarOptions() {
 
+									var self = this;
+
+									var allOptions = self.selectOptions.slice();
+												return allOptions;
+								},
 								selectOptions() {
 
 												var self = this;
@@ -1852,8 +1861,10 @@ export default {
 												var actualOptions = [];
 
 
-												if (self.field.options && self.field.options.length) {
 
+
+
+												if (self.field.options && self.field.options.length) {
 																actualOptions = _.chain(self.field.options)
 																				.map(function(option) {
 
@@ -1876,7 +1887,6 @@ export default {
 																				})
 																				.compact()
 																				.value();
-
 												} else {
 																if (self.allowedValues && self.allowedValues.length) {
 																				actualOptions = _.chain(self.allowedValues)
@@ -1898,6 +1908,8 @@ export default {
 												if (self.field.type == 'reference' && self.allowedReferences && self.allowedReferences.length) {
 																actualOptions = self.allowedReferences;
 												}
+
+
 
 												////////////////////////////////////////
 
@@ -2130,6 +2142,9 @@ export default {
 																//And we are a reference field
 																if (dataType == 'reference') {
 																				switch (directive) {
+																								case 'academic-select':
+																												return directive;
+																												break;
 																								case 'realmselect':
 																								case 'realm-select':
 																												return 'realmselect';
