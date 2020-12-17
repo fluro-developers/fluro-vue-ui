@@ -26,6 +26,9 @@
                             </v-btn>
                         </template>
                         <template v-else>
+                           <!--  <v-btn icon v-if="showFiltersEnabled" class="mr-0"  @click="toggleFilters()">
+                                <fluro-icon icon="filter" :library="filtersEnabled ? 'fas' : 'far'" />
+                            </v-btn> -->
                             <v-btn icon v-if="refreshable" class="mr-0"  @click="refresh()">
                                 <fluro-icon icon="sync" />
                             </v-btn>

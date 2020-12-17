@@ -95,7 +95,7 @@
 																																				</div>
 																																				<v-flex style="overflow: hidden;">
 																																								<template v-if="availableKeys.length">
-																																												<filter-condition-row :type="type" :useSample="useSample" :rows="rows" :loadingKeys="loadingKeys" :definition="definition" :fields="availableKeys" :mini="mini" v-model="group.filters[index]" />
+																																												<filter-condition-row :forceLocalValues="forceLocalValues" :type="type" :useSample="useSample" :rows="rows" :loadingKeys="loadingKeys" :definition="definition" :fields="availableKeys" :mini="mini" v-model="group.filters[index]" />
 																																								</template>
 																																				</v-flex>
 																																				<div v-if="group.filters.length > 1">
@@ -208,6 +208,9 @@ function getFlattenedFields(array, trail, titles) {
 
 export default {
 				props: {
+								forceLocalValues: {
+												type: Boolean,
+								},
 								filterFields: {
 												type: Array,
 												default () {
@@ -790,54 +793,56 @@ export default {
 																})
 												);
 
-												injectFields.push({
-																title: "Posts and Notes > Total linked posts",
-																key: "_posts.all.length",
-																maximum: 1,
-																minimum: 0,
-																type: "integer",
-																subfieldTitle: "Where post matches...",
-																subfields: [{
-																								title: "Created Date",
-																								key: "created",
-																								maximum: 1,
-																								minimum: 0,
-																								type: "date"
-																				},
-																				// {
-																				//     title: 'Updated Date',
-																				//     key: 'updated',
-																				//     maximum: 1,
-																				//     minimum: 0,
-																				//     type: 'date',
-																				// },
-																				{
-																								title: "Realms",
-																								key: "realms",
-																								maximum: 0,
-																								minimum: 0,
-																								type: "reference",
-																								directive: "select",
-																								_discriminatorDefinition: "realm"
-																				},
-																				{
-																								title: "Post Type",
-																								key: "definition",
-																								maximum: 1,
-																								minimum: 0,
-																								type: "string",
-																								directive: "select",
-																								options: postDefinitionOptions
-																				},
-																				{
-																								title: "Title",
-																								key: "title",
-																								maximum: 1,
-																								minimum: 0,
-																								type: "string",
-																				}
-																]
-												});
+												if (self.type) {
+																injectFields.push({
+																				title: "Posts and Notes > Total linked posts",
+																				key: "_posts.all.length",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "integer",
+																				subfieldTitle: "Where post matches...",
+																				subfields: [{
+																												title: "Created Date",
+																												key: "created",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "date"
+																								},
+																								// {
+																								//     title: 'Updated Date',
+																								//     key: 'updated',
+																								//     maximum: 1,
+																								//     minimum: 0,
+																								//     type: 'date',
+																								// },
+																								{
+																												title: "Realms",
+																												key: "realms",
+																												maximum: 0,
+																												minimum: 0,
+																												type: "reference",
+																												directive: "select",
+																												_discriminatorDefinition: "realm"
+																								},
+																								{
+																												title: "Post Type",
+																												key: "definition",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "string",
+																												directive: "select",
+																												options: postDefinitionOptions
+																								},
+																								{
+																												title: "Title",
+																												key: "title",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "string",
+																								}
+																				]
+																});
+												}
 
 												//////////////////////////////////////////////////
 
@@ -1292,8 +1297,86 @@ export default {
 																												minimum: 0,
 																												type: "reference",
 																												directive: "select",
-																												options: eventTrackOptions
+																												// options: eventTrackOptions
+																												typeSelect: "eventtrack",
 																								},
+
+																				]
+																});
+
+
+
+																injectFields.push({
+																				title: "Unavailable Periods",
+																				// key: '_checkins[]',
+																				key: "_unavailability.all.length",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "integer",
+																				subfieldTitle: "Matching",
+																				subfields: [{
+																												title: "Period Starts",
+																												key: "startDate",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "date",
+																								},
+																								{
+																												title: "Period Ends",
+																												key: "endDate",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "date",
+																								},
+																								{
+																												title: "Period was Created",
+																												key: "created",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "date",
+																								},
+																								{
+																												title: "Period was Updated",
+																												key: "created",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "date",
+																								},
+																								// {
+																								// 				title: "Event Type",
+																								// 				key: "eventDefinition",
+																								// 				maximum: 1,
+																								// 				minimum: 0,
+																								// 				type: "string",
+																								// 				directive: "select",
+																								// 				options: eventDefinitionOptions
+																								// },
+																								// {
+																								// 				title: "Date",
+																								// 				key: "startDate",
+																								// 				maximum: 1,
+																								// 				minimum: 0,
+																								// 				type: "date"
+																								// },
+																								// {
+																								// 				title: "Realms",
+																								// 				key: "realms",
+																								// 				maximum: 0,
+																								// 				minimum: 0,
+																								// 				type: "reference",
+																								// 				directive: "select",
+																								// 				_discriminatorDefinition: "realm"
+																								// },
+																								// {
+																								// 				title: "Event Track",
+																								// 				key: "track",
+																								// 				maximum: 0,
+																								// 				minimum: 0,
+																								// 				type: "reference",
+																								// 				directive: "select",
+																								// 				// options: eventTrackOptions
+																								// 				typeSelect: "eventtrack",
+																								// },
 
 																				]
 																});
@@ -2092,6 +2175,49 @@ export default {
 
 																// var definitionName = _.get(self.definition, 'definitionName');
 																switch (self.basicType) {
+																				case 'interaction':
+
+
+								// 												 case 'utm_campaign':
+        // case 'utm_source':
+        // case 'utm_content':
+        // case 'utm_medium':
+        // case 'utm_term':
+        // case 'fbclid':
+																								injectFields.push({
+																												title: "UTM Campaign",
+																												key: "utm.utm_campaign",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "string",
+																								});
+
+																								injectFields.push({
+																												title: "UTM Source",
+																												key: "utm.utm_source",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "string",
+																								});
+
+																								injectFields.push({
+																												title: "UTM Medium",
+																												key: "utm.utm_medium",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "string",
+																								});
+
+																								injectFields.push({
+																												title: "UTM Term",
+																												key: "utm.utm_term",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "string",
+																								});
+
+																								
+																								break;
 																				case 'persona':
 																								// injectFields.push({
 																								// 				title: "Contact",
@@ -2523,7 +2649,7 @@ export default {
 																												'site',
 																								], function(metricType) {
 
-																									var matchingDefinition = self.$fluro.types.glossary[metricType];
+																												var matchingDefinition = self.$fluro.types.glossary[metricType];
 
 																												injectFields.push({
 																																title: `Metrics > ${matchingDefinition.plural}`,

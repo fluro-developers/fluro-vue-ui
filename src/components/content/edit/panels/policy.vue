@@ -16,11 +16,16 @@
                                         <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.inviteCodeEnabled" v-model="model"></fluro-content-form-field>
                                     </fluro-panel-title>
                                     <template v-if="inviteCodeEnabled">
+                                        <template v-if="inviteCode">
                                         <div class="invite-code" v-tippy content="Click to copy to clipboard" @click="copyCodeToClipboard">
                                             <span>{{inviteCode}}</span>
                                             <!-- <fluro-icon icon="copy" right /> -->
                                         </div>
                                         <input type="hidden" ref="input" :value="inviteCode">
+                                    </template>
+                                    <fluro-panel-body style="text-align:center" v-else>
+                                            <Span class="muted">Invite code will be generated after save</Span>
+                                    </fluro-panel-body>
                                         <!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.fromEmail" v-model="model"></fluro-content-form-field> -->
                                         <!-- <v-layout> -->
                                         <!-- <v-flex xs12 sm6> -->
@@ -137,6 +142,10 @@ export default {
         },
         inviteCode() {
             var self = this;
+
+            if(!self.policyCode) {
+                return
+            }
             return `${self.user.account.prefix}-${self.policyCode }`.toUpperCase();
         },
         expanded() {

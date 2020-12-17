@@ -1,6 +1,6 @@
 <template>
     <div class="payment-modifier-editor">
-        <list-group>
+        <list-group v-if="model.length">
             <draggable v-model="model" v-bind="dragOptions" @sort="sorted" @start="drag=true" @end="drag=false">
                 <payment-modifier-item :form="form" @remove="remove" @duplicate="duplicate" @edit="edit" v-model="model[index]" v-for="(modifier, index) in model"/>
             </draggable>

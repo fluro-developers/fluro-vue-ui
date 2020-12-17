@@ -39,7 +39,7 @@
                                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.graduationDate" v-model="model"></fluro-content-form-field>
                                             </v-flex>
                                             <v-flex>
-                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.graduateTo" v-model="model"></fluro-content-form-field>
+                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.graduatesTo" v-model="model"></fluro-content-form-field>
                                             </v-flex>
                                         </v-layout>
                                     </fluro-panel-body>

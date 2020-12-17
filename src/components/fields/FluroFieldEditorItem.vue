@@ -416,6 +416,12 @@ export default {
     },
 
     watch: {
+        leaf(m) {
+            this.model = m;
+        },
+        leaf(m) {
+            this.model = m;
+        },
         hasSubFields(bol) {
             var self = this;
 

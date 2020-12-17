@@ -457,6 +457,12 @@ export default {
 				return [];
 			}
 		},
+		additionalKeys: {
+			type: Array,
+			default () {
+				return [];
+			}
+		},
 		// filterConfig: {
 		//     type: Object,
 		//     default () {
@@ -521,7 +527,7 @@ export default {
 
 	computed: {
 		joins() {
-			return _.map(this.extraColumns, 'key');
+			return [].concat(this.additionalKeys, _.map(this.extraColumns, 'key'));
 		},	
 		availableGroupingKeys() {
 

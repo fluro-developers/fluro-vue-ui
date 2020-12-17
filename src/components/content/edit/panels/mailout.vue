@@ -621,7 +621,7 @@ export default {
             //////////////////////////////////////////////////////
 
             addField('contacts', {
-                title: 'Select contacts',
+                title: 'Recipient contacts',
                 minimum: 0,
                 maximum: 0,
                 type: 'reference',
@@ -631,7 +631,7 @@ export default {
             })
 
             addField('teams', {
-                title: 'Select Groups/Teams',
+                title: 'Recipient Groups/Teams',
                 minimum: 0,
                 maximum: 0,
                 type: 'reference',
@@ -641,7 +641,7 @@ export default {
             })
 
             addField('tickets', {
-                title: 'Select tickets',
+                title: 'Recipient tickets',
                 minimum: 0,
                 maximum: 0,
                 type: 'reference',
@@ -655,7 +655,7 @@ export default {
             ///////////////////////////////////////
 
             addField('events', {
-                title: 'Select events',
+                title: 'Recipient events',
                 minimum: 0,
                 maximum: 0,
                 type: 'reference',
@@ -703,7 +703,7 @@ export default {
 
 
             addField('interactions', {
-                title: 'Select interactions',
+                title: 'Recipient interactions',
                 minimum: 0,
                 maximum: 0,
                 type: 'reference',
@@ -713,7 +713,7 @@ export default {
             })
 
             addField('cards', {
-                title: 'Select Process Cards',
+                title: 'Recipient Process Cards',
                 minimum: 0,
                 maximum: 0,
                 type: 'reference',
@@ -723,7 +723,7 @@ export default {
             })
 
             addField('checkins', {
-                title: 'Select Checkins',
+                title: 'Recipient Checkins',
                 minimum: 0,
                 maximum: 0,
                 type: 'reference',
@@ -733,7 +733,7 @@ export default {
             })
 
             addField('families', {
-                title: 'Select Households',
+                title: 'Recipient Households',
                 minimum: 0,
                 maximum: 0,
                 type: 'reference',
@@ -743,7 +743,7 @@ export default {
             })
 
             addField('collections', {
-                title: 'Select Collections',
+                title: 'Recipient Collections',
                 minimum: 0,
                 maximum: 0,
                 type: 'reference',
@@ -756,7 +756,7 @@ export default {
 
             // if (self.contactDefinitionOptions && self.contactDefinitionOptions.length > 1) {
             addField('definitionNames', {
-                title: 'Select Contact Definitions',
+                title: 'Recipient Contact Definitions',
                 minimum: 0,
                 maximum: 0,
                 type: 'string',
@@ -766,7 +766,7 @@ export default {
             // }
 
             addField('selectedTags', {
-                title: 'Select Tags',
+                title: 'Recipient Tags',
                 minimum: 0,
                 maximum: 0,
                 type: 'reference',
@@ -776,7 +776,7 @@ export default {
             })
 
             addField('selectedRealms', {
-                title: 'Select Realms',
+                title: 'Recipient Realms',
                 minimum: 0,
                 maximum: 0,
                 type: 'reference',
@@ -788,7 +788,7 @@ export default {
             })
 
             addField('details', {
-                title: 'Select Detail Sheet',
+                title: 'Recipient Detail Sheet',
                 minimum: 0,
                 maximum: 0,
                 type: 'reference',
@@ -798,7 +798,7 @@ export default {
             })
 
             addField('personas', {
-                title: 'Select User Personas',
+                title: 'Recipient User Personas',
                 minimum: 0,
                 maximum: 0,
                 type: 'reference',
@@ -808,7 +808,7 @@ export default {
             })
 
             addField('query', {
-                title: 'Select Query',
+                title: 'Recipient Query',
                 minimum: 0,
                 maximum: 1,
                 type: 'reference',

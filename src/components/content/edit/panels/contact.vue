@@ -473,7 +473,7 @@
 																																				<p class="help-block">Select where {{contextName}} {{sheet.title}} information should be stored</p>
 																																				<fluro-realm-select @input="updateSheetRealms($event, sheet.definitionName)" v-model="sheet.dataModel.realms" type="contactdetail" :definition="sheet.definitionName" />
 																																</v-input>
-																																<fluro-content-form  :options="formOptions" @input="updateSheet($event, sheet.definitionName)" v-model="sheet.dataModel.data" :fields="sheet.fields" />
+																																<fluro-content-form :options="formOptions" @input="updateSheet($event, sheet.definitionName)" v-model="sheet.dataModel.data" :fields="sheet.fields" />
 																																<!-- <pre>{{sheet.dataModel.data}}</pre> -->
 																																<!-- <pre>{{sheet.dataModel.data}}</pre> -->
 																												</constrain>

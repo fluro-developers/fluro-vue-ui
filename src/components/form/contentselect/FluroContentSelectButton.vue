@@ -35,7 +35,9 @@ export default {
         label: {
             type: String
         },
-
+        lockFilter:{
+            type:Object,
+        },
         filter: {
             type: Object,
             default () {
@@ -222,7 +224,8 @@ export default {
                     type: self.type,
                     allDefinitions: self.allDefinitions,
                     searchInheritable: self.searchInheritable,
-                    filter: self.filter
+                    filter: self.filter,
+                    lockFilter:self.lockFilter,
                 }
             });
 

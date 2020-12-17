@@ -154,6 +154,8 @@ export default {
     },
     mounted() {
         this.focusSearch();
+        console.log('Mounted')
+        this.reloadSuggestions();
     },
     methods: {
 
@@ -535,14 +537,17 @@ export default {
         reloadSuggestions() {
 
             var self = this;
-
+            console.log('reload suggestions')
 
             if (!self.model) {
                 self.loadingSuggestions = false;
                 self.suggestionData = null;
+                console.log('no model')
                 return;
             }
+
             self.loadingSuggestions = true;
+            console.log('loading')
 
             self.$fluro.api.post(`/matrix/suggest`, {
                     title: self.slot.title,
@@ -554,6 +559,7 @@ export default {
                     },
                 })
                 .then(function(res) {
+
 
                     self.suggestionData = res.data;
                     self.loadingSuggestions = false;
@@ -575,6 +581,7 @@ export default {
             this.search = '';
             this.focusSearch();
             this.reloadSuggestions();
+            console.log('value set')
         },
     },
     computed: {

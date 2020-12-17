@@ -1,5 +1,5 @@
 <template>
-    <div class="number-cell-text" :class="{muted:empty}">
+    <div class="number-cell-text" :class="{empty:empty}">
         {{prefix}}{{data}}{{suffix}}
         </div>
 </template>
@@ -34,7 +34,12 @@ export default {
 <style scoped lang="scss">
 .number-cell-text {
     text-align: center;
-    opacity: 0.8;
+    opacity: 0.9;
     font-size: 0.9em;
+
+    &.empty {
+        font-weight:normal;
+        opacity: 0.2;
+    }
 }
 </style>

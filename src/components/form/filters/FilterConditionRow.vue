@@ -27,10 +27,10 @@
 																				<v-text-field single-line label v-model="model.key"></v-text-field>
 																</template>
 												</v-flex>
-												<v-flex xs12 sm3 >
-													<div v-tippy :content="comparatorsCaption">
-																<v-select single-line dense ref="inputComparator" v-model="modelComparator" item-text="title" item-value="operator" :items="comparators" />
-												</div>
+												<v-flex xs12 sm3>
+																<div v-tippy :content="comparatorsCaption">
+																				<v-select single-line dense ref="inputComparator" v-model="modelComparator" item-text="title" item-value="operator" :items="comparators" />
+																</div>
 												</v-flex>
 												<template v-if="comparator && inputType != 'none'">
 																<v-flex xs12 sm5 v-if="inputType == 'daterange'">
@@ -111,7 +111,7 @@
 																																</v-select>
 																												</template>
 																												<template v-else>
-																																<!-- REFERENCE -->
+																																<!-- REFERENCE -->|
 																																<!-- rEFERENCE {{loadingValues}} - {{cleanedValueSelection.length}} -->
 																																<v-autocomplete class="small-input" multiple dense v-model="model.values" item-text="title" item-value="_id" :loading="loadingValues" :items="cleanedValueSelection">
 																																				<template v-slot:item="data">
@@ -235,7 +235,7 @@
 																				<!-- :rows="rows" -->
 																				<v-layout :key="criteriaRow.guid" v-for="(criteriaRow, index) in model.criteria">
 																								<v-flex>
-																												<filter-condition-row :type="type" :definition="definition" :rows="rows" :fields="selector.subfields" :mini="mini" v-model="model.criteria[index]" />
+																												<filter-condition-row :forceLocalValues="forceLocalValues" :type="type" :definition="definition" :rows="rows" :fields="selector.subfields" :mini="mini" v-model="model.criteria[index]" />
 																								</v-flex>
 																								<v-flex shrink>
 																												<v-btn small flat color="error" class="ma-0" icon @click="removeCriteria(index)">
@@ -274,6 +274,9 @@ export default {
 								// FilterConditionGroup,
 				},
 				props: {
+								forceLocalValues: {
+												type: Boolean,
+								},
 								type: {
 												type: String
 								},
@@ -424,6 +427,7 @@ export default {
 								};
 				},
 				computed: {
+
 								modelComparator: {
 												get() {
 																return this.model.comparator;
@@ -479,15 +483,17 @@ export default {
 								useBasicReferenceSelect() {
 												var self = this;
 
+												if (self.selector && self.selector.typeSelect) {
+																return self.selector.typeSelect;
+												}
+
 												if (!self.rows || !self.rows.length) {
 
 																if (!self.selector) {
 																				return;
 																}
 
-																if (self.selector.typeSelect) {
-																				return self.selector.typeSelect;
-																}
+
 
 																if (self.selector.params && self.selector.params.restrictType) {
 
@@ -540,8 +546,6 @@ export default {
 								//     },
 								// },
 								cleanedValueSelection() {
-
-
 												var self = this;
 
 												return _.map(self.possibleValues, function(option) {
@@ -563,9 +567,6 @@ export default {
 																if (self.type == 'reference' && !option._id) {
 																				option._id = option.value;
 																}
-
-
-
 
 																return option;
 												});
@@ -966,6 +967,8 @@ export default {
 												var key = self.model.key;
 												// console.log('RETRIEVE VALUES', key);
 
+
+
 												////////////////////////////////////
 
 												if (self.useBasicReferenceSelect) {
@@ -987,6 +990,8 @@ export default {
 																// console.log('CADE > No key so no values', self.model)
 																return;
 												}
+
+
 
 												////////////////////////////////////
 
@@ -1017,6 +1022,183 @@ export default {
 																				// console.log('Return selectable options', selectableOptions, self.selector)
 																				return;
 																}
+												}
+
+
+												////////////////////////////////////
+
+												if (self.forceLocalValues && self.rows.length) {
+																console.log('LOCAL VALUES')
+
+
+																// var values = {};
+
+																// ///////////////////////////////////////
+
+																// function addValueToSet(entry) {
+
+																// 				//If it's not an object
+																// 				if (!entry._id && !entry.title && !entry.name && !entry.id) {
+																// 								return values[entry] = entry;
+																// 				}
+
+																// 				if (entry.status == 'deleted') {
+																// 								return;
+																// 				}
+
+																// 				if (entry.status == 'archived' && entry._type != 'event') {
+																// 								return;
+																// 				}
+
+
+																// 				//////////////////////////////////////////////
+
+																// 				if (fieldKey == 'realms') {
+																// 								if (!_discriminator && !_discriminatorType) {
+																// 												if (entry._discriminator || entry._discriminatorType) {
+																// 																return;
+																// 												}
+																// 								}
+
+																// 				}
+
+																// 				//////////////////////////////////////////////
+
+																// 				if (_discriminator) {
+																// 								if (entry._discriminator != _discriminator) {
+																// 												return;
+																// 								}
+																// 				}
+
+																// 				//////////////////////////////////////////////
+
+																// 				if (_discriminatorType) {
+																// 								if (entry._discriminatorType != _discriminatorType) {
+																// 												return;
+																// 								}
+																// 				}
+
+																// 				//////////////////////////////////////////////
+
+																// 				if (_definition && _definition.length) {
+																// 								// console.log('Check DEFINITION', _definition, entry.title, entry.definition)
+																// 								if (entry.definition != _definition) {
+
+																// 												if (entry._type == _definition && (!entry.definition || !entry.definition.length)) {
+																// 																//The type and the definition match
+																// 												} else {
+																// 																return;
+																// 												}
+																// 								}
+																// 				}
+
+																// 				return values[entry._id || entry.title || entry.name || entry.id] = entry;
+																// }
+
+																///////////////////////////////////////
+
+																// var extractedValues = [];
+
+																var extractedValues = {};
+
+																_.each(self.rows, function(row) {
+																				//Get the deep value
+																				return getDeepValue(row, key);
+																});
+
+
+																///////////////////////////////////////
+
+																function addValueToSet(entry) {
+																				//If it's not an object
+																				if (!entry._id && !entry.title && !entry.name && !entry.id) {
+																								return extractedValues[entry] = entry;
+																				}
+
+																				if (entry.status == 'deleted') {
+																								return;
+																				}
+
+																				if (entry.status == 'archived' && entry._type != 'event') {
+																								return;
+																				}
+
+																				return extractedValues[entry._id || entry.id || entry.title || entry.name] = entry;
+																}
+
+																///////////////////////////////////////
+
+																function getDeepValue(node, keyPath) {
+
+																				if (keyPath[0] == '.') {
+																								keyPath = keyPath.slice(1);
+																				}
+
+																				if (_.includes(keyPath, '[]')) {
+
+																								var splitPieces = keyPath.split('[]');
+																								var splitKey = splitPieces.shift();
+																								var subPath = splitPieces.join('[]');
+																								var subItems = _.get(node, splitKey) || [];
+
+																								// console.log('GET DEEP PATH', keyPath, splitKey, subPath);
+
+																								return _.each(subItems, function(subItem) {
+																												getDeepValue(subItem, subPath)
+																								});
+																				}
+
+																				//Matching Value
+																				var value = _.get(node, keyPath);
+
+																				if (!value) {
+																								return;
+																				}
+
+																				///////////////////////////////////////
+
+																				if (_.isArray(value)) {
+																								if (value.length) {
+																												_.each(value, function(v) {
+																																addValueToSet(v);
+																												})
+																								}
+																				} else {
+																								addValueToSet(value);
+																				}
+
+																}
+
+																///////////////////////////////////////
+
+																self.possibleValues = _.chain(extractedValues)
+																				.values()
+																				// .map(function(row) {
+																				// 				return getDeepValue(row, key);
+
+																				// })
+																				// .flatten()
+																				.compact()
+																				// .uniqBy(function(entry) {
+																				// 				return entry._id || entry.id || entry.title || entry.name || entry;
+																				// })
+																				.orderBy(function(entry) {
+																								return entry.title || entry.name || entry;
+																				})
+																				.map(function(entry) {
+
+																								if (entry.title || entry.name || entry.id || entry._id) {
+																												entry.value = entry._id || entry.id || entry.name || entry.title;
+																								}
+
+																								return entry;
+																				})
+																				.value();
+
+																// console.log('POSSIBLE VALUES', self.possibleValues)
+
+																self.loadingValues = false;
+																return;
 												}
 
 												////////////////////////////////

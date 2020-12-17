@@ -11,18 +11,25 @@
             <v-container style="background: #fafafa;">
                 <template v-for="action in actions">
                     <div class="detail-button" @click="select(action)" v-if="action.description">
-                        <h5>
-                        <v-layout>
-                            <v-flex>
-                                {{action.title}}
+                        <v-layout align-center>
+                            <v-flex v-if="action.icon" shrink style="padding-right:10px;">
+                                <fluro-icon :icon="action.icon" />
                             </v-flex>
-                            <v-spacer/>
-                            <v-flex class="text-xs-right" shrink>
-                                <fluro-icon icon="angle-right"/>
+                            <v-flex>
+                                <h5>
+                                    <v-layout>
+                                        <v-flex>
+                                            {{action.title}}
+                                        </v-flex>
+                                        <v-spacer />
+                                        <v-flex class="text-xs-right" shrink>
+                                            <fluro-icon icon="angle-right" />
+                                        </v-flex>
+                                    </v-layout>
+                                </h5>
+                                <div class="sm muted">{{action.description}}</div>
                             </v-flex>
                         </v-layout>
-                        </h5>
-                        <div class="sm muted">{{action.description}}</div>
                     </div>
                     <v-btn v-else block color="primary" @click="select(action)">
                         {{action.title}}
@@ -116,6 +123,7 @@ export default {
         // },
     }
 }
+
 </script>
 <style lang="scss">
 .fluro-options-dialog {
@@ -129,7 +137,7 @@ export default {
         padding: 10px;
         border-radius: 3px;
         text-align: left;
-        margin-bottom:2px;
+        margin-bottom: 2px;
         cursor: pointer;
 
         &:hover {
@@ -144,4 +152,5 @@ export default {
     }
 
 }
+
 </style>

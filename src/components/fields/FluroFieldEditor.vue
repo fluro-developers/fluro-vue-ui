@@ -2,6 +2,7 @@
     <flex-column class="fluro-field-editor" :class="{'schema-mode':!formMode}">
         <flex-row>
             <flex-column class="sidebar">
+
                 <flex-column class="fields-tree" v-show="true || !(field || configurePayment || configureDefaults)">
                     <flex-column-header>
                         <div class="palette-title">
@@ -23,7 +24,7 @@
                                 <div class="pseudo-field" :class="{active:configureDefaults && !field}" @click="showDefaultFieldOptions()">Form Configuration</div>
                             </template>
                             <draggable class="field-editor-children" handle=".handle" element="ul" @sort="sorted" v-model="model" :options="treeOptions">
-                                <fluro-field-editor-item :top="model" :mouseover="mouseover" :mouseleave="mouseleave" :parent="psuedoParent" :parentGroup="psuedoParent"  :leaf="model[index]" :selected="field" :select="clicked" @duplicate="duplicateField" @injected="injectField" @copypath="copyFieldPath" @deleted="deleteField" v-for="(leaf, index) in model" :key="leaf.guid" />
+                                <fluro-field-editor-item :top="model" :mouseover="mouseover" :mouseleave="mouseleave" :parent="psuedoParent" :parentGroup="psuedoParent" :leaf="model[index]" :selected="field" :select="clicked" @duplicate="duplicateField" @injected="injectField" @copypath="copyFieldPath" @deleted="deleteField" v-for="(leaf, index) in model" :key="leaf.guid" />
                             </draggable>
                             <template v-if="formMode">
                                 <div class="pseudo-field" :class="{active:configurePayment && !field}" @click="showPaymentOptions()">Payment Options</div>
@@ -47,7 +48,7 @@
                                     </v-btn>
                                 </v-flex>
                                 <v-flex v-else>
-                                    <v-btn small class="ma-1" color="primary" block @click="addNewField()">
+                                    <v-btn small class="ma-1" color="primary" block @click="addNewTypeTemplate(parentType)">
                                         Add Field
                                         <fluro-help title="Add a Field" body="Click here to add a new field" />
                                         <fluro-icon icon="plus" right />
@@ -139,7 +140,7 @@
                                 <wrapper sm>
                                     <constrain sm>
                                         <!-- :fields="model" -->
-                                        <fluro-interaction-form @state="stateChanged" :contextField="contextField" :defaultState="previewState" context="builder" :prefill="false" @debug="debugField" :title="item.title" :definition="fauxDefinition" :paymentIntegration="paymentIntegration" :debugMode="true" v-model="previewModel" ref="previewForm">
+                                        <fluro-interaction-form @state="stateChanged" :contextField="contextField" :defaultState="previewState" context="builder" :prefill="false" @debug="debugField" :title="item.title" :definition="fauxDefinition" :paymentIntegration="paymentIntegration" :gateways="paymentGateways" :debugMode="true" v-model="previewModel" ref="previewForm">
                                             <template v-slot:info>
                                                 <h1 margin v-if="!hideDisplayTitle">{{displayTitle}}</h1>
                                                 <fluro-compile-html class="form-body" :template="publicData.body" :context="item" />
@@ -167,7 +168,7 @@
                             v-model="dataModel"
                             :fields="fields"
                 />-->
-                                <fluro-content-form context="builder" :recursiveClick="debugComponent" :debugMode="true" :contextField="contextField" v-model="previewModel" ref="previewForm" :fields="model" />
+                                <fluro-content-form context="definition" :recursiveClick="debugComponent" :debugMode="true" :contextField="contextField" v-model="previewModel" ref="previewForm" :fields="model" />
                             </constrain>
                         </v-container>
                     </template>
@@ -284,6 +285,7 @@ import Vue from "vue";
 import _ from "lodash";
 
 import FieldTemplates from "./FieldEditorTemplates";
+import DefinitionTemplates from "./FieldEditorDefinitionTemplates";
 import ComponentFieldTemplates from "./FieldEditorComponentTemplates";
 import draggable from "vuedraggable";
 import FluroFieldEditorItem from "./FluroFieldEditorItem.vue";
@@ -322,11 +324,14 @@ export default {
         self.recursiveGUID(self.model);
     },
     computed: {
+        parentType() {
+            return this.item.parentType;
+        },
         psuedoParent() {
             return {
-                title:'FORM',
-                type:'group',
-                fields:this.model,
+                title: 'FORM',
+                type: 'group',
+                fields: this.model,
             }
         },
         allFields() {
@@ -398,8 +403,8 @@ export default {
             //     return this.$vuetify.breakpoint.lgAndUp;
             // }
 
-            if(this.configureDefaults && !this.field) {
-             return;
+            if (this.configureDefaults && !this.field) {
+                return;
             }
 
             // if(!this.field) {
@@ -566,7 +571,7 @@ export default {
             var self = this;
             return self.item && self.item.data ? self.item.data.publicData : {};
         },
-        paymentIntegration() {
+        paymentGateways() {
             var self = this;
 
             if (
@@ -576,7 +581,19 @@ export default {
                 return;
             }
 
-            return _.first(self.publicData.paymentGateways);
+            return self.publicData.paymentGateways;
+        },
+        paymentIntegration() {
+            var self = this;
+
+            // if (
+            //     !self.publicData.paymentGateways ||
+            //     !self.publicData.paymentGateways.length
+            // ) {
+            //     return;
+            // }
+
+            return _.first(self.paymentGateways);
         }
     },
     // watch:{
@@ -653,7 +670,7 @@ export default {
 
             _.each(fields, function(field) {
                 if (!field.guid) {
-                    self.$set(field,'guid', self.$fluro.utils.guid());
+                    self.$set(field, 'guid', self.$fluro.utils.guid());
                 }
 
                 self.recursiveGUID(field.fields);
@@ -706,16 +723,30 @@ export default {
                 self.resetting = false;
             }, 10);
         },
-        getFieldTemplate(type) {
+
+        getFieldTemplate(parentType) {
             var self = this;
+
 
             //////////////////////////////////
 
             return new Promise(function(resolve, reject) {
                 var templateSet = FieldTemplates;
-                if (self.componentMode) {
-                    templateSet = ComponentFieldTemplates;
+
+                switch (parentType) {
+                    case 'form':
+                    case 'interaction':
+                        break;
+                    default:
+                        if (self.componentMode) {
+                            templateSet = ComponentFieldTemplates;
+                        } else {
+                           templateSet = DefinitionTemplates;
+                        }
+                        break;
                 }
+
+                //////////////////////////////////
 
                 self.$fluro
                     .options(templateSet, "Add a field")
@@ -769,6 +800,14 @@ export default {
             field.guid = self.$fluro.utils.guid();
 
             return field;
+        },
+        addNewTypeTemplate(type) {
+            var self = this;
+
+            console.log('GET FOR TYPE', type)
+            self.getFieldTemplate(type).then(function(field) {
+                self.addNewField(null, field);
+            });
         },
         addNewComponentTemplate() {
             var self = this;

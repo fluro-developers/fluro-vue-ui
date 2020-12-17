@@ -4,11 +4,27 @@
             <fluro-page-preloader contain />
         </template>
         <template v-else>
-
-            <!-- :vertical="true" -->
-            <tabset :justified="true" :vertical="true">
+            <tabset :vertical="true">
                 <tab heading="Results">
-                    <fluro-table :showFooter="true" trackingKey="_id" :pageSize="100" :items="results" :columns="columns" />
+                    <flex-row>
+                        <flex-column>
+                            <fluro-table :showFooter="true" trackingKey="_id" :pageSize="100" :items="filtered" :totals="totals" :columns="columns" />
+                        </flex-column>
+                        <flex-column class="border-left" style="max-width:320px;">
+                            <tabset :justified="true">
+                                <tab heading="Refine">
+                                    <flex-column-body style="background: #fafafa;">
+                                        <v-container fluid pa-2>
+                                            <search-input style="background: #fff;" @click.native.stop.prevent placeholder="Search within results" v-model="keywords" />
+                                        </v-container>
+                                        <v-container fluid pa-2>
+                                            <filter-condition-group :forceLocalValues="true" :filterFields="filterFields" :rows="results" :mini="true" v-model="filterConfig" :debounce="filterDebounce" />
+                                        </v-container>
+                                    </flex-column-body>
+                                </tab>
+                            </tabset>
+                        </flex-column>
+                    </flex-row>
                 </tab>
                 <tab heading="Feeds">
                     <flex-column-body style="background: #fafafa;">
@@ -41,42 +57,69 @@
                         </v-container>
                     </flex-column-body>
                 </tab>
-                <tab :heading="`History`" v-if="resultSetsData.length">
+                <tab :heading="`History`" v-if="dataSets.length">
                     <flex-column-body style="background: #fafafa;">
-                        <div v-for="dataset in resultSetsData" v-bind:key="dataset._id">
-                            <v-container fluid>
-                                <constrain sm>
-                                    <h3 margin>{{dataset.title}} - Details</h3>
-                                    <div class="timeline">
-                                        <div class="timeline-year" v-for="year in dataset.historicaltimeline" v-bind:key="year.date">
+                        <div v-for="dataset in dataSets" :key="dataset._id">
+                            <v-container fluid class="history">
+                                <constrain sm >
+                                    <h3 margin>{{dataset.title}} - Records</h3>
+                                    <fluro-timeline v-model="dataset.data">
+                                        <template v-slot:card="{entry}">
+                                            <div class="timeline-card">
+                                                <v-layout align-center>
+                                                    <v-flex>
+                                                     <strong>{{entry.date | formatDate('ddd D MMM YYYY')}}</strong>
+                                                     <div class="font-xxs muted">{{entry.date | timeago}}</div>
+                                                    </v-flex>
+                                                    <v-flex shrink>
+                                                        <v-btn class="ma-0" small :href="entry.link" target="_blank">
+                                                            Download CSV <fluro-icon right icon="arrow-to-bottom" />
+                                                        </v-btn>
+                                                    </v-flex>
+                                                </v-layout>
+                                               
+                                                    
+                                                    <!-- <fluro-realm-bar :realm="entry.realms" /> -->
+                                                    <!-- <label>{{entry.title}}</label> -->
+                                                    <!-- <pre>{{entry}}</pre> -->
+                                                    <!-- } -->
+                                            </div>
+                                        </template>
+                                    </fluro-timeline>
+                                    <!-- <div class="timeline">
+                                        <div class="timeline-year" v-for="(year, yearIndex) in dataset.timeline" :key="yearIndex">
                                             <h4 class="year-title">{{year.date | formatDate('YYYY')}}</h4>
                                             <div>
-                                                <div class="timeline-month" v-for="month in year.months" v-bind:key="month.date">
+                                                <div class="timeline-month" v-for="(month, monthIndex) in year.months" :key="monthIndex">
                                                     <div class="timeline-line"></div>
                                                     <h5 class="month-title">{{month.date | formatDate('MMM')}}</h5>
-                                                    <div class="timeline-day" v-for="day in month.days" v-bind:key="day.date">
+                                                    <div class="timeline-day" v-for="(day, dayIndex) in month.days" :key="dayIndex">
                                                         <div class="row no-gutters">
                                                             <div class="xs-2">
                                                                 <div class="date-label-outer">
                                                                     <div class="date-label">
                                                                         {{day.date | formatDate('ddd D')}}
-                                                                        <div class="tiny text-muted" ng-if="$index == 0">{{day.date | timeago}}</div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             <div class="xs-10">
                                                                 <div class="day-events">
-                                                                    <a :href="entry.link" target="_blank" v-for="entry in day.items" class="timeline-event" v-bind:key="entry._id">
-                                                                        <!-- <pre>{{entry | json}}</pre> -->
-                                                                        <!-- <div class="color-block" style="background-color: {{realm.bgColor}}" ng-repeat="realm in card.realms"></div> -->
-                                                                        <span class="float-right">
-                                                                            <fluro-icon icon="download" />
-                                                                        </span>
-                                                                        <h5>
-                                                                            <fluro-icon icon="file-alt" />
-                                                                            {{entry.date | formatDate('h:mma dddd D MMM YYYY')}}
-                                                                        </h5>
-                                                                        <em class="text-muted small">Export generated {{entry.date | timeago}}</em>
+                                                                    <a :href="entry.url" target="_blank" v-for="entry in day.items" class="timeline-event" :key="entry._id">
+                                                                        <v-layout align-center>
+                                                                            <v-flex>
+                                                                                <strong>
+                                                                                    {{entry.date | formatDate('h:mma dddd D MMM YYYY')}}
+                                                                                </strong>
+                                                                                <Div>
+                                                                                    <em class="muted font-xxs">Export generated {{entry.date | timeago}}</em>
+                                                                                </Div>
+                                                                            </v-flex>
+                                                                            <v-flex shrink>
+                                                                                <v-btn class="ma-0" small icon>
+                                                                                    <fluro-icon icon="download" />
+                                                                                </v-btn>
+                                                                            </v-flex>
+                                                                        </v-layout>
                                                                     </a>
                                                                 </div>
                                                             </div>
@@ -84,8 +127,8 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
+                                        </div> -->
+                                    <!-- </div> -->
                                     <!-- <pre>{{resultSets}}</pre> -->
                                     <!-- <pre>{{resultSetsData}}</pre> -->
                                 </constrain>
@@ -105,7 +148,10 @@ import FluroTable from "../../../table/FluroTable.vue";
 import RealmDotCell from "../../../table/cells/RealmDotCell.vue";
 import TitleCell from "../../../table/cells/TitleCell.vue";
 import DefinitionCell from "../../../table/cells/DefinitionCell.vue";
-
+import SearchInput from "../../../ui/SearchInput.vue";
+import FilterConditionGroup from '../../../form/filters/FilterConditionGroup.vue';
+import FluroTimeline from '../../../ui/FluroTimeline.vue';
+import { FilterService } from 'fluro';
 /////////////////////////////////
 
 export default {
@@ -118,21 +164,33 @@ export default {
             type: Object,
             required: true
         },
-        cacheKey:{
-            type:Number,
-            default() {
+        cacheKey: {
+            type: Number,
+            default () {
                 return 0;
             }
         },
     },
     components: {
+        FluroTimeline,
         FluroTable,
         RealmDotCell,
         TitleCell,
-        DefinitionCell
+        DefinitionCell,
+        SearchInput,
+        FilterConditionGroup,
     },
     mixins: [FluroContentViewMixin],
     methods: {
+        refilter: _.debounce(function() {
+            var self = this;
+
+            self.filterSet = FilterService.filter(self.results, {
+                filter: self.filterConfig,
+            });
+
+
+        }, 200),
         refresh() {
             this.cacheBuster++;
         },
@@ -182,7 +240,7 @@ export default {
 
                 var cb = self.cacheBuster;
                 return new Promise(function(resolve, reject) {
-                    self.$fluro.content.query(self.item, {cb}, { cache: false })
+                    self.$fluro.content.query(self.item, { cb }, { cache: false })
                         .then(function(result) {
                             resolve(result);
                             self.loading = false;
@@ -191,40 +249,182 @@ export default {
                 });
             }
         },
-        resultSetsData: {
+        dataSets: {
             default: [],
             get() {
                 var self = this;
                 self.loadingResultSetData = true;
-                console.log("Self.item", self.item);
+
+
                 return new Promise(function(resolve, reject) {
 
-                    
-                    self.$fluro.api.get(`/query/${self.$fluro.utils.getStringID(self.item)}/resultsets/metadata`, {cache:false})
-                        .then(function(result) {
-                            var returnData = _.map(result.data, function(entry) {
-                                entry.historicaltimeline = self.$fluro.date.timeline(
-                                    entry.data,
-                                    "date"
-                                );
-                                return entry;
-                            });
-                            resolve(returnData);
+
+                    self.$fluro.api.get(`/query/${self.$fluro.utils.getStringID(self.item)}/resultsets/metadata`, { cache: false })
+                        .then(function(res) {
+
+                            var dataSets = res.data;
+
+                            resolve(dataSets);
                             self.loadingResultSetData = false;
-                            console.log("returndata", returnData);
+
+                            // _.each(dataSets, function(dataSet) {
+
+                            // });
+
+                            //   var dataItems = _.map(dataSet.data, function(item) {
+
+
+
+                            //   });
+
+                            //   dataSet.timeline = _.map(dataItems, function(item) {
+
+
+                            //   })
+
+
+                            // })
+                            // var timeline = _.map(result.data, function(entry) {
+
+                            //     var items = _.map(entry.data, function(item) {
+                            //         return Fluro.apiURL + '/results/' + $scope.item._id + '/' + entry._id + '/' + filename + '.csv';
+                            //     })
+
+
+                            //     entry.historicaltimeline = self.$fluro.date.timeline(
+                            //         entry.data,
+                            //         "date"
+                            //     );
+                            //     return entry;
+                            // });
+
+
+                            // resolve(returnData);
+
+
+
+                            // resolve(res.data);
+                            // self.loadingResultSetData = false;
                         })
                         .catch(reject);
                 });
             }
         }
     },
-    watch:{
+    watch: {
+        results: 'refilter',
+        filterChangeString: 'refilter',
+        keywords(keywords) {
+
+        },
         cacheKey(k) {
             this.cacheBuster = k;
         }
     },
     computed: {
+        filterChangeString() {
+            return FilterService.getFilterChangeString(this.filterConfig);
+        },
+        filterFields() {
 
+            var self = this;
+            var fields = [];
+
+
+            _.each(self.item.filters, function(filter) {
+                fields.push({
+                    title: filter.title,
+                    key: filter.key,
+                    maximum: 1,
+                    minimum: 0,
+                    type: filter.type || 'string',
+                })
+            })
+
+
+            _.each(self.item.columns, function(column) {
+                fields.push({
+                    title: column.title,
+                    key: column.key,
+                    maximum: 1,
+                    minimum: 0,
+                    type: column.type || 'string',
+                })
+            })
+            // fields.push({
+            //     title: "Testing",
+            //     key: "title",
+            //     maximum: 1,
+            //     minimum: 0,
+            //     type: "string",
+            // })
+
+
+
+
+            return fields;
+        },
+
+        filtered() {
+            var self = this;
+
+            var results = self.filterSet;
+
+
+            if (self.keywords && self.keywords.length) {
+
+                var keywords = self.keywords.toLowerCase();
+                // function filterDeep(input, searchTerms, state) {
+
+                //     if (_.isObject(input)) {
+                //         for (const v of Object.values(input)) {
+
+                //         }
+                //     } else {
+                //         if (String(input).includes(searchTerms)) {
+                //             state.push(input);
+                //         }
+                //     }
+
+                // }
+
+                /////////////////////////////////////////////////
+
+                function valueMatches(item) {
+
+                    var match;
+                    if (_.isObject(item)) {
+                        match = _.chain(item)
+                            .values()
+                            .some(function(value) {
+                                return valueMatches(value);
+                            })
+                            .value();
+                    } else {
+                        match = String(item).toLowerCase().includes(keywords);
+                    }
+
+                    return match;
+                }
+
+                /////////////////////////////////////////////////
+
+                results = _.reduce(results, function(set, item) {
+
+                    if (valueMatches(item)) {
+                        set.push(item);
+                    }
+
+                    return set;
+                }, []);
+            }
+
+
+
+
+
+            return results;
+        },
         jsonURL() {
             if (!this.item._id) {
                 return;
@@ -281,6 +481,25 @@ export default {
         definedFields() {
             return this.config.definition ? this.config.definition.fields || [] : [];
         },
+        totals() {
+            var self = this;
+
+            return _.map(self.columns, function(column) {
+                return _.reduce(self.filtered, function(set, row) {
+
+                    //TODO Make this more advanced for nested and multi field entries
+                    var value = _.get(row, column.key);
+
+                    if(isNaN(value)) {
+                        return set;
+                    }
+
+                    set = parseFloat(set) + parseFloat(value);
+
+                    return set;
+                }, 0)
+            })
+        },
         columns() {
             if (!this.item.columns.length) {
                 return [{
@@ -321,106 +540,24 @@ export default {
     },
     data() {
         return {
+            filterSet: [],
+            filterConfig: {},
+            filterDebounce: 300,
+
+            //Other bits
+            keywords: '',
             loading: true,
             exporting: false,
             loadingResultSetData: true,
-            cacheBuster:this.cacheKey,
+            cacheBuster: this.cacheKey,
         };
     }
 };
 
 </script>
-<style scoped lang="scss">
-.timeline .timeline-month:first-child,
-.tooltip-block .tooltip-roster:first-child {
-    border-top: none;
-}
+<style lang="scss">
 
-.dateselect,
-.list-item,
-.map-outer,
-.timeline .timeline-month {
-    position: relative;
+.history .timeline-card {
+ padding: 8px;
 }
-
-.timeline .timeline-year .year-title {
-    padding: 8px 10px;
-    background: rgba(0, 0, 0, 0.05);
-    border-radius: 2px;
-    margin: 0;
-}
-
-.timeline .timeline-month {
-    padding: 20px 0;
-}
-
-.timeline .timeline-month .timeline-line {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 1px;
-    background: rgba(0, 0, 0, 0.1);
-    z-index: 0;
-}
-
-.timeline .timeline-month .month-title {
-    text-transform: uppercase;
-    opacity: 0.8;
-    margin-top: 2px;
-    padding: 10px;
-}
-
-.timeline .timeline-day .day-events {
-    background: #fff;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-    margin-bottom: 10px;
-}
-
-.timeline .timeline-event {
-    padding: 10px 15px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    position: relative;
-    display: block;
-}
-
-.timeline .timeline-event .icon {
-    position: absolute;
-    left: -107px;
-    top: 2px;
-    border-radius: 50%;
-    background: #fff;
-    border: 1px solid #ddd;
-    height: 20px;
-    width: 20px;
-    line-height: 20px;
-    z-index: 10;
-    text-align: center;
-    font-size: 10px;
-}
-
-.timeline .timeline-event h5 {
-    margin: 0;
-}
-
-.timeline a.timeline-event:hover {
-    color: inherit;
-    opacity: 0.9;
-}
-
-.timeline .date-label-outer {
-    margin-top: 10px;
-    position: relative;
-    z-index: 2;
-}
-
-.timeline .date-label {
-    font-size: 0.7em;
-    padding: 0 10px;
-    height: 18px;
-    line-height: 18px;
-    display: block;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-}
-
 </style>

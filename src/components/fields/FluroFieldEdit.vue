@@ -52,8 +52,6 @@
         </flex-column-footer>-->
             </tab>
             <tab heading="Expressions" index="expressions">
-
-
                 <flex-column-body>
                     <v-container class="border-bottom" style="background: #fff;">
                         <label>
@@ -66,8 +64,7 @@
                         </v-btn>
                     </v-container>
                     <v-container class="border-bottom" style="background: #fff;">
-
-                         <!-- <pre>{{popup}}</pre> -->
+                        <!-- <pre>{{popup}}</pre> -->
                         <fluro-panel>
                             <fluro-panel-title>
                                 <strong>Variables</strong>
@@ -94,7 +91,6 @@
                     <v-container>
                         <!-- <template v-if="model.hideExpression && model.hideExpression.length"> -->
                         <!-- <template v-if="true"> -->
-
                         <div class="expression-group" :class="{active:model.expressions.show}">
                             <v-input label="Show group if" hint="Show this group only if this expression returns true " :persistent-hint="true" class="no-flex">
                                 <v-layout>
@@ -291,15 +287,17 @@
                         </template>
                         <template v-else>
                             <template v-if="requiresOptions">
-                                <template v-if="!advancedOptions">
+                                <!-- <template v-if="!advancedOptions"> -->
+                                <!-- <div class="sm muted" @click="showAdvancedOptions = true">Show advanced labelling options</div> -->
+                                <!-- </template> -->
+                                <!-- <template v-else> -->
+                                <v-input label="Selectable Options" class="no-flex">
+                                    <options-manager v-model="model.options" />
+                                </v-input>
+                                <div v-if="$pro.enabled">
                                     <fluro-content-form-field :field="fields.allowedValues" v-model="model" />
-                                    <div class="sm muted" @click="showAdvancedOptions = true">Show advanced labelling options</div>
-                                </template>
-                                <template v-else>
-                                    <v-input label="Selectable Options" class="no-flex">
-                                        <options-manager v-model="model.options" />
-                                    </v-input>
-                                </template>
+                                </div>
+                                <!-- </template> -->
                             </template>
                             <template v-if="model.directive != 'embedded'">
                                 <template v-if="model.type == 'reference'">
@@ -330,6 +328,9 @@
                                 </fluro-panel-title>
                                 <fluro-panel-body>
                                     <!-- <pre>TEST: {{model.directive == 'embedded'}}</pre> -->
+
+                                   
+
                                     <fluro-content-form-field :field="fields.targetRealms" v-model="model.params" />
                                     <v-input class="no-flex">
                                         <v-label>Add fields from Detail Sheets</v-label>
@@ -339,14 +340,17 @@
                                     <fluro-content-form-field :field="fields.targetStatus" v-model="model.params" />
                                     <fluro-content-form-field :field="fields.targetHouseholdRole" v-model="model.params" />
                                     <fluro-content-form-field :field="fields.targetDefinition" v-model="model.params" />
+                                     
+
+                                 
+                                    
                                     <fluro-content-form-field :field="fields.targetTeams" v-model="model.params" />
                                     <fluro-content-form-field :field="fields.targetProcesses" v-model="model.params" />
                                     <fluro-content-form-field :field="fields.targetTags" v-model="model.params" />
                                     <fluro-content-form-field :field="fields.targetTagsRemove" v-model="model.params" />
                                     <fluro-content-form-field :field="fields.targetCapabilities" v-model="model.params" />
                                     <fluro-content-form-field :field="fields.targetReactions" v-model="model.params" />
-
-
+                                    <fluro-content-form-field :field="fields.excludeFromFamily" v-model="model.params" />
                                 </fluro-panel-body>
                             </fluro-panel>
                             <fluro-panel v-if="model.directive == 'embedded' && restrictType == 'contact'">
@@ -440,7 +444,7 @@
                                                 </v-btn>
                                             </template>
                                             <div>
-                                                <expression-field-select :conditional="true"  :context="model" @click="injectExpression($event, 'show')" v-model="expressionFields" />
+                                                <expression-field-select :conditional="true" :context="model" @click="injectExpression($event, 'show')" v-model="expressionFields" />
                                             </div>
                                         </v-menu>
                                     </v-flex>
@@ -461,7 +465,7 @@
                                                 </v-btn>
                                             </template>
                                             <div>
-                                                <expression-field-select :conditional="true"  :context="model" @click="injectExpression($event, 'hide')" v-model="expressionFields" />
+                                                <expression-field-select :conditional="true" :context="model" @click="injectExpression($event, 'hide')" v-model="expressionFields" />
                                             </div>
                                         </v-menu>
                                     </v-flex>
@@ -517,14 +521,14 @@
                                         <fluro-expression-editor v-model="model.expressions.required" />
                                     </v-flex>
                                     <v-flex shrink>
-                                        <v-menu :left="true"  v-model="popup['required']" :top="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
+                                        <v-menu :left="true" v-model="popup['required']" :top="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
                                             <template v-slot:activator="{ on }">
                                                 <v-btn icon small class="ma-0 ml-1" v-on="on">
                                                     <fluro-icon icon="bullseye" />
                                                 </v-btn>
                                             </template>
                                             <div>
-                                                <expression-field-select :conditional="true"  :context="model" @click="injectExpression($event, 'required')" v-model="expressionFields" />
+                                                <expression-field-select :conditional="true" :context="model" @click="injectExpression($event, 'required')" v-model="expressionFields" />
                                             </div>
                                         </v-menu>
                                     </v-flex>
@@ -880,6 +884,35 @@ export default {
         }, 100);
     },
     asyncComputed: {
+        contactDefinitionOptions:{
+            default:[],
+            get() {
+
+                var self = this;
+
+                return new Promise(function(resolve, reject) {
+
+                    self.$fluro.types.subTypes('contact')
+                    .then(function(definitions) {
+
+                        var mapped = _.map(definitions, function(definition) {
+                            return {
+                                name:definition.title,
+                                value:definition.definitionName,
+                            }
+                        })
+
+                        mapped.unshift({
+                            name:'None (Basic Contact)',
+                            value:'',
+                        })
+
+                        return resolve(mapped);
+
+                    }, reject);
+                })
+            }
+        },
         referenceOptions: {
             default: [],
             get() {
@@ -1153,13 +1186,13 @@ export default {
             });
 
             addField("allowedValues", {
-                title: "Allowed Options",
+                title: "Allowed Values",
                 description: "Restrict what values can be entered into this field",
                 minimum: 0,
                 maximum: 0,
                 type: "string",
                 params: {
-                    persistentDescription: true
+                    //persistentDescription: true
                 }
             });
 
@@ -1240,7 +1273,7 @@ export default {
             addField("codeDefaultValues", {
                 title: "Default Value(s)",
                 key: "defaultValues",
-                description: "add a default value for this field",
+                description: "Add a default value for this field",
                 minimum: 0,
                 maximum: 0,
                 type: "string",
@@ -1986,20 +2019,38 @@ export default {
             ////////////////////////////////////////////
 
             addField("targetDefinition", {
-                title: "Definition",
+                title: "Definition / Contact Type",
                 description: `Select the definition that should be applied to ${embeddedPlural}.`,
                 minimum: 0,
                 maximum: 1,
-                type: "reference",
+                type: "string",
+                directive:'select',
                 expressions: {
                     hide() {
-                        return !definitions.length;
+                        return !self.contactDefinitionOptions.length;
                     }
                 },
-                params: {
-                    restrictType: "realm"
-                }
+                options:self.contactDefinitionOptions,
             });
+
+            addField('excludeFromFamily', {
+                 title: "Include in family",
+                description: `By default all contacts linked to a form will be added to a family household (if specified on the form). Disable this option if you want this contact to be created, but excluded from being add to the family household`,
+                minimum: 0,
+                maximum: 1,
+                type: "boolean",
+                directive:'checkbox',
+                inverse:true,
+                params:{
+                    persistentDescription:true,
+                },
+                // expressions: {
+                //     hide() {
+                //         return !self.contactDefinitionOptions.length;
+                //     }
+                // },
+                // options:self.contactDefinitionOptions,
+            })
 
             addField("targetRealms", {
                 title: `Create ${embeddedTitle} in Realms`,
@@ -2125,11 +2176,10 @@ export default {
                     referenceFilter: {
                         operator: 'and',
                         filters: [{
-                                key: 'parentType',
-                                comparator: '==',
-                                value: 'process',
-                            },
-                        ]
+                            key: 'parentType',
+                            comparator: '==',
+                            value: 'process',
+                        }, ]
                     },
 
                 }

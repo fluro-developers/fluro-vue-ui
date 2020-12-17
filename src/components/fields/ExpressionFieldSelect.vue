@@ -122,6 +122,8 @@ function simplify(f) {
 ///////////////////////////////////////////////////////////////////////////////////////
 
 function getFieldDescriptions(contextField, fields, conditional) {
+
+    console.log('CONTEXT FIELD', contextField)
     var trail = [];
     var titles = [];
     var results = [];
@@ -282,7 +284,7 @@ function getFieldDescriptions(contextField, fields, conditional) {
                             exampleTitle = _.first(sampleOptions).name;
                             exampleValue = `'${_.first(sampleOptions).value}'`;
                         } else {
-                            exampleTitle = exampleValue = `'Michael'`;
+                            exampleTitle = exampleValue = `Michael`;
                         }
                     }
                     break;
@@ -312,6 +314,9 @@ function getFieldDescriptions(contextField, fields, conditional) {
             var sliceIndex = delimiterIndex == -1 ? 0 : delimiterIndex;
             var childPath = fieldPath.slice(sliceIndex + delimiter.length + 1);
             var isArray = field.isArray;
+
+
+
 
             //////////////////////////////////////////////////
 
@@ -367,6 +372,9 @@ function getFieldDescriptions(contextField, fields, conditional) {
                         }
                         break;
                     default:
+
+
+
                         if (sampleOptions.length) {
                             _.each(sampleOptions, function(option) {
                                 examples.push({
@@ -430,8 +438,6 @@ function getFieldDescriptions(contextField, fields, conditional) {
                     }
                 } else {
 
-
-
                     if (conditional) {
                         switch (field.type) {
                             case 'boolean':
@@ -451,6 +457,18 @@ function getFieldDescriptions(contextField, fields, conditional) {
                                     path: `${field.contextualPath}`,
                                     description: `Returns the value of '${field.title}'`
                                 });
+
+
+                                examples.push({
+                                    path: ` moment().diff(${field.contextualPath}, 'years') < 18`,
+                                    description: `Returns true if '${field.title}' is less than 18 years ago`
+                                });
+
+                                examples.push({
+                                    path: ` moment().diff(${field.contextualPath}, 'years') >= 21`,
+                                    description: `Returns true if '${field.title}' is greater than or equal to 21 years ago`
+                                });
+
                                 examples.push({
                                     path: `new Date(${field.contextualPath}) <= Date.now()`,
                                     description: `Returns true if the date value of '${field.title}' is in the past`
@@ -492,7 +510,7 @@ function getFieldDescriptions(contextField, fields, conditional) {
                                     path: `${field.contextualPath}`,
                                     description: `Returns the literal value of the object '${field.title}'`
                                 });
-                            break;
+                                break;
 
                             default:
 
@@ -517,6 +535,23 @@ function getFieldDescriptions(contextField, fields, conditional) {
                                 break;
 
 
+                        }
+                    } else {
+                        examples.push({
+                            path: `${field.contextualPath}`,
+                            description: `Returns the value of '${field.title}'`
+                        });
+
+                        switch (field.type) {
+                            case 'date':
+                                examples.push({
+                                    path: `moment().diff(${field.contextualPath}, 'years')`,
+                                    description: `Returns how many years difference since '${field.title}'`
+                                });
+
+
+
+                                break;
                         }
                     }
                 }
@@ -618,7 +653,7 @@ function getFieldDescriptions(contextField, fields, conditional) {
             display: inline-block;
             padding: 3px;
             border-radius: 3px;
-            cursor:pointer;
+            cursor: pointer;
         }
 
         .example-description {

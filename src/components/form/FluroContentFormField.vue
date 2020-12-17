@@ -252,7 +252,8 @@
 																</v-dialog>
 												</template>
 												<template v-else-if="renderer == 'datetimepicker'">
-																<fluro-date-time-picker :outline="showOutline" :large="!params.small" :min="minDate" :max="maxDate" :success="success" format="ddd D MMM - h:mma " timePickerFormat="ampm" :label="displayLabel" :placeholder="placeholder" :hint="field.description" v-model="fieldModel" @blur="touch()" @focus="modalFocussed();" />
+																<fluro-date-time-picker :outline="showOutline" :large="!params.small" :error-messages="errorMessages" :min="minDate" :max="maxDate" :success="success" :required="required" format="ddd D MMM - h:mma " timePickerFormat="ampm" :label="displayLabel" :placeholder="placeholder" :hint="field.description" v-model="fieldModel" @touched="touch()" />
+																
 																<!-- <pre>{{fieldModel}}</pre> -->
 												</template>
 												<template v-else-if="renderer == 'timezoneselect'">
@@ -498,9 +499,7 @@
 																</v-input>
 												</template>
 												<template v-else-if="renderer == 'academic-select'">
-																
 																<v-select :persistent-hint="true" :outline="showOutline" :success="success" :return-object="true" :label="displayLabel" no-data-text="No options available" :multiple="false" v-model="academicModel" item-text="title" :items="academicCalendarOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
-																
 																<div v-if="gradeOptions && gradeOptions.length">
 																				<v-select :outline="showOutline" :success="success" label="Grade" :multiple="false" v-model="model['academicGrade']" item-text="title" :items="gradeOptions" @blur="touch()" @focus="focussed()" />
 																</div>
@@ -559,6 +558,9 @@
 												<template v-else>
 																<template v-if="multipleInput">
 																				<v-input :outline="showOutline" :label="displayLabel" :success="success" class="no-flex">
+																								<div class="help-text" v-if="field.description">
+																												{{field.description}}
+																								</div>
 																								<template v-if="fieldModel && fieldModel.length">
 																												<draggable v-model="fieldModel" handle=".handle" v-bind="dragOptions" @start="drag=true" @end="drag=false">
 																																<!-- <transition-group type="transition" :name="!drag ? 'flip-list' : null"> -->
@@ -651,6 +653,33 @@ const RANGE = (x, y) => Array.from((function*() {
 				while (x <= y) yield x++;
 })());
 
+
+
+function getBooleanValue(value) {
+				switch (String(value).toLowerCase()) {
+								case 'true':
+								case 'y':
+								case 'yes':
+								case '1':
+								case 't':
+												// //console.log('convert boolean to true > ', value)
+												value = true;
+												break;
+								case 'false':
+								case 'n':
+								case 'no':
+								case '0':
+								case 'f':
+								case 'undefined':
+								case 'null':
+								case '':
+												// //console.log('convert boolean to false > ', value)
+												value = false;
+												break;
+				}
+
+				return value;
+}
 
 ////////////////////////////////////////////////////////
 
@@ -1841,9 +1870,9 @@ export default {
 
 								academicCalendarOptions() {
 
-									var self = this;
+												var self = this;
 
-									var allOptions = self.selectOptions.slice();
+												var allOptions = self.selectOptions.slice();
 												return allOptions;
 								},
 								selectOptions() {
@@ -1921,7 +1950,21 @@ export default {
 												var options = actualOptions.slice();
 												if (!self.field.minimum && self.field.maximum == 1) {
 
-																var match = _.find(actualOptions, { value: '' });
+																var match
+
+																switch (self.field.type) {
+																				case 'boolean':
+																								match = _.find(actualOptions, function(option) {
+																												return option.value == '' || getBooleanValue(option.value) == false;
+																								});
+
+																								break;
+																				default:
+																								match = _.find(actualOptions, { value: '' });
+																								break;
+																}
+
+																////////////////////////////////////////
 
 																if (!match) {
 																				options.unshift({
@@ -1988,7 +2031,6 @@ export default {
 
 												//Hasn't been touched yet
 												if (!this.$v.model.$dirty) {
-																// ////console.log('Not dirty', this.title)
 																return errors;
 												}
 
@@ -2032,6 +2074,8 @@ export default {
 
 																//If we require a set amount of answers
 																if (this.minimum == this.maximum) {
+
+
 
 																				//If there is a minimum
 																				if (this.minimum) {
@@ -2137,7 +2181,7 @@ export default {
 												/////////////////////////////////
 
 
-												if (self.context == 'admin') {
+												if (self.context == 'admin' || self.context == 'definition') {
 																// If we are in the admin panel
 																//And we are a reference field
 																if (dataType == 'reference') {
@@ -2240,6 +2284,7 @@ export default {
 
 																				switch (self.context) {
 																								case 'admin':
+																								case 'definition':
 																												directive = 'content-select';
 																												break;
 
@@ -2283,6 +2328,7 @@ export default {
 																												switch (self.context) {
 																																case 'raw':
 																																case 'admin':
+																																case 'definition':
 																																				// case 'builder':
 																																				directive = 'content-select';
 																																				break;
@@ -2555,28 +2601,8 @@ export default {
 
 																				//If there is a value of some sort
 																				if (value) {
-
-																								switch (String(value).toLowerCase()) {
-																												case 'true':
-																												case 'y':
-																												case 'yes':
-																												case '1':
-																												case 't':
-																																// //console.log('convert boolean to true > ', value)
-																																value = true;
-																																break;
-																												case 'false':
-																												case 'n':
-																												case 'no':
-																												case '0':
-																												case 'f':
-																												case 'undefined':
-																												case 'null':
-																												case '':
-																																// //console.log('convert boolean to false > ', value)
-																																value = false;
-																																break;
-																								}
+																								value = getBooleanValue(value);
+																								console.log('Boolean value is', value)
 																				} else {
 																								// //console.log('boolean false', value);
 																								value = false;
@@ -2785,30 +2811,7 @@ export default {
 
 																				////console.log('BOOLEAN CHECK IN', value)
 																				if (value) {
-
-
-																								switch (String(value).toLowerCase()) {
-																												case 'true':
-																												case 'y':
-																												case 'yes':
-																												case '1':
-																												case 't':
-
-																																// //console.log('convert boolean to true > ', value)
-																																value = true;
-																																break;
-																												case 'false':
-																												case 'n':
-																												case 'no':
-																												case '0':
-																												case 'f':
-																												case 'undefined':
-																												case 'null':
-																												case '':
-																																// //console.log('convert boolean to false > ', value)
-																																value = false;
-																																break;
-																								}
+																								value = getBooleanValue(value);
 																				} else {
 																								// //console.log('boolean false', value)
 																								value = false;
@@ -3042,7 +3045,7 @@ export default {
 								debugSelect($event) {
 												var self = this;
 
-												if (self.context == 'builder' && self.recursiveClick) {
+												if ((self.context == 'builder' || self.context == 'definition') && self.recursiveClick) {
 																if ($event) {
 																				$event.preventDefault()
 																				$event.stopPropagation();
@@ -3696,7 +3699,7 @@ export default {
 												var self = this;
 
 
-												////console.log('touch the field!')
+												console.log('touch the field!', this.title)
 												self.$v.model.$touch()
 
 								},
@@ -3711,6 +3714,7 @@ export default {
 								modalFocussed() {
 												this.focussed();
 												this.modal = true;
+												this.touch();
 								},
 								//CADESEARCHBACKHERE
 
@@ -4458,7 +4462,12 @@ function checkValidInput(self, input) {
 
 												if (self.minimum) {
 																if (!input) {
+																				// if (input === false) {
+
+																				// } else {
 																				errors.push('This is required')
+																				// }
+
 																}
 												}
 												break;
@@ -4493,6 +4502,12 @@ function checkValidInput(self, input) {
 <style lang="scss">
 .vc-chrome {
 				width: auto !important;
+}
+
+
+.help-text {
+				opacity: 0.5;
+				font-size: 0.8em;
 }
 
 .color-swatch {

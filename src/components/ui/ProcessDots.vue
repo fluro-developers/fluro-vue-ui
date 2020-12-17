@@ -5,10 +5,11 @@
         <!-- <v-layout> -->
             <!-- <v-flex > -->
                 <span class="pill" v-tippy :content="state.title" :key="state.key" v-for="state in mapped" :style="{color:state.color}">
-                    <fluro-icon :icon="state.icon" :library="state.library" />
+                    <fluro-icon :icon="state.icon" :library="state.library" /> 
                 </span>
             <!-- </v-flex> -->
         <!-- </v-layout> -->
+        
     </div>
 </template>
 <script>
@@ -87,7 +88,7 @@ export default {
                 .value();
         },
         states() {
-            return (_.get(this.definition, 'data.states') || []);
+            return (_.get(this.definition, 'data.states') || this.model.states || []);
         },
         results() {
             return this.model.results;

@@ -48,10 +48,15 @@ export default {
 		fixed() {
 			return this.modal.options.fixed;
 		},
+
 	},
 	methods: {
 		checkDismiss() {
-			if((this.options || {}).disableBackdrop) {
+
+
+			var backdropDisabled = (this.modal.options || {}).disableBackdrop;
+
+			if(backdropDisabled) {
 				return;
 			}  else {
 				return this.dismiss();

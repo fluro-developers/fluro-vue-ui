@@ -8,7 +8,9 @@
                         <v-layout wrap align-center ma-0>
                             <v-flex sm10 xs12 px-4>
                                 <strong>{{unavailability.description}}</strong>
-                                <p class="muted mb-0">{{unavailability | readableEventDate}}</p>
+                                <div class="muted">{{unavailability | readableEventDate}}</div>
+                                <div class="font-xxs muted"><fluro-icon icon="clock"/> Submitted {{unavailability.created | timeago}}</div>
+
                             </v-flex>
                             <v-flex sm2 xs12>
                                 <fluro-confirm-button @click="remove(index)" content="Remove">

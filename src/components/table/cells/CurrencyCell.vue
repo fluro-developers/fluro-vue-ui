@@ -8,7 +8,7 @@
 export default {
     props: {
         'row': {
-            type: Object,
+            type: [Object, Array],
         },
         'column': {
             type: Object,

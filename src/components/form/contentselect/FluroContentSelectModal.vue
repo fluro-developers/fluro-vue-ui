@@ -52,8 +52,9 @@
                 <!-- v-show="$vuetify.breakpoint.smAndUp || !showFilters" -->
                 <v-layout fill-height>
                     <flex-column style="min-height:50vh;">
+                        <!-- <pre>{{joins}}</pre> -->
                         <!-- :init-page="$route.query.page"  :init-sort="{sortKey:$route.query.sortKey, sortDirection:$route.query.sortDirection, sortType:$route.query.sortType}" @raw="rowsChanged" @filtered="filteredChanged" @page="pageChanged" @sort="sortChanged"  -->
-                        <fluro-dynamic-table :queryString="false" :enable-actions="false" :allDefinitions="retrieveAllDefinitions" :searchInheritable="options.searchInheritable" :filter-config="filterConfig" :lock-filter="options.lockFilter" :selection-controller="selector" :clicked="rowClicked" :search="search" :data-type="type" :columns="columns" @raw="rowsChanged" @filtered="filteredChanged" @page="pageChanged" @sort="sortChanged" />
+                        <fluro-dynamic-table :additionalKeys="joins"  :queryString="false" :enable-actions="false" :allDefinitions="retrieveAllDefinitions" :searchInheritable="options.searchInheritable" :filter-config="filterConfig" :lock-filter="options.lockFilter" :selection-controller="selector" :clicked="rowClicked" :search="search" :data-type="type" :columns="columns" @raw="rowsChanged" @filtered="filteredChanged" @page="pageChanged" @sort="sortChanged" />
                     </flex-column>
                     <div class="filter-sidebar scroll-y" v-show="showFilters">
                         <div>
@@ -275,6 +276,9 @@ export default {
         }
     },
     computed: {
+        joins() {
+            return this.options.joins;
+        },
         retrieveAllDefinitions() {
             return this.options.allDefinitions || this.selector.allDefinitions;
         },
@@ -419,6 +423,14 @@ export default {
                     array = array.concat([
                         { title: "Title", key: "title", renderer: TitleCell, additionalFields:['firstLine'] },
                         { title: "Address", key: "address.addressLine1"}
+                    ]);
+                    break;
+                case "contact":
+                    array = array.concat([
+                         { title: "", key: "_id", renderer: TypeImageCell, shrink: true },
+                        { title: "Title", key: "title", renderer: TitleCell, additionalFields:['firstName', 'preferredName', 'lastName'] },
+                        { title: "Gender", key: "gender"},
+                        { title: "Age", key:'age' },
                     ]);
                     break;
                 default:

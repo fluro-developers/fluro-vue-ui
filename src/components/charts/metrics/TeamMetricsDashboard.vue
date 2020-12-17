@@ -257,7 +257,7 @@ export default {
 	},
 	asyncComputed: {
 		model: {
-			// default: {},
+			default: {},
 			get() {
 				var self = this;
 				var id = self.$fluro.utils.getStringID(self.id);

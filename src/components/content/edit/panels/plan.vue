@@ -3,7 +3,7 @@
         <template v-if="loading">
             <fluro-page-preloader contain />
         </template>
-        <tabset v-else :justified="true" :vertical="true">
+        <tabset v-else :justified="true">
             <!-- <template v-slot:menuprefix v-if="model._id"> -->
             <!-- <div class="event-cover-image" :style="{backgroundImage:`url(${coverImage})`}"/> -->
             <!-- <fluro-image cover :spinner="true" :height="150" :item="coverImage"/> -->
@@ -160,19 +160,20 @@
                 <!-- </flex-column-body> -->
                 <!-- </slot> -->
             </tab>
-            <tab :heading="`${definition.title} details`" v-if="definition">
+            <tab :heading="tabTitle">
                 <!-- <tab heading="Info"> -->
-                <slot>
-                    <flex-column-body style="background: #fafafa;">
-                        <v-container>
-                            <constrain sm>
-                                <h3 margin>{{ definition.title }}</h3>
-                                <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields">
-                                </fluro-content-form>
-                            </constrain>
-                        </v-container>
-                    </flex-column-body>
-                </slot>
+                <!-- <fluro-content-form-field :field="eventField" v-model="model" /> -->
+                <flex-column-body style="background: #fafafa;">
+                    <v-container>
+                        <constrain sm>
+                            <h3 margin>{{ tabTitle }}</h3>
+                            <fluro-content-form :options="options" v-model="model" :fields="defaultFields" />
+                            <template v-if="definition">
+                                <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
+                            </template>
+                        </constrain>
+                    </v-container>
+                </flex-column-body>
             </tab>
         </tabset>
     </flex-column>
@@ -238,7 +239,7 @@ export default {
             }
 
 
-            var rows = self.model.schedules;
+            var rows = self.model.schedules || [];
             var before = rows.slice(0, startIndex).reverse();
             var after = rows.slice(startIndex);
 
@@ -446,6 +447,14 @@ export default {
         }
     },
     computed: {
+        tabTitle() {
+            if (this.definition) {
+                return `${this.definition.title} details`
+            }
+
+            return 'Configuration';
+
+        },
         times() {
             return _.map(this.model.schedules, 'duration').join('-');
         },
@@ -481,12 +490,40 @@ export default {
 
             return array;
         },
+        defaultFields() {
+            var array = [];
+
+            array.push({
+                key: "title",
+                minimum: 0,
+                maximum: 1,
+                title: "Plan Title",
+                type: "string",
+            })
+
+            array.push(this.eventField);
+            return array;
+        },
+        eventField() {
+            return {
+                key: "event",
+                minimum: 0,
+                maximum: 1,
+                title: "Link to an event",
+                type: "reference",
+                params: {
+                    restrictType: 'event',
+                },
+                placeholder: "Select the event to link this plan to. If creating a template you can leave this plan"
+            };
+        },
+
         columnEditField() {
             return {
                 key: "teams",
                 minimum: 0,
                 maximum: 0,
-                title: "Extra Column",
+                title: "Extra Columns",
                 type: "string",
                 placeholder: "Eg. Lighting, MC, Band"
             };

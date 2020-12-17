@@ -15,15 +15,14 @@
                 </template>
             </template>
             <tab heading="Card Details">
-                <flex-row>
-                    <v-flex xs12 sm8 class="main">
+                <flex-row class="card-columns">
+                    <flex-column class="main">
                         <flex-column-body style="background: #fafafa;">
                             <!-- <pre>{{definition.fields}}</pre> -->
                             <v-container>
                                 <!-- <pre>{{model}}</pre> -->
                                 <constrain sm>
                                     <template v-if="reference">
-
                                         <fluro-panel>
                                             <!--  <fluro-panel-title class="border-bottom">
                                                     <v-layout align-center>
@@ -60,11 +59,10 @@
                                     </template>
                                     <fluro-panel v-if="definition && definition.fields && definition.fields.length">
                                         <fluro-panel-body>
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="fieldHash.title" v-model="model" />
-                                        <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields"></fluro-content-form>
-                                    </fluro-panel-body>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="fieldHash.title" v-model="model" />
+                                            <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields"></fluro-content-form>
+                                        </fluro-panel-body>
                                     </fluro-panel>
-                                    
                                     <fluro-panel v-if="model.taskCount && model.taskCount.checkinsExpected">
                                         <fluro-panel-title class="border-bottom">
                                             <strong>{{model.taskCount.checkinsCompleted}} of {{model.taskCount.checkinsExpected}} checkins complete</strong>
@@ -146,8 +144,8 @@
                                 </constrain>
                             </v-container>
                         </flex-column-body>
-                    </v-flex>
-                    <v-flex xs12 sm4 class="sidebar">
+                    </flex-column>
+                    <flex-column class="sidebar">
                         <flex-column-body>
                             <v-container>
                                 <!-- <pre>{{definition}}</pre> -->
@@ -172,7 +170,7 @@
                                 </v-input>
                             </v-container>
                         </flex-column-body>
-                    </v-flex>
+                    </flex-column>
                 </flex-row>
             </tab>
             <!-- <tab heading="Forms" v-if="model.forms && model.forms.length">
@@ -580,7 +578,7 @@ export default {
 
             addField("state", {
                 title: "Current State",
-                minimum: 0,
+                minimum: 1,
                 maximum: 1,
                 type: "string",
                 directive: "select",
@@ -722,10 +720,30 @@ export default {
 }
 
 .sidebar {
+
     background: rgba(#000, 0.02);
 
     @media (min-width: 769px) {
+        width: 30%;
+        max-width: 400px;
         border-left: 1px solid rgba(#000, 0.05);
+    }
+}
+
+
+@media (max-width: 768px) {
+
+    .card-columns {
+        display: block !important;
+        overflow:auto !important;
+
+    }
+
+    .sidebar,
+    .main {
+        width: 100% !important;
+        max-width: none !important;
+        flex: none !important;
     }
 }
 

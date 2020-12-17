@@ -1,7 +1,7 @@
 <template>
     <form @submit.prevent="submit" :disabled="state == 'processing'" class="add-post-modal">
         <fluro-page-preloader v-if="loading" contain />
-        <flex-column  v-else>
+        <flex-column v-else>
             <flex-column-header class="border-bottom">
                 <page-header type="post">
                     <template v-slot:left>
@@ -11,7 +11,6 @@
             </flex-column-header>
             <flex-column-body>
                 <v-container>
-
                     <!-- <pre>{{definition}}</pre> -->
                     <fluro-content-form v-model="dataModel.data" ref="form" @errorMessages="validate" :fields="definition.fields"></fluro-content-form>
                     <!-- <fluro-realm-select v-model="dataModel.realms" type="event" :definition="dataModel.definition" /> -->
@@ -46,11 +45,12 @@
                             </v-btn>
                         </template>
                         <v-spacer />
-                         <fluro-tag-select class="mx-0 ml-2" v-model="dataModel.tags"/>
+                        <fluro-tag-select class="mx-0 ml-2" v-model="dataModel.tags" />
                         <v-spacer />
                         <!-- <v-flex> -->
-                                                        <fluro-realm-select ref="realmSelector" v-tippy :content="`Select where this ${definition.title} should be kept`" v-model="dataModel.realms" type="post" :definition="definition.definitionName" />
-
+                        <template v-if="showRealmSelector">
+                            <fluro-realm-select ref="realmSelector" v-tippy :content="`Select where this ${definition.title} should be kept`" v-model="dataModel.realms" type="post" :definition="definition.definitionName" />
+                        </template>
                         <!-- </v-flex> -->
                         <v-spacer />
                         <v-btn class="mx-0 ml-2" :loading="state == 'processing'" :disabled="hasErrors" type="submit" color="primary">
@@ -63,7 +63,6 @@
     </form>
 </template>
 <script>
-
 import _ from 'lodash';
 
 import async from 'async';
@@ -132,6 +131,13 @@ export default {
         }
     },
     computed: {
+        showRealmSelector() {
+
+            if (this.user && this.user.accountType == 'contact') {
+                return
+            }
+            return true;
+        },
         summary() {
             return this.items.length != 1 ? `${this.items.length} items` : this.items[0].title;
         },
@@ -186,11 +192,12 @@ export default {
                 return;
             }
 
-
-            if (!self.dataModel.realms || !self.dataModel.realms.length) {
-                return self.showRealmsPopup();
+            if (self.showRealmSelector) {
+                if (!self.dataModel.realms || !self.dataModel.realms.length) {
+                    return self.showRealmsPopup();
+                }
             }
-        
+
 
             self.state = 'processing';
 
@@ -276,6 +283,7 @@ export default {
 
     }
 }
+
 </script>
 <style lang="scss">
 .add-post-modal {
@@ -286,4 +294,5 @@ export default {
     max-width: 750px;
     width: 100%;
 }
+
 </style>

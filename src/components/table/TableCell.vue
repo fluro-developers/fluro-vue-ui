@@ -1,7 +1,6 @@
 <template>
     <td :style="style" @click="cellclick" :class="{wrap:shouldWrap, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right', 'no-padding':column.padding === false}">
         <!-- <pre>{{column}}</pre> -->
-        
         <!-- <pre>{{formattedArray}}</pre> -->
         <!-- <pre>{{rawValue}} {{column.key}}</pre> -->
         <div :class="{'wrap-limit':shouldWrap}">
@@ -10,19 +9,17 @@
                 <!-- Simple Array -->
                 <template v-for="entry in formattedArray">
                     <component v-if="renderer" :data="entry" :is="renderer" :row="row" :column="column" />
-                    <div v-else>
-                        <span class="inline-tag">
-                            {{entry | simple}}
-                        </span>
-                    </div>
+                    <value-render v-else :value="entry" />
                 </template>
             </template>
             <div v-else-if="formattedArray" class="formatted-array">
                 <template v-for="entry in formattedArray">
-                  
                     <a class="inline-tag" v-if="entry._id" @click.stop.prevent="clicked(entry)" :style="{color:entry.color, backgroundColor:entry.bgColor}">
                         <template v-if="entry._type == 'event'">
                             <fluro-icon type="event" /> {{entry.title}} <span class="text-muted">// {{entry | readableEventDate}}</span>
+                        </template>
+                        <template v-if="entry._type == 'unavailability'">
+                            <fluro-icon type="event" /> {{entry.title}} <span class="">- {{entry | readableEventDate}}</span>
                         </template>
                         <template v-else-if="entry._type == 'post'">
                             <fluro-icon type="post" /> {{entry.title}} <span class="text-muted">// {{entry.managedAuthor ? entry.managedAuthor.title : ''}} {{entry.created | timeago}}</span>
@@ -40,13 +37,9 @@
                             <fluro-icon v-if="entry._type" :type="entry._type" /> {{entry.title}} <template v-if="entry.appendage"> - {{entry.appendage}}</template>
                         </template>
                     </a>
-               
-                    <template v-else-if="renderer">
-                        <component :data="entry" :is="renderer" :row="row" :column="column" />
-                    </template>
-                    <template v-else>{{entry}}</template>
+                    <component v-else-if="renderer" :data="entry" :is="renderer" :row="row" :column="column" />
+                    <value-render v-else :value="entry" />
                 </template>
-                <!-- <template>{{formattedArray.length}} in total</template> -->
             </div>
             <div v-else-if="complexObject">
                 <template v-if="preValue._type == 'event'">
@@ -66,14 +59,17 @@
             </div>
             <component v-else-if="renderer" :data="rawValue" :is="renderer" :row="row" :column="column" />
             <slot v-else :value="value" :row="row" :column="column">
-                {{value}}
+                <!-- {{value}} -->
+                <value-render :value="value" />
             </slot>
         </div>
     </td>
 </template>
 <script>
 import _ from 'lodash';
+import Vue from 'vue';
 
+import CurrencyCell from './cells/CurrencyCell.vue';
 import NumberCell from './cells/NumberCell.vue';
 import BooleanCell from './cells/BooleanCell.vue';
 import ButtonCell from './cells/ButtonCell.vue';
@@ -84,7 +80,44 @@ import AvatarCell from './cells/AvatarCell.vue';
 import ChartCell from './cells/ChartCell.vue';
 
 
+var ValueRender = Vue.extend({
+    props: {
+        value: {}
+    },
+    computed: {
+        className() {
+            if (!this.value) {
+                return;
+            }
 
+            if (_.isArray(this.value)) {
+                return;
+            }
+            return this.value.title || this.value.name ? 'inline-tag' : null;
+        },
+        computedValue() {
+            var self = this
+
+            if (this.value == undefined || this.value == null || this.value == '') {
+                return
+            }
+
+            if (_.isArray(this.value)) {
+                return _.reduce(this.value, function(set, value) {
+                    if (value == undefined || value == null || value == '') {
+                        return set;
+                    }
+
+                    set.push(value.title || value.name || value);
+
+                    return set;
+                }, []).join(', ');
+            }
+            return this.value.title || this.value.name || this.value;
+        },
+    },
+    template: `<span :class="className">{{computedValue}}</span>`,
+})
 
 
 /////////////////////////////////
@@ -95,12 +128,15 @@ export default {
             type: Object,
         },
         'row': {
-            type: Object,
+            type: [Object, Array],
         },
+    },
+    components: {
+        ValueRender,
     },
     methods: {
         cellclick() {
-            if(!this.column.click) {
+            if (!this.column.click) {
                 return;
             }
 
@@ -132,7 +168,7 @@ export default {
             return String(this.rawValue).length;
         },
         shouldWrap() {
-            if((this.formattedArray || []).length > 4) {
+            if ((this.formattedArray || []).length > 4) {
                 return true;
             }
 
@@ -146,6 +182,7 @@ export default {
         },
         renderer() {
 
+            var self = this;
             // if (this.subField) {
             //     return;
             // }
@@ -154,12 +191,12 @@ export default {
             //     return;
             // }
 
-            var renderer = this.column.renderer
-            switch (this.column.renderer) {
+            var renderer = self.column.renderer
+            switch (self.column.renderer) {
                 case 'chart':
-                return ChartCell;
+                    return ChartCell;
                     break;
-                break;
+                    break;
                 case 'contactAvatar':
                     return AvatarCell;
                     break;
@@ -174,21 +211,21 @@ export default {
                     break;
                 case 'date':
                 case 'datetime':
-                    this.column.type = 'date';
+                    self.column.type = 'date';
                     return DateCell;
                     break;
-               case 'time':
-                    this.column.type = 'date';
-                    this.column.format = 'h:mma';
+                case 'time':
+                    self.column.type = 'date';
+                    self.column.format = 'h:mma';
                     return DateCell;
                     break;
                 case 'weekday':
-                    this.column.type = 'date';
-                    this.column.format = 'dddd';
+                    self.column.type = 'date';
+                    self.column.format = 'dddd';
                     return DateCell;
                     break;
                 case 'timeago':
-                    this.column.type = 'date';
+                    self.column.type = 'date';
                     return TimeagoCell;
                     break;
                 case 'capitalize':
@@ -197,6 +234,15 @@ export default {
                 case 'realmDots':
                     renderer = RealmDotCell;
                     break
+                case 'currency':
+                    renderer = CurrencyCell;
+                break;
+                case 'number':
+                case 'integer':
+                case 'decimal':
+                case 'float':
+                    renderer = NumberCell;
+                    break;
 
             }
 
@@ -204,7 +250,7 @@ export default {
                 return renderer;
             }
 
-            switch (this.column.type) {
+            switch (self.column.type) {
                 case 'button':
                     return ButtonCell;
                     break;
@@ -216,7 +262,7 @@ export default {
                 case 'decimal':
                 case 'float':
 
-                    if (!this.subField) {
+                    if (!self.subField) {
                         return NumberCell;
                     }
                     break;
@@ -245,11 +291,90 @@ export default {
 
             var subFieldPath = self.subField;
 
-            // console.log('APPENDAGE', self.column)
             if (subFieldPath) {
                 if (subFieldPath[0] == '.') {
                     subFieldPath = subFieldPath.slice(1);
                 }
+
+
+                ///////////////////////////////////////////////
+
+                function cleanEntry(entry) {
+                    if (!entry) {
+                        return;
+                    }
+
+                    //If it's not an object but a simple number or string
+                    if (!_.isObject(entry)) {
+                        return entry;
+                    }
+
+                    //Check if we have a title or name
+                    var title = (entry.title || entry.name);
+                    var appendage = entry.appendage || self.subField ? _.get(entry, subFieldPath) : null;
+
+                    //If it's a reference
+                    if (entry._id) {
+
+                        //Check if it's a real complicated badboy
+                        if (subFieldPath.indexOf('.')) {
+                            if (!title && !appendage) {
+                                return;
+                            }
+
+                            //Its a deep nested simple value
+                            if (!title && appendage && subFieldPath.indexOf('.')) {
+                                return appendage;
+                            }
+                        }
+
+                        return {
+                            title,
+                            appendage,
+                            _type: entry._type,
+                            _id: entry._id,
+                            color: entry.color,
+                            bgColor: entry.bgColor,
+                            startDate: entry.startDate,
+                            endDate: entry.endDate,
+                            created: entry.created,
+                        }
+                    }
+
+                    return entry;
+                }
+
+                ///////////////////////////////////////////////
+
+                return _.reduce(self.preValue, function(set, input) {
+
+                    //If its an array
+                    if (_.isArray(input)) {
+                        //loop through each item
+                        _.each(input, function(e) {
+                            var output = cleanEntry(e)
+                            if (output && output != 0) {
+
+                                set.push(output);
+                            }
+                        })
+                    } else {
+                        //Add the single item
+                        var output = cleanEntry(input)
+                        if (output && output != 0) {
+                            set.push(output);
+                        }
+                    }
+
+                    ////////////////////////////
+
+                    return set;
+                }, [])
+
+
+
+
+
 
                 return _.chain(self.preValue)
                     .map(function(entry) {
@@ -261,19 +386,12 @@ export default {
 
                         //If it's not an object but a simple number or string
                         if (!_.isObject(entry)) {
-
                             return entry;
                         }
 
-
-
-
                         //Check if we have a title or name
-
                         var title = (entry.title || entry.name);
                         var appendage = entry.appendage || self.subField ? _.get(entry, subFieldPath) : null;
-
-
 
                         //If it's a reference
                         if (entry._id) {
@@ -303,17 +421,13 @@ export default {
                             }
                         }
 
-                        ////////////////////////////////////////////
-
-
-
-                        ////////////////////////////////////////////
 
                         return entry;
                     })
                     .filter(function(entry) {
                         return entry == 0 || entry;
                     })
+                    .flatten()
 
                     .value();
             }
@@ -399,13 +513,13 @@ export default {
         key() {
 
             //Get the basic key
-            var mainKey = (this.column.key || '').split('|')[0];
+            var mainKey = (String(this.column.key) || '').split('|')[0];
 
             //Split it out 
             return (mainKey); //.split('[]')[0];
         },
         subField() {
-            var key = this.column.key || '';
+            var key = String(this.column.key)  || '';
             var pieces = key.split('[]');
 
             if (pieces.length > 1) {
@@ -564,7 +678,7 @@ export default {
             // console.log('RAW VAL', val);
             ///////////////////////////////
 
-            var definitionDiscriminator = (this.column.key || '').split('|')[1];
+            var definitionDiscriminator = (String(this.column.key)  || '').split('|')[1];
 
             ///////////////////////////////
 
@@ -654,14 +768,14 @@ export default {
     white-space: pre-line;
     text-overflow: ellipsis;
 
-     .formatted-array {
-        min-width: 300px;   
+    .formatted-array {
+        min-width: 300px;
     }
 }
 
 
 .no-padding {
-    padding:0 !important;
+    padding: 0 !important;
 }
 
 td.align-bottom {

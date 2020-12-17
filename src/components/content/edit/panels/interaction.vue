@@ -29,22 +29,31 @@
                                     <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.emails" v-model="model" />
                                 </template>
                             </fluro-content-form>
-                            <fluro-panel v-if="definition.fields && definition.fields.length">
-                                <tabset :justified="true">
-                                    <tab heading="Submitted Data">
-                                        <fluro-panel-body class="border-bottom">This is the data that was provided at the time of submission.</fluro-panel-body>
-                                        <fluro-panel-body>
-                                            <fluro-content-form :options="options" context="raw" v-model="model.rawData" :fields="definition.fields" />
-                                        </fluro-panel-body>
-                                    </tab>
-                                    <tab heading="Computed Data">
-                                        <fluro-panel-body class="border-bottom">This is the data after it has been processed by the system. Your form may have content that is transformed into dynamic links to other content in the database, eg. contacts, families etc</fluro-panel-body>
-                                        <fluro-panel-body>
-                                            <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
-                                        </fluro-panel-body>
-                                    </tab>
-                                </tabset>
-                            </fluro-panel>
+                            <template v-if="definition">
+                                <fluro-panel v-if="definition.fields && definition.fields.length">
+                                    <tabset :justified="true">
+                                        <tab heading="Submitted Data">
+                                            <fluro-panel-body class="border-bottom">This is the data that was provided at the time of submission.</fluro-panel-body>
+                                            <fluro-panel-body>
+                                                <fluro-content-form :options="options" context="raw" v-model="model.rawData" :fields="definition.fields" />
+                                            </fluro-panel-body>
+                                        </tab>
+                                        <tab heading="Computed Data">
+                                            <fluro-panel-body class="border-bottom">This is the data after it has been processed by the system. Your form may have content that is transformed into dynamic links to other content in the database, eg. contacts, families etc</fluro-panel-body>
+                                            <fluro-panel-body>
+                                                <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
+                                            </fluro-panel-body>
+                                        </tab>
+                                    </tabset>
+                                </fluro-panel>
+                            </template>
+                            <template v-else>
+                              <fluro-panel>
+                                <fluro-panel-body style="text-align:center">
+                                 No definition currently exists for this {{model.definition || model._type }}
+                                </fluro-panel-body>
+                              </fluro-panel>
+                            </template>
                         </constrain>
                     </v-container>
                 </flex-column-body>
@@ -52,8 +61,7 @@
             <tab heading="Transactions & Payments" v-if="paymentsEnabled">
                 <flex-column-body style="background: #fafafa;">
                     <v-container grid-list-xl>
-
-                                            <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.transactions" v-model="model" />
+                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.transactions" v-model="model" />
                     </v-container>
                 </flex-column-body>
             </tab>

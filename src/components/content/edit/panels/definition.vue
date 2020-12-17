@@ -277,23 +277,27 @@
 																																				</fluro-content-form>
 																																				<template v-if="paymentIsEnabled">
 																																								<v-input class="no-flex">
-																																												<v-label>Payment Gateway</v-label>
+																																												<v-label>Payment Gateways</v-label>
 																																												<p class="help-block">Select the integration that should be used to process these payments</p>
 																																												<!-- <fluro-panel-body class="border-top"> -->
-																																												<fluro-content-select-button block type="integration" v-model="model.data.publicData.paymentGateways" />
+																																												<fluro-content-select-button block :lockFilter="paymentGatewayFilter" type="integration" v-model="model.data.publicData.paymentGateways" />
 																																												<!-- </fluro-panel-body> -->
 																																								</v-input>
+																																								<payment-gateway-expression-editor v-if="model.data.publicData.paymentGateways.length > 1" :form="model" v-model="model.data.gatewaySettings" />
 																																								<fluro-panel margin>
-																																												<fluro-panel-body>
-																																																<v-input class="no-flex">
-																																																				<v-label>Payment Modifiers</v-label>
-																																																				<p class="help-block">Add payment modifiers to adjust the required payment amount depending on values entered by the user</p>
-																																																				<payment-modifier-editor :form="model" v-model="model.paymentDetails.modifiers" />
-																																																				<!-- <pre>{{model.paymentDetails.modifiers}}</pre> -->
-																																																				<!-- <fluro-panel-body class="border-top"> -->
-																																																				<!-- <fluro-content-select-button block type="integration" v-model="model.data.publicData.paymentGateways" /> -->
-																																																				<!-- </fluro-panel-body> -->
-																																																</v-input>
+																																									<fluro-panel-body>
+																																												<!-- <fluro-panel-title> -->
+																																																<v-label>Payment Modifiers</v-label>
+																																																<p class="help-block">Add payment modifiers to adjust the required payment amount depending on values entered by the user</p>
+																																												<!-- </fluro-panel-title> -->
+																																												
+																																																<!-- <v-input class="no-flex"> -->
+																																																<payment-modifier-editor :form="model" v-model="model.paymentDetails.modifiers" />
+																																																<!-- <pre>{{model.paymentDetails.modifiers}}</pre> -->
+																																																<!-- <fluro-panel-body class="border-top"> -->
+																																																<!-- <fluro-content-select-button block type="integration" v-model="model.data.publicData.paymentGateways" /> -->
+																																																<!-- </fluro-panel-body> -->
+																																																<!-- </v-input> -->
 																																												</fluro-panel-body>
 																																								</fluro-panel>
 																																								<fluro-content-form v-model="model.data" :fields="dataFields">
@@ -734,6 +738,7 @@
 /////////////////////////////////
 
 import FluroContentEditMixin from '../FluroContentEditMixin.js';
+import PaymentGatewayExpressionEditor from '../components/PaymentGatewayExpressionEditor.vue';
 import PaymentModifierEditor from '../components/PaymentModifierEditor.vue';
 import FluroColumnSelect from '../components/FluroColumnSelect.vue';
 import FluroFieldEditor from '../../../fields/FluroFieldEditor.vue';
@@ -746,6 +751,7 @@ import FluroAccordion from '../../../ui/accordion/FluroAccordion.vue';
 import FluroAccordionPanel from '../../../ui/accordion/FluroAccordionPanel.vue';
 import GroupRoleManager from "../components/GroupRoleManager.vue";
 
+// import FluroExpressionEditor from "../../../form/FluroExpressionEditor.vue";
 
 
 /////////////////////////////////
@@ -756,12 +762,13 @@ import Vue from 'vue';
 
 export default {
 				components: {
-
+								// FluroExpressionEditor,
 								FluroAccordion,
 								FluroAccordionPanel,
 								FluroFieldEditor,
 								FluroContentSelectButton,
 								PaymentModifierEditor,
+								PaymentGatewayExpressionEditor,
 								FluroColumnSelect,
 								FluroCodeEditor,
 								MailoutRenderPreview,
@@ -771,6 +778,9 @@ export default {
 				},
 				mixins: [FluroContentEditMixin],
 				methods: {
+								injectExpression() {
+
+								},
 								copy(snippet) {
 												this.$fluro.global.copyToClipBoard(snippet.code);
 								},
@@ -834,6 +844,10 @@ export default {
 
 																				if (!self.model.data.publicData) {
 																								self.$set(self.model.data, 'publicData', {});
+																				}
+
+																				if (!self.model.data.gatewaySettings) {
+																								self.$set(self.model.data, 'gatewaySettings', {});
 																				}
 
 																				if (!self.model.data.publicData.paymentGateways) {
@@ -1042,6 +1056,16 @@ export default {
 								}
 				},
 				computed: {
+								paymentGatewayFilter() {
+												return {
+																operator: "and",
+																filters: [{
+																				key: "module",
+																				comparator: "in",
+																				values: ["stripe", "eway", "paypal", 'square']
+																}]
+												}
+								},
 								snippetGroups() {
 
 												var self = this;
@@ -1416,7 +1440,7 @@ export default {
 																				persistentDescription: true,
 																				hideSuffix: true,
 																},
-																description: `The amount required to be paid to subit this form. You can leave this as 0 and calculate the cost with payment modifiers.`,
+																description: `The amount required to be paid to submit this form. You can leave this as 0 and calculate the cost with payment modifiers.`,
 												})
 
 
@@ -1433,7 +1457,7 @@ export default {
 
 												addField('currency', {
 																title: 'Currency',
-																minimum: 0,
+																minimum: 1,
 																maximum: 1,
 																type: 'string',
 																directive: 'select',
@@ -1988,7 +2012,7 @@ export default {
 																params: {
 																				restrictType: 'contact',
 																},
-																description: `Send a basic notification to the selected contacts eac time a new ${self.model.title || 'post'} is submitted`,
+																description: `Send a basic notification to the selected contacts each time a new ${self.model.title || 'post'} is submitted`,
 												})
 
 
@@ -2377,6 +2401,7 @@ export default {
 																_tickets: false,
 												},
 												editorOptions: {},
+												popup: {},
 								}
 				},
 }

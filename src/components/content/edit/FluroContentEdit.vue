@@ -568,7 +568,38 @@ export default {
 
             // return new Promise(function(resolve, reject) {
 
-            return self.$fluro.api.put(`/content/${definedType}/${requestData._id}?replaceData=true`, requestData)
+            return new Promise(function(resolve, reject) {
+                self.$fluro.api.put(`/content/${definedType}/${requestData._id}?replaceData=true`, requestData)
+                    .then(function(res) {
+
+                        //Object.assign(self.model, res.data);
+
+                        
+                        switch(self.typeName) {
+                            // case 'definition':
+                            // case 'component':
+                            // case 'product':
+                            // //This screws with things. It's too dangerous to enable until we can rewrite the field editor to use correct data flow
+                            // break;
+                            case 'integration':
+                            case 'contact':
+                            case 'audio':
+                            case 'video':
+                            case 'image':
+                            case 'asset':
+                            case 'mailout':
+                                 self.model = res.data;
+                            break;
+                            default:
+                               //Do nothing
+                            break;
+                        }
+                       
+                        resolve(res);
+
+                    }, reject);
+
+            });
             // .then(function(res) {
 
             //     if (!res.data) {
@@ -899,11 +930,18 @@ export default {
         },
         hideFooter() {
             var self = this;
-            return !self.$pro.enabled;//self.typeName == "definition";
+            return !self.$pro.enabled; //self.typeName == "definition";
         },
         autofocusTitle() {
             var self = this;
-            return (self.typeName == 'article') && (!self.model._id || !self.model.title);
+
+            switch(self.typeName) {
+                case 'article':
+                case 'plan':
+                    return (!self.model._id || !self.model.title);
+                break;
+            }
+            
         },
         summary() {
             var self = this;

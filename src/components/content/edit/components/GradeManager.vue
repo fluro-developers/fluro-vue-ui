@@ -5,7 +5,7 @@
                 <list-group-item v-for="(grade, index) in model" :key="grade.title">
                     <v-layout align-center>
                         <v-flex>
-                            <strong>{{grade.title}}</strong>
+                            <strong>{{grade.title}}</strong> <span class="font-xxs muted">&nbsp;({{grade.key}})</span>
                         </v-flex>
                         <v-flex shrink>
                             <fluro-confirm-button @click="remove(index)" content="Remove">

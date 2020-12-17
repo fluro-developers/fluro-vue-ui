@@ -115,15 +115,30 @@
                             <!-- <pre>{{selectedPaymentMethod}}</pre> -->
                             <div class="border-top">
                                 <tabset :justified="true" v-model="selectedPaymentMethod">
-                                    <tab heading="Pay with Card" key="card" index="card">
-                                        <v-container style="background: #fafafa" class="border-top">
-                                            <h4>Card Details</h4>
-                                            <fluro-content-form @errorMessages="validate" @input="modelChanged" ref="payment" :options="options" v-model="dataModel" :fields="paymentFields" />
-                                        </v-container>
-                                        <v-container v-if="definition.data.enableReceipt" style="background: #fafafa" class="border-top">
-                                            <!-- <h5>Would you like an email receipt?</h5> -->
-                                            <fluro-content-form-field @input="modelChanged" :options="options" :field="receiptInput" v-model="dataModel" />
-                                        </v-container>
+                                    <tab heading="Pay Now" key="card" index="card">
+                                        <!-- <tab :heading="gateway.title" :key="gateway._id" :index="gateway._id" v-for="gateway in additionalGateways">
+                                            <v-container style="background: #fafafa" class="border-top">
+                                                <h4>{{gateway.title}}</h4>
+                                                <fluro-content-form @errorMessages="validate" @input="modelChanged" ref="payment" :options="options" v-model="dataModel" :fields="paymentFields" />
+                                            </v-container>
+                                            <v-container v-if="definition.data.enableReceipt" style="background: #fafafa" class="border-top">
+                                                <fluro-content-form-field @input="modelChanged" :options="options" :field="receiptInput" v-model="dataModel" />
+                                            </v-container>
+                                        </tab> -->
+                                        <template v-if="!actualPaymentIntegration">
+                                            <p>Configuration Error: No payment gateway has been connected to this form.</p>
+                                        </template>
+                                        <template v-else>
+                                            <v-container style="background: #fafafa" class="border-top">
+                                                <h4>Card Details</h4>
+                                                <div class="muted font-sm" v-if="debugMode" style="margin-bottom:5px;">Payments processed through: <strong>{{actualPaymentIntegration.displayTitle || actualPaymentIntegration.title}}</strong></div>
+                                                <fluro-content-form @errorMessages="validate" @input="modelChanged" ref="payment" :options="options" v-model="dataModel" :fields="paymentFields" />
+                                            </v-container>
+                                            <v-container v-if="definition.data.enableReceipt" style="background: #fafafa" class="border-top">
+                                                <!-- <h5>Would you like an email receipt?</h5> -->
+                                                <fluro-content-form-field @input="modelChanged" :options="options" :field="receiptInput" v-model="dataModel" />
+                                            </v-container>
+                                        </template>
                                     </tab>
                                     <tab :heading="paymentMethod.title" v-for="paymentMethod in alternativePaymentMethods" :index="paymentMethod.key" :key="paymentMethod.key">
                                         <v-container style="background: #fafafa" class="border-top">
@@ -267,6 +282,12 @@ export default {
         paymentIntegration: {
             type: Object
         },
+        gateways: {
+            type: Array,
+            default () {
+                return [];
+            },
+        },
         linkedProcess: {
             type: [Object, String]
         },
@@ -317,6 +338,7 @@ export default {
     },
     data() {
         return {
+            selectedPaymentIntegration: null,
             selectedPaymentMethod: 'card',
             paymentReady: false,
             dataModel: JSON.parse(JSON.stringify(this.value)),
@@ -352,6 +374,10 @@ export default {
         this.validate();
         this.initializePayment();
         this.mounted = true;
+
+        ///////////////////////////////////////////////////////////////
+
+
     },
     watch: {
         selectedPaymentMethod(method) {
@@ -365,15 +391,69 @@ export default {
         defaultState(state) {
             this.state = state;
         },
-        paymentIntegration: "initializePayment"
+        actualPaymentIntegration: "initializePayment",
+        availableGateways(gateways) {
+
+            // console.log('GATEWAYS CHANGED')
+            var self = this;
+
+            if (!gateways || !gateways.length) {
+                self.$set(self.dataModel, '_paymentGateway', null);
+                return;
+            }
+
+            var firstGateway = gateways[0];
+            self.$set(self.dataModel, '_paymentGateway', self.$fluro.utils.getStringID(firstGateway));
+
+
+
+        }
     },
     computed: {
+        gatewayLookup() {
+            var self = this;
+            return _.reduce(self.availableGateways, function(set, gateway) {
+
+                if (!gateway || !gateway._id) {
+                    return set;
+                }
+
+                set[gateway._id] = gateway;
+                return set;
+            }, {});
+        },
+        actualPaymentIntegration() {
+
+            var self = this;
+
+
+            //If we have specifically selected a payment integration
+            //from the available gateways
+            if (self.dataModel._paymentGateway) {
+
+                //Get the gateway that we selected
+                var matchingGateway = self.gatewayLookup[self.dataModel._paymentGateway];
+                if (matchingGateway) {
+                    // console.log('return the matching gateway', matchingGateway);
+                    return matchingGateway;
+                }
+            }
+
+
+            //Use the one specified on the form
+            if (self.paymentIntegration) {
+                // console.log('return the default gateway', self.paymentIntegration);
+                return self.paymentIntegration;
+            }
+
+        },
         requiresCardPayment() {
             return this.selectedPaymentMethod == 'card' || !this.selectedPaymentMethod;
         },
         allowAlternativePayments() {
             return this.paymentDetails.allowAlternativePayments;
         },
+
         alternativePaymentMethods() {
             var self = this;
 
@@ -510,7 +590,6 @@ export default {
                         Date: Date,
                         Math: Math,
                         String: String,
-                        Date: Date,
                         parseInt: parseInt,
                         parseFloat: parseFloat,
                         Boolean: Boolean,
@@ -693,6 +772,105 @@ export default {
         formOptions() {
             return this.definition.data;
         },
+        gatewaySettings() {
+            var self = this;
+            return self.formOptions.gatewaySettings || {};
+        },
+        // gatewayTitles() {
+        //     var self = this;
+        //     return _.reduce(self.availableGateways, function(set, gateway) {
+        //         var gatewayID = gateway._id;
+        //         var title = gateway.title;
+
+        //         //////////////////////
+
+        //         //If there is a gateway configuration
+        //         var configurationEntry = self.gatewaySettings[gatewayID];
+        //         if(configurationEntry) {
+        //             if(configurationEntry.title) {
+        //                 title = configurationEntry.title;
+        //             }
+        //         }
+
+        //         //////////////////////
+
+        //         set[gatewayID] = title;
+
+        //         //////////////////////
+
+        //         return set;
+        //     }, {})
+        // },
+        availableGateways() {
+            var self = this;
+            var gateways = [];
+
+            if (self.gateways && self.gateways.length) {
+                gateways = self.gateways;
+            } else {
+                if (self.paymentIntegration) {
+                    gateways = [self.paymentIntegration];
+                }
+            }
+
+            //////////////////////////////////////////
+
+            //Create a new context for this modifier
+            var context = {
+                date: Date.now(),
+                calculatedTotal: self.total,
+                model: self.dataModel,
+                data: self.dataModel,
+                matchInArray: self.$fluro.utils.matchInArray,
+                //Basic Bits
+                getAge: self.$fluro.utils.getAge,
+                Date: Date,
+                Math: Math,
+                String: String,
+                parseInt: parseInt,
+                parseFloat: parseFloat,
+                Boolean: Boolean,
+                Number: Number,
+                moment: self.$fluro.date.moment,
+                create(Class, ...rest) {
+                    return new Class(...rest)
+                }
+            }
+
+            //////////////////////////////////////////
+
+            return _.reduce(gateways, function(set, gateway) {
+                var gatewayID = gateway._id;
+                var gatewaySetting = self.gatewaySettings[gatewayID] || {};
+
+                if (gatewaySetting.title) {
+                    gateway.displayTitle = gatewaySetting.title;
+                }
+
+                var gatewayExpression = gatewaySetting.expression;
+                if (gatewayExpression && gatewayExpression.length) {
+                    if (!self.evaluate(gatewayExpression, context)) {
+                        return set;
+                    }
+                }
+
+                //Include the gateway
+                set.push(gateway);
+
+                // return true;
+                return set;
+            }, [])
+        },
+        paymentGatewayOptions() {
+            var self = this;
+
+            return _.map(self.availableGateways, function(gateway) {
+                return {
+                    title: gateway.displayTitle || gateway.title,
+                    value: gateway._id,
+                }
+            });
+        },
         paymentFields() {
             var self = this;
             var fields = [];
@@ -702,6 +880,8 @@ export default {
             var defaultCardExpMonth;
             var defaultCardExpYear;
             var defaultCardCVC;
+
+
             if (self.debugMode) {
                 defaultCardName = "John Appleseed";
                 defaultCardNumber = "4242424242424242";
@@ -713,6 +893,26 @@ export default {
             //////////////////////////////
 
             var paymentRequired = self.requiresCardPayment ? 1 : 0;
+
+            //////////////////////////////
+
+            fields.push({
+                title: "Payment Method",
+                key: "_paymentGateway",
+                type: "string",
+                directive: 'select',
+                minimum: 1,
+                maximum: 1,
+                defaultValues: self.actualPaymentIntegration ? [self.actualPaymentIntegration._id] : [],
+                options: self.paymentGatewayOptions,
+                expressions: {
+                    hide() {
+                        return self.paymentGatewayOptions.length <= 1;
+                    }
+                },
+            });
+
+
 
             //////////////////////////////
 
@@ -1119,7 +1319,7 @@ export default {
             var self = this;
 
             //Get the Public Encryption Key
-            var key = self.paymentIntegration.publicDetails.publicKey;
+            var key = _.get(self.actualPaymentIntegration, 'publicDetails.publicKey');
 
             /////////////////////////////////////////////
 
@@ -1152,8 +1352,10 @@ export default {
             console.log('Create stripe token');
             //STRIPE v2 (DEPRECATED)
             var self = this;
-            var liveKey = self.paymentIntegration.publicDetails.livePublicKey;
-            var sandboxKey = self.paymentIntegration.publicDetails.testPublicKey;
+            var liveKey = _.get(self.actualPaymentIntegration, 'publicDetails.livePublicKey');
+            var sandboxKey = _.get(self.actualPaymentIntegration, 'publicDetails.testPublicKey');
+            //self.actualPaymentIntegration.publicDetails.livePublicKey;
+            //ar sandboxKey = self.actualPaymentIntegration.publicDetails.testPublicKey;
             var stripeUseKey;
 
             ///////////////////////
@@ -1225,7 +1427,7 @@ export default {
         },
         initializePayment() {
             var self = this;
-            var integration = self.paymentIntegration;
+            var integration = self.actualPaymentIntegration;
 
             ////////////////////////////////////
 
@@ -1384,10 +1586,31 @@ export default {
 
             /////////////////////////////////
 
+            var utm;
+
+            //If there is a get cookies method
+            if (self.$fluro.global.getCookies) {
+
+                //Get the UTM tags
+                utm = self.$fluro.global.getCookies('flc_', [
+                    'fbclid',
+                    'utm_term',
+                    'utm_medium',
+                    'utm_content',
+                    'utm_source',
+                    'utm_campaign',
+                ]);
+
+                console.log('UTM', utm)
+            }
+
+            /////////////////////////////////
+
             var interactionData = {
                 interaction: dataModel,
                 event: self.$fluro.utils.getStringID(self.linkedEvent),
-                process: self.$fluro.utils.getStringID(self.linkedProcess)
+                process: self.$fluro.utils.getStringID(self.linkedProcess),
+                utm,
                 // transaction:self.$fluro.utils.getStringID(self.linkedProcess),
             };
 
@@ -1435,7 +1658,7 @@ export default {
                     return submitRequest(paymentDetails);
                 } else {
                     paymentDetails.email = dataModel.receiptEmail;
-                    paymentDetails.integration = self.$fluro.utils.getStringID(self.paymentIntegration);
+                    paymentDetails.integration = self.$fluro.utils.getStringID(self.actualPaymentIntegration);
                 }
 
                 /////////////////////////////////
@@ -1444,7 +1667,7 @@ export default {
                 console.log('PAYMENT OPTIONS IS', self.selectedPaymentMethod, paymentDetails);
 
                 //Here we generate our client side tokens
-                switch (self.paymentIntegration.module) {
+                switch (self.actualPaymentIntegration.module) {
                     case "eway":
                         if (process.browser) {
                             if (!window.eCrypt) {
@@ -1505,7 +1728,14 @@ export default {
             /////////////////////////////////
 
             function submitRequest(paymentDetails) {
+
+
                 if (paymentDetails) {
+
+                    //This is important and must match what is calculated on the server
+                    // interactionData.interaction.calculatedTotal = paymentDetails.amount;
+
+                    console.log('SUBMIT REQUEST WITH PAYMENT', paymentDetails.amount)
 
                     if (self.debugMode) {
                         paymentDetails.sandbox = true;

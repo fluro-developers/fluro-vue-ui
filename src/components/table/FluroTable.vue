@@ -32,7 +32,7 @@
 																																												<div is="table-header-checkbox" :all="allSelected" :some="someSelected" />
 																																								</div>
 																																				</template>
-																																				<v-card tile>
+																																				<v-card tile style="margin:0;">
 																																								<v-list dense>
 																																												<v-list-tile v-if="!allSelected" @click="selectPage()">
 																																																<v-list-tile-content>
@@ -148,6 +148,21 @@
 																												</tr>
 																								</template>
 																				</tbody>
+																				<tfoot class="totals" v-if="totals && totals.length">
+																								<tr>
+																												<th class="first shrink checkbox-cell" v-if="selectionEnabled">
+																												</th>
+																												<template v-for="(column, index) in columns">
+																																<!-- <th :class="[column.classes, {'shrink':column.shrink, sortable:isSortable(column), 'sorting':sort.sortKey == column.key, 'tiny':column.tiny, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}]" v-tippy :content="totalTooltip(column, index)" v-for="(column, index) in columns"> -->
+																																<table-cell v-if="totals[index]" :row="totals" :column="{renderer:column.renderer, type:column.type, key:index}" />
+																																<td v-else></td>
+																																<!-- <Span v-if="totals[index]" style="padding:8px;">{{totals[index]}}</Span> -->
+																																<!-- </th> -->
+																												</template>
+																												<th class="last shrink" v-if="actionsAreEnabled">
+																												</th>
+																								</tr>
+																				</tfoot>
 																</table>
 												</div>
 												<div class="footer-stats" v-if="footerEnabled">
@@ -340,6 +355,10 @@ export default {
 																return [];
 												}
 								},
+								totals: {
+												type: Array,
+
+								},
 								items: {
 												type: Array,
 												default () {
@@ -429,6 +448,21 @@ export default {
 								}
 				},
 				computed: {
+								computedTotals() {
+												var self = this;
+
+												return _.map(self.totals, function(value) {
+																return {}
+												})
+								},
+								// totalsLookup() {
+								// 				var self = this;
+
+								// 				return _.reduce(self.totals, function(set, entry) {
+								// 								set[entry.key] = entry.values;
+								// 								return set;
+								// 				}, {})
+								// },
 								plural() {
 												return 'items';
 								},
@@ -1365,6 +1399,9 @@ export default {
 								}, 500),
 				},
 				methods: {
+								totalTooltip(column, index) {
+												return `${column.title} \nTotal: ${this.totals[index]} \nAverage: ${Math.round((this.totals[index] || 0) / this.filtered.length)}`;
+								},
 								// refilter: _.debounce(function() {
 
 
@@ -2100,6 +2137,17 @@ export default {
 												th {
 																white-space: nowrap;
 												}
+
+												&.totals {
+													
+																th, td {
+																	border-top: 4px solid rgba(#000, 0.1);
+																				// padding: 0 !important;
+																				
+																				// font-size: 0.8em;
+																				// background: #eee !important;
+																}
+												}
 								}
 
 
@@ -2199,6 +2247,12 @@ export default {
 								}
 				}
 
+
+				.v-menu {
+								font-weight: normal;
+								text-transform: none;
+								letter-spacing: 0;
+				}
 
 }
 

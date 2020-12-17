@@ -175,14 +175,17 @@ templates.push({
 					directive: 'select',
 					options: [{
 						title: 'Standard',
+						name:'Standard Button',
 						value: '',
 					},
 					{
 						title: 'Outline',
+						name:'Outline Button',
 						value: 'outline',
 					},
 					{
 						title: 'Link',
+						name:'Text Link',
 						value: 'link',
 					},
 					],
@@ -197,14 +200,17 @@ templates.push({
 					defaultValues: ['default'],
 					options: [{
 						title: 'Default',
+						name:'Default',
 						value: 'default',
 					},
 					{
 						title: 'Danger',
+						name:'Danger',
 						value: 'danger',
 					},
 					{
 						title: 'Success',
+						name:'Success',
 						value: 'success',
 					},
 					],

@@ -4,7 +4,7 @@
         <!-- <v-text-field slot="activator" :outline="outline" :label="label" :value="formattedDatetime" :disabled="disabled" :loading="loading" :error-messages="errorMessages" :error-count="errorCount" :error="error" :hide-details="hideDetails" :append-icon="appendIcon" :prepend-icon="prependIcon" readonly /> -->
         <!-- <template > -->
             <!-- :value="formattedDatetime" -->
-        <v-input slot="activator" class="no-flex" :label="label" :hint="hint" :persistent-hint="true"  :disabled="disabled" :loading="loading" :error-messages="errorMessages" :error-count="errorCount" :error="error" :hide-details="hideDetails">
+        <v-input @click.native="$emit('touched')" slot="activator" class="no-flex" @blur="$emit('blur')" @focus="$emit('focus')" :label="label" :required="required" :hint="hint" :persistent-hint="true"  :disabled="disabled" :loading="loading" :error-messages="errorMessages" :error-count="errorCount" :error="error" :hide-details="hideDetails">
             
                 <v-btn block :large="large" color="#e0e0e0" class="mx-0">
                     <fluro-icon left icon="calendar-alt"/>{{readable}}
@@ -96,6 +96,9 @@ export default {
             type: String,
             default: 'Select a date'
         },
+        required: {
+            type: Boolean,
+        },
         min: {
             type: Date,
         },
@@ -141,9 +144,8 @@ export default {
             type: Boolean,
             default: false
         },
-        errorMessages: {
-            type: [String, Array],
-            default: () => []
+        errorMessages:{
+            type:Array,
         },
         errorCount: {
             type: [Number, String],

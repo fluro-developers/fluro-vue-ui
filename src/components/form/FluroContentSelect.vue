@@ -6,9 +6,8 @@
                     <draggable v-model="model" v-bind="dragOptions" @start="drag=true" @end="drag=false">
                         <list-group-item @click="viewItem(item)" :item="item" v-for="(item, index) in model">
                             <template v-slot:right>
-                                <fluro-status-label :value="item.status" v-if="item.status"/>
-                                <fluro-status-label :value="item.paymentStatus" v-if="item.paymentStatus"/>
-
+                                <fluro-status-label :value="item.status" v-if="item.status" />
+                                <fluro-status-label :value="item.paymentStatus" v-if="item.paymentStatus" />
                                 <v-menu :left="true" v-model="actionIndexes[index]" :fixed="true" transition="slide-y-transition" offset-y>
                                     <template v-slot:activator="{ on }">
                                         <v-btn class="ma-0" @click.prevent.stop icon small flat v-on="on">
@@ -29,14 +28,29 @@
                                     </v-list>
                                 </v-menu>
                             </template>
-
                         </list-group-item>
                     </draggable>
                 </list-group>
             </div>
             <div class="fluro-content-list" v-else>
                 <fluro-panel>
-                    <fluro-table style="max-height: 50vh" trackingKey="_id" :pageSize="40" :items="model" :columns="columns" />
+                 
+                    <fluro-table :selection="contextSelection" style="max-height: 50vh" trackingKey="_id" :pageSize="40" :items="model" :columns="columns" />
+                    <fluro-panel-title class="border-top" v-if="contextSelection.selection.length">
+                        <v-layout align-center>
+                            <v-flex class="selection-summary">{{contextSelection.selection.length}} Selected</v-flex>
+                            <v-flex shrink>
+                                <v-btn color="primary" class="ma-0" small @click="removeCurrentSelection()">
+                                    Remove {{contextSelection.selection.length}} from list
+                                    
+                                </v-btn>
+                                <v-btn color="primary" class="ma-0 ml-1" small @click="$actions.open(contextSelection.selection)">
+                                    More Actions
+                                    
+                                </v-btn>
+                            </v-flex>
+                        </v-layout>
+                    </fluro-panel-title>
                 </fluro-panel>
                 <!-- <list-group>
           <list-group-item :item="item" v-for="(item, index) in limited">
@@ -112,8 +126,12 @@
     </div>
 </template>
 <script>
+import Vue from 'vue';
 import draggable from "vuedraggable";
 import FluroSelectionMixin from "../../mixins/FluroSelectionMixin.js";
+import FluroSelector from "./contentselect/FluroSelector.vue";
+
+
 import FluroContentSelectModal from "./contentselect/FluroContentSelectModal.vue";
 import FluroStatusLabel from "../ui/FluroStatusLabel.vue";
 
@@ -199,6 +217,16 @@ export default {
         this.setInitialValue(this.value);
     },
     computed: {
+        contextSelection() {
+            var self = this;
+            var SelectionManager = Vue.extend(FluroSelector);
+            return new SelectionManager({
+                propsData: {
+                    minimum: 0,
+                    maximum: self.maximum,
+                }
+            })
+        },
         showBasicList() {
             return !this.options.forceTableView && (this.model.length <= this.listLimit)
         },
@@ -259,6 +287,7 @@ export default {
                     title: '',
                     key: '_id',
                     renderer: 'button',
+                     tooltip:'Edit',
                     shrink: true,
                     button: {
                         icon: 'pencil',
@@ -278,14 +307,16 @@ export default {
                 key: '_id',
                 renderer: 'button',
                 shrink: true,
+
                 button: {
                     icon: 'times',
+                     tooltip:'Remove from list',
                     action(row) {
 
                         return new Promise(function(resolve, reject) {
 
-                            if (self.$fluro.confirm) {
-                                self.$fluro.confirm('Deselect', `Deselect ${row.title}?`)
+                            if (self.confirmRemove && self.$fluro.confirm) {
+                                self.$fluro.confirm('Remove from list', `Deselect ${row.title}?`)
                                     .then(deselect).catch(reject);
                             } else {
                                 deselect();
@@ -392,6 +423,12 @@ export default {
         }
     },
     methods: {
+        removeCurrentSelection() {
+
+         var toDeselect = this.contextSelection.selection.slice();
+            this.deselectMultiple(toDeselect);
+            this.contextSelection.deselectAll();
+        },
         viewItem(item) {
             this.$fluro.global.view(item, true);
         },
@@ -495,6 +532,15 @@ export default {
             var self = this;
             //////////////////////////////////////
 
+            // var joins;
+            // if (self.type == 'contact') {
+            var joins = _.map(self.columns, 'key');
+            //     // ['firstName', 'lastName', 'preferredName', 'gender', 'age'];
+            // }
+
+            // var additionalColumns = self.columns;
+
+            console.log('ASK FOR JOINS', joins)
             var promise = self.$fluro.modal({
                 component: FluroContentSelectModal,
                 options: {
@@ -504,7 +550,9 @@ export default {
                     maximum: self.maximum,
                     allDefinitions: self.allDefinitions,
                     searchInheritable: self.searchInheritable,
-                    lockFilter: self.lockFilter
+                    lockFilter: self.lockFilter,
+                    joins,
+                    // additionalColumns,
                 }
             });
 
@@ -620,9 +668,12 @@ export default {
             // console.log("CHANGESSS", max);
             var self = this;
             self.selectionMaximum = max;
-        }
+        },
     },
     data() {
+
+
+
         return {
             listLimit: 50,
             actionIndexes: {},
@@ -645,6 +696,12 @@ export default {
 }
 
 .fluro-content-select {
+
+    .selection-summary {
+        opacity: 0.5;
+        font-size: 0.8em;
+    }
+
     &>>>.v-select__selections {
         padding-top: 0 !important;
     }
