@@ -112,10 +112,10 @@ module.exports = {
     },
     plugins: [
         new VueLoaderPlugin(),
-        new MiniCssExtractPlugin({
-            filename: 'EXTRACTED.css',
-            chunkFilename: "[name].css"
-        })
+        // new MiniCssExtractPlugin({
+        //     filename: 'EXTRACTED.css',
+        //     chunkFilename: "[name].css"
+        // })
     ],
 
 
