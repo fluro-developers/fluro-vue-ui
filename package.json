@@ -1,6 +1,6 @@
 {
 				"name": "fluro-vue-ui",
-				"version": "2.3.5",
+				"version": "2.3.6",
 				"description": "A package that contains helpful Fluro UI components and mixins",
 				"main": "src/index.js",
 				"scripts": {
@@ -56,7 +56,7 @@
 								"@babel/eslint-plugin": "^7.11.5",
 								"@babel/plugin-external-helpers": "^7.0.0",
 								"@babel/plugin-proposal-object-rest-spread": "^7.0.0",
-								"autoprefixer": "^9.7.6",
+								"autoprefixer": "^10.1.0",
 								"babel-eslint": "^10.1.0",
 								"babel-loader": "^8.1.0",
 								"babel-preset-vue": "^2.0.2",
@@ -67,11 +67,12 @@
 								"eslint-config-xo": "^0.29.1",
 								"eslint-plugin-vue": "^6.2.2",
 								"mini-css-extract-plugin": "^0.9.0",
-								"postcss-csso": "^4.0.0",
+								"postcss": "^8.2.1",
+								"postcss-csso": "^5.0.0",
 								"sass": "^1.26.10",
 								"sass-loader": "^9.0.3",
 								"sass-resources-loader": "^2.1.1",
-								"vue-loader": "^15.9.4",
+								"vue-loader": "^15.9.6",
 								"vue-template-compiler": "^2.6.11",
 								"webpack": "^4.44.2",
 								"webpack-cli": "^3.3.12"
