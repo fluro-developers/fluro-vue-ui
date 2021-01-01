@@ -3,13 +3,11 @@
         <!-- ACTIVATOR -->
         <!-- <v-text-field slot="activator" :outline="outline" :label="label" :value="formattedDatetime" :disabled="disabled" :loading="loading" :error-messages="errorMessages" :error-count="errorCount" :error="error" :hide-details="hideDetails" :append-icon="appendIcon" :prepend-icon="prependIcon" readonly /> -->
         <!-- <template > -->
-            <!-- :value="formattedDatetime" -->
-        <v-input @click.native="$emit('touched')" slot="activator" class="no-flex" @blur="$emit('blur')" @focus="$emit('focus')" :label="label" :required="required" :hint="hint" :persistent-hint="true"  :disabled="disabled" :loading="loading" :error-messages="errorMessages" :error-count="errorCount" :error="error" :hide-details="hideDetails">
-            
-                <v-btn block :large="large" color="#e0e0e0" class="mx-0">
-                    <fluro-icon left icon="calendar-alt"/>{{readable}}
-                </v-btn>
-            
+        <!-- :value="formattedDatetime" -->
+        <v-input @click.native="$emit('touched')" slot="activator" class="no-flex" @blur="$emit('blur')" @focus="$emit('focus')" :label="label" :required="required" :hint="hint" :persistent-hint="true" :disabled="disabled" :loading="loading" :error-messages="errorMessages" :error-count="errorCount" :error="error" :hide-details="hideDetails">
+            <v-btn block :large="large" color="#e0e0e0" class="mx-0">
+                <fluro-icon left icon="calendar-alt" />{{readable}}
+            </v-btn>
         </v-input>
         <!-- </template> -->
         <flex-column>
@@ -20,6 +18,7 @@
                     <!-- <pre>{{typeof datetime}}</pre> -->
                     <!-- <pre>{{datePart}}</pre> -->
                     <!--  -->
+                  
                     <v-date-picker attach class="elevation-0" :min="minDateString" :max="maxDateString" full-width v-model="datePart" scrollable :locale="locale" actions></v-date-picker>
                 </fluro-tab>
                 <fluro-tab heading="Time" index="time">
@@ -61,7 +60,6 @@
     </v-dialog>
 </template>
 <script>
-
 import FluroTab from '../ui/tabset/FluroTab.vue'
 import FluroTabset from '../ui/tabset/FluroTabset.vue'
 
@@ -128,9 +126,9 @@ export default {
             type: String,
             default: 'CLEAR'
         },
-        large:{
-            type:Boolean,
-            default:true,
+        large: {
+            type: Boolean,
+            default: true,
         },
         okText: {
             type: String,
@@ -144,8 +142,8 @@ export default {
             type: Boolean,
             default: false
         },
-        errorMessages:{
-            type:Array,
+        errorMessages: {
+            type: Array,
         },
         errorCount: {
             type: [Number, String],
@@ -179,7 +177,7 @@ export default {
 
         var self = this;
 
-        if(self.datetime) {
+        if (self.datetime) {
             if (self.datetime instanceof Date) {
                 self.selectedDatetime = self.datetime
             } else if (typeof self.datetime === 'string' || self.datetime instanceof String) {
@@ -187,6 +185,17 @@ export default {
                 self.selectedDatetime = self.$fluro.date.moment(new Date(self.datetime), self.format)
             }
         }
+    },
+    watch: {
+        datetime(v) {
+            var self = this;
+            if (v instanceof Date) {
+                self.selectedDatetime = v
+            } else if (typeof v === 'string' || v instanceof String) {
+                // see https://stackoverflow.com/a/9436948
+                self.selectedDatetime = self.$fluro.date.moment(new Date(v), self.format)
+            }
+        },
     },
     computed: {
         minDateString() {
@@ -198,7 +207,7 @@ export default {
             return self.max ? self.$fluro.date.moment(self.max).format(DEFAULT_DATE_FORMAT) : null;
         },
         readable() {
-            return this.datetime ? this.formattedDatetime : this.placeholder;//'Select a date'
+            return this.datetime ? this.formattedDatetime : this.placeholder; //'Select a date'
         },
         datePart: {
             get() {
@@ -247,23 +256,24 @@ export default {
         okHandler() {
             this.display = false
             this.activeTab = 'date';
-            if(this.$refs.timer) {
+            if (this.$refs.timer) {
                 this.$refs.timer.selectingHour = true
             }
-            
+
 
             this.$emit('input', this.selectedDatetime)
         },
         clearHandler() {
             this.display = false
-            this.activeTab = 0
-            if(this.$refs.timer) {
+            this.activeTab = 'date'
+            if (this.$refs.timer) {
                 this.$refs.timer.selectingHour = true
             }
-            
+
 
             this.$emit('input', null)
         }
     }
 }
+
 </script>

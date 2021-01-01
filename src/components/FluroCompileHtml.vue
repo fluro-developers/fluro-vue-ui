@@ -35,14 +35,17 @@ export default {
     //     this.render();
     // },
     created() {
+        // console.log('CREATED')
         this.render();
     },
     methods: {
         render() {
+            // console.log('RENDER')
 
             var self = this;
 
             if (!self.template || !self.template.length) {
+                // console.log('NO TEMPLATE');
                 self.component = null;
                 return;
             }
@@ -70,8 +73,14 @@ export default {
 
 
             var components;
+
+            // console.log('PARENT', self.$parent)
             if (self.$parent && self.$parent.$options) {
+
+
                 components = self.$parent.$options.components;
+
+                // console.log('GET THE COMPONENTS', components);
             }
 
 

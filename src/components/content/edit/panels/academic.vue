@@ -23,7 +23,7 @@
                         <v-container fluid>
                             <constrain sm>
                                 <!--  -->
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
+                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />
                                 <!-- -->
                                 <grade-manager v-model="model.grades" />
                                 <!--  -->
@@ -36,16 +36,15 @@
                                     <fluro-panel-body v-if="model.autoGraduate">
                                         <v-layout column>
                                             <v-flex>
-                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.graduationDate" v-model="model"></fluro-content-form-field>
+                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.graduationDate" v-model="model" />
                                             </v-flex>
                                             <v-flex>
-                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.graduatesTo" v-model="model"></fluro-content-form-field>
+                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.graduatesTo" v-model="model" />
                                             </v-flex>
                                         </v-layout>
                                     </fluro-panel-body>
                                 </fluro-panel>
                                 <!--  -->
-
                                 <!-- <pre>{{model}}</pre> -->
                             </constrain>
                         </v-container>
@@ -53,6 +52,35 @@
                 </tab>
                 <tab :heading="`${definition.title} Information`" v-if="definition && definition.fields && definition.fields.length">
                     <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
+                </tab>
+                <tab heading="Student Graduation" v-if="model.autoGraduate">
+                    <flex-column-body style="background: #fafafa;">
+                        <v-container fluid>
+                            <constrain sm>
+                                <h4 margin>Graduation Details</h4>
+                                <div>
+                                    <v-label>Automatic Graduation:</v-label>
+                                    <p>{{model.graduationDate | formatDate('h:mma D MMM YYYY')}} <span class="muted">{{model.graduationDate | timeago}}</span>
+                                    </p>
+                                </div>
+                                <search-input style="background: #fff;" @click.native.stop.prevent placeholder="Search contacts" v-model="keywords" />
+                                <fluro-panel v-if="filtered.length">
+                                    <fluro-table :columns="columns" :items="filtered" />
+                                </fluro-panel>
+                                <!-- <fluro-panel v-if="test && test.contacts.length">
+                                 <fluro-panel-body class="border-top" v-for="contact in test.contacts">
+                                  <v-layout>
+                                   <v-flex>
+                                    {{}}
+                                   </v-flex>
+                                   <v-flex></v-flex>
+                                  </v-layout>
+                                 </fluro-panel-body>
+                                </fluro-panel>
+ -->
+                            </constrain>
+                        </v-container>
+                    </flex-column-body>
                 </tab>
                 <!-- <tab heading="Advanced / Metadata" v-if="hasMeta">
                     <flex-column-body style="background: #fafafa;">
@@ -92,6 +120,8 @@
 import FluroEditor from '../../../form/FluroEditor.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin.js';
 import GradeManager from '../components/GradeManager.vue';
+import FluroTable from '../../../table/FluroTable.vue';
+import SearchInput from "../../../ui/SearchInput.vue";
 
 /////////////////////////////////
 
@@ -103,12 +133,101 @@ export default {
     components: {
         FluroEditor,
         GradeManager,
+        FluroTable,
+        SearchInput,
+    },
+    data() {
+        return {
+            keywords: '',
+            loading: false,
+        }
     },
     created() {
 
     },
     mixins: [FluroContentEditMixin],
+    asyncComputed: {
+        contacts: {
+            default: [],
+            get() {
+                var self = this;
+
+                if (!self.model._id || !self.model.autoGraduate) {
+                    self.loading = false;
+                    return Promise.resolve([]);
+                }
+
+                self.loading = true;
+                return new Promise(function(resolve, reject) {
+
+                    self.$fluro.api.get(`/contact/schools/graduation/${self.model._id}`)
+                        .then(function(res) {
+
+                            resolve(res.data);
+
+                            self.loading = false;
+                        })
+                        .catch(function(err) {
+
+                            reject(err);
+                            self.loading = false;
+                        })
+
+                })
+            }
+        }
+    },
     computed: {
+        lowercaseKeywords() {
+            return String(this.keywords).toLowerCase();
+        },
+        filtered() {
+
+            var self = this;
+            var contacts = self.contacts;
+
+
+            if (self.lowercaseKeywords && self.lowercaseKeywords.length) {
+                contacts = _.filter(contacts, function(contact) {
+                    return String(contact.title).toLowerCase().includes(self.lowercaseKeywords)
+                });
+            }
+
+
+            var ordered = _.orderBy(contacts, 'title');
+
+
+            return ordered;
+        },
+        columns() {
+
+            var self = this;
+            var array = [];
+
+
+
+            array.push({
+                title: 'Contact',
+                key: 'title',
+                type: 'string',
+            });
+
+
+            array.push({
+                title: 'From',
+                key: 'from',
+                type: 'string',
+            });
+
+
+            array.push({
+                title: 'To',
+                key: 'to',
+                type: 'string',
+            });
+
+            return array;
+        },
         fieldsOutput() {
 
 
@@ -122,8 +241,8 @@ export default {
                 minimum: 1,
                 maximum: 1,
                 type: 'string',
-                params:{
-                    autofocus:!self.model.title
+                params: {
+                    autofocus: !self.model.title
                 },
             });
 
@@ -139,7 +258,7 @@ export default {
             });
 
 
-            addField('graduateTo', {
+            addField('graduatesTo', {
                 title: 'Graduate To',
                 description: 'Which academic calendar does a contact graduate to if they reach the end of the grades in this calendar',
                 minimum: 0,
@@ -168,22 +287,21 @@ export default {
             var self = this;
             if (!self.model.autoGraduate) {
                 self.$set(self.model, 'autoGraduate', true);
-            }
-            else {
+            } else {
                 self.$set(self.model, 'autoGraduate', false);
             }
         }
     },
-    data() {
-        return {}
-    },
+
 }
+
 </script>
 <style lang="scss">
 .no-border-no-background .toggle-item {
     border: none !important;
     background: none !important;
     font-size: 14px;
-    padding:0px;
+    padding: 0px;
 }
+
 </style>

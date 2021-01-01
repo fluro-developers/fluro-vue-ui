@@ -95,7 +95,7 @@
 																																				</div>
 																																				<v-flex style="overflow: hidden;">
 																																								<template v-if="availableKeys.length">
-																																												<filter-condition-row :forceLocalValues="forceLocalValues" :type="type" :useSample="useSample" :rows="rows" :loadingKeys="loadingKeys" :definition="definition" :fields="availableKeys" :mini="mini" v-model="group.filters[index]" />
+																																												<filter-condition-row :forceLocalValues="forceLocalValues" :type="type" :useSample="useSample" :rows="rows" :loadingKeys="loadingKeys" :definition="definition" :fields="availableKeys" :mini="mini" @input="debounced" v-model="group.filters[index]" />
 																																								</template>
 																																				</v-flex>
 																																				<div v-if="group.filters.length > 1">
@@ -1967,6 +1967,40 @@ export default {
 
 																//////////////////////////////////////////////////////////////
 
+																// injectFields.push({
+																// 				title: `Family Members > in any active Group/Team`,
+																// 				key: `family.items[]realms|team`,
+																// 				maximum: 0,
+																// 				minimum: 0,
+																// 				type: "reference",
+																// 				directive: "select",
+																// 				_discriminator: 'team',
+																// 				_discriminatorType: "team"
+																// });
+
+																// injectFields.push({
+																// 				title: `Family Children > in any active Group/Team`,
+																// 				key: `family._children[]realms`,
+																// 				maximum: 0,
+																// 				minimum: 0,
+																// 				type: "reference",
+																// 				directive: "select",
+
+																// 				_discriminatorType: "team"
+																// });
+
+																// injectFields.push({
+																// 				title: `Family Parents > in any active Group/Team`,
+																// 				key: `family._parents[]realms`,
+																// 				maximum: 0,
+																// 				minimum: 0,
+																// 				type: "reference",
+																// 				directive: "select",
+
+																// 				_discriminatorType: "team"
+																// });
+
+
 																injectFields.push({
 																				title: `Assigned position in any active Group/Team`,
 																				key: "_positions.active",
@@ -2178,12 +2212,12 @@ export default {
 																				case 'interaction':
 
 
-								// 												 case 'utm_campaign':
-        // case 'utm_source':
-        // case 'utm_content':
-        // case 'utm_medium':
-        // case 'utm_term':
-        // case 'fbclid':
+																								// 												 case 'utm_campaign':
+																								// case 'utm_source':
+																								// case 'utm_content':
+																								// case 'utm_medium':
+																								// case 'utm_term':
+																								// case 'fbclid':
 																								injectFields.push({
 																												title: "UTM Campaign",
 																												key: "utm.utm_campaign",
@@ -2216,7 +2250,7 @@ export default {
 																												type: "string",
 																								});
 
-																								
+
 																								break;
 																				case 'persona':
 																								// injectFields.push({
@@ -2762,14 +2796,30 @@ export default {
 								//     this.retrieveKeys();
 								// },
 								value(v) {
-												this.model = JSON.parse(JSON.stringify(v));
+
+												var newValue = JSON.stringify(v);
+												var currentValue = JSON.stringify(this.model);
+
+												if (newValue != currentValue) {
+																console.log('new value')
+																this.model = JSON.parse(newValue);
+
+												}
+
 								},
-								model: {
-												handler: function() {
-																this.debounced();
-												},
-												deep: true
-								}
+								model() {
+												// console.log('group changed');
+												this.debounced();
+								},
+
+								// : {
+								// 				handler: function(v) {
+
+								// 					console.log('MODEL CHANGED', v);
+								// 								this.debounced();
+								// 				},
+								// 				deep: true
+								// }
 				}
 };
 
