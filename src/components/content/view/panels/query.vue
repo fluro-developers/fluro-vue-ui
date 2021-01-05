@@ -8,7 +8,26 @@
                 <tab heading="Results">
                     <flex-row>
                         <flex-column>
-                            <fluro-table :showFooter="true" trackingKey="_id" :pageSize="100" :items="filtered" :totals="totals" :columns="columns" />
+                            <fluro-table ref="table" :defaultSort="defaultSort" :defaultSortType="defaultSortType" :defaultSortDirection="defaultSortDirection" :showFooter="true" trackingKey="_id" :pageSize="100" :items="filtered" :totals="totals" :avg="avg" :columns="columns">
+                                <template v-slot:optionsabove>
+                                    <v-container pa-2 class="border-bottom">
+                                        <v-layout>
+                                            <v-flex xs6>
+                                                <v-btn block class="mr-1" :loading="printing" @click="printTable()">
+                                                    Print
+                                                    <fluro-icon right icon="print" />
+                                                </v-btn>
+                                            </v-flex>
+                                            <v-flex xs6>
+                                                <v-btn block class="ml-1" :loading="exporting" @click="printTable(true)">
+                                                    Export CSV
+                                                    <fluro-icon right icon="file-spreadsheet" />
+                                                </v-btn>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-container>
+                                </template>
+                            </fluro-table>
                         </flex-column>
                         <flex-column class="border-left" style="max-width:320px;">
                             <tabset :justified="true">
@@ -61,28 +80,27 @@
                     <flex-column-body style="background: #fafafa;">
                         <div v-for="dataset in dataSets" :key="dataset._id">
                             <v-container fluid class="history">
-                                <constrain sm >
+                                <constrain sm>
                                     <h3 margin>{{dataset.title}} - Records</h3>
                                     <fluro-timeline v-model="dataset.data">
                                         <template v-slot:card="{entry}">
                                             <div class="timeline-card">
                                                 <v-layout align-center>
                                                     <v-flex>
-                                                     <strong>{{entry.date | formatDate('ddd D MMM YYYY')}}</strong>
-                                                     <div class="font-xxs muted">{{entry.date | timeago}}</div>
+                                                        <strong>{{entry.date | formatDate('ddd D MMM YYYY')}}</strong>
+                                                        <div class="font-xxs muted">{{entry.date | timeago}}</div>
                                                     </v-flex>
                                                     <v-flex shrink>
                                                         <v-btn class="ma-0" small :href="entry.link" target="_blank">
-                                                            Download CSV <fluro-icon right icon="arrow-to-bottom" />
+                                                            Download CSV
+                                                            <fluro-icon right icon="arrow-to-bottom" />
                                                         </v-btn>
                                                     </v-flex>
                                                 </v-layout>
-                                               
-                                                    
-                                                    <!-- <fluro-realm-bar :realm="entry.realms" /> -->
-                                                    <!-- <label>{{entry.title}}</label> -->
-                                                    <!-- <pre>{{entry}}</pre> -->
-                                                    <!-- } -->
+                                                <!-- <fluro-realm-bar :realm="entry.realms" /> -->
+                                                <!-- <label>{{entry.title}}</label> -->
+                                                <!-- <pre>{{entry}}</pre> -->
+                                                <!-- } -->
                                             </div>
                                         </template>
                                     </fluro-timeline>
@@ -182,6 +200,55 @@ export default {
     },
     mixins: [FluroContentViewMixin],
     methods: {
+        printTable(exportCSV) {
+            console.log('PRINT TABLE')
+            var self = this;
+            var table = self.$refs.table;
+
+            /////////////////////////////////////////
+
+            self.$fluro.global.softLoading = true;
+            if (exportCSV) {
+                self.exporting = true;
+            } else {
+                self.printing = true;
+            }
+
+            /////////////////////////////////////////
+
+            self.$fluro.global.print(self.item.title, 'table', {
+                    value: {
+                        rows: JSON.parse(JSON.stringify(self.filtered)),
+                        renderColumns: self.columns,
+                        dataType: self.item.filterType || 'node',
+                        //             groupingColumn: table.groupingColumn,
+                        //             groupingFunction: table.groupingColumn ? function(rows) {
+
+                        //                 return table.groupByColumn(rows, table.groupingColumn, true)
+                        //             } : null,
+                        export: exportCSV,
+                    }
+                })
+                .then(function() {
+
+                    if (exportCSV) {
+                        self.exporting = false;
+                    } else {
+                        self.printing = false;
+                    }
+                    self.$fluro.global.softLoading = false;
+                })
+                .catch(function() {
+
+                    if (exportCSV) {
+                        self.exporting = false;
+                    } else {
+                        self.printing = false;
+                    }
+                    self.$fluro.global.softLoading = false;
+                });
+
+        },
         refilter: _.debounce(function() {
             var self = this;
 
@@ -322,6 +389,27 @@ export default {
         }
     },
     computed: {
+        filterSort() {
+            return this.item.filterType ? this.item.filterSort : null;
+        },
+        defaultSort() {
+            if (!this.filterSort) {
+                return;
+            }
+            return this.filterSort.key || this.filterSort.sortKey
+        },
+        defaultSortType() {
+            if (!this.filterSort) {
+                return;
+            }
+            return this.filterSort.type || this.filterSort.sortType
+        },
+        defaultSortDirection() {
+            if (!this.filterSort) {
+                return;
+            }
+            return this.filterSort.direction || this.filterSort.sortDirection
+        },
         filterChangeString() {
             return FilterService.getFilterChangeString(this.filterConfig);
         },
@@ -419,10 +507,6 @@ export default {
                 }, []);
             }
 
-
-
-
-
             return results;
         },
         jsonURL() {
@@ -485,12 +569,20 @@ export default {
             var self = this;
 
             return _.map(self.columns, function(column) {
+
+                var key = column.key;
+                if (String(key).toLowerCase().includes('phone') || String(key).toLowerCase().includes('mobile')) {
+                    return 0;
+                }
+
+
                 return _.reduce(self.filtered, function(set, row) {
 
-                    //TODO Make this more advanced for nested and multi field entries
-                    var value = _.get(row, column.key);
 
-                    if(isNaN(value)) {
+                    //TODO Make this more advanced for nested and multi field entries
+                    var value = _.get(row, key);
+
+                    if (isNaN(value)) {
                         return set;
                     }
 
@@ -499,6 +591,17 @@ export default {
                     return set;
                 }, 0)
             })
+        },
+        avg() {
+            var self = this;
+
+            var rowCount = self.filtered.length;
+
+            return _.map(self.totals, function(total) {
+
+                return Math.round(total / rowCount);
+            })
+
         },
         columns() {
             if (!this.item.columns.length) {
@@ -540,6 +643,8 @@ export default {
     },
     data() {
         return {
+            printing: false,
+            exporting: false,
             filterSet: [],
             filterConfig: {},
             filterDebounce: 300,
@@ -556,8 +661,8 @@ export default {
 
 </script>
 <style lang="scss">
-
 .history .timeline-card {
- padding: 8px;
+    padding: 8px;
 }
+
 </style>

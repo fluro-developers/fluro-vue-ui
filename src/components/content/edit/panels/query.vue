@@ -14,6 +14,7 @@
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.firstLine" v-model="model"></fluro-content-form-field>
                             </div>
+
                             <template v-if="isFilterQuery">
                                 <template v-if="model.disableDataTypeSelect || model._id">
                                     <h4>Content Type: {{model.filterType | definitionTitle(true)}}</h4>
@@ -21,29 +22,41 @@
                                 <template v-else>
                                     <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.filterType" v-model="model"></fluro-content-form-field>
                                 </template>
+                                <v-layout align-center>
+                                    <v-flex>
+                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.sortKey" v-model="model.filterSort" />
+                                    </v-flex>
+                                    <v-flex>
+                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.sortType" v-model="model.filterSort" />
+                                    </v-flex>
+                                    <v-flex>
+                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.sortDirection" v-model="model.filterSort" />
+                                    </v-flex>
+                                </v-layout>
+                                <pre>{{model.filterSort}}</pre>
                             </template>
-                            <v-layout align-center>
-                                <v-flex>
-                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.sort" v-model="model" />
-                                </v-flex>
-                                <v-flex shrink>
-                                    <v-btn icon class="ma-0" v-tippy content="Advanced" @click="manualSort = !manualSort">
-                                        <fluro-icon :library="manualSort ? 'fas' : 'far'" icon="cogs" />
-                                    </v-btn>
-                                </v-flex>
-                            </v-layout>
+                            <template v-else>
+                                <v-layout align-center>
+                                    <v-flex>
+                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.sort" v-model="model" />
+                                    </v-flex>
+                                    <v-flex shrink>
+                                        <v-btn icon class="ma-0" v-tippy content="Advanced" @click="manualSort = !manualSort">
+                                            <fluro-icon :library="manualSort ? 'fas' : 'far'" icon="cogs" />
+                                        </v-btn>
+                                    </v-flex>
+                                </v-layout>
+                            </template>
                             <fluro-panel>
                                 <tabset>
-                                    <tab heading="Filter Criteria" index="criteria" v-if="model.filterType">
-                                     
-                                                <fluro-panel-body style="background: #eee;">
-                                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.filterSearch" v-model="model" />
-                                                    <!-- <fluro-panel-title>
+                                    <tab heading="Filter Criteria" index="criteria" v-if="isFilterQuery && model.filterType">
+                                        <fluro-panel-body style="background: #eee;">
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.filterSearch" v-model="model" />
+                                            <!-- <fluro-panel-title>
                                                 
                                             </fluro-panel-title> -->
-                                                    <filter-condition-group :rows="rows" :useSample="true" :mini="true" v-model="model.filterConfiguration" :type="model.filterType" :debounce="filterDebounce" />
-                                                </fluro-panel-body>
-                                          
+                                            <filter-condition-group :rows="rows" :useSample="true" :mini="true" v-model="model.filterConfiguration" :type="model.filterType" :debounce="filterDebounce" />
+                                        </fluro-panel-body>
                                     </tab>
                                     <tab heading="Query" index="query" v-else>
                                         <flex-column style="min-height:600px;">
@@ -273,8 +286,13 @@ export default {
     created() {
         var self = this;
 
-        if (!this.model.filterConfiguration) {
-            this.model.filterConfiguration = {};
+        if (!self.model.filterConfiguration) {
+            self.model.filterConfiguration = {};
+        }
+
+
+        if (!self.model.filterSort) {
+            self.model.filterSort = {};
         }
 
         self.reloadSample();
@@ -422,6 +440,101 @@ export default {
                 directive: "select",
                 description: "The type of item you want to return from this query",
                 options: self.typeOptions
+            });
+
+
+
+            ////////////////////////////////////////////////////
+
+            addField("sortType", {
+                key: 'type',
+                title: "Sort Type",
+                minimum: 0,
+                maximum: 1,
+                type: "string",
+                directive: "select",
+                description: "The type of item you want to return from this query",
+                options: [{
+                        name: 'String / Text',
+                        value: 'string',
+                    },
+                    {
+                        name: 'Number',
+                        value: 'number',
+                    },
+                    {
+                        name: 'Integer (Whole Number)',
+                        value: 'integer',
+                    },
+                    {
+                        name: 'Decimal / Float',
+                        value: 'float',
+                    },
+                    {
+                        name: 'Date',
+                        value: 'date',
+                    },
+                    {
+                        name: 'Boolean (True/False)',
+                        value: 'boolean',
+                    },
+                ],
+            });
+
+            addField("sortKey", {
+                key: 'key',
+                title: "Sorting Field Key",
+                minimum: 0,
+                maximum: 1,
+                type: "string",
+                // directive: "select",
+                description: "The field to sort on",
+                // options: [{
+                //         name: 'String / Text',
+                //         value: 'string',
+                //     },
+                //     {
+                //         name: 'Number',
+                //         value: 'number',
+                //     },
+                //     {
+                //         name: 'Integer (Whole Number)',
+                //         value: 'integer',
+                //     },
+                //     {
+                //         name: 'Decimal / Float',
+                //         value: 'float',
+                //     },
+                //     {
+                //         name: 'Date',
+                //         value: 'date',
+                //     },
+                //     {
+                //         name: 'Boolean (True/False)',
+                //         value: 'boolean',
+                //     },
+                // ],
+            });
+
+
+            addField("sortDirection", {
+                key: 'direction',
+                title: "Sorting Order",
+                minimum: 0,
+                maximum: 1,
+                type: "string",
+                directive: "select",
+                description: "Select which order to sort by",
+                options: [
+                    {
+                        name: 'Ascending',
+                        value: 'asc',
+                    },
+                    {
+                        name: 'Descending',
+                        value: 'dsc',
+                    },
+                ],
             });
 
 

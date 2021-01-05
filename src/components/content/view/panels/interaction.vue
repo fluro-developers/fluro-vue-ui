@@ -6,6 +6,7 @@
                     <v-container v-if="item">
                         <fluro-content-render :fields="defaultFields" :raw="true" v-model="item.rawData"></fluro-content-render>
                         <fluro-content-render :fields="interactionFields" :raw="true" v-model="item" />
+                        
                         <!-- <pre>{{defaultFields}}</pre> -->
                         <fluro-panel v-if="paymentExists">
                             <fluro-panel-body>
@@ -265,6 +266,11 @@ export default {
                 fields
             });
 
+
+
+
+            
+
             function addField(key, details) {
                 details.key = key;
                 array.push(details);
@@ -338,6 +344,18 @@ export default {
                         }
                     }
                 ]
+            });
+
+
+            addField("transactions", {
+                title: "Transactions",
+                type: "reference",
+                key: "transactions",
+                minimum:0,
+                maximum:0,
+                params:{
+                    restrictType:'transaction',
+                }
             });
 
             function addField(key, details) {

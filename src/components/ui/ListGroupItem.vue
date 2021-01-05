@@ -122,6 +122,23 @@ export default {
 
 												return array;
 								},
+								readablePaymentStatus() {
+									var self = this;
+												switch (self.item.paymentStatus) {
+																case 'refund':
+																				return 'Refunded';
+																				break;
+																case 'failed':
+																				return 'Failed';
+																				break;
+																case 'success':
+																				return 'Paid';
+																				break;
+																case 'partial_refund':
+																				return 'Partially Refunded';
+																				break;
+												}
+								},
 								renderFirstLine() {
 
 												var self = this;
@@ -154,13 +171,21 @@ export default {
 																				break;
 																case 'transaction':
 
-																				pieces.push(self.$fluro.utils.formatCurrency(self.item.amount, self.item.currency));
-																				pieces.push(self.item.mode == 'sandbox' ? 'Sandbox / Test Payment' : 'Live Payment');
+																			
+																				pieces.push(`${self.$fluro.utils.formatCurrency(self.item.amount, self.item.currency)} ${String(self.item.currency).toUpperCase()}`);
+
+																					pieces.push(self.readablePaymentStatus);
+																				if (self.item.mode == 'sandbox') {
+																								pieces.push('Sandbox / TEST Payment');
+																				}
+
+																				
+
 																				pieces.push(self.item.module);
 
 
 
-																				return _.compact(pieces).join(', ');
+																				return _.compact(pieces).join(' • ');
 																				break;
 																case 'family':
 

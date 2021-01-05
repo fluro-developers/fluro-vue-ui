@@ -74,6 +74,37 @@
 																																{{column.title}}
 																												</th>
 																												<th class="last shrink" v-if="actionsAreEnabled">
+																																<v-menu :close-on-content-click="false" @click.native.stop offset-y>
+																																				<template v-slot:activator="{ on }">
+																																								<div v-on="on">
+																																												<v-btn v-tippy content="Table Settings" class="ma-0" small icon>
+																																																<fluro-icon icon="cog" />
+																																												</v-btn>
+																																								</div>
+																																				</template>
+																																				<v-card tile>
+																																								<slot name="optionsabove"></slot>
+																																								<!-- <v-container v-if="availableKeys.length">
+																																												<v-autocomplete label="Group rows by" :items="availableGroupingKeys" @change="toggleColumnGrouping" :return-object="true" item-text="title"></v-autocomplete>
+																																								</v-container>
+																																								<v-container class="border-top border-bottom">
+																																												<strong>Select Columns</strong>
+																																								</v-container>
+																																								<v-list style="max-height: 50vh;" class="scroll-y" dense>
+																																												<v-list-tile :class="{columnselected:columnIsSelected(field)}" @click="toggleColumn(field)" v-for="field in availableKeys">
+																																																<v-list-tile-action>
+																																																				<fluro-icon icon="check" v-if="columnIsSelected(field)" />
+																																																</v-list-tile-action>
+																																																<v-list-tile-content>
+																																																				<v-list-tile-title>
+																																																								{{field.title}}
+																																																				</v-list-tile-title>
+																																																</v-list-tile-content>
+																																												</v-list-tile>
+																																								</v-list> -->
+																																								<slot name="optionsbelow"></slot>
+																																				</v-card>
+																																</v-menu>
 																																<!-- <v-btn class="ma-0" small icon @click.stop.prevent="toggleConfiguration()"> -->
 																																<!-- <fluro-icon icon="cog" /> -->
 																																<!-- </v-btn> -->
@@ -148,13 +179,14 @@
 																												</tr>
 																								</template>
 																				</tbody>
-																				<tfoot class="totals" v-if="totals && totals.length">
-																								<tr>
+																				<tfoot class="totals" v-if="totals && totals.length || avg && avg.length">
+																								<tr v-if="totals && totals.length">
 																												<th class="first shrink checkbox-cell" v-if="selectionEnabled">
+																																Totals
 																												</th>
 																												<template v-for="(column, index) in columns">
 																																<!-- <th :class="[column.classes, {'shrink':column.shrink, sortable:isSortable(column), 'sorting':sort.sortKey == column.key, 'tiny':column.tiny, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}]" v-tippy :content="totalTooltip(column, index)" v-for="(column, index) in columns"> -->
-																																<table-cell v-if="totals[index]" :row="totals" :column="{renderer:column.renderer, type:column.type, key:index}" />
+																																<table-cell v-if="totals[index]" v-tippy :content="`Average: ${avg[index]}`" :row="totals" :column="{renderer:column.renderer, type:column.type, key:index}" />
 																																<td v-else></td>
 																																<!-- <Span v-if="totals[index]" style="padding:8px;">{{totals[index]}}</Span> -->
 																																<!-- </th> -->
@@ -359,6 +391,10 @@ export default {
 												type: Array,
 
 								},
+								avg: {
+												type: Array,
+
+								},
 								items: {
 												type: Array,
 												default () {
@@ -448,13 +484,13 @@ export default {
 								}
 				},
 				computed: {
-								computedTotals() {
-												var self = this;
+								// computedTotals() {
+								// 				var self = this;
 
-												return _.map(self.totals, function(value) {
-																return {}
-												})
-								},
+								// 				return _.map(self.totals, function(value) {
+								// 								return {}
+								// 				})
+								// },
 								// totalsLookup() {
 								// 				var self = this;
 
@@ -770,7 +806,7 @@ export default {
 
 												//////////////////////////////////////////////
 
-												if (sortingDirection == 'desc') {
+												if (sortingDirection == 'desc' || sortingDirection == 'dsc') {
 																items.reverse();
 												}
 
@@ -2139,11 +2175,12 @@ export default {
 												}
 
 												&.totals {
-													
-																th, td {
-																	border-top: 4px solid rgba(#000, 0.1);
+
+																th,
+																td {
+																				border-top: 4px solid rgba(#000, 0.1);
 																				// padding: 0 !important;
-																				
+
 																				// font-size: 0.8em;
 																				// background: #eee !important;
 																}

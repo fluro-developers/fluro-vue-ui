@@ -52,22 +52,22 @@ export default {
 				props: {
 								controls: {
 												type: [Boolean, String],
-												default:true,
+												default: true,
 								},
 								autoplay: {
 												type: [Boolean, String],
 								},
 								muted: {
 												type: [Boolean, String],
-												default:false,
+												default: false,
 								},
 								loop: {
 												type: [Boolean, String],
-												default:false,
+												default: false,
 								},
 								playsinline: {
 												type: [Boolean, String],
-												default:false,
+												default: false,
 								},
 								item: Object,
 								width: {
@@ -118,7 +118,7 @@ export default {
 				//     }
 				// },
 				computed: {
-						
+
 								preloadStyle() {
 												var self = this;
 
@@ -184,10 +184,10 @@ export default {
 												return output;
 								},
 								computedWidth() {
-												return _.get(this.item, 'width') || this.width || 1920;
+												return this.width || _.get(this.item, 'width') || 1920;
 								},
 								computedHeight() {
-												return _.get(this.item, 'height') || this.height || 1080;
+												return this.height || _.get(this.item, 'height') || 1080;
 								},
 								aspectRatio() {
 												return (this.computedHeight / this.computedWidth * 100);

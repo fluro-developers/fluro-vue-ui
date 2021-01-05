@@ -2,8 +2,8 @@
     <flex-column class="content-view">
         <fluro-page-preloader v-if="loading" contain />
         <template v-else-if="model">
-            <flex-column-header class="border-bottom">
-                <page-header :type="type" v-if="!hideTitle">
+            <flex-column-header class="border-bottom" v-if="!hideTitle">
+                <page-header :type="type" >
                     <template v-slot:left>
                         <div>
                             <h3>
