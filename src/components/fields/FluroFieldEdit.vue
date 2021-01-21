@@ -1630,7 +1630,7 @@ export default {
                 key: "currency",
                 title: "Currency",
                 description: "Select what currency symbol to display",
-                minimum: 0,
+                minimum: 1,
                 maximum: 1,
                 type: "string",
                 directive: "select",

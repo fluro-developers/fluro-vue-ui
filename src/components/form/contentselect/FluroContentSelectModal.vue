@@ -34,9 +34,9 @@
                             </template>
                         </v-flex>
                         <v-spacer />
-                        <v-flex shrink v-if="$vuetify.breakpoint.smAndUp">
+                        <v-flex shrink>
                             <v-btn icon small class="my-0" @click="showFilters = !showFilters">
-                                <fluro-icon icon="filter" />
+                                <fluro-icon icon="filter" :library="showFilters ? 'fas' : 'far'" />
                             </v-btn>
                         </v-flex>
                         <v-flex shrink>
@@ -238,7 +238,7 @@ export default {
             rows: [],
             search: "",
             searchFocussed: false,
-            showFilters: this.options.filter ? true : false,
+            showFilters: this.$vuetify.breakpoint.smAndUp && this.options.filter ? true : false,
             filterConfig: defaultFilter,
             selector: this.options.selector
         };

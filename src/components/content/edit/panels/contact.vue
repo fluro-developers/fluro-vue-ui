@@ -56,33 +56,38 @@
 																																								</div>
 																																				</template>
 																																</template>
-																																<wrapper xs>
-																																				<v-layout row wrap>
-																																								<v-flex :class="{'xs12':$vuetify.breakpoint.xsOnly}">
-																																												<fluro-content-form-field :autofocus="$vuetify.breakpoint.smAndUp" class="right-messages" :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.firstName" v-model="model"></fluro-content-form-field>
-																																												<fluro-content-form-field class="right-messages" :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.preferredName" v-model="model" v-if="showPreferredName"></fluro-content-form-field>
-																																												<fluro-content-form-field class="right-messages" :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.ethnicName" v-model="model" v-if="showEthnicName"></fluro-content-form-field>
-																																												<div class="additions">
-																																																<a class="hint" v-if="!showPreferredName" @click="show.preferredName = true">Add Nick/Preferred Name</a>
-																																																<a class="hint" v-if="!showEthnicName" @click="show.ethnicName = true">Add Ethnic Name</a>
-																																												</div>
-																																								</v-flex>
-																																								<v-flex :class="{'xs12':$vuetify.breakpoint.xsOnly}" v-if="showMiddleName">
-																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.middleName" v-model="model"></fluro-content-form-field>
-																																								</v-flex>
-																																								<v-flex :class="{'xs12':$vuetify.breakpoint.xsOnly}">
-																																												<fluro-content-form-field class="right-messages" :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.lastName" v-model="model"></fluro-content-form-field>
-																																												<fluro-content-form-field class="right-messages" :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.maidenName" v-model="model" v-if="showMaidenName"></fluro-content-form-field>
-																																												<div class="additions">
-																																																<a class="hint" v-if="!showMiddleName" @click="show.middleName = true">Add Middle Name</a>
-																																																<a class="hint" v-if="!showMaidenName" @click="show.maidenName = true">Add Maiden Name</a>
-																																												</div>
-																																								</v-flex>
-																																				</v-layout>
-																																				<template v-if="contactDefinitions.length">
-																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="definitionField" v-model="model"></fluro-content-form-field>
-																																				</template>
-																																</wrapper>
+																																<v-layout row wrap>
+																																				<v-flex :class="{'xs12':$vuetify.breakpoint.xsOnly}">
+																																								<fluro-content-form-field :autofocus="$vuetify.breakpoint.smAndUp" class="right-messages" :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.firstName" v-model="model"></fluro-content-form-field>
+																																								<fluro-content-form-field class="right-messages" :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.preferredName" v-model="model" v-if="showPreferredName"></fluro-content-form-field>
+																																								<fluro-content-form-field class="right-messages" :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.ethnicName" v-model="model" v-if="showEthnicName"></fluro-content-form-field>
+																																								<div class="additions">
+																																												<a class="hint" v-if="!showPreferredName" @click="show.preferredName = true">Add Nick/Preferred Name</a>
+																																												<a class="hint" v-if="!showEthnicName" @click="show.ethnicName = true">Add Ethnic Name</a>
+																																								</div>
+																																				</v-flex>
+																																				<v-flex :class="{'xs12':$vuetify.breakpoint.xsOnly}" v-if="showMiddleName">
+																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.middleName" v-model="model"></fluro-content-form-field>
+																																				</v-flex>
+																																				<v-flex :class="{'xs12':$vuetify.breakpoint.xsOnly}">
+																																								<fluro-content-form-field class="right-messages" :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.lastName" v-model="model"></fluro-content-form-field>
+																																								<fluro-content-form-field class="right-messages" :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.maidenName" v-model="model" v-if="showMaidenName"></fluro-content-form-field>
+																																								<div class="additions">
+																																												<a class="hint" v-if="!showMiddleName" @click="show.middleName = true">Add Middle Name</a>
+																																												<a class="hint" v-if="!showMaidenName" @click="show.maidenName = true">Add Maiden Name</a>
+																																								</div>
+																																				</v-flex>
+																																</v-layout>
+																																<template v-if="contactDefinitions.length">
+																																				<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="definitionField" v-model="model"></fluro-content-form-field>
+																																</template>
+																																<!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="statusField" v-model="model" /> -->
+																																<v-input class="no-flex">
+																																				<v-label>Status</v-label>
+																																				<div>
+																																								<fluro-status-select v-model="model.status" type="contact" />
+																																				</div>
+																																</v-input>
 																																<v-layout row wrap>
 																																				<v-flex xs12 sm6>
 																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.gender" v-model="model"></fluro-content-form-field>
@@ -548,6 +553,7 @@ import FluroAcademicSelect from '../../../form/FluroAcademicSelect.vue';
 import FluroRealmSelect from '../../../form/realmselect/FluroRealmSelect.vue';
 import FluroContentEditMixin from '../FluroContentEditMixin.js';
 import FluroContactCommunicateMixin from '../../../../mixins/FluroContactCommunicateMixin';
+import FluroStatusSelect from "../../../form/FluroStatusSelect.vue";
 
 
 
@@ -606,6 +612,7 @@ export default {
 								FluroAvatarUpdate,
 								FluroRealmSelect,
 								FluroAcademicSelect,
+								FluroStatusSelect,
 				},
 				methods: {
 
@@ -1442,6 +1449,34 @@ export default {
 																directive: 'select',
 																key: 'definition',
 																options: self.contactDefinitions,
+												}
+								},
+								statusField() {
+
+												var self = this;
+
+												///////////////////////////////////
+
+												return {
+																title: 'Status',
+																minimum: 1,
+																maximum: 1,
+																type: 'string',
+																directive: 'select',
+																key: 'status',
+																options: [{
+																								name: 'Active',
+																								value: 'active',
+																				},
+																				{
+																								name: 'Draft / Incomplete record',
+																								value: 'draft',
+																				},
+																				{
+																								name: 'Archived',
+																								value: 'archived',
+																				},
+																],
 												}
 								},
 								showOutline() {

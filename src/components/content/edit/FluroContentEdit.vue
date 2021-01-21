@@ -188,7 +188,7 @@
                                     <v-spacer />
                                     <v-flex shrink>
                                         <template v-if="model._id">
-                                            <em class="muted sm">Last updated {{model.updated | timeago}}</em>
+                                            <em class="muted sm" style="margin-right:10px">Last updated {{model.updated | timeago}}</em>
                                         </template>
                                         <help title="Status Selector" :body="`Update and change the status of this ${definitionTitle}`" />
                                         <fluro-status-select v-if="canChangeStatus" v-model="model.status" :type="model._type" />

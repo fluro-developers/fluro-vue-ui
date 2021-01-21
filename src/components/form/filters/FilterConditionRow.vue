@@ -24,7 +24,7 @@
 																				</template>
 																</template>
 																<template v-else>
-																				<v-text-field single-line label v-model="model.key"></v-text-field>
+																				<v-text-field single-line label v-model="model.key" />
 																</template>
 												</v-flex>
 												<v-flex xs12 sm3>
@@ -80,10 +80,10 @@
 																<v-flex xs12 sm5 v-else-if="inputType == 'range'">
 																				<v-layout>
 																								<v-flex xs6>
-																												<v-text-field class="small-input" single-line label="from" v-model="model.value"></v-text-field>
+																												<v-text-field class="small-input" single-line label="from" v-model="model.value" />
 																								</v-flex>
 																								<v-flex xs6>
-																												<v-text-field class="small-input" single-line label="to" v-model="model.value2"></v-text-field>
+																												<v-text-field class="small-input" single-line label="to" v-model="model.value2" />
 																								</v-flex>
 																				</v-layout>
 																</v-flex>
@@ -111,7 +111,7 @@
 																																</v-select>
 																												</template>
 																												<template v-else>
-																																<!-- REFERENCE -->|
+																																<!-- REFERENCE -->
 																																<!-- rEFERENCE {{loadingValues}} - {{cleanedValueSelection.length}} -->
 																																<v-autocomplete class="small-input" multiple dense v-model="model.values" item-text="title" item-value="_id" :loading="loadingValues" :items="cleanedValueSelection">
 																																				<template v-slot:item="data">
@@ -175,8 +175,8 @@
 																												</div>
 																								</template>
 																				</template>
-																				<v-text-field v-else-if="dataType == 'number' || dataType == 'float' || dataType == 'decimal'" class="small-input" single-line v-model="model.value"></v-text-field>
-																				<v-text-field v-else-if="dataType == 'integer'" class="small-input" single-line mask="############" v-model="model.value"></v-text-field>
+																				<v-text-field v-else-if="dataType == 'number' || dataType == 'float' || dataType == 'decimal'" class="small-input" single-line v-model="model.value" />
+																				<v-text-field v-else-if="dataType == 'integer'" class="small-input" single-line mask="############" v-model="model.value" />
 																				<template v-else-if="useBasicReferenceSelect">
 																								<!-- <pre>{{referenceID}}</pre> -->
 																								<fluro-content-select-button :createDisabled="true" small block :allDefinitions="true" :maximum="1" :single-value="true" :type="useBasicReferenceSelect" v-model="model.value" />
@@ -211,7 +211,7 @@
 																				</template>
 																				<template v-else>
 																								<template v-if="requiresManualInput">
-																												<v-text-field class="small-input" single-line v-model="model.value"></v-text-field>
+																												<v-text-field class="small-input" single-line v-model="model.value" />
 																								</template>
 																								<template v-else>
 																												<template v-if="$vuetify.breakpoint.xsOnly">
@@ -547,6 +547,8 @@ export default {
 								// },
 								cleanedValueSelection() {
 												var self = this;
+
+
 
 												return _.map(self.possibleValues, function(option) {
 																if (_.isString(option)) {
@@ -1004,7 +1006,6 @@ export default {
 												//     key = splitParameters;
 												// }
 
-												// console.log('KEY', key, self.selector);
 												////////////////////////////////////
 
 												var selectableOptions = [];
@@ -1027,77 +1028,10 @@ export default {
 
 												////////////////////////////////////
 
-												if (self.forceLocalValues && self.rows.length) {
-																console.log('LOCAL VALUES')
+												var forceLocalValues = self.forceLocalValues || key == 'account';
 
 
-																// var values = {};
-
-																// ///////////////////////////////////////
-
-																// function addValueToSet(entry) {
-
-																// 				//If it's not an object
-																// 				if (!entry._id && !entry.title && !entry.name && !entry.id) {
-																// 								return values[entry] = entry;
-																// 				}
-
-																// 				if (entry.status == 'deleted') {
-																// 								return;
-																// 				}
-
-																// 				if (entry.status == 'archived' && entry._type != 'event') {
-																// 								return;
-																// 				}
-
-
-																// 				//////////////////////////////////////////////
-
-																// 				if (fieldKey == 'realms') {
-																// 								if (!_discriminator && !_discriminatorType) {
-																// 												if (entry._discriminator || entry._discriminatorType) {
-																// 																return;
-																// 												}
-																// 								}
-
-																// 				}
-
-																// 				//////////////////////////////////////////////
-
-																// 				if (_discriminator) {
-																// 								if (entry._discriminator != _discriminator) {
-																// 												return;
-																// 								}
-																// 				}
-
-																// 				//////////////////////////////////////////////
-
-																// 				if (_discriminatorType) {
-																// 								if (entry._discriminatorType != _discriminatorType) {
-																// 												return;
-																// 								}
-																// 				}
-
-																// 				//////////////////////////////////////////////
-
-																// 				if (_definition && _definition.length) {
-																// 								// console.log('Check DEFINITION', _definition, entry.title, entry.definition)
-																// 								if (entry.definition != _definition) {
-
-																// 												if (entry._type == _definition && (!entry.definition || !entry.definition.length)) {
-																// 																//The type and the definition match
-																// 												} else {
-																// 																return;
-																// 												}
-																// 								}
-																// 				}
-
-																// 				return values[entry._id || entry.title || entry.name || entry.id] = entry;
-																// }
-
-																///////////////////////////////////////
-
-																// var extractedValues = [];
+												if (forceLocalValues && self.rows.length) {
 
 																var extractedValues = {};
 
@@ -1196,6 +1130,9 @@ export default {
 																				.value();
 
 																// console.log('POSSIBLE VALUES', self.possibleValues)
+
+																	
+
 
 																self.loadingValues = false;
 																return;
@@ -1304,6 +1241,7 @@ export default {
 
 												////////////////////////////////////
 
+
 												//Show feedback to the user that we are loading
 												//the values for them
 												self.loadingValues = true;
@@ -1323,6 +1261,7 @@ export default {
 
 												//If we haven't already got the values for this request
 												if (!valueCache) {
+
 																// console.log('No value cache! Load it now')
 																//Check to see if the rows we know about already have the data
 																//we are wanting to search on, because if so we can just use those
@@ -1424,7 +1363,6 @@ export default {
 
 																				///////////////////////////////////////////////////////
 
-																				// console.log('Go get the values')
 																				//Make the request and cache it
 																				valueCache = valueStorageCache[
 																								self.rowChangeString

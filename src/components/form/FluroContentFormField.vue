@@ -285,11 +285,31 @@
 												<template v-else-if="renderer == 'select'">
 																<template v-if="useBasicDropdown">
 																				<!-- :fixed="true"  -->
-																				<v-select :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
+																				<v-select :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder">
+																								<template v-slot:item="{item}">
+																												<div class="border-bottom" v-if="item.description && item.description.length">
+																																<strong>{{item.title || item.name}}</strong><br />
+																																<div class="muted font-xs">{{item.description}}</div>
+																												</div>
+																												<template v-else>
+																																{{item.title || item.name}}
+																												</template>
+																								</template>
+																				</v-select>
 																</template>
 																<template v-else>
 																				<!-- :fixed="true"  -->
-																				<v-autocomplete :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
+																				<v-autocomplete :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder">
+																								<template v-slot:item="{item}">
+																												<div class="border-bottom" v-if="item.description && item.description.length">
+																																<strong>{{item.title || item.name}}</strong><br />
+																																<div class="muted font-xs">{{item.description}}</div>
+																												</div>
+																												<template v-else>
+																																{{item.title || item.name}}
+																												</template>
+																								</template>
+																				</v-autocomplete>
 																</template>
 												</template>
 												<template v-else-if="renderer == 'content-select-button'">
@@ -3698,7 +3718,6 @@ export default {
 												var self = this;
 
 
-												console.log('touch the field!', this.title)
 												self.$v.model.$touch()
 
 								},
@@ -4451,7 +4470,8 @@ function checkValidInput(self, input) {
 																}
 
 												} else {
-																if (!checkIsURL(input) && input.length) {
+																//If they have entered some data, and it's not a url
+																if ((input && input.length) && !checkIsURL(input)) {
 																				errors.push('Must be a valid URL eg. (https://...)', input);
 																}
 												}

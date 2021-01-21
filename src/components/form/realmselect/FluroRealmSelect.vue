@@ -1,6 +1,7 @@
 <template>
+
     <!-- v-hide="onlyOneOption" -->
-    <div class="realm-select" v-show="!singleOptionAvailable">
+    <div class="realm-select" v-show="visibleSingle || !singleOptionAvailable">
         <template v-if="selectionAvailable">
             <v-btn :small="small" :block="block" class="pill mx-0" @click.native="showModal">
                 <fluro-realm-dots :realms="selection" />
@@ -14,7 +15,7 @@
             </v-btn>
         </template>
         <!-- <pre>{{type}} {{definition}}</pre> -->
-    </div>
+</div>
 </template>
 <script>
 import Vue from 'vue';
@@ -106,6 +107,9 @@ export default {
     },
     mixins: [Layout, FluroSelectionMixin],
     props: {
+        visibleSingle:{
+            type:Boolean,
+        },
         small: {
             type: Boolean,
         },

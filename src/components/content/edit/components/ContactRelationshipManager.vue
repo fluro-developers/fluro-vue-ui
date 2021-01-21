@@ -80,7 +80,7 @@
                             <v-flex xs12 sm5>
                                 <!-- <v-input class="no-flex"> -->
                                 <!-- <v-label>Select Contacts</v-label> -->
-                                <fluro-content-select-button block type="contact" v-model="proposed.contacts" />
+                                <fluro-content-select-button block type="contact" :allDefinitions="true" v-model="proposed.contacts" />
                                 <!-- </v-input> -->
                             </v-flex>
                             <v-flex xs12 sm4>

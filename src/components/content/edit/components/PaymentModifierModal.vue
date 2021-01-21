@@ -292,7 +292,7 @@ export default {
                         isArray: isArray,
                         titles: field.titles.join(" > "),
                         options: field.options,
-                        firstTen: firstTen
+                        firstTen: _.compact(firstTen),
                     };
                 }
 
@@ -353,6 +353,7 @@ export default {
                                 }
                             } else {
                                 if (firstTen.length) {
+                                    console.log('FIRST TEN', firstTen)
                                     exampleTitle = _.first(firstTen).name;
                                     exampleValue = "'" + _.first(firstTen).value + "'";
                                 } else {

@@ -32,7 +32,7 @@ export default {
             }
         },
         index: {
-            type: String,
+            type: [String, Number],
         },
         iconType: {
             type: String

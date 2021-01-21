@@ -770,7 +770,7 @@ export default {
             return this.errorMessages.length ? true : false;
         },
         formOptions() {
-            return this.definition.data;
+            return this.definition.data || {};
         },
         gatewaySettings() {
             var self = this;
@@ -1599,6 +1599,7 @@ export default {
                     'utm_content',
                     'utm_source',
                     'utm_campaign',
+                    'utm_mailout',
                 ]);
 
                 console.log('UTM', utm)

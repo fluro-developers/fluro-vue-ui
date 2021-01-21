@@ -446,7 +446,7 @@ export default {
 
 												addField("deployment", {
 																title: "Application Type / Deployment",
-																minimum: 0,
+																minimum: self.definition.definitionName == 'checkinStation' ? 1: 0,
 																maximum: 1,
 																type: "string",
 																directive: 'select',

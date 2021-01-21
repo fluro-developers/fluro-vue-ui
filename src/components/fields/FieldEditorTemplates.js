@@ -320,7 +320,7 @@ templates.push({
 
 
 templates.push({
-    title: 'Heading',
+    title: 'Heading / Custom Text',
     description: `Add a custom heading or html markup`,
     field: {
         title: 'My Heading',
@@ -354,6 +354,25 @@ templates.push({
     },
     params: {},
 })
+
+
+templates.push({
+    title: 'Checkbox',
+    description: `Add a checkbox or True/False value`,
+    field: {
+        title: '',
+        minimum: 1,
+        maximum: 1,
+        askCount: 1,
+        type: 'boolean',
+        key: '',
+        params:{
+            storeCopy:false,
+storeData:'',
+        },
+
+    }
+});
 
 
 templates.push({

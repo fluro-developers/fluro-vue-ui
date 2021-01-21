@@ -41,7 +41,7 @@ export default {
     computed: {
         compiledOptions: function() {
             var self = this
-            var options = self.options
+            var options = self.options || {};
             if (!_.get(options, 'colors')) {
                 options.colors = self.colors
             }
@@ -101,7 +101,7 @@ export default {
                 var returnDatasource = {}
 
                 _.each(dataSource.axis, function(entryDate, key) {
-                    // console.log("in the each", entryDate, key)
+                    // console.log("in the each", groupFormat, entryDate, key)
                     var groupingKey = self.getGroupDate(entryDate, groupFormat)
                     var currentGroupedEntry = _.get(returnDatasource, groupingKey)
                     if (!currentGroupedEntry) {
@@ -270,6 +270,33 @@ export default {
         },
         getGroupDate(date, format) {
             switch (format) {
+                case '4week':
+                    var weekStartDate = moment(date).toDate();
+                    var weekMoment = moment(weekStartDate);
+                    var weekNumber = weekMoment.format('W')
+                    var year = weekMoment.format('YYYY');
+                    var periodNumber = Math.ceil(weekNumber / 4) * 4; 
+                    var periodNumberCapped = Math.min(periodNumber, 52); 
+
+                    var period = moment(`${periodNumberCapped} ${weekNumber > 52 ? year-1 : year}`, 'W YYYY').toDate();
+                    return period;
+                    break;
+                case '6week':
+                    var weekStartDate = moment(date).toDate();
+                    var weekMoment = moment(weekStartDate);
+                    var weekNumber = weekMoment.format('W')
+
+                    
+                    var year = weekMoment.format('YYYY');
+                    var periodNumber = Math.ceil(weekNumber / 6) * 6; 
+                    var periodNumberCapped = Math.min(periodNumber, 52); 
+
+                    var period = moment(`${periodNumberCapped} ${weekNumber > 52 ? year-1 : year}`, 'W YYYY').toDate();
+
+                    // console.log('MATCH', weekMoment.format('W YYYY'), weekNumber, year, periodNumberCapped, period)
+                    return period;
+
+                    break;
                 case 'year':
                 case 'week':
                 default:

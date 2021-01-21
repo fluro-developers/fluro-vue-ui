@@ -22,6 +22,7 @@
                                 <template v-else>
                                     <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.filterType" v-model="model"></fluro-content-form-field>
                                 </template>
+                                <v-container pa-0 grid-list-md>
                                 <v-layout align-center>
                                     <v-flex>
                                         <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.sortKey" v-model="model.filterSort" />
@@ -33,7 +34,8 @@
                                         <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.sortDirection" v-model="model.filterSort" />
                                     </v-flex>
                                 </v-layout>
-                                <pre>{{model.filterSort}}</pre>
+                            </v-container>
+                                
                             </template>
                             <template v-else>
                                 <v-layout align-center>
@@ -68,11 +70,15 @@
                                             <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
                                         </fluro-panel-body>
                                     </tab>
-                                    <tab heading="Columns">
-                                        <fluro-panel-body>
+                                    <tab :heading="`${model.columns.length} Columns`">
+                                        <!-- <fluro-panel-body> -->
                                             <!-- <h3 margin>Columns</h3> -->
-                                            <column-customiser v-model="model.columns" :sampleData="sample" :config="config" :loadingSample="loadingSample" />
-                                        </fluro-panel-body>
+                                            <column-editor :query="model" v-model="model.columns" />
+
+                                            
+<!-- ColumnEditor -->
+                                            <!-- <column-customiser v-model="model.columns" :sampleData="sample" :config="config" :loadingSample="loadingSample" /> -->
+                                        <!-- </fluro-panel-body> -->
                                     </tab>
                                 </tabset>
                             </fluro-panel>
@@ -182,6 +188,7 @@ import FluroCodeEditor from '../../../form/FluroCodeEditor.vue';
 import FluroContentEditMixin from "../FluroContentEditMixin.js";
 import FilterConditionGroup from "../../../form/filters/FilterConditionGroup.vue";
 import ColumnCustomiser from "../components/ColumnCustomiser.vue";
+import ColumnEditor from "../components/ColumnEditor.vue";
 // import ResultSetEdit from './resultset.vue'
 /////////////////////////////////
 
@@ -198,6 +205,7 @@ export default {
         FilterConditionGroup,
         ColumnCustomiser,
         FluroCodeEditor,
+        ColumnEditor,
         // ResultSetEdit
     },
     methods: {

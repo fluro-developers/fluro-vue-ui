@@ -32,6 +32,7 @@ export default {
 												type: Boolean,
 												default: false,
 								},
+
 								cacheKey: {
 												type: [String, Number],
 								},
@@ -39,6 +40,7 @@ export default {
 												type: Object,
 												default () {
 																return {
+																				allDefinitions: true,
 																				sort: {
 																								key: 'created',
 																								direction: 'desc',
@@ -86,6 +88,7 @@ export default {
 								cacheKey(c) {
 												this.dataSource.cacheKey = c;
 								},
+
 								loading(val) {
 												this.$emit('loading', val);
 								}

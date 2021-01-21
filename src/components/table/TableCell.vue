@@ -3,6 +3,8 @@
         <!-- <pre>{{column}}</pre> -->
         <!-- <pre>{{formattedArray}}</pre> -->
         <!-- <pre>{{rawValue}} {{column.key}}</pre> -->
+
+        
         <div :class="{'wrap-limit':shouldWrap}">
             <component v-if="renderer" :data="preValue" :is="renderer" :row="row" :column="column" />
             <template v-else-if="simpleArray">
@@ -236,7 +238,7 @@ export default {
                     break
                 case 'currency':
                     renderer = CurrencyCell;
-                break;
+                    break;
                 case 'number':
                 case 'integer':
                 case 'decimal':
@@ -244,9 +246,10 @@ export default {
                     renderer = NumberCell;
                     break;
 
+
             }
 
-            if (renderer) {
+            if (renderer && typeof renderer != 'string') {
                 return renderer;
             }
 
@@ -519,7 +522,7 @@ export default {
             return (mainKey); //.split('[]')[0];
         },
         subField() {
-            var key = String(this.column.key)  || '';
+            var key = String(this.column.key) || '';
             var pieces = key.split('[]');
 
             if (pieces.length > 1) {
@@ -678,7 +681,7 @@ export default {
             // console.log('RAW VAL', val);
             ///////////////////////////////
 
-            var definitionDiscriminator = (String(this.column.key)  || '').split('|')[1];
+            var definitionDiscriminator = (String(this.column.key) || '').split('|')[1];
 
             ///////////////////////////////
 

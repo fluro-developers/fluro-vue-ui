@@ -29,6 +29,7 @@
                                     <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.emails" v-model="model" />
                                 </template>
                             </fluro-content-form>
+                            
                             <template v-if="definition">
                                 <fluro-panel v-if="definition.fields && definition.fields.length">
                                     <tabset :justified="true">
@@ -48,12 +49,51 @@
                                 </fluro-panel>
                             </template>
                             <template v-else>
-                              <fluro-panel>
-                                <fluro-panel-body style="text-align:center">
-                                 No definition currently exists for this {{model.definition || model._type }}
-                                </fluro-panel-body>
-                              </fluro-panel>
+                                <fluro-panel>
+                                    <fluro-panel-body style="text-align:center">
+                                        No definition currently exists for this {{model.definition || model._type }}
+                                    </fluro-panel-body>
+                                </fluro-panel>
                             </template>
+
+                            <fluro-panel v-if="model.utm">
+                                <fluro-panel-title>
+                                    <strong>UTM Tags</strong>
+                                </fluro-panel-title>
+                                <fluro-panel-body>
+                                    <v-layout row wrap>
+                                        <v-flex xs6 v-if="model.utm.utm_campaign">
+                                            <v-input label="UTM Campaign" class="no-flex">
+                                               <div>
+                                                {{model.utm.utm_campaign}}
+                                               </div>
+                                            </v-input>
+                                        </v-flex>
+                                        <v-flex xs6 v-if="model.utm.utm_medium">
+                                            <v-input label="UTM Medium" class="no-flex">
+                                                 <div>
+                                                {{model.utm.utm_medium}}
+                                               </div>
+                                            </v-input>
+                                        </v-flex>
+                                        <v-flex xs6 v-if="model.utm.utm_source">
+                                            <v-input label="UTM Source" class="no-flex">
+                                                 <div>
+                                                {{model.utm.utm_source}}
+                                               </div>
+                                            </v-input>
+                                        </v-flex>
+                                        <v-flex xs6 v-if="model.utm.utm_term">
+                                            <v-input label="UTM Term" class="no-flex">
+                                                 <div>
+                                                {{model.utm.utm_term}}
+                                                 </div>
+                                            </v-input>
+                                        </v-flex>
+                                        
+                                    </v-layout>
+                                </fluro-panel-body>
+                            </fluro-panel>
                         </constrain>
                     </v-container>
                 </flex-column-body>

@@ -182,7 +182,7 @@
 																				<tfoot class="totals" v-if="totals && totals.length || avg && avg.length">
 																								<tr v-if="totals && totals.length">
 																												<th class="first shrink checkbox-cell" v-if="selectionEnabled">
-																																Totals
+																																<fluro-icon icon="calculator-alt" />
 																												</th>
 																												<template v-for="(column, index) in columns">
 																																<!-- <th :class="[column.classes, {'shrink':column.shrink, sortable:isSortable(column), 'sorting':sort.sortKey == column.key, 'tiny':column.tiny, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right'}]" v-tippy :content="totalTooltip(column, index)" v-for="(column, index) in columns"> -->

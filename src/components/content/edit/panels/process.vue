@@ -59,7 +59,9 @@
                                     </template>
                                     <fluro-panel v-if="definition && definition.fields && definition.fields.length">
                                         <fluro-panel-body>
+                                            <template v-if="!model.item">
                                             <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="fieldHash.title" v-model="model" />
+                                            </template>
                                             <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields"></fluro-content-form>
                                         </fluro-panel-body>
                                     </fluro-panel>

@@ -53,7 +53,7 @@
                     </v-container>
                 </flex-column-body>
             </tab>
-            <tab :heading="`Team Members`" v-if="model.rostered">
+            <tab :heading="`Team Members`" >
                 <flex-column-body style="background: #fafafa;">
                     <v-container>
                         <constrain sm>

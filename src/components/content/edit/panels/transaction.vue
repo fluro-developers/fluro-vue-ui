@@ -141,7 +141,7 @@
                                         <fluro-panel-title>
                                             <strong>Card Payment</strong>
                                         </fluro-panel-title>
-                                        <fluro-panel-body>
+                                        <fluro-panel-body v-if="model.transactionData && model.transactionData.source">
                                             <h4>XXXX-XXXX-XXXX-{{model.transactionData.source.last4}}</h4>
                                             <h5>{{model.transactionData.source.name}} {{model.transactionData.source.brand}} {{model.transactionData.source.country}}</h5>
                                             <div>{{model.transactionData.source.exp_month}}/{{model.transactionData.source.exp_year}}</div>

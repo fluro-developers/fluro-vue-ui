@@ -7,7 +7,7 @@
 export default {
     props: {
         'row': {
-            type: Object,
+            type:Object,
         },
         'column': {
             type: Object,

@@ -178,6 +178,8 @@
 																																																																<fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.confirmationMessage" v-model="model" />
 																																																																<fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.confirmationTemplate" v-model="model" />
 																																																																<fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.notifyContacts" v-model="model" />
+																																																																<fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.notifyTeams" v-model="model" />
+																																																																<fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.notificationMessage" v-model="model" />
 																																																																<fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.enableReceipt" v-model="model" />
 																																																												</template>
 																																																								</fluro-content-form>
@@ -285,12 +287,11 @@
 																																								</v-input>
 																																								<payment-gateway-expression-editor v-if="model.data.publicData.paymentGateways.length > 1" :form="model" v-model="model.data.gatewaySettings" />
 																																								<fluro-panel margin>
-																																									<fluro-panel-body>
-																																												<!-- <fluro-panel-title> -->
+																																												<fluro-panel-body>
+																																																<!-- <fluro-panel-title> -->
 																																																<v-label>Payment Modifiers</v-label>
 																																																<p class="help-block">Add payment modifiers to adjust the required payment amount depending on values entered by the user</p>
-																																												<!-- </fluro-panel-title> -->
-																																												
+																																																<!-- </fluro-panel-title> -->
 																																																<!-- <v-input class="no-flex"> -->
 																																																<payment-modifier-editor :form="model" v-model="model.paymentDetails.modifiers" />
 																																																<!-- <pre>{{model.paymentDetails.modifiers}}</pre> -->
@@ -1202,7 +1203,7 @@ export default {
 												///////////////////////////////
 
 												array.push({
-																title: 'Notifications',
+																title: 'Notify Contacts',
 																key: 'notifyContacts',
 																minimum: 0,
 																maximum: 0,
@@ -1660,14 +1661,56 @@ export default {
 
 
 												addField('notifyContacts', {
-																title: 'Send Notifications',
+																title: 'Send Admin Notifications to Contacts',
 																minimum: 0,
 																maximum: 0,
 																type: 'reference',
 																params: {
 																				restrictType: 'contact',
 																},
-																description: `Send a basic notification to the following contacts when a new ${self.model.title} is submitted`,
+																description: `Send a basic notification selected contacts when a new ${self.model.title} is submitted`,
+												})
+
+												addField('notifyTeams', {
+																title: 'Send Admin Notifications to Groups/Teams',
+																minimum: 0,
+																maximum: 0,
+																type: 'reference',
+																params: {
+																				restrictType: 'team',
+																				allDefinitions: true,
+																},
+																description: `Send a basic notification to members of selected teams when a new ${self.model.title} is submitted`,
+												})
+
+
+												var formTokens = self.$fluro.utils.getFlattenedFields(self.model.fields, [], []).map(function(field) {
+
+																console.log('FIELD', field);
+																// return {
+																// 				title: field.title,
+																// 				value: `<%= get('data.${field.trail.join('.')}') %>`,
+																// }
+
+																return {
+																				title: field.title,
+																				key: `rawData.${field.trail.join('.')}`,
+																}
+												});
+
+
+
+												addField('notificationMessage', {
+																title: 'Admin Notification Message',
+																minimum: 0,
+																maximum: 1,
+																type: 'string',
+																directive: 'wysiwyg',
+																description: `Add a customised message for the notification email. This will be sent to people and teams listed above`,
+																params: {
+																				persistentDescription: true,
+																				tokens:formTokens, 
+																},
 												})
 
 

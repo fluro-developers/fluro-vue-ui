@@ -58,7 +58,7 @@
                             <v-label>Select a Realm</v-label>
                             <p class="help-block">Select where this role can be used</p>
                             <!-- :type="typeName" :definition="definitionName" -->
-                            <fluro-realm-select block v-model="proposed.realms" />
+                            <fluro-realm-select visibleSingle block v-model="proposed.realms" />
                         </v-input>
                     </v-flex>
                     <v-flex xs12 md3>
