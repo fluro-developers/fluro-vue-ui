@@ -1,6 +1,6 @@
 <template>
 				<div>
-								<slot :nextPage="nextPage" :previousPage="previousPage" :setPage="setPage" :pageIndex="pageIndex" :currentPage="currentPage" :perPage="perPage" :items="items" :page="page" :totalPages="totalPages" :previousPageEnabled="previousPageEnabled" :nextPageEnabled="nextPageEnabled" />
+								<slot :nextPage="nextPage" :previousPage="previousPage" :setPage="setPage" :pageIndex="pageIndex" :currentPage="currentPage" :perPage="perPage"  :items="items" :page="page" :totalPages="totalPages" :previousPageEnabled="previousPageEnabled" :nextPageEnabled="nextPageEnabled" />
 								<!-- <pre>previousPageEnabled {{previousPageEnabled}}</pre> -->
 								<!-- <pre>nextPageEnabled {{nextPageEnabled}}</pre> -->
 								<!-- 	<pre>totalPages {{totalPages}}</pre>
@@ -20,6 +20,7 @@ export default {
 								perPage: {
 												type: Number,
 								},
+								
 								index: {
 												type: Number,
 												default: 0,
@@ -78,6 +79,7 @@ export default {
 								perPage(c) {
 												this.dataSource.perPage = c;
 								},
+
 								index(c) {
 												this.dataSource.pageIndex = c;
 								},

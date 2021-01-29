@@ -1576,21 +1576,27 @@ export default {
 
 
 												addField('enableConfirmation', {
-																title: 'Send Confirmation Email',
+																title: 'Send Confirmation Email ',
 																minimum: 0,
 																maximum: 1,
 																type: 'boolean',
 																defaultValues: defaultConfirmationCheckbox,
-																description: `Send a confirmation email to the primary contact upon a new submission.`,
+																description: `Send a confirmation email to the primary contact upon a new submission. The email will include your own custom thank you message, and information about any tickets registered with this form.`,
+																params:{
+																	persistentDescription:true,
+																},
 												})
 
 												addField('confirmationMessage', {
-																title: 'Confirmation Thank You Message',
+																title: 'Email Confirmation Thank You Message',
 																minimum: 0,
 																maximum: 1,
 																type: 'string',
 																directive: 'wysiwyg',
 																description: `Add a customised thank you message to be shown in the confirmation email. \n Please note that event registrations will already contain key dates, locations and directions underneath this message`,
+																expressions: {
+																				show: 'model.enableConfirmation',
+																}
 												})
 
 
@@ -1600,6 +1606,11 @@ export default {
 																minimum: 0,
 																maximum: 1,
 																type: 'reference',
+																expressions: {
+																				show() {
+																								return self.$pro && self.$pro.enabled;
+																				}
+																},
 																params: {
 																				restrictType: 'definition',
 																				searchInheritable: true,
@@ -1634,6 +1645,9 @@ export default {
 																type: 'boolean',
 																defaultValues: defaultQRCodeCheckbox,
 																description: `Check this box if you want Fluro to send digital a QR for ticket collection.`,
+																expressions: {
+																				show: 'model.enableConfirmation',
+																}
 												})
 
 												addField('enableReceipt', {
@@ -1709,7 +1723,7 @@ export default {
 																description: `Add a customised message for the notification email. This will be sent to people and teams listed above`,
 																params: {
 																				persistentDescription: true,
-																				tokens:formTokens, 
+																				tokens: formTokens,
 																},
 												})
 

@@ -4,7 +4,7 @@
 												<v-progress-circular indeterminate />
 								</v-container>
 								<template v-else>
-												<pre>{{queryID}}</pre>
+											
 												<draggable handle=".handle" v-model="model" v-bind="dragOptions">
 																<v-container grid-list-md fluid pa-1 class="column-entry-row" :key="index" v-for="(column, index) in model">
 																				<v-layout align-center>

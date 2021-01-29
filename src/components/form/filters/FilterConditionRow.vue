@@ -148,7 +148,7 @@
 																</v-flex>
 																<v-flex xs12 sm5 v-else>
 																				<template v-if="dataType == 'date'">
-																								<template v-if="model.comparator == 'datesameweekday'">
+																								<template v-if="model.comparator == 'datesameweekday' || model.comparator == 'datedifferentweekday'">
 																												<div>
 																																<v-select single-line multiple dense v-model="model.values" item-text="title" item-value="value" :items="weekdays" />
 																												</div>
@@ -251,7 +251,7 @@
 												</v-btn>
 								</template>
 								<!-- <pre>SELECT AUTO {{cleanedValueSelection}}</pre> -->
-								<!-- <pre>{{model.criteria}}</pre> -->
+							<!-- 	<pre>{{model}}</pre> -->
 				</v-container>
 </template>
 <script>

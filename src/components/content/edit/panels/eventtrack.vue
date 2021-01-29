@@ -40,6 +40,8 @@
                             <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.defaultFirstLine" v-model="model" />
                             <br />
                             <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.mainImage" v-model="model" />
+                                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.recurDefinition" v-model="model" />
+
                             <fluro-panel>
                                 <fluro-panel-title>
                                     <strong>Default Times</strong>

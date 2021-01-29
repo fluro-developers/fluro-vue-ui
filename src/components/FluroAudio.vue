@@ -21,7 +21,10 @@ export default {
             }
         },
         global: {
-            type: Boolean
+            type: Boolean,
+            default() {
+                return true;
+            }
         }
     },
     data() {

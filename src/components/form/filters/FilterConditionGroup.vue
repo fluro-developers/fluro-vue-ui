@@ -1,5 +1,6 @@
 <template>
 				<div class="filter-group-outer" :class="{mini:mini, large:!mini}">
+					
 								<v-container ref="element" :class="[{'pa-0': mini}, model.operator]">
 												<v-layout row v-if="model.filters.length > 1">
 																<v-flex d-flex align-center>
@@ -126,6 +127,7 @@
 												</v-btn>
 												<!-- <pre>{{model}}</pre> -->
 								</v-container>
+						
 				</div>
 </template>
 <script>
@@ -2784,11 +2786,9 @@ export default {
 
 												injectFields = injectFields.concat(self.asyncKeys);
 
-												// console.log('ALL INJECTED', injectFields);
-												var fields = FilterService.allKeys(injectFields, self.definition);
+												// return injectFields;
 
-												// console.log('ALL KEY FIELDS', fields);
-												return _.orderBy(fields, "title");
+												return FilterService.allKeys(injectFields, self.definition);
 								}
 				},
 				watch: {
@@ -2801,7 +2801,7 @@ export default {
 												var currentValue = JSON.stringify(this.model);
 
 												if (newValue != currentValue) {
-																console.log('new value')
+																//console.log('new value')
 																this.model = JSON.parse(newValue);
 
 												}

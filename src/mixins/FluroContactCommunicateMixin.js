@@ -72,6 +72,9 @@ export default {
 			var self = this;
 			var contact = self.model || self.item;
 
+			var canAccessTextMessages = self.$fluro.access.can('create', 'smscorrespondence') || self.$fluro.access.can('sms');
+			return canAccessTextMessages;
+
 			return contact.phoneNumbers && contact.phoneNumbers.length;
 		},
 	},
@@ -159,13 +162,19 @@ export default {
 
 				case 'email':
 					// console.log('EMAIL NOW?', contact.emails)
-
+					var canAccessSimpleEmail = self.$fluro.access.can('create', 'simpleemail');
+					if(!canAccessSimpleEmail) {
+						return window.open(`mailto:${contact.emails[0]}`);
+					}
 
 					self.$communications.email([contact]);
 					break;
 				case 'sms':
 					// console.log('SMS NOW?', contact.emails)
-
+					// var canAccessTextMessages = self.$fluro.access.can('create', 'smscorrespondence') || self.$fluro.access.can('sms');
+					// if(!canAccessTextMessages) {
+					// 	return window.open(`sms:${contact.phoneNumbers[0]}`);
+					// }
 
 					self.$communications.sms([contact]);
 					break;

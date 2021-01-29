@@ -40,6 +40,7 @@
                         <!-- <pre>{{showPaymentForm}}</pre> -->
                         <!-- <pre>GUESSSS {{context}} {{ options }}</pre> -->
                         <fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" @errorMessages="validate" @input="modelChanged" ref="form" :options="options" v-model="dataModel" :fields="fields" />
+                        <!-- <pre>SHOW PAYMENT FORM {{showPaymentForm}}</pre> -->
                         <div class="payment" v-if="showPaymentForm">
                             <v-container fluid v-if="requirePayment">
                                 <h2>Payment Summary</h2>
@@ -751,6 +752,11 @@ export default {
             return this.definition.paymentDetails || {};
         },
         showPaymentForm() {
+
+            if(this.allowPayment) {
+                return true;
+            }
+            
             if (this.requirePayment || this.allowPayment) {
                 return this.total && parseInt(this.total) > 0;
             }

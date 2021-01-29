@@ -102,26 +102,25 @@
 																																												</div>
 																																								</v-input>
 																																				</fluro-panel-body>
-																																				<fluro-panel-body  class="border-top">
+																																				<fluro-panel-body class="border-top">
 																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.forceSSL" v-model="model" />
 																																				</fluro-panel-body>
-																																			</fluro-panel>
-																																			
-																																				<fluro-panel>
-																																								<fluro-panel-body v-if="$pro.enabled">
-																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.origins" v-model="model.privateDetails" />
-																																												<v-layout>
-																																																<v-flex>
-																																																				<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.blacklist" v-model="model.privateDetails" />
-																																																</v-flex>
-																																																<v-spacer />
-																																																<v-flex>
-																																																				<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.whitelist" v-model="model.privateDetails" />
-																																																</v-flex>
-																																												</v-layout>
-																																								</fluro-panel-body>
-																																				</fluro-panel>
-																																				<!--  <div v-if="definition && definition.fields && definition.fields.length">
+																																</fluro-panel>
+																																<fluro-panel>
+																																				<fluro-panel-body v-if="$pro.enabled">
+																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.origins" v-model="model.privateDetails" />
+																																								<v-layout>
+																																												<v-flex>
+																																																<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.blacklist" v-model="model.privateDetails" />
+																																												</v-flex>
+																																												<v-spacer />
+																																												<v-flex>
+																																																<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.whitelist" v-model="model.privateDetails" />
+																																												</v-flex>
+																																								</v-layout>
+																																				</fluro-panel-body>
+																																</fluro-panel>
+																																<!--  <div v-if="definition && definition.fields && definition.fields.length">
                                     <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields">
                                     </fluro-content-form>
                 </div>-->
@@ -428,8 +427,13 @@ export default {
 																value: 'io.fluro.remap'
 												});
 
+												var definitionName;
+
 												if (self.definition) {
-																if (self.definition.definitionName == 'checkinStation') {
+													
+																definitionName = self.definition.definitionName;
+
+																if (definitionName == 'checkinStation') {
 
 																				deploymentOptions = [];
 																				deploymentOptions.push({
@@ -446,7 +450,7 @@ export default {
 
 												addField("deployment", {
 																title: "Application Type / Deployment",
-																minimum: self.definition.definitionName == 'checkinStation' ? 1: 0,
+																minimum: definitionName == 'checkinStation' ? 1 : 0,
 																maximum: 1,
 																type: "string",
 																directive: 'select',

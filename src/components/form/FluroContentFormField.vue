@@ -1985,7 +1985,8 @@ export default {
 
 																////////////////////////////////////////
 
-																if (!match) {
+
+																if (!match && (self.directive == 'select')) {
 																				options.unshift({
 																								name: 'None',
 																								title: 'None',
