@@ -3839,7 +3839,7 @@ export default {
 								var cleaned = self.fixCorruptedData(self.model[self.field.key]);
 								if (typeof cleaned != typeof self.model[self.field.key] || cleaned != self.model[self.field.key]) {
 												self.$set(self.model, self.field.key, cleaned);
-												console.log('CLEANED', self.field.key)
+												//console.log('CLEANED', self.field.key)
 								}
 
 

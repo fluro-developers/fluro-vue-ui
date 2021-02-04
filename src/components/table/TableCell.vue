@@ -1,6 +1,8 @@
 <template>
     <td :style="style" @click="cellclick" :class="{wrap:shouldWrap, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right', 'no-padding':column.padding === false}">
-        <!-- <pre>{{column}}</pre> -->
+        <!-- <pre>{{column.key}}</pre> -->
+        <!-- <pre>{{row.rawData}}</pre> -->
+        
         <!-- <pre>{{formattedArray}}</pre> -->
         <!-- <pre>{{rawValue}} {{column.key}}</pre> -->
 

@@ -1177,7 +1177,7 @@ export default {
         checkinEndDate() {
             var self = this;
             return self.$fluro.date
-                .moment(self.model.startDate)
+                .moment(self.model.endDate)
                 .add(self.checkinEndOffset, "minutes")
                 .toDate();
         },

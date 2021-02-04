@@ -20,6 +20,12 @@ export default {
                 return {}
             }
         },
+        inject: {
+            type: Object,
+            default () {
+                return {}
+            }
+        },
     },
     data() {
         return {
@@ -30,6 +36,7 @@ export default {
     watch: {
         template:'render',
         context:'render',
+        inject: 'render',
     },
     // mounted() {
     //     this.render();
@@ -70,24 +77,19 @@ export default {
 
 
 
-
-
             var components;
 
             // console.log('PARENT', self.$parent)
             if (self.$parent && self.$parent.$options) {
-
-
                 components = self.$parent.$options.components;
-
-                // console.log('GET THE COMPONENTS', components);
             }
 
+            var dynamicComponents = Object.assign({}, components, self.inject);
 
 
             const DynamicComponent = Vue.extend({
                 template: `<div>${self.template}</div>`,
-                components,
+                components:dynamicComponents,
                 data() {
                     return self.context || {};
                 },

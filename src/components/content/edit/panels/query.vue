@@ -14,7 +14,6 @@
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.firstLine" v-model="model"></fluro-content-form-field>
                             </div>
-
                             <template v-if="isFilterQuery">
                                 <template v-if="model.disableDataTypeSelect || model._id">
                                     <h4>Content Type: {{model.filterType | definitionTitle(true)}}</h4>
@@ -23,19 +22,18 @@
                                     <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.filterType" v-model="model"></fluro-content-form-field>
                                 </template>
                                 <v-container pa-0 grid-list-md>
-                                <v-layout align-center>
-                                    <v-flex>
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.sortKey" v-model="model.filterSort" />
-                                    </v-flex>
-                                    <v-flex>
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.sortType" v-model="model.filterSort" />
-                                    </v-flex>
-                                    <v-flex>
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.sortDirection" v-model="model.filterSort" />
-                                    </v-flex>
-                                </v-layout>
-                            </v-container>
-                                
+                                    <v-layout align-center>
+                                        <v-flex>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.sortKey" v-model="model.filterSort" />
+                                        </v-flex>
+                                        <v-flex>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.sortType" v-model="model.filterSort" />
+                                        </v-flex>
+                                        <v-flex>
+                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.sortDirection" v-model="model.filterSort" />
+                                        </v-flex>
+                                    </v-layout>
+                                </v-container>
                             </template>
                             <template v-else>
                                 <v-layout align-center>
@@ -57,7 +55,9 @@
                                             <!-- <fluro-panel-title>
                                                 
                                             </fluro-panel-title> -->
-                                            <filter-condition-group :rows="rows" :useSample="true" :mini="true" v-model="model.filterConfiguration" :type="model.filterType" :debounce="filterDebounce" />
+                                            <!-- :useSample="true"  -->
+                                            <!-- :useSample="model.query && model.query.length" -->
+                                            <filter-condition-group :rows="rows"  :mini="true" v-model="model.filterConfiguration" :type="model.filterType" :debounce="filterDebounce" />
                                         </fluro-panel-body>
                                     </tab>
                                     <tab heading="Query" index="query" v-else>
@@ -72,12 +72,10 @@
                                     </tab>
                                     <tab :heading="`${model.columns.length} Columns`">
                                         <!-- <fluro-panel-body> -->
-                                            <!-- <h3 margin>Columns</h3> -->
-                                            <column-editor :query="model" v-model="model.columns" />
-
-                                            
-<!-- ColumnEditor -->
-                                            <!-- <column-customiser v-model="model.columns" :sampleData="sample" :config="config" :loadingSample="loadingSample" /> -->
+                                        <!-- <h3 margin>Columns</h3> -->
+                                        <column-editor :query="model" v-model="model.columns" />
+                                        <!-- ColumnEditor -->
+                                        <!-- <column-customiser v-model="model.columns" :sampleData="sample" :config="config" :loadingSample="loadingSample" /> -->
                                         <!-- </fluro-panel-body> -->
                                     </tab>
                                 </tabset>
@@ -312,6 +310,61 @@ export default {
         }
     },
     asyncComputed: {
+
+        rows: {
+            default: null,
+            get() {
+                var self = this;
+
+                var filterType = self.model.filterType;
+                if (!filterType || !filterType.length) {
+                    return Promise.resolve(null);
+                }
+
+
+                return new Promise(function(resolve, reject) {
+
+                    self.$fluro.api.post(`/content/${filterType}/filter`)
+                        .then(function(res) {
+
+                            // console.log('ROWS', res.data);
+                            resolve(res.data);
+                        })
+                        .catch(function(err) {
+                            // console.log('Error', err);
+                            reject(err);
+                        });
+                })
+
+
+                // if(!self.options.site) {
+                //  return Promise.resolve([])
+                // }
+
+                // var site = self.options.site;
+
+                // // //Get all blocks
+                // var mapped = [];
+                // //blocks = [];
+
+
+                // // var mapped = _.map(site.menus, function(menu) {
+                // //   return {
+                // //       text:menu.title,
+                // //       value:menu.key,
+                // //   }
+                // // })
+
+                // return Promise.resolve(mapped);
+
+                // // return new Promise(function(resolve, reject) {
+
+                // //   var 
+                // // });
+
+            }
+        },
+
         resultSets: {
             default: [],
             get() {
@@ -396,9 +449,6 @@ export default {
     computed: {
         isFilterQuery() {
             return !this.model.query || !this.model.query.length;
-        },
-        rows() {
-            return [];
         },
         showOutline() {
             return false; //true; //false;//true;//false;//true;
@@ -533,8 +583,7 @@ export default {
                 type: "string",
                 directive: "select",
                 description: "Select which order to sort by",
-                options: [
-                    {
+                options: [{
                         name: 'Ascending',
                         value: 'asc',
                     },

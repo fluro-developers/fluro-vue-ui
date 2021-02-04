@@ -231,24 +231,38 @@ export default {
 
             //////////////////////////////////////////////////
 
-            // console.log('PARENT IS?', self.parentFields)
+            
             var parentFields = self.parentGroup ? self.parentGroup.fields : self.parent.fields;
+
+            // console.log('PARENT IS?', self.model.title,'', parentFields)
 
 
             var conflict = parentFields.some(function(field) {
+
+                return recursiveCheck(field);
+
+            });
+
+
+            function recursiveCheck(field) {
                 if (field == self.model) {
                     return;
                 }
 
                 if (field.type == 'group' && !field.asObject) {
-                    return;
+                    var nestedConflict = _.some(field.fields, recursiveCheck);
+                    if(nestedConflict) {
+                        return true;
+                    } else {
+                        return;
+                    }
                 }
 
                 return field.key == self.model.key;
-            });
+            }
 
             if (conflict) {
-                array.push(`Key '${self.model.key}' is already in use at this level`);
+                array.push(`The key '${self.model.key}' conflicts with another field.`);
             }
 
             //////////////////////////////////////////////////

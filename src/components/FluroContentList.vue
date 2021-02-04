@@ -1,6 +1,7 @@
 <template>
 				<div>
-								<slot :nextPage="nextPage" :previousPage="previousPage" :setPage="setPage" :pageIndex="pageIndex" :currentPage="currentPage" :perPage="perPage"  :items="items" :page="page" :totalPages="totalPages" :previousPageEnabled="previousPageEnabled" :nextPageEnabled="nextPageEnabled" />
+
+								<slot :nextPage="nextPage" :previousPage="previousPage" :setPage="setPage" :pageIndex="pageIndex" :currentPage="currentPage" :perPage="perPage" :items="items" :page="page" :totalPages="totalPages" :previousPageEnabled="previousPageEnabled" :nextPageEnabled="nextPageEnabled" />
 								<!-- <pre>previousPageEnabled {{previousPageEnabled}}</pre> -->
 								<!-- <pre>nextPageEnabled {{nextPageEnabled}}</pre> -->
 								<!-- 	<pre>totalPages {{totalPages}}</pre>
@@ -20,7 +21,7 @@ export default {
 								perPage: {
 												type: Number,
 								},
-								
+
 								index: {
 												type: Number,
 												default: 0,
@@ -84,7 +85,7 @@ export default {
 												this.dataSource.pageIndex = c;
 								},
 								fields(c) {
-												// console.log('fields changed', c);
+												// //console.log('fields changed', c);
 												this.dataSource.fields = c;
 								},
 								cacheKey(c) {
@@ -111,7 +112,7 @@ export default {
 												page: dataSource.page,
 												totalPages: dataSource.totalPages,
 												pageIndex: dataSource.pageIndex,
-												dataSource: Vue.observable(dataSource),
+												dataSource: dataSource, //Vue.observable(dataSource),
 												loadingFilter: dataSource.loadingFilter,
 												loadingPage: dataSource.loadingPage,
 								}
@@ -133,6 +134,7 @@ export default {
 												this.dataSource.addEventListener('page', this.changePage);
 												this.dataSource.addEventListener('items', this.changeItems);
 												this.dataSource.addEventListener('totalPages', this.changeTotalPages);
+												this.dataSource.addEventListener('perPage', this.changePerPage);
 												this.dataSource.addEventListener('pageIndex', this.changePageIndex);
 												this.dataSource.addEventListener('loadingFilter', this.changeLoadingFilter);
 												this.dataSource.addEventListener('loadingPage', this.changeLoadingPage);
@@ -141,6 +143,7 @@ export default {
 												this.dataSource.removeEventListener('page', this.changePage);
 												this.dataSource.removeEventListener('items', this.changeItems);
 												this.dataSource.removeEventListener('totalPages', this.changeTotalPages);
+												this.dataSource.removeEventListener('perPage', this.changePerPage);
 												this.dataSource.removeEventListener('pageIndex', this.changePageIndex);
 												this.dataSource.removeEventListener('loadingFilter', this.changeLoadingFilter);
 												this.dataSource.removeEventListener('loadingPage', this.changeLoadingPage);
@@ -172,6 +175,9 @@ export default {
 												this.pageIndex = pageIndex;
 												this.$emit('pageIndex', pageIndex);
 								},
+								changePerPage(perPage) {
+												this.$emit('perPage', perPage);
+								},
 								changeTotalPages(totalPages) {
 												this.totalPages = totalPages;
 												this.$emit('totalPages', totalPages);
@@ -181,6 +187,7 @@ export default {
 												this.$emit('page', page);
 								},
 								changeItems(items) {
+									//console.log('items is now', items)
 												this.items = items;
 												this.$emit('items', items);
 								},
@@ -200,13 +207,13 @@ export default {
 								},
 								// items() {
 								// 				var items = this.dataSource.items;;
-								// 				console.log('ITEMS CHANGED', items);
+								// 				//console.log('ITEMS CHANGED', items);
 								// 				return items;
 								// },
 								// page() {
 
 								// 				var page = this.dataSource.page;;
-								// 				console.log('PAGE CHANGED', page);
+								// 				//console.log('PAGE CHANGED', page);
 								// 				return page;
 								// },
 

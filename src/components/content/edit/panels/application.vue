@@ -430,7 +430,7 @@ export default {
 												var definitionName;
 
 												if (self.definition) {
-													
+
 																definitionName = self.definition.definitionName;
 
 																if (definitionName == 'checkinStation') {

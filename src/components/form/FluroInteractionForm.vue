@@ -381,6 +381,10 @@ export default {
 
     },
     watch: {
+        value(v) {
+          
+            this.dataModel = JSON.parse(JSON.stringify(v));
+        },
         selectedPaymentMethod(method) {
             if (method != 'card') {
                 this.validate();

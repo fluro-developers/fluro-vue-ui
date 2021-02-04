@@ -1,6 +1,5 @@
 <template>
 				<div class="filter-group-outer" :class="{mini:mini, large:!mini}">
-					
 								<v-container ref="element" :class="[{'pa-0': mini}, model.operator]">
 												<v-layout row v-if="model.filters.length > 1">
 																<v-flex d-flex align-center>
@@ -127,7 +126,6 @@
 												</v-btn>
 												<!-- <pre>{{model}}</pre> -->
 								</v-container>
-						
 				</div>
 </template>
 <script>
@@ -617,7 +615,7 @@ export default {
 																// }
 																// return new Promise(function(resolve, reject) {
 
-																return self.$fluro.types.subTypes("team");
+																return self.$fluro.types.subTypes("team", true);
 																// .then(resolve)
 																// .catch(reject);
 																// })
@@ -653,7 +651,7 @@ export default {
 
 																// return new Promise(function(resolve, reject) {
 
-																return self.$fluro.types.subTypes("tag");
+																return self.$fluro.types.subTypes("tag", true);
 																// .then(resolve)
 																// .catch(reject);
 																// })
@@ -977,11 +975,28 @@ export default {
 																});
 
 																injectFields.push({
+																				title: "Number of Email Addresses",
+																				key: "emails.length",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "integer"
+																});
+
+																injectFields.push({
 																				title: "Phone Number (Primary)",
 																				key: "phoneNumbers[0]",
 																				maximum: 1,
 																				minimum: 0,
 																				type: "string"
+																});
+
+
+																injectFields.push({
+																				title: "Number of Phone Numbers",
+																				key: "phoneNumbers.length",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "integer"
 																});
 
 																injectFields.push({
@@ -2013,6 +2028,7 @@ export default {
 																});
 
 																///////////////////////////////////////////////
+
 
 																_.each(self.teamTypes, function(teamType) {
 																				injectFields.push({
