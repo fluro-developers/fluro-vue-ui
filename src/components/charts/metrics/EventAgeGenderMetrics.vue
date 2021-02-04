@@ -3,7 +3,7 @@
         <fluro-page-preloader v-if="loading" contain />
         <!--  <template v-if="loading"> Loading Component <v-progress-circular indeterminate></v-progress-circular>
         </template> -->
-        <template v-else>
+        <template v-else-if="model && model.stats">
             <fluro-panel>
                 <fluro-panel-body>
                     <div class="field-group">
@@ -224,7 +224,7 @@ export default {
     },
     asyncComputed: {
         model: {
-            // default: {},
+            default: {},
             get() {
                 var self = this;
                 var id = self.$fluro.utils.getStringID(self.id);

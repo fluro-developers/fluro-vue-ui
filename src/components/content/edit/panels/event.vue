@@ -53,7 +53,7 @@
                     </v-container>
                 </flex-column-body>
             </tab>
-            <tab :heading="`Team Members`" >
+            <tab :heading="`Team Members`" v-if="model._id">
                 <flex-column-body style="background: #fafafa;">
                     <v-container>
                         <constrain sm>
@@ -110,6 +110,7 @@
                             <p></p>
                             <h3 margin>Reminders</h3>
                             <event-reminder-manager :slots="rosterSlots" :startDate="model.startDate" :endDate="model.endDate" v-model="model.reminders" />
+                            <!-- <pre>{{model.reminders}}</pre> -->
                         </constrain>
                     </v-container>
                 </flex-column-body>
@@ -321,7 +322,7 @@
                     </v-container>
                 </flex-column-body>
             </tab>
-            <tab heading="Reporting & Metrics">
+            <tab heading="Reporting & Metrics" v-if="model._id">
                 <flex-column-body>
                     <v-container fluid grid-list-xl>
                         <constrain>

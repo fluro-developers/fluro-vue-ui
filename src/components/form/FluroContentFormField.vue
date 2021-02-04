@@ -283,31 +283,46 @@
 																<v-select :persistent-hint="true" :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="definitionOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
 												</template>
 												<template v-else-if="renderer == 'select'">
+																<!-- <pre>{{fieldModel}}</pre> -->
 																<template v-if="useBasicDropdown">
-																				<!-- :fixed="true"  -->
 																				<v-select :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder">
 																								<template v-slot:item="{item}">
-																												<div class="border-bottom" v-if="item.description && item.description.length">
-																																<strong>{{item.title || item.name}}</strong><br />
-																																<div class="muted font-xs">{{item.description}}</div>
-																												</div>
-																												<template v-else>
-																																{{item.title || item.name}}
-																												</template>
+																												<v-layout align-center>
+																																<v-flex shrink style="padding-right:8px;">
+																																				<fluro-icon :icon="optionIsSelected(item) ? 'check-square' : 'square'" :library="optionIsSelected(item) ? 'fas' : 'far'" />
+																																</v-flex>
+
+																																<v-flex>
+																																				<div class="border-bottom" v-if="item.description && item.description.length">
+																																								<strong>{{item.title || item.name}}</strong><br />
+																																								<div class="muted font-xs">{{item.description}}</div>
+																																				</div>
+																																				<template v-else>
+																																								{{item.title || item.name}}
+																																				</template>
+																																</v-flex>
+																												</v-layout>
 																								</template>
 																				</v-select>
 																</template>
 																<template v-else>
-																				<!-- :fixed="true"  -->
 																				<v-autocomplete :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder">
 																								<template v-slot:item="{item}">
-																												<div class="border-bottom" v-if="item.description && item.description.length">
-																																<strong>{{item.title || item.name}}</strong><br />
-																																<div class="muted font-xs">{{item.description}}</div>
-																												</div>
-																												<template v-else>
-																																{{item.title || item.name}}
-																												</template>
+																												<v-layout align-center>
+																																<v-flex shrink style="padding-right:8px;">
+																																				<fluro-icon :icon="optionIsSelected(item) ? 'check-square' : 'square'" :library="optionIsSelected(item) ? 'fas' : 'far'" />
+																																</v-flex>
+
+																																<v-flex>
+																																				<div class="border-bottom" v-if="item.description && item.description.length">
+																																								<strong>{{item.title || item.name}}</strong><br />
+																																								<div class="muted font-xs">{{item.description}}</div>
+																																				</div>
+																																				<template v-else>
+																																								{{item.title || item.name}}
+																																				</template>
+																																</v-flex>
+																												</v-layout>
 																								</template>
 																				</v-autocomplete>
 																</template>
@@ -2381,6 +2396,19 @@ export default {
 								}
 				},
 				methods: {
+								optionIsSelected(item) {
+												if (!this.fieldModel) {
+																return;
+												}
+
+												var value = item.value || item;
+
+												//If the item is selected
+												if (this.fieldModel == value) {
+																return true;
+												}
+												return this.fieldModel.includes(value);
+								},
 								checkTextDateImmediate() {
 												var self = this;
 												var dateString = this.textDate;

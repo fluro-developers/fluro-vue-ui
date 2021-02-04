@@ -61,7 +61,9 @@
                     <flex-column-body style="background: #fafafa;">
                         <v-container>
                             <constrain md>
-                                <event-reminder-manager :slots="model.slots" :startDate="startDate" :endDate="endDate" v-model="model.reminders" />
+                                <event-reminder-manager type="roster" :slots="model.slots" :startDate="startDate" :endDate="endDate" v-model="model.reminders" />
+                                
+                                <pre>{{model.reminders}}</pre>
                                 <!-- <reminder-event-manager :config="config" v-model="model.reminders" :allAssignmentOptions="model.slots" /> -->
                             </constrain>
                         </v-container>
@@ -374,7 +376,7 @@ export default {
             return {
                 title: 'Select an event',
                 _type: 'event',
-                key:'event',
+                key: 'event',
                 minimum: 0,
                 maximum: 1,
                 type: 'reference',
