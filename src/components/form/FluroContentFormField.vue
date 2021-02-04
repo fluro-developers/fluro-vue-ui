@@ -1549,7 +1549,7 @@ export default {
 								},
 								allowedReferences() {
 												return _.map(this.field.allowedReferences, function(reference) {
-													reference.value = reference._id;
+																reference.value = reference._id;
 																return reference;
 												});
 								},
@@ -2409,7 +2409,11 @@ export default {
 												if (this.fieldModel == value) {
 																return true;
 												}
-												return this.fieldModel.includes(value);
+
+												if (_.isArray(this.fieldModel)) {
+																return this.fieldModel.includes(value);
+												}
+
 								},
 								checkTextDateImmediate() {
 												var self = this;
