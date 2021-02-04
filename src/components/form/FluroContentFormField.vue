@@ -209,6 +209,7 @@
 																																<fluro-icon right icon="check" class="tick" />
 																												</v-btn>
 																								</template>
+																								<!-- <pre>{{selectOptions}}</pre> -->
 																				</div>
 																</v-input>
 												</template>
@@ -291,7 +292,6 @@
 																																<v-flex shrink style="padding-right:8px;">
 																																				<fluro-icon :icon="optionIsSelected(item) ? 'check-square' : 'square'" :library="optionIsSelected(item) ? 'fas' : 'far'" />
 																																</v-flex>
-
 																																<v-flex>
 																																				<div class="border-bottom" v-if="item.description && item.description.length">
 																																								<strong>{{item.title || item.name}}</strong><br />
@@ -312,7 +312,6 @@
 																																<v-flex shrink style="padding-right:8px;">
 																																				<fluro-icon :icon="optionIsSelected(item) ? 'check-square' : 'square'" :library="optionIsSelected(item) ? 'fas' : 'far'" />
 																																</v-flex>
-
 																																<v-flex>
 																																				<div class="border-bottom" v-if="item.description && item.description.length">
 																																								<strong>{{item.title || item.name}}</strong><br />
@@ -1549,7 +1548,10 @@ export default {
 												return this.field.allowedValues;
 								},
 								allowedReferences() {
-												return this.field.allowedReferences;
+												return _.map(this.field.allowedReferences, function(reference) {
+													reference.value = reference._id;
+																return reference;
+												});
 								},
 
 								defaultValues() {
@@ -3502,9 +3504,10 @@ export default {
 												if (value == undefined || value == null) {
 																return;
 												}
-												return value._id || value.id || value.value || value;
+												return value._id || value.id || value.value || value.title || value;
 								},
 								toggleValue(value) {
+												console.log('TOGGLE VALUE', value)
 												var self = this;
 
 												if (value == undefined || value == null) {
