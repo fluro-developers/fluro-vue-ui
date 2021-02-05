@@ -1292,6 +1292,9 @@ export default {
 
 </script>
 <style scoped lang="scss">
+
+$proposedColor: #2ad4b9 !default;
+
 .event-cover-image {
     border-radius: 5px;
     width: 90%;
