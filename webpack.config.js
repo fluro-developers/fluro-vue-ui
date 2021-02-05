@@ -27,6 +27,11 @@ module.exports = {
         'prosemirror-state': 'prosemirror-state',
         'prosemirror-view': 'prosemirror-view',
 
+        '@fortawesome/vue-fontawesome':'@fortawesome/vue-fontawesome',
+        '@fortawesome/pro-solid-svg-icons':'@fortawesome/pro-solid-svg-icons',
+        '@fortawesome/pro-regular-svg-icons':'@fortawesome/pro-regular-svg-icons',
+        '@fortawesome/fontawesome-svg-core':'@fortawesome/fontawesome-svg-core',
+
 
         "tippy.js": "tippy.js",
         'tiptap': 'tiptap',

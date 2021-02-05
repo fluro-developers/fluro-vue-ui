@@ -89,7 +89,7 @@
                         <img class="qrcode" :src="qrCodeURL" />
                     </v-container>
                     <v-container>
-                        <ticket-list :interaction="item" />
+                        <ticket-list type="interaction"  :interaction="item" />
                     </v-container>
                 </flex-column-body>
             </tab>

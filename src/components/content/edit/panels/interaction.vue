@@ -105,6 +105,16 @@
                     </v-container>
                 </flex-column-body>
             </tab>
+            <tab :heading="`${tickets.length} Tickets`" v-if="tickets.length">
+                <flex-column-body style="background: #fafafa;">
+                    <v-container fluid style="background: #fff;" class="border-bottom">
+                        <img class="qrcode" :src="qrCodeURL" />
+                    </v-container>
+                    <v-container>
+                        <ticket-list :interaction="model" />
+                    </v-container>
+                </flex-column-body>
+            </tab>
         </tabset>
     </flex-column>
 </template>
@@ -112,6 +122,7 @@
 /////////////////////////////////
 
 import FluroContentEditMixin from "../FluroContentEditMixin.js";
+import TicketList from "../../event/TicketList.vue";
 
 /////////////////////////////////
 
@@ -121,12 +132,47 @@ import Vue from "vue";
 
 export default {
     mixins: [FluroContentEditMixin],
-    components: {},
+   components: {
+        TicketList
+    },
     created() {
         var self = this;
     },
-    asyncComputed: {},
+    asyncComputed: {
+        tickets: {
+            default: [],
+            get() {
+                var self = this;
+
+                self.loading = true;
+
+                ///////////////////////////////////
+
+                var url = `/tickets/interaction/${self.model._id}`;
+
+                ///////////////////////////////////
+
+                return new Promise(function(resolve, reject) {
+                    return self.$fluro.api
+                        .get(url)
+                        .then(function(res) {
+                            resolve(res.data);
+                            self.loading = false;
+                        })
+                        .catch(function(err) {
+                            reject(err);
+                            self.loading = false;
+                        });
+                });
+            }
+        }
+    },
     computed: {
+        qrCodeURL() {
+            var self = this;
+            var interactionID = self.$fluro.utils.getStringID(self.model);
+            return `${self.$fluro.api.defaults.baseURL}/system/qr?input=http://tickets.fluro.io/interaction/${interactionID}`;
+        },
         paymentsEnabled() {
 
             if (!this.definition || !this.definition.paymentDetails) {
@@ -347,6 +393,13 @@ export default {
     opacity: 0.5;
     color: inherit;
     display: block;
+}
+
+.qrcode {
+    display: block;
+    border: 5px solid #000;
+    background: #000;
+    margin: auto;
 }
 
 </style>

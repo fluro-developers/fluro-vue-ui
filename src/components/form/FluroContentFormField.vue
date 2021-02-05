@@ -284,12 +284,19 @@
 																<v-select :persistent-hint="true" :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="definitionOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
 												</template>
 												<template v-else-if="renderer == 'select'">
+
+
 																<!-- <pre>{{fieldModel}}</pre> -->
 																<template v-if="useBasicDropdown">
+
+
 																				<v-select :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder">
 																								<template v-slot:item="{item}">
+
+																								
 																												<v-layout align-center>
 																																<v-flex shrink style="padding-right:8px;">
+
 																																				<fluro-icon :icon="optionIsSelected(item) ? 'check-square' : 'square'" :library="optionIsSelected(item) ? 'fas' : 'far'" />
 																																</v-flex>
 																																<v-flex>
@@ -310,6 +317,7 @@
 																								<template v-slot:item="{item}">
 																												<v-layout align-center>
 																																<v-flex shrink style="padding-right:8px;">
+
 																																				<fluro-icon :icon="optionIsSelected(item) ? 'check-square' : 'square'" :library="optionIsSelected(item) ? 'fas' : 'far'" />
 																																</v-flex>
 																																<v-flex>
@@ -1851,8 +1859,15 @@ export default {
 								countryCodeOptions() {
 												var options = _.chain(this.asyncOptions)
 																.map(function(country) {
+
+																	var countryName = country.name;
+																	var countryAlpha2 = country.alpha2;
+																	var countryCallingCodes = country.countryCallingCodes;
+
+																	var title = `${countryName} - ${countryAlpha2} (${countryCallingCodes.join(', ')})`;
+
 																				return {
-																								title: `${country.name} - ${country.alpha2} (${country.countryCallingCodes.join(', ')})`,
+																								title,
 																								value: country.alpha2,
 																				}
 																})
@@ -2403,10 +2418,10 @@ export default {
 																return;
 												}
 
-												var value = item.value || item;
+												var value = this.getActualValue(item);
 
 												//If the item is selected
-												if (this.fieldModel == value) {
+												if (this.getActualValue(this.fieldModel) == value) {
 																return true;
 												}
 
@@ -2656,7 +2671,7 @@ export default {
 																				//If there is a value of some sort
 																				if (value) {
 																								value = getBooleanValue(value);
-																								console.log('Boolean value is', value)
+																								// console.log('Boolean value is', value)
 																				} else {
 																								// //console.log('boolean false', value);
 																								value = false;
@@ -3511,7 +3526,6 @@ export default {
 												return value._id || value.id || value.value || value.title || value;
 								},
 								toggleValue(value) {
-												console.log('TOGGLE VALUE', value)
 												var self = this;
 
 												if (value == undefined || value == null) {

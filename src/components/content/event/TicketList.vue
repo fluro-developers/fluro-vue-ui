@@ -56,7 +56,7 @@ export default {
         },
         interaction: {
             type: [Object, String]
-        }
+        },
     },
     methods: {
         clicked(item) {
@@ -88,13 +88,13 @@ export default {
                     var downloadURL = self.$fluro.api.defaults.baseURL + res.data.download;
 
 
- if (process.browser) {
-                    if (token) {
-                        window.open(downloadURL + "?access_token=" + token);
-                    } else {
-                        window.open(downloadURL);
+                    if (process.browser) {
+                        if (token) {
+                            window.open(downloadURL + "?access_token=" + token);
+                        } else {
+                            window.open(downloadURL);
+                        }
                     }
-                }
 
                     self.exporting = false;
                 })
@@ -115,53 +115,7 @@ export default {
             search: "",
             debouncedSearch: "",
             loading: true,
-            columns: [
-                // {
-                //        title: 'Contact',
-                //        key: 'contact',
-                // },
-                {
-                    title: "First Name",
-                    key: "firstName"
-                },
-                {
-                    title: "Last Name",
-                    key: "lastName"
-                },
 
-                {
-                    title: "Ticket Type",
-                    key: "title"
-                },
-                {
-                    title: "Collected",
-                    key: "collected",
-                    type: "boolean"
-                },
-                // {
-                //        title: 'ID',
-                //        key: '_id',
-                // },
-                {
-                    title: "Interaction",
-                    key: "interaction"
-                },
-                {
-                    title: "Email",
-                    key: "email"
-                },
-                {
-                    title: "Date",
-                    key: "created",
-                    type: "date"
-                },
-                {
-                    title: "When",
-                    key: "created",
-                    type: "date",
-                    renderer: "timeago"
-                }
-            ]
         };
     },
     computed: {
@@ -185,7 +139,74 @@ export default {
         },
         interactionID() {
             return this.$fluro.utils.getStringID(this.interaction);
-        }
+        },
+        columns() {
+
+
+            var array = [];
+
+            array.push({
+                title: "First Name",
+                key: "firstName"
+            })
+
+
+            array.push({
+                title: "Last Name",
+                key: "lastName"
+            })
+
+
+            array.push({
+                title: "Ticket Type",
+                key: "title"
+            })
+
+            array.push({
+                title: "Collected",
+                key: "collected",
+                type: "boolean"
+            })
+
+            if (this.event) {
+                array.push({
+                    title: "Interaction",
+                    key: "interaction"
+                })
+            }
+
+            if (this.interaction) {
+                array.push({
+                    title: "Event",
+                    key: "event"
+                })
+            }
+
+
+            array.push({
+                title: "Email",
+                key: "email"
+            })
+
+
+            array.push({
+                title: "Date",
+                key: "created",
+                type: "date"
+            })
+
+
+            array.push({
+                title: "When",
+                key: "created",
+                type: "date",
+                renderer: "timeago"
+            })
+
+
+
+            return array;
+        },
     },
     asyncComputed: {
         tickets: {
