@@ -89,6 +89,8 @@ export default {
 }
 </script>
 <style lang="scss">
+
+$proposedColor: #2ad4b9 !default;
 .assignment-list-item {
     // display: flex;
     position: relative;
