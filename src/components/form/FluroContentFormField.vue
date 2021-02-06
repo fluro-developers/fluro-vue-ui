@@ -1715,6 +1715,12 @@ export default {
 																				self.$emit('input', self.model);
 
 																				console.log('model changed', self.field.key, self.model);
+																				var cacheKey = self.model._ck;
+																				if(!cacheKey) {
+																					cacheKey = 0;
+																				}
+
+																				self.$set(self.model, '_ck', cacheKey++);
 																				// //console.log('Emit', value, self.model[self.field.key])
 																				//
 																				// } else {
