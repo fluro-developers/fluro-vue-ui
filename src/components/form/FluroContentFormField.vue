@@ -741,6 +741,7 @@ export default {
 
 
 								return {
+									changeCacheKey:0,
 												actualDateModelDay: null,
 												actualDateModelMonth: null,
 												actualDateModelYear: null,
@@ -891,7 +892,7 @@ export default {
 												if (this.model != val) {
 
 
-													console.log('new model coming in', this.field.key);
+													//console.log('new model coming in', this.field.key);
 																
 																//Set the new model
 																this.model = val;
@@ -911,10 +912,10 @@ export default {
 																				this.checkInitialValue();
 																}
 												} else {
-													console.log('model is already the same')
+													//console.log('model is already the same')
 												}
 
-												this.$forceUpdate();
+												//this.$forceUpdate();
 
 
 
@@ -1664,6 +1665,8 @@ export default {
 												get() {
 																var self = this;
 
+																console.log(self.changeCacheKey);
+
 																if (self.field.type == 'void') {
 																				// //console.log('Void get nothing')
 																				return false;
@@ -1711,6 +1714,7 @@ export default {
 																				// //console.log('SET VALUE TO', value)
 																				self.$set(self.model, self.field.key, value);
 
+	self.changeCacheKey++;
 																				self.$emit('input', self.model);
 																				// //console.log('Emit', value, self.model[self.field.key])
 																				//
@@ -1730,7 +1734,7 @@ export default {
 																}
 
 
-															console.log('checkit', self.field.key, self.model, self.fieldModel, self.model[self.field.key]);
+															//console.log('checkit', self.field.key, self.model, self.fieldModel, self.model[self.field.key]);
 
 																//  else {
 																// 	////console.log('Value is already same thing!')
@@ -1738,7 +1742,7 @@ export default {
 																// }
 																//////////////////////////////////
 
-																return;
+																//return;
 																//////////////////////////////////
 
 
