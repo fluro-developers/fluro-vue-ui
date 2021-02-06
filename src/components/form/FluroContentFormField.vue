@@ -3520,7 +3520,7 @@ export default {
 								toggleValue(value) {
 												var self = this;
 
-	console.log('toggle value', value)
+
 												if (value == undefined || value == null) {
 																return;
 												}
@@ -3534,17 +3534,17 @@ export default {
 								selectValue(value) {
 												var self = this;
 
-	console.log('deselect', value);
+	console.log('select', value);
 												if (self.multipleInput && !self.canAddValue) {
 																console.log('reached limit')
 																return;
 												}
-												if (!self.isSelectedValue(value)) {
 
+												if (!self.isSelectedValue(value)) {
 																if (self.multipleInput) {
 																				self.fieldModel.push(value);
 																} else {
-																				self.fieldModel = value;
+																				self.$set(self, 'fieldModel', value);
 																}
 												}
 
@@ -3585,7 +3585,6 @@ export default {
 																});
 												} else {
 
-													console.log('check string value', stringValue, self.fieldModel, self.getActualValue(self.fieldModel) == stringValue, self.fieldModel);
 																return self.getActualValue(self.fieldModel) == stringValue;
 												}
 
