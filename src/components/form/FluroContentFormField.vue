@@ -1714,7 +1714,7 @@ export default {
 																			
 																				self.$set(self.model, self.field.key, value);
 
-																					console.log('SET VALUE TO', self.field.key, value, self.model)
+																				//	console.log('SET VALUE TO', self.field.key, value, self.model)
 
 																				self.$emit('input', self.model);
 																				// //console.log('Emit', value, self.model[self.field.key])
@@ -1729,11 +1729,9 @@ export default {
 																				// }
 
 
-
-																				self.$forceUpdate();
+self.$emit('input', self.model);
+																				//self.$forceUpdate();
 																				// //console.log('EMIT CHANGE')
-																} else {
-																	console.log('model is already set to', self.field.key, value, self.model)
 																}
 
 
@@ -1746,7 +1744,7 @@ export default {
 																// }
 																//////////////////////////////////
 
-																return;
+																self.$emit('input', self.model);
 																//////////////////////////////////
 
 
