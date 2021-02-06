@@ -3534,6 +3534,7 @@ export default {
 								selectValue(value) {
 												var self = this;
 
+	console.log('deselect', value);
 												if (self.multipleInput && !self.canAddValue) {
 																console.log('reached limit')
 																return;
@@ -3552,6 +3553,7 @@ export default {
 								},
 								deselectValue(value) {
 												var self = this;
+												console.log('deselect', value);
 												if (self.isSelectedValue(value)) {
 																if (self.multipleInput) {
 																				var index = self.fieldModel.indexOf(value);
@@ -3575,12 +3577,15 @@ export default {
 												}
 
 												var stringValue = self.getActualValue(value);
+												
 
 												if (self.multipleInput) {
 																return self.fieldModel.some(function(val) {
 																				return self.getActualValue(val) == stringValue
 																});
 												} else {
+
+													console.log('check string value', stringValue, self.fieldModel, self.getActualValue(self.fieldModel) == stringValue, self.fieldModel);
 																return self.getActualValue(self.fieldModel) == stringValue;
 												}
 
