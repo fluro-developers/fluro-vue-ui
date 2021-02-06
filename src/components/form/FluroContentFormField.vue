@@ -1689,6 +1689,7 @@ export default {
 												set(value) {
 
 																var self = this;
+																console.log('set the field model', value)
 
 																if (self.field.type == 'void') {
 																				// ////console.log('Void set nothing')
@@ -1730,6 +1731,8 @@ export default {
 
 																				// self.$forceUpdate();
 																				// //console.log('EMIT CHANGE')
+																} else {
+																	console.log('model is already set to', self.field.key, value, self.model)
 																}
 
 
