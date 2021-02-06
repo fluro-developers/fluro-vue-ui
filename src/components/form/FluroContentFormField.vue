@@ -1702,14 +1702,14 @@ export default {
 																// //console.log('SET clean going in', self.field.title, value);
 																value = self.cleanInput(value);
 
-																// //console.log('SET clean going out', self.field.title, value);
+																console.log('SET clean going out', self.field.title, value);
 
 
 																//////////////////////////////////
 																//If there is a change
 																if (self.model[self.field.key] != value) {
 
-																				// //console.log('SET VALUE TO', value)
+																				console.log('SET VALUE TO', value)
 																				self.$set(self.model, self.field.key, value);
 
 																				self.$emit('input', self.model);
@@ -3544,8 +3544,12 @@ export default {
 																if (self.multipleInput) {
 																				self.fieldModel.push(value);
 																} else {
+																	console.log('set it now')
 																				self.$set(self, 'fieldModel', value);
+																				console.log('after', self.fieldModel)
 																}
+												} else {
+													console.log(value, 'is already selected');
 												}
 
 												self.elementValueChanged(null, true);
