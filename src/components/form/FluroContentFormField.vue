@@ -1699,10 +1699,10 @@ export default {
 
 																//Clean the input
 																// //console.log('Before clean', value)
-																// //console.log('SET clean going in', self.field.title, value);
+																console.log('SET clean going in', self.field.title, self.field.key, value);
 																value = self.cleanInput(value);
 
-																console.log('SET clean going out', self.field.title, value);
+																console.log('SET clean going out', self.field.title, self.field.key, value);
 
 
 																//////////////////////////////////
@@ -3544,8 +3544,9 @@ export default {
 																if (self.multipleInput) {
 																				self.fieldModel.push(value);
 																} else {
-																	console.log('set it now')
-																				self.$set(self, 'fieldModel', value);
+																	console.log('set it now', value)
+																	self.fieldModel = value;
+																				//self.$set(self, 'fieldModel', value);
 																				console.log('after', self.fieldModel)
 																}
 												} else {
