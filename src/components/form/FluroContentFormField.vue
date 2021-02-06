@@ -1664,7 +1664,8 @@ export default {
 								fieldModel: {
 												get() {
 																var self = this;
-
+																
+	console.log('GET VALUE', self.field.key, self.model[self.field.key]);
 																if (self.field.type == 'void') {
 																				console.log('Void get nothing')
 																				return false;
@@ -1675,7 +1676,7 @@ export default {
 																				return;
 																}
 
-
+															
 
 																//Get the value for this field
 																var value = self.model[self.field.key];
@@ -3552,7 +3553,7 @@ export default {
 																	console.log('set it now', value)
 																	self.fieldModel = value;
 																				//self.$set(self, 'fieldModel', value);
-																				console.log('after', self.fieldModel)
+																				console.log('after', self.fieldModel, self.model[self.field.key])
 																}
 												} else {
 													console.log(value, 'is already selected');
