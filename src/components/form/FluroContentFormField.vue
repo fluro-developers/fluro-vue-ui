@@ -1714,8 +1714,9 @@ export default {
 																				// //console.log('SET VALUE TO', value)
 																				self.$set(self.model, self.field.key, value);
 
-	self.changeCacheKey++;
+
 																				self.$emit('input', self.model);
+																					self.changeCacheKey++;
 																				// //console.log('Emit', value, self.model[self.field.key])
 																				//
 																				// } else {
@@ -1734,7 +1735,7 @@ export default {
 																}
 
 
-															//console.log('checkit', self.field.key, self.model, self.fieldModel, self.model[self.field.key]);
+															console.log('checkit', self.field.key, self.model, self.fieldModel, self.model[self.field.key]);
 
 																//  else {
 																// 	////console.log('Value is already same thing!')
@@ -3522,7 +3523,6 @@ export default {
 								toggleValue(value) {
 												var self = this;
 
-	console.log('toggle value', value)
 												if (value == undefined || value == null) {
 																return;
 												}
@@ -3585,7 +3585,7 @@ export default {
 																});
 												} else {
 
-													console.log('check string value', stringValue, self.fieldModel, self.getActualValue(self.fieldModel) == stringValue, self.fieldModel);
+													//console.log('check string value', stringValue, self.fieldModel, self.getActualValue(self.fieldModel) == stringValue, self.fieldModel);
 																return self.getActualValue(self.fieldModel) == stringValue;
 												}
 
