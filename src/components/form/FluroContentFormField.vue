@@ -1714,13 +1714,13 @@ export default {
 
 																				self.$emit('input', self.model);
 
-																				console.log('model changed', self.field.key, self.model);
-																				var cacheKey = self.model._ck;
-																				if(!cacheKey) {
-																					cacheKey = 0;
-																				}
+																				// console.log('model changed', self.field.key, self.model);
+																				// var cacheKey = self.model._ck;
+																				// if(!cacheKey) {
+																				// 	cacheKey = 0;
+																				// }
 
-																				self.$set(self.model, '_ck', cacheKey++);
+																				// self.$set(self.model, '_ck', cacheKey++);
 																				// //console.log('Emit', value, self.model[self.field.key])
 																				//
 																				// } else {
@@ -3588,7 +3588,7 @@ export default {
 																				return self.getActualValue(val) == stringValue
 																});
 												} else {
-																return self.getActualValue(self.fieldModel) == stringValue;
+																return self.getActualValue(self.fieldModel) == stringValue || self.getActualValue(self.model[self.field.key]) == stringValue;
 												}
 
 								},
