@@ -1712,12 +1712,12 @@ export default {
 																				// //console.log('SET VALUE TO', value)
 																				// 
 
-																				self.model[self.field.key] = value;
+																			
 																				self.$set(self.model, self.field.key, value);
 
 																				self.$emit('input', self.model);
 
-																				console.log('double set', self.field.key, 'to', value, 'now is:', self.fieldModel);
+																				console.log('change occurred');
 
 
 																				// console.log('model changed', self.field.key, self.model);
@@ -3536,6 +3536,8 @@ export default {
 												if (value == undefined || value == null) {
 																return;
 												}
+
+												
 												return value._id || value.id || value.value || value.title || value;
 								},
 								toggleValue(value) {
@@ -3601,7 +3603,7 @@ export default {
 																				return self.getActualValue(val) == stringValue
 																});
 												} else {
-																return self.getActualValue(self.fieldModel) == stringValue || self.getActualValue(self.model[self.field.key]) == stringValue;
+																return self.getActualValue(self.fieldModel) == stringValue;
 												}
 
 								},
@@ -3887,17 +3889,9 @@ export default {
 								var self = this;
 
 
-
-								if (!self.model) {
-												// //console.log('NO MODEL BIG ISSUE', self.model, self.field.key);
-								}
-
-
 								// //console.log('FIX CORRUPED', self.model[self.field.key], JSON.parse(JSON.stringify(self.model)));
 
-								if (self.field.key == 'logo') {
-												//console.log('CREATED KEY NOW', self.field.title, self.field.maximum, self.model[self.field.key]);
-								}
+
 
 								var cleaned = self.fixCorruptedData(self.model[self.field.key]);
 								if (typeof cleaned != typeof self.model[self.field.key] || cleaned != self.model[self.field.key]) {
