@@ -1717,7 +1717,6 @@ export default {
 
 																				self.$emit('input', self.model);
 
-																				console.log('change occurred');
 
 
 																				// console.log('model changed', self.field.key, self.model);
