@@ -1666,12 +1666,12 @@ export default {
 																var self = this;
 
 																if (self.field.type == 'void') {
-																				// //console.log('Void get nothing')
+																				console.log('Void get nothing')
 																				return false;
 																}
 
 																if (!self.field.key || !self.field.key.length) {
-																				//	//console.log('Field not ready yet')
+																				console.log('Field not ready yet')
 																				return;
 																}
 
@@ -1681,7 +1681,7 @@ export default {
 																var value = self.model[self.field.key];
 																// //console.log('GET clean going in', self.field.title, value);
 																var cleaned = self.cleanOutput(value);
-																// //console.log('GET clean going out', self.field.title, cleaned);
+																console.log('GET clean going out', self.field.title, cleaned);
 
 																return cleaned;
 
@@ -1699,18 +1699,20 @@ export default {
 
 																//Clean the input
 																// //console.log('Before clean', value)
-																console.log('SET clean going in', self.field.title, self.field.key, value);
+																//console.log('SET clean going in', self.field.title, self.field.key, value);
 																value = self.cleanInput(value);
 
-																console.log('SET clean going out', self.field.title, self.field.key, value);
+																//console.log('SET clean going out', self.field.title, self.field.key, value);
 
 
 																//////////////////////////////////
 																//If there is a change
 																if (self.model[self.field.key] != value) {
 
-																				console.log('SET VALUE TO', value)
+																			
 																				self.$set(self.model, self.field.key, value);
+
+																					console.log('SET VALUE TO', self.field.key, value, self.model)
 
 																				self.$emit('input', self.model);
 																				// //console.log('Emit', value, self.model[self.field.key])
