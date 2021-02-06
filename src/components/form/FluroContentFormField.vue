@@ -891,15 +891,10 @@ export default {
 												if (this.model != val) {
 
 
-
-																// val = this.fixCorruptedData(val);
-																if (this.field.key == 'logo') {
-																				//console.log('SET THE MODEL TO', val);
-																}
+													console.log('new model coming in', this.field.key);
+																
 																//Set the new model
 																this.model = val;
-
-																// this.model = Object.assign({}, val);
 
 																if (this.model) {
 																				//Clean up any bad input
@@ -915,7 +910,11 @@ export default {
 																				this.reset();
 																				this.checkInitialValue();
 																}
+												} else {
+													console.log('model is already the same')
 												}
+
+												this.$forceUpdate();
 
 
 
@@ -1731,9 +1730,7 @@ export default {
 																}
 
 
-
-															self.$forceUpdate();
-															console.log('FORCE UPDATE', self.field.key, self.model, self.fieldModel, self.model[self.field.key]);
+															console.log('checkit', self.field.key, self.model, self.fieldModel, self.model[self.field.key]);
 
 																//  else {
 																// 	////console.log('Value is already same thing!')
