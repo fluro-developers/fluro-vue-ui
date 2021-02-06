@@ -364,6 +364,9 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+
+$proposedColor: #2ad4b9 !default;
+
 .assignment-item {
     font-size: 12px;
     text-overflow: ellipsis;

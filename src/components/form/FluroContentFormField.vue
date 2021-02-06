@@ -198,13 +198,13 @@
 																<v-input class="no-flex" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
 																				<div class="button-select-buttons">
 																								<template v-if="webMode">
-																												<fluro-button :block="$vuetify.breakpoint.xsOnly" @click="toggleValue(button.value)" :class="{active:isSelectedValue(button.value), inactive:!isSelectedValue(button.value)}" :key="button.value" v-for="button in selectOptions">
+																												<fluro-button :block="$vuetify.breakpoint.xsOnly" @click.native="toggleValue(button.value)" :class="{active:isSelectedValue(button.value), inactive:!isSelectedValue(button.value)}" :key="button.value" v-for="button in selectOptions">
 																																{{button.name || button.title}}
 																																<fluro-icon right icon="check" class="tick" />
 																												</fluro-button>
 																								</template>
 																								<template v-else>
-																												<v-btn :block="$vuetify.breakpoint.xsOnly" :color="isSelectedValue(button.value) ? `primary` : null" :class="{active:isSelectedValue(button.value)}" class="ml-0" @click="toggleValue(button.value)" v-for="button in selectOptions">
+																												<v-btn :block="$vuetify.breakpoint.xsOnly" :color="isSelectedValue(button.value) ? `primary` : null" :class="{active:isSelectedValue(button.value)}" class="ml-0" @click.native="toggleValue(button.value)" v-for="button in selectOptions">
 																																{{button.name || button.title}}
 																																<fluro-icon right icon="check" class="tick" />
 																												</v-btn>
@@ -284,19 +284,12 @@
 																<v-select :persistent-hint="true" :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="definitionOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
 												</template>
 												<template v-else-if="renderer == 'select'">
-
-
 																<!-- <pre>{{fieldModel}}</pre> -->
 																<template v-if="useBasicDropdown">
-
-
 																				<v-select :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder">
 																								<template v-slot:item="{item}">
-
-																								
 																												<v-layout align-center>
 																																<v-flex shrink style="padding-right:8px;">
-
 																																				<fluro-icon :icon="optionIsSelected(item) ? 'check-square' : 'square'" :library="optionIsSelected(item) ? 'fas' : 'far'" />
 																																</v-flex>
 																																<v-flex>
@@ -317,7 +310,6 @@
 																								<template v-slot:item="{item}">
 																												<v-layout align-center>
 																																<v-flex shrink style="padding-right:8px;">
-
 																																				<fluro-icon :icon="optionIsSelected(item) ? 'check-square' : 'square'" :library="optionIsSelected(item) ? 'fas' : 'far'" />
 																																</v-flex>
 																																<v-flex>
@@ -1860,11 +1852,11 @@ export default {
 												var options = _.chain(this.asyncOptions)
 																.map(function(country) {
 
-																	var countryName = country.name;
-																	var countryAlpha2 = country.alpha2;
-																	var countryCallingCodes = country.countryCallingCodes;
+																				var countryName = country.name;
+																				var countryAlpha2 = country.alpha2;
+																				var countryCallingCodes = country.countryCallingCodes;
 
-																	var title = `${countryName} - ${countryAlpha2} (${countryCallingCodes.join(', ')})`;
+																				var title = `${countryName} - ${countryAlpha2} (${countryCallingCodes.join(', ')})`;
 
 																				return {
 																								title,
