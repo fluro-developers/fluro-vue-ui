@@ -1730,7 +1730,7 @@ export default {
 
 
 
-																				// self.$forceUpdate();
+																				self.$forceUpdate();
 																				// //console.log('EMIT CHANGE')
 																} else {
 																	console.log('model is already set to', self.field.key, value, self.model)
