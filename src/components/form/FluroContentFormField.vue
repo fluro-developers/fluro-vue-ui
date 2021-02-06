@@ -1710,11 +1710,14 @@ export default {
 																if (self.model[self.field.key] != value) {
 
 																				// //console.log('SET VALUE TO', value)
+																				// 
+
+																				self.model[self.field.key] = value;
 																				self.$set(self.model, self.field.key, value);
 
 																				self.$emit('input', self.model);
 
-																				console.log('set', self.field.key, 'to', value, 'now is:', self.fieldModel);
+																				console.log('double set', self.field.key, 'to', value, 'now is:', self.fieldModel);
 
 
 																				// console.log('model changed', self.field.key, self.model);
@@ -1751,7 +1754,7 @@ export default {
 																// }
 																//////////////////////////////////
 
-																self.$forceUpdate();
+																// self.$forceUpdate();
 																//////////////////////////////////
 
 
@@ -2895,7 +2898,14 @@ export default {
 
 																				// ////console.log('BOOLEAN', this.field.title, self.field.inverse ? 'invert to' : 'normal', value);
 																				break;
+																				case 'string':
+																					default:
+																						if(!value) {
+																							value = '';
+																						}
+																					break;
 												}
+
 
 												// ////console.log('CLEANED INPUT', self.field.title, value)
 												return value;
@@ -3870,8 +3880,6 @@ export default {
 																});
 												});
 								}
-
-								this.$forceUpdate();
 				},
 				created() {
 
