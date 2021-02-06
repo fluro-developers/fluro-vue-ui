@@ -1714,6 +1714,9 @@ export default {
 
 																				self.$emit('input', self.model);
 
+																				console.log('set', self.field.key, 'to', value, 'now is:', self.fieldModel);
+
+
 																				// console.log('model changed', self.field.key, self.model);
 																				// var cacheKey = self.model._ck;
 																				// if(!cacheKey) {
@@ -1748,7 +1751,7 @@ export default {
 																// }
 																//////////////////////////////////
 
-																return;
+																self.$forceUpdate();
 																//////////////////////////////////
 
 
@@ -3845,6 +3848,7 @@ export default {
 
 
 				mounted() {
+
 								var self = this;
 								if (self.debugMode && self.field.isNew) {
 												// ////console.log('SCROLL FIELD INTO VIEW', self.$el);
@@ -3866,6 +3870,8 @@ export default {
 																});
 												});
 								}
+
+								this.$forceUpdate();
 				},
 				created() {
 
