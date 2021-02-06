@@ -741,7 +741,6 @@ export default {
 
 
 								return {
-									changeCacheKey:0,
 												actualDateModelDay: null,
 												actualDateModelMonth: null,
 												actualDateModelYear: null,
@@ -892,10 +891,15 @@ export default {
 												if (this.model != val) {
 
 
-													//console.log('new model coming in', this.field.key);
-																
+
+																// val = this.fixCorruptedData(val);
+																if (this.field.key == 'logo') {
+																				//console.log('SET THE MODEL TO', val);
+																}
 																//Set the new model
 																this.model = val;
+
+																// this.model = Object.assign({}, val);
 
 																if (this.model) {
 																				//Clean up any bad input
@@ -911,11 +915,7 @@ export default {
 																				this.reset();
 																				this.checkInitialValue();
 																}
-												} else {
-													//console.log('model is already the same')
 												}
-
-												//this.$forceUpdate();
 
 
 
@@ -1665,8 +1665,6 @@ export default {
 												get() {
 																var self = this;
 
-																console.log(self.changeCacheKey);
-
 																if (self.field.type == 'void') {
 																				// //console.log('Void get nothing')
 																				return false;
@@ -1714,9 +1712,9 @@ export default {
 																				// //console.log('SET VALUE TO', value)
 																				self.$set(self.model, self.field.key, value);
 
-
 																				self.$emit('input', self.model);
-																					self.changeCacheKey++;
+
+																				console.log('model changed', self.field.key, self.model);
 																				// //console.log('Emit', value, self.model[self.field.key])
 																				//
 																				// } else {
@@ -1730,12 +1728,13 @@ export default {
 
 
 
-																				self.$forceUpdate();
+																				// self.$forceUpdate();
 																				// //console.log('EMIT CHANGE')
 																}
 
 
-															console.log('checkit', self.field.key, self.model, self.fieldModel, self.model[self.field.key]);
+
+
 
 																//  else {
 																// 	////console.log('Value is already same thing!')
@@ -1743,7 +1742,7 @@ export default {
 																// }
 																//////////////////////////////////
 
-																//return;
+																return;
 																//////////////////////////////////
 
 
@@ -3537,7 +3536,7 @@ export default {
 												var self = this;
 
 												if (self.multipleInput && !self.canAddValue) {
-																console.log('reached limit')
+																// //console.log('reached limit')
 																return;
 												}
 												if (!self.isSelectedValue(value)) {
@@ -3577,15 +3576,12 @@ export default {
 												}
 
 												var stringValue = self.getActualValue(value);
-												
 
 												if (self.multipleInput) {
 																return self.fieldModel.some(function(val) {
 																				return self.getActualValue(val) == stringValue
 																});
 												} else {
-
-													//console.log('check string value', stringValue, self.fieldModel, self.getActualValue(self.fieldModel) == stringValue, self.fieldModel);
 																return self.getActualValue(self.fieldModel) == stringValue;
 												}
 
