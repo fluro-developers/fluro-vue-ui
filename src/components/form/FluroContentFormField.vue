@@ -3520,6 +3520,7 @@ export default {
 								toggleValue(value) {
 												var self = this;
 
+	console.log('toggle value', value)
 												if (value == undefined || value == null) {
 																return;
 												}
@@ -3534,7 +3535,7 @@ export default {
 												var self = this;
 
 												if (self.multipleInput && !self.canAddValue) {
-																// //console.log('reached limit')
+																console.log('reached limit')
 																return;
 												}
 												if (!self.isSelectedValue(value)) {
