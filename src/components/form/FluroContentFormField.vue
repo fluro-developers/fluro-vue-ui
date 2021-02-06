@@ -1664,25 +1664,24 @@ export default {
 								fieldModel: {
 												get() {
 																var self = this;
-																
-	console.log('GET VALUE', self.field.key, self.model[self.field.key]);
+
 																if (self.field.type == 'void') {
-																				console.log('Void get nothing')
+																				// //console.log('Void get nothing')
 																				return false;
 																}
 
 																if (!self.field.key || !self.field.key.length) {
-																				console.log('Field not ready yet')
+																				//	//console.log('Field not ready yet')
 																				return;
 																}
 
-															
+
 
 																//Get the value for this field
 																var value = self.model[self.field.key];
 																// //console.log('GET clean going in', self.field.title, value);
 																var cleaned = self.cleanOutput(value);
-																console.log('GET clean going out', self.field.title, cleaned);
+																// //console.log('GET clean going out', self.field.title, cleaned);
 
 																return cleaned;
 
@@ -1690,7 +1689,6 @@ export default {
 												set(value) {
 
 																var self = this;
-																console.log('set the field model', value)
 
 																if (self.field.type == 'void') {
 																				// ////console.log('Void set nothing')
@@ -1701,20 +1699,18 @@ export default {
 
 																//Clean the input
 																// //console.log('Before clean', value)
-																//console.log('SET clean going in', self.field.title, self.field.key, value);
+																// //console.log('SET clean going in', self.field.title, value);
 																value = self.cleanInput(value);
 
-																//console.log('SET clean going out', self.field.title, self.field.key, value);
+																// //console.log('SET clean going out', self.field.title, value);
 
 
 																//////////////////////////////////
 																//If there is a change
 																if (self.model[self.field.key] != value) {
 
-																			
+																				// //console.log('SET VALUE TO', value)
 																				self.$set(self.model, self.field.key, value);
-
-																				//	console.log('SET VALUE TO', self.field.key, value, self.model)
 
 																				self.$emit('input', self.model);
 																				// //console.log('Emit', value, self.model[self.field.key])
@@ -1729,14 +1725,15 @@ export default {
 																				// }
 
 
-self.$emit('input', self.model);
-																				//self.$forceUpdate();
+
+																				// self.$forceUpdate();
 																				// //console.log('EMIT CHANGE')
 																}
 
 
 
-
+															self.$forceUpdate();
+															console.log('FORCE UPDATE', self.field.key, self.model, self.fieldModel, self.model[self.field.key]);
 
 																//  else {
 																// 	////console.log('Value is already same thing!')
@@ -1744,7 +1741,7 @@ self.$emit('input', self.model);
 																// }
 																//////////////////////////////////
 
-																self.$emit('input', self.model);
+																return;
 																//////////////////////////////////
 
 
@@ -3524,7 +3521,7 @@ self.$emit('input', self.model);
 								toggleValue(value) {
 												var self = this;
 
-
+	console.log('toggle value', value)
 												if (value == undefined || value == null) {
 																return;
 												}
@@ -3538,23 +3535,17 @@ self.$emit('input', self.model);
 								selectValue(value) {
 												var self = this;
 
-	console.log('select', value);
 												if (self.multipleInput && !self.canAddValue) {
 																console.log('reached limit')
 																return;
 												}
-
 												if (!self.isSelectedValue(value)) {
+
 																if (self.multipleInput) {
 																				self.fieldModel.push(value);
 																} else {
-																	console.log('set it now', value)
-																	self.fieldModel = value;
-																				//self.$set(self, 'fieldModel', value);
-																				console.log('after', self.fieldModel, self.model[self.field.key])
+																				self.fieldModel = value;
 																}
-												} else {
-													console.log(value, 'is already selected');
 												}
 
 												self.elementValueChanged(null, true);
@@ -3562,7 +3553,6 @@ self.$emit('input', self.model);
 								},
 								deselectValue(value) {
 												var self = this;
-												console.log('deselect', value);
 												if (self.isSelectedValue(value)) {
 																if (self.multipleInput) {
 																				var index = self.fieldModel.indexOf(value);
@@ -3594,6 +3584,7 @@ self.$emit('input', self.model);
 																});
 												} else {
 
+													console.log('check string value', stringValue, self.fieldModel, self.getActualValue(self.fieldModel) == stringValue, self.fieldModel);
 																return self.getActualValue(self.fieldModel) == stringValue;
 												}
 
