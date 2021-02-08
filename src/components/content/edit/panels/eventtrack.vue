@@ -112,7 +112,7 @@
                         <constrain md>
                             <h4 margin>Roster Reminders</h4>
                             <p>Setup reminders for team members rostered to events on this track</p>
-                            <event-reminder-manager :slots="rosterSlots" v-model="model.defaultReminders" />
+                            <event-reminder-manager type="track" :slots="rosterSlots" v-model="model.defaultReminders" />
                             <!-- <default-roster-manager :config="config" v-model="model.defaultRosters" :rosterOptions="rosterDefinitions.definitions"/> -->
                             <!-- <reminder-event-manager :config="config" v-model="model.defaultReminders" :allAssignmentOptions="allPositions" /> -->
                         </constrain>
@@ -144,7 +144,7 @@
                     <v-container>
                         <constrain lg>
                             <h3 margin>Automated Messages</h3>
-                            <event-message-manager v-model="model.defaultMessages" />
+                            <event-message-manager type="track" v-model="model.defaultMessages" />
                             <!-- <pre>{{model.messages}}</pre> -->
                             <!-- <messaging-event-manager :config="config" v-model="model.messages" :startDate="model.startDate" :endDate="model.endDate" /> -->
                         </constrain>

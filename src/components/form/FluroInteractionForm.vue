@@ -1372,6 +1372,7 @@ export default {
 
             if (self.debugMode) {
                 stripeUseKey = sandboxKey;
+                console.log('debug mode use sandbox key')
             } else {
                 stripeUseKey = liveKey;
             }

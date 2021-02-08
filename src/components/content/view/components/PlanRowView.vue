@@ -9,23 +9,10 @@
         <td>
             <v-layout>
                 <v-flex>
-                    <div class="row-title">
-                        <div class="cell">
-                            <strong class="row-title-text">{{row.title}}</strong>
-                        </div>
-                    </div>
+                    <div class="row-title"><div class="cell"><strong class="row-title-text">{{row.title}}</strong></div></div>
                 </v-flex>
-                <div v-if="type == 'song'">
-                    <div class="row-song-key cell">
-                        {{row.key}}
-                    </div>
-                </div>
-            </v-layout>
-            <div class="row-detail" v-if="(type != 'breaker') && (type != 'start')">
-                <div class="cell" v-if="row.detail">
-                    
-                </div>
-            </div>
+                <div v-if="type == 'song'"><div class="row-song-key cell">{{row.key}}</div></div>
+            </v-layout><div class="row-detail" v-if="row.detail && (type != 'breaker') && (type != 'start')"><div class="cell"><div v-html="row.detail"></div></div></div>
         </td>
         <td :key="column.key"  v-for="column in columns">
              <div class="cell" v-html="row.notes[column.key]">

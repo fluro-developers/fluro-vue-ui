@@ -110,6 +110,9 @@
                             <p></p>
                             <h3 margin>Reminders</h3>
                             <event-reminder-manager :slots="rosterSlots" :startDate="model.startDate" :endDate="model.endDate" v-model="model.reminders" />
+                            <div v-if="eventTrack">
+                                <event-reminder-manager type="track" disabled :slots="rosterSlots" v-model="eventTrack.defaultReminders" />
+                            </div>
                             <!-- <pre>{{model.reminders}}</pre> -->
                         </constrain>
                     </v-container>
@@ -252,9 +255,7 @@
                     <v-container>
                         <!-- <constrain sm> -->
                         <h3 margin>Tickets and Registration Forms</h3>
-
                         <fluro-panel v-if="(model.forms && model.forms.length) || !model.publicTicketingEnabled">
-
                             <fluro-panel-body>
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.forms" v-model="model"></fluro-content-form-field>
                             </fluro-panel-body>
@@ -264,7 +265,6 @@
                         <ticket-type-manager v-model="model" />
                         <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.publicTicketingConfirmationMessage" v-model="model"></fluro-content-form-field>
                         <ticket-list :event="model" />
-                        
                     </v-container>
                 </flex-column-body>
             </tab>
@@ -275,6 +275,9 @@
                             <constrain lg>
                                 <h3 margin>Automated Messages</h3>
                                 <event-message-manager v-model="model.messages" />
+                                <div v-if="eventTrack">
+                                    <event-message-manager type="track" disabled v-model="eventTrack.defaultMessages" />
+                                </div>
                                 <!-- <messaging-event-manager :config="config" v-model="model.messages" :startDate="model.startDate" :endDate="model.endDate" /> -->
                             </constrain>
                         </v-container>
@@ -648,6 +651,23 @@ export default {
         }
     },
     asyncComputed: {
+        eventTrack: {
+            default: null,
+            get() {
+
+                var self = this;
+
+                var trackPartial = this.model.track;
+                if (!trackPartial) {
+                    return Promise.resolve(null);
+                }
+
+                return new Promise(function(resolve, reject) {
+
+                    self.$fluro.content.get(trackPartial).then(resolve, reject);
+                })
+            },
+        },
         rosterTypes: {
             default: [],
             get() {
@@ -699,6 +719,7 @@ export default {
         }
     },
     computed: {
+
         rosterSlots() {
             var self = this;
 
@@ -1042,7 +1063,7 @@ export default {
 
             addField("forms", {
                 title: self.model.publicTicketingEnabled ? "Advanced Custom Registration Forms" : 'Forms',
-                description: self.model.publicTicketingEnabled ? 'Add your own custom form': "Link forms to this event.",
+                description: self.model.publicTicketingEnabled ? 'Add your own custom form' : "Link forms to this event.",
                 minimum: 0,
                 maximum: 0,
                 type: "reference",
@@ -1050,7 +1071,7 @@ export default {
                 params: {
                     restrictType: "form"
                 },
-                
+
             });
 
             addField("expectTeams", {
@@ -1292,7 +1313,6 @@ export default {
 
 </script>
 <style scoped lang="scss">
-
 $proposedColor: #2ad4b9 !default;
 
 .event-cover-image {
