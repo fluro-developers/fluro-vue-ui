@@ -34,7 +34,6 @@
             </div>
             <div class="fluro-content-list" v-else>
                 <fluro-panel>
-                 
                     <fluro-table :selection="contextSelection" style="max-height: 50vh" trackingKey="_id" :pageSize="40" :items="model" :columns="columns" />
                     <fluro-panel-title class="border-top" v-if="contextSelection.selection.length">
                         <v-layout align-center>
@@ -42,11 +41,9 @@
                             <v-flex shrink>
                                 <v-btn color="primary" class="ma-0" small @click="removeCurrentSelection()">
                                     Remove {{contextSelection.selection.length}} from list
-                                    
                                 </v-btn>
                                 <v-btn color="primary" class="ma-0 ml-1" small @click="$actions.open(contextSelection.selection)">
                                     More Actions
-                                    
                                 </v-btn>
                             </v-flex>
                         </v-layout>
@@ -287,7 +284,7 @@ export default {
                     title: '',
                     key: '_id',
                     renderer: 'button',
-                     tooltip:'Edit',
+                    tooltip: 'Edit',
                     shrink: true,
                     button: {
                         icon: 'pencil',
@@ -310,7 +307,7 @@ export default {
 
                 button: {
                     icon: 'times',
-                     tooltip:'Remove from list',
+                    tooltip: 'Remove from list',
                     action(row) {
 
                         return new Promise(function(resolve, reject) {
@@ -342,10 +339,10 @@ export default {
             return array;
         },
         readableSingle() {
-            return this.$fluro.types.readable(this.type);
+            return this.$fluro.types.readable(this.type || 'node');
         },
         readablePlural() {
-            return this.$fluro.types.readable(this.type, true);
+            return this.$fluro.types.readable(this.type || 'node', true);
         },
         canCreate() {
             var self = this;
@@ -425,7 +422,7 @@ export default {
     methods: {
         removeCurrentSelection() {
 
-         var toDeselect = this.contextSelection.selection.slice();
+            var toDeselect = this.contextSelection.selection.slice();
             this.deselectMultiple(toDeselect);
             this.contextSelection.deselectAll();
         },
@@ -532,29 +529,66 @@ export default {
             var self = this;
             //////////////////////////////////////
 
-            // var joins;
-            // if (self.type == 'contact') {
-            var joins = _.map(self.columns, 'key');
-            //     // ['firstName', 'lastName', 'preferredName', 'gender', 'age'];
-            // }
+            if (!self.type || self.type == 'node') {
 
-            // var additionalColumns = self.columns;
+                self.$fluro.types.basicTypes().then(function(types) {
 
-            console.log('ASK FOR JOINS', joins)
-            var promise = self.$fluro.modal({
-                component: FluroContentSelectModal,
-                options: {
-                    selector: self,
-                    type: self.type,
-                    minimum: self.minimum,
-                    maximum: self.maximum,
-                    allDefinitions: self.allDefinitions,
-                    searchInheritable: self.searchInheritable,
-                    lockFilter: self.lockFilter,
-                    joins,
-                    // additionalColumns,
-                }
-            });
+                    var answers = _.chain(types)
+
+                        .map(function(type) {
+                            if (!type) {
+                                return;
+                            }
+                            
+                            return {
+                                name: type.title,
+                                title:type.title,
+                                value: type.definitionName,
+                            }
+                        })
+                        .compact()
+                        .orderBy("title")
+                        .value();
+
+                    console.log('TYPES OF THINGS', answers);
+
+                    //////////////////////////////////////////
+
+                    self.$fluro.options(answers, 'Select a type', 'Select what kind of thing you want to reference')
+                        .then(function(answer) {
+                            launchSelectModal(answer.value);
+                        })
+
+                })
+
+                //Ask what type of thing we are looking for
+
+                // return launchSelectModal(self.type);
+            } else {
+                return launchSelectModal(self.type);
+            }
+
+
+
+            function launchSelectModal(type) {
+
+                var joins = _.map(self.columns, 'key');
+
+                var promise = self.$fluro.modal({
+                    component: FluroContentSelectModal,
+                    options: {
+                        selector: self,
+                        type,
+                        minimum: self.minimum,
+                        maximum: self.maximum,
+                        allDefinitions: self.allDefinitions,
+                        searchInheritable: self.searchInheritable,
+                        lockFilter: self.lockFilter,
+                        joins,
+                        // additionalColumns,
+                    }
+                });
+            }
 
             //////////////////////////////////////
 
@@ -686,7 +720,7 @@ export default {
             // model: this.value,
             drag: false
         };
-    }
+    },
 };
 
 </script>

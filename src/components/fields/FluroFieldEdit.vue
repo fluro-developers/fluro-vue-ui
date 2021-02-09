@@ -934,45 +934,6 @@ export default {
                         })
                         .catch(reject);
 
-                    // Promise.all([
-                    //     new Promise(function(resolve, reject) {
-                    //         self.$fluro.types.basicTypes()
-                    //             .then(function(values) {
-                    //                 var cleaned = _.chain(values)
-                    //                     .compact()
-                    //                     .map(function(type) {
-                    //                         return {
-                    //                             name: type.title,
-                    //                             title: type.title,
-                    //                             value: type.definitionName,
-                    //                         }
-                    //                     })
-                    //                     .orderBy('title')
-                    //                     .value();
-
-                    //                 resolve(cleaned);
-                    //             });
-                    //     }),
-                    //     new Promise(function(resolve, reject) {
-                    //         self.$fluro.types.basicTypes()
-                    //             .then(function(values) {
-                    //                 var cleaned = _.chain(values)
-                    //                     .compact()
-                    //                     .map(function(type) {
-                    //                         return {
-                    //                             name: type.title,
-                    //                             title: type.title,
-                    //                             value: type.definitionName,
-                    //                         }
-                    //                     })
-                    //                     .orderBy('title')
-                    //                     .value();
-
-                    //                 resolve(cleaned);
-                    //             });
-                    //     }),
-
-                    // ])
                 });
             }
         }

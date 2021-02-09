@@ -55,6 +55,7 @@
 																								</v-toolbar>
 																								<v-card-text>
 																												<fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel[index]" @input="elementValueChanged" :fields="fields" />
+																		
 																								</v-card-text>
 																				</v-card>
 																				<template v-if="!fieldModel || !fieldModel.length">
@@ -154,6 +155,8 @@
 																												<!-- <fluro-content-form-field :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" class="flex" :field="subfield" @input="elementValueChanged" v-model="fieldModel" /> -->
 																								</template>
 																				</template>
+
+																				<!-- <pre>TEST {{model}}</pre> -->
 																</template>
 												</template>
 												<template v-else-if="renderer == 'checkbox'">
@@ -341,7 +344,7 @@
 												<template v-else-if="renderer == 'search-select'">
 																<v-autocomplete :persistent-hint="true" :outline="showOutline" :success="success" :deletable-chips="true" :hide-selected="true" prepend-inner-icon="search" :error-messages="errorMessages" :cache-items="!defaultReferences || !defaultReferences.length" :chips="multipleInput" :clearable="!required" :return-object="true" item-text="title" v-model="fieldModel" @blur="touch()" @focus="focussed()" @change="elementValueChanged($event, true)" :multiple="multipleInput" :loading="loading" :items="searchResults" :search-input.sync="keywords" flat hide-no-data :label="displayLabel">
 																				<template v-slot:item="{ item }">
-																								<fluro-avatar class="xs" :id="item._id" type="contact"></fluro-avatar>    
+																								<fluro-avatar class="xs" :id="item._id" type="contact"></fluro-avatar>
 																								<v-list-tile-content>
 																												<v-list-tile-title v-text="item.title"></v-list-tile-title>
 																								</v-list-tile-content>
@@ -3817,8 +3820,10 @@ export default {
 																self.touch()
 												}
 
-												//console.log('SUB FIELD CHANGED!');
-												self.$emit('input', self.model);
+												self.$forceUpdate();
+
+												console.log('SUB FIELD CHANGED!');
+												// self.$emit('input', self.model);
 								},
 
 								valueChange(event, setTouched) {
