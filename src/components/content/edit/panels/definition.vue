@@ -695,6 +695,7 @@
 																																												<fluro-realm-select v-model="model.restrictRealms" />
 																																								</fluro-panel-body>
 																																				</fluro-panel>
+																																				<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.weight" v-model="model" />
 																																				<!-- <fluro-panel>
 																																								<fluro-panel-title>
 																																												<h5>Display Columns</h5>
@@ -1582,8 +1583,8 @@ export default {
 																type: 'boolean',
 																defaultValues: defaultConfirmationCheckbox,
 																description: `Send a confirmation email to the primary contact upon a new submission. The email will include your own custom thank you message, and information about any tickets registered with this form.`,
-																params:{
-																	persistentDescription:true,
+																params: {
+																				persistentDescription: true,
 																},
 												})
 
@@ -2337,20 +2338,36 @@ export default {
 												})
 
 
+												if (self.model.parentType == 'roster') {
+																array.push({
+																				title: 'Weight',
+																				key: 'weight',
+																				minimum: 0,
+																				maximum: 1,
+																				type: 'integer',
+																				defaultValues: ['0'],
+																				description: `Set the weight of this roster, this will determine the ordering when shown in the multi planner, (Lighter weight rosters will be shown at the top, Heavier weight rosters will be shown toward the bottom)`,
+																				params: {
+																								persistentDescription: true,
+																				},
+																				//placeholder: `Eg. 'Bank Transfer', 'Cash', 'Cheque', 'Payment Plan'...`,
+																})
+												} else {
+																array.push({
+																				title: 'Weight',
+																				key: 'weight',
+																				minimum: 0,
+																				maximum: 1,
+																				type: 'integer',
+																				defaultValues: ['0'],
+																				description: `Set the weight of this definition, this will determine the ordering of this definition in lists on the user interface (Lighter weights will be shown at the top, Heavier weights will be shown toward the bottom)`,
+																				params: {
+																								persistentDescription: true,
+																				},
+																				//placeholder: `Eg. 'Bank Transfer', 'Cash', 'Cheque', 'Payment Plan'...`,
+																})
+												}
 
-												array.push({
-																title: 'Weight',
-																key: 'weight',
-																minimum: 0,
-																maximum: 1,
-																type: 'integer',
-																defaultValues: ['0'],
-																description: 'Set the weight of this roster, this will determine the ordering when shown in the multi planner, (Lighter weight rosters will be shown at the top, Heavier weight rosters will be shown toward the bottom)',
-																params: {
-																				persistentDescription: true,
-																},
-																//placeholder: `Eg. 'Bank Transfer', 'Cash', 'Cheque', 'Payment Plan'...`,
-												})
 
 
 

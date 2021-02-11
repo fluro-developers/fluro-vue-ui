@@ -55,7 +55,6 @@
 																								</v-toolbar>
 																								<v-card-text>
 																												<fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel[index]" @input="elementValueChanged" :fields="fields" />
-																		
 																								</v-card-text>
 																				</v-card>
 																				<template v-if="!fieldModel || !fieldModel.length">
@@ -155,7 +154,6 @@
 																												<!-- <fluro-content-form-field :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" class="flex" :field="subfield" @input="elementValueChanged" v-model="fieldModel" /> -->
 																								</template>
 																				</template>
-
 																				<!-- <pre>TEST {{model}}</pre> -->
 																</template>
 												</template>
@@ -217,7 +215,6 @@
 																</v-input>
 												</template>
 												<template v-else-if="renderer == 'datepicker'">
-																<!-- <pre>{{fieldModel}}</pre> -->
 																<!-- DATE PICKER -->
 																<v-menu :fixed="true" v-model="modal" min-width="290px" :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
 																				<template v-slot:activator="{ on }">
@@ -1715,7 +1712,7 @@ export default {
 																				// //console.log('SET VALUE TO', value)
 																				// 
 
-																			
+
 																				self.$set(self.model, self.field.key, value);
 
 																				self.$emit('input', self.model);
@@ -2624,7 +2621,7 @@ export default {
 																												return new Date().toISOString();
 																								} else {
 
-																												// console.log('DATE VALUE', value)
+																												console.log('DATE VALUE', value)
 																												return new Date(value);
 																								}
 																				}
@@ -2808,6 +2805,7 @@ export default {
 
 												//////////////////////////////////
 
+												
 												switch (self.field.type) {
 																case 'reference':
 
@@ -2821,6 +2819,8 @@ export default {
 
 																				break;
 																case 'date':
+																				console.log('CLEAN DATE INPUT', value)
+
 																				if (value) {
 																								if (String(value).toLowerCase() == 'now') {
 																												value = new Date();
@@ -2828,6 +2828,7 @@ export default {
 																												value = new Date(value); //.toISOString();
 																								}
 																				}
+
 
 
 
@@ -2900,12 +2901,12 @@ export default {
 
 																				// ////console.log('BOOLEAN', this.field.title, self.field.inverse ? 'invert to' : 'normal', value);
 																				break;
-																				case 'string':
-																					default:
-																						if(!value) {
-																							value = '';
-																						}
-																					break;
+																case 'string':
+																default:
+																				if (!value) {
+																								value = '';
+																				}
+																				break;
 												}
 
 
@@ -3539,7 +3540,7 @@ export default {
 																return;
 												}
 
-												
+
 												return value._id || value.id || value.value || value.title || value;
 								},
 								toggleValue(value) {

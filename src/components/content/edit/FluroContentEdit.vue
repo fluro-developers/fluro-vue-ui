@@ -87,6 +87,13 @@
                             <v-btn small icon v-if="model._id" class="ma-0" @click="$actions.open([model])">
                                 <fluro-icon icon="ellipsis-h" />
                             </v-btn>
+
+                            
+                            <v-btn class="mx-0 ml-2" @click="cancel" v-if="!embedded">Close</v-btn>
+                            <v-btn class="mx-0 ml-2" :loading="state == 'processing'" :disabled="hasErrors" @click="submit()" color="primary">{{saveText}}</v-btn>
+                        
+
+
                         </template>
                     </page-header>
                 </flex-column-header>
@@ -574,8 +581,8 @@ export default {
 
                         //Object.assign(self.model, res.data);
 
-                        
-                        switch(self.typeName) {
+
+                        switch (self.typeName) {
                             // case 'definition':
                             // case 'component':
                             // case 'product':
@@ -588,13 +595,13 @@ export default {
                             case 'image':
                             case 'asset':
                             case 'mailout':
-                                 self.model = res.data;
-                            break;
+                                self.model = res.data;
+                                break;
                             default:
-                               //Do nothing
-                            break;
+                                //Do nothing
+                                break;
                         }
-                       
+
                         resolve(res);
 
                     }, reject);
@@ -935,13 +942,13 @@ export default {
         autofocusTitle() {
             var self = this;
 
-            switch(self.typeName) {
+            switch (self.typeName) {
                 case 'article':
                 case 'plan':
                     return (!self.model._id || !self.model.title);
-                break;
+                    break;
             }
-            
+
         },
         summary() {
             var self = this;
