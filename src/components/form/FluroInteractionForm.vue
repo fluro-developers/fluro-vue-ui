@@ -382,7 +382,7 @@ export default {
     },
     watch: {
         value(v) {
-          
+
             this.dataModel = JSON.parse(JSON.stringify(v));
         },
         selectedPaymentMethod(method) {
@@ -757,10 +757,10 @@ export default {
         },
         showPaymentForm() {
 
-            if(this.allowPayment) {
+            if (this.allowPayment) {
                 return true;
             }
-            
+
             if (this.requirePayment || this.allowPayment) {
                 return this.total && parseInt(this.total) > 0;
             }
@@ -1572,6 +1572,7 @@ export default {
 
             function pruneEmpty(obj) {
                 return (function prune(current) {
+
                     _.forOwn(current, function(value, key) {
                         if (
                             _.isUndefined(value) ||
@@ -1580,12 +1581,23 @@ export default {
                             (_.isString(value) && _.isEmpty(value)) ||
                             (_.isObject(value) && _.isEmpty(prune(value)))
                         ) {
-                            delete current[key];
+
+                            //If it's an empty array
+                            if (_.isArray(value)) {
+                                //Leave it there so that (.length) expressions can calculate correctly
+                            } else {
+                             //Remove it entirely
+                                delete current[key];
+                            }
+
+
                         }
                     });
                     // remove any leftover undefined values from the delete
                     // operation on an array
-                    if (_.isArray(current)) _.pull(current, undefined);
+                    if (_.isArray(current)) {
+                        _.pull(current, undefined);
+                    }
 
                     return current;
                 })(_.cloneDeep(obj)); // Do not modify the original object, create a clone instead
@@ -1593,8 +1605,9 @@ export default {
 
             /////////////////////////////////
 
+            console.log('before prune', dataModel)
             dataModel = pruneEmpty(dataModel);
-
+            console.log('after prune', dataModel)
             /////////////////////////////////
 
             var utm;
