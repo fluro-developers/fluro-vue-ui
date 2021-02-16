@@ -31,6 +31,7 @@
                     </div>
                 </slot>
                 <template v-else>
+                   
                     <slot name="info"></slot>
                     <form @submit.stop.prevent="submit" novalidate :disabled="state == 'processing'">
                         <!-- <pre>{{allowAnonymous}}</pre> -->
@@ -211,6 +212,8 @@
                                 <pre>{{dataModel}}</pre>
                         </v-flex>
     </v-layout>-->
+
+
     </div>
 </template>
 <script>

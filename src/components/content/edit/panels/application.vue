@@ -104,6 +104,8 @@
 																																				</fluro-panel-body>
 																																				<fluro-panel-body class="border-top">
 																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.forceSSL" v-model="model" />
+																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.requirePIN" v-model="model" />
+																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.pin" v-model="model" />
 																																				</fluro-panel-body>
 																																</fluro-panel>
 																																<fluro-panel>
@@ -540,6 +542,24 @@ export default {
 												});
 
 
+												addField("requirePIN", {
+																title: "Require Access Pin Number",
+																minimum: 0,
+																maximum: 1,
+																type: "boolean",
+																description: "Require a pin number to be entered to gain access to this application"
+												});
+
+												addField("pin", {
+																title: "Access PIN Number",
+																minimum: 0,
+																maximum: 1,
+																type: "string",
+																description: "Enter an access PIN Number",
+																expressions: {
+																				show: 'model.requirePIN',
+																},
+												});
 
 
 												addField("forceSSL", {

@@ -229,7 +229,7 @@
                             </v-layout>
                         </div>
                     </flex-column-header>
-                    <fluro-field-edit @reset="resetPreview()" :item="item" @deleted="deleteSelectedField" :expressionFields="model" v-model="field" />
+                    <fluro-field-edit @reset="resetPreview()" :item="item" @deleted="deleteSelectedField" :expressionFields="expressionFields" v-model="field" />
                 </template>
                 <template v-else-if="configurePayment">
                     <flex-column-header>
@@ -324,6 +324,95 @@ export default {
         self.recursiveGUID(self.model);
     },
     computed: {
+        expressionFields() {
+
+            var self = this;
+            var extraFields = [];
+
+            if(self.askFirstName) {
+                extraFields.push({
+                    title:'First Name',
+                    key:'_firstName',
+                    minimum:0,
+                    maximum:1,
+                    type:'string',
+                })
+            }
+
+            if(self.askLastName) {
+                extraFields.push({
+                    title:'Last Name',
+                    key:'_lastName',
+                    minimum:0,
+                    maximum:1,
+                    type:'string',
+                })
+            }
+
+            if(self.askGender) {
+                extraFields.push({
+                    title:'Gender',
+                    key:'_gender',
+                    minimum:0,
+                    maximum:1,
+                    type:'string',
+                    directive:'select',
+                    options:[
+                    {
+                        name:'Male',
+                        value:'male',
+                    },
+                    {
+                        name:'Female',
+                        value:'female',
+                    },
+                    {
+                        name:`I'd prefer not to say`,
+                        value:'unknown',
+                    },
+                    ]
+                })
+            }
+
+            if(self.askDOB) {
+                extraFields.push({
+                    title:'Date of Birth',
+                    key:'_dob',
+                    minimum:0,
+                    maximum:1,
+                    type:'date',
+                })
+            }
+
+            if(self.askPhone) {
+                extraFields.push({
+                    title:'Phone Number',
+                    key:'_phoneNumber',
+                    minimum:0,
+                    maximum:1,
+                    type:'string',
+                })
+            }
+
+            if(self.askEmail) {
+                extraFields.push({
+                    title:'Phone Number',
+                    key:'_email',
+                    minimum:0,
+                    maximum:1,
+                    type:'email',
+                })
+            }
+
+
+
+            if(!extraFields || !extraFields.length) {
+                return self.model;
+            }
+
+           
+            return [].concat(extraFields, this.model);
+        },
         parentType() {
             return this.item.parentType;
         },
