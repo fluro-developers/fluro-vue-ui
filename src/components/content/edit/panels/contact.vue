@@ -232,6 +232,7 @@
 																																												<tab heading="Create new Household">
 																																																<v-container>
 																																																				<fluro-content-form @input="updateFamily" :options="formOptions" v-model="family" :fields="familyFields" />
+																																																				<!-- <pre>{{family}}</pre> -->
 																																																</v-container>
 																																												</tab>
 																																												<tab heading="Add to existing Household">
@@ -754,20 +755,42 @@ export default {
 
 								},
 								updateFamily() {
+										
+												/**/
 												var self = this;
 
-												var enteredValues = _.chain(self.family)
-																.get('address')
-																.values()
-																.compact()
-																.value();
+												var hasFamily = self.family;
+												var hasAddress;
+												var hasTitle;
 
-												if (enteredValues && enteredValues.length) {
+												///////////////////////////////
+
+												if (hasFamily) {
+
+																hasTitle = self.family.title;
+
+																//////////////////////////////
+
+																var hasAddressLine1 = _.get(self.family, 'address.addressLine1');
+																var hasSuburb = _.get(self.family, 'address.suburb');
+																var hasState = _.get(self.family, 'address.state');
+																var hasPostalCode = _.get(self.family, 'address.postalCode');
+
+																//Consider any of those fields to be an address
+																hasAddress = hasAddressLine1 || hasSuburb || hasState || hasPostalCode;
+												}
+
+												/////////////////////////////////////////
+
+												if (hasAddress) {
 																self.$set(self.model, 'family', self.family);
+																// console.log('Family Updated with an address');
 												} else {
 																self.$delete(self.model, 'family');
+																// console.log('Family DELETED because no address');
 												}
-												// console.log('Family Updated', self.mod el);
+												/**/
+
 								},
 								updateSheetRealms(realms, definitionName) {
 												var self = this;
@@ -1494,30 +1517,19 @@ export default {
 								showMaidenName() {
 												return (this.model.maidenName && this.model.maidenName.length) || this.show.maidenName;
 								},
-				},
+								familyFields() {
 
-				data() {
-								return {
-												// loadingDetails: true,
-												// loadingDefinitions: true,
-												subscriptionCacheKey: 0,
-												sheetDefinitions: [],
-												details: {},
-												detailsModel: {},
-												family: {},
-												show: {
-																preferredName: false,
-																middleName: false,
-																ethnicName: false,
-																maidenName: false,
-												},
-												familyFields: [{
+												var self = this;
+
+												return [{
 																				title: 'Name of household',
 																				key: 'title',
 																				minimum: 0,
 																				maximum: 1,
 																				"expressions": {
-																								defaultValue: 'data.lastName',
+																								defaultValue() {
+																												return self.model.lastName;
+																								}
 																				},
 																},
 																{
@@ -1577,6 +1589,27 @@ export default {
 																				]
 																},
 												]
+								},
+				},
+
+				data() {
+								return {
+												// loadingDetails: true,
+												// loadingDefinitions: true,
+												subscriptionCacheKey: 0,
+												sheetDefinitions: [],
+												details: {},
+												detailsModel: {},
+												family: {
+
+												},
+												show: {
+																preferredName: false,
+																middleName: false,
+																ethnicName: false,
+																maidenName: false,
+												},
+
 								}
 				},
 }

@@ -158,6 +158,8 @@
 																</template>
 												</template>
 												<template v-else-if="renderer == 'checkbox'">
+
+													
 																<div class="terms" :class="{'has-error':errorMessages.length}" v-if="savedTerms">
 																				<!--   -->
 																				<v-checkbox :outline="showOutline" :success="success" :mandatory="required" :persistent-hint="true" :label="displayLabel" v-model="fieldModel" @change="elementValueChanged($event, true)" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
@@ -284,7 +286,8 @@
 																<v-select :persistent-hint="true" :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="definitionOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
 												</template>
 												<template v-else-if="renderer == 'select'">
-																<!-- <pre>{{fieldModel}}</pre> -->
+															
+																<!-- :return-object="type == 'reference'" -->
 																<template v-if="useBasicDropdown">
 																				<v-select :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder">
 																								<template v-slot:item="{item}">
@@ -623,6 +626,8 @@
 																</template>
 												</template>
 								</template>
+
+
 				</div>
 </template>
 <script>
@@ -2621,7 +2626,7 @@ export default {
 																												return new Date().toISOString();
 																								} else {
 
-																												console.log('DATE VALUE', value)
+																												// console.log('DATE VALUE', value)
 																												return new Date(value);
 																								}
 																				}
@@ -2805,7 +2810,7 @@ export default {
 
 												//////////////////////////////////
 
-												
+
 												switch (self.field.type) {
 																case 'reference':
 
@@ -2819,7 +2824,7 @@ export default {
 
 																				break;
 																case 'date':
-																				console.log('CLEAN DATE INPUT', value)
+																				//console.log('CLEAN DATE INPUT', value)
 
 																				if (value) {
 																								if (String(value).toLowerCase() == 'now') {
@@ -3823,7 +3828,8 @@ export default {
 
 												self.$forceUpdate();
 
-												console.log('SUB FIELD CHANGED!');
+
+												self.elementValueChanged(event);
 												// self.$emit('input', self.model);
 								},
 

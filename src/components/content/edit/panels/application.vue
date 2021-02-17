@@ -25,8 +25,9 @@
 																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.forwards" v-model="model" />
 																																								<!-- </v-flex> -->
 																																								<!-- </v-layout> -->
-																																								<template v-if="showDeployment">
+																																								<template v-if="showDeploymentDropdown">
 																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.deployment" v-model="model" />
+																																											
 																																								</template>
 																																				</fluro-panel-body>
 																																</fluro-panel>
@@ -278,12 +279,22 @@ export default {
 																return '(Will be generated after save)';
 												}
 								},
-								showDeployment() {
+								defaultDeployment() {
+												if (this.definition) {
+																return _.get(this.definition, 'data.defaultDistribution');
+												}
+								},
+								showDeploymentDropdown() {
 												if (this.definition) {
 																switch (this.definition.definitionName) {
+
 																				case 'checkinStation':
 																								return true;
 																								break;
+																				default:
+
+																								break;
+
 																}
 												}
 
@@ -413,6 +424,7 @@ export default {
 												///////////////////////////////////
 
 												var deploymentOptions = [];
+												var defaultDeploymentValues = [];
 
 												deploymentOptions.push({
 																name: 'Fluro - Classic Admin',
@@ -435,31 +447,49 @@ export default {
 
 																definitionName = self.definition.definitionName;
 
-																if (definitionName == 'checkinStation') {
+																switch (definitionName) {
+																				case 'checkinStation':
 
-																				deploymentOptions = [];
-																				deploymentOptions.push({
-																								name: 'Checkin - Self First',
-																								value: 'io.fluro.checkin.self'
-																				});
+																								deploymentOptions = [];
+																								deploymentOptions.push({
+																												name: 'Checkin - Self First',
+																												value: 'io.fluro.checkin.self'
+																								});
 
-																				deploymentOptions.push({
-																								name: 'Checkin - Parent First',
-																								value: 'io.fluro.checkin.parent'
-																				});
+																								deploymentOptions.push({
+																												name: 'Checkin - Parent First',
+																												value: 'io.fluro.checkin.parent'
+																								});
+																								break;
+																				default:
+																								if (self.defaultDeployment && self.defaultDeployment.length) {
+
+																												defaultDeploymentValues = [self.defaultDeployment];
+
+																												deploymentOptions = [];
+																												deploymentOptions.push({
+																																name: `${self.definition.title} - Default`,
+																																value: self.defaultDeployment,
+																												});
+																								}
+																								break;
 																}
+
+
 												}
 
 												addField("deployment", {
 																title: "Application Type / Deployment",
-																minimum: definitionName == 'checkinStation' ? 1 : 0,
+																minimum: deploymentOptions.length == 1 || definitionName == 'checkinStation' ? 1 : 0,
 																maximum: 1,
 																type: "string",
 																directive: 'select',
 																description: "Select an application to deploy",
 																options: deploymentOptions,
+																defaultValues: defaultDeploymentValues,
 												});
 
+												console.log('dEFAULT DEPLOYMENTS', defaultDeploymentValues)
 
 
 												addField("origins", {

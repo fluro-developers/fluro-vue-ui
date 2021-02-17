@@ -269,8 +269,9 @@ export default {
             // }
         },
         update(input, valueThatWasChanged) {
-            // console.log('form model changed from update callback', input, valueThatWasChanged);
-            this.$emit('input', this.model);           
+            // console.log('form level', this.model)
+            this.$emit('input', Object.assign({}, this.model));           
+           
         },
     }
 };
