@@ -1483,6 +1483,11 @@ export default {
 																								name: 'GBP',
 																								value: 'gbp',
 																				},
+
+																				{
+																								name: 'SGD',
+																								value: 'sgd',
+																				},
 																]
 												})
 

@@ -225,9 +225,10 @@
                         </template> -->
                         <template v-if="model.directive == 'app-field-key-select' || model.directive == 'app-field-select'">
                             <fluro-content-form-field :field="fields.referenceType" v-model="model.params" />
+                             <fluro-content-form-field :field="fields.dynamicReferenceType" v-model="model.params" />
                         </template>
                         <template v-if="model.directive == 'app-type-select'">
-                            <fluro-content-form-field :field="fields.referenceType" v-model="model.params" />
+                            <fluro-content-form-field :field="fields.parentType" v-model="model.params" />
                             <fluro-content-form-field :field="fields.includeDefinedTypes" v-model="model.params" />
                         </template>
                         <template v-if="model.directive == 'app-filter-select'">
@@ -909,6 +910,7 @@ export default {
                 })
             }
         },
+
         referenceOptions: {
             default: [],
             get() {
@@ -925,7 +927,8 @@ export default {
                                     return {
                                         name: term.title,
                                         title: term.title,
-                                        value: term.definitionName
+                                        value: term.definitionName,
+                                        parentType:term.parentType,
                                     };
                                 })
                                 .orderBy("title")
@@ -941,7 +944,11 @@ export default {
         }
     },
     computed: {
-
+        basicAvailableTypes() {
+            return this.referenceOptions.filter(function(type) {
+                return !type.parentType
+            })
+        },
         isAssetType() {
             var isReference = (this.model.type == 'reference');
             if (!isReference) {
@@ -1034,6 +1041,11 @@ export default {
             array.push({
                 name: `CAD (${self.$fluro.utils.currencySymbol("cad")})`,
                 value: "cad"
+            });
+
+            array.push({
+                name: `SGD (${self.$fluro.utils.currencySymbol("sgd")})`,
+                value: "sgd"
             });
 
             return array;
@@ -1269,6 +1281,8 @@ export default {
                 }
             });
 
+
+            
             addField("defaultValues", {
                 title: "Default Value(s)",
                 description: "add a default value for this field",
@@ -1539,6 +1553,24 @@ export default {
                 ]
             });
 
+
+
+            
+
+
+            addField("parentType", {
+                key: "parentType",
+                title: "Restrict to Parent Type",
+                description: "Restrict to only definitions of a specified basic type",
+                minimum: 0,
+                maximum: 1,
+                type: "string",
+                directive: "select",
+                options: self.basicAvailableTypes,
+            });
+
+
+
             addField("referenceType", {
                 key: "restrictType",
                 title: "Reference Type",
@@ -1580,7 +1612,12 @@ export default {
                 description: "Include any extended definitions of this type",
                 minimum: 0,
                 maximum: 1,
-                type: "boolean"
+                type: "boolean",
+                expressions:{
+                    show() {
+                        return !self.model.params.parentType;
+                    }
+                }
             });
 
             addField("currency", {

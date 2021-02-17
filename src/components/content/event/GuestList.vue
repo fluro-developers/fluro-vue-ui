@@ -33,7 +33,7 @@
                             </v-flex>
                         </v-layout>
                     </v-container>
-                    <fluro-table trackingKey="_id" defaultSort="firstName" :pageSize="35" style="max-height:50vh;" :items="segment.contacts" :columns="columns" />
+                    <fluro-table trackingKey="_id" defaultSort="firstName" :pageSize="35" style="max-height:50vh;" :items="segment.contacts" :columns="getColumns(segment.key)" />
                 </tab>
             </tabset>
         </fluro-panel>
@@ -44,7 +44,36 @@ import SearchInput from '../../ui/SearchInput.vue';
 import AvatarCell from '../../table/cells/AvatarCell.vue';
 import FluroTable from '../../table/FluroTable.vue';
 import _ from 'lodash';
+import Vue from 'vue';
 
+// const RSVPCell = Vue.extend({
+//     props: {
+//         'column': {
+//             type: Object,
+//         },
+//         'row': {
+//             type: [Object, Array],
+//         },
+//     },
+//     methods: {
+//         respond(type) {
+
+//         }
+//     },
+//     computed: {
+//         isDeclined() {
+//          return this.row.attendance && this.row.attendance.guestDeclined;
+//         },
+//         isConfirmed() {
+//          return this.row.attendance && this.row.attendance.guestConfirmed
+//         },
+//         isMaybe() {
+
+//         },
+//     },
+
+//     template: `<div><v-btn small class="ma-1" @click="respond('confirm')" icon :color="isConfirmed ? 'green' : ''"><fluro-icon icon="check-circle"/></v-btn> <v-btn small class="ma-1" @click="respond('decline')" icon :color="isDeclined ? 'red' : ''"><fluro-icon icon="times-circle"/></v-btn> <v-btn small class="ma-1" @click="respond('maybe')" icon><fluro-icon icon="question-circle"/></v-btn></div>`,
+// })
 
 export default {
     components: {
@@ -68,7 +97,112 @@ export default {
             search: '',
             debouncedSearch: '',
             loading: true,
-            columns: [{
+
+        }
+    },
+    computed: {
+        eventID() {
+            return this.$fluro.utils.getStringID(this.event);
+
+        },
+        filtered() {
+            var self = this;
+            var filtered = self.guests;
+
+            if (self.debouncedSearch && self.debouncedSearch.length) {
+                filtered = _.filter(filtered, function(item) {
+                    return _.includes(item.searchString, self.debouncedSearch);
+                })
+            }
+
+            return filtered;
+        },
+        segments() {
+            return _.chain(this.filtered)
+                .reduce(function(set, guest) {
+
+                    //The guest is expected if they have confirmed, have a ticket, or are expected at the event
+                    if (guest.attendance.guestExpected || guest.attendance.guestConfirmed || guest.attendance.ticket) {
+
+                        if (guest.attendance.guestDeclined) {
+                            //But they have declined
+                        } else {
+                            set['expected'].contacts.push(guest);
+                        }
+                    }
+
+                    if (guest.attendance.guestConfirmed) {
+                        set['confirmed'].contacts.push(guest);
+                    }
+
+
+
+                    if (guest.attendance.ticket) {
+                        set['ticket'].contacts.push(guest);
+                    }
+
+                    if (guest.attendance.guestDeclined) {
+                        set['declined'].contacts.push(guest);
+                        return set;
+                    }
+
+                    if (guest.attendance.checkin) {
+                        set['checkin'].contacts.push(guest);
+                    } else {
+                        set['absent'].contacts.push(guest);
+                    }
+
+                    return set;
+                }, {
+
+
+                    expected: {
+                        title: 'Expected',
+                        contacts: []
+                    },
+                    confirmed: {
+                        title: 'Confirmed',
+                        contacts: []
+                    },
+                    declined: {
+                        title: 'Declined',
+                        contacts: []
+                    },
+                    ticket: {
+                        title: 'Ticket Holders',
+                        contacts: []
+                    },
+                    checkin: {
+                        title: 'Checked In',
+                        contacts: []
+                    },
+                    absent: {
+                        title: 'Not Checked In',
+                        contacts: []
+                    },
+                })
+                .map(function(segment, key) {
+                    segment.key = key;
+                    return segment;
+                })
+                .filter(function(segment) {
+                    return segment.contacts.length;
+                })
+                .value();
+        },
+    },
+    methods: {
+        // exportItems(segment) {
+
+        //     var self = this;
+        //     self.exporting = true;
+        //     console.log('SIGMENT', segment);
+        // },
+        getColumns(segment) {
+
+            var self = this;
+
+            var columns = [{
                     title: '',
                     key: '_id',
                     renderer: AvatarCell,
@@ -100,100 +234,159 @@ export default {
                 //     key: 'correspondenceID',
                 //     renderer: InfoCell,
                 // },
-            ],
-        }
-    },
-    computed: {
-        filtered() {
-            var self = this;
-            var filtered = self.guests;
+            ];
 
-            if (self.debouncedSearch && self.debouncedSearch.length) {
-                filtered = _.filter(filtered, function(item) {
-                    return _.includes(item.searchString, self.debouncedSearch);
-                })
+            console.log('GET COLUMNS FOR', segment)
+
+            switch (segment) {
+                case 'expected':
+                case 'confirmed':
+                case 'declined':
+                    // columns.push({
+                    //     title: 'RSVP',
+                    //     key: '_id',
+                    //     renderer: RSVPCell,
+                    //     shrink: true,
+
+                    // })
+
+
+
+                    columns.push({
+                        title: 'RSVP',
+                        key: '_id',
+                        renderer: 'button',
+                        button: {
+                            color(row) {
+                                if (row.attendance) {
+                                    if (row.attendance.guestConfirmed) {
+                                        return 'rgb(153, 224, 63)';
+                                    }
+
+                                    if (row.attendance.guestDeclined) {
+                                        return 'red';
+                                    }
+                                }
+
+                                return '#eee';
+                            },
+                            tooltip(row) {
+                                if (row.attendance) {
+                                    if (row.attendance.guestConfirmed) {
+                                        return `${row.preferredName || row.firstName || row.title} has confirmed`
+                                    }
+
+                                    if (row.attendance.guestDeclined) {
+                                       return `${row.preferredName || row.firstName || row.title} has declined`
+                                    }
+                                }
+
+                                return `No RSVP Yet`
+                            },
+                            icon(row) {
+                                if (row.attendance) {
+                                    if (row.attendance.guestConfirmed) {
+                                        return 'check';
+                                    }
+
+                                    if (row.attendance.guestDeclined) {
+                                        return 'times';
+                                    }
+                                }
+
+                                return 'question';
+                            },
+                            iconLibrary(row) {
+                                if (row.attendance) {
+                                    if (row.attendance.guestConfirmed) {
+                                        return 'far';
+                                    }
+
+                                    if (row.attendance.guestDeclined) {
+                                        return 'far';
+                                    }
+                                }
+
+                                return 'fas';
+                            },
+                            action(row) {
+                                return new Promise(function(resolve, reject) {
+
+
+
+                                    self.$fluro.options([{
+                                                title: 'Confirm',
+                                                icon: 'check',
+                                                description: `RSVP ${row.preferredName || row.firstName || row.title} as confirmed`,
+                                                value: 'confirmed',
+
+                                            },
+                                            {
+                                                title: 'Decline',
+                                                icon: 'times',
+                                                description: `RSVP ${row.preferredName || row.firstName || row.title} as declined`,
+                                                value: 'declined',
+                                            },
+
+                                        ])
+                                        .then(function(answer) {
+
+                                            //Get the contactId
+                                            var contact = self.$fluro.utils.getStringID(row);
+
+                                            self.$fluro.api.post(`/event/${self.eventID}/rsvp/${answer.value}`, {
+                                                    contact,
+                                                })
+                                                .then(function(res) {
+
+                                                    if (!row.attendance) {
+                                                        self.$set(row, 'attendance', {});
+                                                    }
+
+                                                    switch (res.data.rsvp) {
+                                                        case 'confirmed':
+                                                            self.$set(row.attendance, 'guestConfirmed', true);
+                                                            break;
+                                                        case 'declined':
+                                                            self.$set(row.attendance, 'guestDeclined', true);
+                                                            break;
+                                                    }
+                                                   
+                                                   resolve();
+                                                })
+                                                .catch(function(err) {
+                                                    self.$fluro.error(err);
+                                                })
+                                        })
+                                        .catch(reject);
+
+                                    // console.log('Delete', row);
+                                    // self.$fluro.confirm('Confirm Deletion', `Are you sure you want to delete ${row.title}?`, {
+                                    //         confirmColor: 'error',
+                                    //         confirmText: 'Confirm Delete',
+                                    //     })
+                                    //     .then(function() {
+
+                                    //         self.$fluro.api.delete(`/printer/${row._id}`).then(function() {
+                                    //             self.$fluro.resetCache();
+                                    //             self.$fluro.notify('Printer was degistered')
+                                    //             resolve();
+                                    //         }, reject);
+                                    //     }, reject);
+
+
+                                })
+
+                            },
+                        },
+                        shrink: true,
+
+                    })
+                    break;
             }
 
-            return filtered;
+            return columns;
         },
-        segments() {
-            return _.chain(this.filtered)
-                .reduce(function(set, guest) {
-
-                    if (guest.attendance.guestExpected) {
-                        set['expected'].contacts.push(guest);
-                    }
-
-                    if (guest.attendance.guestConfirmed) {
-                        set['confirmed'].contacts.push(guest);
-                    }
-
-                    
-
-                    if (guest.attendance.ticket) {
-                        set['ticket'].contacts.push(guest);
-                    }
-
-                    if (guest.attendance.guestDeclined) {
-                        set['declined'].contacts.push(guest);
-                        return set;
-                    }
-
-                    if (guest.attendance.checkin ) {
-                        set['checkin'].contacts.push(guest);
-                    } else {
-                        set['absent'].contacts.push(guest);
-                    }
-
-                    return set;
-                }, {
-
-
-                    expected: {
-                        title: 'Expected',
-                        contacts: []
-                    },
-                    confirmed: {
-                        title: 'RSVP Yes',
-                        contacts: []
-                    },
-                    declined: {
-                        title: 'RSVP No',
-                        contacts: []
-                    },
-                    ticket: {
-                        title: 'Ticket Holders',
-                        contacts: []
-                    },
-                    checkin: {
-                        title: 'Checked In',
-                        contacts: []
-                    },
-                    absent: {
-                        title: 'Not Checked In',
-                        contacts: []
-                    },
-                })
-                .map(function(segment, key) {
-                    segment.key = key;
-                    return segment;
-                })
-                .filter(function(segment) {
-                    return segment.contacts.length;
-                })
-                .value();
-        },
-        eventID() {
-            return this.$fluro.utils.getStringID(this.event);
-        },
-    },
-    methods: {
-        // exportItems(segment) {
-
-        //     var self = this;
-        //     self.exporting = true;
-        //     console.log('SIGMENT', segment);
-        // },
         exportItems(segment) {
 
             console.log('SIGMENT', segment);

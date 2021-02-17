@@ -547,7 +547,7 @@
 																<fluro-app-menu-select :field="field" v-model="fieldModel" :options="options" :label="displayLabel" />
 												</template>
 												<template v-else-if="renderer == 'app-type-select'">
-																<fluro-app-type-select :field="field" v-model="fieldModel" :options="options" :label="displayLabel" />
+																<fluro-app-type-select :field="field" v-model="fieldModel"  :parentModel="parent" :options="options" :label="displayLabel" />
 												</template>
 												<template v-else-if="renderer == 'app-block-select'">
 																<fluro-app-block-select :field="field" v-model="fieldModel" :options="options" :label="displayLabel" />
@@ -562,10 +562,10 @@
 																<fluro-app-size-select :field="field" v-model="fieldModel" :options="options" :label="displayLabel" />
 												</template>
 												<template v-else-if="renderer == 'app-field-select'">
-																<fluro-app-field-select :field="field" v-model="fieldModel" :options="options" :label="displayLabel" />
+																<fluro-app-field-select :field="field" v-model="fieldModel"  :parentModel="parent" :options="options" :label="displayLabel" />
 												</template>
 												<template v-else-if="renderer == 'app-field-key-select'">
-																<fluro-app-field-key-select :field="field" v-model="fieldModel" :options="options" :label="displayLabel" />
+																<fluro-app-field-key-select :field="field" v-model="fieldModel"  :parentModel="parent" :options="options" :label="displayLabel" />
 												</template>
 												<template v-else-if="renderer == 'app-theme-select'">
 																<fluro-app-theme-select :field="field" v-model="fieldModel" :options="options" :label="displayLabel" />
@@ -574,7 +574,7 @@
 																<fluro-app-font-select :field="field" v-model="fieldModel" :options="options" :label="displayLabel" />
 												</template>
 												<template v-else-if="renderer == 'app-filter-select'">
-																<fluro-app-filter-select :field="field" v-model="fieldModel" :parentModel="model" :options="options" :label="displayLabel" />
+																<fluro-app-filter-select :field="field" v-model="fieldModel"  :parentModel="parent" :options="options" :label="displayLabel" />
 												</template>
 												<template v-else-if="renderer == 'color' && !multipleInput">
 																<!-- COLOR COLOR -->

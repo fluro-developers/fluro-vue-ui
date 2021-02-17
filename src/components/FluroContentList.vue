@@ -1,6 +1,5 @@
 <template>
 				<div>
-
 								<slot :nextPage="nextPage" :previousPage="previousPage" :setPage="setPage" :pageIndex="pageIndex" :currentPage="currentPage" :perPage="perPage" :items="items" :page="page" :totalPages="totalPages" :previousPageEnabled="previousPageEnabled" :nextPageEnabled="nextPageEnabled" />
 								<!-- <pre>previousPageEnabled {{previousPageEnabled}}</pre> -->
 								<!-- <pre>nextPageEnabled {{nextPageEnabled}}</pre> -->
@@ -85,7 +84,7 @@ export default {
 												this.dataSource.pageIndex = c;
 								},
 								fields(c) {
-												// //console.log('fields changed', c);
+												// ////console.log('fields changed', c);
 												this.dataSource.fields = c;
 								},
 								cacheKey(c) {
@@ -138,6 +137,14 @@ export default {
 												this.dataSource.addEventListener('pageIndex', this.changePageIndex);
 												this.dataSource.addEventListener('loadingFilter', this.changeLoadingFilter);
 												this.dataSource.addEventListener('loadingPage', this.changeLoadingPage);
+
+
+												this.changePage(this.dataSource.page);
+												this.changeItems(this.dataSource.items);
+												this.changeTotalPages(this.dataSource.totalPages);
+												this.changePerPage(this.dataSource.perPage);
+												this.changePageIndex(this.dataSource.pageIndex);
+											
 								},
 								unmount() {
 												this.dataSource.removeEventListener('page', this.changePage);
@@ -187,7 +194,7 @@ export default {
 												this.$emit('page', page);
 								},
 								changeItems(items) {
-									//console.log('items is now', items)
+												// console.log('items is now', items)
 												this.items = items;
 												this.$emit('items', items);
 								},
@@ -207,13 +214,13 @@ export default {
 								},
 								// items() {
 								// 				var items = this.dataSource.items;;
-								// 				//console.log('ITEMS CHANGED', items);
+								// 				////console.log('ITEMS CHANGED', items);
 								// 				return items;
 								// },
 								// page() {
 
 								// 				var page = this.dataSource.page;;
-								// 				//console.log('PAGE CHANGED', page);
+								// 				////console.log('PAGE CHANGED', page);
 								// 				return page;
 								// },
 

@@ -552,17 +552,26 @@ export default {
 												get() {
 																var self = this;
 
-																if (!self.isContactType) {
-																				return Promise.resolve([]);
-																}
-																return new Promise(function(resolve, reject) {
+																switch (self.basicType) {
+																				case 'contact':
+																				case 'interaction':
+																				case 'checkin':
 
-																				return self.$fluro.api.get(`/tickets/filter/types`)
-																								.then(function(res) {
-																												return resolve(res.data);
+																								return new Promise(function(resolve, reject) {
+
+																												return self.$fluro.api.get(`/tickets/filter/types`)
+																																.then(function(res) {
+																																				return resolve(res.data);
+																																})
+																																.catch(reject);
 																								})
-																								.catch(reject);
-																})
+																								break;
+																				default:
+																								return Promise.resolve([]);
+																								break;
+																}
+
+
 												}
 								},
 
@@ -946,8 +955,8 @@ export default {
 												);
 
 												//////////////////////////////////////////////////
-												ticketOptions = ticketOptions.concat(
-																_.map(self.ticketTypes, function(title) {
+												ticketOptions = _.chain(self.ticketTypes)
+																.map(function(title) {
 																				return {
 																								title,
 																								name: title,
@@ -955,9 +964,118 @@ export default {
 																								value: title,
 																				};
 																})
-												);
+																.orderBy('title')
+																.value()
+
 												// break;
 												// }
+
+
+												var ticketingField = {
+																title: "Total number of tickets",
+																key: "_tickets.all.length",
+																maximum: 1,
+																minimum: 0,
+																type: "integer",
+																subfieldTitle: "Where...",
+																subfields: [{
+																								title: "Event",
+																								key: "event",
+																								maximum: 1,
+																								minimum: 0,
+																								type: "reference",
+																								typeSelect: "event"
+																				},
+																				{
+																								title: "Event Date",
+																								key: "eventDate",
+																								maximum: 1,
+																								minimum: 0,
+																								type: "date"
+																				},
+																				{
+																								title: "Event Type (Definition)",
+																								key: "eventDefinition",
+																								maximum: 1,
+																								minimum: 0,
+																								type: "string",
+																								directive: "select",
+																								options: eventDefinitionOptions
+																				},
+																				{
+																								title: "Event Track",
+																								key: "eventTrack",
+																								maximum: 1,
+																								minimum: 0,
+																								type: "reference",
+																								// directive:'select',
+																								typeSelect: "eventtrack"
+																				},
+																				{
+																								title: "Ticket Title / Type",
+																								key: "title",
+																								maximum: 1,
+																								minimum: 0,
+																								type: "string",
+																								directive: "select",
+																								options: ticketOptions
+																				},
+																				{
+																								title: "Collected",
+																								key: "collected",
+																								maximum: 1,
+																								minimum: 0,
+																								type: "boolean"
+																				},
+																				{
+																								title: "Collected By",
+																								key: "collectedBy",
+																								maximum: 1,
+																								minimum: 0,
+																								type: "string"
+																				},
+																				{
+																								title: "Collection Date",
+																								key: "collectionDate",
+																								maximum: 1,
+																								minimum: 0,
+																								type: "date"
+																				},
+																				{
+																								title: "Realms",
+																								key: "realms",
+																								maximum: 0,
+																								minimum: 0,
+																								type: "reference",
+																								directive: "select",
+																								_discriminatorDefinition: "realm"
+																				},
+																				{
+																								title: "Tags",
+																								key: "tags",
+																								maximum: 0,
+																								minimum: 0,
+																								type: "reference",
+																								typeSelect: "tag"
+																				},
+																				// {
+																				// 				title: "Definition",
+																				// 				key: "definition",
+																				// 				maximum: 0,
+																				// 				minimum: 0,
+																				// 				type: "string",
+																				// 				directive: "select",
+																				// 				options: teamDefinitionOptions
+																				// },
+																				{
+																								title: "Title",
+																								key: "title",
+																								maximum: 1,
+																								minimum: 0,
+																								type: "string",
+																				}
+																]
+												}
 
 												// console.log("EVENT TRACK OPTIONS", eventTrackOptions);
 
@@ -1047,115 +1165,7 @@ export default {
 																				]
 																});
 
-																injectFields.push({
-																				title: "Total number of tickets",
-																				key: "_tickets.all.length",
-																				maximum: 1,
-																				minimum: 0,
-																				type: "integer",
-																				subfieldTitle: "Where...",
-																				subfields: [{
-																												title: "Event",
-																												key: "event",
-																												maximum: 1,
-																												minimum: 0,
-																												type: "reference",
-																												typeSelect: "event"
-																								},
-
-																								{
-																												title: "Event Date",
-																												key: "eventDate",
-																												maximum: 1,
-																												minimum: 0,
-																												type: "date"
-																								},
-
-																								{
-																												title: "Event Type (Definition)",
-																												key: "eventDefinition",
-																												maximum: 1,
-																												minimum: 0,
-																												type: "string",
-																												directive: "select",
-																												options: eventDefinitionOptions
-																								},
-
-																								{
-																												title: "Event Track",
-																												key: "eventTrack",
-																												maximum: 1,
-																												minimum: 0,
-																												type: "reference",
-																												// directive:'select',
-																												typeSelect: "eventtrack"
-																								},
-
-																								{
-																												title: "Ticket Title / Type",
-																												key: "title",
-																												maximum: 1,
-																												minimum: 0,
-																												type: "string",
-																												directive: "select",
-																												options: ticketOptions
-																								},
-																								{
-																												title: "Collected",
-																												key: "collected",
-																												maximum: 1,
-																												minimum: 0,
-																												type: "boolean"
-																								},
-																								{
-																												title: "Collected By",
-																												key: "collectedBy",
-																												maximum: 1,
-																												minimum: 0,
-																												type: "string"
-																								},
-																								{
-																												title: "Collection Date",
-																												key: "collectionDate",
-																												maximum: 1,
-																												minimum: 0,
-																												type: "date"
-																								},
-																								{
-																												title: "Realms",
-																												key: "realms",
-																												maximum: 0,
-																												minimum: 0,
-																												type: "reference",
-																												directive: "select",
-																												_discriminatorDefinition: "realm"
-																								},
-																								{
-																												title: "Tags",
-																												key: "tags",
-																												maximum: 0,
-																												minimum: 0,
-																												type: "reference",
-																												typeSelect: "tag"
-																								},
-																								// {
-																								// 				title: "Definition",
-																								// 				key: "definition",
-																								// 				maximum: 0,
-																								// 				minimum: 0,
-																								// 				type: "string",
-																								// 				directive: "select",
-																								// 				options: teamDefinitionOptions
-																								// },
-																								{
-																												title: "Title",
-																												key: "title",
-																												maximum: 1,
-																												minimum: 0,
-																												type: "string",
-																								}
-																				]
-																});
+																injectFields.push(ticketingField);
 
 																injectFields.push({
 																				title: "Attendance > Total times checked in",
@@ -2230,6 +2240,11 @@ export default {
 																				case 'interaction':
 
 
+																								injectFields.push(ticketingField)
+
+
+
+
 																								// 												 case 'utm_campaign':
 																								// case 'utm_source':
 																								// case 'utm_content':
@@ -2288,6 +2303,16 @@ export default {
 																								break;
 																				case "checkin":
 																								//Extra filters for process cards
+
+																								injectFields.push({
+																												title: "Ticket Type",
+																												key: "_ticket.title",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "string",
+																												directive: "select",
+																												options: ticketOptions
+																								});
 
 																								///////////////////////////////////
 

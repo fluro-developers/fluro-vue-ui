@@ -1,8 +1,8 @@
 <template>
     <div class="button-cell text-xs-center">
-        <v-btn class="ma-0" small @click.stop.prevent="run" :color="column.button.color" :icon="!column.button.text" v-tippy :content="column.button.tooltip" :loading="processing">
+        <v-btn class="ma-0" small @click.stop.prevent="run" :color="color" :icon="!column.button.text" v-tippy :content="tooltip" :loading="processing">
             {{column.button.text}}
-            <fluro-icon :icon="column.button.icon" v-if="column.button.icon" :right="column.button.text" />
+            <fluro-icon :icon="icon" :library="iconLibrary" v-if="icon" :right="column.button.text" />
         </v-btn>
     </div>
 </template>
@@ -45,7 +45,37 @@ export default {
         }
     },
     computed: {
+        color() {
+            if(_.isFunction(this.column.button.color)) {
+                return this.column.button.color(this.row)
+            }
 
+            return this.column.button.color;
+        },
+        icon() {
+
+            if(_.isFunction(this.column.button.icon)) {
+                return this.column.button.icon(this.row)
+            }
+
+            return this.column.button.icon;
+        },
+        iconLibrary() {
+
+            if(_.isFunction(this.column.button.iconLibrary)) {
+                return this.column.button.iconLibrary(this.row)
+            }
+
+            return this.column.button.iconLibrary;
+        },
+        tooltip() {
+
+            if(_.isFunction(this.column.button.tooltip)) {
+                return this.column.button.tooltip(this.row)
+            }
+
+            return this.column.button.tooltip;
+        }
     }
 }
 
