@@ -150,6 +150,7 @@ export default {
                 self.$nextTick(function() {
                     self.watchEnabled = true;
                 });
+
             }
 
            
@@ -273,8 +274,11 @@ export default {
             // this.$emit('input', Object.assign({}, this.model)); 
             //TODO CADE
             //Check this works going up and down nested forms, in addition check that it doesn't break
-            //File Uploads          
+            //File Uploads    
+
+            // console.log('Emitting up!', this.model.$el)      
             this.$emit('input', this.model);           
+          
            
         },
     }

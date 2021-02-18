@@ -78,7 +78,7 @@
 																																								</div>
 																																				</v-flex>
 																																</v-layout>
-																																<template v-if="contactDefinitions.length">
+																																<template v-if="model._id && contactDefinitions.length">
 																																				<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="definitionField" v-model="model"></fluro-content-form-field>
 																																</template>
 																																<!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="statusField" v-model="model" /> -->
@@ -231,8 +231,7 @@
 																																								<tabset>
 																																												<tab heading="Create new Household">
 																																																<v-container>
-																																																				<fluro-content-form @input="updateFamily" :options="formOptions" v-model="family" :fields="familyFields" />
-																																																				<!-- <pre>{{family}}</pre> -->
+																																																				<fluro-content-form @input="updateFamily"  :options="formOptions" v-model="family" :fields="familyFields" />
 																																																</v-container>
 																																												</tab>
 																																												<tab heading="Add to existing Household">
@@ -410,26 +409,26 @@
 																																				<v-label>Communication Preferences</v-label>
 																																				<p class="help-block">Manage {{contextName}} subscription preferences below</p>
 																																				<fluro-panel>
-																																				<div class="toggle-items">
-																																								<template v-if="emails.length">
-																																												<fluro-toggle-item @click.native="toggleSubscription('mailout')" :inactive="unsubscribedMailout">
-																																																Allow Promotional Emails
-																																												</fluro-toggle-item>
-																																								</template>
-																																								<template v-if="phoneNumbers.length">
-																																												<fluro-toggle-item @click.native="toggleSubscription('sms')" :inactive="unsubscribedSMS">
-																																																Allow Promotional SMS
-																																												</fluro-toggle-item>
-																																								</template>
-																																								<!--  <div class="toggle-item" @click="toggleSubscription('sms')" :class="{inactive:unsubscribedSMS}">
+																																								<div class="toggle-items">
+																																												<template v-if="emails.length">
+																																																<fluro-toggle-item @click.native="toggleSubscription('mailout')" :inactive="unsubscribedMailout">
+																																																				Allow Promotional Emails
+																																																</fluro-toggle-item>
+																																												</template>
+																																												<template v-if="phoneNumbers.length">
+																																																<fluro-toggle-item @click.native="toggleSubscription('sms')" :inactive="unsubscribedSMS">
+																																																				Allow Promotional SMS
+																																																</fluro-toggle-item>
+																																												</template>
+																																												<!--  <div class="toggle-item" @click="toggleSubscription('sms')" :class="{inactive:unsubscribedSMS}">
                                                 <v-layout>
                                                     <v-flex>Allow Promotional SMS</v-flex>
                                                     <v-spacer />
                                                     <div class="toggle-switch" />
                                                 </v-layout>
                                             </div> -->
-																																				</div>
-																																			</fluro-panel>
+																																								</div>
+																																				</fluro-panel>
 																																				<!-- <pre>{{smsUnsubscribes}}</pre> -->
 																																				<!-- <pre>{{mailoutUnsubscribes}}</pre> -->
 																																</v-input>
@@ -758,6 +757,8 @@ export default {
 								},
 								updateFamily() {
 
+									console.log('UPDATE FAMILY')
+
 												/**/
 												var self = this;
 
@@ -864,6 +865,13 @@ export default {
 
 								if (!self.model.academicGrade) {
 												self.$set(self.model, 'academicGrade', '');
+								}
+
+
+								if (!self.model._id) {
+												if (self.definition) {
+																self.model.definition = self.definition.definitionName;
+												}
 								}
 
 								//////////////////////////////////////////////////////////////

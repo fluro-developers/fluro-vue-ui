@@ -86,7 +86,7 @@
 												<template v-else-if="renderer == 'group'">
 																<template v-if="asObject">
 																				<template v-if="!multipleInput">
-																								<fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel" @input="elementValueChanged" :fields="fields" />
+																								<fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel" @input="elementValueChanged($event, true, 'emit')" :fields="fields" />
 																				</template>
 																				<template v-else>
 																								<draggable v-model="fieldModel" handle=".handle" v-bind="dragOptions" @start="drag=true" @end="drag=false">
@@ -196,6 +196,7 @@
 																</v-input>
 												</template>
 												<template v-else-if="renderer == 'button-select'">
+												
 																<v-input class="no-flex" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
 																				<div class="button-select-buttons">
 																								<template v-if="webMode">
@@ -1693,10 +1694,10 @@ export default {
 
 																//Clean the input
 																// ////console.log('Before clean', value)
-																// ////console.log('SET clean going in', self.field.title, value);
+																// console.log('SET clean going in', self.field.title, value);
 																value = self.cleanInput(value);
 
-																// ////console.log('SET clean going out', self.field.title, value);
+																// console.log('SET clean going out', self.field.title, value);
 
 
 																//////////////////////////////////
@@ -1709,6 +1710,7 @@ export default {
 
 																				self.$set(self.model, self.field.key, value);
 
+																				// console.log('SETTING KEY', self.model);
 																				self.$emit('input', self.model);
 
 
@@ -3799,14 +3801,18 @@ export default {
 								},
 								//CADESEARCHBACKHERE
 
-								elementValueChanged(event, setTouched) {
+								elementValueChanged(event, setTouched, emitEvent) {
 												var self = this;
 
 												if (setTouched) {
 																self.touch()
 												}
 
+												// if(emitEvent == 'emit') {
+													// console.log('Emit event!', self.field.key)
 												// ////console.log('ELEMENT VALUE CHANGED', self.field.title, self.field.key, self.fieldModel)
+												self.$emit('input', self.model);
+											// }
 								},
 
 								subFieldChanged(event, setTouched) {
@@ -3818,7 +3824,7 @@ export default {
 
 												self.$forceUpdate();
 
-
+												console.log('subfield changed');
 												self.elementValueChanged(event);
 												// self.$emit('input', self.model);
 								},
