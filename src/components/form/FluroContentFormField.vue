@@ -837,7 +837,7 @@ export default {
 
 
 								}, 500),
-								expressionDefaultValue: _.debounce(function(v) {
+								expressionDefaultValue(v) {
 
 												//If there is a default value expression
 												if (!this.expressions || !this.expressions.defaultValue) {
@@ -846,10 +846,8 @@ export default {
 												//If the user has entered data into here
 												//Don't make any change
 												if (this.$v.model.$dirty || this.hasInitialValue) {
-
+																console.log(this.field.key, 'is dirty already')
 																return;
-												} else {
-
 												}
 
 												v = this.cleanInput(v);
@@ -860,13 +858,13 @@ export default {
 												if (this.field.type == 'date') {
 																if (v && currentValue) {
 																				if (Date(v) == Date(currentValue)) {
-
 																								return;
 																				}
 																}
 												}
 
 												if (currentValue == v) {
+													console.log(this.field.key, 'no change', currentValue, v);
 																//No change
 																return;
 												}
@@ -877,8 +875,8 @@ export default {
 												this.$emit('input', this.model);
 
 
-								}, 10),
-								expressionValue: _.debounce(function(v) {
+								},
+								expressionValue(v) {
 
 												if (!this.expressions || !this.expressions.value) {
 																return;
@@ -907,7 +905,7 @@ export default {
 												this.$set(this.model, this.field.key, v);
 												this.$emit('input', this.model);
 
-								}, 10),
+								},
 
 								/**/
 								value(val) {
@@ -4144,7 +4142,8 @@ export default {
 																}
 
 																if (typeof self.expressions.value == 'function') {
-																				return self.expressions.value();
+																				var result =  self.expressions.value();
+																				return Promise.resolve(result);
 																} else {
 																				if (!String(self.expressions.value).length) {
 																								return Promise.resolve();
@@ -4166,7 +4165,8 @@ export default {
 																}
 
 																if (typeof self.expressions.defaultValue == 'function') {
-																				return self.expressions.defaultValue();
+																				var result = self.expressions.defaultValue();
+																				return Promise.resolve(result);
 																} else {
 																				if (!String(self.expressions.defaultValue).length) {
 																								return Promise.resolve();
@@ -4175,9 +4175,6 @@ export default {
 
 
 																var value = this.resolveExpression(self.expressions.defaultValue);
-
-
-
 																return Promise.resolve(value);
 												}
 
