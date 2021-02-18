@@ -158,8 +158,6 @@
 																</template>
 												</template>
 												<template v-else-if="renderer == 'checkbox'">
-
-													
 																<div class="terms" :class="{'has-error':errorMessages.length}" v-if="savedTerms">
 																				<!--   -->
 																				<v-checkbox :outline="showOutline" :success="success" :mandatory="required" :persistent-hint="true" :label="displayLabel" v-model="fieldModel" @change="elementValueChanged($event, true)" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
@@ -286,7 +284,6 @@
 																<v-select :persistent-hint="true" :outline="showOutline" :success="success" :required="required" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="definitionOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder" />
 												</template>
 												<template v-else-if="renderer == 'select'">
-															
 																<!-- :return-object="type == 'reference'" -->
 																<template v-if="useBasicDropdown">
 																				<v-select :persistent-hint="true" :outline="showOutline" :success="success" :return-object="type == 'reference'" :label="displayLabel" :chips="multipleInput" no-data-text="No options available" :multiple="multipleInput" v-model="fieldModel" item-text="title" :items="selectOptions" @blur="touch()" @focus="focussed()" :error-messages="errorMessages" :hint="field.description" :placeholder="placeholder">
@@ -485,7 +482,7 @@
 																</v-input>
 												</template>
 												<template v-else-if="renderer == 'upload'">
-																<!-- UPLOAD -->
+										
 																<v-input class="no-flex" :outline="showOutline" :success="success" :label="displayLabel" :required="required" :error-messages="errorMessages" :persistent-hint="true" :hint="fileHint">
 																				<div class="file-items" v-if="files && files.length">
 																								<div class="file-item" v-for="file in files">
@@ -528,6 +525,7 @@
 																												</v-layout>
 																								</div>
 																				</div>
+																				
 																				<label class="file-drop" v-if="canAddFile" @dragover.prevent.stop="fileover" @drop.prevent.stop="filedrop">
 																								<input ref="file" type="file" :multiple="multipleInput" @change="filesSelected($event.target.files)">
 																								Drag and drop a file or click to select {{multipleInput ? 'files' : 'a file'}}
@@ -547,7 +545,7 @@
 																<fluro-app-menu-select :field="field" v-model="fieldModel" :options="options" :label="displayLabel" />
 												</template>
 												<template v-else-if="renderer == 'app-type-select'">
-																<fluro-app-type-select :field="field" v-model="fieldModel"  :parentModel="parent" :options="options" :label="displayLabel" />
+																<fluro-app-type-select :field="field" v-model="fieldModel" :parentModel="parent" :options="options" :label="displayLabel" />
 												</template>
 												<template v-else-if="renderer == 'app-block-select'">
 																<fluro-app-block-select :field="field" v-model="fieldModel" :options="options" :label="displayLabel" />
@@ -562,10 +560,10 @@
 																<fluro-app-size-select :field="field" v-model="fieldModel" :options="options" :label="displayLabel" />
 												</template>
 												<template v-else-if="renderer == 'app-field-select'">
-																<fluro-app-field-select :field="field" v-model="fieldModel"  :parentModel="parent" :options="options" :label="displayLabel" />
+																<fluro-app-field-select :field="field" v-model="fieldModel" :parentModel="parent" :options="options" :label="displayLabel" />
 												</template>
 												<template v-else-if="renderer == 'app-field-key-select'">
-																<fluro-app-field-key-select :field="field" v-model="fieldModel"  :parentModel="parent" :options="options" :label="displayLabel" />
+																<fluro-app-field-key-select :field="field" v-model="fieldModel" :parentModel="parent" :options="options" :label="displayLabel" />
 												</template>
 												<template v-else-if="renderer == 'app-theme-select'">
 																<fluro-app-theme-select :field="field" v-model="fieldModel" :options="options" :label="displayLabel" />
@@ -574,7 +572,7 @@
 																<fluro-app-font-select :field="field" v-model="fieldModel" :options="options" :label="displayLabel" />
 												</template>
 												<template v-else-if="renderer == 'app-filter-select'">
-																<fluro-app-filter-select :field="field" v-model="fieldModel"  :parentModel="parent" :options="options" :label="displayLabel" />
+																<fluro-app-filter-select :field="field" v-model="fieldModel" :parentModel="parent" :options="options" :label="displayLabel" />
 												</template>
 												<template v-else-if="renderer == 'color' && !multipleInput">
 																<!-- COLOR COLOR -->
@@ -626,8 +624,6 @@
 																</template>
 												</template>
 								</template>
-
-
 				</div>
 </template>
 <script>
@@ -678,7 +674,7 @@ import FluroRealmSelect from './realmselect/FluroRealmSelect.vue';
 
 function mapDefaultDateValue(value) {
 				if (String(value).toLowerCase() == 'now') {
-								////console.log('convert to now')
+								//////console.log('convert to now')
 								return new Date();
 				}
 
@@ -700,7 +696,7 @@ function getBooleanValue(value) {
 								case 'yes':
 								case '1':
 								case 't':
-												// //console.log('convert boolean to true > ', value)
+												// ////console.log('convert boolean to true > ', value)
 												value = true;
 												break;
 								case 'false':
@@ -711,7 +707,7 @@ function getBooleanValue(value) {
 								case 'undefined':
 								case 'null':
 								case '':
-												// //console.log('convert boolean to false > ', value)
+												// ////console.log('convert boolean to false > ', value)
 												value = false;
 												break;
 				}
@@ -805,7 +801,7 @@ export default {
 
 												// var search = self.photographerSearch;
 												self.loading = true;
-												//////////console.log('Searching', keywords);
+												////////////console.log('Searching', keywords);
 
 
 
@@ -852,15 +848,15 @@ export default {
 												}
 
 
-												// ////console.log('Set from default expression', this.$v.model.$dirty, this.hasInitialValue, this.field.title, v);
+												// //////console.log('Set from default expression', this.$v.model.$dirty, this.hasInitialValue, this.field.title, v);
 
 												//If the user has entered data into here
 												//Don't make any change
 												if (this.$v.model.$dirty || this.hasInitialValue) {
-																////console.log(this.field.title, 'is dirty', this.$v.model.$dirty, this.hasInitialValue)
+																//////console.log(this.field.title, 'is dirty', this.$v.model.$dirty, this.hasInitialValue)
 																return;
 												} else {
-																////console.log(this.field.title, 'Is not dirty', this.$v.model.$dirty, this.hasInitialValue)
+																//////console.log(this.field.title, 'Is not dirty', this.$v.model.$dirty, this.hasInitialValue)
 												}
 
 												v = this.cleanInput(v);
@@ -882,29 +878,25 @@ export default {
 																// this.model[this.field.key] = v;
 																this.$set(this.model, this.field.key, v);
 																this.$emit('input', this.model);
-																// ////console.log('Expression Updated value', v)
+																// //////console.log('Expression Updated value', v)
 												}
 
 
 												// //Update this field to reconnect with the new model
 												// this.model[this.key] = v[this.key];
 								},
+
+								/**/
 								value(val) {
 
 
 
 												if (this.model != val) {
 
+													//console.log('NEW MODEL INTO FIELD')
 
-
-																// val = this.fixCorruptedData(val);
-																if (this.field.key == 'logo') {
-																				//console.log('SET THE MODEL TO', val);
-																}
 																//Set the new model
 																this.model = val;
-
-																// this.model = Object.assign({}, val);
 
 																if (this.model) {
 																				//Clean up any bad input
@@ -913,10 +905,7 @@ export default {
 																				//Set the defaults
 																				this.createDefaults();
 
-
-																				// this.$set(this, 'model', val);
-																				//And reset
-																				// ////console.log('RESET INSIDE VALUE()', this.model != val, this.model, val)
+																				// //console.log('reset() inside expression')
 																				this.reset();
 																				this.checkInitialValue();
 																}
@@ -925,7 +914,7 @@ export default {
 
 
 								},
-								// 'isNew':'checkNew',
+								/**/ 
 				},
 				computed: {
 								// textDate: {
@@ -933,12 +922,12 @@ export default {
 
 								// 								var self = this;
 								// 								if (self.field.type != 'date') {
-								// 												//console.log('TEXTDATE > IS NOT A DATE')
+								// 												////console.log('TEXTDATE > IS NOT A DATE')
 								// 												return;
 								// 								}
 
 								// 								if (self.multipleInput) {
-								// 												//console.log('TEXTDATE > IS MULTIPLE')
+								// 												////console.log('TEXTDATE > IS MULTIPLE')
 								// 												return;
 								// 								}
 
@@ -1330,7 +1319,7 @@ export default {
 
 																this.fieldModel = new Date(dateString);
 
-																////console.log('SET', dateString, this.fieldModel)
+																//////console.log('SET', dateString, this.fieldModel)
 																// new Date(dateString);
 												},
 								},
@@ -1514,7 +1503,7 @@ export default {
 								},
 								canAddFile() {
 												if (!this.canAddValue) {
-																//console.log('Cant add file')
+																////console.log('Cant add file')
 																return;
 												}
 
@@ -1536,11 +1525,11 @@ export default {
 
 												//We are under the maximum
 												if (this.total < this.maximum) {
-																// //////////console.log(this.title, 'is under',this.total, this.maximum)
+																// ////////////console.log(this.title, 'is under',this.total, this.maximum)
 																return true;
 												}
 
-												//console.log('Cant add value', this.total, this.maximum)
+												////console.log('Cant add value', this.total, this.maximum)
 												return false;
 								},
 								canRemoveValue() {
@@ -1671,12 +1660,12 @@ export default {
 																var self = this;
 
 																if (self.field.type == 'void') {
-																				// //console.log('Void get nothing')
+																				// ////console.log('Void get nothing')
 																				return false;
 																}
 
 																if (!self.field.key || !self.field.key.length) {
-																				//	//console.log('Field not ready yet')
+																				//	////console.log('Field not ready yet')
 																				return;
 																}
 
@@ -1684,9 +1673,9 @@ export default {
 
 																//Get the value for this field
 																var value = self.model[self.field.key];
-																// //console.log('GET clean going in', self.field.title, value);
+																// ////console.log('GET clean going in', self.field.title, value);
 																var cleaned = self.cleanOutput(value);
-																// //console.log('GET clean going out', self.field.title, cleaned);
+																// ////console.log('GET clean going out', self.field.title, cleaned);
 
 																return cleaned;
 
@@ -1696,25 +1685,25 @@ export default {
 																var self = this;
 
 																if (self.field.type == 'void') {
-																				// ////console.log('Void set nothing')
+																				// //////console.log('Void set nothing')
 																				self.$emit('input', self.model);
 																				return;
 																}
 
 
 																//Clean the input
-																// //console.log('Before clean', value)
-																// //console.log('SET clean going in', self.field.title, value);
+																// ////console.log('Before clean', value)
+																// ////console.log('SET clean going in', self.field.title, value);
 																value = self.cleanInput(value);
 
-																// //console.log('SET clean going out', self.field.title, value);
+																// ////console.log('SET clean going out', self.field.title, value);
 
 
 																//////////////////////////////////
 																//If there is a change
 																if (self.model[self.field.key] != value) {
 
-																				// //console.log('SET VALUE TO', value)
+																				// ////console.log('SET VALUE TO', value)
 																				// 
 
 
@@ -1724,28 +1713,28 @@ export default {
 
 
 
-																				// console.log('model changed', self.field.key, self.model);
+																				// //console.log('model changed', self.field.key, self.model);
 																				// var cacheKey = self.model._ck;
 																				// if(!cacheKey) {
 																				// 	cacheKey = 0;
 																				// }
 
 																				// self.$set(self.model, '_ck', cacheKey++);
-																				// //console.log('Emit', value, self.model[self.field.key])
+																				// ////console.log('Emit', value, self.model[self.field.key])
 																				//
 																				// } else {
 
-																				// //console.log('SAME VALUE', self.model[self.field.key], value)
+																				// ////console.log('SAME VALUE', self.model[self.field.key], value)
 																				// if(self.field.type == 'boolean') {
 																				// 	self.$set(self.model, self.field.key, value);
 																				// 				self.$emit('input', self.model);
-																				// 				//console.log('change', self.field.key, self.model[self.field.key], value);
+																				// 				////console.log('change', self.field.key, self.model[self.field.key], value);
 																				// }
 
 
 
 																				// self.$forceUpdate();
-																				// //console.log('EMIT CHANGE')
+																				// ////console.log('EMIT CHANGE')
 																}
 
 
@@ -1753,7 +1742,7 @@ export default {
 
 
 																//  else {
-																// 	////console.log('Value is already same thing!')
+																// 	//////console.log('Value is already same thing!')
 																// 	self.$emit('input', self.model);
 																// }
 																//////////////////////////////////
@@ -1768,7 +1757,7 @@ export default {
 																// // self.model[self.field.key] = value;
 																// self.$set(self.model, self.field.key, value);
 
-																// ////console.log('VALUE TEST CHANGED', self.field.key, self.fieldModel == value, self.model[self.field.key] == value, self.fieldModel)
+																// //////console.log('VALUE TEST CHANGED', self.field.key, self.fieldModel == value, self.model[self.field.key] == value, self.fieldModel)
 
 																// self.valueChange();
 
@@ -2064,7 +2053,7 @@ export default {
 								},
 								errorMessages() {
 
-												// ////console.log('Compile errors', this.title, this.$v.model.$dirty);
+												// //////console.log('Compile errors', this.title, this.$v.model.$dirty);
 												var self = this;
 												const errors = []
 
@@ -2084,7 +2073,7 @@ export default {
 												}
 
 												if (!self.isVisible) {
-																// ////console.log('No errors', this.field.title);
+																// //////console.log('No errors', this.field.title);
 																return errors;
 												} else {
 																// return ['Errors on purpose'];
@@ -2177,7 +2166,7 @@ export default {
 																												} else {
 																																//Provide at least X ${valueType}s
 
-																																////console.log('ANSWERS IS', numberOfAnswersProvided, this.minimum, this.maximum)
+																																//////console.log('ANSWERS IS', numberOfAnswersProvided, this.minimum, this.maximum)
 																																errors.push(`Please provide at least ${this.minimum} ${valueType}s`)
 																												}
 																								}
@@ -2218,7 +2207,7 @@ export default {
 																				break;
 												}
 
-												//console.log('DIRECTIVE', this.field.directive)
+												////console.log('DIRECTIVE', this.field.directive)
 								},
 								renderer() {
 
@@ -2228,7 +2217,7 @@ export default {
 												var dataType = self.type;
 												var directive = self.directive;
 
-												// //console.log(this.field.title, directive);
+												// ////console.log(this.field.title, directive);
 												/////////////////////////////////
 
 												if (self.dynamic) {
@@ -2397,7 +2386,7 @@ export default {
 																																				// case 'builder':
 																																default:
 
-																																				//console.log('CONTEXT IS', self.context)
+																																				////console.log('CONTEXT IS', self.context)
 																																				directive = 'select';
 																																				break;
 
@@ -2486,11 +2475,11 @@ export default {
 												}
 
 
-												//console.log(object._collapsed);
+												////console.log(object._collapsed);
 								},
 
 								// fieldManualUpdate(data) {
-								// 	// ////console.log('FIELD UPDATED', this.field.title, data);
+								// 	// //////console.log('FIELD UPDATED', this.field.title, data);
 								// 	this.$emit('input', this.model);
 								// },
 
@@ -2506,12 +2495,12 @@ export default {
 												///////////////////////////////////////////////
 
 												var value = self.model[self.field.key];
-												// ////console.log('Create defaults for', self.field.title, value);
+												// //////console.log('Create defaults for', self.field.title, value);
 												var hasExistingValue = (value !== undefined && value !== null && value !== '');
 
 												if (self.field.type == 'group' && value == {}) {
 																hasExistingValue = false;
-																// //console.log('CREATE DEFAULTS FOR GROUP')
+																// ////console.log('CREATE DEFAULTS FOR GROUP')
 												}
 
 												//We already have a value
@@ -2543,7 +2532,7 @@ export default {
 
 												////////////////////////////////////////////
 
-												// ////console.log('Update defaults', self.field.title, self.defaultValues);
+												// //////console.log('Update defaults', self.field.title, self.defaultValues);
 
 												////////////////////////////////////////////
 
@@ -2554,13 +2543,13 @@ export default {
 
 																if (defaultValue) {
 																				//Set our field model default value
-																				// ////console.log('GET DEFAULT VALUE', self.field.key, defaultValue);
+																				// //////console.log('GET DEFAULT VALUE', self.field.key, defaultValue);
 																				self.$set(self.model, self.field.key, self.cleanInput(defaultValue));
 																}
 												} else {
 
 																var defaultArray = _.map(self.defaultValues, self.cleanInput);
-																// //console.log('CREATE DEFAULTS', defaultArray);
+																// ////console.log('CREATE DEFAULTS', defaultArray);
 
 																//Add all our default values
 																self.$set(self.model, self.field.key, defaultArray);
@@ -2584,7 +2573,7 @@ export default {
 
 												if (self.field.directive == 'timepicker') {
 																value = self.$fluro.date.militaryTimestamp(value, true)
-																// //console.log('TIMEPICKER OUT >', value)
+																// ////console.log('TIMEPICKER OUT >', value)
 												}
 
 												/////////////////////////////////////
@@ -2626,7 +2615,7 @@ export default {
 																												return new Date().toISOString();
 																								} else {
 
-																												// console.log('DATE VALUE', value)
+																												// //console.log('DATE VALUE', value)
 																												return new Date(value);
 																								}
 																				}
@@ -2652,12 +2641,12 @@ export default {
 																												changeValue = 0;
 																								}
 
-																								// //console.log('VALUE BEFORE FLOAT', value)
+																								// ////console.log('VALUE BEFORE FLOAT', value)
 																								//If we have to transform the data
 																								// if (parseFloat(value).toFixed(2) != parseFloat(changeValue).toFixed(2)) {
 																								value = changeValue;
 																								// }
-																								// //console.log('VALUE AFTER FLOAT', value)
+																								// ////console.log('VALUE AFTER FLOAT', value)
 
 
 																				}
@@ -2681,9 +2670,9 @@ export default {
 																				//If there is a value of some sort
 																				if (value) {
 																								value = getBooleanValue(value);
-																								// console.log('Boolean value is', value)
+																								// //console.log('Boolean value is', value)
 																				} else {
-																								// //console.log('boolean false', value);
+																								// ////console.log('boolean false', value);
 																								value = false;
 																				}
 
@@ -2694,7 +2683,7 @@ export default {
 																								value = !value;
 																				}
 
-																				// ////console.log('BOOLEAN', this.field.title, self.field.inverse ? 'invert to' : 'normal', value);
+																				// //////console.log('BOOLEAN', this.field.title, self.field.inverse ? 'invert to' : 'normal', value);
 
 																				/////////////////////////////////////
 
@@ -2747,7 +2736,7 @@ export default {
 
 												/////////////////////////////////////
 
-												// ////console.log('CLEANED OUTPUT', self.field.title, value)
+												// //////console.log('CLEANED OUTPUT', self.field.title, value)
 												return value;
 								},
 								cleanInput(value) {
@@ -2775,7 +2764,7 @@ export default {
 
 												if (self.field.directive == 'timepicker') {
 																value = self.$fluro.date.militaryTimestamp(value)
-																// //console.log('TIMEPICKER IN >', value)
+																// ////console.log('TIMEPICKER IN >', value)
 												}
 
 												//////////////////////////////////
@@ -2824,7 +2813,7 @@ export default {
 
 																				break;
 																case 'date':
-																				//console.log('CLEAN DATE INPUT', value)
+																				////console.log('CLEAN DATE INPUT', value)
 
 																				if (value) {
 																								if (String(value).toLowerCase() == 'now') {
@@ -2862,13 +2851,13 @@ export default {
 																												changeValue = 0;
 																								}
 
-																								// //console.log('TRANSFORM FLOAT BEFORE', value, changeValue)
+																								// ////console.log('TRANSFORM FLOAT BEFORE', value, changeValue)
 																								// //If we have to transform the data
 																								// if (parseFloat(value).toFixed(2) != parseFloat(changeValue).toFixed(2)) {
 																								// 				value = changeValue;
 																								// }
 
-																								// //console.log('TRANSFORM FLOAT AFTER', value, changeValue)
+																								// ////console.log('TRANSFORM FLOAT AFTER', value, changeValue)
 																								value = changeValue;
 
 
@@ -2892,11 +2881,11 @@ export default {
 																				break;
 																case 'boolean':
 
-																				////console.log('BOOLEAN CHECK IN', value)
+																				//////console.log('BOOLEAN CHECK IN', value)
 																				if (value) {
 																								value = getBooleanValue(value);
 																				} else {
-																								// //console.log('boolean false', value)
+																								// ////console.log('boolean false', value)
 																								value = false;
 																				}
 
@@ -2904,7 +2893,7 @@ export default {
 																								value = !value;
 																				}
 
-																				// ////console.log('BOOLEAN', this.field.title, self.field.inverse ? 'invert to' : 'normal', value);
+																				// //////console.log('BOOLEAN', this.field.title, self.field.inverse ? 'invert to' : 'normal', value);
 																				break;
 																case 'string':
 																default:
@@ -2915,7 +2904,7 @@ export default {
 												}
 
 
-												// ////console.log('CLEANED INPUT', self.field.title, value)
+												// //////console.log('CLEANED INPUT', self.field.title, value)
 												return value;
 								},
 								fixCorruptedData(input) {
@@ -2933,7 +2922,7 @@ export default {
 																//Find out our minimum
 																var minimumToAsk = Math.max(self.field.minimum || 0, self.field.askCount || 0);
 																for (var i = 0; i < minimumToAsk; i++) {
-																				////console.log('PUSH EMPTY', self.field.title, self.field.type, self.field.directive);
+																				//////console.log('PUSH EMPTY', self.field.title, self.field.type, self.field.directive);
 																				array.push({})
 																}
 
@@ -2960,7 +2949,7 @@ export default {
 												//We're expecting multiple answers
 												if (multipleInput) {
 
-																// //console.log('IS A GROUP OBJECT', self.field.title, self.field.key, input);
+																// ////console.log('IS A GROUP OBJECT', self.field.title, self.field.key, input);
 
 																//But the existing value is not an array
 																if (!isArray) {
@@ -2980,11 +2969,11 @@ export default {
 																												if (self.field.asObject) {
 																																if (input) {
 
-																																				//console.log('WERE NOT AN ARRAY BUT WE SHOULD BE!!', isArray, input)
+																																				////console.log('WERE NOT AN ARRAY BUT WE SHOULD BE!!', isArray, input)
 																																				//We are an object so insert the object into the array
 																																				output = [input];
 																																} else {
-																																				//console.log('GET PLACEHOLDERS')
+																																				////console.log('GET PLACEHOLDERS')
 																																				output = getPlaceholders();
 																																}
 																												}
@@ -3028,7 +3017,7 @@ export default {
 																												//Convert the value to a date
 
 																												output = new Date(input);
-																												////console.log('convert to date', typeof input, input)
+																												//////console.log('convert to date', typeof input, input)
 																								}
 																				}
 
@@ -3122,7 +3111,7 @@ export default {
 												//////////////////////////
 												//If we had to make adjustments
 												if (output) {
-																////console.log('fixed corrupted data set', self.field.title, 'from', input, 'to', output);
+																//////console.log('fixed corrupted data set', self.field.title, 'from', input, 'to', output);
 																//return the cleaned up value
 																return output;
 												}
@@ -3151,19 +3140,20 @@ export default {
 																self.hasInitialValue = false;
 												} else {
 																self.hasInitialValue = true;
-																// //console.log('HAS INITIAL VALUE', self.fieldModel)
+																// ////console.log('HAS INITIAL VALUE', self.fieldModel)
 												}
 
-												// ////console.log('')
+												// //////console.log('')
 								},
 								clear() {
+										//console.log('clear field', this.field.title)
 												this.fieldModel = null;
 												this.modal = false;
 
 												this.reset()
 								},
 								reset() {
-												////console.log('reset field', this.field.title)
+												//console.log('reset field', this.field.title)
 												//Clear files
 												this.files = [];
 												this.$v.$reset();
@@ -3213,9 +3203,9 @@ export default {
 												}
 								},
 								fileover(e) {
-												//console.log('FILEOVER AT FIELD LEVEL')
+												////console.log('FILEOVER AT FIELD LEVEL')
 												if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
-																// //console.log('FILE OVER', e.dataTransfer);
+																// ////console.log('FILE OVER', e.dataTransfer);
 																e.preventDefault();
 																e.stopPropagation();
 												}
@@ -3259,7 +3249,7 @@ export default {
 
 												if (self.maximum) {
 																self.files = self.files.slice(0, self.maximum);
-																//////console.log('Cropped to', self.files.length);
+																////////console.log('Cropped to', self.files.length);
 												}
 
 												//Clear out the files
@@ -3366,7 +3356,7 @@ export default {
 
 												///////////////////////////////////////////////////
 
-												//////console.log('Get the upload realm id', self.field);
+												////////console.log('Get the upload realm id', self.field);
 												var uploadRealmID;
 												var uploadRealmIDs = _.chain(self.field)
 																.get('params.realm')
@@ -3400,10 +3390,10 @@ export default {
 
 												///////////////////////////////////////////////////
 
-												////console.log('Uploading to ', uploadRealmID)
+												//////console.log('Uploading to ', uploadRealmID)
 												return this.$fluro.api.post(`/file/attach/${self.$fluro.utils.getStringID(uploadRealmID)}`, body, config)
 																.then(function(res) {
-																				//////console.log('UPLOAD RESPONSE', res);
+																				////////console.log('UPLOAD RESPONSE', res);
 																				file.state = 'complete';
 																				file.result = res.data;
 																				file.attachmentID = res.data._id;
@@ -3411,7 +3401,7 @@ export default {
 																				self.uploadNextFile();
 																})
 																.catch(function(err) {
-																				//////console.log('UPLOAD Error', err);
+																				////////console.log('UPLOAD Error', err);
 																				file.state = 'error';
 																				file.cancelToken = null;
 																				self.uploadNextFile();
@@ -3469,7 +3459,7 @@ export default {
 																				.value();
 												}
 
-												////console.log('MAP FILES TO VALUES', self.field.key, self.field.type);
+												//////console.log('MAP FILES TO VALUES', self.field.key, self.field.type);
 
 												self.$forceUpdate();
 								},
@@ -3507,10 +3497,10 @@ export default {
 																ast = ExpressionParse(expression);
 																result = ExpressionEval(ast, context);
 												} catch (err) {
-																// ////console.log('EXPRESSION', expression, err);
+																// //////console.log('EXPRESSION', expression, err);
 												} finally {
 
-																// ////console.log('EXPRESSION RESULT', result, ast, expression, context)
+																// //////console.log('EXPRESSION RESULT', result, ast, expression, context)
 																return result;
 												}
 
@@ -3545,7 +3535,7 @@ export default {
 																return;
 												}
 
-
+	//console.log('Get actual value')
 												return value._id || value.id || value.value || value.title || value;
 								},
 								toggleValue(value) {
@@ -3565,7 +3555,7 @@ export default {
 												var self = this;
 
 												if (self.multipleInput && !self.canAddValue) {
-																// //console.log('reached limit')
+																// ////console.log('reached limit')
 																return;
 												}
 												if (!self.isSelectedValue(value)) {
@@ -3641,7 +3631,7 @@ export default {
 												//Check to see if the input is valid
 												var errors = checkValidInput(self, proposedValue)
 												if (errors.length) {
-																//////////console.log('Bad Data!', errors)
+																////////////console.log('Bad Data!', errors)
 																return;
 												}
 
@@ -3658,7 +3648,7 @@ export default {
 
 												var self = this;
 
-												//console.log('ADD VALUE!!!', value)
+												////console.log('ADD VALUE!!!', value)
 
 												//If we have defaults disabled
 												if (self.disableDefaults) {
@@ -3735,7 +3725,7 @@ export default {
 
 																				// 								var defaultObject = createDefaultValueForGroup(field, {});
 
-																				// 								//console.log('Create default object', field.key, field.title, defaultObject);
+																				// 								////console.log('Create default object', field.key, field.title, defaultObject);
 																				// 								self.$set(value, field.key, defaultObject);
 																				// 								return;
 																				// 				}
@@ -3776,7 +3766,7 @@ export default {
 								},
 								removeValue(index, forceAllow) {
 
-												////console.log('REMOVE VALUE', index, this.fieldModel)
+												//////console.log('REMOVE VALUE', index, this.fieldModel)
 												if ((this.canRemoveValue || forceAllow) && this.fieldModel) {
 																this.fieldModel.splice(index, 1);
 																this.valueChange();
@@ -3816,7 +3806,7 @@ export default {
 																self.touch()
 												}
 
-												// //console.log('ELEMENT VALUE CHANGED', self.field.title, self.field.key, self.fieldModel)
+												// ////console.log('ELEMENT VALUE CHANGED', self.field.title, self.field.key, self.fieldModel)
 								},
 
 								subFieldChanged(event, setTouched) {
@@ -3848,20 +3838,20 @@ export default {
 
 												// //If it's a group and not an object then end here so we don't have a recurring loop
 												// // if(self.field.type == 'group' && !self.field.asObject) {
-												// // 	////console.log('No change', event)
+												// // 	//////console.log('No change', event)
 												// // 	return;
 												// // }
 
 												// ////////////////////////////////////////////
 
 												// // if (self.field.type == 'reference') {
-												// // 	////console.log('EMIT REFERENCE CHANGE', event, self.field.maximum, self.field.directive, self.field.key);
+												// // 	//////console.log('EMIT REFERENCE CHANGE', event, self.field.maximum, self.field.directive, self.field.key);
 												// // 	//return;
 												// // }
 
 
-												// // ////console.log('FIELD VALUE CHANGED', self.field.title, self.field.key, '>>', self.model[self.field.key], self.fieldModel);
-												// ////console.log('valueChange()', self.field.title, self.model[self.field.key]);
+												// // //////console.log('FIELD VALUE CHANGED', self.field.title, self.field.key, '>>', self.model[self.field.key], self.fieldModel);
+												// //////console.log('valueChange()', self.field.title, self.model[self.field.key]);
 												// self.$emit('input', self.model, self.fieldModel);
 												// self.$forceUpdate();
 
@@ -3874,7 +3864,7 @@ export default {
 
 								var self = this;
 								if (self.debugMode && self.field.isNew) {
-												// ////console.log('SCROLL FIELD INTO VIEW', self.$el);
+												// //////console.log('SCROLL FIELD INTO VIEW', self.$el);
 												self.$nextTick(function() {
 
 																self.$nextTick(function() {
@@ -3900,14 +3890,14 @@ export default {
 								var self = this;
 
 
-								// //console.log('FIX CORRUPED', self.model[self.field.key], JSON.parse(JSON.stringify(self.model)));
+								// ////console.log('FIX CORRUPED', self.model[self.field.key], JSON.parse(JSON.stringify(self.model)));
 
 
 
 								var cleaned = self.fixCorruptedData(self.model[self.field.key]);
 								if (typeof cleaned != typeof self.model[self.field.key] || cleaned != self.model[self.field.key]) {
 												self.$set(self.model, self.field.key, cleaned);
-												//console.log('CLEANED', self.field.key)
+												////console.log('CLEANED', self.field.key)
 								}
 
 
@@ -3954,7 +3944,7 @@ export default {
 
 								//     //If there is no model
 								//     if (!self.fieldModel) {
-								//         ////console.log('Create a Model')
+								//         //////console.log('Create a Model')
 								//         self.fieldModel = {};
 								//     }
 
@@ -4060,7 +4050,7 @@ export default {
 
 																return new Promise(function(resolve, reject) {
 																				self.$fluro.api.get(self.asyncOptionsURL).then(function(res) {
-																												// ////console.log('RES', res)
+																												// //////console.log('RES', res)
 																												resolve(res.data);
 																												self.asyncOptionsLoading = false;
 																								})
@@ -4201,7 +4191,7 @@ export default {
 
 																				var shouldHide = self.expressions.hide();
 
-																				// ////console.log('SHOULD WE HIDE?', self.field.title, shouldHide)
+																				// //////console.log('SHOULD WE HIDE?', self.field.title, shouldHide)
 
 																				return Promise.resolve(shouldHide);
 																} else {
@@ -4216,7 +4206,7 @@ export default {
 																// }
 																value = this.resolveExpression(self.expressions.hide);
 
-																// ////console.log('RESOLVE', value, self.expressions.hide)
+																// //////console.log('RESOLVE', value, self.expressions.hide)
 																return Promise.resolve(value);
 												}
 
@@ -4278,7 +4268,7 @@ export default {
 										])
 										.then(function(results) {
 
-														// ////console.log('Set Components', results);
+														// //////console.log('Set Components', results);
 														self.$options.components.FluroContentForm = results[0];
 														self.$options.components.FluroContentFormField = results[1];
 														self.$options.components.FluroEditor = results[2];
@@ -4296,7 +4286,7 @@ export default {
 																				return false;
 																}
 
-																//////console.log('UPLOAD IS VALID', source, vm);
+																////////console.log('UPLOAD IS VALID', source, vm);
 																return true;
 												},
 								}
@@ -4336,7 +4326,7 @@ function checkNumericInputError(input, minimumValue, maximumValue, numberType, c
 				if (typeof minimumValue != 'undefined') {
 								minimumValue = parseFunction(minimumValue);
 								if (input < minimumValue) {
-												////console.log('MINIMUM', minimumValue, input, input < minimumValue)
+												//////console.log('MINIMUM', minimumValue, input, input < minimumValue)
 												return `Must be at least ${currency && self ? self.$fluro.utils.formatCurrency(minimumValue, currency) : minimumValue}`
 								}
 				}
@@ -4373,7 +4363,7 @@ function validateInput(source, vm) {
 
 				//There is no minimum
 				if (!minimum && !value) {
-								////////////console.log('No minimum!')
+								//////////////console.log('No minimum!')
 								return true;
 				}
 
@@ -4385,10 +4375,10 @@ function validateInput(source, vm) {
 				if (maximum == 1) {
 
 								if (value) {
-												////////////console.log(`Required answer was provided`)
+												//////////////console.log(`Required answer was provided`)
 												return !checkValidInput(vm, value).length;
 								} else {
-												////////////console.log('Requires an answer but none provided');
+												//////////////console.log('Requires an answer but none provided');
 												return false;
 								}
 				}
@@ -4397,7 +4387,7 @@ function validateInput(source, vm) {
 
 				//We need value to be an array at this point
 				if (!isArray) {
-								////////////console.log(`Requires ${minimum} answer but value is not an array`)
+								//////////////console.log(`Requires ${minimum} answer but value is not an array`)
 								return false;
 				}
 
@@ -4466,7 +4456,7 @@ function checkValidInput(self, input) {
 																				});
 
 																				if (someInvalidEmails) {
-																								////console.log('Invalid Emails', input)
+																								//////console.log('Invalid Emails', input)
 																								errors.push('All emails must be valid', input);
 																				}
 																} else {
@@ -4571,7 +4561,7 @@ function checkValidInput(self, input) {
 												var numberised = Number(input);
 												var isActualNumber = (_.isFinite(numberised) && !_.isNaN(numberised));
 												if (!isActualNumber) {
-																////console.log('Is not a valid number??', input, numberised)
+																//////console.log('Is not a valid number??', input, numberised)
 																errors.push(`${input ? input : ''} is not a valid number!`)
 												}
 

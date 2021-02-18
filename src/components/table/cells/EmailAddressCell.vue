@@ -1,8 +1,8 @@
 <template>
 
     <div class="inline-tags">
-        <a :href="`mailto:${data}`" class="inline-tag">
-            <fluro-icon icon="envelope"/> {{data}}
+        <a :href="`mailto:${value}`" class="inline-tag" v-for="value in values">
+            <fluro-icon icon="envelope"/> {{value}}
         </a>
     </div>
 </template>
@@ -17,6 +17,15 @@ export default {
         },
         'data': {
             // type: Object,
+        },
+    },
+    computed:{
+        values() {
+            if(_.isArray(this.data)) {
+                return this.data
+            } else {
+                return this.data ? [this.data] : []
+            }
         },
     }
 }

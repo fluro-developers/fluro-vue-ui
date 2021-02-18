@@ -1,8 +1,9 @@
 <template>
 
     <div class="inline-tags">
-        <a :href="`tel:${data}`" class="inline-tag">
-            <fluro-icon icon="phone"/> {{data}}
+
+        <a :href="`tel:${value}`" class="inline-tag" v-for="value in values">
+            <fluro-icon icon="phone"/> {{value}}
         </a>
     </div>
 </template>
@@ -17,6 +18,15 @@ export default {
         },
         'data': {
             // type: Object,
+        },
+    },
+    computed:{
+        values() {
+            if(_.isArray(this.data)) {
+                return this.data
+            } else {
+                return this.data ? [this.data] : []
+            }
         },
     }
 }

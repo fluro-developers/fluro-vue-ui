@@ -5,7 +5,6 @@
         
         <!-- <pre>{{formattedArray}}</pre> -->
         <!-- <pre>{{rawValue}} {{column.key}}</pre> -->
-
         
         <div :class="{'wrap-limit':shouldWrap}">
             <component v-if="renderer" :data="preValue" :is="renderer" :row="row" :column="column" />
@@ -82,6 +81,8 @@ import RealmDotCell from './cells/RealmDotCell.vue';
 import TimeagoCell from './cells/TimeagoCell.vue';
 import AvatarCell from './cells/AvatarCell.vue';
 import ChartCell from './cells/ChartCell.vue';
+import PhoneNumberCell from './cells/PhoneNumberCell.vue';
+import EmailAddressCell from './cells/EmailAddressCell.vue';
 
 
 var ValueRender = Vue.extend({
@@ -203,6 +204,14 @@ export default {
                     break;
                 case 'contactAvatar':
                     return AvatarCell;
+                    break;
+                case 'email':
+                case 'emails':
+                    return EmailAddressCell;
+                    break;
+                case 'phoneNumber':
+                case 'phoneNumbers':
+                    return PhoneNumberCell;
                     break;
                 case 'personaAvatar':
                     return AvatarCell;

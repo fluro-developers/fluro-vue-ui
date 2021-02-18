@@ -270,7 +270,11 @@ export default {
         },
         update(input, valueThatWasChanged) {
             // console.log('form level', this.model)
-            this.$emit('input', Object.assign({}, this.model));           
+            // this.$emit('input', Object.assign({}, this.model)); 
+            //TODO CADE
+            //Check this works going up and down nested forms, in addition check that it doesn't break
+            //File Uploads          
+            this.$emit('input', this.model);           
            
         },
     }

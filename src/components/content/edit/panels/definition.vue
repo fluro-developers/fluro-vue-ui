@@ -422,6 +422,14 @@
 																																												<fluro-content-form v-model="model.data" :fields="processFields" />
 																																								</fluro-panel-body>
 																																				</fluro-panel>
+																																				<fluro-panel v-if="model.parentType == 'event'">
+																																								<fluro-panel-body>
+																																												<h4 margin>Event Options</h4>
+																																												<system-event-manager v-model="model.data.defaultSystemEvents" />
+																																												<!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.firstLine" v-model="model" /> -->
+																																												<!-- <fluro-content-form v-model="model.data" :fields="eventFields" /> -->
+																																								</fluro-panel-body>
+																																				</fluro-panel>
 																																				<fluro-panel v-if="model.parentType == 'post'">
 																																								<fluro-panel-body>
 																																												<h4 margin>Post Options</h4>
@@ -752,7 +760,7 @@ import _ from 'lodash';
 import FluroAccordion from '../../../ui/accordion/FluroAccordion.vue';
 import FluroAccordionPanel from '../../../ui/accordion/FluroAccordionPanel.vue';
 import GroupRoleManager from "../components/GroupRoleManager.vue";
-
+import SystemEventManager from './definition/SystemEventManager.vue';
 // import FluroExpressionEditor from "../../../form/FluroExpressionEditor.vue";
 
 
@@ -775,6 +783,7 @@ export default {
 								FluroCodeEditor,
 								MailoutRenderPreview,
 								GroupRoleManager,
+								SystemEventManager,
 								//RosterSlotManager,
 								// FluroEditor,
 				},
@@ -942,6 +951,10 @@ export default {
 
 								if (!self.model.data) {
 												self.$set(self.model, 'data', {});
+								}
+
+								if (!self.model.data.defaultSystemEvents) {
+												self.$set(self.model.data, 'defaultSystemEvents', []);
 								}
 
 								if (!self.model.data.slots) {
@@ -2137,6 +2150,29 @@ export default {
 																}
 																array.push(field);
 												}
+
+												return array;
+								},
+								eventFields() {
+												var self = this;
+												var array = [];
+
+
+												///////////////////////////////////
+
+												array.push({
+																title: 'Types that can be processed',
+																minimum: 0,
+																maximum: 0,
+																key: 'processTypes',
+																type: 'string',
+																directive: 'select',
+																options: self.referenceOptions,
+																params: {
+																				persistentDescription: true
+																},
+																description: `Restrict what kind of content types can be referenced and added to this process`,
+												})
 
 												return array;
 								},

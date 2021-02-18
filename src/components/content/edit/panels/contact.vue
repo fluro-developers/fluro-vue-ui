@@ -409,6 +409,7 @@
 																																<v-input class="no-flex" v-if="phoneNumbers.length || emails.length">
 																																				<v-label>Communication Preferences</v-label>
 																																				<p class="help-block">Manage {{contextName}} subscription preferences below</p>
+																																				<fluro-panel>
 																																				<div class="toggle-items">
 																																								<template v-if="emails.length">
 																																												<fluro-toggle-item @click.native="toggleSubscription('mailout')" :inactive="unsubscribedMailout">
@@ -428,6 +429,7 @@
                                                 </v-layout>
                                             </div> -->
 																																				</div>
+																																			</fluro-panel>
 																																				<!-- <pre>{{smsUnsubscribes}}</pre> -->
 																																				<!-- <pre>{{mailoutUnsubscribes}}</pre> -->
 																																</v-input>
@@ -755,7 +757,7 @@ export default {
 
 								},
 								updateFamily() {
-										
+
 												/**/
 												var self = this;
 
