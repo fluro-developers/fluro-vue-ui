@@ -232,6 +232,7 @@
 																								</v-date-picker>
 																				</v-card>
 																</v-menu>
+															
 												</template>
 												<template v-else-if="renderer == 'timepicker'">
 																<v-dialog ref="dialog" v-model="modal" persistent :return-value.sync="fieldModel" lazy full-width width="290px">
@@ -255,6 +256,8 @@
 												<template v-else-if="renderer == 'datetimepicker'">
 																<fluro-date-time-picker :outline="showOutline" :large="!params.small" :error-messages="errorMessages" :min="minDate" :max="maxDate" :success="success" :required="required" format="ddd D MMM - h:mma " timePickerFormat="ampm" :label="displayLabel" :placeholder="placeholder" :hint="field.description" v-model="fieldModel" @touched="touch()" />
 																<!-- <pre>{{fieldModel}}</pre> -->
+
+
 												</template>
 												<template v-else-if="renderer == 'timezoneselect'">
 																<template v-if="mobile">
@@ -850,7 +853,9 @@ export default {
 																return;
 												}
 
+										
 												v = this.cleanInput(v);
+												
 
 												//If there is actually a change
 												var currentValue = this.model[this.field.key];
@@ -2848,11 +2853,16 @@ export default {
 																												if (!isValidDate) {
 																																value = null;
 																												} else {
-																																//Round off to the nearest minute so we don't trigger reactivity endlessly
-																																d.setMinutes(0, 0, 0);
-																																value = d;
+
+																													//Round off to the nearest minute so we don't trigger reactivity endlessly
+																													var coeff = 1000 * 60 * 1;
+																													value = new Date(Math.round(d.getTime() / coeff) * coeff)
+																																
 
 																												}
+
+
+																												
 																								}
 																				}
 
