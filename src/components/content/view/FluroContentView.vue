@@ -3,7 +3,7 @@
         <fluro-page-preloader v-if="loading" contain />
         <template v-else-if="model">
             <flex-column-header class="border-bottom" v-if="!hideTitle">
-                <page-header :type="type" >
+                <page-header :type="type">
                     <template v-slot:left>
                         <div>
                             <h3>
@@ -26,17 +26,21 @@
                             </v-btn>
                         </template>
                         <template v-else>
-                           <!--  <v-btn icon v-if="showFiltersEnabled" class="mr-0"  @click="toggleFilters()">
+                            <!--  <v-btn icon v-if="showFiltersEnabled" class="mr-0"  @click="toggleFilters()">
                                 <fluro-icon icon="filter" :library="filtersEnabled ? 'fas' : 'far'" />
                             </v-btn> -->
-                            <v-btn icon v-if="refreshable" class="mr-0"  @click="refresh()">
+                            <v-btn icon v-if="refreshable" class="mr-0" @click="refresh()">
                                 <fluro-icon icon="sync" />
                             </v-btn>
                             <v-btn v-if="model._id" icon class="mr-0" @click="$actions.open([model])">
                                 <fluro-icon icon="ellipsis-h" />
                             </v-btn>
-                            <v-btn @click="cancel">Close</v-btn>
-                            <v-btn v-if="canEdit" @click="edit">
+                            <v-btn v-tippy :content="showFilters ? 'Hide Filters' : 'Show Filters'" v-if="filterable" class="mr-0" @click="toggleFilters()">
+                                Filters
+                                <fluro-icon icon="filter" :library="showFilters ? 'fas' : 'far'" right />
+                            </v-btn>
+                            <v-btn @click="cancel" class="mr-0">Close</v-btn>
+                            <v-btn v-if="canEdit" @click="edit" class="mr-0">
                                 Edit
                                 <fluro-icon right icon="pencil" />
                             </v-btn>
@@ -46,11 +50,14 @@
                         </template>
                     </template>
                     <template v-slot:rightmobile>
-                        <v-btn icon v-if="refreshable" class="mr-0"  small @click="refresh()">
+                        <v-btn icon v-if="refreshable" class="mr-0" small @click="refresh()">
                             <fluro-icon icon="sync" />
                         </v-btn>
                         <v-btn v-tippy content="More actions" v-if="model._id" icon class="mr-0" small @click="$actions.open([model])">
                             <fluro-icon icon="ellipsis-h" />
+                        </v-btn>
+                        <v-btn icon v-if="filterable" class="mr-0" @click="toggleFilters()">
+                            <fluro-icon icon="filter" />
                         </v-btn>
                         <v-btn v-tippy content="Edit" v-if="canEdit" icon small @click="edit">
                             <fluro-icon icon="pencil" />
@@ -61,7 +68,7 @@
                     </template>
                 </page-header>
             </flex-column-header>
-            <component :item="model" v-bind:is="component" :cacheKey="cacheKey" :config="config" v-if="component" />
+            <component :item="model" v-bind:is="component" ref="view" :cacheKey="cacheKey" :config="config" v-if="component" />
         </template>
     </flex-column>
 </template>
@@ -105,6 +112,11 @@ export default {
         };
     },
     methods: {
+        toggleFilters() {
+            if (this.$refs && this.$refs.view && this.$refs.view.toggleFilters) {
+                this.$refs.view.toggleFilters();
+            }
+        },
         refresh() {
             this.cacheKey++;
         },
@@ -113,14 +125,14 @@ export default {
         },
         edit() {
 
-          var self = this;
+            var self = this;
 
             self.$fluro.global.edit(self.model)
-            .then(function(response) {
+                .then(function(response) {
 
-              console.log('Edited')
-              self.refresh();
-            });
+                    console.log('Edited')
+                    self.refresh();
+                });
         }
     },
 
@@ -131,7 +143,13 @@ export default {
         }
     },
     computed: {
+        showFilters() {
+            return this.filterable && this.$refs.view && this.$refs.view.showFilters;
+        },
         refreshable() {
+            return this.type == 'query';
+        },
+        filterable() {
             return this.type == 'query';
         },
         component() {
@@ -460,7 +478,7 @@ export default {
                             appendContactDetail: "all",
                             appendAssignments: "all",
                             type: self.type,
-                            cacheKey:self.cacheKey,
+                            cacheKey: self.cacheKey,
                         })
                         .then(function(res) {
                             if (!res.data) {

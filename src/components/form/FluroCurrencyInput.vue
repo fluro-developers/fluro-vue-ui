@@ -112,7 +112,7 @@ export default {
                 v = Math.max(v, 0);
                 v = v / 100;
 
-                console.log('GETTING currency model to', v);
+                // console.log('GETTING currency model to', v);
                 return v;
             },
             set(v) {
@@ -122,7 +122,7 @@ export default {
                 v = parseInt(v * 100);
 
 
-                console.log('Setting currency model to', v);
+                // console.log('Setting currency model to', v);
                 this.model = v;
             },
         },

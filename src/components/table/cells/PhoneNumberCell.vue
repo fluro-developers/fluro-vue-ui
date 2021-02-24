@@ -23,7 +23,7 @@ export default {
     computed:{
         values() {
             if(_.isArray(this.data)) {
-                return this.data
+                return _.flatten(this.data)
             } else {
                 return this.data ? [this.data] : []
             }

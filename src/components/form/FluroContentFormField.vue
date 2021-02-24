@@ -853,7 +853,7 @@ export default {
 																return;
 												}
 
-										
+											console.log('GET THE DEFAULT VALUE', this.field.key, v);
 												v = this.cleanInput(v);
 												
 
@@ -4168,6 +4168,7 @@ export default {
 
 								expressionDefaultValue: {
 												get() {
+
 																var self = this;
 																//There is no hidden expression
 																if (!self.expressions || !self.expressions.defaultValue) {
@@ -4185,6 +4186,7 @@ export default {
 
 
 																var value = this.resolveExpression(self.expressions.defaultValue);
+								
 																return Promise.resolve(value);
 												}
 

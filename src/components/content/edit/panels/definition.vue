@@ -1071,6 +1071,15 @@ export default {
 								}
 				},
 				computed: {
+
+								currencyOptions() {
+												var self = this;
+
+												//Get the user's default country code
+												var userCountryCode = _.get(self.user, "account.countryCode");
+												return self.$fluro.utils.getAvailableCurrencies(userCountryCode);
+
+								},
 								paymentGatewayFilter() {
 												return {
 																operator: "and",
@@ -1470,38 +1479,16 @@ export default {
 
 
 
+
+
 												addField('currency', {
 																title: 'Currency',
 																minimum: 1,
 																maximum: 1,
 																type: 'string',
 																directive: 'select',
-																options: [{
-																								name: 'USD',
-																								value: 'usd',
-																				},
-																				{
-																								name: 'AUD',
-																								value: 'aud',
-																				},
-																				{
-																								name: 'CAD',
-																								value: 'cad',
-																				},
-																				{
-																								name: 'EUR',
-																								value: 'eur',
-																				},
-																				{
-																								name: 'GBP',
-																								value: 'gbp',
-																				},
-
-																				{
-																								name: 'SGD',
-																								value: 'sgd',
-																				},
-																]
+																options: self.currencyOptions,
+																defaultValues:self.currencyOptions.slice(0,1),
 												})
 
 
@@ -1719,7 +1706,7 @@ export default {
 
 												var formTokens = self.$fluro.utils.getFlattenedFields(self.model.fields, [], []).map(function(field) {
 
-																console.log('FIELD', field);
+																// console.log('FIELD', field);
 																// return {
 																// 				title: field.title,
 																// 				value: `<%= get('data.${field.trail.join('.')}') %>`,

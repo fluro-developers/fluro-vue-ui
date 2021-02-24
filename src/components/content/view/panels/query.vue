@@ -4,8 +4,22 @@
             <fluro-page-preloader contain />
         </template>
         <template v-else>
-            <tabset :vertical="true">
+            <tabset justified>
                 <tab heading="Results">
+                    <!-- <flex-column-header>
+                        <v-container style="background: #fff;" pa-2 fluid class="border-bottom">
+                            <v-layout>
+                                <v-flex>
+                                </v-flex>
+                                <v-flex shrink>
+                                    <v-btn small @click="toggleFilters()" class="ma-0">
+                                        {{showFilters ? 'Hide' : 'Show'}} Filters
+                                        <fluro-icon icon="filter" :library="showFilters ? 'fas' : 'far'" right />
+                                    </v-btn>
+                                </v-flex>
+                            </v-layout>
+                        </v-container>
+                    </flex-column-header> -->
                     <flex-row>
                         <flex-column>
                             <fluro-table ref="table" :defaultSort="defaultSort" :defaultSortType="defaultSortType" :defaultSortDirection="defaultSortDirection" :showFooter="true" trackingKey="_id" :pageSize="100" :items="filtered" :totals="totals" :avg="avg" :columns="columns">
@@ -29,14 +43,15 @@
                                 </template>
                             </fluro-table>
                         </flex-column>
-                        <flex-column class="border-left" style="max-width:320px;">
+                        <flex-column class="border-left" style="max-width:320px;" v-if="showFilters">
                             <tabset :justified="true">
                                 <tab heading="Refine">
-                                    <flex-column-body style="background: #fafafa;">
+                                    <flex-column-body style="background: #f0f0f0;">
                                         <v-container fluid pa-2>
                                             <search-input style="background: #fff;" @click.native.stop.prevent placeholder="Search within results" v-model="keywords" />
                                         </v-container>
                                         <v-container fluid pa-2>
+                                         <v-label>Advanced filters</v-label>
                                             <filter-condition-group :forceLocalValues="true" :filterFields="filterFields" :rows="results" :mini="true" v-model="filterConfig" :debounce="filterDebounce" />
                                         </v-container>
                                     </flex-column-body>
@@ -200,6 +215,9 @@ export default {
     },
     mixins: [FluroContentViewMixin],
     methods: {
+        toggleFilters() {
+            this.showFilters = !this.showFilters;
+        },
         printTable(exportCSV) {
             console.log('PRINT TABLE')
             var self = this;
@@ -648,6 +666,7 @@ export default {
             filterSet: [],
             filterConfig: {},
             filterDebounce: 300,
+            showFilters: false,
 
             //Other bits
             keywords: '',
