@@ -1958,7 +1958,8 @@ export default {
 												}
 
 
-												&.process-status-failed {
+												&.process-status-failed,
+												&.payment-status-failed {
 
 																th.first,
 																th.last,

@@ -752,6 +752,8 @@ export default {
                 .then(function(res) {
                     var { parent, index } = self.findSelectedParent();
                     self.deleteField(self.field, parent);
+
+
                 });
         },
         recursiveGUID(fields) {
@@ -1140,11 +1142,14 @@ export default {
             // var parent = this.findFieldParent(field);
 
             if (!parent) {
+                console.log('DELETE No parent', parent);
                 return;
             }
 
             var index = parent.indexOf(field);
             parent.splice(index, 1);
+
+            console.log('DELETE', self.model)
         }
     },
     data() {

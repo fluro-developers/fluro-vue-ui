@@ -89,6 +89,7 @@
 																</v-flex>
 																<v-flex xs12 sm5 v-else-if="inputType == 'array' && dataType != 'date'">
 																				<template v-if="simpleKeyIsRealms">
+																					
 																								<fluro-realm-select action="view any" :filterDiscriminator="discriminator || discriminatorType || discriminatorDefinition" block small v-model="model.values" />
 																								<!-- <pre>{{discriminator}} - {{discriminatorType}} - {{discriminatorDefinition}}</pre> -->
 																				</template>

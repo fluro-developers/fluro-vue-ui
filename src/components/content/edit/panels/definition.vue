@@ -1479,7 +1479,12 @@ export default {
 
 
 
-
+												var firstCurrency = _.first(self.currencyOptions);
+												if (firstCurrency && firstCurrency.value) {
+																firstCurrency = firstCurrency.value;
+												} else {
+																firstCurrency = '';
+												}
 
 												addField('currency', {
 																title: 'Currency',
@@ -1488,7 +1493,7 @@ export default {
 																type: 'string',
 																directive: 'select',
 																options: self.currencyOptions,
-																defaultValues:self.currencyOptions.slice(0,1),
+																defaultValues:firstCurrency ? [firstCurrency] : [],
 												})
 
 

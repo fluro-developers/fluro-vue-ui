@@ -2707,6 +2707,40 @@ export default {
 																												]
 																								});
 																								break;
+																				case 'user':
+
+																								injectFields.push({
+																												title: 'First Name',
+																												key: 'firstName',
+																												minimum: 0,
+																												maximum: 1,
+																								})
+
+																								injectFields.push({
+																												title: 'Last Name',
+																												key: 'lastName',
+																												minimum: 0,
+																												maximum: 1,
+																								})
+																								injectFields.push({
+																												title: 'Email',
+																												key: 'email',
+																												minimum: 0,
+																												maximum: 1,
+																												type:'email',
+																								})
+
+																								injectFields.push({
+																												title: 'Primary Account',
+																												key: 'account',
+																												minimum: 0,
+																												maximum: 1,
+																												type: 'reference',
+																												params: {
+																																restrictType: 'account',
+																												}
+																								})
+																								break;
 																				case 'account':
 
 																								_.each([

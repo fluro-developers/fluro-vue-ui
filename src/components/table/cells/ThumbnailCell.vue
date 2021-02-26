@@ -1,5 +1,13 @@
 <template>
-    <div class="thumbnail" :class="{contain:contain}" :style="{backgroundImage:`url(${url})`}"/>
+    <v-menu lazy open-on-hover>
+        <template v-slot:activator="{ on }">
+            <div v-on="on" class="thumbnail" :class="{contain:contain}" :style="{backgroundImage:`url(${url})`}">
+            </div>
+        </template>
+        <div class="large-preview">
+            <fluro-image :imageWidth="1000" :item="contentID" />
+        </div>
+    </v-menu>
 </template>
 <script>
 export default {
@@ -14,7 +22,7 @@ export default {
             // type: Object,
         },
     },
-    computed:{
+    computed: {
         content() {
             return this.data ? this.data : this.row;
         },
@@ -33,7 +41,7 @@ export default {
         // url() {
         //     return this.data ? this.$fluro.asset.imageUrl(this.data, 50) : this.defaultURL;
         // },
-        
+
         // rowID() {
         //     return this.$fluro.utils.getStringID(this.row);
         // },
@@ -45,11 +53,22 @@ export default {
         }
     }
 }
-</script>
-<style lang="scss" scoped>
 
-.thumbnail.contain {
-    background-size:contain;
-    height:50px;
+</script>
+<style lang="scss">
+.large-preview {
+    background:#fff;
+    border:5px solid #fff;
+    width:700px;
+    max-width: 50vw;
+
 }
+
+</style>
+<style lang="scss" scoped>
+.thumbnail.contain {
+    background-size: contain;
+    height: 50px;
+}
+
 </style>

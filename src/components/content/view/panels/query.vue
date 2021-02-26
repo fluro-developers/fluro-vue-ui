@@ -51,7 +51,7 @@
                                             <search-input style="background: #fff;" @click.native.stop.prevent placeholder="Search within results" v-model="keywords" />
                                         </v-container>
                                         <v-container fluid pa-2>
-                                         <v-label>Advanced filters</v-label>
+                                            <v-label>Advanced filters</v-label>
                                             <filter-condition-group :forceLocalValues="true" :filterFields="filterFields" :rows="results" :mini="true" v-model="filterConfig" :debounce="filterDebounce" />
                                         </v-container>
                                     </flex-column-body>
@@ -65,6 +65,7 @@
                         <v-container fluid>
                             <constrain sm>
                                 <h3 margin>Feed URLs</h3>
+                                <p>This query can be retrieved and rendered in different ways. Select below to get a templated feed of it's results.</p>
                                 <v-btn large block :href="jsonURL" target="_blank">
                                     JSON API Feed
                                     <fluro-icon right icon="brackets-curly" />
@@ -72,6 +73,10 @@
                                 <v-btn large block @click="exportCSV()" :loading="exporting">
                                     Export CSV
                                     <fluro-icon right icon="file-csv" />
+                                </v-btn>
+                                <v-btn large block :href="icalFeed" target="_blank">
+                                    ICal Feed
+                                    <fluro-icon right icon="rss" />
                                 </v-btn>
                                 <v-btn large block :href="podcastURL" target="_blank">
                                     Podcast RSS Feed
@@ -540,7 +545,30 @@ export default {
         },
 
 
+        icalFeed() {
+            if (!this.item._id) {
+                return;
+            }
 
+            var token = _.get(this.item, 'data.accessToken');
+
+            var params = {
+                noCache: true,
+                template: 'ical',
+                limit: 100,
+            };
+
+
+            if (token) {
+                params.withoutToken = true;
+                params.access_token = token;
+                
+            }
+
+            var url = this.$fluro.api.generateEndpointURL(`/content/_query/${this.item._id}/file/ical.ics`, params)
+
+            return url;
+        },
         podcastURL() {
             if (!this.item._id) {
                 return;

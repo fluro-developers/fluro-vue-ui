@@ -232,7 +232,6 @@
 																								</v-date-picker>
 																				</v-card>
 																</v-menu>
-															
 												</template>
 												<template v-else-if="renderer == 'timepicker'">
 																<v-dialog ref="dialog" v-model="modal" persistent :return-value.sync="fieldModel" lazy full-width width="290px">
@@ -256,8 +255,6 @@
 												<template v-else-if="renderer == 'datetimepicker'">
 																<fluro-date-time-picker :outline="showOutline" :large="!params.small" :error-messages="errorMessages" :min="minDate" :max="maxDate" :success="success" :required="required" format="ddd D MMM - h:mma " timePickerFormat="ampm" :label="displayLabel" :placeholder="placeholder" :hint="field.description" v-model="fieldModel" @touched="touch()" />
 																<!-- <pre>{{fieldModel}}</pre> -->
-
-
 												</template>
 												<template v-else-if="renderer == 'timezoneselect'">
 																<template v-if="mobile">
@@ -689,6 +686,22 @@ const RANGE = (x, y) => Array.from((function*() {
 })());
 
 
+////////////////////////////////////////////////////////
+
+function zeroPadded(num) {
+				if (!num) {
+								return;
+				}
+
+				var output = num;
+				if (String(output).length < 2) {
+								output = `0${output}`;
+				}
+
+				return output;
+}
+////////////////////////////////////////////////////////
+
 
 function getBooleanValue(value) {
 				switch (String(value).toLowerCase()) {
@@ -853,9 +866,9 @@ export default {
 																return;
 												}
 
-											console.log('GET THE DEFAULT VALUE', this.field.key, v);
+												console.log('GET THE DEFAULT VALUE', this.field.key, v);
 												v = this.cleanInput(v);
-												
+
 
 												//If there is actually a change
 												var currentValue = this.model[this.field.key];
@@ -869,7 +882,7 @@ export default {
 												}
 
 												if (currentValue == v) {
-													console.log(this.field.key, 'no change', currentValue, v);
+																console.log(this.field.key, 'no change', currentValue, v);
 																//No change
 																return;
 												}
@@ -1036,7 +1049,8 @@ export default {
 																				return;
 																}
 
-																this.dateStringModel = `${this.actualDateModelYear}-${this.actualDateModelMonth}-${this.actualDateModelDay}`;
+
+																this.dateStringModel = `${this.actualDateModelYear}-${zeroPadded(this.actualDateModelMonth)}-${zeroPadded(this.actualDateModelDay)}`;
 												}
 								},
 								dateModelMonth: {
@@ -1059,7 +1073,7 @@ export default {
 																				return;
 																}
 
-																this.dateStringModel = `${this.actualDateModelYear}-${this.actualDateModelMonth}-${this.actualDateModelDay}`;
+																this.dateStringModel = `${this.actualDateModelYear}-${zeroPadded(this.actualDateModelMonth)}-${zeroPadded(this.actualDateModelDay)}`;
 												}
 								},
 								dateModelYear: {
@@ -1083,7 +1097,7 @@ export default {
 																				return;
 																}
 
-																this.dateStringModel = `${this.actualDateModelYear}-${this.actualDateModelMonth}-${this.actualDateModelDay}`;
+																this.dateStringModel = `${this.actualDateModelYear}-${zeroPadded(this.actualDateModelMonth)}-${zeroPadded(this.actualDateModelDay)}`;
 												}
 								},
 								dateDayOptions() {
@@ -2854,15 +2868,15 @@ export default {
 																																value = null;
 																												} else {
 
-																													//Round off to the nearest minute so we don't trigger reactivity endlessly
-																													var coeff = 1000 * 60 * 1;
-																													value = new Date(Math.round(d.getTime() / coeff) * coeff)
-																																
+																																//Round off to the nearest minute so we don't trigger reactivity endlessly
+																																var coeff = 1000 * 60 * 1;
+																																value = new Date(Math.round(d.getTime() / coeff) * coeff)
+
 
 																												}
 
 
-																												
+
 																								}
 																				}
 
@@ -4152,7 +4166,7 @@ export default {
 																}
 
 																if (typeof self.expressions.value == 'function') {
-																				var result =  self.expressions.value();
+																				var result = self.expressions.value();
 																				return Promise.resolve(result);
 																} else {
 																				if (!String(self.expressions.value).length) {
@@ -4186,7 +4200,7 @@ export default {
 
 
 																var value = this.resolveExpression(self.expressions.defaultValue);
-								
+
 																return Promise.resolve(value);
 												}
 

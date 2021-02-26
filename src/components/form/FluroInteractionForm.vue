@@ -72,6 +72,7 @@
                                                 {{ formattedTotal }}
                                                 <span class="muted">
                                                     {{ currency.toUpperCase() }}
+                                                    
                                                 </span>
                                             </h3>
                                         </v-flex>
@@ -108,6 +109,7 @@
                                                 {{ formattedTotal }}
                                                 <span class="muted">
                                                     {{ currency.toUpperCase() }}
+                                                   
                                                 </span>
                                             </h3>
                                         </v-flex>

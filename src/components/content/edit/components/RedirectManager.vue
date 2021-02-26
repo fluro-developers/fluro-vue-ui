@@ -43,6 +43,14 @@ export default {
 																type: 'string',
 												})
 
+
+												array.push({
+																title: 'Status Code',
+																key: 'statusCode',
+																type: 'string',
+
+												})
+
 												// array.push({
 												// 				title: '',
 												// 				key: 'exclude',
@@ -158,6 +166,26 @@ export default {
 																								// expressions: {
 																								// 				transform,
 																								// },
+																				},
+
+																				{
+																								title: 'Status Code',
+																								type: 'string',
+																								key: 'statusCode',
+																								minimum: 1,
+																								maximum: 1,
+																								directive: 'select',
+																								defaultValues: ['301'],
+																								placeholder: 'eg. /camp123 or https://camp.com',
+																								options: [{
+																																name: '301 Permanent',
+																																value: '301',
+																												},
+																												{
+																																name: '302 Temporary',
+																																value: '302',
+																												},
+																								]
 																				},
 
 																], 'Add Redirect')

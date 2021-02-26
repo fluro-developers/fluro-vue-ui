@@ -1,11 +1,56 @@
 <template>
     <!-- <flex-column> -->
-    <flex-column class="realm-select-modal" >
+    <flex-column class="realm-select-modal">
         <flex-column v-if="loading">
             <v-container class="text-xs-center">
                 <v-progress-circular indeterminate />
             </v-container>
         </flex-column>
+        <template v-else-if="mega">
+            <!-- <fluro-panel v-for="realm in tree">
+                <fluro-panel-title @click.native="expanded = realm">{{realm.title}}</fluro-panel-title>
+                <fluro-panel-body v-if="expanded == realm">
+                    <fluro-panel v-for="child in realm.realms">
+                        <pre>{{realm}}</pre>
+                        {{child.title}}
+                    </fluro-panel>
+                </fluro-panel-body>
+            </fluro-panel> -->
+            <flex-column-header class="border-bottom">
+                <v-container py-2>
+                    <v-layout row align-center>
+                        <v-flex>
+                            <h3 style="margin:0;">{{title}}</h3>
+                        </v-flex>
+                        <div>
+                            <v-btn color="primary" class="ma-0" @click="dismiss()">
+                                Done
+                            </v-btn>
+                        </div>
+                    </v-layout>
+                </v-container>
+            </flex-column-header>
+            <flex-column>
+                <fluro-tabset>
+                    <fluro-tab :heading="type.plural" :key="type.definitionName" v-for="type in tree">
+                        <flex-column-body class="realm-select-item-outer" :class="{'has-selection':selection.length}">
+                            <div class="children">
+                                <template v-for="realm in type.realms">
+                                    <fluro-realm-select-item :item="realm" collapsible :expandLookup="expandLookup" :check="isSelected" :callback="toggleRealm" />
+                                </template>
+                            </div>
+                        </flex-column-body>
+                    </fluro-tab>
+                </fluro-tabset>
+            </flex-column>
+            <flex-column-footer class="border-top" v-if="selector.selection.length">
+                <v-container pa-1>
+                    <v-btn small flat @click="selector.deselectAll()">
+                        Deselect all {{selector.selection.length}}
+                    </v-btn>
+                </v-container>
+            </flex-column-footer>
+        </template>
         <template v-else>
             <flex-column-header class="border-bottom">
                 <v-container py-2>
@@ -25,22 +70,15 @@
                 <fluro-tabset>
                     <fluro-tab :heading="type.plural" :key="type.definitionName" v-for="type in tree">
                         <flex-column-body class="realm-select-item-outer" :class="{'has-selection':selection.length}">
-                            <!-- <constrain gutterless xs > -->
-                            <!-- <div class="realm-select-item-outer"> -->
                             <div class="children">
                                 <template v-for="realm in type.realms">
-                                    <!-- {{isSelected(realm)}} -->
                                     <fluro-realm-select-item :item="realm" :check="isSelected" :callback="toggleRealm" />
                                 </template>
                             </div>
-                            <!-- </div> -->
-                            <!-- </constrain> -->
                         </flex-column-body>
                     </fluro-tab>
                 </fluro-tabset>
             </flex-column>
-
-           
             <flex-column-footer class="border-top" v-if="selector.selection.length">
                 <v-container pa-1>
                     <v-btn small flat @click="selector.deselectAll()">
@@ -73,6 +111,7 @@ export default {
     mixins: [ModalMixin, Layout],
     data() {
         return {
+            expandLookup:{},
             selector: this.options.selector,
         }
     },
@@ -85,13 +124,18 @@ export default {
         },
     },
     computed: {
+        mega() {
+            return _.some(this.tree, function(top) {
+                return top.count > 1000;
+            })
+        },
         title() {
             var self = this;
             var plural = 'Realms';
 
-            if(self.tree.length == 1) {
-                plural  = self.tree[0].plural;
-            } 
+            if (self.tree.length == 1) {
+                plural = self.tree[0].plural;
+            }
             return `Select ${plural}`;
         },
         selection() {
@@ -108,6 +152,7 @@ export default {
         },
     },
 }
+
 </script>
 <style lang="scss">
 $bg-color: #eaedf2;
@@ -116,7 +161,8 @@ $line-color: darken($bg-color, 10%);
 .realm-select-modal {
 
     max-width: 500px;
-     max-height: 80vh;
+    max-height: 80vh;
+
     .tabset {
         .tabset-menu {
             background: #333;
@@ -282,4 +328,5 @@ $line-color: darken($bg-color, 10%);
 
 
 }
+
 </style>
