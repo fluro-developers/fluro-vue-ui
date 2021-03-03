@@ -853,6 +853,100 @@ export default {
 																});
 												}
 
+
+
+												function injectReferenceContactFields() {
+
+																injectFields.push({
+																				title: "Contact > Address > Address Line 1",
+																				key: "_contactFamily.address.addressLine1",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "string",
+																});
+
+																injectFields.push({
+																				title: "Contact > Address > Address Line 2",
+																				key: "_contactFamily.address.addressLine2",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "string",
+																});
+
+																injectFields.push({
+																				title: "Contact > Address > Suburb",
+																				key: "_contactFamily.address.suburb",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "string",
+																});
+
+																injectFields.push({
+																				title: "Contact > Address > State",
+																				key: "_contactFamily.address.state",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "string",
+																});
+
+																injectFields.push({
+																				title: "Contact > Address > Postal Code",
+																				key: "_contactFamily.address.postalCode",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "string",
+																});
+
+																injectFields.push({
+																				title: "Contact > Address > Country",
+																				key: "_contactFamily.address.postalCode",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "string",
+																});
+
+
+																injectFields.push({
+																				title: "Contact > First Name",
+																				key: "_contact.firstName",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "string",
+																});
+
+																injectFields.push({
+																				title: "Contact > Preferred Name",
+																				key: "_contact.preferredName",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "string",
+																});
+
+																injectFields.push({
+																				title: "Contact > Last Name",
+																				key: "_contact.lastName",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "string",
+																});
+
+																injectFields.push({
+																				title: "Contact > Primary Email Address",
+																				key: "_contact.emails[0]",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "email",
+																});
+
+																injectFields.push({
+																				title: "Contact > Primary Phone Number",
+																				key: "_contact.phoneNumbers[0]",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "string",
+																});
+												}
+
 												//////////////////////////////////////////////////
 
 												var ticketOptions = [];
@@ -2301,8 +2395,16 @@ export default {
 
 
 																								break;
+																				case 'ticket':
+
+
+																								injectReferenceContactFields();
+																								break;
 																				case "checkin":
 																								//Extra filters for process cards
+
+
+																								injectReferenceContactFields();
 
 																								injectFields.push({
 																												title: "Ticket Type",
@@ -2325,8 +2427,6 @@ export default {
 																												directive: "select",
 																												options: contactDefinitionOptions
 																								});
-
-
 
 																								injectFields.push({
 																												title: "Contact Definition (At time of checkin)",
@@ -2727,7 +2827,7 @@ export default {
 																												key: 'email',
 																												minimum: 0,
 																												maximum: 1,
-																												type:'email',
+																												type: 'email',
 																								})
 
 																								injectFields.push({

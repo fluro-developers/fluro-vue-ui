@@ -87,13 +87,8 @@
                             <v-btn small icon v-if="model._id" class="ma-0" @click="$actions.open([model])">
                                 <fluro-icon icon="ellipsis-h" />
                             </v-btn>
-
-                            
                             <v-btn class="mx-0 ml-2" @click="cancel" v-if="!embedded">Close</v-btn>
                             <v-btn class="mx-0 ml-2" :loading="state == 'processing'" :disabled="hasErrors" @click="submit()" color="primary">{{saveText}}</v-btn>
-                        
-
-
                         </template>
                     </page-header>
                 </flex-column-header>
@@ -581,6 +576,8 @@ export default {
 
                         //Object.assign(self.model, res.data);
 
+                        var result = Object.assign({}, res.data);
+
 
                         switch (self.typeName) {
                             // case 'definition':
@@ -588,14 +585,17 @@ export default {
                             // case 'product':
                             // //This screws with things. It's too dangerous to enable until we can rewrite the field editor to use correct data flow
                             // break;
-                            case 'integration':
                             case 'contact':
+                                self.model = result;
+                                break;
+                            case 'integration':
+
                             case 'audio':
                             case 'video':
                             case 'image':
                             case 'asset':
                             case 'mailout':
-                                self.model = res.data;
+                                self.model = result;
                                 break;
                             default:
                                 //Do nothing

@@ -31,9 +31,18 @@
                             </v-flex>
                         </v-layout>
                     </div>
-                    <v-btn v-else block color="primary" @click="select(action)">
-                        {{action.title}}
-                    </v-btn>
+                    <template v-else>
+                        <template v-if="webMode">
+                            <fluro-button block @click="select(action)">
+                                {{action.title}}
+                            </fluro-button>
+                        </template>
+                        <template v-else>
+                            <v-btn block color="primary" @click="select(action)">
+                                {{action.title}}
+                            </v-btn>
+                        </template>
+                    </template>
                 </template>
             </v-container>
             <!-- <v-list>
@@ -60,9 +69,16 @@
         </flex-column-body>
         <flex-column-footer class="border-top">
             <v-container class="py-1 px-2">
-                <v-btn block @click="dismiss()">
-                    Cancel
-                </v-btn>
+                <template v-if="webMode">
+                    <fluro-button block @click="dismiss()">
+                        Cancel
+                    </fluro-button>
+                </template>
+                <template v-else>
+                    <v-btn block @click="dismiss()">
+                        Cancel
+                    </v-btn>
+                </template>
             </v-container>
         </flex-column-footer>
     </flex-column>
@@ -81,6 +97,9 @@ export default {
         return {}
     },
     computed: {
+        webMode() {
+            return this.options.webMode;
+        },
         title() {
             return this.options.title;
         },

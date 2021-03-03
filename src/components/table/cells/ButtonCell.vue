@@ -1,6 +1,6 @@
 <template>
-    <div class="button-cell text-xs-center">
-        <v-btn class="ma-0" small @click.stop.prevent="run" :color="color" :icon="!column.button.text" v-tippy :content="tooltip" :loading="processing">
+    <div class="button-cell text-xs-center" >
+        <v-btn class="ma-0" v-if="!hidden" small @click.stop.prevent="run" :color="color" :icon="!column.button.text" v-tippy :content="tooltip" :loading="processing">
             {{column.button.text}}
             <fluro-icon :icon="icon" :library="iconLibrary" v-if="icon" :right="column.button.text" />
         </v-btn>
@@ -45,6 +45,11 @@ export default {
         }
     },
     computed: {
+        hidden() {
+            if(_.isFunction(this.column.button.hidden)) {
+                return this.column.button.hidden(this.row)
+            }
+        },
         color() {
             if(_.isFunction(this.column.button.color)) {
                 return this.column.button.color(this.row)

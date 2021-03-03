@@ -5,6 +5,7 @@
                 <fluro-page-preloader contain />
             </template>
             <template v-else>
+
                 <!-- :vertical="true" -->
                 <tabset :justified="true" :vertical="true">
                     <tab heading="Details">

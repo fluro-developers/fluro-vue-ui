@@ -3,7 +3,9 @@
 								<!-- @click.stop="dismiss()"  -->
 								<div class="blanket" @click="checkDismiss" />
 								<div class="modal-inner">
+
 												<component :options="modal.options" v-bind="componentProps" @close="close" @dismiss="dismiss" :is="modal.component" />
+												
 												<!-- <component @close="close" @dismiss="dismiss" :is="component" /> -->
 								</div>
 				</div>
@@ -78,7 +80,7 @@ export default {
 								close(value) {
 												var self = this;
 												if (self.inapp) {
-													self.$fluro.app.closeModal(self.modal.modalID);
+																self.$fluro.app.closeModal(self.modal.modalID);
 												} else {
 																self.$fluro.closeModal(self.modal.modalID);
 												}

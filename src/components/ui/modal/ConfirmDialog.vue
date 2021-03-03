@@ -8,20 +8,37 @@
                 </constrain>
             </v-container>
         </flex-column-header>
-        
         <flex-column-footer class="border-top">
             <v-container class="pa-2">
                 <constrain xs>
                     <v-layout>
                         <template v-if="!options.noCancel">
-                            <v-btn block @click="dismiss()">
-                                {{cancelText}}
-                            </v-btn>
+                            <v-flex>
+                                <template v-if="webMode">
+                                    <fluro-button block @click="dismiss()">
+                                        {{cancelText}}
+                                    </fluro-button>
+                                </template>
+                                <template v-else>
+                                    <v-btn block @click="dismiss()">
+                                        {{cancelText}}
+                                    </v-btn>
+                                </template>
+                            </v-flex>
                             <v-spacer />
                         </template>
-                        <v-btn block :color="confirmColor" @click="close()">
-                            {{confirmText}}
-                        </v-btn>
+                        <v-flex>
+                            <template v-if="webMode">
+                                <fluro-button block :color="confirmColor" @click="close()">
+                                    {{confirmText}}
+                                </fluro-button>
+                            </template>
+                            <template v-else>
+                                <v-btn block :color="confirmColor" @click="close()">
+                                    {{confirmText}}
+                                </v-btn>
+                            </template>
+                        </v-flex>
                     </v-layout>
                 </constrain>
             </v-container>
@@ -43,6 +60,9 @@ export default {
         return {}
     },
     computed: {
+        webMode() {
+            return this.options.webMode;
+        },
         confirmColor() {
             return this.options.confirmColor ? this.options.confirmColor : 'success';
         },

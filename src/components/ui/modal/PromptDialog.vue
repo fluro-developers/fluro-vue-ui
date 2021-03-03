@@ -16,15 +16,30 @@
                 <v-container pa-2>
                     <constrain xs>
                         <v-layout>
-                            <v-btn block @click="dismiss()">
-                                {{cancelText}}
-                                <!-- Cancel -->
-                            </v-btn>
+                            <template v-if="webMode">
+                                <v-btn block @click="dismiss()">
+                                    {{cancelText}}
+                                    <!-- Cancel -->
+                                </v-btn>
+                            </template>
+                            <template v-else>
+                                <v-btn block @click="dismiss()">
+                                    {{cancelText}}
+                                </v-btn>
+                            </template>
                             <v-spacer />
-                            <v-btn block type="submit" :disabled="disabled" color="primary">
-                                {{confirmText}}
-                                <!-- Continue -->
-                            </v-btn>
+                            <template v-if="webMode">
+                                <fluro-button tag="button" block type="submit" :disabled="disabled" color="primary">
+                                    {{confirmText}}
+                                    <!-- Continue -->
+                                </fluro-button>
+                            </template>
+                            <template v-else>
+                                <v-btn block type="submit" :disabled="disabled" color="primary">
+                                    {{confirmText}}
+                                    <!-- Continue -->
+                                </v-btn>
+                            </template>
                         </v-layout>
                     </constrain>
                 </v-container>
@@ -53,6 +68,9 @@ export default {
         }
     },
     computed: {
+        webMode() {
+            return this.options.webMode;
+        },
         cancelText() {
             return this.options.cancelText || 'Cancel';
         },
