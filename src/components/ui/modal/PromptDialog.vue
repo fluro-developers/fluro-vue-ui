@@ -17,10 +17,10 @@
                     <constrain xs>
                         <v-layout>
                             <template v-if="webMode">
-                                <v-btn block @click="dismiss()">
+                                <fluro-button tag="a" block @click="dismiss()">
                                     {{cancelText}}
                                     <!-- Cancel -->
-                                </v-btn>
+                                </fluro-button>
                             </template>
                             <template v-else>
                                 <v-btn block @click="dismiss()">
