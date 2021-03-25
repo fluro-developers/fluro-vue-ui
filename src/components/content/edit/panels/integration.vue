@@ -19,6 +19,9 @@
                                 <template v-if="model.module == 'stripe'">
                                     <stripe v-model="model" />
                                 </template>
+                                <template v-if="model.module == 'square'">
+                                    <square v-model="model" />
+                                </template>
                                 <template v-if="model.module == 'eway'">
                                     <eway v-model="model" />
                                 </template>
@@ -112,6 +115,7 @@ import Vue from "vue";
 /////////////////////////////////
 
 import Stripe from './integrations/Stripe.vue';
+import Square from './integrations/Square.vue';
 import Eway from './integrations/Eway.vue';
 import SongSelect from './integrations/SongSelect.vue';
 import AWSS3 from './integrations/AWSS3.vue';
@@ -128,6 +132,7 @@ import rtmp from './integrations/rtmp.vue'
 export default {
     mixins: [FluroContentEditMixin],
     components: {
+        Square,
         Stripe,
         Eway,
         'paypal': PayPal,
@@ -168,6 +173,9 @@ export default {
             var array = [];
 
             array.push({
+                    title: "Square",
+                    value: "square"
+                },{
                     title: "Stripe",
                     value: "stripe"
                 }, {
