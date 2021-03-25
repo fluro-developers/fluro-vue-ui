@@ -70,7 +70,7 @@
                                             <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
                                         </fluro-panel-body>
                                     </tab>
-                                    <tab :heading="`${model.columns.length} Columns`">
+                                    <tab :heading="`${(model.columns || []).length} Columns`">
                                         <!-- <fluro-panel-body> -->
                                         <!-- <h3 margin>Columns</h3> -->
                                         <column-editor :query="model" v-model="model.columns" />

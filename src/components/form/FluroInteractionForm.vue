@@ -1459,6 +1459,12 @@ export default {
             ////////////////////////////////////
 
             switch (integration.module) {
+                case 'square':
+                     injectScript("https://js.squareupsandbox.com/v2/paymentform", function() {
+                        console.log("Square has been included on page");
+                        self.paymentReady = true;
+                    });
+                break;
                 case "stripe":
                     // injectScript('https://js.stripe.com/v3/', function() {
                     //     console.log('Stripe has been included on page')
@@ -1728,6 +1734,25 @@ export default {
                         });
 
                         break;
+                    case 'square':
+                        // //Generate the Stripe Token
+                        // return self.createStripeToken(function(status, response) {
+                        //     var error = status.error || response.error;
+
+                        //     if (error) {
+                        //         console.log("FORM -> Stripe token error", status, response);
+                        //         self.serverErrors = error.message;
+                        //         self.$fluro.error(self.serverErrors);
+                        //         self.state = "error";
+                        //         self.$emit("error", error);
+                        //     } else {
+                        //         //Include the payment details
+                        //         console.log("FORM -> Stripe tokenized", status, response);
+                        //         paymentDetails.details = response;
+                        //         return submitRequest(paymentDetails);
+                        //     }
+                        // });
+                    break;
                     case "stripe":
                         //Generate the Stripe Token
                         return self.createStripeToken(function(status, response) {

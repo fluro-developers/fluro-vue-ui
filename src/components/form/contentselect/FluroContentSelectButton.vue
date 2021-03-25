@@ -41,7 +41,9 @@ export default {
         filter: {
             type: Object,
             default () {
+
                 return {
+                    default:true,
                     operator: "and",
                     filters: [{
                         operator: "and",

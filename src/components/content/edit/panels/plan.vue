@@ -501,11 +501,7 @@ export default {
                 type: "string",
             })
 
-            array.push(this.eventField);
-            return array;
-        },
-        eventField() {
-            return {
+            array.push({
                 key: "event",
                 minimum: 0,
                 maximum: 1,
@@ -515,8 +511,36 @@ export default {
                     restrictType: 'event',
                 },
                 placeholder: "Select the event to link this plan to. If creating a template you can leave this plan"
-            };
+            });
+
+
+            array.push({
+                key: "fixedStartDate",
+                minimum: 0,
+                maximum: 1,
+                title: "Use fixed start date/time",
+                type: "boolean",
+                placeholder: "Choose a specific start time/date for this plan. If left unselected then the start date+time of the event will be used"
+            });
+
+
+            array.push({
+                key: "startDate",
+                minimum: 0,
+                maximum: 1,
+                title: "Plan Start Date",
+                type: "date",
+                directive: 'datetimepicker',
+                expressions: {
+                    show: 'model.fixedStartDate'
+                },
+            });
+
+
+
+            return array;
         },
+
 
         columnEditField() {
             return {

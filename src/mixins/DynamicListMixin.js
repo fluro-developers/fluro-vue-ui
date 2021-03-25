@@ -77,7 +77,7 @@ export default {
 												all: [], //Including unmatched
 												rows: [], //Only the rows that match
 												groupingColumn: null,
-												unwindColumn: null,
+												unwindColumns: [],
 												debouncedSearch: this.search,
 												loadingItems: true,
 												sort: JSON.parse(JSON.stringify(this.initSort)),
@@ -95,7 +95,7 @@ export default {
 												this.debouncedSearch = newValue;
 												// this.refine();
 								}, 500),
-								unwindColumn: 'debouncedReload',
+								unwindColumns: 'debouncedReload',
 								reloadRequired: {
 												immediate: true,
 												handler: 'debouncedReload',
@@ -152,7 +152,6 @@ export default {
 												this.cacheKey = this.$fluro.global.CACHE_KEY;
 								},
 								debouncedReload: _.debounce(function(string) {
-												console.log('RELOAD NOW')
 												this.reload();
 								}, 500),
 								reload() {
@@ -178,10 +177,13 @@ export default {
 																}
 
 
-																console.log('LOCK FILTER CHECK', filter);
 												}
 
 												///////////////////////////////////////
+
+												var unwindKeys = _.map(self.unwindColumns, function(column) {
+																return column.key;
+												})
 
 												var filterCriteria = {
 																// return self.$fluro.api.get(`/system/test`, {
@@ -193,7 +195,7 @@ export default {
 																searchInheritable: self.searchInheritable,
 																includeUnmatched: true,
 																groupingColumn: self.groupingColumn ? self.groupingColumn.key : undefined,
-																unwindColumn: self.unwindColumn ? self.unwindColumn.key : undefined,
+																unwindColumns: unwindKeys && unwindKeys.length ? unwindKeys : undefined, // && self.unwindColumns.length ? self.unwindColumn.key : undefined,
 
 												}
 
@@ -206,8 +208,8 @@ export default {
 
 												var joinColumns = self.joins || [];
 
-												if (self.unwindColumn && self.unwindColumn.key) {
-																joinColumns.push(self.unwindColumn.key);
+												if (unwindKeys && unwindKeys.length) {
+																joinColumns = joinColumns.concat(unwindKeys);
 												}
 
 												if (joinColumns && joinColumns.length) {
@@ -257,15 +259,16 @@ export default {
 
 																				var unwound = res.data;
 
-																				/////////////////////////////
+																				// /////////////////////////////
 
+																				// if (self.unwindColumns && self.unwindColumns.length) {
+																				// 				_.each(self.unwindColumns, function(col) {
 
-																				if (self.unwindColumn && self.unwindColumn.key) {
+																				// 								unwound = self.unwind(unwound, col.key);
+																				// 								console.log('UNWIND THE DATA', col.key)
+																				// 				})
 
-																								// console.log('Got the original data', unwound, self.unwindColumn.key)
-																								unwound = self.unwind(unwound, self.unwindColumn.key);
-																								// console.log('UNWIND THE DATA')
-																				}
+																				// }
 
 																				/////////////////////////////
 
@@ -310,8 +313,8 @@ export default {
 												return this.includeArchivedByDefault
 								},
 								reloadRequired() {
-												console.log('RELOAD REQUIRED', this.unwindColumn)
-												return `${this.cacheKey}-${this.searchInheritable}-${this.dataType}-${this.joins}-${this.filterCheckString} ${this.dateWatchString} ${this.sort.sortKey} ${this.sort.sortDirection} ${this.sort.sortType} ${this.groupingColumn ? this.groupingColumn.key : ''} ${this.unwindColumn ? this.unwindColumn.key : ''}  ${this.debouncedSearch}`;
+												// console.log('RELOAD REQUIRED', this.unwindColumns)
+												return `${this.cacheKey}-${this.searchInheritable}-${this.dataType}-${this.joins}-${this.filterCheckString} ${this.dateWatchString} ${this.sort.sortKey} ${this.sort.sortDirection} ${this.sort.sortType} ${this.groupingColumn ? this.groupingColumn.key : ''} ${this.unwindColumns && this.unwindColumns.length ? _.map(this.unwindColumns, 'key').join('.') : ''}  ${this.debouncedSearch}`;
 								},
 								activeFilters() {
 												return FilterService.activeFilters(this.filterConfig);

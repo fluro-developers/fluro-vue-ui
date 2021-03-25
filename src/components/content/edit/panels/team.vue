@@ -134,6 +134,16 @@
                                 </flex-column-body>
                         </tab>
       -->
+
+            <tab heading="Posts and Notes">
+                <flex-column-body style="background: #fafafa;">
+                    <v-container class="grid-list-xl">
+                        <constrain md>
+                            <fluro-post-feed v-model="model"/>
+                        </constrain>
+                    </v-container>
+                </flex-column-body>
+            </tab>
             <tab heading="Notifications">
                 <flex-column-body style="background: #fafafa;">
                     <v-container class="grid-list-xl">
@@ -181,6 +191,7 @@ import FluroContentEditMixin from "../FluroContentEditMixin.js";
 import TeamTrackTeaser from "../components/TeamTrackTeaser.vue";
 import TeamMetricsDashboard from "../../../charts/metrics/TeamMetricsDashboard.vue";
 import TeamAttendanceMetrics from "../../../charts/metrics/TeamAttendanceMetrics.vue";
+import FluroPostFeed from "../components/FluroPostFeed.vue";
 
 // import { JSONView } from "vue-json-component";
 
@@ -197,7 +208,8 @@ export default {
         TeamAttendanceMetrics,
         TeamTrackTeaser,
         NotificationTeamManager,
-        GroupRoleManager
+        GroupRoleManager,
+        FluroPostFeed,
     },
     mixins: [FluroContentEditMixin],
     created() {
@@ -303,14 +315,11 @@ export default {
                 autoRecur: true
             };
 
+
+
+
             self.$fluro.global
-                .create(
-                    "eventtrack", {
-                        template
-                        // copy: true,
-                    },
-                    true
-                )
+                .create("eventtrack", {template, options: true}, true)
                 .then(
                     function(res) {
                         self.processing = false;

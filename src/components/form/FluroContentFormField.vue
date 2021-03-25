@@ -232,6 +232,7 @@
 																								</v-date-picker>
 																				</v-card>
 																</v-menu>
+																<!-- <pre>{{fieldModel}}</pre> -->
 												</template>
 												<template v-else-if="renderer == 'timepicker'">
 																<v-dialog ref="dialog" v-model="modal" persistent :return-value.sync="fieldModel" lazy full-width width="290px">
@@ -1357,7 +1358,9 @@ export default {
 																				return;
 																}
 
-																this.fieldModel = new Date(dateString);
+																var date = new Date(dateString);
+
+																this.fieldModel = date;
 
 
 																// new Date(dateString);
@@ -1582,10 +1585,15 @@ export default {
 												return this.field.allowedValues;
 								},
 								allowedReferences() {
-												return _.map(this.field.allowedReferences, function(reference) {
+												return _.chain(this.field.allowedReferences)
+												.map(function(reference) {
 																reference.value = reference._id;
 																return reference;
-												});
+												})
+												.orderBy(function(reference) {
+													return reference.title || reference.name;
+												})
+												.value();
 								},
 
 								defaultValues() {
@@ -2655,9 +2663,7 @@ export default {
 																								if (String(value).toLowerCase() == 'now') {
 																												return new Date().toISOString();
 																								} else {
-
-
-																												return new Date(value);
+																												return new Date(value).toISOString();
 																								}
 																				}
 																				break;

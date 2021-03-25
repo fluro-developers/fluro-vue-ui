@@ -42,16 +42,26 @@ export default {
                 return row.deployment
             }
 
-            if(row.event) {
-
-                if(row.event.startDate) {
-                    return `${self.$fluro.date.formatDate(row.event.startDate, 'ddd D MMM YYYY - h:mma')} - ${row.event.title}`
-                }
-
-                if(row.event.title) {
-                    return `${row.event.title}`
+            var event = row.event;
+            if(!event) {
+                if(row.roster) {
+                    event = row.roster.event;
                 }
             }
+
+            if(event) {
+
+                if(event.startDate) {
+                    return `${self.$fluro.date.formatDate(event.startDate, 'ddd D MMM YYYY - h:mma')} - ${event.title}`
+                }
+
+                if(event.title) {
+                    return `${event.title}`
+                }
+            }
+
+
+
 
 
             if(row._type == 'post') {

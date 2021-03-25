@@ -237,6 +237,16 @@
 																																																</tab>
 																																												</tabset>
 																																								</fluro-panel>
+																																								<fluro-panel margin>
+																																												<fluro-panel-title>
+																																																<h5>Restrict To Realms</h5>
+																																																<div class="muted">Select which realms these {{model.parentType | definitionTitle(true)}} can be created in</div>
+																																												</fluro-panel-title>
+																																												<fluro-panel-body>
+																																																<fluro-realm-select v-model="model.restrictRealms" />
+																																												</fluro-panel-body>
+																																								</fluro-panel>
+																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.weight" v-model="model" />
 																																				</constrain>
 																																</v-container>
 																												</template>
@@ -1493,7 +1503,7 @@ export default {
 																type: 'string',
 																directive: 'select',
 																options: self.currencyOptions,
-																defaultValues:firstCurrency ? [firstCurrency] : [],
+																defaultValues: firstCurrency ? [firstCurrency] : [],
 												})
 
 
@@ -1607,6 +1617,22 @@ export default {
 																description: `Add a customised thank you message to be shown in the confirmation email. \n Please note that event registrations will already contain key dates, locations and directions underneath this message`,
 																expressions: {
 																				show: 'model.enableConfirmation',
+																},
+																params: {
+																				tokens: [{
+																												title: 'Primary Contact - First Name',
+																												key: 'primaryFirstName',
+																								},
+																								{
+																												title: 'Primary Contact - Last Name',
+																												key: 'primaryLastName',
+																								},
+
+																								{
+																												title: 'Primary Contact - Full Name',
+																												key: 'primaryFullName',
+																								},
+																				]
 																}
 												})
 
