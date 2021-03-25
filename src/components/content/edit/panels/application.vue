@@ -27,7 +27,6 @@
 																																								<!-- </v-layout> -->
 																																								<template v-if="showDeploymentDropdown">
 																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.deployment" v-model="model" />
-																																											
 																																								</template>
 																																				</fluro-panel-body>
 																																</fluro-panel>
@@ -105,8 +104,15 @@
 																																				</fluro-panel-body>
 																																				<fluro-panel-body class="border-top">
 																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.forceSSL" v-model="model" />
-																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.requirePIN" v-model="model" />
-																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.pin" v-model="model" />
+																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.requireLogin" v-model="model" />
+																																								<template v-if="model.requireLogin">
+																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.lockAccount" v-model="model" />
+																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.lockRole" v-model="model" />
+																																								</template>
+																																								<template v-else>
+																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.requirePIN" v-model="model" />
+																																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.pin" v-model="model" />
+																																								</template>
 																																				</fluro-panel-body>
 																																</fluro-panel>
 																																<fluro-panel>
@@ -569,6 +575,40 @@ export default {
 																				restrictType: 'asset',
 																},
 																description: "Override your own custom application engine",
+												});
+
+
+												addField("requireLogin", {
+																title: "Require Login ",
+																minimum: 0,
+																maximum: 1,
+																type: "boolean",
+																	expressions: {
+																				hide: 'model.requirePIN'
+																},
+																description: "Require the user to login with a Fluro username and password"
+												});
+
+												addField("lockAccount", {
+																title: "Lock Account",
+																minimum: 0,
+																maximum: 1,
+																type: "boolean",
+																expressions: {
+																				show: 'model.requireLogin'
+																},
+																description: `Require the user to have an active persona in the ${self.user.account.title} account`
+												});
+
+												addField("lockRole", {
+																title: "Lock Role",
+																minimum: 0,
+																maximum: 1,
+																type: "boolean",
+																expressions: {
+																				show: 'model.requireLogin'
+																},
+																description: `Require the user to have been given explicit access to this app via either a role or access pass`
 												});
 
 

@@ -78,7 +78,7 @@
 																																<!-- <fluro-icon library="far" icon="ellipsis-v" /> -->
 																																<!-- </div> -->
 																												</th>
-																												<th class="last shrink">
+																												<th class="last shrink" v-if="enableActions">
 																																<v-menu :close-on-content-click="false" @click.native.stop offset-y>
 																																				<template v-slot:activator="{ on }">
 																																								<div v-on="on">
@@ -102,7 +102,7 @@
 																																																<v-autocomplete label="Group rows by" :items="availableGroupingKeys" @change="toggleColumnGrouping" :return-object="true" item-text="title"></v-autocomplete>
 																																												</v-container>
 																																												<v-container v-if="unwindableColumns.length">
-																																																<v-autocomplete label="Unwind rows by" :items="unwindableColumns" @change="toggleUnwindColumn" :return-object="true" item-text="title"></v-autocomplete>
+																																																<v-autocomplete label="Unwind rows by" :items="unwindableColumns" multiple @change="toggleUnwindColumns" :return-object="true" item-text="title"></v-autocomplete>
 																																												</v-container>
 																																								</div>
 																																								<!-- <v-list style="max-height: 50vh;" class="scroll-y" dense>
@@ -1184,11 +1184,11 @@ export default {
 
 
 								},
-								toggleUnwindColumn(column) {
+								toggleUnwindColumns(columns) {
 												var self = this;
 
-												self.unwindColumn = column;
-												console.log('toggle unwind column')
+												self.unwindColumns = columns;
+												// console.log('toggle unwind columns', columns)
 								},
 								toggleColumnGrouping(column) {
 												var self = this;
@@ -1196,11 +1196,18 @@ export default {
 												self.groupingColumn = column;
 
 								},
-								columnIsUnwinding(column) {
-												var self = this;
-												return self.unwindColumn && (self.unwindColumn.key == column.key);
+								// columnIsUnwinding(column) {
+								// 				var self = this;
 
-								},
+								// 				var lookup = _.reduce(self.unwindColumns, function(set, column) {
+								// 								set[column.key] = true;
+								// 								return set;
+								// 				}, {})
+
+								// 				return (lookup[column.key])
+								// 				// return self.unwindColumn && (self.unwindColumn.key == column.key);
+
+								// },
 								columnIsGrouping(column) {
 												var self = this;
 												return self.groupingColumn && (self.groupingColumn.key == column.key);
@@ -1438,18 +1445,14 @@ export default {
 
 																												var output = Object.assign({}, rawRow, entry);
 
-																												//////////////////////////////////////////
-
-																												if (self.unwindColumn && self.unwindColumn.key) {
-
-																																var unwoundData = _.get(rawRow, self.unwindColumn.key);
-																																_.set(output, self.unwindColumn.key, unwoundData);
-																												}
-
-
 																												return output
 
+
+
+
+
 																								})
+																								// .flatten()
 																								.compact()
 																								.value();
 
@@ -1488,7 +1491,55 @@ export default {
 
 												self.populatePageItems(self.rawPage, self.dataType, self.renderColumns)
 																.then(function(res) {
-																				self.page = res;
+
+																				var page = res;
+
+																				//////////////////////////////////////////////////////////
+
+																				var unwindKeys = _.map(self.unwindColumns, 'key');
+
+																				// ['adult', 'child'];
+
+																				if (unwindKeys && unwindKeys.length) {
+
+
+																								page = _.chain(page)
+																												.map(function(row) {
+
+
+																																return _.map(unwindKeys, function(columnKey) {
+																																				var array = _.get(row, columnKey);
+
+																																				//If it's not an array return the original row
+																																				if (!array || !_.isArray(array) || !array.length) {
+																																								return row;
+																																				}
+
+																																				//Return an entry for each unwound value
+																																				return _.chain(array)
+																																								.map(function(indValue) {
+
+																																												//Clone the row
+																																												var clone = JSON.parse(JSON.stringify(row));
+																																												_.set(clone, columnKey, indValue);
+																																												return clone;
+																																								})
+																																								.value();
+
+
+																																})
+
+																												})
+																												.flattenDeep()
+																												.value();
+
+
+																				}
+
+																				//////////////////////////////////////////////////////////
+
+
+																				self.page = page;
 																				// console.log('>> Page is populated', res)
 																				self.loading = false;
 																})
@@ -1975,6 +2026,17 @@ export default {
 
 
 
+
+												&.status-template {
+
+																th.first,
+																th.last,
+																td,
+																th {
+																				color: #333 !important; //rgba(#000, 0.5);
+																				background: #fafafa !important;
+																}
+												}
 
 												&.payment-status-pending {
 

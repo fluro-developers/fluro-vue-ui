@@ -232,6 +232,7 @@
 																								<template v-if="model.directive == 'app-filter-select'">
 																												<fluro-content-form-field :field="fields.referenceType" v-model="model.params" />
 																												<fluro-content-form-field :field="fields.dynamicReferenceType" v-model="model.params" />
+																												<fluro-content-form-field :field="fields.showAllValues" v-model="model.params" />
 																												<!-- <fluro-content-form-field :field="fields.allDefinitions" v-model="model.params" /> -->
 																								</template>
 																								<template v-if="model.type == 'boolean'">
@@ -1547,6 +1548,18 @@ export default {
 																options: self.referenceOptions
 												});
 
+
+												addField("showAllValues", {
+																key: "showAllValues",
+																title: "Select all values",
+																description: "Tick this to allow the user to filter on all possible values that could be selected, if left unchecked then values will be cropped to only show from current results available.",
+																minimum: 0,
+																maximum: 1,
+																type: "boolean",
+																//directive: "select",
+																//options: self.referenceOptions
+												});
+
 												addField("dynamicReferenceType", {
 																key: "dynamicReferenceType",
 																title: "Dynamic Reference Type",
@@ -1774,6 +1787,18 @@ export default {
 																								title: "Signature",
 																								value: "signature"
 																				});
+
+																				inputOptions.push({
+																								title: "Country Selector",
+																								value: "countryselect"
+																				});
+
+																				inputOptions.push({
+																								title: "Timezone Selector",
+																								value: "timezoneselect"
+																				});
+
+
 
 																				break;
 																case "date":

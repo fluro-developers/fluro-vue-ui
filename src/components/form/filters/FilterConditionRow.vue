@@ -1,5 +1,6 @@
 <template>
 				<v-container class="filter-condition-row grid-list-sm" v-if="ready" :class="{mini:mini}" pa-0>
+
 								<v-layout row wrap>
 												<v-flex xs12 sm4>
 																<template v-if="fields.length">
@@ -89,7 +90,6 @@
 																</v-flex>
 																<v-flex xs12 sm5 v-else-if="inputType == 'array' && dataType != 'date'">
 																				<template v-if="simpleKeyIsRealms">
-																					
 																								<fluro-realm-select action="view any" :filterDiscriminator="discriminator || discriminatorType || discriminatorDefinition" block small v-model="model.values" />
 																								<!-- <pre>{{discriminator}} - {{discriminatorType}} - {{discriminatorDefinition}}</pre> -->
 																				</template>
@@ -236,6 +236,7 @@
 																				<!-- :rows="rows" -->
 																				<v-layout :key="criteriaRow.guid" v-for="(criteriaRow, index) in model.criteria">
 																								<v-flex>
+																									<!-- <pre>{{forceLocalValues}}</pre> -->
 																												<filter-condition-row :forceLocalValues="forceLocalValues" :type="type" :definition="definition" :rows="rows" :fields="selector.subfields" :mini="mini" v-model="model.criteria[index]" />
 																								</v-flex>
 																								<v-flex shrink>
@@ -252,7 +253,7 @@
 												</v-btn>
 								</template>
 								<!-- <pre>SELECT AUTO {{cleanedValueSelection}}</pre> -->
-							<!-- 	<pre>{{model}}</pre> -->
+								<!-- 	<pre>{{model}}</pre> -->
 				</v-container>
 </template>
 <script>
@@ -484,33 +485,63 @@ export default {
 								useBasicReferenceSelect() {
 												var self = this;
 
-												if (self.selector && self.selector.typeSelect) {
-																return self.selector.typeSelect;
+											
+
+												////////////////////////////////////////////////
+
+												var hardCodeTypeSelect = _.get(self.selector, 'typeSelect');
+
+													//If we've specified a specific type of thing to select
+												if (hardCodeTypeSelect) {
+																return hardCodeTypeSelect;
 												}
 
+												////////////////////////////////////////////////
+	
+												var restrictType = _.get(self.selector, 'params.restrictType');
+												var _discriminatorDefinition = _.get(self.selector, '_discriminatorDefinition');
+
+												// console.log('No Rows > ', self.selector, self.rows, hardCodeTypeSelect,  restrictType, _discriminatorDefinition) 
+												////////////////////////////////////////////////
+
+												//If there are no rows
 												if (!self.rows || !self.rows.length) {
+
+													
 
 																if (!self.selector) {
 																				return;
 																}
 
+																if (restrictType) {
+																				// console.log('Use restrict type', self.selector.params.restrictType)
+																				return restrictType;
+																}
 
 
-																if (self.selector.params && self.selector.params.restrictType) {
-
-																				return self.selector.params.restrictType;
+																if (_discriminatorDefinition) {
+																				// console.log('Use discriminator', self.selector.params._discriminatorDefinition)
+																				return _discriminatorDefinition;
 																}
 												}
 
+												/////////////////////////////////////////
+
+
+
 												if (self.referenceSelectField) {
+																// console.log('use reference select field', self.referenceSelectField)
 																return;
 												}
 
 												if (!self.selector) {
+																// console.log('no selector')
 																return;
 												}
 
-												return self.selector.typeSelect || false;
+												/////////////////////////////////////////
+
+												return hardCodeTypeSelect || _discriminatorDefinition || restrictType;
 								},
 								comparatorsCaption() {
 
@@ -1038,6 +1069,7 @@ export default {
 
 																_.each(self.rows, function(row) {
 																				//Get the deep value
+																				console.log('GET DEEP VALUE FOR', key);
 																				return getDeepValue(row, key);
 																});
 
@@ -1132,7 +1164,7 @@ export default {
 
 																// console.log('POSSIBLE VALUES', self.possibleValues)
 
-																	
+
 
 
 																self.loadingValues = false;

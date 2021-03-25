@@ -34,6 +34,38 @@
                             </template>
                         </v-flex>
                         <v-spacer />
+                        <v-flex shrink v-if="dateFilterVisible && !showFilters">
+                            <v-menu :fixed="true" :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
+                                <template v-slot:activator="{ on }">
+                                    <v-btn small v-on="on">
+                                        {{readableDate}}
+                                        <fluro-icon library="far" icon="angle-down" right />
+                                    </v-btn>
+                                </template>
+                                <v-card>
+                                    <v-layout>
+                                        <v-flex>
+                                            <v-card-text>
+                                                <label>&nbsp;</label>
+                                                <v-list dense>
+                                                    <v-list-tile @click="selectDatePeriod(option)" v-for="option in datePeriodOptions" :key="option.value">
+                                                        {{option.title}}
+                                                    </v-list-tile>
+                                                </v-list>
+                                            </v-card-text>
+                                        </v-flex>
+                                        <v-flex>
+                                            <v-card-text class="text-sm-center"><label>From Date</label></v-card-text>
+                                            <v-date-picker v-model="startDateString" no-title scrollable></v-date-picker>
+                                        </v-flex>
+                                        <v-flex>
+                                            <v-card-text class="text-sm-center"><label>To Date</label></v-card-text>
+                                            <v-date-picker v-model="endDateString" no-title scrollable></v-date-picker>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-card>
+                            </v-menu>
+                        </v-flex>
                         <v-flex shrink>
                             <v-btn icon small class="my-0" @click="showFilters = !showFilters">
                                 <fluro-icon icon="filter" :library="showFilters ? 'fas' : 'far'" />
@@ -54,10 +86,10 @@
                     <flex-column style="min-height:50vh;">
                         <!-- <pre>{{joins}}</pre> -->
                         <!-- :init-page="$route.query.page"  :init-sort="{sortKey:$route.query.sortKey, sortDirection:$route.query.sortDirection, sortType:$route.query.sortType}" @raw="rowsChanged" @filtered="filteredChanged" @page="pageChanged" @sort="sortChanged"  -->
-                        <fluro-dynamic-table :additionalKeys="joins"  :queryString="false" :enable-actions="false" :allDefinitions="retrieveAllDefinitions" :searchInheritable="options.searchInheritable" :filter-config="filterConfig" :lock-filter="options.lockFilter" :selection-controller="selector" :clicked="rowClicked" :search="search" :data-type="type" :columns="columns" @raw="rowsChanged" @filtered="filteredChanged" @page="pageChanged" @sort="sortChanged" />
+                        <fluro-dynamic-table :startDate="startDate" :endDate="endDate" :includeArchivedByDefault="includeArchivedByDefault" :additionalKeys="joins" :queryString="false" :enable-actions="false" :allDefinitions="retrieveAllDefinitions" :searchInheritable="options.searchInheritable" :filter-config="filterConfig" :lock-filter="options.lockFilter" :selection-controller="selector" :clicked="rowClicked" :search="search" :data-type="type" :columns="columns" @raw="rowsChanged" @filtered="filteredChanged" @page="pageChanged" @sort="sortChanged" />
                     </flex-column>
-                    <div class="filter-sidebar scroll-y" v-show="showFilters">
-                        <div>
+                    <flex-column class="filter-sidebar" v-show="showFilters">
+                        <flex-column-body>
                             <v-container pa-2>
                                 <div class="search" :class="{active:searchFocussed || search.length}">
                                     <input v-model="search" @focus="searchFocussed = true" @blur="searchFocussed = false" placeholder="Keyword search" />
@@ -67,10 +99,10 @@
                                     </div>
                                 </div>
                             </v-container>
-                            <!-- <v-container pa-2 v-if="inheritEnabled">
+                            <!--  <v-container pa-2 v-if="inheritEnabled">
                                 <help title="Inherited content" body="Show content that is shared with you from other Fluro accounts" keywords="What is inheritable content?" />
                                 <v-checkbox :persistent-hint="true" label="Show Inherited" v-model="manualSearchInheritable" hint="Include content inherited from other accounts" />
-                            </v-container>
+                            </v-container> -->
                             <v-container pa-2 v-if="dateFilterVisible">
                                 <help title="Date filters" body="Filter records by providing a relevant date range" keywords="Date Range Filter" />
                                 <v-menu :fixed="true" :right="true" :close-on-content-click="false" transition="slide-y-transition" offset-y>
@@ -106,12 +138,12 @@
                                         </v-layout>
                                     </v-card>
                                 </v-menu>
-                            </v-container> -->
+                            </v-container>
                             <v-container pa-2>
                                 <filter-condition-group :rows="rows" :mini="true" v-model="filterConfig" :type="type" :debounce="filterDebounce" />
                             </v-container>
-                        </div>
-                    </div>
+                        </flex-column-body>
+                    </flex-column>
                 </v-layout>
                 <!-- <fluro-tabset>
                     <fluro-tab :heading="type.plural" :key="type.definitionName" v-for="type in tree">
@@ -174,15 +206,77 @@ import { FilterService } from "fluro";
 
 /////////////////////////////////////////
 
+import moment from 'moment';
+
 /////////////////////////////////////////
 
 export default {
     created() {
-        console.log("MODAL THIS", this);
+        console.log("MODAL", this);
     },
     props: {
         options: {
             type: Object
+        },
+        dateFilterPresets: {
+            type: Array,
+            default () {
+                var datePeriodOptions = []
+
+                var day = (1000 * 60 * 60 * 24);
+                var week = day * 7;
+                var now = new Date();
+
+
+                //////////////////////////////////////////////////
+
+                datePeriodOptions.push({
+                    title: 'Today',
+                    startDate: now,
+                    endDate: now,
+                });
+
+                datePeriodOptions.push({
+                    title: 'Past 7 Days',
+                    startDate: moment().subtract(7, 'days').toDate(),
+                    endDate: now,
+                });
+
+                datePeriodOptions.push({
+                    title: 'Next 7 Days',
+                    startDate: now,
+                    endDate: moment().add(7, 'days').toDate(),
+
+                });
+
+                //////////////////////////////////////////////////
+
+                datePeriodOptions.push({
+                    title: 'Past 4 Weeks',
+                    startDate: moment().subtract(4, 'weeks').toDate(),
+                    endDate: now,
+                });
+
+                datePeriodOptions.push({
+                    title: 'Next 4 Weeks',
+                    startDate: now,
+                    endDate: moment().add(4, 'weeks').toDate(),
+
+                });
+
+                return datePeriodOptions;
+            }
+        },
+        dateFilterDefault: {
+            type: Object,
+            default () {
+                var now = new Date();
+                return {
+                    startDate: moment().subtract(4, 'weeks').toDate(),
+                    endDate: moment().add(4, 'weeks').toDate(),
+                }
+            }
+
         }
     },
     components: {
@@ -200,36 +294,89 @@ export default {
         EventTitleCell
     },
     mixins: [ModalMixin, Layout],
+    // data() {
+    //     var self = this;
+
+
+    //     var datePeriodOptions = self.dateFilterPresets;
+    //     var defaultDatePeriod = self.dateFilterDefault;
+
+
+
+    //     return {
+    //         datePeriodOptions,
+    //         rawStartDate: defaultDatePeriod.startDate, //defaultStartDate,
+    //         rawEndDate: defaultDatePeriod.endDate, //defaultEndDate,
+    //     }
+    // },
     data() {
+
+
+        var self = this;
         var statuses = ["active", "draft"];
 
         var basicType =
             this.$fluro.types.parentType(this.options.type) || this.options.type;
+
+        /////////////////////////////////////////////
+
+        var dateFilterEnabled;
+        var includeArchivedByDefault;
+
+        /////////////////////////////////////////////
+
         switch (basicType) {
             case "plan":
+                dateFilterEnabled = true;
                 statuses.push("template");
                 break;
+            case 'event':
+            case 'checkin':
+            case 'attendance':
+            case 'ticket':
+            case 'post':
+                includeArchivedByDefault = true;
+                dateFilterEnabled = true;
+                break;
+        }
+        /////////////////////////////////////////////
+
+        if (includeArchivedByDefault) {
+            statuses.push("archived");
+            console.log('Include archived', statuses)
         }
 
-        // console.log('PLAN STATUSES', basicType, statuses)
+        /////////////////////////////////////////////
 
-        var initialFilter = this.options.filter || {
-            operator: "and",
-            filters: [{
+        var initialFilter = this.options.filter;
+
+        if (!initialFilter || initialFilter.default) {
+            console.log('CREATE INITIAL FILTER')
+            initialFilter = {
                 operator: "and",
                 filters: [{
-                    key: "status",
-                    comparator: "in",
-                    values: statuses
+                    operator: "and",
+                    filters: [{
+                        key: "status",
+                        comparator: "in",
+                        values: statuses
+                    }]
                 }]
-            }]
-        };
+            }
+        }
+
+
 
         /////////////////////////////////////////////
 
         // console.log('INITIAL FILTER', this.options.filter, initialFilter);
 
         var defaultFilter = JSON.parse(JSON.stringify(initialFilter));
+
+        ///////////////////////////////////////
+
+        var datePeriodOptions = self.dateFilterPresets;
+        var defaultDatePeriod = self.dateFilterDefault;
 
         ///////////////////////////////////////
 
@@ -240,10 +387,23 @@ export default {
             searchFocussed: false,
             showFilters: this.$vuetify.breakpoint.smAndUp && this.options.filter ? true : false,
             filterConfig: defaultFilter,
-            selector: this.options.selector
+            selector: this.options.selector,
+            dateFilterEnabled,
+            datePeriodOptions,
+            includeArchivedByDefault,
+            rawStartDate: defaultDatePeriod.startDate,
+            rawEndDate: defaultDatePeriod.endDate,
         };
     },
     methods: {
+        stringDate(date) {
+            return this.$fluro.date.formatDate(date, 'YYYY-MM-DD');
+        },
+        selectDatePeriod(period) {
+            this.startDate = new Date(period.startDate);
+            this.endDate = new Date(period.endDate);
+
+        },
         rowClicked(item) {
             this.selectionManager.toggle(item);
         },
@@ -276,6 +436,75 @@ export default {
         }
     },
     computed: {
+
+        dateFilterVisible() {
+            return this.dateFilterEnabled; // && (this.viewMode.value != 'calendar');
+        },
+        readableDate() {
+
+            return this.$fluro.date.readableEventDate({
+                startDate: this.startDate,
+                endDate: this.endDate,
+            }, 'day');
+        },
+        readableStartDate() {
+            return this.$fluro.date.formatDate(this.startDate);
+        },
+        readableEndDate() {
+            return this.$fluro.date.formatDate(this.endDate);
+        },
+        startDate: {
+            get() {
+                if (!this.dateFilterEnabled) {
+                    return;
+                }
+                return this.rawStartDate;
+            },
+            set(value) {
+
+                var date = new Date(value);
+
+                if (this.rawEndDate < date) {
+                    this.rawEndDate = new Date(date);
+                }
+
+                return this.rawStartDate = new Date(value);
+            }
+        },
+        endDate: {
+            get() {
+                if (!this.dateFilterEnabled) {
+                    return;
+                }
+                return this.rawEndDate;
+            },
+            set(value) {
+
+                var date = new Date(value);
+
+                if (this.rawStartDate > date) {
+                    this.rawStartDate = new Date(date);
+                }
+
+                return this.rawEndDate = new Date(value);
+            }
+        },
+        startDateString: {
+            get() {
+                return this.stringDate(this.startDate);
+            },
+            set(value) {
+                return this.startDate = new Date(value);
+            }
+        },
+        endDateString: {
+            get() {
+                return this.stringDate(this.endDate);
+            },
+            set(value) {
+                return this.endDate = new Date(value);
+            }
+        },
         joins() {
             return this.options.joins;
         },
@@ -374,7 +603,7 @@ export default {
                 case "node":
                     array = array.concat([
                         { title: "", key: "_id", renderer: TypeImageCell, shrink: true },
-                        { title: "Title", key: "title", renderer: TitleCell, additionalFields:['firstLine'] }
+                        { title: "Title", key: "title", renderer: TitleCell, additionalFields: ['firstLine'] }
                     ]);
                     break;
                 case "image":
@@ -385,9 +614,16 @@ export default {
                         { title: "Height", key: "height", sortType: "number" }
                     ]);
                     break;
+                case "video":
+                    array = array.concat([
+                        { title: "Thumbnail", key: "_id", renderer: ThumbnailCell },
+                        { title: "Title", key: "title", renderer: TitleCell },
+                        { title: "Source", key: "assetType"},
+                    ]);
+                    break;
                 case "academic":
                     array = array.concat([
-                       { title: "Title", key: "title", renderer: TitleCell, additionalFields:['grades'] }
+                        { title: "Title", key: "title", renderer: TitleCell, additionalFields: ['grades'] }
                     ]);
                     break;
                 case "interaction":
@@ -419,23 +655,28 @@ export default {
                         }
                     ]);
                     break;
+                case "plan":
+                    array = array.concat([
+                        { title: "Title", key: "title", renderer: TitleCell, additionalFields: ['event', 'startDate', 'endDate'] },
+                    ]);
+                    break;
                 case "family":
                     array = array.concat([
-                        { title: "Title", key: "title", renderer: TitleCell, additionalFields:['firstLine'] },
-                        { title: "Address", key: "address.addressLine1"}
+                        { title: "Title", key: "title", renderer: TitleCell, additionalFields: ['firstLine'] },
+                        { title: "Address", key: "address.addressLine1" }
                     ]);
                     break;
                 case "contact":
                     array = array.concat([
-                         { title: "", key: "_id", renderer: TypeImageCell, shrink: true },
-                        { title: "Title", key: "title", renderer: TitleCell, additionalFields:['firstName', 'preferredName', 'lastName'] },
-                        { title: "Gender", key: "gender"},
-                        { title: "Age", key:'age' },
+                        { title: "", key: "_id", renderer: TypeImageCell, shrink: true },
+                        { title: "Title", key: "title", renderer: TitleCell, additionalFields: ['firstName', 'preferredName', 'lastName'] },
+                        { title: "Gender", key: "gender" },
+                        { title: "Age", key: 'age' },
                     ]);
                     break;
                 default:
                     array = array.concat([
-                        { title: "Title", key: "title", renderer: TitleCell, additionalFields:['firstLine'] }
+                        { title: "Title", key: "title", renderer: TitleCell, additionalFields: ['firstLine'] }
                     ]);
                     break;
             }

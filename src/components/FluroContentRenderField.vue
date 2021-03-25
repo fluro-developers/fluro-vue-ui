@@ -7,7 +7,7 @@
 																								{{field.title}}
 																				</fluro-panel-title>
 																				<fluro-panel-body>
-																								<fluro-content-render :raw="raw" :fields="fields" v-model="fieldModel" />
+																								<fluro-content-render :webMode="webMode" @actions="viewActions" @view="view" :raw="raw" :fields="fields" v-model="fieldModel" />
 																				</fluro-panel-body>
 																</fluro-panel>
 												</template>
@@ -18,7 +18,7 @@
 																												<h5 title>{{groupTitle(object, index)}}</h5>
 																								</fluro-panel-title>
 																								<fluro-panel-body>
-																												<fluro-content-render :raw="raw" :fields="fields" v-model="fieldModel[index]" />
+																												<fluro-content-render :webMode="webMode" @actions="viewActions" @view="view" :raw="raw" :fields="fields" v-model="fieldModel[index]" />
 																								</fluro-panel-body>
 																				</fluro-panel>
 																</template>
@@ -27,7 +27,7 @@
 								<template v-else-if="renderer == 'group'">
 												<template v-if="asObject">
 																<template v-if="!multiple">
-																				<fluro-content-render :raw="raw" :fields="fields" v-model="fieldModel" />
+																				<fluro-content-render :webMode="webMode" @actions="viewActions" @view="view" :raw="raw" :fields="fields" v-model="fieldModel" />
 																</template>
 																<template v-if="multiple">
 																				<template v-for="(object, index) in fieldModel">
@@ -37,7 +37,7 @@
 																												</div>
 																												<v-card-text class="panel-body">
 																																<v-layout row wrap>
-																																				<fluro-content-render :raw="raw" :fields="fields" v-model="fieldModel[index]" />
+																																				<fluro-content-render :webMode="webMode" @actions="viewActions" @view="view" :raw="raw" :fields="fields" v-model="fieldModel[index]" />
 																																</v-layout>
 																												</v-card-text>
 																								</v-card>
@@ -48,14 +48,14 @@
 																<template v-if="sameLine">
 																				<v-layout row wrap>
 																								<template v-for="subField in fields">
-																												<fluro-content-render-field class="flex" :raw="raw" :field="subField" v-model="model" />
+																												<fluro-content-render-field class="flex" :webMode="webMode" @actions="viewActions" @view="view" :raw="raw" :field="subField" v-model="model" />
 																								</template>
 																				</v-layout>
 																</template>
 																<template v-else>
 																				<!-- <v-layout row wrap> -->
 																				<template v-for="subField in fields">
-																								<fluro-content-render-field :raw="raw" :field="subField" v-model="model" />
+																								<fluro-content-render-field :webMode="webMode" @actions="viewActions" @view="view" :raw="raw" :field="subField" v-model="model" />
 																				</template>
 																				<!-- </v-layout> -->
 																</template>
@@ -69,9 +69,9 @@
 																				<label>{{label}}</label>
 																				<template v-if="!multiple">
 																								<list-group>
-																												<list-group-item @click="$fluro.global.view(fieldModel, true)" :item="fieldModel">
+																												<list-group-item @click="view(fieldModel, true)" :item="fieldModel">
 																																<template v-slot:right>
-																																				<v-btn class="ma-0" small icon @click.stop.prevent="$actions.open([fieldModel])">
+																																				<v-btn class="ma-0" small icon @click.stop.prevent="viewActions([fieldModel])">
 																																								<fluro-icon icon="ellipsis-h" />
 																																				</v-btn>
 																																</template>
@@ -81,9 +81,9 @@
 																				</template>
 																				<template v-if="multiple">
 																								<list-group>
-																												<list-group-item @click="$fluro.global.view(object, true)" :item="object" v-for="(object, index) in fieldModel">
+																												<list-group-item @click="view(object, true)" :item="object" v-for="(object, index) in fieldModel">
 																																<template v-slot:right>
-																																				<v-btn class="ma-0" small icon @click.stop.prevent="$actions.open([object])">
+																																				<v-btn class="ma-0" small icon @click.stop.prevent="viewActions([object])">
 																																								<fluro-icon icon="ellipsis-h" />
 																																				</v-btn>
 																																</template>
@@ -501,6 +501,28 @@ export default {
 								}
 				},
 				methods: {
+								viewActions(array) {
+
+												if (this.webMode) {
+																this.$emit('actions', array);
+												}
+												if (this.$actions) {
+																this.$actions.open(array)
+												}
+
+												this.$emit('actions', array);
+								},
+								view(item, modal) {
+
+												if (this.webMode) {
+																this.$emit('view', item, modal);
+												}
+												if (this.$fluro.global.view) {
+																this.$fluro.global.view(item, modal);
+												}
+
+												this.$emit('view', item, modal);
+								},
 								defaultActions(object) {
 
 												if (!object) {
@@ -556,6 +578,9 @@ export default {
 								},
 								'value': {
 												required: true,
+								},
+								'webMode': {
+												type: Boolean,
 								}
 				},
 }

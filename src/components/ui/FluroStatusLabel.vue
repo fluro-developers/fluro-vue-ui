@@ -24,6 +24,9 @@ export default {
                 case 'refund':
                     value = 'Refunded'
                     break;
+                case 'denied':
+                    value = 'Unavailable'
+                    break;
                 case 'partial_refund':
                     value = 'Partial Refund'
                     break;
@@ -69,6 +72,11 @@ export default {
 
     }
 
+    &.template {
+        background: #e9dbff !important;
+        color: #864ef0 !important;
+    }
+
     &.draft,
     &.trial,
     &.sent,
@@ -88,6 +96,7 @@ export default {
     &.ready,
     &.active,
     &.green,
+    &.confirmed,
     &.success {
 
         background: rgba(#51d432, 0.2) !important;
@@ -95,6 +104,8 @@ export default {
     }
 
 
+    &.denied,
+    &.declined,
     &.error,
     &.failed,
     &.red,

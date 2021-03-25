@@ -1,13 +1,15 @@
 <template>
-    <v-menu lazy open-on-hover>
+    <div>
+    <v-menu attach lazy open-on-hover>
         <template v-slot:activator="{ on }">
             <div v-on="on" class="thumbnail" :class="{contain:contain}" :style="{backgroundImage:`url(${url})`}">
             </div>
         </template>
         <div class="large-preview">
-            <fluro-image :imageWidth="1000" :item="contentID" />
+            <fluro-image :imageWidth="1500" :item="contentID" />
         </div>
     </v-menu>
+</div>
 </template>
 <script>
 export default {
@@ -57,10 +59,10 @@ export default {
 </script>
 <style lang="scss">
 .large-preview {
-    background:#fff;
-    border:5px solid #fff;
-    width:700px;
-    max-width: 50vw;
+    background: #fff;
+    border: 5px solid #fff;
+    width:1000px;
+    max-width:30vw;
 
 }
 

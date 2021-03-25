@@ -2,17 +2,15 @@
     <td :style="style" @click="cellclick" :class="{wrap:shouldWrap, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right', 'no-padding':column.padding === false}">
         <!-- <pre>{{column.key}}</pre> -->
         <!-- <pre>{{row.rawData}}</pre> -->
-        
         <!-- <pre>{{formattedArray}}</pre> -->
         <!-- <pre>{{rawValue}} {{column.key}}</pre> -->
-        
         <div :class="{'wrap-limit':shouldWrap}">
             <component v-if="renderer" :data="preValue" :is="renderer" :row="row" :column="column" />
             <template v-else-if="simpleArray">
                 <!-- Simple Array -->
-                <template v-for="entry in formattedArray">
+                <template v-for="(entry, i) in formattedArray">
                     <component v-if="renderer" :data="entry" :is="renderer" :row="row" :column="column" />
-                    <value-render v-else :value="entry" />
+                    <value-render v-else :value="entry" />{{i == formattedArray.length-1 ? '' : ', '}}
                 </template>
             </template>
             <div v-else-if="formattedArray" class="formatted-array">
@@ -21,7 +19,7 @@
                         <template v-if="entry._type == 'event'">
                             <fluro-icon type="event" /> {{entry.title}} <span class="text-muted">// {{entry | readableEventDate}}</span>
                         </template>
-                        <template v-if="entry._type == 'unavailability'">
+                        <template v-else-if="entry._type == 'unavailability'">
                             <fluro-icon type="event" /> {{entry.title}} <span class="">- {{entry | readableEventDate}}</span>
                         </template>
                         <template v-else-if="entry._type == 'post'">
@@ -36,9 +34,11 @@
                             <!-- <fluro-icon type="team" /> {{entry.title}} <span class="text-muted" v-if="entry.position">{{entry.position}}</span> -->
                         </template>
                         <template v-else>
-                            <!-- TESTING {{entry}} -->
                             <fluro-icon v-if="entry._type" :type="entry._type" /> {{entry.title}} <template v-if="entry.appendage"> - {{entry.appendage}}</template>
                         </template>
+                    </a>
+                    <a class="inline-tag" v-else-if="entry._type == 'log'" @click.stop.prevent="$fluro.global.json(entry)">
+                        <fluro-icon icon="clock" /> {{entry.title}} <span class="text-muted">// {{entry.created | timeago}}</span>
                     </a>
                     <component v-else-if="renderer" :data="entry" :is="renderer" :row="row" :column="column" />
                     <value-render v-else :value="entry" />
@@ -118,7 +118,7 @@ var ValueRender = Vue.extend({
                     return set;
                 }, []).join(', ');
             }
-            return this.value.title || this.value.name || this.value;
+            return String(this.value.title || this.value.name || this.value).trim();
         },
     },
     template: `<span :class="className">{{computedValue}}</span>`,

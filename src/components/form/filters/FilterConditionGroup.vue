@@ -575,6 +575,30 @@ export default {
 												}
 								},
 
+								assignmentPositions: {
+												get() {
+																var self = this;
+
+																switch (self.basicType) {
+																				case 'contact':
+																								return new Promise(function(resolve, reject) {
+
+																												return self.$fluro.api.get(`/assignments/filter/types`)
+																																.then(function(res) {
+																																				return resolve(res.data);
+																																})
+																																.catch(reject);
+																								})
+																								break;
+																				default:
+																								return Promise.resolve([]);
+																								break;
+																}
+
+
+												}
+								},
+
 								rosterTypes: {
 												get() {
 																var self = this;
@@ -761,7 +785,7 @@ export default {
 								isContactType() {
 												var self = this;
 
-												if (self.type == "contact") {
+												if (self.basicType == "contact") {
 																return true;
 												}
 
@@ -949,6 +973,7 @@ export default {
 
 												//////////////////////////////////////////////////
 
+												var assignmentPositionOptions = []
 												var ticketOptions = [];
 												var eventDefinitionOptions = [];
 												var contactDefinitionOptions = [];
@@ -1061,8 +1086,23 @@ export default {
 																.orderBy('title')
 																.value()
 
+
+												//////////////////////////////////////////////////
+												assignmentPositionOptions = _.chain(self.assignmentPositions)
+																.map(function(title) {
+																				return {
+																								title,
+																								name: title,
+																								text: title,
+																								value: title,
+																				};
+																})
+																.orderBy('title')
+																.value()
+
 												// break;
 												// }
+
 
 
 												var ticketingField = {
@@ -1161,13 +1201,13 @@ export default {
 																				// 				directive: "select",
 																				// 				options: teamDefinitionOptions
 																				// },
-																				{
-																								title: "Title",
-																								key: "title",
-																								maximum: 1,
-																								minimum: 0,
-																								type: "string",
-																				}
+																				// {
+																				// 				title: "Title",
+																				// 				key: "title",
+																				// 				maximum: 1,
+																				// 				minimum: 0,
+																				// 				type: "string",
+																				// }
 																]
 												}
 
@@ -1261,6 +1301,11 @@ export default {
 
 																injectFields.push(ticketingField);
 
+
+
+
+
+
 																injectFields.push({
 																				title: "Attendance > Total times checked in",
 																				// key: '_checkins[]',
@@ -1277,7 +1322,7 @@ export default {
 																												type: "date"
 																								},
 																								{
-																												title: "Realms",
+																												title: "Event Realms",
 																												key: "realms",
 																												maximum: 0,
 																												minimum: 0,
@@ -1285,16 +1330,6 @@ export default {
 																												directive: "select",
 																												_discriminatorDefinition: "realm"
 																								},
-
-																								// {
-																								//  title: 'Event Track',
-																								//  key: 'track',
-																								//  maximum: 0,
-																								//  minimum: 0,
-																								//  type: 'reference',
-																								//  directive: 'select',
-																								//  options: eventTrackOptions,
-																								// },
 																								{
 																												title: "Event Track",
 																												key: "track",
@@ -1305,36 +1340,316 @@ export default {
 																												typeSelect: "eventtrack"
 																								},
 																								{
+																												title: "Event",
+																												key: "_id",
+																												maximum: 0,
+																												minimum: 0,
+																												type: "reference",
+																												// directive:'select',
+																												typeSelect: "event"
+																								},
+																								{
 																												title: "Event Type (Definition)",
 																												key: "definition",
 																												maximum: 1,
 																												minimum: 0,
 																												type: "string",
 																												directive: "select",
-																												// options:[{
-																												//  name:'Hello',
-																												//  value:'there',
-																												// }],
 																												options: eventDefinitionOptions
 																								},
 																								{
-																												title: "Title",
+																												title: "Event Title",
 																												key: "title",
 																												maximum: 1,
 																												minimum: 0,
 																												type: "string",
 																								},
-																								// {
-																								//     title: 'Group / Room name',
-																								//     key: 'groupNames',
-																								//     maximum: 0,
-																								//     minimum: 0,
-																								//     type: 'string',
-																								//     directive: 'select',
-																								//     options: groupNameOptions,
-																								// },
-																				]
+																				],
 																});
+
+																var statusOptions = [{
+																								name: 'Draft',
+																								value: 'draft',
+																				},
+																				{
+																								name: 'Active',
+																								value: 'active',
+																				},
+																				{
+																								name: 'Archived',
+																								value: 'archived',
+																				},
+																];
+
+
+																injectFields.push({
+																				title: "Status > Total times status changed",
+																				// key: '_checkins[]',
+																				key: "_contactStatus.all.length",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "integer",
+																				subfieldTitle: "Where change was...",
+																				subfields: [{
+																												title: "Date",
+																												key: "created",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "date",
+																								},
+
+																								{
+																												title: "From Status",
+																												key: "from",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "string",
+																												options: statusOptions,
+																								},
+
+																								{
+																												title: "To Status",
+																												key: "to",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "string",
+																												options: statusOptions,
+																								},
+
+																								{
+																												title: "User responsible",
+																												key: "managedUser",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "reference",
+																												typeSelect: "persona"
+																								},
+
+																				],
+																});
+
+
+																injectFields.push({
+																				title: "Contact Definition > Total times definition was changed",
+																				// key: '_checkins[]',
+																				key: "_contactDefinition.all.length",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "integer",
+																				subfieldTitle: "Where change was...",
+																				subfields: [{
+																												title: "Date",
+																												key: "created",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "date",
+																								},
+
+																								{
+																												title: "From Definition",
+																												key: "from",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "string",
+																												options: contactDefinitionOptions,
+																								},
+
+																								{
+																												title: "To Definition",
+																												key: "to",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "string",
+																												options: contactDefinitionOptions,
+																								},
+
+																								{
+																												title: "User responsible",
+																												key: "managedUser",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "reference",
+																												typeSelect: "persona"
+																								},
+
+																				],
+																});
+
+
+
+
+
+																// injectFields.push({
+																// 				title: "Action Log > Total number of log entries",
+																// 				// key: '_checkins[]',
+																// 				key: "_contactLogs.all.length",
+																// 				maximum: 1,
+																// 				minimum: 0,
+																// 				type: "integer",
+																// 				subfieldTitle: "Where log matches...",
+																// 				subfields: [{
+																// 												title: "Date",
+																// 												key: "created",
+																// 												maximum: 1,
+																// 												minimum: 0,
+																// 												type: "date",
+																// 								},
+																// 								{
+																// 												title: "Key / Type",
+																// 												key: "key",
+																// 												maximum: 1,
+																// 												minimum: 0,
+																// 												type: "string",
+																// 												directive: 'select',
+																// 												options: [
+																// 												{
+																// 																name: 'Checkin Assignment',
+																// 																value:'confirmation.unavailable',
+																// 												},
+																// 												{
+																// 																name: 'Declined Assignment',
+																// 																value:'confirmation.unavailable',
+																// 												},
+																// 												{
+																// 																name: 'Graduated to new grade',
+																// 																value:'contact.graduation',
+																// 												},
+																// 												{
+																// 																name: 'Graduated to new Academic Calendar',
+																// 																value:'calendar.graduated',
+																// 												},
+																// 												{
+																// 																name: 'Responded to assignment swap request',
+																// 																value:'assignment.swap.response',
+																// 												},
+																// 												{
+																// 																name: 'Joined a team',
+																// 																value:'team.join',
+																// 												},
+																// 												{
+																// 																name: 'Left a team',
+																// 																value:'team.leave',
+																// 												},
+																// 												{
+																// 																name: 'Recognised by Facial Recognition Camera',
+																// 																value:'contact.recognize',
+																// 												},
+
+																// 												]
+																// 								},
+
+
+
+																// 								{
+																// 												title: "User responsible",
+																// 												key: "managedUser",
+																// 												maximum: 1,
+																// 												minimum: 0,
+																// 												type: "reference",
+																// 												typeSelect: "persona"
+																// 								},
+
+																// 				],
+																// });
+
+
+																var guestlistSubFields = [{
+																								title: "Event",
+																								key: "_id",
+																								maximum: 1,
+																								minimum: 0,
+																								type: "reference",
+																								typeSelect: "event"
+																				},
+																				{
+																								title: "Event Date",
+																								key: "startDate",
+																								maximum: 1,
+																								minimum: 0,
+																								type: "date"
+																				},
+																				{
+																								title: "Event Type (Definition)",
+																								key: "definition",
+																								maximum: 1,
+																								minimum: 0,
+																								type: "string",
+																								directive: "select",
+																								options: eventDefinitionOptions
+																				},
+																				{
+																								title: "Event Track",
+																								key: "track",
+																								maximum: 1,
+																								minimum: 0,
+																								type: "reference",
+																								// directive:'select',
+																								typeSelect: "eventtrack"
+																				},
+
+																				{
+																								title: "Realms",
+																								key: "realms",
+																								maximum: 0,
+																								minimum: 0,
+																								type: "reference",
+																								directive: "select",
+																								_discriminatorDefinition: "realm"
+																				},
+																				{
+																								title: "Tags",
+																								key: "tags",
+																								maximum: 0,
+																								minimum: 0,
+																								type: "reference",
+																								typeSelect: "tag"
+																				},
+																				{
+																								title: "Title",
+																								key: "title",
+																								maximum: 1,
+																								minimum: 0,
+																								type: "string",
+
+																				}
+																];
+
+
+
+																injectFields.push({
+																				title: "Guest List > Total number of events expected at",
+																				// key: '_checkins[]',
+																				key: "_guestExpected.all.length",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "integer",
+																				subfieldTitle: "Where event matches...",
+																				subfields: guestlistSubFields,
+																});
+
+																injectFields.push({
+																				title: "Guest List > Total number of RSVP Yes responses",
+																				// key: '_checkins[]',
+																				key: "_guestConfirmed.all.length",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "integer",
+																				subfieldTitle: "Where event matches...",
+																				subfields: guestlistSubFields,
+																});
+
+																injectFields.push({
+																				title: "Guest List > Total number of RSVP No responses",
+																				// key: '_checkins[]',
+																				key: "_guestDeclined.all.length",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "integer",
+																				subfieldTitle: "Where event matches...",
+																				subfields: guestlistSubFields,
+																});
+
+
 
 																injectFields.push({
 																				title: "Rostered Assignments > Total times rostered",
@@ -1344,13 +1659,23 @@ export default {
 																				minimum: 0,
 																				type: "integer",
 																				subfieldTitle: "Where assignment matches...",
-																				subfields: [{
+																				subfields: [
+																								// {
+																								// 				title: "Position",
+																								// 				key: "title",
+																								// 				maximum: 1,
+																								// 				minimum: 0,
+																								// 				type: "string",
+																								// 				directive: "select"
+																								// },
+																								{
 																												title: "Position",
 																												key: "title",
 																												maximum: 1,
 																												minimum: 0,
 																												type: "string",
-																												directive: "select"
+																												directive: "select",
+																												options: assignmentPositionOptions,
 																								},
 																								{
 																												title: "Confirmation Status",
