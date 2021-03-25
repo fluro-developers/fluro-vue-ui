@@ -257,8 +257,8 @@ export default {
 								// FluroContentRenderField,
 				},
 				beforeCreate() {
-								this.$options.components.FluroEditor = require('./FluroEditor.vue').default;
-								this.$options.components.FluroCodeEditor = require('./FluroCodeEditor.vue').default;
+								this.$options.components.FluroEditor = require('./form/FluroEditor.vue').default;
+								this.$options.components.FluroCodeEditor = require('./form/FluroCodeEditor.vue').default;
 								this.$options.components.FluroContentRender = require('./FluroContentRender.vue').default;
 								this.$options.components.FluroContentRenderField = require('./FluroContentRenderField.vue').default;
 								//	this.$options.components.FluroEditor = require('./FluroEditor.vue').default;
