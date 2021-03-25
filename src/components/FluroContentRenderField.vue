@@ -237,7 +237,7 @@ import _ from 'lodash';
 
 
 
-import FluroCodeEditor from "./form/FluroCodeEditor.vue";
+// import FluroCodeEditor from "./form/FluroCodeEditor.vue";
 import ListGroup from "./ui/ListGroup.vue";
 import ListGroupItem from "./ui/ListGroupItem.vue";
 // import FluroContentRender from "./FluroContentRender.vue";
@@ -250,13 +250,15 @@ import ListGroupItem from "./ui/ListGroupItem.vue";
 export default {
 				name: 'fluro-content-render-field',
 				components: {
-								FluroCodeEditor,
+								// FluroCodeEditor,
 								ListGroup,
 								ListGroupItem,
 								// FluroContentRender,
 								// FluroContentRenderField,
 				},
 				beforeCreate() {
+								this.$options.components.FluroEditor = require('./FluroEditor.vue').default;
+								this.$options.components.FluroCodeEditor = require('./FluroCodeEditor.vue').default;
 								this.$options.components.FluroContentRender = require('./FluroContentRender.vue').default;
 								this.$options.components.FluroContentRenderField = require('./FluroContentRenderField.vue').default;
 								//	this.$options.components.FluroEditor = require('./FluroEditor.vue').default;
