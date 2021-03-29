@@ -5,7 +5,12 @@
 												<template v-if="officeUseOnly">
 												</template>
 												<template v-else-if="customComponent">
-																<component v-model="model" v-bind:is="customComponent" />
+																<component v-model="model" :is="customComponent" />
+												</template>
+												<template v-else-if="customComponentName">
+																<!-- <component v-model="fieldModel" :is="customComponent" /> -->
+																<component :is="customComponentName" :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel" @input="elementValueChanged" :fields="fields" />
+									
 												</template>
 												<template v-else-if="renderer == 'dynamicdate'">
 																<v-input :label="displayLabel" :persistent-hint="true" :hint="dynamicDateHint" class="no-flex">
@@ -35,7 +40,13 @@
 																</v-input>
 												</template>
 												<template v-else-if="renderer == 'custom'">
+																<!-- <template v-if="matchesComponent">
+																				MATCHES COMPONENT
+																				<component :is="matchesComponent" :context="context" :debugMode="debugMode" v-model="fieldModel" @input="elementValueChanged" />
+																</template>
+																<template v-else> -->
 																<fluro-compile-html :template="customTemplate" :context="customContext" />
+																<!-- </template> -->
 												</template>
 												<template v-else-if="renderer == 'embedded'">
 																<template v-if="!multipleInput">
@@ -669,6 +680,72 @@ import FluroRealmSelect from './realmselect/FluroRealmSelect.vue';
 // let FluroCodeEditor = import('./FluroCodeEditor.vue');
 
 
+
+function createDynamicComponent(globalComponent, extraComponents) {
+				var key = globalComponent.key;
+				var script = `"use strict"; var object = {}; try {object = ${globalComponent.js}} catch(e) {console.log(e)} finally {return object}`;
+
+				var compiled;
+				try {
+								compiled = Function(script)();
+				} catch (e) {
+								console.log('Error generating dynamic component', globalComponent.title, globalComponent.key, e, globalComponent.js);
+				} finally {
+
+								if (!compiled) {
+												return;
+								}
+
+
+								if (!compiled.mixins) {
+												compiled.mixins = [];
+								}
+
+								////////////////////////////////////
+
+								//Recursively allow nested components within components
+								compiled.mixins.push({
+												beforeCreate() {
+																var self = this;
+																_.each(extraComponents, function(comp) {
+																				self.$options.components[comp.key] = createDynamicComponent(comp, extraComponents);
+																})
+												},
+								})
+
+								////////////////////////////////////
+
+								//Create the element
+								var wrapper = document.createElement('div');
+								wrapper.innerHTML = globalComponent.html;
+								var html;
+
+								////////////////////////////////////
+
+								if (wrapper.childNodes && wrapper.childNodes.length) {
+
+												if (wrapper.childNodes.length == 1) {
+																var firstNode = wrapper.childNodes[0];
+																firstNode.classList.add(`component-${globalComponent.key}`)
+																html = wrapper.innerHTML;
+												} else {
+																html = `<div class="component-${globalComponent.key}">${globalComponent.html}</div>`;
+												}
+								}
+
+								////////////////////////////////////
+
+								if (compiled) {
+												compiled.template = html;
+												// compiled.template = `<div class="component-${globalComponent.key}">${globalComponent.html}</div>`;
+												// var compiledComponent = Vue.extend(compiled);
+								}
+				}
+
+				return compiled;
+}
+
+
 ////////////////////////////////////////////////////////
 
 function mapDefaultDateValue(value) {
@@ -1235,7 +1312,13 @@ export default {
 												return this.autofocus || this.params.autofocus;
 								},
 								customComponent() {
+												//This is for us hardcoding our own custom components and inputs
+												//into the admin panel
 												return this.field.customComponent;
+								},
+								customComponentName() {
+												//this is for users to use their own custom components inside the website builder
+												return this.params.customComponent;
 								},
 								mobile() {
 												return this.$vuetify.breakpoint.xsOnly;
@@ -1586,14 +1669,14 @@ export default {
 								},
 								allowedReferences() {
 												return _.chain(this.field.allowedReferences)
-												.map(function(reference) {
-																reference.value = reference._id;
-																return reference;
-												})
-												.orderBy(function(reference) {
-													return reference.title || reference.name;
-												})
-												.value();
+																.map(function(reference) {
+																				reference.value = reference._id;
+																				return reference;
+																})
+																.orderBy(function(reference) {
+																				return reference.title || reference.name;
+																})
+																.value();
 								},
 
 								defaultValues() {
@@ -3956,21 +4039,11 @@ export default {
 
 								var self = this;
 
-
-
-
-
-
 								var cleaned = self.fixCorruptedData(self.model[self.field.key]);
 								if (typeof cleaned != typeof self.model[self.field.key] || cleaned != self.model[self.field.key]) {
 												self.$set(self.model, self.field.key, cleaned);
 
 								}
-
-
-
-
-
 
 								////////////////////////////////////////////
 
@@ -4020,6 +4093,18 @@ export default {
 								//     }
 								// }
 								/**/
+
+
+
+
+
+
+								//////////////////////////////////////////////
+
+
+
+
+
 
 
 								// self.ready = true;
@@ -4309,42 +4394,29 @@ export default {
 								this.$options.components.FluroContentFormField = require('./FluroContentFormField.vue').default;
 								this.$options.components.FluroEditor = require('./FluroEditor.vue').default;
 								this.$options.components.FluroCodeEditor = require('./FluroCodeEditor.vue').default;
-								//this.ready = true;
+
+								///////////////////////////////////////////////////
+
+								var self = this;
+								var originalField = self.$options.propsData.field;
+								if (!originalField || originalField.directive != 'custom') {
+												return;
+								}
+
+								//If we are a custom directive check if we know what the component is
+								if (self.$fluro.app && self.$fluro.app.site && self.$fluro.app.site.components && self.$fluro.app.site.components.length) {
+												var additionalComponents = self.$fluro.app.site.components;
+												additionalComponents.forEach(function(globalComponent) {
+																var created = createDynamicComponent(globalComponent, additionalComponents)
+																if (created) {
+																				self.$options.components[globalComponent.key] = Vue.extend(created);
+																}
+												})
+								}
+
+								///////////////////////////////////////////////////
+
 				},
-				/**
-				beforeCreate: function() {
-
-
-						var self = this;
-
-
-
-
-						Promise.all([
-														DynamicImportService.load('./FluroContentForm.vue', function() {
-																		return import('./FluroContentForm.vue')
-														}),
-														DynamicImportService.load('./FluroContentFormField.vue', function() {
-																		return import('./FluroContentFormField.vue')
-														}),
-														DynamicImportService.load('./FluroEditor.vue', function() {
-																		return import('./FluroEditor.vue')
-														}),
-														DynamicImportService.load('./FluroCodeEditor.vue', function() {
-																		return import('./FluroCodeEditor.vue')
-														}),
-										])
-										.then(function(results) {
-
-
-														self.$options.components.FluroContentForm = results[0];
-														self.$options.components.FluroContentFormField = results[1];
-														self.$options.components.FluroEditor = results[2];
-														self.$options.components.FluroCodeEditor = results[3];
-														self.ready = true;
-										})
-				},
-				/**/
 				validations: {
 								model: {
 												validateInput,

@@ -287,6 +287,9 @@
 																								</template>
 																								<template v-if="model.directive == 'custom'">
 																												<fluro-content-form-field :field="fields.template" v-model="model" />
+																												<template v-if="$pro.enabled">
+																																<fluro-content-form-field :field="fields.customComponent" v-model="model.params" />
+																												</template>
 																								</template>
 																								<template v-else>
 																												<template v-if="requiresOptions">
@@ -1949,7 +1952,20 @@ export default {
 																directive: "code",
 																params: {
 																				syntax: "html"
-																}
+																},
+																expressions: {
+																				hide() {
+																								return self.model && self.model.params && self.model.params.customComponent;
+																				}
+																},
+												});
+
+												addField("customComponent", {
+																title: "Custom Component Name",
+																description: "Advanced usage to replace with your own custom input",
+																minimum: 0,
+																maximum: 1,
+																type: "string",
 												});
 
 												/////////////////////////////////////////////////////////

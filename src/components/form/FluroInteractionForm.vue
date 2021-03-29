@@ -15,74 +15,74 @@
                 </template>
             </template>
             <template v-if="allowed">
-                <slot name="success" :reset="reset" :result="result" v-if="state == 'success'">
-                    <div class="text-xs-center">
-                        <h3>Submission Successful</h3>
-                        <div>Thank you for your submission</div>
-                        <template v-if="webMode">
-                            <fluro-button @click="reset()">Back to form</fluro-button>
-                        </template>
-                        <template v-else>
-                            <v-btn @click="reset()">Back to form</v-btn>
-                        </template>
-                        <!-- <v-btn class="mx-0" @click="reset()">
+                <fluro-page-preloader v-if="forceProcessing" />
+                <template v-else>
+                    <slot name="success" :reset="reset" :result="result" v-if="state == 'success'">
+                        <div class="text-xs-center">
+                            <h3>Submission Successful</h3>
+                            <div>Thank you for your submission</div>
+                            <template v-if="webMode">
+                                <fluro-button @click="reset()">Back to form</fluro-button>
+                            </template>
+                            <template v-else>
+                                <v-btn @click="reset()">Back to form</v-btn>
+                            </template>
+                            <!-- <v-btn class="mx-0" @click="reset()">
                                                         Back to form
             </v-btn>-->
-                    </div>
-                </slot>
-                <template v-else>
-                   
-                    <slot name="info"></slot>
-                    <form @submit.stop.prevent="submit" novalidate :disabled="state == 'processing'">
-                        <!-- <pre>{{allowAnonymous}}</pre> -->
-                        <!-- <pre>{{fields}}</pre> -->
-                        <!-- <pre>{{options}}</pre> -->
-                        <!-- <pre>{{errorMessages}}</pre> -->
-                        <!-- <pre>{{showPaymentForm}}</pre> -->
-                        <!-- <pre>GUESSSS {{context}} {{ options }}</pre> -->
-                        <fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" @errorMessages="validate" @input="modelChanged" ref="form" :options="options" v-model="dataModel" :fields="fields" />
-                        <!-- <pre>SHOW PAYMENT FORM {{showPaymentForm}}</pre> -->
-                        <div class="payment" v-if="showPaymentForm">
-                            <v-container fluid v-if="requirePayment">
-                                <h2>Payment Summary</h2>
-                                <v-layout align-center>
-                                    <v-flex class="modifier-title">
-                                        <strong>Amount</strong>
-                                    </v-flex>
-                                    <v-flex shrink v-if="baseAmount">
-                                        <strong>
-                                            {{ formattedBaseAmount }}
-                                        </strong>
-                                    </v-flex>
-                                </v-layout>
-                                <div class="modifier" v-for="modifier in activeModifiers">
+                        </div>
+                    </slot>
+                    <template v-else>
+                        <slot name="info"></slot>
+                        <form @submit.stop.prevent="submit" novalidate :disabled="state == 'processing'">
+                            <!-- <pre>{{allowAnonymous}}</pre> -->
+                            <!-- <pre>{{fields}}</pre> -->
+                            <!-- <pre>{{options}}</pre> -->
+                            <!-- <pre>{{errorMessages}}</pre> -->
+                            <!-- <pre>{{showPaymentForm}}</pre> -->
+                            <!-- <pre>GUESSSS {{context}} {{ options }}</pre> -->
+                            <fluro-content-form  :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" @errorMessages="validate" @input="modelChanged" ref="form" :options="options" v-model="dataModel" :fields="fields" />
+                            <!-- <pre>SHOW PAYMENT FORM {{showPaymentForm}}</pre> -->
+                            <div class="payment" v-if="showPaymentForm">
+                                <v-container fluid v-if="requirePayment">
+                                    <h2>Payment Summary</h2>
                                     <v-layout align-center>
-                                        <v-flex class="modifier-title">{{ modifier.title }}</v-flex>
-                                        <v-flex shrink>{{ modifier.description }}</v-flex>
-                                        <v-flex shrink>{{ modifier.formattedTotal }}</v-flex>
-                                    </v-layout>
-                                </div>
-                                <div>
-                                    <v-layout align-center>
-                                        <v-flex>
-                                            <h3>Total</h3>
+                                        <v-flex class="modifier-title">
+                                            <strong>Amount</strong>
                                         </v-flex>
-                                        <v-flex shrink>
-                                            <h3>
-                                                {{ formattedTotal }}
-                                                <span class="muted">
-                                                    {{ currency.toUpperCase() }}
-                                                    
-                                                </span>
-                                            </h3>
+                                        <v-flex shrink v-if="baseAmount">
+                                            <strong>
+                                                {{ formattedBaseAmount }}
+                                            </strong>
                                         </v-flex>
                                     </v-layout>
-                                </div>
-                            </v-container>
-                            <v-container v-if="allowPayment">
-                                <h2>Payment</h2>
-                                <fluro-content-form-field @input="modelChanged" :options="options" :field="allowedAmountInput" v-model="dataModel" />
-                                <!-- <v-layout align-center>
+                                    <div class="modifier" v-for="modifier in activeModifiers">
+                                        <v-layout align-center>
+                                            <v-flex class="modifier-title">{{ modifier.title }}</v-flex>
+                                            <v-flex shrink>{{ modifier.description }}</v-flex>
+                                            <v-flex shrink>{{ modifier.formattedTotal }}</v-flex>
+                                        </v-layout>
+                                    </div>
+                                    <div>
+                                        <v-layout align-center>
+                                            <v-flex>
+                                                <h3>Total</h3>
+                                            </v-flex>
+                                            <v-flex shrink>
+                                                <h3>
+                                                    {{ formattedTotal }}
+                                                    <span class="muted">
+                                                        {{ currency.toUpperCase() }}
+                                                    </span>
+                                                </h3>
+                                            </v-flex>
+                                        </v-layout>
+                                    </div>
+                                </v-container>
+                                <v-container v-if="allowPayment">
+                                    <h2>Payment</h2>
+                                    <fluro-content-form-field @input="modelChanged" :options="options" :field="allowedAmountInput" v-model="dataModel" />
+                                    <!-- <v-layout align-center>
                                     <v-flex class="modifier-title">
                                         <strong>Amount</strong>
                                     </v-flex>
@@ -92,35 +92,34 @@
                                         </strong>
                                     </v-flex>
                                 </v-layout> -->
-                                <div class="modifier" v-for="modifier in activeModifiers">
-                                    <v-layout align-center>
-                                        <v-flex class="modifier-title">{{ modifier.title }}</v-flex>
-                                        <v-flex shrink>{{ modifier.description }}</v-flex>
-                                        <v-flex shrink>{{ modifier.formattedTotal }}</v-flex>
-                                    </v-layout>
-                                </div>
-                                <div>
-                                    <v-layout align-center>
-                                        <v-flex>
-                                            <h3>Total</h3>
-                                        </v-flex>
-                                        <v-flex shrink>
-                                            <h3>
-                                                {{ formattedTotal }}
-                                                <span class="muted">
-                                                    {{ currency.toUpperCase() }}
-                                                   
-                                                </span>
-                                            </h3>
-                                        </v-flex>
-                                    </v-layout>
-                                </div>
-                            </v-container>
-                            <!-- <pre>{{selectedPaymentMethod}}</pre> -->
-                            <div class="border-top">
-                                <tabset :justified="true" v-model="selectedPaymentMethod">
-                                    <tab heading="Pay Now" key="card" index="card">
-                                        <!-- <tab :heading="gateway.title" :key="gateway._id" :index="gateway._id" v-for="gateway in additionalGateways">
+                                    <div class="modifier" v-for="modifier in activeModifiers">
+                                        <v-layout align-center>
+                                            <v-flex class="modifier-title">{{ modifier.title }}</v-flex>
+                                            <v-flex shrink>{{ modifier.description }}</v-flex>
+                                            <v-flex shrink>{{ modifier.formattedTotal }}</v-flex>
+                                        </v-layout>
+                                    </div>
+                                    <div>
+                                        <v-layout align-center>
+                                            <v-flex>
+                                                <h3>Total</h3>
+                                            </v-flex>
+                                            <v-flex shrink>
+                                                <h3>
+                                                    {{ formattedTotal }}
+                                                    <span class="muted">
+                                                        {{ currency.toUpperCase() }}
+                                                    </span>
+                                                </h3>
+                                            </v-flex>
+                                        </v-layout>
+                                    </div>
+                                </v-container>
+                                <!-- <pre>{{selectedPaymentMethod}}</pre> -->
+                                <div class="border-top">
+                                    <tabset :justified="true" v-model="selectedPaymentMethod">
+                                        <tab heading="Pay Now" key="card" index="card">
+                                            <!-- <tab :heading="gateway.title" :key="gateway._id" :index="gateway._id" v-for="gateway in additionalGateways">
                                             <v-container style="background: #fafafa" class="border-top">
                                                 <h4>{{gateway.title}}</h4>
                                                 <fluro-content-form @errorMessages="validate" @input="modelChanged" ref="payment" :options="options" v-model="dataModel" :fields="paymentFields" />
@@ -129,82 +128,88 @@
                                                 <fluro-content-form-field @input="modelChanged" :options="options" :field="receiptInput" v-model="dataModel" />
                                             </v-container>
                                         </tab> -->
-                                        <template v-if="!actualPaymentIntegration">
-                                            <p>Configuration Error: No payment gateway has been connected to this form.</p>
-                                        </template>
-                                        <template v-else>
+                                            <template v-if="!actualPaymentIntegration">
+                                                <p>Configuration Error: No payment gateway has been connected to this form.</p>
+                                            </template>
+                                            <template v-else-if="requiresExternalPayment">
+                                                <v-container style="background: #fafafa" class="border-top">
+                                                    Press Continue to complete your payment
+                                                </v-container>
+                                            </template>
+                                            <template v-else>
+                                                <v-container style="background: #fafafa" class="border-top">
+                                                    <h4>Card Details</h4>
+                                                    <div class="muted font-sm" v-if="debugMode" style="margin-bottom:5px;">Payments processed through: <strong>{{actualPaymentIntegration.displayTitle || actualPaymentIntegration.title}}</strong></div>
+                                                    <fluro-content-form @errorMessages="validate" @input="modelChanged" ref="payment" :options="options" v-model="dataModel" :fields="paymentFields" />
+                                                </v-container>
+                                                <v-container v-if="definition.data.enableReceipt" style="background: #fafafa" class="border-top">
+                                                    <!-- <h5>Would you like an email receipt?</h5> -->
+                                                    <fluro-content-form-field @input="modelChanged" :options="options" :field="receiptInput" v-model="dataModel" />
+                                                </v-container>
+                                            </template>
+                                        </tab>
+                                        <tab :heading="paymentMethod.title" v-for="paymentMethod in alternativePaymentMethods" :index="paymentMethod.key" :key="paymentMethod.key">
                                             <v-container style="background: #fafafa" class="border-top">
-                                                <h4>Card Details</h4>
-                                                <div class="muted font-sm" v-if="debugMode" style="margin-bottom:5px;">Payments processed through: <strong>{{actualPaymentIntegration.displayTitle || actualPaymentIntegration.title}}</strong></div>
-                                                <fluro-content-form @errorMessages="validate" @input="modelChanged" ref="payment" :options="options" v-model="dataModel" :fields="paymentFields" />
-                                            </v-container>
-                                            <v-container v-if="definition.data.enableReceipt" style="background: #fafafa" class="border-top">
+                                                <h4>{{paymentMethod.title}}</h4>
+                                                <!-- <pre>{{paymentMethod}}</pre> -->
+                                                <div v-html="paymentMethod.description">
+                                                </div>
+                                                <!-- <fluro-content-form @errorMessages="validate" @input="modelChanged" ref="payment" :options="options" v-model="dataModel" :fields="paymentFields" /> -->
+                                                <!-- </v-container> -->
+                                                <!-- <v-container v-if="definition.data.enableReceipt" style="background: #fafafa" class="border-top"> -->
                                                 <!-- <h5>Would you like an email receipt?</h5> -->
-                                                <fluro-content-form-field @input="modelChanged" :options="options" :field="receiptInput" v-model="dataModel" />
+                                                <!-- <fluro-content-form-field @input="modelChanged" :options="options" :field="receiptInput" v-model="dataModel" /> -->
                                             </v-container>
-                                        </template>
-                                    </tab>
-                                    <tab :heading="paymentMethod.title" v-for="paymentMethod in alternativePaymentMethods" :index="paymentMethod.key" :key="paymentMethod.key">
-                                        <v-container style="background: #fafafa" class="border-top">
-                                            <h4>{{paymentMethod.title}}</h4>
-                                            <!-- <pre>{{paymentMethod}}</pre> -->
-                                            <div v-html="paymentMethod.description">
-                                            </div>
-                                            <!-- <fluro-content-form @errorMessages="validate" @input="modelChanged" ref="payment" :options="options" v-model="dataModel" :fields="paymentFields" /> -->
-                                            <!-- </v-container> -->
-                                            <!-- <v-container v-if="definition.data.enableReceipt" style="background: #fafafa" class="border-top"> -->
-                                            <!-- <h5>Would you like an email receipt?</h5> -->
-                                            <!-- <fluro-content-form-field @input="modelChanged" :options="options" :field="receiptInput" v-model="dataModel" /> -->
-                                        </v-container>
-                                    </tab>
-                                </tabset>
+                                        </tab>
+                                    </tabset>
+                                </div>
                             </div>
-                        </div>
-                        <div class="actions">
-                            <template v-if="state == 'processing'">
-                                <template v-if="webMode">
-                                    <fluro-button :loading="true" :block="mobile" :large="mobile" :disabled="true">{{submitText}}</fluro-button>
-                                </template>
-                                <template v-else>
-                                    <v-btn :block="mobile" :large="mobile" class="mx-0" :disabled="true">
-                                        {{submitText}}
-                                        <v-progress-circular indeterminate></v-progress-circular>
-                                    </v-btn>
-                                </template>
-                            </template>
-                            <template v-else-if="state == 'error'">
-                                <v-alert :value="true" type="error" outline>{{ serverErrors }}</v-alert>
-                                <template v-if="webMode">
-                                    <fluro-button :block="mobile" :large="mobile" @click.prevent.native="state = 'ready'">Try Again</fluro-button>
-                                </template>
-                                <template v-else>
-                                    <v-btn :block="mobile" :large="mobile" class="mx-0" @click.prevent.native="state = 'ready'">Try Again</v-btn>
-                                </template>
-                            </template>
-                            <template v-else>
-                                <v-alert :value="true" type="error" outline v-if="hasErrors">
-                                    Please check the following issues before
-                                    submitting
-                                    <div v-for="error in errorMessages">
-                                        <strong>{{ error.title }}</strong>
-                                        : {{ error.messages[0] }}
-                                    </div>
-                                </v-alert>
-                                <v-layout>
+                            <div class="actions">
+                                <template v-if="state == 'processing'">
                                     <template v-if="webMode">
-                                        <!-- type="submit" -->
-                                        <fluro-button @click.native.prevent="submit" tag="button" type="submit" :block="mobile" :large="mobile" :disabled="hasErrors">{{submitText}}</fluro-button>
+                                        <fluro-button :loading="true" :block="mobile" :large="mobile" :disabled="true">{{actualSubmitText}}</fluro-button>
                                     </template>
                                     <template v-else>
-                                        <v-btn :block="mobile" :large="mobile" class="mx-0" :disabled="hasErrors" type="submit" color="primary">{{submitText}}</v-btn>
+                                        <v-btn :block="mobile" :large="mobile" class="mx-0" :disabled="true">
+                                            {{actualSubmitText}}
+                                            <v-progress-circular indeterminate></v-progress-circular>
+                                        </v-btn>
                                     </template>
-                                    <!--  -->
-                                    <v-spacer />
-                                    <slot name="submit"></slot>
-                                </v-layout>
-                            </template>
-                        </div>
-                    </form>
+                                </template>
+                                <template v-else-if="state == 'error'">
+                                    <v-alert :value="true" type="error" outline>{{ serverErrors }}</v-alert>
+                                    <template v-if="webMode">
+                                        <fluro-button :block="mobile" :large="mobile" @click.prevent.native="state = 'ready'">Try Again</fluro-button>
+                                    </template>
+                                    <template v-else>
+                                        <v-btn :block="mobile" :large="mobile" class="mx-0" @click.prevent.native="state = 'ready'">Try Again</v-btn>
+                                    </template>
+                                </template>
+                                <template v-else>
+                                    <v-alert :value="true" type="error" outline v-if="hasErrors">
+                                        Please check the following issues before
+                                        submitting
+                                        <div v-for="error in errorMessages">
+                                            <strong>{{ error.title }}</strong>
+                                            : {{ error.messages[0] }}
+                                        </div>
+                                    </v-alert>
+                                    <v-layout>
+                                        <template v-if="webMode">
+                                            <!-- type="submit" -->
+                                            <fluro-button @click.native.prevent="submit" tag="button" type="submit" :block="mobile" :large="mobile" :disabled="hasErrors">{{actualSubmitText}}</fluro-button>
+                                        </template>
+                                        <template v-else>
+                                            <v-btn :block="mobile" :large="mobile" class="mx-0" :disabled="hasErrors" type="submit" color="primary">{{actualSubmitText}}</v-btn>
+                                        </template>
+                                        <!--  -->
+                                        <v-spacer />
+                                        <slot name="submit"></slot>
+                                    </v-layout>
+                                </template>
+                            </div>
+                        </form>
+                    </template>
                 </template>
             </template>
             <!-- <pre>ERRORS {{errorMessages}}</pre> -->
@@ -214,8 +219,6 @@
                                 <pre>{{dataModel}}</pre>
                         </v-flex>
     </v-layout>-->
-
-
     </div>
 </template>
 <script>
@@ -228,6 +231,9 @@ import { mapFields } from "vuex-map-fields";
 var hasBeenReset;
 
 //////////////////////////////////////////////////
+
+import SquarePayment from "./payments/SquarePayment.vue";
+
 
 import FluroButton from "../ui/FluroButton.vue";
 import FluroContentForm from "./FluroContentForm.vue";
@@ -344,6 +350,7 @@ export default {
     },
     data() {
         return {
+            forceProcessing: false,
             selectedPaymentIntegration: null,
             selectedPaymentMethod: 'card',
             paymentReady: false,
@@ -386,6 +393,9 @@ export default {
 
     },
     watch: {
+        customPaymentElementsRequired() {
+            this.createPaymentElements();
+        },
         value(v) {
 
             this.dataModel = JSON.parse(JSON.stringify(v));
@@ -419,7 +429,44 @@ export default {
 
         }
     },
+
     computed: {
+        requiresExternalPayment() {
+            var self = this;
+
+            switch (self.paymentModule) {
+                case 'square':
+                    return true;
+                    break;
+            }
+        },
+        actualSubmitText() {
+            var self = this;
+
+            if (self.requiresExternalPayment) {
+                return 'Continue';
+            }
+
+            return self.submitText;
+        },
+        paymentModule() {
+            var self = this;
+
+            if (!self.actualPaymentIntegration) {
+                return;
+            }
+
+            return self.actualPaymentIntegration.module;
+        },
+        customPaymentElementsRequired() {
+
+            var self = this;
+            switch (self.paymentModule) {
+                case 'square':
+                    return true;
+                    break;
+            }
+        },
         gatewayLookup() {
             var self = this;
             return _.reduce(self.availableGateways, function(set, gateway) {
@@ -1362,6 +1409,58 @@ export default {
 
             return done(null, cardDetails);
         },
+        createPaymentElements() {
+
+            var self = this;
+
+
+            console.log('Create Custom Payment Elements')
+
+            switch (self.paymentModule) {
+                case 'square':
+
+                    return new Promise(function(resolve, reject) {
+
+
+
+                    })
+
+                    break;
+                default:
+                    return Promise.resolve();
+                    break;
+            }
+
+
+        },
+        createSquareToken(paymentDetails, done) {
+
+
+            var self = this;
+
+            var modalFunction = self.$fluro.modal || self.$fluro.app.modal;
+
+            //////////////////////////////
+
+            modalFunction({
+                    options: {
+                        integration: self.actualPaymentIntegration,
+                        debugMode: self.debugMode,
+                        amount: paymentDetails.amount || 0,
+                        disableBackdrop: true,
+                        webMode: self.webMode,
+                    },
+                    component: SquarePayment,
+                })
+                .then(function(res) {
+                    return done(null, res)
+
+                }, function(errors) {
+                    return done(errors);
+                });
+
+
+        },
         createStripeToken(done) {
 
             console.log('Create stripe token');
@@ -1460,11 +1559,12 @@ export default {
 
             switch (integration.module) {
                 case 'square':
-                     injectScript("https://js.squareupsandbox.com/v2/paymentform", function() {
+                    injectScript("https://js.squareupsandbox.com/v2/paymentform", function() {
                         console.log("Square has been included on page");
-                        self.paymentReady = true;
+                        // self.paymentReady = true;
+                        // self.createPaymentElements();
                     });
-                break;
+                    break;
                 case "stripe":
                     // injectScript('https://js.stripe.com/v3/', function() {
                     //     console.log('Stripe has been included on page')
@@ -1485,6 +1585,14 @@ export default {
                     );
                     break;
             }
+        },
+        abort() {
+            var self = this;
+            console.log('Abort')
+            self.state = "ready";
+            self.forceProcessing = false;
+            return;
+
         },
         modelChanged() {
             this.$emit("input", this.dataModel);
@@ -1576,6 +1684,7 @@ export default {
             delete dataModel.cardExpMonth;
             delete dataModel.cardCVC;
 
+           
 
             /////////////////////////////////
 
@@ -1597,7 +1706,7 @@ export default {
                             if (_.isArray(value)) {
                                 //Leave it there so that (.length) expressions can calculate correctly
                             } else {
-                             //Remove it entirely
+                                //Remove it entirely
                                 delete current[key];
                             }
 
@@ -1702,6 +1811,13 @@ export default {
 
                 console.log('PAYMENT OPTIONS IS', self.selectedPaymentMethod, paymentDetails);
 
+
+                /////////////////////////////////
+
+
+
+                /////////////////////////////////
+
                 //Here we generate our client side tokens
                 switch (self.actualPaymentIntegration.module) {
                     case "eway":
@@ -1735,24 +1851,35 @@ export default {
 
                         break;
                     case 'square':
-                        // //Generate the Stripe Token
-                        // return self.createStripeToken(function(status, response) {
-                        //     var error = status.error || response.error;
+                        //Generate the Stripe Token
+                        return self.createSquareToken(paymentDetails, function(errors, cardDetails) {
 
-                        //     if (error) {
-                        //         console.log("FORM -> Stripe token error", status, response);
-                        //         self.serverErrors = error.message;
-                        //         self.$fluro.error(self.serverErrors);
-                        //         self.state = "error";
-                        //         self.$emit("error", error);
-                        //     } else {
-                        //         //Include the payment details
-                        //         console.log("FORM -> Stripe tokenized", status, response);
-                        //         paymentDetails.details = response;
-                        //         return submitRequest(paymentDetails);
-                        //     }
-                        // });
-                    break;
+                            if (!errors && !cardDetails) {
+                                return self.abort();
+                            }
+
+                            if (errors) {
+                                console.log('SQUARE ERRORS RECEIVED', errors)
+
+                                var errorMessages = errors.map(function(error) {
+                                    return error.message || error;
+                                }).join('\n');
+
+                                console.log('SQUARE ERRORS MESSAGES', errorMessages)
+                                console.log("FORM -> Square nonce error", errors);
+                                self.serverErrors = errorMessages;
+                                self.$fluro.error(errorMessages);
+                                self.state = "error";
+                                self.$emit("error", error);
+                            } else {
+                                //Include the payment details
+                                console.log("FORM -> Square tokenized", cardDetails);
+                                paymentDetails.details = cardDetails;
+                                self.forceProcessing = true;
+                                return submitRequest(paymentDetails);
+                            }
+                        });
+                        break;
                     case "stripe":
                         //Generate the Stripe Token
                         return self.createStripeToken(function(status, response) {
@@ -1833,6 +1960,7 @@ export default {
                         };
 
                         self.result = interaction;
+                        self.forceProcessing = false;
 
                     },
                     function(err) {
@@ -1844,6 +1972,7 @@ export default {
                         self.$emit("error", err);
 
                         console.log("SWITCH STATE TO", err, self);
+                        self.forceProcessing = false;
                     }
                 );
             }

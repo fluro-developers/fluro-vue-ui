@@ -8,8 +8,8 @@ export default {
 		}
 	},
     methods: {
-        dismiss() {
-            this.$emit('dismiss');
+        dismiss(error) {
+            this.$emit('dismiss', error);
         },
         close(result) {
             this.$emit('close',result);

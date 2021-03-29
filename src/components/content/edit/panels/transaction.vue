@@ -142,10 +142,11 @@
                                         <fluro-panel-title>
                                             <strong>Card Payment</strong>
                                         </fluro-panel-title>
-                                        <fluro-panel-body v-if="model.transactionData && model.transactionData.source">
-                                            <h4>XXXX-XXXX-XXXX-{{model.transactionData.source.last4}}</h4>
-                                            <h5>{{model.transactionData.source.name}} {{model.transactionData.source.brand}} {{model.transactionData.source.country}}</h5>
-                                            <div>{{model.transactionData.source.exp_month}}/{{model.transactionData.source.exp_year}}</div>
+                                        <!-- <pre>{{cardDetails}}</pre> -->
+                                        <fluro-panel-body v-if="cardDetails">
+                                            <h4>XXXX-XXXX-XXXX-{{cardDetails.last4}}</h4>
+                                            <h5>{{cardDetails.name}} {{cardDetails.brand}} {{cardDetails.country}}</h5>
+                                            <div>{{cardDetails.exp_month}}/{{cardDetails.exp_year}}</div>
                                         </fluro-panel-body>
                                         <fluro-panel-body class="border-top" v-if="refundAvailable">
                                             <fluro-page-preloader v-if="refunding" />
@@ -288,6 +289,61 @@ export default {
     },
     mixins: [FluroContentEditMixin],
     computed: {
+        cardDetails() {
+
+            var self = this;
+
+            var paymentModule = self.model.module;
+            var transactionData = _.get(self.model, 'transactionData');
+
+            if (!transactionData) {
+                return;
+            }
+
+            switch (paymentModule) {
+                case 'stripe':
+                    return {
+                        name: transactionData.source.name,
+                        last4: transactionData.source.last4,
+                        brand: transactionData.source.last4,
+                        country: transactionData.source.country,
+                        exp_month: transactionData.source.exp_month,
+                        exp_year: transactionData.source.exp_year,
+                    }
+                    break;
+                case 'eway':
+
+                 var cardData = _.get(transactionData, 'Customer.CardDetails') || {};
+                    return {
+                        name: cardData.Name,
+                        last4: String(cardData.Number || '').slice(-4),
+                        brand:'',//''cardData.last4,
+                        country: '',
+                        exp_month: cardData.ExpiryMonth,
+                        exp_year: cardData.ExpiryYear,
+                    }
+                    break;
+                case 'square':
+                    var cardData = _.get(transactionData, 'payment.cardDetails.card');
+                    return {
+                        name: cardData.name || '',
+                        last4: cardData.last4,
+                        brand: cardData.cardBrand,
+                        country: cardData.country || '',
+                        exp_month: cardData.expMonth,
+                        exp_year: cardData.expYear,
+                    }
+                    break;
+            }
+
+            // <fluro-panel-body v-if="model.transactionData && model.transactionData.source">
+            //                                             <h4>XXXX-XXXX-XXXX-{{model.transactionData.source.last4}}</h4>
+            //                                             <h5>{{model.transactionData.source.name}} {{model.transactionData.source.brand}} {{model.transactionData.source.country}}</h5>
+            //                                             <div>{{model.transactionData.source.exp_month}}/{{model.transactionData.source.exp_year}}</div>
+            //                                         </fluro-panel-body>
+
+
+        },
         refundAvailable() {
 
             var self = this;
