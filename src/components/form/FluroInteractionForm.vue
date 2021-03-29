@@ -41,7 +41,7 @@
                             <!-- <pre>{{errorMessages}}</pre> -->
                             <!-- <pre>{{showPaymentForm}}</pre> -->
                             <!-- <pre>GUESSSS {{context}} {{ options }}</pre> -->
-                            <fluro-content-form  :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" @errorMessages="validate" @input="modelChanged" ref="form" :options="options" v-model="dataModel" :fields="fields" />
+                            <fluro-content-form :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" @errorMessages="validate" @input="modelChanged" ref="form" :options="options" v-model="dataModel" :fields="fields" />
                             <!-- <pre>SHOW PAYMENT FORM {{showPaymentForm}}</pre> -->
                             <div class="payment" v-if="showPaymentForm">
                                 <v-container fluid v-if="requirePayment">
@@ -1559,10 +1559,17 @@ export default {
 
             switch (integration.module) {
                 case 'square':
-                    injectScript("https://js.squareupsandbox.com/v2/paymentform", function() {
-                        console.log("Square has been included on page");
-                        // self.paymentReady = true;
-                        // self.createPaymentElements();
+
+                    //Try and preload the script
+                    var squareAPIURL = "https://js.squareup.com/v2/paymentform";
+                    var sandboxed = self.debugMode || _.get(self.actualPaymentIntegration, 'publicDetails.sandbox');
+                    if (sandboxed) {
+                        squareAPIURL = "https://js.squareupsandbox.com/v2/paymentform";
+                    }
+
+                    injectScript(squareAPIURL, function() {
+                        console.log("Square has been included on page", 'Sandboxed:', sandboxed);
+                        self.paymentReady = true;
                     });
                     break;
                 case "stripe":
@@ -1684,7 +1691,7 @@ export default {
             delete dataModel.cardExpMonth;
             delete dataModel.cardCVC;
 
-           
+
 
             /////////////////////////////////
 
@@ -1870,7 +1877,7 @@ export default {
                                 self.serverErrors = errorMessages;
                                 self.$fluro.error(errorMessages);
                                 self.state = "error";
-                                self.$emit("error", error);
+                                self.$emit("error", errors);
                             } else {
                                 //Include the payment details
                                 console.log("FORM -> Square tokenized", cardDetails);

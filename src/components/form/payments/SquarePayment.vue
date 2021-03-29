@@ -92,7 +92,13 @@ export default {
 				created() {
 
 								var self = this;
-								self.$fluro.utils.injectScript("https://js.squareupsandbox.com/v2/paymentform").then(function() {
+
+								var scriptURL = "https://js.squareup.com/v2/paymentform";
+								if (self.sandboxed) {
+												scriptURL = "https://js.squareupsandbox.com/v2/paymentform";
+								}
+
+								self.$fluro.utils.injectScript(scriptURL).then(function() {
 												console.log("Square has been included on page");
 
 												self.scriptReady = true;
@@ -112,6 +118,9 @@ export default {
 				},
 				mixins: [ModalMixin],
 				computed: {
+								sandboxed() {
+												return this.debugMode || this.options.sandbox || _.get(this.actualPaymentIntegration, 'publicDetails.sandbox');
+								},
 								webMode() {
 												return this.options.webMode;
 								},
