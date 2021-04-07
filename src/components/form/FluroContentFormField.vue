@@ -10,7 +10,6 @@
 												<template v-else-if="customComponentName">
 																<!-- <component v-model="fieldModel" :is="customComponent" /> -->
 																<component :is="customComponentName" :context="context" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :parent="formModel" :form-fields="formFields" :options="options" v-model="fieldModel" @input="elementValueChanged" :fields="fields" />
-									
 												</template>
 												<template v-else-if="renderer == 'dynamicdate'">
 																<v-input :label="displayLabel" :persistent-hint="true" :hint="dynamicDateHint" class="no-flex">
@@ -207,7 +206,7 @@
 																</v-input>
 												</template>
 												<template v-else-if="renderer == 'button-select'">
-																<v-input class="no-flex" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
+																<v-input class="no-flex" :label="displayLabel" persistent-hint :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
 																				<div class="button-select-buttons">
 																								<template v-if="webMode">
 																												<fluro-button :block="$vuetify.breakpoint.xsOnly" @click.native="toggleValue(button.value)" :class="{active:isSelectedValue(button.value), inactive:!isSelectedValue(button.value)}" :key="button.value" v-for="button in selectOptions">
@@ -3610,7 +3609,32 @@ export default {
 												self.$forceUpdate();
 								},
 
+								runExpression(expressionFunction) {
+												var self = this;
 
+
+												//Create a context model
+												var context = {
+																data: self.parent, //self.model,
+																interaction: self.parent, //self.model,
+																model: self.model,
+																Math: Math,
+																String: String,
+																Array: Array,
+																Date: Date,
+																Boolean: Boolean,
+																parseInt: parseInt,
+																parseFloat: parseFloat,
+																moment: self.$fluro.date.moment,
+																//Include helper function
+																matchInArray: this.$fluro.utils.matchInArray,
+																create(Class, ...rest) {
+																				return new Class(...rest)
+																}
+												}
+
+												return expressionFunction(context);
+								},
 								resolveExpression(expression) {
 
 												var self = this;
@@ -4257,7 +4281,8 @@ export default {
 																}
 
 																if (typeof self.expressions.value == 'function') {
-																				var result = self.expressions.value();
+																				var result = self.runExpression(self.expressions.value);
+																				//self.expressions.value();
 																				return Promise.resolve(result);
 																} else {
 																				if (!String(self.expressions.value).length) {
@@ -4281,7 +4306,8 @@ export default {
 																}
 
 																if (typeof self.expressions.defaultValue == 'function') {
-																				var result = self.expressions.defaultValue();
+																				var result = self.runExpression(self.expressions.defaultValue);
+																				// var result = self.expressions.defaultValue();
 																				return Promise.resolve(result);
 																} else {
 																				if (!String(self.expressions.defaultValue).length) {
@@ -4323,7 +4349,8 @@ export default {
 																				//If its a function
 																				if (typeof self.expressions.show == 'function') {
 																								//Return the opposite of the show function
-																								return !self.expressions.show();
+																								// return !self.expressions.show();
+																								return !self.runExpression(self.expressions.show);
 																				} else {
 																								var shouldShow = self.resolveExpression(self.expressions.show);
 																								return Promise.resolve(!shouldShow);
@@ -4342,7 +4369,8 @@ export default {
 																if (typeof self.expressions.hide == 'function') {
 
 
-																				var shouldHide = self.expressions.hide();
+																				// var shouldHide = self.expressions.hide();
+																				var shouldHide = self.runExpression(self.expressions.hide);
 
 
 

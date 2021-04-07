@@ -94,6 +94,7 @@
 																								<!-- <pre>{{discriminator}} - {{discriminatorType}} - {{discriminatorDefinition}}</pre> -->
 																				</template>
 																				<template v-else-if="useBasicReferenceSelect">
+
 																								<fluro-content-select-button :createDisabled="true" small block :allDefinitions="true" :type="useBasicReferenceSelect" v-model="model.values" />
 																				</template>
 																				<template v-else>
@@ -112,6 +113,8 @@
 																																</v-select>
 																												</template>
 																												<template v-else>
+
+
 																																<!-- REFERENCE -->
 																																<!-- rEFERENCE {{loadingValues}} - {{cleanedValueSelection.length}} -->
 																																<v-autocomplete class="small-input" multiple dense v-model="model.values" item-text="title" item-value="_id" :loading="loadingValues" :items="cleanedValueSelection">
@@ -180,7 +183,9 @@
 																				<v-text-field v-else-if="dataType == 'integer'" class="small-input" single-line mask="############" v-model="model.value" />
 																				<template v-else-if="useBasicReferenceSelect">
 																								<!-- <pre>{{referenceID}}</pre> -->
+
 																								<fluro-content-select-button :createDisabled="true" small block :allDefinitions="true" :maximum="1" :single-value="true" :type="useBasicReferenceSelect" v-model="model.value" />
+																								
 																				</template>
 																				<template v-else-if="referenceSelectField">
 																								<template v-if="$vuetify.breakpoint.xsOnly">

@@ -313,11 +313,11 @@ export default {
                     break;
                 case 'eway':
 
-                 var cardData = _.get(transactionData, 'Customer.CardDetails') || {};
+                    var cardData = _.get(transactionData, 'Customer.CardDetails') || {};
                     return {
                         name: cardData.Name,
                         last4: String(cardData.Number || '').slice(-4),
-                        brand:'',//''cardData.last4,
+                        brand: '', //''cardData.last4,
                         country: '',
                         exp_month: cardData.ExpiryMonth,
                         exp_year: cardData.ExpiryYear,
@@ -348,15 +348,20 @@ export default {
 
             var self = this;
 
-            if (self.model.module != 'stripe') {
-                return;
-            }
+            //////////////////////////////
 
             if (!self.model.total) {
                 return;
             }
 
-            return true
+            //////////////////////////////
+
+            switch (self.model.module) {
+                case 'stripe':
+                case 'square':
+                    return true;
+                    break;
+            }
 
         },
         refundData() {

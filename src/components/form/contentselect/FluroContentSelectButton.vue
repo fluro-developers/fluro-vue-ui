@@ -12,6 +12,7 @@
                 </v-btn>
             </v-flex>
         </v-layout>
+
     </div>
 </template>
 <script>
@@ -129,14 +130,15 @@ export default {
 
                 if (!self.type || self.type == "node") {
                     return true;
+                    //test
                 }
 
-                return entry.definition ?
-                    entry.definition == self.type :
-                    entry._type == self.type;
-            });
+                var matchDefinition = entry.definition == self.type;
+                var matchType = entry._type == self.type;
+                
 
-            ///////////////////////////////////////
+                return matchDefinition || matchType;
+            });
 
             ///////////////////////////////////////
 

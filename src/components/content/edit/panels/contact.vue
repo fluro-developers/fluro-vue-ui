@@ -231,7 +231,7 @@
 																																								<tabset>
 																																												<tab heading="Create new Household">
 																																																<v-container>
-																																																				<fluro-content-form @input="updateFamily"  :options="formOptions" v-model="family" :fields="familyFields" />
+																																																				<fluro-content-form @input="updateFamily" :options="formOptions" v-model="family" :fields="familyFields" />
 																																																</v-container>
 																																												</tab>
 																																												<tab heading="Add to existing Household">
@@ -757,7 +757,7 @@ export default {
 								},
 								updateFamily() {
 
-									console.log('UPDATE FAMILY')
+												console.log('UPDATE FAMILY')
 
 												/**/
 												var self = this;
@@ -911,6 +911,7 @@ export default {
 
 																var extractedEntry = _.get(self.model, `details.${definitionName}`);
 																var existingEntry = JSON.parse(JSON.stringify(extractedEntry || {}));
+																var existingActualSheets = existingEntry.items || [];
 
 																var cleanedEntry = {
 																				realms: [],
@@ -920,8 +921,17 @@ export default {
 																///////////////////////////////////////////////////////////////
 
 																if (existingEntry) {
-																				if (existingEntry.items && existingEntry.items.length) {
-																								var item = existingEntry.items[0];
+																				if (existingActualSheets.length) {
+
+																								//If there is more than one sheet for this detail 
+																								if (existingActualSheets.length > 1) {
+																												//TODO figure out an interface for what the user should see
+																												cleanedEntry.extras = existingActualSheets;
+																								}
+
+																								///////////////////////////////////////
+
+																								var item = existingActualSheets[0];
 																								if (!item.data) {
 																												item.data = Vue.observable({});
 																								}

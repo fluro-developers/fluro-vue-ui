@@ -1,27 +1,30 @@
 <template>
 				<component :is="componentType" class="list-group-item" :href="href" :target="target" :to="to" @click="clicked" :class="[isSelected ? 'active selected' : '', extraClasses]">
-								<div>
-												<fluro-realm-bar v-if="item" :realm="item._type == 'realm' ? [item] : item.realms" />
-												<slot name="left">
-																<fluro-item-image v-if="item" :item="item" />
-												</slot>
-								</div>
-								<div class="list-group-item-content">
-												<slot>
-																<strong>{{title}}</strong>
-																<div class="muted sm" v-if="renderFirstLine">{{renderFirstLine}}</div>
-												</slot>
-								</div>
-								<div>
-												<slot name="right">
-												</slot>
-								</div>
-								<div v-if="selectable">
-												<fluro-icon class="tick-icon" icon="check" />
-								</div>
-								<!-- <pre>{{item}}</pre> -->
-								<!-- WOOOOTT -->
-								<!-- <pre>{{item}}</pre> -->
+								
+								<template v-if="loading">
+												loading
+								</template>
+								<template v-else>
+												<div>
+																<fluro-realm-bar v-if="actualItem" :realm="actualItem._type == 'realm' ? [actualItem] : actualItem.realms" />
+																<slot name="left">
+																				<fluro-item-image v-if="actualItem" :item="actualItem" />
+																</slot>
+												</div>
+												<div class="list-group-item-content">
+																<slot>
+																				<strong>{{title}}</strong>
+																				<div class="muted sm" v-if="renderFirstLine">{{renderFirstLine}}</div>
+																</slot>
+												</div>
+												<div>
+																<slot name="right">
+																</slot>
+												</div>
+												<div v-if="selectable">
+																<fluro-icon class="tick-icon" icon="check" />
+												</div>
+								</template>
 				</component>
 </template>
 <script>
@@ -46,9 +49,7 @@ export default {
 								target: {
 												type: String,
 								},
-								item: {
-												type: Object
-								},
+								'item': [String, Object],
 								firstLine: {
 												type: String,
 								},
@@ -62,47 +63,85 @@ export default {
 												default: false,
 								}
 				},
+				data() {
+								return {
+												loading: false,
+												actualItem: this.item,
+								}
+				},
 				methods: {
 								clicked() {
-												this.$emit('click', this.item);
+												this.$emit('click', this.actualItem);
 								}
 				},
 				created() {
-								if (this.to) {
-												this.componentType = 'router-link';
-								} else if (this.href) {
-												this.componentType = 'a';
+
+								var self = this;
+
+								if (!self.item) {
+												self.actualItem = self.item;
 								} else {
-												this.componentType = 'div';
+
+												//If you have an item id
+												if (self.item._id) {
+																//We're all good
+																self.actualItem = self.item;
+												} else {
+
+																//We need to load some extra bits
+																self.loading = true;
+
+																//Load the full item
+																self.$fluro.content.get(self.item)
+																				.then(function(res) {
+																								//Replace the full item and stop loading
+																								self.actualItem = res;
+																								self.loading = false;
+																				})
+																				.catch(function(err) {
+																								//We couldn't load so just leave it
+																								self.actualItem = self.item;
+																								self.loading = false;
+																				})
+												}
+
+								}
+								if (self.to) {
+												self.componentType = 'router-link';
+								} else if (self.href) {
+												self.componentType = 'a';
+								} else {
+												self.componentType = 'div';
 								}
 
 				},
 				computed: {
+
 								title() {
 												var self = this;
 
-												if (!self.item) {
+												if (!self.actualItem) {
 																return;
 												}
 
-												if (!self.item.title) {
-																return `${self.item.firstName} ${self.item.lastName}`
+												if (!self.actualItem.title) {
+																return `${self.actualItem.firstName} ${self.actualItem.lastName}`
 												}
 
-												return self.item.title;
+												return self.actualItem.title;
 
 								},
 								extraClasses() {
 												var self = this;
 												var array = [];
 
-												if (!self.item) {
+												if (!self.actualItem) {
 																return;
 												}
 
-												switch (self.item._type) {
+												switch (self.actualItem._type) {
 																case 'transaction':
-																				switch (self.item.paymentStatus) {
+																				switch (self.actualItem.paymentStatus) {
 																								case 'refund':
 																								case 'partial_refund':
 																												array.push('archived');
@@ -114,8 +153,8 @@ export default {
 																				break;
 												}
 
-												if (self.item.status) {
-																array.push(`status-${self.item.status}`)
+												if (self.actualItem.status) {
+																array.push(`status-${self.actualItem.status}`)
 												}
 
 
@@ -123,8 +162,8 @@ export default {
 												return array;
 								},
 								readablePaymentStatus() {
-									var self = this;
-												switch (self.item.paymentStatus) {
+												var self = this;
+												switch (self.actualItem.paymentStatus) {
 																case 'refund':
 																				return 'Refunded';
 																				break;
@@ -149,7 +188,7 @@ export default {
 																return self.firstLine;
 												}
 
-												if (!self.item) {
+												if (!self.actualItem) {
 																return;
 												}
 
@@ -157,13 +196,13 @@ export default {
 
 												var pieces = [];
 
-												switch (self.item._type) {
+												switch (self.actualItem._type) {
 																case 'contact':
 
-																				pieces.push(self.item.householdRole);
-																				pieces.push(self.item.gender);
-																				if (self.item.definition) {
-																								pieces.push(self.$fluro.types.readable(self.item.definition));
+																				pieces.push(self.actualItem.householdRole);
+																				pieces.push(self.actualItem.gender);
+																				if (self.actualItem.definition) {
+																								pieces.push(self.$fluro.types.readable(self.actualItem.definition));
 																				}
 
 
@@ -171,17 +210,17 @@ export default {
 																				break;
 																case 'transaction':
 
-																			
-																				pieces.push(`${self.$fluro.utils.formatCurrency(self.item.amount, self.item.currency)} ${String(self.item.currency).toUpperCase()}`);
 
-																					pieces.push(self.readablePaymentStatus);
-																				if (self.item.mode == 'sandbox') {
+																				pieces.push(`${self.$fluro.utils.formatCurrency(self.actualItem.amount, self.actualItem.currency)} ${String(self.actualItem.currency).toUpperCase()}`);
+
+																				pieces.push(self.readablePaymentStatus);
+																				if (self.actualItem.mode == 'sandbox') {
 																								pieces.push('Sandbox / TEST Payment');
 																				}
 
-																				
 
-																				pieces.push(self.item.module);
+
+																				pieces.push(self.actualItem.module);
 
 
 
@@ -189,35 +228,35 @@ export default {
 																				break;
 																case 'family':
 
-																				pieces.push(self.item.firstLine);
-																				if (self.item.address) {
+																				pieces.push(self.actualItem.firstLine);
+																				if (self.actualItem.address) {
 																								pieces.push('•');
-																								pieces.push(self.item.address.addressLine1);
-																								pieces.push(self.item.address.addressLine2);
-																								pieces.push(self.item.address.suburb);
-																								pieces.push(self.item.address.state);
-																								pieces.push(self.item.address.postalCode);
-																								pieces.push(self.item.address.country);
+																								pieces.push(self.actualItem.address.addressLine1);
+																								pieces.push(self.actualItem.address.addressLine2);
+																								pieces.push(self.actualItem.address.suburb);
+																								pieces.push(self.actualItem.address.state);
+																								pieces.push(self.actualItem.address.postalCode);
+																								pieces.push(self.actualItem.address.country);
 																				}
 
 
 																				return _.compact(pieces).join(' ');
 																				break;
 																case 'event':
-																				if (self.item.firstLine && self.item.firstLine.length) {
-																								return `${self.$fluro.date.readableEventDate(self.item)} - ${self.item.firstLine}`;
+																				if (self.actualItem.firstLine && self.actualItem.firstLine.length) {
+																								return `${self.$fluro.date.readableEventDate(self.actualItem)} - ${self.actualItem.firstLine}`;
 																				} else {
 
-																								return self.$fluro.date.readableEventDate(self.item);
+																								return self.$fluro.date.readableEventDate(self.actualItem);
 
 																				}
 																				break;
 																case 'persona':
-																				return self.item.collectionEmail || self.item.email;
+																				return self.actualItem.collectionEmail || self.actualItem.email;
 																				break;
 																default:
-																				if (self.item.firstLine && self.item.firstLine.length) {
-																								return self.item.firstLine;
+																				if (self.actualItem.firstLine && self.actualItem.firstLine.length) {
+																								return self.actualItem.firstLine;
 																				}
 																				break;
 												}

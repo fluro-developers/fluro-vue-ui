@@ -68,6 +68,9 @@ export default {
 																return defaultSort;
 												},
 								},
+								literal: {
+												type: Array,
+								}
 
 				},
 				data() {
@@ -84,6 +87,11 @@ export default {
 								}
 				},
 				watch: {
+								literal(l) {
+												if (l) {
+																this.reload();
+												}
+								},
 								searchInheritable() {
 												this.reload();
 								},
@@ -161,6 +169,21 @@ export default {
 												//////////////////////////////////////////
 
 												self.loadingItems = true;
+
+												if (self.literal) {
+																self.loadingItems = false;
+																self.all = self.literal;
+																self.$emit('raw', self.all);
+																self.rows = self.all;
+																self.$emit('filtered', self.rows);
+																if (self.setPage) {
+																				self.setPage(1);
+																}
+
+																self.loadingItems = false;
+																self.reloadChangeKey++;;
+																return;
+												}
 
 												///////////////////////////////////////
 

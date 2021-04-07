@@ -277,7 +277,7 @@ export default {
                                     }
 
                                     if (row.attendance.guestDeclined) {
-                                       return `${row.preferredName || row.firstName || row.title} has declined`
+                                        return `${row.preferredName || row.firstName || row.title} has declined`
                                     }
                                 }
 
@@ -351,8 +351,8 @@ export default {
                                                             self.$set(row.attendance, 'guestDeclined', true);
                                                             break;
                                                     }
-                                                   
-                                                   resolve();
+
+                                                    resolve();
                                                 })
                                                 .catch(function(err) {
                                                     self.$fluro.error(err);
@@ -381,6 +381,91 @@ export default {
                         },
                         shrink: true,
 
+                    })
+                    break;
+            }
+
+            ////////////////////////////////////
+
+            switch (segment) {
+                case 'absent':
+                case 'expected':
+                    columns.push({
+                        title: 'Check In',
+                        key: '_id',
+                        renderer: 'button',
+                        button: {
+                            color: 'primary',
+                            tooltip(row) {
+                             if (row.attendance) {
+                                    if (row.attendance.checkin) {
+                                        return 'Checked in'
+                                    }
+                                }
+
+                                return `Add Checkin`;
+                            },
+                            // text(row) {
+                            //     return 'Check in';
+                            // },
+                            icon(row) {
+                                if (row.attendance) {
+                                    if (row.attendance.checkin) {
+                                        return 'check-square';
+                                    }
+                                }
+
+                                return 'sign-in';
+                            },
+                            iconLibrary(row) {
+                                if (row.attendance) {
+                                    if (row.attendance.checkin) {
+                                        return 'fas';
+                                    }
+                                }
+
+                                return 'far';
+                            },
+                            disabled(row) {
+                                if (row.attendance) {
+                                    if (row.attendance.checkin) {
+                                        return true;
+                                    }
+                                }
+
+                                return
+                            },
+                            action(row) {
+                                return new Promise(function(resolve, reject) {
+
+                                    if (!self.$fluro.access.can('create', 'checkin', 'checkin')) {
+                                        console.log('no permissions')
+                                        return;
+                                    }
+
+                                    self.$fluro.api.post(`/checkin/${self.eventID}`, {
+                                            contact: self.$fluro.utils.getStringID(row),
+                                        })
+                                        .then(function(res) {
+                                            resolve(res.data);
+                                            if (!row.attendance) {
+                                                self.$set(row, 'attendance', {});
+                                            }
+
+                                            self.$set(row.attendance, 'checkin', true);
+                                            self.$fluro.notify(`${row.firstName} was checked in`);
+                                            // self.$delete(self.processing, contactID);
+                                        }, function(err) {
+
+                                            self.$set(row.attendance, 'checkin', false);
+                                            reject(err);
+                                            // self.$delete(self.processing, contactID);
+                                        });
+                                })
+
+                            },
+                        },
+                        shrink: true,
                     })
                     break;
             }

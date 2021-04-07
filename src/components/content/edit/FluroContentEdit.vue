@@ -1048,6 +1048,7 @@ export default {
             }
         },
         extraFields() {
+            var self = this;
             var fields = {};
 
             fields.inheritable = {
@@ -1059,7 +1060,7 @@ export default {
                 key: "inheritable",
                 expressions: {
                     hide() {
-                        switch (this.typeName) {
+                        switch (self.typeName) {
                             case "contact":
                             case "family":
                                 return true;
