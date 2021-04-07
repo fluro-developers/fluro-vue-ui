@@ -578,18 +578,39 @@ export default {
                 var self = this;
 
                 return new Promise(function(resolve, reject) {
-                    return self.$fluro.types
-                        .subTypes("contact")
-                        .catch(reject)
-                        .then(function(res) {
-                            return resolve(res);
-                        });
-                }).catch(function(err) {
-                    console.log(err);
-                    self.$fluro.notify(err);
 
-                    return reject(err);
-                });
+
+                    self.$fluro.types.subTypes('contact')
+                        .then(function(definitions) {
+
+
+
+                            var definitions = _.chain(definitions)
+                                .filter(function(definition) {
+                                    // console.log('Contact Definition!', definition)
+                                    return definition.status == 'active';
+                                })
+                                .map(function(definition, key) {
+                                    return {
+                                        _id: definition._id,
+                                        name: definition.title,
+                                        value: definition.definitionName,
+                                    }
+                                })
+                                .value();
+
+                            // if(definitions.length) {
+                            //     definitions.unshift({
+                            //         name:'Basic Contact',
+                            //         value:null,
+                            //     })
+                            // }
+
+                            resolve(definitions);
+
+                        })
+                        .catch(reject);
+                })
             }
         }
     }
