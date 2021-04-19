@@ -1,6 +1,5 @@
 <template>
 				<v-container class="filter-condition-row grid-list-sm" v-if="ready" :class="{mini:mini}" pa-0>
-
 								<v-layout row wrap>
 												<v-flex xs12 sm4>
 																<template v-if="fields.length">
@@ -94,7 +93,6 @@
 																								<!-- <pre>{{discriminator}} - {{discriminatorType}} - {{discriminatorDefinition}}</pre> -->
 																				</template>
 																				<template v-else-if="useBasicReferenceSelect">
-
 																								<fluro-content-select-button :createDisabled="true" small block :allDefinitions="true" :type="useBasicReferenceSelect" v-model="model.values" />
 																				</template>
 																				<template v-else>
@@ -113,8 +111,6 @@
 																																</v-select>
 																												</template>
 																												<template v-else>
-
-
 																																<!-- REFERENCE -->
 																																<!-- rEFERENCE {{loadingValues}} - {{cleanedValueSelection.length}} -->
 																																<v-autocomplete class="small-input" multiple dense v-model="model.values" item-text="title" item-value="_id" :loading="loadingValues" :items="cleanedValueSelection">
@@ -183,9 +179,7 @@
 																				<v-text-field v-else-if="dataType == 'integer'" class="small-input" single-line mask="############" v-model="model.value" />
 																				<template v-else-if="useBasicReferenceSelect">
 																								<!-- <pre>{{referenceID}}</pre> -->
-
 																								<fluro-content-select-button :createDisabled="true" small block :allDefinitions="true" :maximum="1" :single-value="true" :type="useBasicReferenceSelect" v-model="model.value" />
-																								
 																				</template>
 																				<template v-else-if="referenceSelectField">
 																								<template v-if="$vuetify.breakpoint.xsOnly">
@@ -241,7 +235,7 @@
 																				<!-- :rows="rows" -->
 																				<v-layout :key="criteriaRow.guid" v-for="(criteriaRow, index) in model.criteria">
 																								<v-flex>
-																									<!-- <pre>{{forceLocalValues}}</pre> -->
+																												<!-- <pre>{{forceLocalValues}}</pre> -->
 																												<filter-condition-row :forceLocalValues="forceLocalValues" :type="type" :definition="definition" :rows="rows" :fields="selector.subfields" :mini="mini" v-model="model.criteria[index]" />
 																								</v-flex>
 																								<v-flex shrink>
@@ -490,19 +484,19 @@ export default {
 								useBasicReferenceSelect() {
 												var self = this;
 
-											
+
 
 												////////////////////////////////////////////////
 
 												var hardCodeTypeSelect = _.get(self.selector, 'typeSelect');
 
-													//If we've specified a specific type of thing to select
+												//If we've specified a specific type of thing to select
 												if (hardCodeTypeSelect) {
 																return hardCodeTypeSelect;
 												}
 
 												////////////////////////////////////////////////
-	
+
 												var restrictType = _.get(self.selector, 'params.restrictType');
 												var _discriminatorDefinition = _.get(self.selector, '_discriminatorDefinition');
 
@@ -512,7 +506,7 @@ export default {
 												//If there are no rows
 												if (!self.rows || !self.rows.length) {
 
-													
+
 
 																if (!self.selector) {
 																				return;

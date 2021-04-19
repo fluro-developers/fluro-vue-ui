@@ -1,7 +1,6 @@
 <template>
     <td :style="style" @click="cellclick" :class="{wrap:shouldWrap, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right', 'no-padding':column.padding === false}">
-        <!-- <pre>{{column.key}}</pre> -->
-        <!-- <pre>{{row.rawData}}</pre> -->
+
         <!-- <pre>{{formattedArray}}</pre> -->
         <!-- <pre>{{rawValue}} {{column.key}}</pre> -->
         <div :class="{'wrap-limit':shouldWrap}">
@@ -83,6 +82,8 @@ import AvatarCell from './cells/AvatarCell.vue';
 import ChartCell from './cells/ChartCell.vue';
 import PhoneNumberCell from './cells/PhoneNumberCell.vue';
 import EmailAddressCell from './cells/EmailAddressCell.vue';
+import FilesizeCell from './cells/FilesizeCell.vue';
+import ThumbnailCell from './cells/ThumbnailCell.vue';
 
 
 var ValueRender = Vue.extend({
@@ -204,6 +205,12 @@ export default {
                     break;
                 case 'contactAvatar':
                     return AvatarCell;
+                    break;
+                case 'filesize':
+                    return FilesizeCell;
+                    break;
+                 case 'thumbnail':
+                    return ThumbnailCell;
                     break;
                 case 'email':
                 case 'emails':

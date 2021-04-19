@@ -1,5 +1,7 @@
 <template>
     <div>
+
+       
     <v-menu attach lazy open-on-hover>
         <template v-slot:activator="{ on }">
             <div v-on="on" class="thumbnail" :class="{contain:contain}" :style="{backgroundImage:`url(${url})`}">

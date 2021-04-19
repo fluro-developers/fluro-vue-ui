@@ -62,8 +62,8 @@
                         <v-container>
                             <constrain md>
                                 <event-reminder-manager type="roster" :slots="model.slots" :startDate="startDate" :endDate="endDate" v-model="model.reminders" />
-                                
-                                <pre>{{model.reminders}}</pre>
+                                <fluro-content-form-field v-model="model.callTimeOffset" :field="callTimeOffsetField" />
+                                <!-- <pre>{{model.reminders}}</pre> -->
                                 <!-- <reminder-event-manager :config="config" v-model="model.reminders" :allAssignmentOptions="model.slots" /> -->
                             </constrain>
                         </v-container>
@@ -372,6 +372,15 @@ export default {
         // }
     },
     computed: {
+        callTimeOffsetField() {
+            return {
+                title: 'Call Time (Mins Earlier)',
+                key: 'callTimeOffset',
+                minimum: 0,
+                maximum: 1,
+                type: 'integer',
+            }
+        },
         eventField() {
             return {
                 title: 'Select an event',

@@ -1,5 +1,6 @@
 <template>
     <div class="realm-select-item-outer" :class="{'has-children':item.children && item.children.length}">
+        
         <div :class="{selected:isSelected}" class="realm-select-item" @click="callback(item)">
             <v-layout align-center>
                 <v-flex>
@@ -20,7 +21,9 @@
         <template v-if="hasChildren">
             <div class="children" v-if="expanded">
                 <template v-for="realm in item.children">
+                    
                     <fluro-realm-select-item :collapsible="collapsible" :expandLookup="expandLookup" :item="realm" :check="check" :callback="callback" />
+                    
                 </template>
             </div>
         </template>

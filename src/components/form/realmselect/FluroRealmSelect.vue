@@ -1,6 +1,4 @@
 <template>
-
-    <!-- v-hide="onlyOneOption" -->
     <div class="realm-select" v-show="visibleSingle || !singleOptionAvailable">
         <template v-if="selectionAvailable">
             <v-btn :small="small" :block="block" class="pill mx-0" @click.native="showModal">
@@ -14,8 +12,7 @@
                 <span class="label">{{valueSummary}}</span>
             </v-btn>
         </template>
-        <!-- <pre>{{type}} {{definition}}</pre> -->
-</div>
+    </div>
 </template>
 <script>
 import Vue from 'vue';
@@ -49,6 +46,7 @@ export default {
         },
         mainType() {
             var tree = this.tree;
+            console.log('TREEE', tree)
 
 
             if (tree.length == 1) {
@@ -107,8 +105,8 @@ export default {
     },
     mixins: [Layout, FluroSelectionMixin],
     props: {
-        visibleSingle:{
-            type:Boolean,
+        visibleSingle: {
+            type: Boolean,
         },
         small: {
             type: Boolean,
@@ -158,6 +156,7 @@ export default {
                 //////////////////////////////////////
 
                 function mapFlat(realm, memo) {
+                 // console.log(realm.title)
                     memo[realm._id] = realm;
                     if (realm.children && realm.children.length) {
                         _.each(realm.children, function(realm) {
@@ -174,8 +173,6 @@ export default {
                         .retrieveSelectableRealms(self.action, self.definition, self.type)
                         .then(function(allRealms) {
 
-
-
                             var filtered = _.filter(allRealms, function(realmType) {
                                 if (!self.filterDiscriminator || !self.filterDiscriminator.length) {
                                     return true;
@@ -189,8 +186,6 @@ export default {
                                 return (realmType.definition == self.filterDiscriminator)
                             })
 
-
-                            // console.log('ALL REALMS', allRealms, self.filterDiscriminator, filtered, self.definition, self.type)
                             //////////////////////////////////////
 
                             var flattenedLookup = _.reduce(allRealms, function(set, realmType) {
@@ -204,11 +199,9 @@ export default {
                                 return realm;
                             });
 
-
                             var plainRealms = _.filter(flattenedLookup, function(realm) {
                                 return realm.basic;
                             });
-
 
                             //////////////////////////////////////
 
@@ -239,7 +232,7 @@ export default {
                                 if (flattenedIDs.length == 1) {
                                     // console.log('SET FLATTENED', flattenedIDs);
                                     self.setSelection(flattenedIDs);
-                                } else if(plainRealms.length == 1) {
+                                } else if (plainRealms.length == 1) {
                                     self.setSelection(plainRealms);
                                     console.log('PLAIN REALMS 1')
                                 }

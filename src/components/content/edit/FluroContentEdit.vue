@@ -1082,7 +1082,7 @@ export default {
                 key: "slug",
                 expressions: {
                     hide() {
-                        switch (this.typeName) {
+                        switch (self.typeName) {
                             case "contact":
                             case "family":
                                 return true;

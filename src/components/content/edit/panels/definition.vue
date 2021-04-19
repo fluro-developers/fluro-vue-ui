@@ -1230,9 +1230,6 @@ export default {
 								rosterFields() {
 												var array = [];
 
-
-
-
 												///////////////////////////////
 
 												array.push({
@@ -1248,6 +1245,17 @@ export default {
 																				persistentDescription: true,
 																},
 																//placeholder: `Eg. 'Bank Transfer', 'Cash', 'Cheque', 'Payment Plan'...`,
+												})
+
+												///////////////////////////////
+
+												array.push({
+																title: 'Call Time Offset (Mins)',
+																key: 'callTimeOffset',
+																minimum: 0,
+																maximum: 1,
+																type: 'integer',
+																description: `How many minutes earlier than the event start time are members of this roster required to attend`,
 												})
 
 
@@ -2348,6 +2356,8 @@ export default {
 																				}
 																}
 												})
+
+
 
 
 												///////////////////////////////////
