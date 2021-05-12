@@ -4,30 +4,31 @@
             <template v-slot:activator="{ on }">
                 <!-- @click.native="showModal" -->
                 <v-btn v-on="on" :small="small" :block="block" class="pill mx-0">
-                    {{model.length ? model.length : null}}<fluro-icon :right="model.length > 0" type="tag" />
-                    	<slot></slot>
+                    {{model.length ? model.length : null}}
+                    <fluro-icon :right="model.length > 0" type="tag" />
+                    <slot></slot>
                 </v-btn>
             </template>
             <v-card tile>
-                <v-container style="max-width:320px;">
-
-                    <!-- <pre>{{tagGroups}}</pre> -->
-                    <v-input class="no-flex" v-for="group in tagGroups">
-                        <v-label>{{group.title}}</v-label>
-                        <div class="inline-tags">
-                            <span class="inline-tag" @click="removeTag(tag)" v-for="tag in group.tags">
-                                {{tag.title}}
-                                <fluro-icon right class="off" icon="tag"/>
-                                <fluro-icon right class="on" icon="times"/>
-                            </span></div>
-
-                    <fluro-content-select-button  block :type="group.key" v-model="model" />
-                    </v-input>
-
-                    <!-- <fluro-content-select-button :allDefinitions="true" block type="tag" v-model="model" /> -->
-
-                    <!-- <pre> {{model}}</pre> -->
-                </v-container>
+                <flex-column  style="max-width:320px; max-height:80vh;">
+                    <flex-column-body>
+                        <v-container>
+                            <!-- <pre>{{tagGroups}}</pre> -->
+                            <v-input class="no-flex" v-for="group in tagGroups">
+                                <v-label>{{group.title}}</v-label>
+                                <div class="inline-tags">
+                                    <span class="inline-tag" @click="removeTag(tag)" v-for="tag in group.tags">
+                                        {{tag.title}}
+                                        <fluro-icon right class="off" icon="tag" />
+                                        <fluro-icon right class="on" icon="times" />
+                                    </span></div>
+                                <fluro-content-select-button block :type="group.key" v-model="model" />
+                            </v-input>
+                            <!-- <fluro-content-select-button :allDefinitions="true" block type="tag" v-model="model" /> -->
+                            <!-- <pre> {{model}}</pre> -->
+                        </v-container>
+                    </flex-column-body>
+                </flex-column>
             </v-card>
         </v-menu>
         <!-- <pre>{{type}} {{definition}}</pre> -->
@@ -46,9 +47,9 @@ import FluroContentSelectButton from '../contentselect/FluroContentSelectButton.
 ///////////////////////////////////////////////
 
 export default {
-    asyncComputed:{
-        tagDefinitions:{
-            default:[],
+    asyncComputed: {
+        tagDefinitions: {
+            default: [],
             get() {
                 var self = this;
                 return self.$fluro.types.subTypes('tag')
@@ -64,17 +65,17 @@ export default {
 
             var allSets = _.reduce(self.tagDefinitions, function(set, definition) {
                 set[definition.definitionName] = {
-                    title:definition.title,
-                    tags:[],
-                    key:definition.definitionName,
+                    title: definition.title,
+                    tags: [],
+                    key: definition.definitionName,
                 }
 
                 return set;
             }, {
-                tag:{
-                    title:'Tags',
-                    tags:[],
-                    key:'tag',
+                tag: {
+                    title: 'Tags',
+                    tags: [],
+                    key: 'tag',
                 }
             })
 
@@ -100,11 +101,11 @@ export default {
                 .value();
         },
     },
-    methods:{
+    methods: {
         removeTag(tag) {
             var self = this;
             var index = self.model.indexOf(tag);
-            self.model.splice(index,1);
+            self.model.splice(index, 1);
 
             console.log('Remove', index);
         },
@@ -140,15 +141,16 @@ export default {
         }
     },
 }
+
 </script>
 <style scoped lang="scss">
-
 .inline-tag {
     cursor: pointer;
 
     .on {
         display: none;
     }
+
     .off {
         display: inline-block;
     }
@@ -157,9 +159,11 @@ export default {
         .off {
             display: none;
         }
+
         .on {
             display: inline-block;
         }
     }
 }
+
 </style>

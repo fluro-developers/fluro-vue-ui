@@ -4,7 +4,7 @@
             <div class="fluro-content-list" v-if="showBasicList">
                 <list-group>
                     <draggable v-model="model" v-bind="dragOptions" @start="drag=true" @end="drag=false">
-                        <list-group-item @click="viewItem(item)" :item="item" v-for="(item, index) in model">
+                        <list-group-item :key="item._id" @click="viewItem(item)" :item="item" v-for="(item, index) in model">
                             <template v-slot:right>
                                 <fluro-status-label :value="item.status" v-if="item.status" />
                                 <fluro-status-label :value="item.paymentStatus" v-if="item.paymentStatus" />

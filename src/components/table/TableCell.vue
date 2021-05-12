@@ -1,9 +1,11 @@
 <template>
     <td :style="style" @click="cellclick" :class="{wrap:shouldWrap, 'text-xs-center':column.align == 'center', 'text-xs-right':column.align =='right', 'no-padding':column.padding === false}">
 
+ 
         <!-- <pre>{{formattedArray}}</pre> -->
         <!-- <pre>{{rawValue}} {{column.key}}</pre> -->
         <div :class="{'wrap-limit':shouldWrap}">
+
             <component v-if="renderer" :data="preValue" :is="renderer" :row="row" :column="column" />
             <template v-else-if="simpleArray">
                 <!-- Simple Array -->
@@ -62,6 +64,7 @@
             <component v-else-if="renderer" :data="rawValue" :is="renderer" :row="row" :column="column" />
             <slot v-else :value="value" :row="row" :column="column">
                 <!-- {{value}} -->
+
                 <value-render :value="value" />
             </slot>
         </div>
@@ -119,10 +122,17 @@ var ValueRender = Vue.extend({
                     return set;
                 }, []).join(', ');
             }
-            return String(this.value.title || this.value.name || this.value).trim();
+            
+
+            var string = String(this.value.title || this.value.name || this.value).trim();
+
+            // if(string[0] == '<') {
+            //     string = string.replace(/<[^>]+>/g, '')
+            // }
+            return string;
         },
     },
-    template: `<span :class="className">{{computedValue}}</span>`,
+    template: `<span :class="className" v-html="computedValue"></span>`,
 })
 
 

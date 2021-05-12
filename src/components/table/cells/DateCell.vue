@@ -1,10 +1,11 @@
 <template>
     <div>
+
         <template v-if="isArray">
-            <span class="inline-tag" v-for="date in rendered" :content="date | timeago" v-tippy>{{formatted(date)}}</span>
+            <span class="inline-tag" v-for="date in rendered" :content="dateTooltip(date)" v-tippy>{{formatted(date)}}</span>
         </template>
         <template v-else-if="rendered">
-            <span :class="{'inline-tag':!column.format}" v-if="rendered" :content="rendered | timeago" v-tippy>{{formatted(rendered)}}</span>
+            <span :class="{'inline-tag':!column.format}" v-if="rendered" :content="dateTooltip(rendered)" v-tippy>{{formatted(rendered)}}</span>
         </template>
         <div class="font-xs muted" v-if="showTimezone">{{row.timezone}}</div>
     </div>
@@ -45,6 +46,9 @@ export default {
         },
     },
     methods: {
+        dateTooltip(date) {
+            return `${this.$fluro.date.formatDate(date, 'h:mma')} - ${this.$fluro.date.timeago(date)}`
+        },
         formatted(date) {
 
             var self = this;

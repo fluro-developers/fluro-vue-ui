@@ -2,7 +2,7 @@
 				<div>
 								<list-group>
 												<draggable :list="model" v-bind="dragOptions" ghost-class="ghost-dragging-class" @start="drag=true" @end="drag=false">
-																<list-group-item v-for="(assignment, index) in model" class="pa-0" :class="currentlyExpanded[index] ? 'hover-grey' : ''" style="width:100%">
+																<list-group-item :key="index" v-for="(assignment, index) in model" class="pa-0" :class="currentlyExpanded[index] ? 'hover-grey' : ''" style="width:100%">
 																				<v-layout align-center ma-0 py-0 px-2>
 																								<v-flex xs3>
 																												<strong>{{assignment.title}}</strong>
@@ -11,7 +11,7 @@
 																												<div v-if="assignment.roles && assignment.roles.length" class="sm text-muted">{{assignment.roles | comma('title') }}</div>
 																								</v-flex>
 																								<v-flex xs5>
-																												<v-chip small v-for="contact in assignment.contacts">{{contact.title}}</v-chip>
+																												<v-chip small :key="contact._id" v-for="contact in assignment.contacts">{{contact.title}}</v-chip>
 																								</v-flex>
 																								<v-flex xs2>
 																												<v-btn style="width:100%" px-0 @click="toggleExpanded(index)">

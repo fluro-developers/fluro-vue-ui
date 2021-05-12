@@ -6,7 +6,7 @@
                 <v-label>{{group.title}}</v-label>
                 <list-group>
                     <template v-for="capability in group.capabilities">
-                        <list-group-item :item="capability">
+                        <list-group-item :key="capability._id" :item="capability">
                             <template v-slot:right>
                                 <!-- <v-menu :left="true" v-model="actionIndexes[capability._id]" :fixed="true" transition="slide-y-transition" offset-y>
                                     <template v-slot:activator="{ on }">

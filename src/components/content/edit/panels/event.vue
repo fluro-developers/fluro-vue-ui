@@ -265,6 +265,43 @@
                         <ticket-type-manager v-model="model" />
                         <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.publicTicketingConfirmationMessage" v-model="model"></fluro-content-form-field>
                         <ticket-list :event="model" />
+                        <fluro-panel>
+                            <fluro-panel-title>
+                                <h5>Ticket Collection Times</h5>
+                            </fluro-panel-title>
+                            <fluro-panel-body>
+                                <fluro-content-form :options="options" v-model="model.ticketCollectionData" :fields="ticketCollectionFields">
+                                    <template v-slot:form="{ formFields, fieldHash, model, update, options }">
+                                        <v-container pa-0 grid-list-xl>
+                                            <v-layout row wrap>
+                                                <v-flex xs12 sm6>
+                                                    <v-input class="no-flex">
+                                                        <v-label>Ticket Collection Opens</v-label>
+                                                        <p class="help-block">How many minutes earlier can tickets be collected</p>
+                                                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.ticketCollectionStartOffset" v-model="model" />
+                                                        <p class="help-block">No ticket collections before</p>
+                                                        <p class="lead">
+                                                            {{ ticketCollectionStartDate | formatDate("h:mma dddd D MMM", model.timezone) }}
+                                                        </p>
+                                                    </v-input>
+                                                </v-flex>
+                                                <v-flex xs12 sm6>
+                                                    <v-input class="no-flex">
+                                                        <v-label>Ticket Collection Closes</v-label>
+                                                        <p class="help-block">How many minutes after this event's end time can a ticket be collected?</p>
+                                                        <fluro-content-form-field :form-fields="formFields" @input="update" :options="options" :field="fieldHash.ticketCollectionEndOffset" v-model="model" />
+                                                        <p class="help-block">No ticket collections after</p>
+                                                        <p class="lead">
+                                                            {{ ticketCollectionEndDate | formatDate("h:mma dddd D MMM", model.timezone) }}
+                                                        </p>
+                                                    </v-input>
+                                                </v-flex>
+                                            </v-layout>
+                                        </v-container>
+                                    </template>
+                                </fluro-content-form>
+                               </fluro-panel-body>
+                        </fluro-panel>
                     </v-container>
                 </flex-column-body>
             </tab>
@@ -628,6 +665,13 @@ export default {
             self.$set(self.model, "checkinData", {
                 checkinStartOffset: 90,
                 checkinEndOffset: 90
+            });
+        }
+
+        if (!self.model.ticketCollectionData) {
+            self.$set(self.model, "ticketCollectionData", {
+                ticketCollectionStartOffset: 90,
+                ticketCollectionEndOffset: 90
             });
         }
 
@@ -1161,6 +1205,48 @@ export default {
             var self = this;
             return self.$fluro.asset.coverImage(self.model._id, "event", { w: 150 });
         },
+        ticketCollectionStartOffset() {
+            var self = this;
+            var originalOffsetValue = self.model.ticketCollectionData.ticketCollectionStartOffset;
+
+            if (
+                originalOffsetValue === undefined ||
+                originalOffsetValue === null ||
+                isNaN(originalOffsetValue)
+            ) {
+                return 90;
+            } else {
+                return parseInt(originalOffsetValue);
+            }
+        },
+        ticketCollectionEndOffset() {
+            var self = this;
+            var originalOffsetValue = self.model.ticketCollectionData.ticketCollectionEndOffset;
+
+            if (
+                originalOffsetValue === undefined ||
+                originalOffsetValue === null ||
+                isNaN(originalOffsetValue)
+            ) {
+                return 90;
+            } else {
+                return parseInt(originalOffsetValue);
+            }
+        },
+        ticketCollectionStartDate() {
+            var self = this;
+            return self.$fluro.date
+                .moment(self.model.startDate)
+                .subtract(self.ticketCollectionStartOffset, "minutes")
+                .toDate();
+        },
+        ticketCollectionEndDate() {
+            var self = this;
+            return self.$fluro.date
+                .moment(self.model.endDate)
+                .subtract(self.ticketCollectionEndOffset, "minutes")
+                .toDate();
+        },
         checkinStartOffset() {
             var self = this;
             var originalOffsetValue = self.model.checkinData.checkinStartOffset;
@@ -1202,6 +1288,32 @@ export default {
                 .moment(self.model.endDate)
                 .add(self.checkinEndOffset, "minutes")
                 .toDate();
+        },
+
+
+
+        ticketCollectionFields() {
+            return [{
+                    title: "Ticket Collection Opens",
+                    description: "How many minutes earlier can users collect a ticket",
+                    key: "ticketCollectionStartOffset",
+                    placeholder: "Defaults to 90 mins before event start",
+                    minimum: 0,
+                    maximum: 1,
+                    // suffix:'minutes',
+                    type: "integer"
+                },
+                {
+                    title: "Ticket Collection Closes",
+                    description: `How many minutes after this event's end time can a user still collect a ticket`,
+                    key: "ticketCollectionEndOffset",
+                    placeholder: "Defaults to 90 mins after event ends",
+                    minimum: 0,
+                    maximum: 1,
+                    // suffix:'minutes',
+                    type: "integer"
+                }
+            ];
         },
         checkinFields() {
             return [{
