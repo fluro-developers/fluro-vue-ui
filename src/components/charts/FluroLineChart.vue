@@ -350,7 +350,7 @@ export default {
                 }
                 ////////////////////////////////////////
                 var yaxis = _.get(chartOpt, "yaxis")
-                //console.log('YAXIS', yaxis)
+                // console.log('YAXIS', yaxis)
                 ////////////////////////////////////////
                 if (!yaxis) {
                     //console.log("FLUROLINECHART no yaxis", yaxis)
@@ -366,12 +366,23 @@ export default {
                 }
                 // need to check yAxis is an array and that the length matches the number of series.
                 if (!Array.isArray(yaxis)) {
-                    // console.log("some yaxis", yaxis)
                     chartOpt.yaxis = yaxis = [yaxis]
                     for (var i = 1; i < self.chartData.length; i++) {
                         yaxis.push(createYAxisOptions(self.chartData[i], i))
                     }
                 }
+                // console.log("SANITY CHECKS", self.chartData.length, yaxis.length)
+
+                if(self.chartData.length < yaxis.length) {
+                    var fixyaxis = []
+                    for (var i=0; i < self.chartData.length; i++) {
+                        fixyaxis.push(yaxis[i])
+                    }
+                    yaxis = fixyaxis
+                    // console.log("SANITY CHECK2", self.chartData.length, yaxis.length)
+                    _.set(chartOpt, "yaxis", yaxis)
+                }
+                
                 // _.set(chartOpt, "yaxis", yaxis)
                 ////////////////////////////////////////
                 if (self.annotations) {

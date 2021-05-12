@@ -769,9 +769,12 @@ export default {
       });
       _.each(events, function (event) {
         //console.log("HERE", event)
-        model.axis.push(event.startDate);
+        
         _.each(self.postStats, function (val) {
-          model.series[val].push(_.get(event, `posts[0].data.${val}`));
+        if(_.get(event, `posts[0].data.${val}`)){
+            model.axis.push(event.startDate);
+            model.series[val].push(_.get(event, `posts[0].data.${val}`));
+          }
         });
       });
 
