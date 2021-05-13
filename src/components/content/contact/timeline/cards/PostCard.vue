@@ -30,6 +30,7 @@
         </v-container>
         <v-container pa-2>
           <!-- <div>{{item.state}}</div> -->
+          <div v-if="item.data.body">{{item.data.body}}</div>
           <div v-if="item.body">{{item.body}}</div>
           <fluro-content-render :fields="definedFields" v-model="item.data" />
           <!-- <pre>{{item}}</pre> -->
