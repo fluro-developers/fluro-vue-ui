@@ -126,6 +126,8 @@
                     <template v-if="fields && fields.length">
                         <fluro-content-render :fields="fields" v-model="item.data" />
                     </template>
+                    <h4>Posts</h4>
+                    <item-post-thread :item="model" />
                 </constrain>
             </v-container>
         </flex-column-body>
@@ -137,7 +139,7 @@
 import Vue from "vue";
 
 import FluroContentViewMixin from "../FluroContentViewMixin.js";
-
+import ItemPostThread from "../../ItemPostThread"
 /////////////////////////////////
 
 export default {
@@ -151,7 +153,9 @@ export default {
             required: true
         }
     },
-    components: {},
+    components: {
+        ItemPostThread,
+    },
     mixins: [FluroContentViewMixin],
     methods: {},
     computed: {
