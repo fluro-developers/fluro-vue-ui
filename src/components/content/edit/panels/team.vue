@@ -175,8 +175,16 @@
                                 </v-container>
                             </flex-column-body>
                         </tab>
+
                     </tabset>
                 </flex-column>
+            </tab>
+            <tab heading="Posts">
+                <flex-column-body>
+                    <v-container fluid>
+                        <item-post-thread :item="model" />
+                    </v-container>
+                </flex-column-body>
             </tab>
         </tabset>
     </flex-column>
@@ -192,6 +200,7 @@ import TeamTrackTeaser from "../components/TeamTrackTeaser.vue";
 import TeamMetricsDashboard from "../../../charts/metrics/TeamMetricsDashboard.vue";
 import TeamAttendanceMetrics from "../../../charts/metrics/TeamAttendanceMetrics.vue";
 import FluroPostFeed from "../components/FluroPostFeed.vue";
+import ItemPostThread from "../../ItemPostThread"
 
 // import { JSONView } from "vue-json-component";
 
@@ -210,6 +219,7 @@ export default {
         NotificationTeamManager,
         GroupRoleManager,
         FluroPostFeed,
+        ItemPostThread,
     },
     mixins: [FluroContentEditMixin],
     created() {
