@@ -346,8 +346,6 @@
 																<v-input class="no-flex" :label="displayLabel" :success="success" :required="required" :error-messages="errorMessages" :hint="field.description">
 																				<!--  -->
 																				<!-- CONTENT SELECT -->
-
-																		
 																				<fluro-content-select :options="params.contentSelect" :context="context" :template="params.template" :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :success="success" :required="required" :error-messages="errorMessages" :label="displayLabel" :outline="showOutline" :persistent-hint="persistentDescription" :hint="field.description" :placeholder="placeholder" :minimum="minimum" @blur="touch()" @focus="focussed();" :type="restrictType" :lockFilter="referenceFilter" @input="elementValueChanged" :searchInheritable="searchInheritable" :maximum="maximum" v-model="fieldModel" />
 																</v-input>
 												</template>
@@ -584,6 +582,9 @@
 												</template>
 												<template v-else-if="renderer == 'app-filter-select'">
 																<fluro-app-filter-select :field="field" v-model="fieldModel" :parentModel="parent" :options="options" :label="displayLabel" />
+												</template>
+												<template v-else-if="renderer == 'app-chart-select'">
+																<fluro-app-chart-select :field="field" v-model="fieldModel" :parentModel="parent" :options="options" :label="displayLabel" />
 												</template>
 												<template v-else-if="renderer == 'color' && !multipleInput">
 																<!-- COLOR COLOR -->
@@ -2411,6 +2412,7 @@ export default {
 																case 'app-block-select':
 																case 'app-font-select':
 																case 'app-filter-select':
+																case 'app-chart-select':
 																case 'app-size-select':
 																case 'app-style-select':
 																case 'academic-select':

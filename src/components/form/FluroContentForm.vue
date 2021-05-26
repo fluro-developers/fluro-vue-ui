@@ -1,15 +1,10 @@
 <template>
     <div class="fluro-content-form" v-if="ready && model">
-        
         <slot name="form" :parent="formModel" :context="context" :form-fields="formFields" :field-hash="fieldHash" :model="model" :update="update" :options="options">
-           <!-- <pre v-for="(field, index) in fields">TEST: {{field}}</pre> -->
-           <v-container fluid class="grid-list-lg" pa-0 :key="`${field.key}-${index}`" v-for="(field, index) in fields">
+            <v-container fluid class="grid-list-lg" pa-0 :key="`${field.key}-${index}`" v-for="(field, index) in fields">
                 <fluro-content-form-field :debugMode="debugMode" :contextField="contextField" :recursiveClick="recursiveClick" :disableDefaults="disableDefaults" :dynamic="dynamic" :context="context" :parent="formModel" :outline="showOutline" :form-fields="formFields" :options="options" :field="fields[index]" :key="`field-${field.key}-${index}`" @input="update" v-model="model" />
             </v-container>
         </slot>
-     
-
-
     </div>
 </template>
 <script>
@@ -133,7 +128,7 @@ export default {
         model(newModel, oldModel) {
 
             if (this.watchEnabled) {
-                
+
                 this.$emit("input", this.model);
                 // console.log('form chagned')
             }
@@ -153,7 +148,7 @@ export default {
 
             }
 
-           
+
             //    // var newModel = Object.assign({}, val) //input;
             //    this.$set(this, 'model', val);
             //    this.reset();
@@ -190,7 +185,7 @@ export default {
             }
 
             function createDefaults(field) {
-                if(!field) {
+                if (!field) {
                     return;
                 }
 
@@ -277,9 +272,9 @@ export default {
             //File Uploads    
 
             // console.log('Emitting up!', this.model.$el)      
-            this.$emit('input', this.model);           
-          
-           
+            this.$emit('input', this.model);
+
+
         },
     }
 };

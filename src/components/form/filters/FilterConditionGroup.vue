@@ -1475,7 +1475,121 @@ export default {
 																				],
 																});
 
+																injectFields.push({
+																				title: "Total times > Joined a Group or Team",
+																				// key: '_checkins[]',
+																				key: "_joinedTeams.all.length",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "integer",
+																				subfieldTitle: "Where ...",
+																				subfields: [{
+																												title: "Date",
+																												key: "date",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "date",
+																								},
 
+																								{
+																												title: "Group Type / Definition",
+																												key: "definition",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "string",
+																												options: teamDefinitionOptions,
+																								},
+																								{
+																												title: "Group/Team is",
+																												key: "_id",
+																												maximum: 0,
+																												minimum: 0,
+																												type: "reference",
+																												typeSelect: "team"
+																								},
+
+																								// {
+																								// 				title: "Position",
+																								// 				key: "assignment",
+																								// 				maximum: 1,
+																								// 				minimum: 0,
+																								// 				type: "string",
+																								// 			//	options: teamDefinitionOptions,
+																								// },
+																				],
+																});
+
+
+																injectFields.push({
+																				title: "Total times > Left a Group or Team",
+																				// key: '_checkins[]',
+																				key: "_leftTeams.all.length",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "integer",
+																				subfieldTitle: "Where ...",
+																				subfields: [{
+																												title: "Date",
+																												key: "date",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "date",
+																								},
+
+																								{
+																												title: "Group Type / Definition",
+																												key: "definition",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "string",
+																												options: teamDefinitionOptions,
+																								},
+																								{
+																												title: "Group/Team is",
+																												key: "_id",
+																												maximum: 0,
+																												minimum: 0,
+																												type: "reference",
+																												typeSelect: "team"
+																								},
+																				],
+																});
+
+
+																injectFields.push({
+																				title: "Historically was a member of group",
+																				// key: '_checkins[]',
+																				key: "_historicalTeamMember.all.length",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "integer",
+																				subfieldTitle: "Where...",
+																				subfields: [{
+																												title: "Date",
+																												key: "date",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "date",
+																								},
+
+																								{
+																												title: "Group Type / Definition",
+																												key: "definition",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "string",
+																												options: teamDefinitionOptions,
+																								},
+																								{
+																												title: "Group/Team is",
+																												key: "_id",
+																												maximum: 0,
+																												minimum: 0,
+																												type: "reference",
+																												typeSelect: "team"
+																								},
+																				],
+																});
 
 
 
@@ -1501,39 +1615,38 @@ export default {
 																// 												minimum: 0,
 																// 												type: "string",
 																// 												directive: 'select',
-																// 												options: [
-																// 												{
-																// 																name: 'Checkin Assignment',
-																// 																value:'confirmation.unavailable',
-																// 												},
-																// 												{
-																// 																name: 'Declined Assignment',
-																// 																value:'confirmation.unavailable',
-																// 												},
-																// 												{
-																// 																name: 'Graduated to new grade',
-																// 																value:'contact.graduation',
-																// 												},
-																// 												{
-																// 																name: 'Graduated to new Academic Calendar',
-																// 																value:'calendar.graduated',
-																// 												},
-																// 												{
-																// 																name: 'Responded to assignment swap request',
-																// 																value:'assignment.swap.response',
-																// 												},
-																// 												{
-																// 																name: 'Joined a team',
-																// 																value:'team.join',
-																// 												},
-																// 												{
-																// 																name: 'Left a team',
-																// 																value:'team.leave',
-																// 												},
-																// 												{
-																// 																name: 'Recognised by Facial Recognition Camera',
-																// 																value:'contact.recognize',
-																// 												},
+																// 												options: [{
+																// 																				name: 'Checkin Assignment',
+																// 																				value: 'confirmation.unavailable',
+																// 																},
+																// 																{
+																// 																				name: 'Declined Assignment',
+																// 																				value: 'confirmation.unavailable',
+																// 																},
+																// 																{
+																// 																				name: 'Graduated to new grade',
+																// 																				value: 'contact.graduation',
+																// 																},
+																// 																{
+																// 																				name: 'Graduated to new Academic Calendar',
+																// 																				value: 'calendar.graduated',
+																// 																},
+																// 																{
+																// 																				name: 'Responded to assignment swap request',
+																// 																				value: 'assignment.swap.response',
+																// 																},
+																// 																{
+																// 																				name: 'Joined a team',
+																// 																				value: 'team.join',
+																// 																},
+																// 																{
+																// 																				name: 'Left a team',
+																// 																				value: 'team.leave',
+																// 																},
+																// 																{
+																// 																				name: 'Recognised by Facial Recognition Camera',
+																// 																				value: 'contact.recognize',
+																// 																},
 
 																// 												]
 																// 								},

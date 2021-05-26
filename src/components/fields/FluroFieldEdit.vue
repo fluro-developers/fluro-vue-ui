@@ -235,6 +235,14 @@
 																												<fluro-content-form-field :field="fields.showAllValues" v-model="model.params" />
 																												<!-- <fluro-content-form-field :field="fields.allDefinitions" v-model="model.params" /> -->
 																								</template>
+																								<template v-if="model.directive == 'app-chart-select'">
+																												<!-- <fluro-content-form-field :field="fields.referenceType" v-model="model.params" /> -->
+
+																												<fluro-content-form-field :field="fields.dynamicChartType" v-model="model.params" />
+																												<fluro-content-form-field :field="fields.dynamicChartDataType" v-model="model.params" />
+																												<!-- <fluro-content-form-field :field="fields.showAllValues" v-model="model.params" /> -->
+																												<!-- <fluro-content-form-field :field="fields.allDefinitions" v-model="model.params" /> -->
+																								</template>
 																								<template v-if="model.type == 'boolean'">
 																												<fluro-content-form-field :field="fields.storeCopy" v-model="model.params" />
 																												<fluro-content-form-field :field="fields.storeData" v-model="model.params" />
@@ -1574,6 +1582,26 @@ export default {
 																//options: self.referenceOptions
 												});
 
+
+												addField("dynamicChartType", {
+																key: "dynamicChartType",
+																title: "Dynamic Chart Type",
+																description: "Infer the chart type for this field from the value in another field",
+																minimum: 0,
+																maximum: 1,
+																type: "string",
+												});
+
+												addField("dynamicChartDataType", {
+																key: "dynamicChartDataType",
+																title: "Dynamic Chart Data Type",
+																description: "Infer the chart data type for this field from the value in another field",
+																minimum: 0,
+																maximum: 1,
+																type: "string",
+												});
+
+
 												addField("allDefinitions", {
 																key: "allDefinitions",
 																title: "Include all definitions",
@@ -1888,6 +1916,11 @@ export default {
 																				inputOptions.push({
 																								title: "Filter Configuration",
 																								value: "app-filter-select"
+																				});
+
+																				inputOptions.push({
+																								title: "Chart Configuration",
+																								value: "app-chart-select"
 																				});
 
 
