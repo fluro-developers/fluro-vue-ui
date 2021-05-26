@@ -7,7 +7,7 @@
                         <v-flex xs12 sm6 v-if="item.emails && item.emails.length">
                             <v-input class="no-flex">
                                 <v-label>Email Addresses</v-label>
-                                <div v-for="email in item.emails">
+                                <div v-for="email in item.emails" :key="email._id">
                                     <a :href="`mailto:${email}`">
                                         <fluro-icon icon="envelope" left />
                                         {{email}}
@@ -18,7 +18,7 @@
                         <v-flex xs12 sm6 v-if="item.phoneNumbers && item.phoneNumbers.length">
                             <v-input class="no-flex">
                                 <v-label>Phone Numbers</v-label>
-                                <div v-for="number in item.phoneNumbers">
+                                <div v-for="number in item.phoneNumbers" :key="number._id">
                                     <a :href="`tel:${number}`">
                                         <fluro-icon icon="phone" left />
                                         {{number}}
@@ -126,6 +126,8 @@
                     <template v-if="fields && fields.length">
                         <fluro-content-render :fields="fields" v-model="item.data" />
                     </template>
+                    <h4>Posts</h4>
+                    <item-post-thread :item="item" />
                 </constrain>
             </v-container>
         </flex-column-body>
@@ -137,7 +139,7 @@
 import Vue from "vue";
 
 import FluroContentViewMixin from "../FluroContentViewMixin.js";
-
+import ItemPostThread from "../../ItemPostThread"
 /////////////////////////////////
 
 export default {
@@ -151,7 +153,9 @@ export default {
             required: true
         }
     },
-    components: {},
+    components: {
+        ItemPostThread,
+    },
     mixins: [FluroContentViewMixin],
     methods: {},
     computed: {

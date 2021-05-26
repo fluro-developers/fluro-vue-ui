@@ -58,6 +58,13 @@
           </v-container>
         </flex-column-body>
       </tab>
+      <tab heading="Posts">
+          <flex-column-body>
+              <v-container fluid>
+                  <item-post-thread :item="item" />
+              </v-container>
+          </flex-column-body>
+      </tab>
     </tabset>
   </flex-column>
 </template>
@@ -70,6 +77,7 @@ import TeamMetricsDashboard from "../../../charts/metrics/TeamMetricsDashboard.v
 import FluroTable from "../../../table/FluroTable.vue";
 import SearchInput from "../../../ui/SearchInput.vue";
 import ContactAvatar from "../../../table/cells/AvatarCell.vue";
+import ItemPostThread from "../../ItemPostThread"
 
 /////////////////////////////////
 
@@ -79,6 +87,7 @@ export default {
     SearchInput,
     FluroTable,
     TeamMetricsDashboard,
+    ItemPostThread,
   },
   props: {
     config: {

@@ -189,6 +189,13 @@
                     </v-container>
                 </flex-column-body>
             </tab>
+            <tab heading="Posts">
+                <flex-column-body>
+                    <v-container fluid>
+                        <item-post-thread :item="item" />
+                    </v-container>
+                </flex-column-body>
+            </tab>
         </tabset>
     </flex-column>
 </template>
@@ -204,6 +211,7 @@ import FluroContentViewMixin from '../FluroContentViewMixin.js';
 import EventAgeGenderMetrics from '../../../charts/metrics/EventAgeGenderMetrics.vue'
 import GuestList from '../../event/GuestList.vue';
 import TicketList from '../../event/TicketList.vue';
+import ItemPostThread from "../../ItemPostThread"
 
 /////////////////////////////////
 
@@ -223,7 +231,8 @@ export default {
         GuestList,
         TicketList,
         LocationViewMapComponent,
-        EventAgeGenderMetrics
+        EventAgeGenderMetrics,
+        ItemPostThread,
     },
     mixins: [FluroContentViewMixin],
     methods: {

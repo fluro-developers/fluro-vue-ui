@@ -374,6 +374,13 @@
                     </v-container>
                 </flex-column-body>
             </tab>
+            <tab heading="Posts">
+                <flex-column-body>
+                    <v-container fluid>
+                        <item-post-thread :item="model" />
+                    </v-container>
+                </flex-column-body>
+            </tab>
         </tabset>
     </flex-column>
 </template>
@@ -392,6 +399,7 @@ import TicketTypeManager from "../../event/TicketTypeManager.vue";
 import FluroContentView from "../../view/FluroContentView.vue";
 import EventAgeGenderMetrics from '../../../charts/metrics/EventAgeGenderMetrics.vue'
 import FluroPostFeed from '../../../FluroPostFeed.vue'
+import ItemPostThread from "../../ItemPostThread"
 
 /////////////////////////////////
 
@@ -413,6 +421,7 @@ export default {
         LocationViewMapComponent,
         EventAgeGenderMetrics,
         FluroPostFeed,
+        ItemPostThread,
     },
     props: {},
     mixins: [FluroContentEditMixin],

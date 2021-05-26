@@ -3,11 +3,11 @@
         <fluro-page-preloader v-if="loading" contain />
         <template v-else>
             <!-- <pre>{{teamGroups}}</pre> -->
-            <v-input class="no-flex" v-for="group in teamGroups">
+            <v-input class="no-flex" v-for="group in teamGroups" :key="group._id">
                 <v-label>{{group.title}}</v-label>
                 <list-group>
                     <template v-for="team in group.teams">
-                        <list-group-item @click="$fluro.global.view(team)" :item="team" :firstLine="team.positions | comma">
+                        <list-group-item @click="$fluro.global.view(team)" :item="team" :firstLine="team.positions | comma" :key="team._id">
                             <template v-slot:right>
                                 <v-menu :left="true" v-model="actionIndexes[team._id]" :fixed="true" transition="slide-y-transition" offset-y>
                                     <template v-slot:activator="{ on }">

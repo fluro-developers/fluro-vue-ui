@@ -93,6 +93,9 @@
                 <tab :heading="`${definition.title} Information`" v-if="definition && definition.fields && definition.fields.length">
                     <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
                 </tab>
+                <tab heading="Posts" >
+                    <item-post-thread :item="model" />
+                </tab>
             </tabset>
         </template>
     </flex-column>
@@ -104,7 +107,7 @@ import FamilyMemberCard from "../components/FamilyMemberCard.vue";
 import FluroContentEditMixin from "../FluroContentEditMixin.js";
 import AddressManager from "../components/AddressManager.vue";
 import FluroAcademicSelect from "../../../form/FluroAcademicSelect.vue";
-
+import ItemPostThread from "../../ItemPostThread"
 /////////////////////////////////
 
 import Vue from "vue";
@@ -115,7 +118,8 @@ import _ from "lodash";
 export default {
     components: {
         AddressManager,
-        FamilyMemberCard
+        FamilyMemberCard,
+        ItemPostThread,
     },
     created() {
         //If we are creating a new family

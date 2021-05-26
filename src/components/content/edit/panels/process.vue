@@ -175,6 +175,13 @@
                     </flex-column>
                 </flex-row>
             </tab>
+            <tab heading="Posts">
+                <flex-column-body>
+                    <v-container fluid>
+                        <item-post-thread :item="model" />
+                    </v-container>
+                </flex-column-body>
+            </tab>
             <!-- <tab heading="Forms" v-if="model.forms && model.forms.length">
                 <slot>
                     <flex-column-body style="background: #fafafa;">
