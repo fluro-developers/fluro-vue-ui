@@ -350,10 +350,7 @@ export default {
                         return ser.key
                     })
                     if (!endpoint) {
-                        endpoint = `chart/data/${self.definition}/${self.chartType}?series=${JSON.stringify(series)}`
-                    }
-                    if (self.axis) {
-                        endpoint = endpoint + `&axis=${self.axis.key}`
+                        endpoint = `chart/data/${self.definition}/${self.chartType}`
                     }
                     /////////////////////////////
                     //console.log("endpoint", endpoint)
@@ -361,11 +358,13 @@ export default {
                     var startDate = self.datePeriod.start;
                     var endDate = self.datePeriod.end;
                     //Load the data from the API
-                    self.$fluro.api.get(endpoint, {
-                        params: {
+                    self.$fluro.api.post(endpoint, {
+                        options: {
                             startDate: startDate,
                             endDate: endDate,
-                        }
+                        },
+                        series,
+                        axis:self.axis.key
                     }).then(function(res) {
                         resolve(res.data);
                         self.loading = false;
