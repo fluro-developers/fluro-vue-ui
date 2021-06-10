@@ -358,14 +358,21 @@ export default {
                     var startDate = self.datePeriod.start;
                     var endDate = self.datePeriod.end;
                     //Load the data from the API
-                    self.$fluro.api.post(endpoint, {
+                    
+                    var postOptions = {
                         options: {
                             startDate: startDate,
                             endDate: endDate,
                         },
                         series,
-                        axis:self.axis.key
-                    }).then(function(res) {
+                    }
+
+                    if( self.axis.key) {
+                        postOptions.axis = self.axis.key
+                    }
+
+                    self.$fluro.api.post(endpoint, postOptions).then(function(res) {
+                        console.log("FLURO CHART DATA", res.data)
                         resolve(res.data);
                         self.loading = false;
                     }, function(err) {
