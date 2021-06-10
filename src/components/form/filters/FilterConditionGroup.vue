@@ -575,6 +575,30 @@ export default {
 												}
 								},
 
+								rooms: {
+												get() {
+																var self = this;
+
+																switch (self.basicType) {
+																				case 'event':
+																								return new Promise(function(resolve, reject) {
+
+																												return self.$fluro.api.get(`/event/filter/rooms`)
+																																.then(function(res) {
+																																				return resolve(res.data);
+																																})
+																																.catch(reject);
+																								})
+																								break;
+																				default:
+																								return Promise.resolve([]);
+																								break;
+																}
+
+
+												}
+								},
+
 								assignmentPositions: {
 												get() {
 																var self = this;
@@ -975,6 +999,7 @@ export default {
 
 												var assignmentPositionOptions = []
 												var ticketOptions = [];
+												var roomOptions = [];
 												var eventDefinitionOptions = [];
 												var contactDefinitionOptions = [];
 												var eventTrackOptions = [];
@@ -1081,6 +1106,22 @@ export default {
 																								name: title,
 																								text: title,
 																								value: title,
+																				};
+																})
+																.orderBy('title')
+																.value()
+
+												//////////////////////////////////////////////////
+
+
+												roomOptions = _.chain(self.rooms)
+																.map(function(room) {
+																				return {
+																								title: room.title,
+																								name: room.title,
+																								text: room.title,
+																								value: room._id,
+																								_id:room._id,
 																				};
 																})
 																.orderBy('title')
@@ -2990,6 +3031,20 @@ export default {
 																								//  ]
 																								// });
 
+																								break;
+
+																				case 'event':
+																							
+
+																								injectFields.push({
+																												title: "Rooms",
+																												key: "rooms",
+																												maximum: 1,
+																												minimum: 0,
+																												type: "reference",
+																												directive: "select",
+																												options: roomOptions
+																								});
 																								break;
 																				case 'plan':
 																				case 'attendance':
