@@ -134,12 +134,11 @@
                                 </flex-column-body>
                         </tab>
       -->
-
             <tab heading="Posts and Notes">
                 <flex-column-body style="background: #fafafa;">
                     <v-container class="grid-list-xl">
                         <constrain md>
-                            <fluro-post-feed v-model="model"/>
+                            <fluro-post-feed v-model="model" />
                         </constrain>
                     </v-container>
                 </flex-column-body>
@@ -175,7 +174,6 @@
                                 </v-container>
                             </flex-column-body>
                         </tab>
-
                     </tabset>
                 </flex-column>
             </tab>
@@ -251,13 +249,40 @@ export default {
 
         if (!self.model._id) {
             var defaultPositions = _.get(self.definition, 'data.defaultPositions');
-            if (defaultPositions) {
+            if (defaultPositions && defaultPositions.length) {
                 var positions = JSON.parse(JSON.stringify(defaultPositions));
 
                 _.each(positions, function(position) {
                     position.contacts = [];
                 })
                 self.$set(self.model, 'assignments', positions);
+            }
+        } else {
+            //add the positions that are missing
+            var defaultPositions = _.get(self.definition, 'data.defaultPositions');
+            if (defaultPositions && defaultPositions.length) {
+                var positions = JSON.parse(JSON.stringify(defaultPositions));
+                
+                //Add any positions that don't exist
+                var currentPositionsLookup = _.reduce(self.model.assignments, function(set, assignmentRow) {
+                    var lowercaseTitle = _.camelCase(assignmentRow.title);
+                    set[lowercaseTitle] = true;
+                    return set;
+                }, {});
+
+
+
+                _.each(positions, function(position) {
+
+                    var title = _.camelCase(position.title);
+                    if (currentPositionsLookup[title]) {
+                        return;
+                    } else {
+                        self.model.assignments.push(position);
+                    }
+                })
+
+
             }
         }
 
@@ -329,7 +354,7 @@ export default {
 
 
             self.$fluro.global
-                .create("eventtrack", {template, options: true}, true)
+                .create("eventtrack", { template, options: true }, true)
                 .then(
                     function(res) {
                         self.processing = false;

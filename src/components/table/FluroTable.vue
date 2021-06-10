@@ -846,9 +846,15 @@ export default {
 
 												var self = this;
 
+												if (!self.selectionManager) {
+																return;
+												}
+
 												if (!self.page || !self.page.length) {
 																return;
 												}
+
+
 
 												//Check if any of the rows are not selected
 												var anyNotSelected = _.some(self.page, function(item) {
@@ -864,6 +870,10 @@ export default {
 
 												if (self.allSelected) {
 																return true;
+												}
+
+												if (!self.selectionManager) {
+																return;
 												}
 
 												return _.some(self.page, function(item) {
@@ -1642,15 +1652,20 @@ export default {
 								// },
 								checkboxClick(item, $event, itemIndex) {
 
+
+
 												// console.log('ITEM INDEX', itemIndex, item, $event);
 												return this.toggleSelection(item, $event, itemIndex);
-												// //console.log('Checkbox click!');
-												return this.selectionManager.toggle(item);
+
 								},
 								toggleSelection(item, $event, itemIndex, isolateOnClick) {
 
 
 												// var isolateOnClick = true;//false;
+												var self = this;
+												if (!self.selectionManager) {
+																return;
+												}
 
 												////////////////////
 
@@ -1659,12 +1674,12 @@ export default {
 																if (isolateOnClick) {
 																				//Set the selection to just this item
 
-																				this.selectionManager.setSelection([item]);
+																				self.selectionManager.setSelection([item]);
 																				//console.log('SET SELECTION', item)
 																				return
 																} else {
 																				//Select/Deselect this item
-																				this.selectionManager.toggle(item);
+																				self.selectionManager.toggle(item);
 
 																				return
 																}
@@ -1803,8 +1818,11 @@ export default {
 																classes.push('ticket-status-collected')
 												}
 
-												if (this.selectionManager.isSelected(item)) {
-																classes.push('selected');
+												if (this.selectionManager) {
+
+																if (this.selectionManager.isSelected(item)) {
+																				classes.push('selected');
+																}
 												}
 
 												//// console.log('iTEM ISSUE', item)
@@ -1856,28 +1874,40 @@ export default {
 																return;
 												}
 
-												this.selectionManager.selectMultiple(this.page)
+												if (this.selectionManager) {
+
+																this.selectionManager.selectMultiple(this.page)
+												}
 								},
 								deselectPage() {
 												if (!this.page || !this.page.length) {
 																return;
 												}
 
-												this.selectionManager.deselectMultiple(this.page)
+												if (this.selectionManager) {
+																this.selectionManager.deselectMultiple(this.page)
+												}
 								},
 								selectAll() {
 
-
-												this.selectionManager.selectMultiple(this.filtered);
+												if (this.selectionManager) {
+																this.selectionManager.selectMultiple(this.filtered);
+												}
 								},
 								deselectAll() {
-												this.selectionManager.deselectAll();
+												if (this.selectionManager) {
+																this.selectionManager.deselectAll();
+												}
 								},
 								toggleSelectAll() {
 
 
 												if (!this.page || !this.page.length) {
 																return;
+												}
+
+												if (!this.selectionManager) {
+													return
 												}
 
 												// //console.log('Toggle All', this.page);
