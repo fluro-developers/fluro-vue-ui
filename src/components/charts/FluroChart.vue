@@ -211,33 +211,34 @@ export default {
             var self = this;
 
 			var dataset = self.items;
-			console.log("Got dataset", dataset)
+			//console.log("Got dataset", dataset)
 			switch (self.chartType) {
 				case "bar":
 				case "line":
 				case "synced":
 				case "column":
 				case "area":
-					console.log("In Area")
-					if (!_.get(_.first(dataset), self.axis)) {
-						console.log(dataset);
+					//console.log("In Area")
+					if (!_.get(_.first(dataset), self.axis.key)) {
+						console.log("dataset not contain axis", self.axis, dataset);
 						return ;
 					}
 
 					//console.log("SERIES", series, "AXIS", axis)
 					var mappedData = _.map(dataset, function(entry) {
-						//console.log(entry)
+						//console.log("Entry", entry)
 						var returnEntry = {};
-						var axisvalue = _.get(entry, self.axis);
-						//console.log("Axis", axis, "Value", axisvalue)
+						var axisvalue = _.get(entry, self.axis.key);
+						console.log("Axis", self.axis, "Value", axisvalue)
 						_.set(returnEntry, "axis", axisvalue);
-						_.each(series, function(ser) {
+						_.each(self.series, function(ser) {
 							// force a 0 rather than a null.
-							_.set(returnEntry, ser, _.get(entry, ser) || 0);
+                      //      console.log("ser", ser)
+							_.set(returnEntry, ser.key, _.get(entry, ser.key) || 0);
 						});
 						return returnEntry;
 					});
-
+                    //console.log("Mapped Data", mappedData)
 
 					var returnData = {
 						axis: [],
@@ -245,19 +246,20 @@ export default {
 					};
 
 					_.each(self.series, function(ser) {
-						_.set(returnData, `series.${ser}`, []);
+						_.set(returnData, `series.${ser.key}`, []);
 					});
 
-					_.each(dataset, function(entry) {
-						//console.log("HERE", entry)
+					_.each(mappedData, function(entry) {
+					//	console.log("HERE", entry)
 						returnData.axis.push(entry.axis);
-						_.each(series, function(ser) {
-							var item = _.get(entry, ser);
+						_.each(self.series, function(ser) {
+							var item = _.get(entry, ser.key);
 							//console.log("Adding Item", ser, item)
-							_.get(mappedData, `series.${ser}`).push(item);
+                            //console.log("Destination:", _.get(mappedData, `series.${ser.key}`))
+							_.get(returnData, `series.${ser.key}`).push(item);
 						});
 					});
-					console.log("RETURNING Line", returnData)
+					//console.log("RETURNING Line", returnData)
 					return returnData;
 
 					break;
@@ -272,14 +274,14 @@ export default {
 						//console.log("Stage 1", dataset.length)
 						_.each(self.series, function(ser) {
 							//console.log("Counting Data:", _.get(dataset, ser))
-							mappedData[ser] = _.countBy(dataset, ser);
+							mappedData[ser.key] = _.countBy(dataset, ser.key);
 						});
 						return mappedData;
 					}
 					//console.log("last iteration", dataset)
 					// Just return the Stat from the object
 					_.each(series, function(ser) {
-						mappedData[ser] = _.get(dataset, ser);
+						mappedData[ser.key] = _.get(dataset, ser.key);
 					});
 
 					// change the nulls to 0
@@ -302,7 +304,7 @@ export default {
 							data.push(value);
 						});
 
-						returnData.series[ser] = { labels, data };
+						returnData.series[ser.key] = { labels, data };
 					});
 					console.log("RETURNING Pie", returnData)
 					return returnData;
@@ -451,7 +453,7 @@ export default {
                 /////////////////////////////
                 return new Promise(function(resolve, reject) {
                     if (self.model) {
-                        console.log('FLUROCHART - We have a supplied datasource!', self.model);
+                        //console.log('FLUROCHART - We have a supplied datasource!', self.model);
                         resolve(self.model);
                         self.loading = false;
                         return;
@@ -484,7 +486,7 @@ export default {
 
                     self.$fluro.api.post(endpoint, postOptions).then(
                         function(res) {
-                            console.log("FLURO CHART DATA", res.data);
+                            //console.log("FLURO CHART DATA", res.data);
                             resolve(res.data);
                             self.loading = false;
                         },
