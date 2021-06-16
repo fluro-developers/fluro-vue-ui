@@ -89,7 +89,7 @@ export default {
             }
 
             if (self.items && self.items.length) {
-				console.log("Going for Items", self.prepareItems)
+				//console.log("Going for Items", self.prepareItems)
                 return self.prepareItems;
             }
 
@@ -229,7 +229,7 @@ export default {
 						//console.log("Entry", entry)
 						var returnEntry = {};
 						var axisvalue = _.get(entry, self.axis.key);
-						console.log("Axis", self.axis, "Value", axisvalue)
+						//console.log("Axis", self.axis, "Value", axisvalue)
 						_.set(returnEntry, "axis", axisvalue);
 						_.each(self.series, function(ser) {
 							// force a 0 rather than a null.
@@ -266,21 +266,53 @@ export default {
 				case "donut":
 				case "radialBar":
 				case "pie":
-					console.log("In Pie")
+					//console.log("In Pie")
 					var mappedData = {};
 
-					// if we have an array - want to get the key pairs from all the objects in the array.
+                    // if i have an array and an axis denoting where teh labels are
+					if (dataset instanceof Array && self.axis) {
+						//console.log("Stage 1", dataset.length)
+						
+                        var returnData = {
+                            series: {},
+                        };
+
+                        _.each(self.series, function(ser) {
+                            //console.log("processing", ser)
+                            var labels = [];
+                            var data = [];
+                            _.each(dataset, function(item) {
+                                //console.log("Dataset value", item)
+                                var key = _.get(item, self.axis.key)
+                                var value = _.get(item, ser.key)
+                                if (Number.isNaN(value) || value == null) {
+                                    value = 0;
+                                }
+                                labels.push(key);
+                                data.push(value);
+                            });
+
+                            returnData.series[ser.key] = { labels, data };
+                        });
+                        //console.log("RETURNING Pie", returnData)
+                        return returnData;
+                        
+					}
+					
+                    
+                    // if we have an array - want to get the key pairs from all the objects in the array.
 					if (dataset instanceof Array) {
 						//console.log("Stage 1", dataset.length)
 						_.each(self.series, function(ser) {
 							//console.log("Counting Data:", _.get(dataset, ser))
 							mappedData[ser.key] = _.countBy(dataset, ser.key);
 						});
+                        //console.log("Array to pie", mappedData)
 						return mappedData;
 					}
 					//console.log("last iteration", dataset)
 					// Just return the Stat from the object
-					_.each(series, function(ser) {
+					_.each(self.series, function(ser) {
 						mappedData[ser.key] = _.get(dataset, ser.key);
 					});
 
@@ -288,7 +320,7 @@ export default {
 
 					var newData = { series: mappedData }
 
-					//console.log("Pie formatData")
+					//console.log("Pie formatData", newData)
 					var returnData = {
 						series: {},
 					};
@@ -306,7 +338,7 @@ export default {
 
 						returnData.series[ser.key] = { labels, data };
 					});
-					console.log("RETURNING Pie", returnData)
+					//console.log("RETURNING Pie", returnData)
 					return returnData;
 				
 					
