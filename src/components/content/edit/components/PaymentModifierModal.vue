@@ -70,6 +70,52 @@
                         </span>
                     </p>
                 </modifier-accordion>
+
+
+                
+
+
+
+                <modifier-accordion title="Global Form Variables">
+                    <p>
+                        <code>calculatedTotal</code>
+                        <br />
+                        <span>
+                            The running total that is currently calculated (for chaining modifiers together)
+                        </span>
+                    </p>
+
+                    <p>
+                        <code>moment()</code>
+                        <br />
+                        <span>
+                            The MomentJS date library
+                        </span>
+                    </p>
+
+                    <p>
+                        <code>Date()</code>
+                        <br />
+                        <span>
+                            The default javascript Date utility
+                        </span>
+                    </p>
+
+                    <p>
+                        <code>Math()</code>
+                        <br />
+                        <span>
+                            The default javascript Math utility
+                        </span>
+                    </p>
+                    
+                </modifier-accordion>
+
+
+
+
+
+
                 <modifier-accordion :title="field.titles" v-for="field in availableFields">
                     <p v-for="example in field.examples" >
                         <code v-tippy content="Click to copy" @click="$fluro.global.copyToClipBoard(example.path)">{{example.path}} <fluro-icon icon="copy"/></code>
@@ -379,6 +425,8 @@ export default {
                     //Check if this field is a child of a lower level multi group
                     if (field.childPath) {
                         if (!firstTen.length) {
+
+
                             examples.push({
                                 path: "matchInArray(data." +
                                     field.parentPath +

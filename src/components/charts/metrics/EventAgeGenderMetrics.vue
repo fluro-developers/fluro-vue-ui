@@ -5,13 +5,20 @@
         </template> -->
         <template v-else-if="model && model.stats">
             <fluro-panel>
+             <fluro-panel-title>
+
+                        <strong>{{model | readableEventDate}}</strong>
+                        <div class="muted font-sm">{{model.title}} - {{model.firstLine}}</div>
+                   
+             </fluro-panel-title>
                 <fluro-panel-body>
+                    
                     <div class="field-group">
                         <label>Overall Attendance</label>
                         <div class="bignumber">
                             {{model.stats.combinedHeadcountCheckins}}
                         </div>
-                    <div class="muted font-sm"><span v-if="model.stats.headcount">{{model.stats.headcount}} Headcount.&nbsp;</span><span v-if="model.stats.checkin">{{model.stats.checkin}} Checked in</span></div>
+                        <div class="muted font-sm"><span v-if="model.stats.headcount">{{model.stats.headcount}} Headcount.&nbsp;</span><span v-if="model.stats.checkin">{{model.stats.checkin}} Checked in</span></div>
                     </div>
                 </fluro-panel-body>
             </fluro-panel>
@@ -264,27 +271,26 @@ export default {
 
 </script>
 <style lang="scss" scoped>
-
 .bignumber {
- font-size: 3em;
- font-weight: bold;
+    font-size: 3em;
+    font-weight: bold;
 }
 
 .field-group {
-        display: block;
-        margin-bottom: 1.5em;
+    display: block;
+    margin-bottom: 1.5em;
 
-        label {
-         opacity: 0.7;
-            display: block;
-            font-weight: 700;
-            margin-bottom: 0.3em;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-size: 0.8em;
-            // opacity:0.5;
-        }
+    label {
+        opacity: 0.7;
+        display: block;
+        font-weight: 700;
+        margin-bottom: 0.3em;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-size: 0.8em;
+        // opacity:0.5;
     }
+}
 
 
 // .gender {

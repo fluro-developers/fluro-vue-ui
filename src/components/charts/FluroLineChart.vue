@@ -43,8 +43,9 @@ export default {
             var self = this
             //console.log("FLUROLINECHART model", self.model)
             var returnData = _.concat([], self.model.series)
+            
             if (!_.get(_.first(self.model.series), 'data.length')) {
-                return
+                return []
             }
             //console.log("options in FLC", _.get(self, "options"))
             if (_.get(self, "options._AOT")) {
@@ -109,6 +110,7 @@ export default {
     asyncComputed: {
         chartOptions() {
             var self = this
+
             return new Promise(function(resolve, reject) {
                 var chartOpt = _.cloneDeep(self.options)
                 // if (!_.get(chartOpt, "chart.width")) {
@@ -348,6 +350,7 @@ export default {
                     // console.log('YAXIS RETURN', returnYAxis, ser);
                     return (returnYAxis)
                 }
+
                 ////////////////////////////////////////
                 var yaxis = _.get(chartOpt, "yaxis")
                 // console.log('YAXIS', yaxis)

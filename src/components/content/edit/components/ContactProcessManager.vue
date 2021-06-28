@@ -2,6 +2,15 @@
     <div>
         <fluro-page-preloader v-if="loading" contain />
         <template v-else>
+
+        
+            <!-- <template v-if="canAdd">
+                <v-btn small color="primary" @click="add()" class="ml-0">
+                    Add to process
+                    <fluro-icon right icon="plus" />
+                </v-btn>
+            </template> -->
+
             <template v-if="sorted.length">
                 <contact-process-state @click.native="clicked(card)" :card="card" :key="card._id" v-for="card in sorted" />
             </template>
@@ -44,6 +53,7 @@
     </div>
 </template>
 <script>
+import AddToProcessModal from '@/components/modal/modals/AddToProcessModal.vue';
 import ListGroup from '../../../ui/ListGroup.vue';
 import ListGroupItem from '../../../ui/ListGroupItem.vue';
 import ContactProcessState from './ContactProcessState.vue';
@@ -185,6 +195,44 @@ export default {
                     self.loading = false;
                 })
         },
+        add() {
+            var self = this;
+            var promise = self.$fluro.modal({
+                component: AddToProcessModal,
+                options: {
+                    items:[self.model],
+                }
+            });
+        },
+        canAnyOfType(permission, basicTypeName) {
+
+            var self = this;
+            var glossary = self.$fluro.types.glossary;
+            if (glossary) {
+
+                var canRunAction = _.chain(glossary)
+                    .some(function(term) {
+                        if (term.parentType == basicTypeName) {
+                            return self.$fluro.access.can(permission, term.definitionName, basicTypeName);
+                        }
+                    })
+                    .value();
+
+                //If we can create a mailout of any type
+                if (canRunAction) {
+                    //finish here
+                    return true;
+                }
+            }
+
+            ///////////////////////////////////////////
+
+            //Check if we have the create mailout permission
+            var canRunActionOnBasicType = self.$fluro.access.can(permission, basicTypeName);
+            if (canRunActionOnBasicType) {
+                return true;
+            }
+        },
     },
     components: {
         ListGroup,
@@ -192,6 +240,9 @@ export default {
         ContactProcessState,
     },
     computed: {
+        canAdd() {
+            return this.canAnyOfType('create', 'process');
+        },
         sorted() {
             return _.orderBy(this.cards, this.$fluro.utils.processCardPrioritySort)
         },
@@ -200,6 +251,7 @@ export default {
         },
     },
 }
+
 </script>
 <style lang="scss">
 </style>

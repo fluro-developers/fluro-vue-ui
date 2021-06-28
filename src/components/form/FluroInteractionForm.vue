@@ -642,6 +642,7 @@ export default {
                         model: self.dataModel,
                         data: self.dataModel,
                         matchInArray: self.$fluro.utils.matchInArray,
+                        extractFromArray: self.$fluro.utils.extractFromArray,
                         //Basic Bits
                         getAge: self.$fluro.utils.getAge,
                         Date: Date,

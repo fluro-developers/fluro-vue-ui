@@ -1,31 +1,29 @@
 <template>
-     <flex-column>
+    <flex-column>
         <fluro-page-preloader v-if="loading" contain />
-        
         <template v-else>
             <!-- <pre>{{postData}}</pre> -->
-            <v-container fluid pa-0 grid-list-xl>
-                <event-age-gender-metrics :id="selectedEvent" v-if="selectedEvent"></event-age-gender-metrics>
-            </v-container>
             <fluro-panel v-if="eventData.model.series.attendance.length">
                 <fluro-panel-title>
                     <strong>Attendance</strong>
                 </fluro-panel-title>
                 <fluro-panel-body>
-                    <fluro-chart chartType="line" :options="eventData.options" v-model="eventData.model" :series="eventData.series" :axis="eventData.axis" v-on:chart-event="chartClicked"/>
+                    <fluro-chart chartType="line" :options="eventData.options" v-model="eventData.model" :series="eventData.series" :axis="eventData.axis" v-on:chart-event="chartClicked" />
                 </fluro-panel-body>
             </fluro-panel>
-
-            <fluro-panel v-if="eventData.model.series.attendance.length">
+            <fluro-panel v-if="postData">
                 <fluro-panel-title>
                     <strong>Reported Stats</strong>
                 </fluro-panel-title>
-
                 <fluro-panel-body>
                     <fluro-chart chartType="bar" :options="postData.options" v-model="postData.model" :series="postData.series" :axis="postData.axis" />
                 </fluro-panel-body>
-
             </fluro-panel>
+            
+            <v-container fluid pa-0 grid-list-xl>
+                <event-age-gender-metrics :id="selectedEvent" v-if="selectedEvent"></event-age-gender-metrics>
+            </v-container>
+            
         </template>
     </flex-column>
 </template>
@@ -47,11 +45,11 @@ export default {
         },
         startDate: {
             type: Date,
-            default: function () { return moment().subtract(1, 'year').toDate()},
-        }, 
+            default: function() { return moment().subtract(1, 'year').toDate() },
+        },
         endDate: {
             type: Date,
-            default: function () { return moment().toDate()},
+            default: function() { return moment().toDate() },
         }
     },
     computed: {
@@ -67,6 +65,8 @@ export default {
             var events = _.sortBy(self.model, function(event) {
                 return event.startDate
             })
+
+
             _.each(events, function(event) {
                 //console.log("HERE", event)
                 var headcount = _.get(event, "stats.headcount") || 0
@@ -80,14 +80,17 @@ export default {
                 }
             })
 
-            
+            var now = new Date();
             var latestEvent = _.chain(events)
                 .filter(function(o) {
-                    return moment(o.startDate) < moment()
+                    return new Date(o.startDate) < now;
                 })
                 .last(events)
                 .value()
-            self.selectedEvent = latestEvent._id
+
+            if (latestEvent) {
+                self.selectedEvent = self.$fluro.utils.getStringID(latestEvent._id);
+            }
 
             var max = Math.max(_.max(model.series.attendance), _.max(model.series.expected))
 
@@ -145,16 +148,16 @@ export default {
             var keys = []
 
             var posts = _.chain(self.model)
-                .map(function (event){
+                .map(function(event) {
                     return event.posts
                 })
                 .flatten()
-                .map(function (post){
+                .map(function(post) {
                     return post.data
                 })
-                .reduce(function(set, value, key){
+                .reduce(function(set, value, key) {
                     //console.log("set", set, "value", value, "key", key)
-                    _.each(value, function(val, id){
+                    _.each(value, function(val, id) {
                         //console.log(val, typeof val)
                         if (typeof val == "number") {
                             set[id] = id
@@ -162,7 +165,7 @@ export default {
                     })
                     return set
                 }, {})
-                
+
                 .value()
 
 
@@ -172,10 +175,15 @@ export default {
         },
         postData() {
             var self = this
+
+            //No point in continuing
+            if(!self.postStats || !self.postStats.length) {
+             return;
+            }
+
             var model = {
                 axis: [],
-                series: {
-                }
+                series: {}
             }
 
             var returnDataSeries = [
@@ -187,9 +195,9 @@ export default {
                 //         "title": "Expected",
                 //         "key": "expected",
                 //     },
-                ]
+            ]
 
-            _.each(self.postStats, function (val){
+            _.each(self.postStats, function(val) {
                 model.series[val] = []
                 returnDataSeries.push({
                     "title": val,
@@ -201,12 +209,12 @@ export default {
             })
             _.each(events, function(event) {
                 //console.log("HERE", event)
-                    model.axis.push(event.startDate)
-                    _.each(self.postStats, function (val){
-                        model.series[val].push(_.get(event, `posts[0].data.${val}`))
-                    })
-
+                model.axis.push(event.startDate)
+                _.each(self.postStats, function(val) {
+                    model.series[val].push(_.get(event, `posts[0].data.${val}`))
                 })
+
+            })
 
 
             var returnData = {
@@ -219,7 +227,7 @@ export default {
                 options: {
                     yaxis: [{
                             min: 0,
-                            
+
                             // title: {
                             //     text: 'Attendance',
                             // },
@@ -287,7 +295,7 @@ export default {
     methods: {
         chartClicked(data) {
             var self = this
-            if(data.key == 'click'){
+            if (data.key == 'click') {
                 // console.log("Clicked", data, self.model[data.config.dataPointIndex])
                 self.selectedEvent = self.model[data.config.dataPointIndex]._id
             }

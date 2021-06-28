@@ -181,6 +181,9 @@
 																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.favicon" v-model="model" />
 																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.headerInject" v-model="model" />
 																												<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.footerInject" v-model="model" />
+																							
+																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.source" v-model="model.data" />
+
 																								</constrain>
 																				</v-container>
 																</flex-column-body>
@@ -495,7 +498,6 @@ export default {
 																defaultValues: defaultDeploymentValues,
 												});
 
-												console.log('dEFAULT DEPLOYMENTS', defaultDeploymentValues)
 
 
 												addField("origins", {
@@ -575,6 +577,20 @@ export default {
 																				restrictType: 'asset',
 																},
 																description: "Override your own custom application engine",
+												});
+
+
+												addField("source", {
+																title: "Site Model Source",
+																minimum: 0,
+																maximum: 1,
+																type: "reference",
+																params: {
+																				// restrictType: 'fluroAppEngine',
+																				restrictType: 'sitemodel',
+																				searchInheritable:true,
+																},
+																description: "Manually set the site data model for this application",
 												});
 
 

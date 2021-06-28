@@ -6,6 +6,9 @@
         <template v-else-if="row._type == 'event'">
             <div class="thumbnail" :style="{backgroundImage:`url(${$fluro.asset.coverUrl(row._id, `event`, {w:50})})`}"/>
         </template>
+        <template v-else-if="row._type == 'team'">
+            <div class="thumbnail" :style="{backgroundImage:`url(${$fluro.asset.coverUrl(row._id, `team`, {w:50})})`}"/>
+        </template>
         <template v-else-if="row._type == 'contact'">
              <fluro-avatar md :id="row._id" :type="row._type" />
             <!-- <div class="thumbnail" :style="{backgroundImage:`url(${$fluro.asset.avatarUrl(row._id, `contact`, {w:50})})`}"/> -->
