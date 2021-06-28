@@ -53,7 +53,7 @@
     </div>
 </template>
 <script>
-import AddToProcessModal from '@/components/modal/modals/AddToProcessModal.vue';
+// import AddToProcessModal from '@/components/modal/modals/AddToProcessModal.vue';
 import ListGroup from '../../../ui/ListGroup.vue';
 import ListGroupItem from '../../../ui/ListGroupItem.vue';
 import ContactProcessState from './ContactProcessState.vue';
@@ -195,15 +195,15 @@ export default {
                     self.loading = false;
                 })
         },
-        add() {
-            var self = this;
-            var promise = self.$fluro.modal({
-                component: AddToProcessModal,
-                options: {
-                    items:[self.model],
-                }
-            });
-        },
+        // add() {
+        //     var self = this;
+        //     var promise = self.$fluro.modal({
+        //         component: AddToProcessModal,
+        //         options: {
+        //             items:[self.model],
+        //         }
+        //     });
+        // },
         canAnyOfType(permission, basicTypeName) {
 
             var self = this;
