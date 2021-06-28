@@ -661,7 +661,10 @@ export default {
                     /////////////////////////////////////////////////////
 
                     var parsedValue = self.evaluate(modifier.expression, context);
+                    // console.log('PARSED EXPRESSION', parsedValue)
                     parsedValue = Number(parsedValue); //.toFixed(2);
+
+
 
                     /////////////////////////////////////////////////////
 
@@ -1525,6 +1528,9 @@ export default {
             var result;
 
 
+            // if(context.data.hoodie) {
+            // console.log('CONTEXT', context, context.extractFromArray(context.data.hoodie, 'quantity', {sum:true}))
+            // }
             // console.log('EXPRESSIONS')
             try {
                 ast = ExpressionParse(expression);
@@ -1532,6 +1538,7 @@ export default {
                 // console.log('tRY PARSE', ast);
                 result = ExpressionEval(ast, context);
             } catch (err) {
+             console.log('Expression Evaluation Error', err);
                 self.debugLog('EXPRESSION EVALUATE ERROR', err, expression, context);
             } finally {
 
