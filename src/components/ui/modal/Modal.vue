@@ -3,9 +3,7 @@
 								<!-- @click.stop="dismiss()"  -->
 								<div class="blanket" @click="checkDismiss" />
 								<div class="modal-inner">
-
 												<component :options="modal.options" v-bind="componentProps" @close="close" @dismiss="dismiss" :is="modal.component" />
-												
 												<!-- <component @close="close" @dismiss="dismiss" :is="component" /> -->
 								</div>
 				</div>

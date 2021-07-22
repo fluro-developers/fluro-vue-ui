@@ -37,7 +37,7 @@
 																																																<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.privacy" v-model="model" />
 																																												</fluro-panel-body>
 																																								</fluro-panel>
-																																								<pre>TESTING {{legacyOptionsAreHidden}} :: {{showLegacyOptions}}</pre>
+																																								<!-- <pre>TESTING {{legacyOptionsAreHidden}} :: {{showLegacyOptions}}</pre> -->
 																																								<div v-if="legacyOptionsAreHidden">
 																																												<a class="font-xs muted" @click="showLegacyOptions = true">Show legacy form form options
 																																																<fluro-icon icon="angle-down" right /></a>
@@ -442,6 +442,7 @@
 																																								<fluro-panel-body>
 																																												<h4 margin>Event Options</h4>
 																																												<system-event-manager v-model="model.data.defaultSystemEvents" />
+																																												 <event-message-manager type="definition" v-model="model.data.defaultMessages" />
 																																												<!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.firstLine" v-model="model" /> -->
 																																												<!-- <fluro-content-form v-model="model.data" :fields="eventFields" /> -->
 																																								</fluro-panel-body>
@@ -1264,6 +1265,19 @@ export default {
 																maximum: 1,
 																type: 'integer',
 																description: `How many minutes earlier than the event start time are members of this roster required to attend`,
+												})
+
+
+												array.push({
+																title: 'Notification Reply To Email Address',
+																key: 'replyToEmail',
+																minimum: 0,
+																maximum: 1,
+																type: 'email',
+																description: `What email should replies to assignment notification emails be sent to?`,
+																params:{
+																	persistentDescription:true,
+																}
 												})
 
 

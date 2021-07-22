@@ -46,7 +46,7 @@ export default {
         },
         mainType() {
             var tree = this.tree;
-            console.log('TREEE', tree)
+            // console.log('TREEE', tree)
 
 
             if (tree.length == 1) {

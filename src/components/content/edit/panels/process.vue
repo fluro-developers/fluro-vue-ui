@@ -55,12 +55,19 @@
                                     </template>
                                     <template v-else>
                                         <h3 margin>{{title}}</h3>
-                                        <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="referenceItemField" v-model="model"></fluro-content-form-field>
+                                        <fluro-panel>
+                                            <fluro-panel-body>
+                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="titleField" v-model="model"></fluro-content-form-field>
+                                            </fluro-panel-body>
+                                            <fluro-panel-body class="border-top">
+                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="referenceItemField" v-model="model"></fluro-content-form-field>
+                                            </fluro-panel-body>
+                                        </fluro-panel>
                                     </template>
                                     <fluro-panel v-if="definition && definition.fields && definition.fields.length">
                                         <fluro-panel-body>
                                             <template v-if="!model.item">
-                                            <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="fieldHash.title" v-model="model" />
+                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" :options="options" :field="fieldHash.title" v-model="model" />
                                             </template>
                                             <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields"></fluro-content-form>
                                         </fluro-panel-body>
@@ -633,11 +640,37 @@ export default {
 
             return {
                 key: "item",
-                title: "Reference Item",
+                title: "Link to reference item",
                 description: "Select an item to add to this process",
                 minimum: 0,
                 maximum: 1,
                 type: "reference",
+                params:{
+                 persistentDescription:true,
+                }
+                // expressions:{
+                //     defaultValue() {
+                //         return self.contacts[0];
+                //     }
+                // }
+                // params:{
+                //     restrictType
+                // }
+            };
+        },
+        titleField() {
+            var self = this;
+
+            return {
+                key: "title",
+                title: "Title for this card",
+                description: "If this card is not going to be linked to a reference, please give it a title",
+                minimum: 0,
+                maximum: 1,
+                type: "string",
+                params:{
+                 persistentDescription:true,
+                }
                 // expressions:{
                 //     defaultValue() {
                 //         return self.contacts[0];
@@ -744,7 +777,7 @@ export default {
 
     .card-columns {
         display: block !important;
-        overflow:auto !important;
+        overflow: auto !important;
 
     }
 
