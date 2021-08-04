@@ -268,6 +268,8 @@ export default {
                     //Load the chart data
                     switch (self.type) {
                         case 'eventtrack':
+
+                        console.log('loading event track metrics')
                             var endpoint = `chart/track/${id}`
                             self.$fluro.api.get(endpoint, {
                                 params: {
