@@ -402,7 +402,7 @@ export default {
 
         switch (track.recurMeasure) {
           case "weeks":
-            if ((track.recurCount = 1)) {
+            if ((track.recurCount == 1)) {
               pieces.push("week");
             } else {
               pieces.push(track.recurCount);
@@ -413,7 +413,7 @@ export default {
             pieces.push(track.recurWeekday);
             break;
           case "months":
-            if ((track.recurCount = 1)) {
+            if ((track.recurCount == 1)) {
               pieces.push("month");
             } else {
               pieces.push(track.recurCount);

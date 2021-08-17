@@ -117,9 +117,14 @@ export default {
             },
             set(v) {
 
+                // console.log('SET THE CURRENCY MODEL TO');
+                //console.log('1. >> ', v)
                 v = parseFloat(v);
+                //console.log('2. >>', v)
                 v = Math.max(v, 0);
-                v = parseInt(v * 100);
+                // console.log('3. >>', v)
+                v = parseInt(Math.round(v * 100));
+                //console.log('4. >>', v)
 
 
                 // console.log('Setting currency model to', v);

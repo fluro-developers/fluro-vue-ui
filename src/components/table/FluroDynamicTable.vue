@@ -10,6 +10,7 @@
 								<!-- <pre>{{filterCheckString}}</pre> -->
 								<!-- {{startDate}} -->
 								<fluro-page-preloader v-if="showLoading" contain />
+								<!-- <pre>PAGE LENGTH {{rawPage.length}}</pre> -->
 								<v-container class="flex-center" v-if="!showLoading && !page.length">
 												<slot name="emptytext">
 																No {{dataType | definitionTitle(true)}} were found matching your criteria
@@ -1398,7 +1399,6 @@ export default {
 																var cachedValue = tableCache.get(cacheString);
 
 																if (cachedValue) {
-																				console.log('From Cache!')
 																				return pageDataLoaded(cachedValue);
 																}
 
@@ -1423,11 +1423,17 @@ export default {
 																				// //console.log('Look for ids', ids);
 																				var pageItems = _.chain(rawPage)
 																								.map(function(rawRow, i) {
-																												var entry = JSON.parse(JSON.stringify(lookup[rawRow._id]));
 
-																												if (!entry) {
+
+																												var matchedLookupEntry = lookup[rawRow._id]
+
+																												if (!matchedLookupEntry) {
 																																return;
 																												}
+
+																												var entry = JSON.parse(JSON.stringify(matchedLookupEntry));
+
+
 																												entry._pageIndex = i;
 
 																												//Add all the keys of the original object
@@ -1489,6 +1495,7 @@ export default {
 												self.loading = true;
 
 
+												console.log('populate page items')
 												self.populatePageItems(self.rawPage, self.dataType, self.renderColumns)
 																.then(function(res) {
 
@@ -1520,6 +1527,7 @@ export default {
 																																								.map(function(indValue) {
 
 																																												//Clone the row
+
 																																												var clone = JSON.parse(JSON.stringify(row));
 																																												_.set(clone, columnKey, indValue);
 																																												return clone;
@@ -1540,11 +1548,10 @@ export default {
 
 
 																				self.page = page;
-																				// console.log('>> Page is populated', res)
 																				self.loading = false;
 																})
 																.catch(function(err) {
-																				//console.log('Error', err);
+																				console.log('Error', err);
 																				self.page = [];
 																				self.loading = false;
 																});

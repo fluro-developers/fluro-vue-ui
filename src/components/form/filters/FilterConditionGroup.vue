@@ -165,7 +165,11 @@ function getFlattenedFields(array, trail, titles) {
 
 																				//Prepend the key to all lowed fields
 
-																				if (field.maximum != 1) {
+																				var isArrayType = ((field.maximum != 1) || ((field.minimum != 1) && field.asObject))
+
+																				// console.log('IS ARRAY TYPE', field.title, trail.slice());
+																				// if (field.maximum != 1) {
+																					if (isArrayType) {
 																								// trail.push(field.key + '[' + indexIterator + ']');
 																								trail.push(field.key + "[]");
 																								titles.push(field.title);
@@ -191,7 +195,9 @@ function getFlattenedFields(array, trail, titles) {
 																trail.push(field.key);
 																titles.push(field.title);
 
+
 																field.trail = trail.slice();
+
 																field.titles = titles.slice();
 																trail.pop();
 																titles.pop();
@@ -762,6 +768,8 @@ export default {
 								detailSheetFields() {
 												var self = this;
 
+												
+
 												if (
 																!self.definition ||
 																!self.definition.details ||
@@ -773,7 +781,10 @@ export default {
 												return _.reduce(
 																self.definition.details,
 																function(set, detailSheet) {
+
+
 																				// //Get all the flattened fields
+
 																				var flattened = getFlattenedFields(detailSheet.fields, [], []);
 
 																				//////////////////////////////////
@@ -787,9 +798,7 @@ export default {
 																												return {
 																																title: detailSheet.title + " - " + field.titles.join(" > "),
 																																// key: `details.${detailSheet.definitionName}.items[0].data.${field.trail.join('.')}`,
-																																key: `details.${
-                  detailSheet.definitionName
-                }.items[].data.${field.trail.join(".")}`,
+																																key: `details.${detailSheet.definitionName}.items[].data.${field.trail.join(".")}`,
 																																minimum: field.minimum,
 																																maximum: field.maximum,
 																																detail: detailSheet.definitionName,
@@ -1121,7 +1130,7 @@ export default {
 																								name: room.title,
 																								text: room.title,
 																								value: room._id,
-																								_id:room._id,
+																								_id: room._id,
 																				};
 																})
 																.orderBy('title')
@@ -3034,7 +3043,7 @@ export default {
 																								break;
 
 																				case 'event':
-																							
+
 
 																								injectFields.push({
 																												title: "Rooms",

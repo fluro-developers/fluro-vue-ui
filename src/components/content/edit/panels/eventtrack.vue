@@ -243,7 +243,7 @@
                 <flex-column-body>
                     <v-container fluid>
                         <!-- <constrain sm> -->
-                            TEST
+                           
                         <eventtrack-metrics-dashboard :id="model._id" type="eventtrack" />
                         <!-- </constrain> -->
                     </v-container>

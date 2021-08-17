@@ -1807,7 +1807,6 @@ export default {
 																//Get the value for this field
 																var value = self.model[self.field.key];
 
-																console.log('CLEANED', self.model, self.field.key)
 																var cleaned = self.cleanOutput(value);
 
 
@@ -2948,7 +2947,6 @@ export default {
 																				break;
 																case 'date':
 
-																console.log('DATE VALUE?', value)
 																				if (value) {
 																								if (String(value).toLowerCase() == 'now') {
 																												value = new Date();
