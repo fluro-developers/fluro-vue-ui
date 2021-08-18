@@ -1365,9 +1365,7 @@ export default {
 								persistentDescription() {
 												var self = this;
 
-												if (self.renderer == 'textarea') {
-																return true;
-												}
+											
 
 												if (self.params.persistentDescription) {
 																return true;
