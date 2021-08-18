@@ -3,7 +3,7 @@ import { FilterService } from 'fluro';
 /////////////////////////////////
 
 import _ from 'lodash';
-
+import axios from 'axios';
 
 /////////////////////////////////
 
@@ -75,6 +75,7 @@ export default {
 				},
 				data() {
 								return {
+												inflightRequest: null,
 												reloadChangeKey: 0,
 												cacheKey: null,
 												all: [], //Including unmatched
@@ -165,6 +166,11 @@ export default {
 								reload() {
 
 												var self = this;
+
+												if (self.inflightRequest) {
+													console.log('Cancel inflight request')
+													self.inflightRequest.cancel('Operation canceled by the user.');
+												}
 
 												//////////////////////////////////////////
 
@@ -275,8 +281,15 @@ export default {
 												/////////////////////////////////////////////////////////////
 												/////////////////////////////////////////////////////////////
 
+												const CancelToken = self.$fluro.api.CancelToken;
+												const cancelSource = CancelToken.source();
+												self.inflightRequest = cancelSource;
+
+
 												//Load just the IDS from the server and required fields
-												return self.$fluro.api.post(`/content/${self.dataType}/filter`, filterCriteria)
+												return self.$fluro.api.post(`/content/${self.dataType}/filter`, filterCriteria, {
+																				cancelToken: cancelSource.token
+																})
 																.then(function(res) {
 
 
@@ -308,6 +321,11 @@ export default {
 																				self.reloadChangeKey++;
 																})
 																.catch(function(err) {
+
+																				if (axios.isCancel(err)) {
+																								console.log('Filter Request canceled', err.message);
+																				}
+
 																				self.loadingItems = false;
 																				self.rows = [];
 																				self.$emit('filtered', self.rows);

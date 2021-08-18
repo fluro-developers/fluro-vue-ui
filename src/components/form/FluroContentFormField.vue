@@ -1365,6 +1365,10 @@ export default {
 								persistentDescription() {
 												var self = this;
 
+												if (self.renderer == 'textarea') {
+																return true;
+												}
+
 												if (self.params.persistentDescription) {
 																return true;
 												}
@@ -4754,6 +4758,17 @@ function checkValidInput(self, input) {
 <style lang="scss">
 .vc-chrome {
 				width: auto !important;
+}
+
+
+.v-textarea .v-label {
+				height: auto !important;
+				white-space: normal !important;
+}
+
+.v-textarea .v-label--active {
+				height: 20px !important;
+				white-space: nowrap !important;
 }
 
 
