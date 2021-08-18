@@ -417,7 +417,7 @@
 																</v-input>
 												</client-only>
 												<template v-else-if="renderer == 'textarea'">
-																<v-input class="no-flex" :outline="showOutline" :success="success" :error-messages="multipleInput ? errorMessages : null" :persistent-hint="multipleInput ? false : persistentDescription" :hint="multipleInput ? null : field.description">
+																<v-input class="no-flex" :outline="showOutline" :success="success" :error-messages="multipleInput ? errorMessages : null">
 																				<template v-if="multipleInput">
 																								<template v-if="fieldModel && fieldModel.length">
 																												<template v-for="(entry, index) in fieldModel">
