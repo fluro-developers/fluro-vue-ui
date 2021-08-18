@@ -1,6 +1,6 @@
 {
 				"name": "fluro-vue-ui",
-				"version": "2.3.89",
+				"version": "2.3.90",
 				"description": "A package that contains helpful Fluro UI components and mixins",
 				"main": "src/index.js",
 				"scripts": {
