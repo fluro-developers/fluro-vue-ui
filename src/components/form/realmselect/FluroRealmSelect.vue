@@ -205,6 +205,10 @@ export default {
 
                             //////////////////////////////////////
 
+                            var singleBasicRealm = (plainRealms.length == 1);
+
+                            //////////////////////////////////////
+
                             var initialIDs = _.chain(self.$fluro.utils.arrayIDs(self.value))
                                 .map(function(id) {
                                     return flattenedLookup[id];
@@ -239,7 +243,7 @@ export default {
 
                             }
 
-                            if (flattenedIDs.length == 1) {
+                            if (flattenedIDs.length == 1 || plainRealms.length == 1) {
                                 singleOption = true;
                             }
 

@@ -10,7 +10,7 @@
                         </v-flex>
                         <v-flex shrink>
                             <v-btn class="my-0" icon @click="edit(index)">
-                                <fluro-icon icon="pencil"/>
+                                <fluro-icon icon="pencil" />
                             </v-btn>
                             <v-btn class="my-0" icon @click="remove(index)">
                                 <fluro-icon icon="times" />
@@ -65,6 +65,11 @@ export default {
         draggable,
 
     },
+    created() {
+        if (!this.model) {
+            this.model = [];
+        }
+    },
     data() {
         return {
             model: this.value,
@@ -94,11 +99,11 @@ export default {
         edit(index) {
             var self = this;
             self.$fluro.prompt(self.fields, 'Edit room', self.model[index])
-            .then(function(res) {
+                .then(function(res) {
 
-                self.$set(self.model, index, res);
-                // _.assign(self.model[index], res);
-            });
+                    self.$set(self.model, index, res);
+                    // _.assign(self.model[index], res);
+                });
         },
         remove(index) {
             this.model.splice(index, 1);
@@ -135,7 +140,7 @@ export default {
                         minimum: 0,
                         maximum: 1,
                         type: 'string',
-                        description:'An ID used to link with external services, like booking systems or image recognition services',
+                        description: 'An ID used to link with external services, like booking systems or image recognition services',
                         key: 'externalID',
                     },
                     // {
@@ -174,10 +179,12 @@ export default {
         }
     }
 }
+
 </script>
 <style lang="scss">
 .ghost-dragging-class {
     opacity: 0.5;
     background: #c8ebfb;
 }
+
 </style>

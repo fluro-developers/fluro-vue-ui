@@ -37,9 +37,9 @@
 																																																<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.privacy" v-model="model" />
 																																												</fluro-panel-body>
 																																								</fluro-panel>
-																																								<!-- <pre>TESTING {{legacyOptionsAreHidden}} :: {{showLegacyOptions}}</pre> -->
+																																								<pre>TESTING {{legacyOptionsAreHidden}} :: {{showLegacyOptions}}</pre>
 																																								<div v-if="legacyOptionsAreHidden">
-																																												<a class="font-xs muted" @click="showLegacyOptions = true">Show legacy form form options
+																																												<a class="font-xs muted" @click="showLegacyOptions = !showLegacyOptions">Show legacy form form options
 																																																<fluro-icon icon="angle-down" right /></a>
 																																								</div>
 																																								<div v-else>
@@ -442,7 +442,7 @@
 																																								<fluro-panel-body>
 																																												<h4 margin>Event Options</h4>
 																																												<system-event-manager v-model="model.data.defaultSystemEvents" />
-																																												 <event-message-manager type="definition" v-model="model.data.defaultMessages" />
+																																												<event-message-manager type="definition" v-model="model.data.defaultMessages" />
 																																												<!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.firstLine" v-model="model" /> -->
 																																												<!-- <fluro-content-form v-model="model.data" :fields="eventFields" /> -->
 																																								</fluro-panel-body>
@@ -1089,7 +1089,13 @@ export default {
 				},
 				computed: {
 								legacyOptionsAreHidden() {
-												return this.showLegacyOptions || (!this.model.allowAnonymous);
+
+												if (this.showLegacyOptions) {
+																return;
+												}
+
+												return !this.model.allowAnonymous
+
 								},
 								currencyOptions() {
 												var self = this;
@@ -1275,8 +1281,8 @@ export default {
 																maximum: 1,
 																type: 'email',
 																description: `What email should replies to assignment notification emails be sent to?`,
-																params:{
-																	persistentDescription:true,
+																params: {
+																				persistentDescription: true,
 																}
 												})
 

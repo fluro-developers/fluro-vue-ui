@@ -5025,7 +5025,7 @@ function checkValidInput(self, input) {
 												margin-top: 10px;
 												font-size: 0.9em;
 												opacity: 0.8;
-
+												white-space: pre-line;
 												font-style: italic;
 								}
 				}

@@ -9,7 +9,7 @@
                 <tab heading="Details">
                     <flex-column-body style="background: #fafafa;">
                         <v-container fluid>
-                            <constrain sm v-if="model._id">
+                            <constrain sm v-if="model._id && model.transactionType != 'log'">
                                 <!--  -->
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.description" v-model="model" />

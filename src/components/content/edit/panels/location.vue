@@ -61,6 +61,7 @@
                     <v-container fluid grid-list-lg>
                         <constrain sm>
                             <room-manager v-model="model.rooms" />
+
                         </constrain>
                     </v-container>
                 </tab>
@@ -130,7 +131,12 @@ export default {
         KeyContactLocationManager,
         LocationEditMapComponent,
     },
-    created() {},
+    created() {
+
+        if(!this.model.rooms) {
+            this.model.rooms = [];
+        }
+    },
     mixins: [FluroContentEditMixin],
     computed: {
         fieldsOutput() {
