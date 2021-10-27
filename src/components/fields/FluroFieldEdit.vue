@@ -52,7 +52,7 @@
                     </v-container>
         </flex-column-footer>-->
 												</tab>
-												<tab heading="Expressions" index="expressions">
+												<tab heading="Expressions" index="expressions" v-if="isAdvanced">
 																<flex-column-body>
 																				<v-container class="border-bottom" style="background: #fff;">
 																								<label>
@@ -167,30 +167,7 @@
 												<tab heading="Field Settings" index="options">
 																<flex-column-body ref="scrollbox">
 																				<v-container>
-																								<!-- <pre>{{model.directive}}</pre> -->
-																								<!-- <v-layout row wrap> -->
-																								<!-- <v-flex xs12> -->
 																								<fluro-content-form-field ref="title" :field="fields.title" v-model="model" />
-																								<!-- </v-flex> -->
-																								<!-- <v-spacer/> -->
-																								<!-- <v-flex xs12> -->
-																								<!-- <fluro-inline-edit :enabled="showKey">
-                            <template v-slot:default>
-                                <div class="key-name fade" v-if="!editingKey" @click="editingKey = true">
-                                    
-                                    (Key: {{model.key}})
-                                    
-                                </div>
-                            </template>
-                            <template v-slot:edit="{props, blur, focus}">
-                                <div class="key-name">
-                                    
-                                    <input class="input-block" @focus="focus($event)" v-model="model.key" @keyup.enter="blur" @blur="blur" />
-                                    
-                                </div>
-                            </template>
-            </fluro-inline-edit>-->
-																								<!-- <div class="key" v-show="showKey"> -->
 																								<div v-show="showKey">
 																												<fluro-content-form-field :field="fields.key" v-model="model" />
 																								</div>
@@ -237,7 +214,6 @@
 																								</template>
 																								<template v-if="model.directive == 'app-chart-select'">
 																												<!-- <fluro-content-form-field :field="fields.referenceType" v-model="model.params" /> -->
-
 																												<fluro-content-form-field :field="fields.dynamicChartType" v-model="model.params" />
 																												<fluro-content-form-field :field="fields.dynamicChartDataType" v-model="model.params" />
 																												<!-- <fluro-content-form-field :field="fields.showAllValues" v-model="model.params" /> -->
@@ -393,21 +369,8 @@
 																								</template>
 																				</v-container>
 																</flex-column-body>
-																<!-- <flex-column-footer class="border-top">
-                    <v-container py-2>
-                        <v-layout>
-                            <v-spacer />
-                            <v-flex>
-                                <v-btn @click="deleteField" block class="ma-0" small>
-                                    Delete Field
-                                    <fluro-icon right icon="trash-alt" />
-                                </v-btn>
-                            </v-flex>
-                        </v-layout>
-                    </v-container>
-        </flex-column-footer>-->
 												</tab>
-												<tab heading="Expressions" index="expressions">
+												<tab heading="Expressions" index="expressions" v-if="isAdvanced">
 																<flex-column-body>
 																				<v-container class="border-bottom" style="background: #fff;">
 																								<label>
@@ -954,6 +917,12 @@ export default {
 								}
 				},
 				computed: {
+								isAdvanced() {
+												return this.uiMode != 'subsplash';
+								},
+								isPro() {
+												return this.$pro && this.$pro.enabled;
+								},
 								basicAvailableTypes() {
 												return this.referenceOptions.filter(function(type) {
 																return !type.parentType
@@ -1268,13 +1237,15 @@ export default {
 																type: "string"
 												});
 
-												addField("errorMessage", {
-																title: "Custom Error Message",
-																description: "Customise the message to display to the user if they enter invalid answers for this field",
-																minimum: 0,
-																maximum: 1,
-																type: "string"
-												});
+												if (self.isPro) {
+																addField("errorMessage", {
+																				title: "Custom Error Message",
+																				description: "Customise the message to display to the user if they enter invalid answers for this field",
+																				minimum: 0,
+																				maximum: 1,
+																				type: "string"
+																});
+												}
 
 												addField("officeUseOnly", {
 																key: "disableWebform",
@@ -1968,13 +1939,15 @@ export default {
 																type: "boolean"
 												});
 
-												addField("className", {
-																title: "CSS Classes",
-																description: "Add CSS classes to this field",
-																minimum: 0,
-																maximum: 1,
-																type: "string"
-												});
+												if (self.isPro) {
+																addField("className", {
+																				title: "CSS Classes",
+																				description: "Add CSS classes to this field",
+																				minimum: 0,
+																				maximum: 1,
+																				type: "string"
+																});
+												}
 
 												addField("template", {
 																title: "Custom HTML",

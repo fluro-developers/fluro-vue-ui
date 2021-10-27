@@ -35,17 +35,17 @@
 																<slot>
 																				<flex-column-body style="background: #fafafa;">
 																								<!-- <v-flex xs12 md3 style="background: #eee;">
-                                <ul>
-                                    <li>
-                                        Basic Details
-                                    </li>
-                                    <li v-for="sheet in sheetDefinitions">
-                                        {{sheet.title}}
-                                    </li>
-                                </ul>
+<ul>
+<li>
+Basic Details
+</li>
+<li v-for="sheet in sheetDefinitions">
+{{sheet.title}}
+</li>
+</ul>
 
-                               
-                            </v-flex> -->
+
+</v-flex> -->
 																								<v-container class="grid-list-xl">
 																												<constrain sm>
 																																<h3 margin>Basic Details</h3>
@@ -188,10 +188,10 @@
 																				</tab>
 																</tabset>
 																<!-- <tabset :justified="true">
-																				<tab heading="Timeline">
-																								<contact-timeline v-model="model" />
-																				</tab>
-																</tabset> -->
+<tab heading="Timeline">
+<contact-timeline v-model="model" />
+</tab>
+</tabset> -->
 												</tab>
 												<tab heading="Household & Relationships">
 																<slot>
@@ -274,7 +274,7 @@
 																				</flex-column-body>
 																</slot>
 												</tab>
-												<tab heading="Processes" v-if="model._id">
+												<tab heading="Processes" v-if="model._id && isAdvanced">
 																<slot>
 																				<flex-column-body style="background: #fafafa;">
 																								<v-container>
@@ -299,24 +299,24 @@
 																																																<fluro-icon icon="ellipsis-h" />
 																																												</v-btn>
 																																												<!-- 		<v-menu :left="true" v-model="actionIndexes[index]" :fixed="true" transition="slide-y-transition" offset-y>
-																																																<template v-slot:activator="{ on }">
-																																																				<v-btn class="ma-0" @click.prevent.stop icon small flat v-on="on">
-																																																								<fluro-icon v-if="actionIndexes[index]" icon="times" />
-																																																								<fluro-icon v-else icon="ellipsis-h" />
-																																																				</v-btn>
-																																																</template>
-																																																<v-list dense>
-																																																				<v-list-tile @click="editInPlace(item)" v-if="editInPlaceEnabled(item)">
-																																																								<v-list-tile-content>Edit</v-list-tile-content>
-																																																				</v-list-tile>
-																																																				<v-list-tile @click="deselect(item)">
-																																																								<v-list-tile-content>Deselect</v-list-tile-content>
-																																																				</v-list-tile>
-																																																				<v-list-tile @click="$actions.open([item])">
-																																																								<v-list-tile-content>More Actions</v-list-tile-content>
-																																																				</v-list-tile>
-																																																</v-list>
-																																												</v-menu> -->
+			<template v-slot:activator="{ on }">
+							<v-btn class="ma-0" @click.prevent.stop icon small flat v-on="on">
+											<fluro-icon v-if="actionIndexes[index]" icon="times" />
+											<fluro-icon v-else icon="ellipsis-h" />
+							</v-btn>
+			</template>
+			<v-list dense>
+							<v-list-tile @click="editInPlace(item)" v-if="editInPlaceEnabled(item)">
+											<v-list-tile-content>Edit</v-list-tile-content>
+							</v-list-tile>
+							<v-list-tile @click="deselect(item)">
+											<v-list-tile-content>Deselect</v-list-tile-content>
+							</v-list-tile>
+							<v-list-tile @click="$actions.open([item])">
+											<v-list-tile-content>More Actions</v-list-tile-content>
+							</v-list-tile>
+			</v-list>
+</v-menu> -->
 																																								</template>
 																																				</list-group-item>
 																																</list-group>
@@ -332,46 +332,46 @@
 																</slot>
 												</tab>
 												<!-- <div ng-if="extras.personas.length">
-									<hr/>
-									<div class="form-group">
-										<label>Fluro Access</label>
-										<p class="help-block"><span class="text-capitalize">{{item.firstName}}</span> can sign in to Fluro as the following persona<span ng-if="extras.personas.length">s</span></p>
+<hr/>
+<div class="form-group">
+<label>Fluro Access</label>
+<p class="help-block"><span class="text-capitalize">{{item.firstName}}</span> can sign in to Fluro as the following persona<span ng-if="extras.personas.length">s</span></p>
 
-										
-										<div class="list-group">
-											<div class="list-group-item clearfix" ng-repeat="persona in extras.personas track by persona._id" ng-click="$root.modal.edit(persona)">
-												<div class="row">
-													<div class="col-xs-10">
 
-														<div class="avatar pull-left" style="margin-right:15px;">
-															<img preload-image aspect="100" ng-src="{{$root.personaAvatarURL(persona._id)}}"/>
-														</div>
+<div class="list-group">
+<div class="list-group-item clearfix" ng-repeat="persona in extras.personas track by persona._id" ng-click="$root.modal.edit(persona)">
+<div class="row">
+<div class="col-xs-10">
 
-														<div>
-															<div style="line-height: 18px;">{{persona.firstName}} {{persona.lastName}}</div>
-															<div style="line-height: 12px;" class="small text-muted">{{persona.email}}</div>
-														</div>
-													</div>
-													<div class="col-xs-2 text-right">
-														<div class="actions btn-group">
-															<a class="btn btn-default btn-tiny btn-xs" ng-if="canEdit(persona)"><i class="far fa-pencil"></i></a>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div ng-if="item._id && !extras.personas.length && canCreateUser" class="form-group">
-									<label>Fluro Access</label>
-									<p class="help-block">Click below to create a persona and invite <span class="text-capitalize">{{item.firstName}}</span> as a {{$root.user.account.name}} Fluro user</p>
-									<a class="btn btn-primary btn-block" ng-click="createUser()">
-										<span>Invite <span class="text-capitalize">{{item.firstName}}</span> to join '{{$root.user.account.title}}' on Fluro</span>
-										<i class="far fa-user"></i>
-									</a>
-								</div>
+<div class="avatar pull-left" style="margin-right:15px;">
+<img preload-image aspect="100" ng-src="{{$root.personaAvatarURL(persona._id)}}"/>
+</div>
 
-								 -->
+<div>
+<div style="line-height: 18px;">{{persona.firstName}} {{persona.lastName}}</div>
+<div style="line-height: 12px;" class="small text-muted">{{persona.email}}</div>
+</div>
+</div>
+<div class="col-xs-2 text-right">
+<div class="actions btn-group">
+<a class="btn btn-default btn-tiny btn-xs" ng-if="canEdit(persona)"><i class="far fa-pencil"></i></a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div ng-if="item._id && !extras.personas.length && canCreateUser" class="form-group">
+<label>Fluro Access</label>
+<p class="help-block">Click below to create a persona and invite <span class="text-capitalize">{{item.firstName}}</span> as a {{$root.user.account.name}} Fluro user</p>
+<a class="btn btn-primary btn-block" ng-click="createUser()">
+<span>Invite <span class="text-capitalize">{{item.firstName}}</span> to join '{{$root.user.account.title}}' on Fluro</span>
+<i class="far fa-user"></i>
+</a>
+</div>
+
+-->
 												<tab heading="Capabilities">
 																<slot>
 																				<flex-column-body style="background: #fafafa;">
@@ -421,12 +421,12 @@
 																																																</fluro-toggle-item>
 																																												</template>
 																																												<!--  <div class="toggle-item" @click="toggleSubscription('sms')" :class="{inactive:unsubscribedSMS}">
-                                                <v-layout>
-                                                    <v-flex>Allow Promotional SMS</v-flex>
-                                                    <v-spacer />
-                                                    <div class="toggle-switch" />
-                                                </v-layout>
-                                            </div> -->
+<v-layout>
+<v-flex>Allow Promotional SMS</v-flex>
+<v-spacer />
+<div class="toggle-switch" />
+</v-layout>
+</div> -->
 																																								</div>
 																																				</fluro-panel>
 																																				<!-- <pre>{{smsUnsubscribes}}</pre> -->
@@ -518,30 +518,30 @@
 																</slot>
 												</tab>
 												<!-- <tab :heading="sheet.title" v-for="sheet in sheetDefinitions">
-                <slot>
-                    <flex-column-body style="background: #fafafa;">
-                        <v-container>
-                            <wrapper xs>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="sheet.field" v-model="details"></fluro-content-form-field>
-                            </wrapper>
-                        </v-container>
-                    </flex-column-body>
-                </slot>
-            </tab> -->
+<slot>
+<flex-column-body style="background: #fafafa;">
+<v-container>
+<wrapper xs>
+<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="sheet.field" v-model="details"></fluro-content-form-field>
+</wrapper>
+</v-container>
+</flex-column-body>
+</slot>
+</tab> -->
 												<!-- <tab heading="Classification">
-                <slot>
-                    <flex-column-body style="background: #fafafa;">
-                        <v-container>
-                            <wrapper xs>
-                                <template v-if="contactDefinitions.length">
-                                    <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="definitionField" v-model="model"></fluro-content-form-field>
-                                </template>
-                                <fluro-realm-select :expanded="true" v-model="model.realms" type="contact" />
-                            </wrapper>
-                        </v-container>
-                    </flex-column-body>
-                </slot>
-            </tab> -->
+<slot>
+<flex-column-body style="background: #fafafa;">
+<v-container>
+<wrapper xs>
+<template v-if="contactDefinitions.length">
+<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="definitionField" v-model="model"></fluro-content-form-field>
+</template>
+<fluro-realm-select :expanded="true" v-model="model.realms" type="contact" />
+</wrapper>
+</v-container>
+</flex-column-body>
+</slot>
+</tab> -->
 								</tabset>
 								<!-- <flex-column-body> -->
 								<!-- <pre>{{model.details}}</pre> -->
@@ -1127,6 +1127,12 @@ export default {
 								}
 				},
 				computed: {
+					isAdvanced() {
+												return this.uiMode != 'subsplash';
+								},
+								isPro() {
+												return this.$pro && this.$pro.enabled;
+								},
 								fieldsOutput() {
 
 												var self = this;

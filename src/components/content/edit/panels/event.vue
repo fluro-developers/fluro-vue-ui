@@ -118,7 +118,7 @@
                     </v-container>
                 </flex-column-body>
             </tab>
-            <tab :heading="`Livestream Settings`">
+            <tab :heading="`Livestream Settings`" v-if="isAdvanced">
                 <flex-column-body style="background: #fafafa;">
                     <v-container>
                         <constrain sm>
@@ -773,6 +773,12 @@ export default {
     },
     computed: {
 
+        isAdvanced() {
+                                                return this.uiMode != 'subsplash';
+                                },
+                                isPro() {
+                                                return this.$pro && this.$pro.enabled;
+                                },
         rosterSlots() {
             var self = this;
 
