@@ -65,7 +65,7 @@
                         </constrain>
                     </v-container>
                 </tab>
-                <tab heading="Key Contacts">
+                <tab heading="Key Contacts" v-if="isProMode">
                     <v-container fluid grid-list-lg>
                         <constrain sm>
                             <key-contact-location-manager v-model="model.keycontacts" />
@@ -139,6 +139,9 @@ export default {
     },
     mixins: [FluroContentEditMixin],
     computed: {
+        isProMode() {
+            return this.$pro && this.$pro.enabled;
+        },
         fieldsOutput() {
 
 

@@ -37,7 +37,6 @@
 																																																<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.privacy" v-model="model" />
 																																												</fluro-panel-body>
 																																								</fluro-panel>
-																																								<pre>TESTING {{legacyOptionsAreHidden}} :: {{showLegacyOptions}}</pre>
 																																								<div v-if="legacyOptionsAreHidden">
 																																												<a class="font-xs muted" @click="showLegacyOptions = !showLegacyOptions">Show legacy form form options
 																																																<fluro-icon icon="angle-down" right /></a>

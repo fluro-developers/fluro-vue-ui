@@ -65,12 +65,13 @@
                         <flex-column-body style="background: #fafafa;">
                             <v-container class="mailout-recipients">
                                 <constrain sm>
-                                    <h3 margin>Recipients</h3>
+                                    <h3 margin>Send this mailout to</h3>
                                     <fluro-panel>
                                         <fluro-panel-title :class="{collapsed:!expanded.contacts}" @click.native="toggleExpand('contacts')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{contacts.length}} Contacts</h6>
+                                               
+                                                    <h6>{{verbiage(contacts.length)}} Contacts</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -86,7 +87,7 @@
                                         <fluro-panel-title :class="{collapsed:!expanded.teams}" @click.native="toggleExpand('teams')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{teams.length}} Groups and Teams</h6>
+                                                    <h6>{{verbiage(teams.length)}} Groups and Teams</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -102,7 +103,7 @@
                                         <fluro-panel-title :class="{collapsed:!expanded.tickets}" @click.native="toggleExpand('tickets')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{tickets.length}} Tickets</h6>
+                                                    <h6>{{verbiage(tickets.length)}} Tickets</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -118,7 +119,7 @@
                                         <fluro-panel-title :class="{collapsed:!expanded.events}" @click.native="toggleExpand('events')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{events.length}} Events</h6>
+                                                    <h6>{{verbiage(events.length)}} Events</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -135,7 +136,7 @@
                                         <fluro-panel-title :class="{collapsed:!expanded.interactions}" @click.native="toggleExpand('interactions')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{interactions.length}} Interactions</h6>
+                                                    <h6>{{verbiage(interactions.length)}} Form Submissions</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -151,7 +152,7 @@
                                         <fluro-panel-title :class="{collapsed:!expanded.checkins}" @click.native="toggleExpand('checkins')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{checkins.length}} Checkins</h6>
+                                                    <h6>{{verbiage(checkins.length)}} Checkins</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -167,7 +168,7 @@
                                         <fluro-panel-title :class="{collapsed:!expanded.details}" @click.native="toggleExpand('details')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{details.length}} Detail Sheets</h6>
+                                                    <h6>{{verbiage(details.length)}} Detail Sheets</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -183,7 +184,7 @@
                                         <fluro-panel-title :class="{collapsed:!expanded.families}" @click.native="toggleExpand('families')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{families.length}} Households</h6>
+                                                    <h6>{{verbiage(families.length)}} Households</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -199,7 +200,7 @@
                                         <fluro-panel-title :class="{collapsed:!expanded.personas}" @click.native="toggleExpand('personas')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{personas.length}} User Personas</h6>
+                                                    <h6>{{verbiage(personas.length)}} Users</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -211,11 +212,11 @@
                                             <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.personas" v-model="model" />
                                         </fluro-panel-body>
                                     </fluro-panel>
-                                    <fluro-panel>
+                                    <fluro-panel v-if="canSendTo('collection')">
                                         <fluro-panel-title :class="{collapsed:!expanded.collections}" @click.native="toggleExpand('collections')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{collections.length}} Collections</h6>
+                                                    <h6>{{verbiage(collections.length)}} Collections that contain contacts</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -231,7 +232,7 @@
                                         <fluro-panel-title :class="{collapsed:!expanded.tags}" @click.native="toggleExpand('tags')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{selectedTags.length}} Tags</h6>
+                                                    <h6>{{verbiage(selectedTags.length)}} Tags</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -243,11 +244,12 @@
                                             <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.selectedTags" v-model="model" />
                                         </fluro-panel-body>
                                     </fluro-panel>
-                                    <fluro-panel>
+                                    <fluro-panel v-if="canSendTo('realm')">
+
                                         <fluro-panel-title :class="{collapsed:!expanded.realms}" @click.native="toggleExpand('realms')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{selectedRealms.length}} Realms</h6>
+                                                    <h6>{{verbiage(selectedRealms.length)}} Realms with contacts</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -263,7 +265,7 @@
                                         <fluro-panel-title :class="{collapsed:!expanded.definitions}" @click.native="toggleExpand('definitions')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{model.definitionNames ? model.definitionNames.length : 0}} Contact Definitions</h6>
+                                                    <h6>{{verbiage(model.definitionNames ? model.definitionNames.length : 0)}} Contact Definitions</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -274,11 +276,11 @@
                                             <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.definitionNames" v-model="model" />
                                         </fluro-panel-body>
                                     </fluro-panel>
-                                    <fluro-panel>
+                                    <fluro-panel v-if="canSendTo('process')">
                                         <fluro-panel-title :class="{collapsed:!expanded.cards}" @click.native="toggleExpand('cards')">
                                             <v-layout align-center>
                                                 <v-flex>
-                                                    <h6>{{cards.length}} Process Cards</h6>
+                                                    <h6>{{verbiage(cards.length)}} Process Cards</h6>
                                                 </v-flex>
                                                 <v-flex shrink>
                                                     <fluro-icon icon="angle-down" class="chevron" />
@@ -311,11 +313,9 @@
                         </flex-column-body>
                     </tab>
                 </template>
-
                 <template v-if="model._id && definition">
                     <tab key="preview" heading="Preview" index="preview">
                         <flex-column style="border-left:1px solid #ddd">
-                            
                             <mailout-render-preview :mailout="model._id" :definition="definition.definitionName" />
                         </flex-column>
                     </tab>
@@ -330,8 +330,6 @@
                     </tab>
                 </template>
             </tabset>
-
-             
         </template>
         <!-- <flex-column-body> -->
         <!-- <pre>{{model}}</pre> -->
@@ -376,6 +374,30 @@ export default {
     },
     mixins: [FluroContentEditMixin],
     methods: {
+        verbiage(number) {
+
+         number = parseInt(number);
+
+            if (number && !isNaN(number)) {
+                return number;
+            }
+
+            return 'Select';
+        },
+        canSendTo(type) {
+            switch (type) {
+                case 'process':
+                case 'collection':
+                case 'realm':
+                    if (this.uiMode == 'subsplash') {
+                        return;
+                    }
+                    break;
+            }
+
+            return true;
+
+        },
         toggleExpand(key) {
             var self = this;
             self.$set(self.expandedSettings, `_${key}`, !self.expandedSettings[`_${key}`]);
@@ -386,6 +408,7 @@ export default {
         published() {
             self.tabIndex = 'results';
         },
+
     },
     computed: {
         contacts: {
@@ -528,6 +551,7 @@ export default {
                 query: self.expandedSettings._query || (self.model.query),
             }
         },
+
         mailoutType() {
             return this.model.mailoutType;
         },

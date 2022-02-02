@@ -14,9 +14,11 @@
 																												<v-btn class="ma-0 mx-1 ml-0" :disabled="!canEmail" @click="communicate('email')" icon color="primary" content="Send Email" v-tippy>
 																																<fluro-icon library="fas" icon="envelope" />
 																												</v-btn>
-																												<v-btn class="ma-0 mx-1" :disabled="!canSMS" @click="communicate('sms')" icon color="primary" content="Send SMS" v-tippy>
-																																<fluro-icon library="fas" icon="comment" />
-																												</v-btn>
+																												<template v-if="isNotSubsplash">
+																																<v-btn class="ma-0 mx-1" :disabled="!canSMS" @click="communicate('sms')" icon color="primary" content="Send SMS" v-tippy>
+																																				<fluro-icon library="fas" icon="comment" />
+																																</v-btn>
+																												</template>
 																												<v-btn class="ma-0 mx-1" :disabled="!canCall" @click="communicate('phone')" icon color="primary" content="Call" v-tippy>
 																																<fluro-icon library="fas" icon="phone" />
 																												</v-btn>
@@ -96,6 +98,7 @@ Basic Details
 																																								<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.maritalStatus" v-model="model"></fluro-content-form-field>
 																																				</v-flex>
 																																</v-layout>
+																																<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="fieldHash.countryCode" v-model="model"></fluro-content-form-field>
 																																<v-layout row wrap>
 																																				<v-flex xs12 sm6>
 																																								<fluro-content-form-field :form-fields="formFields" @input="update" :options="formOptions" :field="fieldHash.emails" v-model="model"></fluro-content-form-field>
@@ -120,7 +123,7 @@ Basic Details
 																																				</v-flex>
 																																</v-layout>
 																																<wrapper xs>
-																																				<v-input class="no-flex">
+																																				<v-input class="no-flex" v-if="isNotSubsplash">
 																																								<v-label>School / Academic Details</v-label>
 																																								<!-- <h5>School / Academic Details</h5> -->
 																																								<fluro-academic-select :form-fields="formFields" :outline="showOutline" :options="formOptions" @calendar="updateAcademicCalendar" @grade="updateAcademicGrade" v-model="model" />
@@ -274,7 +277,7 @@ Basic Details
 																				</flex-column-body>
 																</slot>
 												</tab>
-												<tab heading="Processes" v-if="model._id && isAdvanced">
+												<tab heading="Processes" v-if="model._id && isNotSubsplash">
 																<slot>
 																				<flex-column-body style="background: #fafafa;">
 																								<v-container>
@@ -286,7 +289,7 @@ Basic Details
 																				</flex-column-body>
 																</slot>
 												</tab>
-												<tab heading="Login / Access" v-if="model._id">
+												<tab heading="Login Access" v-if="model._id">
 																<slot>
 																				<flex-column-body style="background: #fafafa;">
 																								<v-container>
@@ -384,7 +387,7 @@ Basic Details
 																				</flex-column-body>
 																</slot>
 												</tab>
-												<tab heading="Rostering / Availability" v-if="context == 'edit'">
+												<tab heading="Volunteer Availability" v-if="context == 'edit'">
 																<slot>
 																				<flex-column-body style="background: #fafafa;">
 																								<v-container grid-list-xl>
@@ -1127,7 +1130,8 @@ export default {
 								}
 				},
 				computed: {
-					isAdvanced() {
+
+								isNotSubsplash() {
 												return this.uiMode != 'subsplash';
 								},
 								isPro() {
@@ -1356,7 +1360,7 @@ export default {
 												///////////////////////////////////
 
 												addField('emails', {
-																title: 'Email Address',
+																title: 'Email Addresses',
 																minimum: 0,
 																maximum: 0,
 																type: 'email',
@@ -1365,16 +1369,37 @@ export default {
 												})
 
 
+
+												/////////////////////////////////////////////
+
+												var defaultCountryCode = self.model.countryCode || _.get(self.user, 'account.countryCode');
+												var formattedPhonePlaceholder = self.user.phoneNumber;
+												
+												// if (!formattedPhonePlaceholder) {
+																if (!defaultCountryCode || defaultCountryCode == 'US') {
+																				formattedPhonePlaceholder = '(123) 456-7890'
+																} else {
+																				formattedPhonePlaceholder = '+0400 123 456';
+																}
+												// }
+
+
+
+												/////////////////////////////////////////////
+
+
 												addField('phoneNumbers', {
-																title: 'Phone Number',
+																title: 'Phone Numbers',
 																minimum: 0,
 																maximum: 0,
 																type: 'string',
 																// directive:'select',
-																placeholder: '+61 400 123 456',
+																placeholder: `eg. ${formattedPhonePlaceholder}`,
 												})
 
 												///////////////////////////////////
+
+												var accountTimezone = _.get(self.user, 'account.timezone');
 
 												addField('timezone', {
 																title: 'Primary Timezone',
@@ -1383,14 +1408,19 @@ export default {
 																type: 'string',
 																directive: 'timezone-select',
 																description: 'Set a local timezone for this contact',
+																defaultValues:accountTimezone? [accountTimezone] : [],
 												})
 
+
+
+
 												addField('countryCode', {
-																title: 'Default Country Code',
+																title: 'Contact Country Code',
 																minimum: 0,
 																maximum: 1,
 																type: 'string',
 																directive: 'countrycodeselect',
+																defaultValues: defaultCountryCode ? [defaultCountryCode] : [],
 												})
 												///////////////////////////////////
 

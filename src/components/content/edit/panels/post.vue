@@ -4,7 +4,7 @@
             <fluro-page-preloader contain />
         </template>
         <tabset v-else :justified="true" :vertical="true">
-            <tab :heading="`${definition.title} Information`" v-if="definition && definition.fields && definition.fields.length">
+            <tab :heading="`${definition.title} Information`">
                 <flex-column-body style="background: #fafafa;">
                     <v-container>
                         <constrain sm>
@@ -26,7 +26,16 @@
                             
                             </v-input>
                             </template>
+                            <div v-if="definition && definition.fields && definition.fields.length">
                             <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
+                        </div>
+                        <div v-else>
+                            <fluro-panel>
+                                <fluro-panel-body>
+                                    No fields have been defined for this type of post
+                                </fluro-panel-body>
+                            </fluro-panel>
+                        </div>
                         </constrain>
                     </v-container>
                 </flex-column-body>
@@ -67,6 +76,15 @@ export default {
             var self = this;
             var array = [];
 
+
+            var restrictedType;
+
+            if(self.definition && self.definition.data && self.definition.data.postParentTypes) {
+                var parentTypes = self.definition.data.postParentTypes;
+                if(parentTypes && parentTypes.length) {
+                    restrictedType = parentTypes[0];
+                }
+            }
             ///////////////////////////////////
 
             //We need to add more smarts here so we can
@@ -76,9 +94,9 @@ export default {
                 minimum: 1,
                 maximum: 1,
                 type: 'reference',
-                // params: {
-                // restrictType: 'event',
-                // },
+                params: {
+                restrictType:restrictedType,
+                },
             })
 
             ///////////////////////////////////

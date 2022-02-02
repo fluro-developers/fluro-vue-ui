@@ -39,7 +39,7 @@ export default {
     computed: {
         style() {
             return {
-                backgroundImage: `url("${this.$fluro.asset.avatarUrl(this.id, this.type, {w:this.width || 100, cacheBuster:this.cacheBuster}) }")`
+                backgroundImage: `url("${this.$fluro.asset.avatarUrl(this.id, this.type, {w:this.width || 100, cacheBuster:this.cacheBuster, forceRefresh:true}) }")`
             }
         }
     },

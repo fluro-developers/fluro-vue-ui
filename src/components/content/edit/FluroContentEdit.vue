@@ -1178,7 +1178,18 @@ export default {
             if (!self.typeName) {
                 return;
             }
-            return () => import(`./panels/${this.typeName}.vue`)
+
+            switch (self.definitionName) {
+                case 'checkinStation':
+
+                    if (self.uiMode == 'subsplash') {
+                        return () => import(`./panels/${self.definitionName}.vue`);
+                    }
+                    break;
+            }
+
+            return () => import(`./panels/${self.typeName}.vue`)
+
         }
     },
     components: {

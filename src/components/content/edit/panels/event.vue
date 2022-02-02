@@ -264,7 +264,7 @@
                         <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.publicTicketingEnabled" v-model="model"></fluro-content-form-field>
                         <ticket-type-manager v-model="model" />
                         <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.publicTicketingConfirmationMessage" v-model="model"></fluro-content-form-field>
-                        <ticket-list :event="model" />
+                        <ticket-list :event="model" v-if="model._id"/>
                         <fluro-panel>
                             <fluro-panel-title>
                                 <h5>Ticket Collection Times</h5>
@@ -362,6 +362,13 @@
                     </v-container>
                 </flex-column-body>
             </tab>
+            <tab heading="Posts, Notes and Reports" v-if="model._id">
+                <flex-column-body>
+                    <v-container fluid>
+                        <item-post-thread :item="model" />
+                    </v-container>
+                </flex-column-body>
+            </tab>
             <tab heading="Reporting & Metrics" v-if="model._id">
                 <flex-column-body>
                     <v-container fluid grid-list-xl>
@@ -374,13 +381,7 @@
                     </v-container>
                 </flex-column-body>
             </tab>
-            <tab heading="Posts">
-                <flex-column-body>
-                    <v-container fluid>
-                        <item-post-thread :item="model" />
-                    </v-container>
-                </flex-column-body>
-            </tab>
+            
         </tabset>
     </flex-column>
 </template>
@@ -1259,7 +1260,7 @@ export default {
             var self = this;
             return self.$fluro.date
                 .moment(self.model.endDate)
-                .subtract(self.ticketCollectionEndOffset, "minutes")
+                .add(self.ticketCollectionEndOffset, "minutes")
                 .toDate();
         },
         checkinStartOffset() {

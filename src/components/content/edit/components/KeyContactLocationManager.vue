@@ -9,22 +9,22 @@
         @end="drag=false"
       >
         <list-group-item v-for="(keycontact, index) in model">
-          <v-layout align-center>
-            <v-flex>
+          <v-layout row align-center>
+            <v-flex xs4>
               <strong>{{keycontact.position}}</strong>
             </v-flex>
             <v-flex>
               <list-group style="margin-bottom:0px;">
                 <list-group-item v-for="contact in keycontact.contacts">
                   <fluro-realm-bar :item="contact.realm" />
-                  <fluro-avatar :id="contact._id" type="contact" :width="100" />
+                  <fluro-avatar left :id="contact._id" type="contact" :width="100" />
                   <strong>{{contact.title}}</strong>
                 </list-group-item>
               </list-group>
             </v-flex>
             <v-flex shrink>
-              <v-btn @click="remove(index)">
-                <fluro-icon icon="times" />
+              <v-btn icon @click="remove(index)">
+                <fluro-icon icon="trash-alt" />
               </v-btn>
             </v-flex>
           </v-layout>
@@ -41,7 +41,7 @@
               <!-- :options="options" -->
             </v-flex>
             <v-flex shrink>
-              <v-btn type="submit" @click="add()">Add</v-btn>
+              <v-btn color="primary" type="submit" @click="add()">Add</v-btn>
             </v-flex>
           </v-layout>
         </form>
@@ -63,6 +63,7 @@
 </template>
 <script>
 import draggable from "vuedraggable";
+import FluroContentForm from '../../../form/FluroContentForm.vue';
 
 export default {
   props: {
@@ -71,11 +72,12 @@ export default {
     }
   },
   components: {
-    draggable
+    draggable,
+    FluroContentForm,
   },
   data() {
     return {
-      model: this.value,
+      model: this.value || [],
       proposed: {},
       dragOptions: {},
       drag: false
@@ -83,7 +85,9 @@ export default {
   },
   methods: {
     add() {
-      var clone = JSON.parse(JSON.stringify(this.proposed));
+
+      var self = this;
+      var clone = JSON.parse(JSON.stringify(self.proposed));
 
       if (!clone.position || !clone.position.length) {
         return;
@@ -91,9 +95,9 @@ export default {
 
       delete clone.row;
 
-      this.model.push(clone);
+      self.model.push(clone);
 
-      this.proposed = {};
+      self.proposed = {};
     },
     remove(index) {
       this.model.splice(index, 1);
@@ -118,11 +122,12 @@ export default {
             key: "position"
           },
           {
-            title: "Description/Directions",
+            title: "Contacts",
             minimum: 0,
             maximum: 0,
             type: "reference",
             key: "contacts",
+            directive:'content-select-button',
             params: {
               restrictType: "contact"
             }

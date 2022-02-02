@@ -306,7 +306,7 @@ export default {
                     {title: '9am', value: '0900'},
                     {title: '10am', value: '1000'},
                     {title: '11am', value: '1100'},
-                    {title: '12am', value: '1200'},
+                    {title: '12pm', value: '1200'},
                     {title: '1pm', value: '1300'},
                     {title: '2pm', value: '1400'},
                     {title: '3pm', value: '1500'},

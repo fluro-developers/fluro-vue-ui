@@ -25,9 +25,11 @@
                     <v-btn class="ma-0 mx-1 ml-0" :disabled="!canEmail" @click="communicate('email')" icon color="primary" content="Send Email" v-tippy>
                         <fluro-icon library="fas" icon="envelope" />
                     </v-btn>
-                    <v-btn class="ma-0 mx-1" :disabled="!canSMS" @click="communicate('sms')" icon color="primary" content="Send SMS" v-tippy>
-                        <fluro-icon library="fas" icon="comment" />
-                    </v-btn>
+                    <template v-if="isNotSubsplash">
+                        <v-btn class="ma-0 mx-1" :disabled="!canSMS" @click="communicate('sms')" icon color="primary" content="Send SMS" v-tippy>
+                            <fluro-icon library="fas" icon="comment" />
+                        </v-btn>
+                    </template>
                     <v-btn class="ma-0 mx-1" :disabled="!canCall" @click="communicate('phone')" icon color="primary" content="Call" v-tippy>
                         <fluro-icon library="fas" icon="phone" />
                     </v-btn>
@@ -54,6 +56,7 @@ import FluroContactCommunicateMixin from "../../../../mixins/FluroContactCommuni
 import FluroContentViewMixin from "../FluroContentViewMixin.js";
 import FluroAvatar from "../../../FluroAvatar.vue";
 
+
 /////////////////////////////////
 
 export default {
@@ -73,6 +76,9 @@ export default {
     mixins: [FluroContentViewMixin, FluroContactCommunicateMixin],
     methods: {},
     computed: {
+        isNotSubsplash() {
+            return this.uiMode != 'subsplash';
+        },
         data() {
             return this.item.data || {};
         },

@@ -169,7 +169,7 @@ function getFlattenedFields(array, trail, titles) {
 
 																				// console.log('IS ARRAY TYPE', field.title, trail.slice());
 																				// if (field.maximum != 1) {
-																					if (isArrayType) {
+																				if (isArrayType) {
 																								// trail.push(field.key + '[' + indexIterator + ']');
 																								trail.push(field.key + "[]");
 																								titles.push(field.title);
@@ -768,7 +768,7 @@ export default {
 								detailSheetFields() {
 												var self = this;
 
-												
+
 
 												if (
 																!self.definition ||
@@ -2816,6 +2816,7 @@ export default {
 
 
 																var eventLinkType;
+																var rosterEventLinkType;
 
 																// var definitionName = _.get(self.definition, 'definitionName');
 																switch (self.basicType) {
@@ -3054,6 +3055,9 @@ export default {
 																												directive: "select",
 																												options: roomOptions
 																								});
+																								break;
+																				case 'assignment':
+																								rosterEventLinkType = true;
 																								break;
 																				case 'plan':
 																				case 'attendance':
@@ -3342,6 +3346,23 @@ export default {
 																																restrictType: 'account',
 																												}
 																								})
+
+																								injectFields.push({
+																												title: 'User Type',
+																												key: 'accountType',
+																												minimum: 0,
+																												maximum: 1,
+																												type: 'string',
+																												options: [{
+																																				name: 'Super Administrator',
+																																				value: 'administrator',
+																																},
+																																{
+																																				name: 'Standard User',
+																																				value: 'standard',
+																																},
+																												]
+																								})
 																								break;
 																				case 'account':
 
@@ -3452,6 +3473,57 @@ export default {
 																injectFields.push({
 																				title: "Event Start Date",
 																				key: "_event.startDate",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "date"
+																});
+
+												}
+
+
+												//////////////////////////////////////////////////////////////
+
+												if (rosterEventLinkType) {
+																injectFields.push({
+																				title: "Event Track",
+																				key: "_rosterEvent.track",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "reference",
+																				typeSelect: "eventtrack"
+																});
+
+																injectFields.push({
+																				title: "Event Tags",
+																				key: "_rosterEvent.tags",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "reference",
+																				typeSelect: "tag"
+																});
+
+																injectFields.push({
+																				title: "Event Realms",
+																				key: "_rosterEvent.realms",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "reference",
+																				typeSelect: "realm"
+																});
+
+																injectFields.push({
+																				title: "Event Type / Definition",
+																				key: "_rosterEvent.definition",
+																				maximum: 1,
+																				minimum: 0,
+																				type: "string",
+																				directive: "select",
+																				options: eventDefinitionOptions
+																});
+
+																injectFields.push({
+																				title: "Event Start Date",
+																				key: "_rosterEvent.startDate",
 																				maximum: 1,
 																				minimum: 0,
 																				type: "date"

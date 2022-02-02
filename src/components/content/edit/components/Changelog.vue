@@ -17,8 +17,8 @@
                         <div class="day" v-for="day in month.days">
                             <div class="day-label">{{day.date | formatDate('ddd D')}}</div>
                             <div class="entries">
-                                <div @click="$fluro.global.json(entry, {title:entry.message, depth:5})" class="entry" v-for="entry in day.items" :key="entry._id">
-                                    <v-layout>
+                                <div @click="promptOptions(entry)" class="entry" v-for="entry in day.items" :key="entry._id">
+                                    <v-layout align-center>
                                         <v-flex shrink class="pr-1">
                                             <fluro-avatar v-if="entry.managedUser" :id="entry.managedUser" type="persona" />
                                             <fluro-avatar v-if="entry.user" :id="entry.user" type="user" />
@@ -62,6 +62,57 @@ export default {
             // console.log('Get dates')
             return this.$fluro.date.timeline(this.log, 'created');
         },
+
+    },
+    methods: {
+        promptOptions(entry) {
+            var self = this;
+
+            // 
+
+            var options = [];
+
+            options.push({
+                title: 'View details',
+                value: 'log',
+            })
+
+            options.push({
+                title: 'Undo / Rollback changes',
+                value: 'rollback',
+            })
+
+            //////////////////////////////////////////////////
+
+            return self.$fluro.options(options, `Log options`)
+                .then(function(result) {
+
+                    switch (result.value) {
+                        case 'log':
+                            self.$fluro.global.json(entry, { title: entry.message, depth: 5 })
+                            break;
+                        case 'rollback':
+                            self.$fluro.confirm('Confirm Rollback', `Are you sure you want to rollback ${self.item.title} to ${self.$fluro.date.formatDate(entry.created, 'h:mma dddd D MMM YYYY')}?`, {
+                                    confirmColor: 'error',
+                                    confirmText: 'Confirm Rollback',
+                                })
+                                .then(function() {
+                                    console.log('rollback')
+
+                                    self.$fluro.api.post(`/content/rollback/${entry._id}`)
+                                        .then(function(result) {
+
+                                            self.$fluro.resetCache();
+
+                                        }, self.$fluro.error);
+                                });
+                            break;
+                    }
+                })
+
+
+
+        }
     },
     asyncComputed: {
         log: {
@@ -86,12 +137,13 @@ export default {
         }
     }
 }
+
 </script>
 <style lang="scss">
 .log-viewer {
     max-width: 500px;
     max-height: 70vh;
-    height:100%;
+    height: 100%;
 
 
     .timeline {
@@ -170,4 +222,5 @@ export default {
         }
     }
 }
+
 </style>

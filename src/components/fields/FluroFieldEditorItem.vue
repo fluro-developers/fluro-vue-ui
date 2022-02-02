@@ -388,13 +388,20 @@ export default {
             return this.model.params && this.model.params.disableWebform;
         },
         hasExpressions() {
+
+
+
             return (
                 _.get(this.model, "hideExpression.length") ||
                 _.get(this.model, "expressions.value") ||
                 _.get(this.model, "expressions.defaultValue") ||
                 _.get(this.model, "expressions.hide") ||
+                _.get(this.model, "expressions.show") ||
                 _.get(this.model, "expressions.required")
             );
+
+
+           
         },
         classes() {
             var array = [];

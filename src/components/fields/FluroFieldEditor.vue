@@ -25,7 +25,7 @@
 																												<draggable class="field-editor-children" handle=".handle" element="ul" @sort="sorted" v-model="model" :options="treeOptions">
 																																<fluro-field-editor-item :top="model" :mouseover="mouseover" :mouseleave="mouseleave" :parent="psuedoParent" :parentGroup="psuedoParent" :leaf="model[index]" :selected="field" :select="clicked" @duplicate="duplicateField" @injected="injectField" @copypath="copyFieldPath" @deleted="deleteField" v-for="(leaf, index) in model" :key="leaf.guid" />
 																												</draggable>
-																												<template v-if="formMode">
+																												<template v-if="formMode && isEnterprise">
 																																<div class="pseudo-field" :class="{active:configurePayment && !field}" @click="showPaymentOptions()">Payment Options</div>
 																												</template>
 																								</v-container>
@@ -76,7 +76,7 @@
 																																<fluro-help title="Preview" body="View a realtime preview of how the form will look and behave when presented to the user" />
 																												</v-flex>
 																												<v-spacer />
-																												<v-flex shrink v-if="formMode && isAdvanced">
+																												<v-flex shrink v-if="formMode && isEnterprise">
 																													
 																																<v-menu :fixed="true" transition="slide-y-transition" offset-y>
 																																				<template v-slot:activator="{ on }">
@@ -325,7 +325,7 @@ export default {
 				},
 				computed: {
 
-					isAdvanced() {
+					isEnterprise() {
 												return this.uiMode != 'subsplash';
 								},
 								isPro() {

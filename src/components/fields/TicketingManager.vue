@@ -8,7 +8,7 @@
                     </v-flex>
                     <v-flex>
                         <strong>{{row.title}}</strong>
-                        <div>
+                        <div v-if="row.event">
                             <strong>{{row.event.title}}</strong>
                             <div class="font-sm muted">{{row.event | readableEventDate}}</div>
                         </div>
@@ -76,7 +76,7 @@ export default {
                 title: 'For Event',
                 key:'event',
                 maximum: 1,
-                minimum: 1,
+                minimum: 0,
                 type: 'reference',
                 params: {
                     restrictType: 'event',
@@ -129,7 +129,7 @@ export default {
                 if(index == -1) {
                     return;
                 }
-                self.model.splice(index)
+                self.model.splice(index, 1)
             })
         }
     },

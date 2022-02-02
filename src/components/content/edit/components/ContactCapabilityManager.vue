@@ -64,6 +64,9 @@ export default {
         'value': {
             type: Array,
             required: true,
+            default() {
+                return [];
+            }
         }
     },
     data() {

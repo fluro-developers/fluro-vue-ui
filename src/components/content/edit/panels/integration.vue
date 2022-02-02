@@ -43,7 +43,6 @@
                                 <template v-if="model.module == 'stripeconnect'">
                                     <stripe-connect v-model="model" />
                                 </template>
-
                                 <template v-if="model.module == 'youtube'">
                                     <youtubeapi :saveCallback="save" v-model="model" />
                                 </template>
@@ -139,14 +138,14 @@ export default {
         's3': AWSS3,
         'songselect': SongSelect,
         'googleoauth': GoogleOAuth,
-        'youtubeapi':YoutubeAPI,
+        'youtubeapi': YoutubeAPI,
         'facebook': FacebookOAuth,
         'stripe-connect': StripeConnect,
         'facebookapi': FacebookAPI,
         rtmp,
     },
     methods: {
-       
+
         modelUpdated() {
             this.update(this.model);
         }
@@ -175,7 +174,7 @@ export default {
             array.push({
                     title: "Square",
                     value: "square"
-                },{
+                }, {
                     title: "Stripe",
                     value: "stripe"
                 }, {
@@ -199,15 +198,13 @@ export default {
                 }, {
                     title: "Stripe Connect",
                     value: "stripeconnect"
-                },
-                {
+                }, {
                     title: "Youtube",
                     value: "youtube"
-                },
-                {
+                }, {
                     title: "Simple rtmp",
                     value: "rtmp"
-                },                
+                },
                 // {
                 //     title: "PushPay",
                 //     value: "pushpay"
@@ -221,6 +218,14 @@ export default {
                     value: "facebook"
                 }
             );
+
+
+            if (this.uiMode == 'subsplash') {
+                array = [{
+                    title: "SongSelect",
+                    value: "songselect"
+                }]
+            }
             return array;
         },
         fieldsOutput() {
@@ -234,26 +239,35 @@ export default {
                 minimum: 1,
                 maximum: 1,
                 type: "string",
-                params:{
-                 autofocus:!self.model.title,
+                params: {
+                    autofocus: !self.model.title,
                 }
             });
 
             // ///////////////////////////////////
 
-            addField("module", {
-                title: "Module",
-                minimum: 1,
-                maximum: 1,
-                type: "string",
-                directive: "select",
-                options: self.moduleOptions,
-                expressions: {
-                    show() {
-                        return !self.model._id || !self.model.module;
+            if (self.uiMode == 'subsplash') {
+                self.model.title = 'CCLI Songselect';
+                self.model.module = 'songselect';
+            } else {
+
+                addField("module", {
+                    title: "Module",
+                    minimum: 1,
+                    maximum: 1,
+                    type: "string",
+                    directive: "select",
+                    options: self.moduleOptions,
+                    // defaultValue: defaultModule,
+                    expressions: {
+                        show() {
+                            return !self.model._id || !self.model.module;
+                        }
                     }
-                }
-            });
+                });
+            }
+
+
 
             function addField(key, details) {
                 details.key = key;

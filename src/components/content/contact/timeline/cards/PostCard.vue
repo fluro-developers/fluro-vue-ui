@@ -82,6 +82,10 @@ export default {
       if (!this.item.author && !this.managedAuthor && this.item.title) {
         return this.item.title;
       }
+
+      if(this.item.family) {
+      return `${this.author} posted a ${this.definitionTitle} linked to the family household`;
+      }
       return `${this.author} posted a ${this.definitionTitle}`;
     },
     datestring() {

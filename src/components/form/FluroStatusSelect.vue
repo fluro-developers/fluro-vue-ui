@@ -30,7 +30,7 @@ export default {
         FluroStatusLabel,
     },
     props: {
-        
+
         'value': {
             type: String,
             default () {
@@ -61,6 +61,12 @@ export default {
 
 
             switch (self.type) {
+                case 'interaction':
+                    array.push({ title: `Active`, value: 'active' })
+                    array.push({ title: `Draft / Sandbox`, value: 'draft' })
+                    array.push({ title: `Archived`, value: 'archived' })
+                    array.push({ title: `Cancelled`, value: 'cancelled' })
+                    break;
                 case 'purchase':
                     array.push({ title: `Active`, value: 'active' })
                     array.push({ title: `Cancelled`, value: 'cancelled' })
@@ -106,8 +112,9 @@ export default {
     background: #fff;
 
     .option-item {
-     cursor: pointer;;
-     font-size:0.8em;
+        cursor: pointer;
+        ;
+        font-size: 0.8em;
         padding: 10px;
         display: block;
         border-bottom: 1px solid rgba(#000, 0.1);

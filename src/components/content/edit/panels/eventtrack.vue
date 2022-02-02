@@ -800,7 +800,7 @@ export default {
 
             addField("defaultDuration", {
                 title: "Duration (Mins)",
-                placeholder: "120",
+                placeholder: "90",
                 minimum: 0,
                 maximum: 1,
                 type: "integer",

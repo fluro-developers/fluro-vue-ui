@@ -1365,7 +1365,7 @@ export default {
 								persistentDescription() {
 												var self = this;
 
-											
+
 
 												if (self.params.persistentDescription) {
 																return true;
@@ -1951,6 +1951,7 @@ export default {
 
 												if (!this.field) {
 																console.error('Field not defined!!', this);
+																return;
 												}
 												return this.field.type;
 								},
@@ -2331,12 +2332,22 @@ export default {
 												return errors
 								},
 								prefix() {
+												if (!this.field) {
+																return;
+												}
 												return this.field.prefix;
 								},
 								suffix() {
+												if (!this.field) {
+																return;
+												}
 												return this.field.suffix;
 								},
 								directive() {
+
+												if (!this.field) {
+																return;
+												}
 												switch (this.field.directive) {
 																default:
 																				return this.field.directive;
@@ -2368,10 +2379,14 @@ export default {
 												/////////////////////////////////
 
 
+
 												if (self.context == 'admin' || self.context == 'definition') {
 																// If we are in the admin panel
 																//And we are a reference field
 																if (dataType == 'reference') {
+
+
+																				var hasSpecifiedReferences = (self.allowedReferences && self.allowedReferences.length)
 																				switch (directive) {
 																								case 'academic-select':
 																												return directive;
@@ -2384,14 +2399,14 @@ export default {
 																												return directive;
 																												break;
 																								case 'reference-select':
-																												if (self.asyncOptionsURL || (self.allowedReferences && self.allowedReferences.length)) {
+																												if (self.asyncOptionsURL || hasSpecifiedReferences) {
 																																return 'select';
 																												} else {
 																																return 'content-select';
 																												}
 																												break;
 																								default:
-																												return 'content-select';
+																												return hasSpecifiedReferences ? directive : 'content-select';
 																												break;
 
 																				}
@@ -4067,6 +4082,10 @@ export default {
 
 
 								var self = this;
+
+								if (!this.field) {
+												console.log('THIS HAS BLOWN UP', this.$el, this)
+								}
 
 								var cleaned = self.fixCorruptedData(self.model[self.field.key]);
 								if (typeof cleaned != typeof self.model[self.field.key] || cleaned != self.model[self.field.key]) {

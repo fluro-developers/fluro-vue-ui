@@ -34,7 +34,9 @@
 																												</v-flex>
 																								</v-layout>
 																								<fluro-content-form-field :field="fields.officeUseOnly" v-model="model.params" />
-																								<fluro-content-form-field :field="fields.className" v-model="model" />
+																								<template v-if="isPro">
+																												<fluro-content-form-field :field="fields.className" v-model="model" />
+																								</template>
 																								<!-- <pre>{{model}}</pre> -->
 																				</v-container>
 																</flex-column-body>
@@ -357,14 +359,16 @@
 																																				<!-- <fluro-content-form-field :field="fields.targetReactions" v-model="model.params.ticketing" /> -->
 																																</fluro-panel-body>
 																												</fluro-panel>
-																												<fluro-panel v-if="model.type == 'reference'">
+																												<fluro-panel v-if="model.type == 'reference' && isPro">
 																																<fluro-panel-body>
 																																				<fluro-content-form-field @input="resetRequired(fields.defaultValues)" :field="fields.population" v-model="model.params" />
 																																				<fluro-content-form-field @input="resetRequired(fields.defaultValues)" :field="fields.populationDetails" v-model="model.params" />
 																																</fluro-panel-body>
 																												</fluro-panel>
-																												<fluro-content-form-field :field="fields.errorMessage" v-model="model" />
-																												<fluro-content-form-field :field="fields.className" v-model="model" />
+																												<template v-if="isPro">
+																																<fluro-content-form-field :field="fields.errorMessage" v-model="model" />
+																																<fluro-content-form-field :field="fields.className" v-model="model" />
+																												</template>
 																												<fluro-content-form-field :field="fields.officeUseOnly" v-model="model.params" />
 																								</template>
 																				</v-container>
@@ -918,7 +922,7 @@ export default {
 				},
 				computed: {
 								isAdvanced() {
-												return this.uiMode != 'subsplash';
+												return this.isPro && (this.uiMode != 'subsplash');
 								},
 								isPro() {
 												return this.$pro && this.$pro.enabled;
@@ -1939,15 +1943,16 @@ export default {
 																type: "boolean"
 												});
 
-												if (self.isPro) {
-																addField("className", {
-																				title: "CSS Classes",
-																				description: "Add CSS classes to this field",
-																				minimum: 0,
-																				maximum: 1,
-																				type: "string"
-																});
-												}
+
+												
+												addField("className", {
+																title: "CSS Classes",
+																description: "Add CSS classes to this field",
+																minimum: 0,
+																maximum: 1,
+																type: "string"
+												});
+
 
 												addField("template", {
 																title: "Custom HTML",
@@ -2063,6 +2068,7 @@ export default {
 																// options:self.contactDefinitionOptions,
 												})
 
+												if(self.$pro && self.$pro.enabled) {
 												addField("targetRealms", {
 																title: `Create ${embeddedTitle} in Realms`,
 																description: `Select realms that these ${embeddedPlural} should be created in. If left blank it will default to the same realm as the form submission itself`,
@@ -2074,6 +2080,8 @@ export default {
 																				restrictType: "realm"
 																}
 												});
+											}
+
 
 
 												addField("realm", {
@@ -2176,36 +2184,40 @@ export default {
 																}
 												});
 
-												addField("targetProcesses", {
-																title: "Add to Processes",
-																description: `Select processes that these ${embeddedPlural} should be added in to. `,
-																minimum: 0,
-																maximum: 0,
-																type: "reference",
-																params: {
-																				restrictType: "definition",
-																				referenceFilter: {
-																								operator: 'and',
-																								filters: [{
-																												key: 'parentType',
-																												comparator: '==',
-																												value: 'process',
-																								}, ]
-																				},
+												if (self.$pro && self.$pro.enabled) {
+																addField("targetProcesses", {
+																				title: "Add to Processes",
+																				description: `Select processes that these ${embeddedPlural} should be added in to. `,
+																				minimum: 0,
+																				maximum: 0,
+																				type: "reference",
+																				params: {
+																								restrictType: "definition",
+																								referenceFilter: {
+																												operator: 'and',
+																												filters: [{
+																																key: 'parentType',
+																																comparator: '==',
+																																value: 'process',
+																												}, ]
+																								},
 
-																}
-												});
+																				}
+																});
+												}
 
-												addField("targetReactions", {
-																title: "Trigger Reactions",
-																description: `Select reaction pipelines that these ${embeddedPlural} should be added in to. `,
-																minimum: 0,
-																maximum: 0,
-																type: "reference",
-																params: {
-																				restrictType: "reaction"
-																}
-												});
+												if (self.$pro && self.$pro.enabled) {
+																addField("targetReactions", {
+																				title: "Trigger Reactions",
+																				description: `Select reaction pipelines that these ${embeddedPlural} should be added in to. `,
+																				minimum: 0,
+																				maximum: 0,
+																				type: "reference",
+																				params: {
+																								restrictType: "reaction"
+																				}
+																});
+												}
 
 												///////////////////////////////////////////////
 												///////////////////////////////////////////////

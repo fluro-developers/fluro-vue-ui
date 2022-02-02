@@ -72,6 +72,7 @@ export default {
 			var self = this;
 			var contact = self.model || self.item;
 
+			
 			var canAccessTextMessages = self.$fluro.access.can('create', 'smscorrespondence') || self.$fluro.access.can('sms');
 			return canAccessTextMessages;
 

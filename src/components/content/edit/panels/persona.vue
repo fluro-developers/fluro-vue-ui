@@ -156,7 +156,7 @@
                     </flex-column-body>
                 </slot>
             </tab>
-            <tab :heading="`Individual Permissions`">
+            <tab :heading="`Individual Permissions`" v-if="uiMode != 'subsplash'">
                 <slot>
                     <flex-column-body style="background: #fafafa;">
                         <v-container grid-list-xl>

@@ -18,7 +18,6 @@
                     <!-- <pre>{{typeof datetime}}</pre> -->
                     <!-- <pre>{{datePart}}</pre> -->
                     <!--  -->
-                  
                     <v-date-picker attach class="elevation-0" :min="minDateString" :max="maxDateString" full-width v-model="datePart" scrollable :locale="locale" actions></v-date-picker>
                 </fluro-tab>
                 <fluro-tab heading="Time" index="time">
@@ -51,8 +50,14 @@
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <slot name="actions" :parent="this">
-                    <v-btn color="" flat @click.native="clearHandler">{{clearText}}</v-btn>
-                    <v-btn color="primary" @click="okHandler">{{okText}}</v-btn>
+                    <template v-if="webMode">
+                        <fluro-button @click="clearHandler">{{clearText}}</fluro-button>
+                        <fluro-button @click="okHandler">{{okText}}</fluro-button>
+                    </template>
+                    <template v-else>
+                        <v-btn color="" flat @click.native="clearHandler">{{clearText}}</v-btn>
+                        <v-btn color="primary" @click="okHandler">{{okText}}</v-btn>
+                    </template>
                 </slot>
             </v-card-actions>
             <!-- </v-card> -->
@@ -198,6 +203,29 @@ export default {
         },
     },
     computed: {
+        webMode() {
+
+            var self = this;
+
+            if (!self.$fluro.app) {
+                return;
+            }
+
+            var element = self.$el;
+            if (!element) {
+                return;
+            }
+
+            if (!element.ownerDocument) {
+                return;
+            }
+
+            if (!element.ownerDocument.defaultView) {
+                return;
+            }
+
+            return !element.ownerDocument.defaultView.adminPanelMode;
+        },
         minDateString() {
             var self = this;
             return self.min ? self.$fluro.date.moment(self.min).format(DEFAULT_DATE_FORMAT) : null;

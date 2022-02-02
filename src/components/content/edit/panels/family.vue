@@ -93,7 +93,7 @@
                 <tab :heading="`${definition.title} Information`" v-if="definition && definition.fields && definition.fields.length">
                     <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
                 </tab>
-                <tab heading="Posts" >
+                <tab heading="Posts" v-if="model._id">
                     <item-post-thread :item="model" />
                 </tab>
             </tabset>
@@ -337,7 +337,10 @@ export default {
                 fields: []
             };
 
-            row4.fields = [{
+            row4.fields = []
+
+            if (self.uiMode != 'subsplash') {
+                row4.fields.push({
                     title: "Realms",
                     description: "If different from the family",
                     key: "realms",
@@ -353,20 +356,22 @@ export default {
                             return self.model.realms.slice();
                         }
                     }
-                },
-                {
-                    title: "Tags",
-                    key: "tags",
-                    minimum: 0,
-                    maximum: 0,
-                    type: "reference",
-                    directive: "content-select-button",
-                    params: {
-                        restrictType: "tag",
-                        allDefinitions: true
-                    }
+                })
+            }
+
+            row4.fields.push({
+                title: "Tags",
+                key: "tags",
+                minimum: 0,
+                maximum: 0,
+                type: "reference",
+                directive: "content-select-button",
+                params: {
+                    restrictType: "tag",
+                    allDefinitions: true
                 }
-            ];
+            })
+
 
             contactFields.push({
                 title: "School / Academic Calendar",
@@ -440,8 +445,8 @@ export default {
             var contactID = self.$fluro.utils.getStringID(contact);
 
             self.$fluro.api.put(`/family/${self.model._id}/remove`, {
-             contacts:[contactID]
-            })
+                    contacts: [contactID]
+                })
                 .then(function(res) {
 
                     console.log('Contact removed');

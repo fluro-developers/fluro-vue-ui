@@ -157,11 +157,18 @@ function getFieldDescriptions(contextField, fields, conditional) {
 
             /////////////////////////////////////////////
 
-            if (field.allowedValues && field.allowedValues.length) {
+            if (field.type == 'reference' && field.allowedReferences && field.allowedReferences.length) {
+                output.options = _.map(field.allowedReferences, function(value) {
+                    return {
+                        name: `${value.title || value.name || value._id}`,
+                        value: value._id || value.value,
+                    }
+                });
+            } else if (field.allowedValues && field.allowedValues.length) {
                 output.options = _.map(field.allowedValues, function(value) {
                     return {
                         name: value,
-                        value: value
+                        value: value,
                     };
                 });
             } else {
@@ -229,7 +236,13 @@ function getFieldDescriptions(contextField, fields, conditional) {
 
             //////////////////////////////////////////////////
 
-            var sampleOptions = field.options ? field.options.slice(0, 5) : [];
+            var limit = 10;
+
+            if (field.type == 'reference') {
+                limit = 50;
+            }
+
+            var sampleOptions = field.options ? field.options.slice(0, limit) : [];
 
             //////////////////////////////////////////////////
 
@@ -289,10 +302,13 @@ function getFieldDescriptions(contextField, fields, conditional) {
                     }
                     break;
                 case "reference":
+
+
                     if (field.isArray) {
                         exampleTitle = exampleValue = ["Object", "Object", "Object"];
                     } else {
                         exampleTitle = exampleValue = {};
+
                     }
                     break;
                 default:
@@ -413,7 +429,18 @@ function getFieldDescriptions(contextField, fields, conditional) {
                 if (sampleOptions.length) {
                     switch (field.type) {
                         case "reference":
+                            _.each(sampleOptions, function(option) {
+                                examples.push({
+                                    path: `${field.contextualPath} == '${option.value}'`,
+                                    description: `Returns if '${option.name}' has been selected`
+                                });
+                            });
+
+
+
+                            break;
                         case "group":
+
                             break;
                         case "number":
                         case "integer":

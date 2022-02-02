@@ -19,28 +19,29 @@
                 <fluro-content-form v-model="model" :fields="fields">
                     <template v-slot:form="{formFields, fieldHash, model, update, options}">
                         <v-layout align-center>
-                            <v-flex xs9>
+                            <v-flex :xs9="isPro">
                                 <template v-if="!model.evaluateTitle">
                                     <fluro-content-form-field :field="fieldHash.title" v-model="model" />
                                 </template>
                                 <template v-else>
-                                 <v-input label="Evaluate Title" :persistent-hint="true" hint="Save the ticket title with the returned value of the expression" class="no-flex">
-                                  <div>
-                                    <fluro-expression-editor v-model="model.title" />
-                                   </div>
-                                   </v-input>
+                                    <v-input label="Evaluate Title" :persistent-hint="true" hint="Save the ticket title with the returned value of the expression" class="no-flex">
+                                        <div>
+                                            <fluro-expression-editor v-model="model.title" />
+                                        </div>
+                                    </v-input>
                                 </template>
                                 <!-- <expression-field-select :context="model" @click="injectExpression($event, 'show')" v-model="expressionFields" /> -->
                             </v-flex>
-                            <v-flex xs3>
+                            <v-flex xs3 v-if="isPro">
                                 <fluro-content-form-field :field="fieldHash.evaluateTitle" v-model="model" />
                             </v-flex>
                         </v-layout>
                         <fluro-content-form-field :field="fieldHash.event" v-model="model" />
-                        <!-- <fluro-content-form-field :field="fieldHash.condition" v-model="model" /> -->
-                        <v-input label="Conditional Expression" :persistent-hint="true" hint="Only create the ticket if this expression returns true" class="no-flex">
-                            <fluro-expression-editor v-model="model.condition" />
-                        </v-input>
+                        <template v-if="isPro">
+                            <v-input label="Conditional Expression" :persistent-hint="true" hint="Only create the ticket if this expression returns true" class="no-flex">
+                                <fluro-expression-editor v-model="model.condition" />
+                            </v-input>
+                        </template>
                     </template>
                 </fluro-content-form>
             </v-container>
@@ -74,6 +75,9 @@ export default {
 
     },
     computed: {
+        isPro() {
+            return this.$pro && this.$pro.enabled;
+        },
         fields() {
             var self = this;
             var fields = [];
@@ -118,7 +122,7 @@ export default {
             addField('event', {
                 title: 'Event',
                 description: `Which event should this tickets be registered for?`,
-                minimum: 1,
+                minimum: 0,
                 maximum: 1,
                 type: 'reference',
                 directive: '',
