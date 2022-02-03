@@ -264,7 +264,8 @@
 																</v-dialog>
 												</template>
 												<template v-else-if="renderer == 'datetimepicker'">
-																<fluro-date-time-picker :outline="showOutline" :large="!params.small" :error-messages="errorMessages" :min="minDate" :max="maxDate" :success="success" :required="required" format="ddd D MMM - h:mma " timePickerFormat="ampm" :label="displayLabel" :placeholder="placeholder" :hint="field.description" v-model="fieldModel" @touched="touch()" />
+													DATE TIME PICKERING
+																<fluro-date-time-picker :webMode="webMode" :outline="showOutline" :large="!params.small" :error-messages="errorMessages" :min="minDate" :max="maxDate" :success="success" :required="required" format="ddd D MMM - h:mma " timePickerFormat="ampm" :label="displayLabel" :placeholder="placeholder" :hint="field.description" v-model="fieldModel" @touched="touch()" />
 																<!-- <pre>{{fieldModel}}</pre> -->
 												</template>
 												<template v-else-if="renderer == 'timezoneselect'">

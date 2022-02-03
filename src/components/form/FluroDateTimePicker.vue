@@ -4,12 +4,11 @@
         <!-- <v-text-field slot="activator" :outline="outline" :label="label" :value="formattedDatetime" :disabled="disabled" :loading="loading" :error-messages="errorMessages" :error-count="errorCount" :error="error" :hide-details="hideDetails" :append-icon="appendIcon" :prepend-icon="prependIcon" readonly /> -->
         <!-- <template > -->
         <!-- :value="formattedDatetime" -->
-      <pre style="display:none !important">
-WEB MODE >> {{webMode}} <<
+        <pre style="display:none !important">
+WEB MODE >> {{isWebMode}} <<
 </pre>
-
         <v-input @click.native="$emit('touched')" slot="activator" class="no-flex" @blur="$emit('blur')" @focus="$emit('focus')" :label="label" :required="required" :hint="hint" :persistent-hint="true" :disabled="disabled" :loading="loading" :error-messages="errorMessages" :error-count="errorCount" :error="error" :hide-details="hideDetails">
-            <template v-if="webMode">
+            <template v-if="isWebMode">
                 <fluro-button block color="#e0e0e0" class="mx-0">
                     <fluro-icon left icon="calendar-alt" />{{readable}}
                 </fluro-button>
@@ -61,7 +60,7 @@ WEB MODE >> {{webMode}} <<
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <slot name="actions" :parent="this">
-                    <template v-if="webMode">
+                    <template v-if="isWebMode">
                         <fluro-button @click="clearHandler">{{clearText}}</fluro-button>
                         <fluro-button @click="okHandler">{{okText}}</fluro-button>
                     </template>
@@ -94,6 +93,9 @@ export default {
         FluroTabset,
     },
     props: {
+        webMode: {
+            type: Boolean,
+        },
         datetime: {
             type: [Date, String],
             default: null
@@ -214,9 +216,13 @@ export default {
         },
     },
     computed: {
-        webMode() {
+        isWebMode() {
 
             var self = this;
+
+            if(self.webMode) {
+             return true;
+            }
 
             if (!self.$fluro.app) {
                 return;
