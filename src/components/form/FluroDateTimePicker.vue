@@ -4,18 +4,15 @@
         <!-- <v-text-field slot="activator" :outline="outline" :label="label" :value="formattedDatetime" :disabled="disabled" :loading="loading" :error-messages="errorMessages" :error-count="errorCount" :error="error" :hide-details="hideDetails" :append-icon="appendIcon" :prepend-icon="prependIcon" readonly /> -->
         <!-- <template > -->
         <!-- :value="formattedDatetime" -->
-        <pre style="display:none !important">
-WEB MODE >> {{isWebMode}} <<
-</pre>
         <v-input @click.native="$emit('touched')" slot="activator" class="no-flex" @blur="$emit('blur')" @focus="$emit('focus')" :label="label" :required="required" :hint="hint" :persistent-hint="true" :disabled="disabled" :loading="loading" :error-messages="errorMessages" :error-count="errorCount" :error="error" :hide-details="hideDetails">
             <template v-if="isWebMode">
                 <fluro-button block color="#e0e0e0" class="mx-0">
-                    <fluro-icon left icon="calendar-alt" />{{readable}}
+                    <fluro-icon left icon="calendar-alt" />Web Mode {{readable}}
                 </fluro-button>
             </template>
             <template v-else>
                 <v-btn block :large="large" color="#e0e0e0" class="mx-0">
-                    <fluro-icon left icon="calendar-alt" />{{readable}}
+                    <fluro-icon left icon="calendar-alt" />Not Web Mode {{readable}}
                 </v-btn>
             </template>
         </v-input>

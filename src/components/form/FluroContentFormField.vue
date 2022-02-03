@@ -264,7 +264,7 @@
 																</v-dialog>
 												</template>
 												<template v-else-if="renderer == 'datetimepicker'">
-													DATE TIME PICKERING
+													<pre style="visibility: :hidden">WebMode {{webMode}}</pre>
 																<fluro-date-time-picker :webMode="webMode" :outline="showOutline" :large="!params.small" :error-messages="errorMessages" :min="minDate" :max="maxDate" :success="success" :required="required" format="ddd D MMM - h:mma " timePickerFormat="ampm" :label="displayLabel" :placeholder="placeholder" :hint="field.description" v-model="fieldModel" @touched="touch()" />
 																<!-- <pre>{{fieldModel}}</pre> -->
 												</template>
@@ -1266,31 +1266,33 @@ export default {
 																				}
 																})
 								},
+
 								webMode() {
 
-												var self = this;
+            var self = this;
+            if (!self.mounted) {
+                return;
+            }
 
+            if (!self.$fluro.app) {
+                return;
+            }
 
+            var element = self.$el;
+            if (!element) {
+                return;
+            }
 
-												if (!self.$fluro.app) {
-																return;
-												}
+            if (!element.ownerDocument) {
+                return;
+            }
 
-												var element = self.$el;
-												if (!element) {
-																return;
-												}
+            if (!element.ownerDocument.defaultView) {
+                return;
+            }
 
-												if (!element.ownerDocument) {
-																return;
-												}
-
-												if (!element.ownerDocument.defaultView) {
-																return;
-												}
-
-												return !element.ownerDocument.defaultView.adminPanelMode;
-								},
+            return !element.ownerDocument.defaultView.adminPanelMode;
+        },
 								useBasicDropdown() {
 												return this.selectOptions.length < 5 || this.mobile || this.params.dropdown;
 								},
