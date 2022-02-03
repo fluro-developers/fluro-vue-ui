@@ -6,13 +6,13 @@
         <!-- :value="formattedDatetime" -->
         <v-input @click.native="$emit('touched')" slot="activator" class="no-flex" @blur="$emit('blur')" @focus="$emit('focus')" :label="label" :required="required" :hint="hint" :persistent-hint="true" :disabled="disabled" :loading="loading" :error-messages="errorMessages" :error-count="errorCount" :error="error" :hide-details="hideDetails">
             <template v-if="isWebMode">
-                <fluro-button block color="#e0e0e0" class="mx-0">
-                    <fluro-icon left icon="calendar-alt" />Web Mode {{readable}}
+                <fluro-button block class="mx-0">
+                    <fluro-icon left icon="calendar-alt" />{{readable}}
                 </fluro-button>
             </template>
             <template v-else>
-                <v-btn block :large="large" color="#e0e0e0" class="mx-0">
-                    <fluro-icon left icon="calendar-alt" />Not Web Mode {{readable}}
+                <v-btn block :large="large" class="mx-0">
+                    <fluro-icon left icon="calendar-alt" />{{readable}}
                 </v-btn>
             </template>
         </v-input>
@@ -58,11 +58,11 @@
                 <v-spacer></v-spacer>
                 <slot name="actions" :parent="this">
                     <template v-if="isWebMode">
-                        <fluro-button @click="clearHandler">{{clearText}}</fluro-button>
-                        <fluro-button @click="okHandler">{{okText}}</fluro-button>
+                        <fluro-button size="sm" @click="clearHandler">{{clearText}}</fluro-button class="mr-1">
+                        <fluro-button size="sm" @click="okHandler">{{okText}}</fluro-button>
                     </template>
                     <template v-else>
-                        <v-btn color="" flat @click.native="clearHandler">{{clearText}}</v-btn>
+                        <v-btn color="" flat @click.native="clearHandler" class="mr-1">{{clearText}}</v-btn>
                         <v-btn color="primary" @click="okHandler">{{okText}}</v-btn>
                     </template>
                 </slot>

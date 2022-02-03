@@ -264,7 +264,6 @@
 																</v-dialog>
 												</template>
 												<template v-else-if="renderer == 'datetimepicker'">
-													<pre style="visibility: :hidden">WebMode {{webMode}}</pre>
 																<fluro-date-time-picker :webMode="webMode" :outline="showOutline" :large="!params.small" :error-messages="errorMessages" :min="minDate" :max="maxDate" :success="success" :required="required" format="ddd D MMM - h:mma " timePickerFormat="ampm" :label="displayLabel" :placeholder="placeholder" :hint="field.description" v-model="fieldModel" @touched="touch()" />
 																<!-- <pre>{{fieldModel}}</pre> -->
 												</template>
@@ -852,6 +851,7 @@ export default {
 												proposedValue: null,
 												pseudoModel: null,
 												color: null,
+												mounted:false,
 
 												//Async searching
 												keywords: '',
@@ -1269,30 +1269,30 @@ export default {
 
 								webMode() {
 
-            var self = this;
-            if (!self.mounted) {
-                return;
-            }
+												var self = this;
+												if (!self.mounted) {
+																return;
+												}
 
-            if (!self.$fluro.app) {
-                return;
-            }
+												if (!self.$fluro.app) {
+																return;
+												}
 
-            var element = self.$el;
-            if (!element) {
-                return;
-            }
+												var element = self.$el;
+												if (!element) {
+																return;
+												}
 
-            if (!element.ownerDocument) {
-                return;
-            }
+												if (!element.ownerDocument) {
+																return;
+												}
 
-            if (!element.ownerDocument.defaultView) {
-                return;
-            }
+												if (!element.ownerDocument.defaultView) {
+																return;
+												}
 
-            return !element.ownerDocument.defaultView.adminPanelMode;
-        },
+												return !element.ownerDocument.defaultView.adminPanelMode;
+								},
 								useBasicDropdown() {
 												return this.selectOptions.length < 5 || this.mobile || this.params.dropdown;
 								},
@@ -4060,6 +4060,8 @@ export default {
 				mounted() {
 
 								var self = this;
+
+								self.mounted = true;
 								if (self.debugMode && self.field.isNew) {
 
 												self.$nextTick(function() {
@@ -4080,6 +4082,9 @@ export default {
 																});
 												});
 								}
+				},
+				beforeUnmount() {
+								this.mounted = false;
 				},
 				created() {
 
