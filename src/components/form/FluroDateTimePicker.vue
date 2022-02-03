@@ -58,7 +58,7 @@
                 <v-spacer></v-spacer>
                 <slot name="actions" :parent="this">
                     <template v-if="isWebMode">
-                        <fluro-button size="sm" @click="clearHandler">{{clearText}}</fluro-button class="mr-1">
+                        <fluro-button size="sm" class="mr-1" @click="clearHandler">{{clearText}}</fluro-button>
                         <fluro-button size="sm" @click="okHandler">{{okText}}</fluro-button>
                     </template>
                     <template v-else>
