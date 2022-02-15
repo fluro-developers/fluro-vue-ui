@@ -67,7 +67,7 @@
                                 <!-- :teams="model.teams" -->
                                 <plan-row @delete="remove(index)" @swap="swap(index)" @duplicate="duplicate(index)" @add="addFromRow" v-model="model.schedules[index]" :index="index" :plan="model" v-for="(row, index) in model.schedules" :key="row.guid" />
                             </draggable>
-                            <tfoot>
+                            <tfoot class="plan-footer">
                                 <tr>
                                     <th colspan="2"></th>
                                     <td>
@@ -841,7 +841,7 @@ export default {
                 width: 100%;
                 position: relative;
                 float: left;
-                z-index: 999999999999999999999;
+               
                 // position: absolute;
             }
 
@@ -895,7 +895,7 @@ export default {
                         border-radius: 3px;
                         border: 3px solid $primary;
                         box-shadow: 0 4px 10px rgba(#000, 0.3);
-                        z-index: 3;
+                        z-index: 5;
                         //width:0 !important;
                     }
                 }
@@ -956,7 +956,7 @@ export default {
 
         /* safari and ios need the tfoot itself to be position:sticky also */
         tfoot {
-
+            
             th,
             td {
                 position: -webkit-sticky;

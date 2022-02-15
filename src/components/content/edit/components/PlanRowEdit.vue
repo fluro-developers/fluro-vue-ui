@@ -67,7 +67,7 @@
             </div>
         </td>
         <column-cell :column="column" :row="row" :key="column.key" v-model="row.notes[column.key]" v-for="column in columns" />
-        <th style="padding:0;">
+        <th style="padding:0; z-index: 5;">
             <!-- style="padding:0;" -->
             <v-menu attach :nudge-left="10" offset-x left :bottom="index < plan.schedules.length/2" :top="index > plan.schedules.length/2" v-model="actionsOpen" transition="slide-x-transition">
                 <template v-slot:activator="{ on }">
