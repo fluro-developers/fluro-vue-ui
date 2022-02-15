@@ -841,6 +841,7 @@ export default {
                 width: 100%;
                 position: relative;
                 float: left;
+                z-index: 999999999999999999999;
                 // position: absolute;
             }
 
