@@ -1387,6 +1387,7 @@ export default {
 																				appendContactDetails,
 																				appendAssignments,
 																				appendFullFamily,
+																				globalCacheKey:self.$fluro.global.CACHE_KEY,
 																				// cancelToken: currentPageItemsRequest.token,
 																}
 
@@ -1399,6 +1400,7 @@ export default {
 																var cachedValue = tableCache.get(cacheString);
 
 																if (cachedValue) {
+																	console.log('Already cached', cachedValue);
 																				return pageDataLoaded(cachedValue);
 																}
 
