@@ -233,7 +233,6 @@ Basic Details
 											:options="formOptions"
 											:field="fieldHash.emails"
 											v-model="model"
-											class="email-display"
 										></fluro-content-form-field>
 									</v-flex>
 									<v-flex xs12 sm6>
@@ -1901,10 +1900,5 @@ export default {
 	& >>> .tabset-menu {
 		background: #eee;
 	}
-}
-.email-display {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
 }
 </style>
