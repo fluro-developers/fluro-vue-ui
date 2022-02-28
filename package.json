@@ -1,80 +1,80 @@
 {
-				"name": "fluro-vue-ui",
-				"version": "2.4.10",
-				"description": "A package that contains helpful Fluro UI components and mixins",
-				"main": "src/index.js",
-				"scripts": {
-								"extract": "node ./extractor.js",
-								"build": "webpack --mode=production --config webpack.config.js",
-								"dev": "webpack --mode=development --progress --colors --watch",
-								"test": "mocha  --colors ./test/*.spec.js",
-								"test:watch": "mocha  --colors -w ./test/*.spec.js"
-				},
-				"author": "Cade Embery",
-				"bugs": {
-								"url": "https://github.com/fluro-developers/fluro-vue-ui/issues"
-				},
-				"homepage": "https://github.com/fluro-developers/fluro-vue-ui#readme",
-				"repository": {
-								"type": "git",
-								"url": "git+https://github.com/fluro-developers/fluro-vue-ui.git"
-				},
-				"browserslist": [
-								"extends browserslist-config-vue"
-				],
-				"peerDependencies": {
-								"vue": "*",
-								"fluro": "*",
-								"lodash": "^4.17.15",
-								"async": "*",
-								"brace": "*",
-								"vue-color": "^2.7.1",
-								"vuetify": "^1.5.24",
-								"signature_pad": "^3.0.0-beta.3",
-								"js-beautify": "^1.11.0",
-								"vue2-ace-editor": "0.0.15",
-								"vuedraggable": "^2.23.2",
-								"tippy.js": "*",
-								"tiptap": "*",
-								"vuex-map-fields": "^1.4.0",
-								"tiptap-commands": "*",
-								"tiptap-extensions": "*",
-								"tiptap-utils": "*"
-				},
-				"dependencies": {
-								"@google/markerclusterer": "*",
-								"expression-eval": "^3.1.2",
-								"rollup-plugin-alias": "^2.2.0",
-								"v-currency-field": "3.0.7",
-								"vue-range-slider": "^0.6.0",
-								"vue-vimeo-player": "^0.1.0",
-								"vue-youtube": "^1.4.0",
-								"vuelidate": "^0.7.5"
-				},
-				"devDependencies": {
-								"@babel/core": "^7.0.0",
-								"@babel/eslint-plugin": "^7.11.5",
-								"@babel/plugin-external-helpers": "^7.0.0",
-								"@babel/plugin-proposal-object-rest-spread": "^7.0.0",
-								"autoprefixer": "^10.1.0",
-								"babel-eslint": "^10.1.0",
-								"babel-loader": "^8.1.0",
-								"babel-preset-vue": "^2.0.2",
-								"browserslist-config-vue": "^1.0.3",
-								"cross-env": "^7.0.2",
-								"del-cli": "^3.0.0",
-								"eslint": "^6.8.0",
-								"eslint-config-xo": "^0.29.1",
-								"eslint-plugin-vue": "^6.2.2",
-								"mini-css-extract-plugin": "^0.9.0",
-								"postcss": "^8.2.1",
-								"postcss-csso": "^5.0.0",
-								"sass": "^1.26.10",
-								"sass-loader": "^9.0.3",
-								"sass-resources-loader": "^2.1.1",
-								"vue-loader": "^15.9.6",
-								"vue-template-compiler": "^2.6.11",
-								"webpack": "^4.44.2",
-								"webpack-cli": "^3.3.12"
-				}
+  "name": "fluro-vue-ui",
+  "version": "2.4.11",
+  "description": "A package that contains helpful Fluro UI components and mixins",
+  "main": "src/index.js",
+  "scripts": {
+    "extract": "node ./extractor.js",
+    "build": "webpack --mode=production --config webpack.config.js",
+    "dev": "webpack --mode=development --progress --colors --watch",
+    "test": "mocha  --colors ./test/*.spec.js",
+    "test:watch": "mocha  --colors -w ./test/*.spec.js"
+  },
+  "author": "Cade Embery",
+  "bugs": {
+    "url": "https://github.com/fluro-developers/fluro-vue-ui/issues"
+  },
+  "homepage": "https://github.com/fluro-developers/fluro-vue-ui#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fluro-developers/fluro-vue-ui.git"
+  },
+  "browserslist": [
+    "extends browserslist-config-vue"
+  ],
+  "peerDependencies": {
+    "vue": "*",
+    "fluro": "*",
+    "lodash": "^4.17.15",
+    "async": "*",
+    "brace": "*",
+    "vue-color": "^2.7.1",
+    "vuetify": "^1.5.24",
+    "signature_pad": "^3.0.0-beta.3",
+    "js-beautify": "^1.11.0",
+    "vue2-ace-editor": "0.0.15",
+    "vuedraggable": "^2.23.2",
+    "tippy.js": "*",
+    "tiptap": "*",
+    "vuex-map-fields": "^1.4.0",
+    "tiptap-commands": "*",
+    "tiptap-extensions": "*",
+    "tiptap-utils": "*"
+  },
+  "dependencies": {
+    "@google/markerclusterer": "*",
+    "expression-eval": "^3.1.2",
+    "rollup-plugin-alias": "^2.2.0",
+    "v-currency-field": "3.0.7",
+    "vue-range-slider": "^0.6.0",
+    "vue-vimeo-player": "^0.1.0",
+    "vue-youtube": "^1.4.0",
+    "vuelidate": "^0.7.5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/eslint-plugin": "^7.11.5",
+    "@babel/plugin-external-helpers": "^7.0.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "autoprefixer": "^10.1.0",
+    "babel-eslint": "^10.1.0",
+    "babel-loader": "^8.1.0",
+    "babel-preset-vue": "^2.0.2",
+    "browserslist-config-vue": "^1.0.3",
+    "cross-env": "^7.0.2",
+    "del-cli": "^3.0.0",
+    "eslint": "^6.8.0",
+    "eslint-config-xo": "^0.29.1",
+    "eslint-plugin-vue": "^6.2.2",
+    "mini-css-extract-plugin": "^0.9.0",
+    "postcss": "^8.2.1",
+    "postcss-csso": "^5.0.0",
+    "sass": "^1.26.10",
+    "sass-loader": "^9.0.3",
+    "sass-resources-loader": "^2.1.1",
+    "vue-loader": "^15.9.6",
+    "vue-template-compiler": "^2.6.11",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
+  }
 }
