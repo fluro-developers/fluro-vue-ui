@@ -94,4 +94,11 @@ export default {
 }
 </script>
 <style lang="scss">
+.payment-modifier-editor {
+    .list-group-item-content {
+        white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    }
+}
 </style>
