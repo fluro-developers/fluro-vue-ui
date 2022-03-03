@@ -190,7 +190,7 @@
 																																																								</fluro-content-form>
 																																																				</fluro-panel-body>
 																																																</tab>
-																																																<tab heading="Processes">
+																																																<tab heading="Processes" v-if="notSubsplash">
 																																																				<fluro-panel-body>
 																																																								<fluro-content-form v-model="model.data" :fields="dataFields">
 																																																												<template v-slot:form="{formFields, fieldHash, model, update, options}">
@@ -222,7 +222,7 @@
 																																																								</fluro-content-form>
 																																																				</fluro-panel-body>
 																																																</tab>
-																																																<tab heading="Reaction Pipelines">
+																																																<tab heading="Reaction Pipelines" v-if="notSubsplash">
 																																																				<fluro-panel-body>
 																																																								<fluro-content-form v-model="model.data" :fields="dataFields">
 																																																												<template v-slot:form="{formFields, fieldHash, model, update, options}">
@@ -1087,6 +1087,9 @@ export default {
 								}
 				},
 				computed: {
+								notSubsplash() {
+												return this.uiMode != 'subsplash';
+								},
 								legacyOptionsAreHidden() {
 
 												if (this.showLegacyOptions) {
