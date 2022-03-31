@@ -997,7 +997,7 @@ export default {
 
             th:first-child,
             th:last-child {
-                z-index: 5;
+                z-index: 4;
             }
         }
 
