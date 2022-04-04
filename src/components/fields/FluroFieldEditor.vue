@@ -77,7 +77,6 @@
 																												</v-flex>
 																												<v-spacer />
 																												<v-flex shrink v-if="formMode && isEnterprise">
-																													
 																																<v-menu :fixed="true" transition="slide-y-transition" offset-y>
 																																				<template v-slot:activator="{ on }">
 																																								<span class="state-link" v-tippy content="Change Preview State" v-on="on">
@@ -325,7 +324,7 @@ export default {
 				},
 				computed: {
 
-					isEnterprise() {
+								isEnterprise() {
 												return this.uiMode != 'subsplash';
 								},
 								isPro() {

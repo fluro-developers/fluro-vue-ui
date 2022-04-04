@@ -5,6 +5,8 @@
         </template>
         <tabset v-else :justified="true" :vertical="true">
             <tab heading="Basic Info">
+
+
                 <flex-column-body style="background: #fafafa;">
                     <v-container grid-list-xl>
                         <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model" />
