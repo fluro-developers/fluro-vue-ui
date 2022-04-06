@@ -2198,8 +2198,7 @@ export default {
 			if (self.fieldModel === undefined || self.fieldModel === null || self.fieldModel === '') {
 				return;
 			}
-
-			return self.fieldModel ? self.$fluro.date.moment(self.fieldModel).format(self.dateFormat) : '';
+			return self.fieldModel ? self.$fluro.date.moment(self.fieldModel).utc().format(self.dateFormat) : '';
 		},
 		// formattedDate() {
 		//     return this.$fluro.date.formatDate(this.fieldModel, 'dddd D MMM YYYY');
