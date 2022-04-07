@@ -37,7 +37,7 @@ export default {
 		var store = this.$fluro.stats.getUserStore(this.stat, true);
 
 		return {
-			store: store,
+			store,
 			statting: false,
 			statted: false,
 		};
@@ -98,20 +98,17 @@ export default {
 
 			if (lastCharacter == 'e') {
 				return `${statString}d`;
-			} else {
-				return `${statString}ed`;
 			}
+			return `${statString}ed`;
 		},
 		readable() {
 			if (this.statting) {
 				return `processing`;
-			} else {
-				if (this.statted) {
-					return this.pastTense;
-				} else {
-					return this.stat;
-				}
 			}
+			if (this.statted) {
+				return this.pastTense;
+			}
+			return this.stat;
 		},
 		targetID() {
 			return this.$fluro.utils.getStringID(this.target);

@@ -81,7 +81,7 @@ export default {
 				components = self.$parent.$options.components;
 			}
 
-			var dynamicComponents = Object.assign({}, components, self.inject);
+			var dynamicComponents = { ...components, ...self.inject };
 
 			const DynamicComponent = Vue.extend({
 				template: `<div>${self.template}</div>`,

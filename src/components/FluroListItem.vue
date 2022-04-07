@@ -43,7 +43,7 @@
 						</v-btn>
 					</template>
 					<v-list dense>
-						<v-list-tile @click="action.click" v-for="action in availableActions">
+						<v-list-tile @click="action.click" v-for="(action, i) in availableActions" :key="i">
 							<v-list-tile-content>{{ action.title }}</v-list-tile-content>
 						</v-list-tile>
 					</v-list>
@@ -82,7 +82,7 @@ export default {
 		},
 		actions: {
 			type: [Array, Boolean],
-			default: function () {
+			default: () => {
 				return [];
 			},
 		},
@@ -121,7 +121,7 @@ export default {
 			if (canEdit) {
 				actions.push({
 					title: 'Edit',
-					click: function () {
+					click: () => {
 						//Fire
 						if (self.$fluro.global.edit) {
 							self.$fluro.global.edit(item);
@@ -135,7 +135,7 @@ export default {
 			if (canView) {
 				actions.push({
 					title: 'View',
-					click: function () {
+					click: () => {
 						//Fire
 						if (self.$fluro.global.view) {
 							self.$fluro.global.view(item);
@@ -147,45 +147,44 @@ export default {
 
 				switch (item._type) {
 					case 'image':
-						var url = self.$fluro.asset.getUrl(item);
 						actions.push({
 							title: 'View Image',
-							click: function () {
+							click: () => {
 								if (process.browser) {
-									window.open(url);
+									window.open(self.$fluro.asset.getUrl(item));
 								}
 							},
 						});
 						break;
 					case 'video':
-						var url = self.$fluro.asset.imageUrl(item);
 						actions.push({
 							title: 'Watch Video',
-							click: function () {
+							click: () => {
 								if (process.browser) {
-									window.open(url);
+									window.open(self.$fluro.asset.imageUrl(item));
 								}
 							},
 						});
 						break;
 					case 'audio':
-						var url = self.$fluro.asset.getUrl(item);
 						actions.push({
 							title: 'Listen',
-							click: function () {
+							click: () => {
 								if (process.browser) {
-									window.open(url);
+									window.open(self.$fluro.asset.getUrl(item));
 								}
 							},
 						});
 						break;
+					default:
+					// pass
 				}
 
 				if (item.assetType == 'upload') {
 					var url = self.$fluro.asset.downloadUrl(item);
 					actions.push({
 						title: 'Download',
-						click: function () {
+						click: () => {
 							if (process.browser) {
 								window.open(url);
 							}
@@ -199,7 +198,7 @@ export default {
 			if (canDelete) {
 				actions.push({
 					title: 'Delete',
-					click: function () {
+					click: () => {
 						//Fire
 						if (self.$fluro.global.delete) {
 							self.$fluro.global.delete(item);

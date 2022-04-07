@@ -16,7 +16,7 @@ export default {
 		return {
 			page: [],
 			perPage: this.pageSize,
-			currentPage: parseInt(this.initPage),
+			currentPage: parseInt(this.initPage, 10),
 		};
 	},
 	filters: {
@@ -55,10 +55,12 @@ export default {
 		},
 		nextPage() {
 			console.log('PAGES', this.currentPage, this.totalPages);
-			this.currentPage < this.totalPages ? this.setPage(this.currentPage + 1) : this.setPage(this.totalPages);
+			if (this.currentPage < this.totalPages) this.setPage(this.currentPage + 1);
+			else this.setPage(this.totalPages);
 		},
 		previousPage() {
-			this.currentPage > 1 ? this.setPage(this.currentPage - 1) : this.setPage(1);
+			if (this.currentPage > 1) this.setPage(this.currentPage - 1);
+			else this.setPage(1);
 		},
 		selectPage() {
 			if (!this.page || !this.page.length) {

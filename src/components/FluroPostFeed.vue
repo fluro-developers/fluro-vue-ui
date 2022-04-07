@@ -1,7 +1,7 @@
 <template>
 	<fluro-panel>
 		<fluro-tabset :justified="true">
-			<fluro-tab :heading="postType.title" v-for="postType in postTypes">
+			<fluro-tab :heading="postType.title" v-for="(postType, i) in postTypes" :key="i">
 				<div :key="post._id" v-for="post in postType.posts">
 					<fluro-panel-title>
 						<v-layout align-center>

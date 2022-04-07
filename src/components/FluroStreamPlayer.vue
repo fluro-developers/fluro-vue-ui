@@ -85,7 +85,7 @@ export default {
 				return this.actualVolume;
 			},
 			set(v) {
-				v = parseInt(v);
+				v = parseInt(v, 10);
 				v = Math.max(v, 0);
 				v = Math.min(v, 100);
 				if (isNaN(v)) {
@@ -154,12 +154,11 @@ export default {
 			}
 		},
 		connected(v) {
-			//console.log('STREAM PLAYER: CONNECTED', v);
-			if (!v) {
+			if (v) {
+				this.$emit('connected', true);
+			} else {
 				this.playing = false;
 				this.$emit('disconnected');
-			} else {
-				this.$emit('connected', true);
 			}
 		},
 		requiredPieces() {
@@ -340,6 +339,8 @@ export default {
 						case 'ERROR':
 							self.connected = false;
 							break;
+						default:
+						// pass
 					}
 				});
 
@@ -374,11 +375,10 @@ export default {
 
 			///////////////////////////////////////////////
 
-			if (hls) {
-				// console.log('HLS EXISTS');
+			if (self.hls) {
 				if (src && src.length) {
-					hls.loadSource(src);
-					hls.attachMedia(video);
+					hks.loadSource(src);
+					self.hls.attachMedia(video);
 					// console.log('ATTACH MEDIA')
 				}
 			} else {

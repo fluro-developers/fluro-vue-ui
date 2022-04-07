@@ -5,9 +5,6 @@
 import FluroVideo from './FluroVideo.vue';
 
 export default {
-	components: {
-		FluroVideo,
-	},
 	props: {
 		value: {
 			type: Object,

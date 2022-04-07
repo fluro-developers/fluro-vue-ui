@@ -46,8 +46,6 @@ export default {
 			return array;
 		},
 		canPost() {
-			var self = this;
-
 			return this.postable.length;
 		},
 		canEmail() {
@@ -63,13 +61,10 @@ export default {
 		},
 		canSMS() {
 			var self = this;
-			var contact = self.model || self.item;
 
 			var canAccessTextMessages =
 				self.$fluro.access.can('create', 'smscorrespondence') || self.$fluro.access.can('sms');
 			return canAccessTextMessages;
-
-			return contact.phoneNumbers && contact.phoneNumbers.length;
 		},
 	},
 	methods: {
@@ -85,11 +80,11 @@ export default {
 					.map(function (def) {
 						// console.log('DEF', def);
 						if (def.status == 'archived') {
-							return;
+							return null;
 						}
 
 						if (def.systemOnly) {
-							return;
+							return null;
 						}
 
 						return {
@@ -110,7 +105,7 @@ export default {
 
 					///////////////////////////
 
-					var promise = self.$fluro.modal({
+					self.$fluro.modal({
 						component: AddPost,
 						options,
 					});
@@ -158,6 +153,8 @@ export default {
 
 					self.$communications.sms([contact]);
 					break;
+				default:
+				// pass
 			}
 		},
 	},

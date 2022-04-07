@@ -20,7 +20,7 @@
 			</template>
 			<template v-if="multiple">
 				<template v-for="(object, index) in fieldModel">
-					<fluro-panel>
+					<fluro-panel :key="index">
 						<fluro-panel-title class="border-bottom">
 							<h5 title>{{ groupTitle(object, index) }}</h5>
 						</fluro-panel-title>
@@ -52,7 +52,7 @@
 				</template>
 				<template v-if="multiple">
 					<template v-for="(object, index) in fieldModel">
-						<v-card class="panel">
+						<v-card class="panel" :key="index">
 							<div class="panel-title">
 								<h5 title>{{ groupTitle(object, index) }}</h5>
 							</div>
@@ -75,7 +75,7 @@
 			<template v-else>
 				<template v-if="sameLine">
 					<v-layout row wrap>
-						<template v-for="subField in fields">
+						<template v-for="(subField, i) in fields">
 							<fluro-content-render-field
 								class="flex"
 								:webMode="webMode"
@@ -84,13 +84,14 @@
 								:raw="raw"
 								:field="subField"
 								v-model="model"
+								:key="i"
 							/>
 						</template>
 					</v-layout>
 				</template>
 				<template v-else>
 					<!-- <v-layout row wrap> -->
-					<template v-for="subField in fields">
+					<template v-for="(subField, i) in fields">
 						<fluro-content-render-field
 							:webMode="webMode"
 							@actions="viewActions"
@@ -98,6 +99,7 @@
 							:raw="raw"
 							:field="subField"
 							v-model="model"
+							:key="i"
 						/>
 					</template>
 					<!-- </v-layout> -->
@@ -127,6 +129,7 @@
 								@click="view(object, true)"
 								:item="object"
 								v-for="(object, index) in fieldModel"
+								:key="index"
 							>
 								<template v-slot:right>
 									<v-btn class="ma-0" small icon @click.stop.prevent="viewActions([object])">
@@ -145,7 +148,7 @@
 				<template v-if="multiple">
 					<div class="field-group">
 						<label>{{ label }}</label>
-						<div v-for="(entry, key) in fieldModel" v-html="fieldModel[key]"></div>
+						<div v-for="(entry, index) in fieldModel" v-html="fieldModel[index]" :key="index"></div>
 					</div>
 				</template>
 				<template v-if="!multiple">
@@ -160,8 +163,8 @@
 				<template v-if="multiple">
 					<div class="field-group">
 						<label>{{ label }}</label>
-						<template v-for="(entry, key) in fieldModel">
-							<div v-html="entry"></div>
+						<template v-for="(entry, index) in fieldModel">
+							<div v-html="entry" :key="index"></div>
 						</template>
 					</div>
 				</template>
@@ -176,8 +179,8 @@
 				<template v-if="multiple">
 					<div class="field-group">
 						<label>{{ label }}</label>
-						<template v-for="(entry, key) in fieldModel">
-							<img class="signature-image" :src="fieldModel" />
+						<template v-for="(entry, index) in fieldModel">
+							<img class="signature-image" :src="fieldModel" :key="index" />
 						</template>
 					</div>
 				</template>
@@ -192,12 +195,13 @@
 				<template v-if="multiple">
 					<div class="field-group">
 						<label>{{ label }}</label>
-						<template v-for="(entry, key) in fieldModel">
+						<template v-for="(entry, index) in fieldModel">
 							<fluro-code-editor
-								v-model="fieldModel[key]"
+								v-model="fieldModel[index]"
 								:lang="syntax"
 								:readonly="true"
 								:height="200"
+								:key="index"
 							></fluro-code-editor>
 						</template>
 					</div>
@@ -218,8 +222,8 @@
 				<template v-if="multiple">
 					<div class="field-group">
 						<label>{{ label }}</label>
-						<template v-for="(entry, key) in fieldModel">
-							<a target="_blank" :href="entry">{{ entry }}</a>
+						<template v-for="(entry, index) in fieldModel">
+							<a target="_blank" :href="entry" :key="index">{{ entry }}</a>
 						</template>
 					</div>
 				</template>
@@ -234,8 +238,8 @@
 				<template v-if="multiple">
 					<div class="field-group">
 						<label>{{ label }}</label>
-						<template v-for="(entry, key) in fieldModel">
-							<a target="_blank" :href="`mailto:` + entry">{{ entry }}</a>
+						<template v-for="(entry, index) in fieldModel">
+							<a target="_blank" :href="`mailto:` + entry" :key="index">{{ entry }}</a>
 						</template>
 					</div>
 				</template>
@@ -251,7 +255,7 @@
 					<template v-if="multiple">
 						<div class="field-group">
 							<label>{{ label }}</label>
-							<div v-for="(entry, key) in fieldModel">
+							<div v-for="(entry, index) in fieldModel" :key="index">
 								{{ entry | formatDate('h:mma dddd D MMM YYYY') }}
 							</div>
 						</div>
@@ -269,7 +273,7 @@
 					<template v-if="multiple">
 						<div class="field-group">
 							<label>{{ label }}</label>
-							<div v-for="(entry, key) in fieldModel">
+							<div v-for="(entry, index) in fieldModel" :key="index">
 								{{ entry }}
 							</div>
 						</div>
@@ -384,9 +388,8 @@ export default {
 
 			if (self.multiple) {
 				return !self.fieldModel || !self.fieldModel.length;
-			} else {
-				return !self.fieldModel;
 			}
+			return !self.fieldModel;
 		},
 		fieldModel: {
 			get() {
@@ -429,7 +432,7 @@ export default {
 						return Number(value);
 						break;
 					case 'integer':
-						return parseInt(value);
+						return parseInt(value, 10);
 						break;
 					case 'decimal':
 						return Number(parseFloat(value).toFixed(2));
@@ -456,6 +459,8 @@ export default {
 								break;
 						}
 						break;
+					default:
+					// pass
 				}
 
 				return value;
@@ -481,10 +486,10 @@ export default {
 			return this.maximum === 0 || this.maximum > 1;
 		},
 		minimum() {
-			return Math.max(parseInt(this.field.minimum), 0);
+			return Math.max(parseInt(this.field.minimum, 10), 0);
 		},
 		maximum() {
-			return parseInt(this.field.maximum);
+			return parseInt(this.field.maximum, 10);
 		},
 		total() {
 			return _.get(this.fieldModel, 'length');
@@ -527,6 +532,8 @@ export default {
 						case 'decimal':
 							directive = 'number';
 							break;
+						default:
+						// pass
 					}
 					break;
 			}
@@ -573,6 +580,8 @@ export default {
 				case 'audio':
 					return true;
 					break;
+				default:
+				// pass
 			}
 		},
 		groupTitle(object, index) {
