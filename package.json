@@ -8,7 +8,9 @@
     "build": "webpack --mode=production --config webpack.config.js",
     "dev": "webpack --mode=development --progress --colors --watch",
     "test": "mocha  --colors ./test/*.spec.js",
-    "test:watch": "mocha  --colors -w ./test/*.spec.js"
+    "test:watch": "mocha  --colors -w ./test/*.spec.js",
+    "prepare": "husky install .gitlab/hooks",
+    "prettier": "prettier --write '**/*.{js,css,md}'"
   },
   "author": "Cade Embery",
   "bugs": {
@@ -23,23 +25,23 @@
     "extends browserslist-config-vue"
   ],
   "peerDependencies": {
-    "vue": "*",
-    "fluro": "*",
-    "lodash": "^4.17.15",
     "async": "*",
     "brace": "*",
-    "vue-color": "^2.7.1",
-    "vuetify": "^1.5.24",
-    "signature_pad": "^3.0.0-beta.3",
+    "fluro": "*",
     "js-beautify": "^1.11.0",
-    "vue2-ace-editor": "0.0.15",
-    "vuedraggable": "^2.23.2",
+    "lodash": "^4.17.15",
+    "signature_pad": "^3.0.0-beta.3",
     "tippy.js": "*",
     "tiptap": "*",
-    "vuex-map-fields": "^1.4.0",
     "tiptap-commands": "*",
     "tiptap-extensions": "*",
-    "tiptap-utils": "*"
+    "tiptap-utils": "*",
+    "vue": "*",
+    "vue-color": "^2.7.1",
+    "vue2-ace-editor": "0.0.15",
+    "vuedraggable": "^2.23.2",
+    "vuetify": "^1.5.24",
+    "vuex-map-fields": "^1.4.0"
   },
   "dependencies": {
     "@google/markerclusterer": "*",
@@ -66,9 +68,11 @@
     "eslint": "^6.8.0",
     "eslint-config-xo": "^0.29.1",
     "eslint-plugin-vue": "^6.2.2",
+    "husky": ">=6",
     "mini-css-extract-plugin": "^0.9.0",
     "postcss": "^8.2.1",
     "postcss-csso": "^5.0.0",
+    "prettier": "^2.6.2",
     "sass": "^1.26.10",
     "sass-loader": "^9.0.3",
     "sass-resources-loader": "^2.1.1",
@@ -76,5 +80,8 @@
     "vue-template-compiler": "^2.6.11",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12"
+  },
+  "lint-staged": {
+    "*.{js,css,md,html}": "prettier --write"
   }
 }
