@@ -1,11 +1,10 @@
-import { Node } from 'tiptap'
-import { replaceText } from 'tiptap-commands'
+import { Node } from 'tiptap';
+import { replaceText } from 'tiptap-commands';
 import { Suggestions } from 'tiptap-extensions';
 
 export default class Mention extends Node {
-
 	get name() {
-		return 'mention'
+		return 'mention';
 	}
 
 	get defaultOptions() {
@@ -15,9 +14,9 @@ export default class Mention extends Node {
 				allowSpaces: false,
 				startOfLine: false,
 			},
-			mentionClass: null,//'',
+			mentionClass: null, //'',
 			suggestionClass: 'mention-suggestion',
-		}
+		};
 	}
 
 	get schema() {
@@ -30,7 +29,7 @@ export default class Mention extends Node {
 			inline: true,
 			selectable: false,
 			atom: true,
-			toDOM: node => [
+			toDOM: (node) => [
 				'mention',
 				{
 					class: this.options.mentionClass,
@@ -42,18 +41,18 @@ export default class Mention extends Node {
 			parseDOM: [
 				{
 					tag: 'mention[data-mention-id]',
-					getAttrs: dom => {
-						const id = dom.getAttribute('data-mention-id')
-						const label = dom.innerText.split(this.options.matcher.char).join('')
-						return { id, label }
+					getAttrs: (dom) => {
+						const id = dom.getAttribute('data-mention-id');
+						const label = dom.innerText.split(this.options.matcher.char).join('');
+						return { id, label };
 					},
 				},
 			],
-		}
+		};
 	}
 
 	commands({ schema }) {
-		return attrs => replaceText(null, schema.nodes[this.name], attrs)
+		return (attrs) => replaceText(null, schema.nodes[this.name], attrs);
 	}
 
 	get plugins() {
@@ -70,7 +69,6 @@ export default class Mention extends Node {
 				onFilter: this.options.onFilter,
 				suggestionClass: this.options.suggestionClass,
 			}),
-		]
+		];
 	}
-
 }

@@ -1,8 +1,6 @@
-console.log('fluro-vue-ui 2.4.15')
+console.log('fluro-vue-ui 2.4.15');
 
 /////////////////////////////////////////////////////
-
-
 
 import FluroCalendar from './components/ui/FluroCalendar.vue';
 import FluroButton from './components/ui/FluroButton.vue';
@@ -98,7 +96,6 @@ import FluroTab from './components/ui/tabset/FluroTab.vue';
 import FluroParallax from './components/ui/parallax/FluroParallax.vue';
 import FluroParallaxItem from './components/ui/parallax/FluroParallaxItem.vue';
 
-
 import FluroAccordion from './components/ui/accordion/FluroAccordion.vue';
 import FluroAccordionPanel from './components/ui/accordion/FluroAccordionPanel.vue';
 import FluroContentBrowser from './components/form/FluroContentBrowser.vue';
@@ -153,7 +150,6 @@ import FluroSyncedChart from './components/charts/FluroSyncedChart.vue';
 
 /////////////////////////////////////////////////////
 
-
 import _ from 'lodash';
 
 /**
@@ -170,37 +166,35 @@ function install(Vue, options) {
 	/////////////////////////////////////////////
 
 	//Add a function to show modals
-	fluro.modal = function(modal) {
-		return new Promise(function(resolve, reject) {
+	fluro.modal = function (modal) {
+		return new Promise(function (resolve, reject) {
 			modal.modalID = fluro.global.modals.length;
 			modal.resolve = resolve;
 			modal.reject = reject;
 			//Inject the modal into the stack
 			fluro.global.modals.splice(modal.modalID, 0, modal);
 		});
-
-	}
+	};
 
 	/////////////////////////////////////////////
 
 	//Request the user to answer some questions
-	fluro.options = function(options, title, description) {
+	fluro.options = function (options, title, description) {
 		return fluro.modal({
 			component: FluroOptionsDialog,
 			options: {
 				title,
 				description,
 				options,
-			}
-		})
-	}
+			},
+		});
+	};
 
 	/////////////////////////////////////////////
 
 	//Request the user to answer some questions
-	fluro.prompt = function(fields, title, model, description, options) {
-
-		if(!options) {
+	fluro.prompt = function (fields, title, model, description, options) {
+		if (!options) {
 			options = {};
 		}
 
@@ -212,15 +206,12 @@ function install(Vue, options) {
 		return fluro.modal({
 			component: FluroPromptDialog,
 			options,
-		})
-	}
-
-
+		});
+	};
 
 	/////////////////////////////////////////////
 
-	fluro.confirm = function(title, description, options) {
-
+	fluro.confirm = function (title, description, options) {
 		if (!options) {
 			options = {};
 		}
@@ -231,16 +222,16 @@ function install(Vue, options) {
 		return fluro.modal({
 			component: FluroConfirmDialog,
 			options,
-		})
-	}
+		});
+	};
 
 	/////////////////////////////////////////////
 
-	fluro.closeModal = function(modalID) {
+	fluro.closeModal = function (modalID) {
 		var modal = _.find(fluro.global.modals, { modalID });
 		var index = _.findIndex(fluro.global.modals, modal);
 		fluro.global.modals.splice(index, 1);
-	}
+	};
 
 	/////////////////////////////////////////////////////
 
@@ -268,26 +259,15 @@ function install(Vue, options) {
 	Vue.component('flex-column-footer', FlexColumnFooter);
 }
 
-
-
 /////////////////////////////////////////////////////
 
-
-if ((typeof window !== 'undefined') && window.Vue) {
+if (typeof window !== 'undefined' && window.Vue) {
 	install(window.Vue);
 }
 
-
 export default {
 	install,
-}
-
-
-
-
-
-
-
+};
 
 export { FluroCalendar as FluroCalendar };
 export { FluroImage as FluroImage };
@@ -295,8 +275,6 @@ export { FluroChatbox as FluroChatbox };
 export { FluroStreamPlayer as FluroStreamPlayer };
 export { FluroHelp as FluroHelp };
 export { FluroButton as FluroButton };
-
-
 
 export { FluroModalMixin as FluroModalMixin };
 export { FluroAvatar as FluroAvatar };
@@ -314,13 +292,11 @@ export { FluroConfirmButton as FluroConfirmButton };
 export { FluroTrendChart as FluroTrendChart };
 export { FluroTable as FluroTable };
 
-
 export { FluroParallax as FluroParallax };
 export { FluroParallaxItem as FluroParallaxItem };
 
 export { TableHeaderCheckbox as TableHeaderCheckbox };
 export { TableRowCheckbox as TableRowCheckbox };
-
 
 export { ProcessDots as ProcessDots };
 export { TableCell as TableCell };
@@ -435,7 +411,7 @@ export { DynamicListMixin as DynamicListMixin };
 export { DynamicPageMixin as DynamicPageMixin };
 export { FluroContactCommunicateMixin as FluroContactCommunicateMixin };
 export { FluroSelectionMixin as FluroSelectionMixin };
-export { FluroChart as FluroChart}
-export { FluroLineChart as FluroLineChart}
-export { FluroPieChart as FluroPieChart}
-export { FluroSyncedChart as FluroSyncedChart}
+export { FluroChart as FluroChart };
+export { FluroLineChart as FluroLineChart };
+export { FluroPieChart as FluroPieChart };
+export { FluroSyncedChart as FluroSyncedChart };

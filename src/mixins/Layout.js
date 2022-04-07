@@ -8,6 +8,5 @@ export default {
 		Wrapper,
 		Constrain,
 		FluroRealmBar,
-
-	}
-}
+	},
+};

@@ -11,21 +11,20 @@ export default {
 				/////////////////////////////////////////////////////////////////
 
 				return new Promise(function (resolve, reject) {
-					return self.$fluro.types.subTypes('post')
+					return self.$fluro.types
+						.subTypes('post')
 						.then(function (res) {
-
 							var filtered = _.filter(res, function (postType) {
 								var canSubmit = self.$fluro.access.can('submit', postType.definitionName, 'post');
 								var canCreate = self.$fluro.access.can('create', postType.definitionName, 'post');
-								return (canSubmit || canCreate);
-							})
+								return canSubmit || canCreate;
+							});
 
 							resolve(filtered);
 						})
 						.catch(reject);
-
 				});
-			}
+			},
 		},
 	},
 
@@ -37,120 +36,100 @@ export default {
 			var array = [];
 
 			if (contact.phoneNumbers && contact.phoneNumbers.length) {
-				array = array.concat(contact.phoneNumbers)
+				array = array.concat(contact.phoneNumbers);
 			}
 
 			if (contact.family && contact.family.phoneNumbers && contact.family.phoneNumbers.length) {
-				array = array.concat(contact.family.phoneNumbers)
+				array = array.concat(contact.family.phoneNumbers);
 			}
 
 			return array;
 		},
 		canPost() {
-
 			var self = this;
-
 
 			return this.postable.length;
 		},
 		canEmail() {
-
-			var self = this
+			var self = this;
 			var contact = self.model || self.item;
 
 			return contact.emails && contact.emails.length;
 		},
 		canCall() {
-
 			var self = this;
-
 
 			return self.phoneNumbers && self.phoneNumbers.length;
 		},
 		canSMS() {
-
 			var self = this;
 			var contact = self.model || self.item;
 
-			
-			var canAccessTextMessages = self.$fluro.access.can('create', 'smscorrespondence') || self.$fluro.access.can('sms');
+			var canAccessTextMessages =
+				self.$fluro.access.can('create', 'smscorrespondence') || self.$fluro.access.can('sms');
 			return canAccessTextMessages;
 
 			return contact.phoneNumbers && contact.phoneNumbers.length;
 		},
 	},
 	methods: {
-
 		addPost() {
-
-			console.log('ADD NEW POST')
+			console.log('ADD NEW POST');
 			var self = this;
-
 
 			var target = self.model || self.item;
 
 			//Load all the types of posts we can create
-			return self.$fluro.types.subTypes('post')
-				.then(function (definitions) {
+			return self.$fluro.types.subTypes('post').then(function (definitions) {
+				var mapped = _.chain(definitions)
+					.map(function (def) {
+						// console.log('DEF', def);
+						if (def.status == 'archived') {
+							return;
+						}
 
+						if (def.systemOnly) {
+							return;
+						}
 
-					var mapped = _.chain(definitions)
-						.map(function (def) {
+						return {
+							title: `New ${def.title}`,
+							definition: def,
+						};
+					})
+					.compact()
+					.value();
 
-							// console.log('DEF', def);
-							if (def.status == 'archived') {
-								return;
-							}
+				/////////////////////////////
 
-							if (def.systemOnly) {
-								return;
-							}
+				self.$fluro.options(mapped).then(function (answer) {
+					var options = {
+						definition: answer.definition,
+						items: [target],
+					};
 
-							return {
-								title: `New ${def.title}`,
-								definition: def,
-							};
-						})
-						.compact()
-						.value();
+					///////////////////////////
 
-					/////////////////////////////
-
-					self.$fluro.options(mapped)
-						.then(function (answer) {
-
-							var options = {
-								definition: answer.definition,
-								items: [target],
-							}
-
-							///////////////////////////
-
-							var promise = self.$fluro.modal({
-								component: AddPost,
-								options,
-							});
-
-
-
-						})
-
+					var promise = self.$fluro.modal({
+						component: AddPost,
+						options,
+					});
 				});
+			});
 		},
 		communicate(channel) {
-
 			var self = this;
 			var contact = self.model || self.item;
 			var contactID = self.$fluro.utils.getStringID(contact);
 
-
 			switch (channel) {
 				case 'vcard':
-
-
 					var token = self.$fluro.auth.getCurrentToken();
 					if (process.browser) {
-						window.open(`${self.$fluro.apiURL}/contact/${contactID}/vcard.vcf?access_token=${token}`, '_blank');
+						window.open(
+							`${self.$fluro.apiURL}/contact/${contactID}/vcard.vcf?access_token=${token}`,
+							'_blank'
+						);
 					}
 					break;
 				case 'phone':
@@ -164,7 +143,7 @@ export default {
 				case 'email':
 					// console.log('EMAIL NOW?', contact.emails)
 					var canAccessSimpleEmail = self.$fluro.access.can('create', 'simpleemail');
-					if(!canAccessSimpleEmail) {
+					if (!canAccessSimpleEmail) {
 						return window.open(`mailto:${contact.emails[0]}`);
 					}
 
@@ -180,7 +159,6 @@ export default {
 					self.$communications.sms([contact]);
 					break;
 			}
-
 		},
 	},
-}
+};

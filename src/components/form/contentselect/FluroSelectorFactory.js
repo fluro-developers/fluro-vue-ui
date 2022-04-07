@@ -7,18 +7,18 @@ export default {
 	create() {
 		return {
 			props: {
-				'minimum': {
+				minimum: {
 					type: Number,
 					default: 0,
 				},
-				'maximum': {
+				maximum: {
 					type: Number,
 					default: 0,
 				},
-				'allDefinitions': {
+				allDefinitions: {
 					type: Boolean,
 				},
-				'value': {
+				value: {
 					type: Array,
 					default: function () {
 						return [];
@@ -29,7 +29,7 @@ export default {
 				return {
 					selectionMinimum: this.minimum,
 					selectionMaximum: this.maximum,
-				}
+				};
 			},
 
 			created() {
@@ -38,16 +38,15 @@ export default {
 			mixins: [FluroSelectionMixin],
 			watch: {
 				minimum(v) {
-					this.selectionMinimum = Math.max(parseInt(v), 0)
+					this.selectionMinimum = Math.max(parseInt(v), 0);
 				},
 				maximum(v) {
 					var self = this;
 
-					self.selectionMaximum = Math.max(parseInt(v), 0)
+					self.selectionMaximum = Math.max(parseInt(v), 0);
 
 					if (self.selectionMaximum) {
 						if (self.value.length > self.selectionMaximum) {
-
 							var cropped = self.value.slice(0, self.selectionMaximum);
 							self.setSelection(cropped);
 
@@ -55,18 +54,17 @@ export default {
 						}
 					}
 				},
-				'value': function (v) {
-
+				value: function (v) {
 					// console.log('SET SELECTION', v);
 					//Set the value so update the selection
 					this.setSelection(v);
 				},
-				'selection': function (s) {
+				selection: function (s) {
 					var self = this;
 					// console.log('Selection is now', s);
 					this.$emit('input', s);
-				}
+				},
 			},
-		}
-	}
-}
+		};
+	},
+};
