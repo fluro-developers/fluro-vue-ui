@@ -9,6 +9,7 @@
     "dev": "webpack --mode=development --progress --colors --watch",
     "test": "mocha  --colors ./test/*.spec.js",
     "test:watch": "mocha  --colors -w ./test/*.spec.js",
+    "lint": "eslint src/**/*.{js,vue}",
     "prepare": "husky install .gitlab/hooks",
     "prettier": "prettier --write '**/*.{js,json,css,md}'"
   },
