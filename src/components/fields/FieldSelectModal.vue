@@ -1,27 +1,21 @@
 <template>
 	<div>
-		<pre>{{sheets}}</pre>
+		<pre>{{ sheets }}</pre>
 	</div>
 </template>
 <script>
-
 import FluroModalMixin from '../../mixins/ModalMixin.js';
 
 export default {
-	components:{
+	components: {
 		FluroModalMixin,
 	},
 	data() {
 		return {
-			loading:true,
-		}
+			loading: true,
+		};
 	},
-	asyncComputed:{
-		
-	}
-}
-
+	asyncComputed: {},
+};
 </script>
-<style lang="scss">
-	
-</style>
+<style lang="scss"></style>

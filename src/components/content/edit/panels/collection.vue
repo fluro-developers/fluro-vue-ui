@@ -1,12 +1,12 @@
 <template>
-    <flex-column>
-        <template v-if="loading">
-            <fluro-page-preloader contain />
-        </template>
-        <template v-else>
-            <!-- :vertical="true" -->
-            <tabset :justified="true" :vertical="true">
-                <!--  <template v-slot:menuprefix>
+	<flex-column>
+		<template v-if="loading">
+			<fluro-page-preloader contain />
+		</template>
+		<template v-else>
+			<!-- :vertical="true" -->
+			<tabset :justified="true" :vertical="true">
+				<!--  <template v-slot:menuprefix>
                     <template v-if="context == 'edit' && $vuetify.breakpoint.mdAndUp">
                         <flex-column-header style="text-align:center">
                             <div style="padding: 10px; max-width:200px; margin: auto;">
@@ -18,29 +18,60 @@
                         </flex-column-header>
                     </template>
                 </template> -->
-                <tab heading="Details">
-                    <!-- <slot> -->
-                    <flex-column-body style="background: #fafafa;">
-                        <v-container fluid>
-                            <constrain sm>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.title" v-model="model"></fluro-content-form-field>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.firstLine" v-model="model"></fluro-content-form-field>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.weight" v-model="model"></fluro-content-form-field>
-                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.items" v-model="model"></fluro-content-form-field>
-                                <fluro-privacy-select v-model="model.privacy" />
-                            </constrain>
-                        </v-container>
-                    </flex-column-body>
-                    <!-- </slot> -->
-                </tab>
-                <tab :heading="`${definition.title} Information`" v-if="definition && definition.fields && definition.fields.length">
-                    <flex-column-body style="background: #fafafa;">
-                        <v-container fluid>
-                            <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
-                        </v-container>
-                    </flex-column-body>
-                </tab>
-                <!-- <tab heading="Advanced / Metadata" v-if="hasMeta">
+				<tab heading="Details">
+					<!-- <slot> -->
+					<flex-column-body style="background: #fafafa">
+						<v-container fluid>
+							<constrain sm>
+								<fluro-content-form-field
+									:form-fields="formFields"
+									:outline="showOutline"
+									@input="update"
+									:options="options"
+									:field="fieldHash.title"
+									v-model="model"
+								></fluro-content-form-field>
+								<fluro-content-form-field
+									:form-fields="formFields"
+									:outline="showOutline"
+									@input="update"
+									:options="options"
+									:field="fieldHash.firstLine"
+									v-model="model"
+								></fluro-content-form-field>
+								<fluro-content-form-field
+									:form-fields="formFields"
+									:outline="showOutline"
+									@input="update"
+									:options="options"
+									:field="fieldHash.weight"
+									v-model="model"
+								></fluro-content-form-field>
+								<fluro-content-form-field
+									:form-fields="formFields"
+									:outline="showOutline"
+									@input="update"
+									:options="options"
+									:field="fieldHash.items"
+									v-model="model"
+								></fluro-content-form-field>
+								<fluro-privacy-select v-model="model.privacy" />
+							</constrain>
+						</v-container>
+					</flex-column-body>
+					<!-- </slot> -->
+				</tab>
+				<tab
+					:heading="`${definition.title} Information`"
+					v-if="definition && definition.fields && definition.fields.length"
+				>
+					<flex-column-body style="background: #fafafa">
+						<v-container fluid>
+							<fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
+						</v-container>
+					</flex-column-body>
+				</tab>
+				<!-- <tab heading="Advanced / Metadata" v-if="hasMeta">
                     <flex-column-body style="background: #fafafa;">
                         <v-container fluid>
                             <constrain sm>
@@ -68,9 +99,9 @@
                         </v-container>
                     </flex-column-body>
                 </tab> -->
-            </tabset>
-        </template>
-    </flex-column>
+			</tabset>
+		</template>
+	</flex-column>
 </template>
 <script>
 /////////////////////////////////
@@ -85,73 +116,65 @@ import Vue from 'vue';
 /////////////////////////////////
 
 export default {
-    components: {
-        FluroEditor,
-    },
-    created() {},
-    mixins: [FluroContentEditMixin],
-    computed: {
-        fieldsOutput() {
+	components: {
+		FluroEditor,
+	},
+	created() {},
+	mixins: [FluroContentEditMixin],
+	computed: {
+		fieldsOutput() {
+			var self = this;
+			var array = [];
 
+			///////////////////////////////////
 
-            var self = this;
-            var array = [];
+			addField('title', {
+				title: 'Title',
+				minimum: 1,
+				maximum: 1,
+				type: 'string',
+			});
 
-            ///////////////////////////////////
+			addField('firstLine', {
+				title: 'Short Description',
+				minimum: 0,
+				maximum: 1,
+				type: 'string',
+				placeholder: 'Optional short description describing the collection',
+			});
 
-            addField('title', {
-                title: 'Title',
-                minimum: 1,
-                maximum: 1,
-                type: 'string',
-            });
+			addField('weight', {
+				title: 'Weight',
+				minimum: 0,
+				maximum: 1,
+				type: 'integer',
+				placeholder: '',
+			});
 
-            addField('firstLine', {
-                title: 'Short Description',
-                minimum: 0,
-                maximum: 1,
-                type: 'string',
-                placeholder: 'Optional short description describing the collection',
-            });
+			addField('items', {
+				title: 'Items',
+				minimum: 0,
+				maximum: 0,
+				type: 'reference',
+				// params: {
+				//     restrictType: 'ticket',
+				// },
+			});
 
-            addField('weight', {
-                title: 'Weight',
-                minimum: 0,
-                maximum: 1,
-                type: 'integer',
-                placeholder: '',
-            });
+			///////////////////////////////////
 
-            addField('items', {
-                title: 'Items',
-                minimum: 0,
-                maximum: 0,
-                type: 'reference',
-                // params: {
-                //     restrictType: 'ticket',
-                // },
-            })
+			function addField(key, details) {
+				details.key = key;
+				array.push(details);
+			}
 
-            ///////////////////////////////////
-
-            function addField(key, details) {
-                details.key = key;
-                array.push(details)
-            }
-
-            return array;
-
-
-        },
-    },
-    methods: {
-
-    },
-    data() {
-        return {}
-    },
-}
-
+			return array;
+		},
+	},
+	methods: {},
+	data() {
+		return {};
+	},
+};
 </script>
-<style lang="scss">
-</style>
+<style lang="scss"></style>

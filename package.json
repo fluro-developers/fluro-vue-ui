@@ -11,7 +11,7 @@
     "test:watch": "mocha  --colors -w ./test/*.spec.js",
     "lint": "eslint src/**/*.{js,vue}",
     "prepare": "husky install .gitlab/hooks",
-    "prettier": "prettier --write '**/*.{js,json,css,md}'"
+    "prettier": "prettier --write '**/*.{js,json,vue,css,md}'"
   },
   "author": "Cade Embery",
   "bugs": {
@@ -84,6 +84,6 @@
     "webpack-cli": "^3.3.12"
   },
   "lint-staged": {
-    "*.{js,json,css,md,html}": "prettier --write"
+    "*.{js,json,vue,css,md,html}": "prettier --write"
   }
 }

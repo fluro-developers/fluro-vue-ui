@@ -25,8 +25,8 @@
 		<component :is="tagType" :to="to" :target="target" :href="href" class="item-text">
 			<!-- <router-link :to="to" class="item-text"> -->
 			<div>
-				<div class="item-title">{{title}}</div>
-				<div class="item-subtitle">{{subtitle}}</div>
+				<div class="item-title">{{ title }}</div>
+				<div class="item-subtitle">{{ subtitle }}</div>
 			</div>
 			<!--  <pre>{{subtitle}}</pre>
             <pre>{{item}}</pre> -->
@@ -34,7 +34,7 @@
 		</component>
 		<!-- <pre>{{actionsEnabled}} {{actions}}</pre> -->
 		<slot name="actions" :item="item">
-			<div class="item-actions" :class="{active:actionsOpen}" v-if="actionsEnabled">
+			<div class="item-actions" :class="{ active: actionsOpen }" v-if="actionsEnabled">
 				<v-menu :left="true" v-model="actionsOpen" :fixed="true" transition="slide-y-transition" offset-y>
 					<template v-slot:activator="{ on }">
 						<v-btn icon flat v-on="on">
@@ -44,7 +44,7 @@
 					</template>
 					<v-list dense>
 						<v-list-tile @click="action.click" v-for="action in availableActions">
-							<v-list-tile-content>{{action.title}}</v-list-tile-content>
+							<v-list-tile-content>{{ action.title }}</v-list-tile-content>
 						</v-list-tile>
 					</v-list>
 				</v-menu>
@@ -53,9 +53,7 @@
 	</div>
 </template>
 <script>
-
 import _ from 'lodash';
-
 
 import FluroRealmBar from './ui/FluroRealmBar.vue';
 
@@ -64,42 +62,41 @@ export default {
 		FluroRealmBar,
 	},
 	props: {
-		'draggable': {
+		draggable: {
 			default: false,
 			type: Boolean,
 		},
-		'to': {
-			type: Object
+		to: {
+			type: Object,
 		},
-		'href': {
-			type: String
+		href: {
+			type: String,
 		},
-		'target': {
-			type: String
+		target: {
+			type: String,
 		},
-		'item': [String, Object],
-		'model': {
+		item: [String, Object],
+		model: {
 			type: String,
 			default: 'node',
 		},
-		'actions': {
+		actions: {
 			type: [Array, Boolean],
-			default: function() {
+			default: function () {
 				return [];
 			},
 		},
-		'defaultActions': {
+		defaultActions: {
 			type: Boolean,
-		}
+		},
 	},
 	data() {
 		return {
 			actionsOpen: false,
 			availableActions: this.actions,
-		}
+		};
 	},
 	created() {
-
 		var self = this;
 
 		//Get any actions pushed in as props
@@ -120,19 +117,17 @@ export default {
 		/////////////////////////////////////
 
 		if (self.defaultActions && self.actions !== false) {
-
-
 			//If we can edit this thing
 			if (canEdit) {
 				actions.push({
 					title: 'Edit',
-					click: function() {
+					click: function () {
 						//Fire
 						if (self.$fluro.global.edit) {
 							self.$fluro.global.edit(item);
 						}
-					}
-				})
+					},
+				});
 			}
 
 			/////////////////////////////////////
@@ -140,54 +135,49 @@ export default {
 			if (canView) {
 				actions.push({
 					title: 'View',
-					click: function() {
+					click: function () {
 						//Fire
 						if (self.$fluro.global.view) {
 							self.$fluro.global.view(item);
 						}
-					}
-				})
-
+					},
+				});
 
 				///////////////////////////////////////
 
-
-
 				switch (item._type) {
 					case 'image':
-
 						var url = self.$fluro.asset.getUrl(item);
 						actions.push({
 							title: 'View Image',
-							click: function() {
+							click: function () {
 								if (process.browser) {
-									window.open(url)
+									window.open(url);
 								}
-
-							}
-						})
+							},
+						});
 						break;
 					case 'video':
 						var url = self.$fluro.asset.imageUrl(item);
 						actions.push({
 							title: 'Watch Video',
-							click: function() {
+							click: function () {
 								if (process.browser) {
-									window.open(url)
+									window.open(url);
 								}
-							}
-						})
+							},
+						});
 						break;
 					case 'audio':
 						var url = self.$fluro.asset.getUrl(item);
 						actions.push({
 							title: 'Listen',
-							click: function() {
+							click: function () {
 								if (process.browser) {
-									window.open(url)
+									window.open(url);
 								}
-							}
-						})
+							},
+						});
 						break;
 				}
 
@@ -195,12 +185,12 @@ export default {
 					var url = self.$fluro.asset.downloadUrl(item);
 					actions.push({
 						title: 'Download',
-						click: function() {
+						click: function () {
 							if (process.browser) {
-							window.open(url)
-									}
-						}
-					})
+								window.open(url);
+							}
+						},
+					});
 				}
 			}
 
@@ -209,27 +199,25 @@ export default {
 			if (canDelete) {
 				actions.push({
 					title: 'Delete',
-					click: function() {
+					click: function () {
 						//Fire
 						if (self.$fluro.global.delete) {
 							self.$fluro.global.delete(item);
 						}
-					}
-				})
+					},
+				});
 			}
-
 
 			/////////////////////////////////////
 
 			self.availableActions = actions;
 		}
-
 	},
 	computed: {
 		primaryRealm() {
 			return _.chain(this.item)
 				.get('realms')
-				.filter(function(realm) {
+				.filter(function (realm) {
 					return realm.bgColor;
 				})
 				.last()
@@ -250,7 +238,7 @@ export default {
 		},
 		tagType() {
 			if (this.to) {
-				return 'router-link'
+				return 'router-link';
 			}
 
 			if (this.href) {
@@ -258,15 +246,14 @@ export default {
 				return 'a';
 			}
 
-			return 'div'
+			return 'div';
 		},
 
 		realmStyle() {
-
 			var realm = _.chain(this.item)
 				.get('realms')
 				.compact()
-				.filter(function(realm) {
+				.filter(function (realm) {
 					return realm.bgColor;
 				})
 				.last()
@@ -275,10 +262,8 @@ export default {
 			if (realm) {
 				return {
 					backgroundColor: realm.bgColor,
-				}
+				};
 			}
-
-
 		},
 		icon() {
 			return this.$fluro.types.icon(this.type);
@@ -296,7 +281,6 @@ export default {
 			return _.get(this, 'item.firstLine');
 		},
 		subtitle() {
-
 			var self = this;
 			var item = this.item;
 			var pieces = [];
@@ -322,15 +306,12 @@ export default {
 			////////////////////////////////
 
 			return _.compact(pieces).join('. ');
-
-		}
-	}
-}
-
+		},
+	},
+};
 </script>
 <style scoped lang="scss">
 .fluro-list-item {
-
 	// 1px solid rgba(0, 0, 0, 0.1)
 	$border-color: rgba(0, 0, 0, 0.1); //rgba(#000, 0.05);
 	display: flex;
@@ -339,10 +320,6 @@ export default {
 	overflow: hidden;
 	position: relative;
 	background: #fff;
-
-
-
-
 
 	user-select: none;
 	/* supported by Chrome and Opera */
@@ -354,9 +331,6 @@ export default {
 	/* Firefox */
 	-ms-user-select: none;
 	/* Internet Explorer/Edge */
-
-
-
 
 	.item-actions {
 		opacity: 0;
@@ -372,7 +346,7 @@ export default {
 		}
 	}
 
-	@media(max-width: 768px) {
+	@media (max-width: 768px) {
 		.item-actions {
 			opacity: 1;
 		}
@@ -385,7 +359,6 @@ export default {
 	&:last-of-type {
 		border-bottom: none;
 	}
-
 
 	&.bordered,
 	&[bordered] {
@@ -403,7 +376,6 @@ export default {
 			border-bottom-left-radius: 3px;
 			border-bottom-right-radius: 3px;
 			border-bottom: 1px solid $border-color;
-
 		}
 	}
 
@@ -429,9 +401,7 @@ export default {
 		&:hover {
 			opacity: 1;
 		}
-
 	}
-
 
 	.item-icon {
 		flex: none;
@@ -479,8 +449,5 @@ export default {
 			margin: 0;
 		}
 	}
-
-
 }
-
 </style>

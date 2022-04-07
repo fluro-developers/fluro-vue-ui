@@ -1,10 +1,18 @@
 <template>
 	<div>
-		<div class="toggle-switch" :class="{'active':booleanTrue, 'inactive':!booleanTrue}" @click.stop.prevent="toggle()">
+		<div
+			class="toggle-switch"
+			:class="{ active: booleanTrue, inactive: !booleanTrue }"
+			@click.stop.prevent="toggle()"
+		>
 			<span class="on">Yes</span>
 			<span class="off">No</span>
 		</div>
-		<fluro-help title="Collect" uid="ticket.collect.cell" body="Shows whether this ticket has been collected by the ticket holder yet or not. Click to collect/uncollect the ticket." />
+		<fluro-help
+			title="Collect"
+			uid="ticket.collect.cell"
+			body="Shows whether this ticket has been collected by the ticket holder yet or not. Click to collect/uncollect the ticket."
+		/>
 	</div>
 	<!-- <div class="boolean-cell text-xs-center" :class="{'true':booleanTrue, 'false':!booleanTrue}">
             <fluro-icon library="fas" v-if="booleanTrue" icon="check-circle"/>
@@ -21,29 +29,28 @@ export default {
 		FluroHelp,
 	},
 	props: {
-		'row': {
+		row: {
 			type: Object,
 		},
-		'column': {
+		column: {
 			type: Object,
 		},
-		'data': {
+		data: {
 			// type: Object,
 		},
 	},
 	data() {
 		return {
 			loading: false,
-		}
+		};
 	},
 	watch: {
 		loading(v) {
 			this.$fluro.global.softLoading = v;
-		}
+		},
 	},
 	methods: {
 		toggle() {
-
 			var self = this;
 			var ticketID = self.$fluro.utils.getStringID(self.row);
 
@@ -51,36 +58,34 @@ export default {
 				return;
 			}
 
-
 			self.loading = true;
 
 			//////////////////////////
 
 			if (!self.row.collected) {
-
-				console.log('collect')
-				self.$fluro.api.get(`/tickets/collect/${ticketID}`)
-					.then(function(res) {
-
+				console.log('collect');
+				self.$fluro.api
+					.get(`/tickets/collect/${ticketID}`)
+					.then(function (res) {
 						self.$set(self.row, 'collected', true);
 						self.loading = false;
 					})
-					.catch(function(err) {
+					.catch(function (err) {
 						self.$fluro.error(err);
 						self.loading = false;
-					})
+					});
 			} else {
-
-				console.log('uncollect')
-				self.$fluro.api.delete(`/tickets/collect/${ticketID}`)
-					.then(function(res) {
+				console.log('uncollect');
+				self.$fluro.api
+					.delete(`/tickets/collect/${ticketID}`)
+					.then(function (res) {
 						self.$set(self.row, 'collected', false);
 						self.loading = false;
 					})
-					.catch(function(err) {
+					.catch(function (err) {
 						self.$fluro.error(err);
 						self.loading = false;
-					})
+					});
 			}
 			// $scope.collect = function(item) {
 			// 	if (!item || item.collected) {
@@ -92,8 +97,7 @@ export default {
 			// 		Notifications.status(item.title + ' was collected');
 			// 	})
 			// }
-		}
-
+		},
 	},
 	computed: {
 		booleanTrue() {
@@ -113,19 +117,18 @@ export default {
 						return;
 						break;
 				}
-				return
+				return;
 			}
 
 			return this.data ? true : false;
-		}
-	}
-}
-
+		},
+	},
+};
 </script>
 <style scoped lang="scss">
 .toggle-switch {
 	flex: none;
-	background: #E2E7EE;
+	background: #e2e7ee;
 	border-radius: 50px;
 	height: 23px;
 	line-height: 23px;
@@ -173,7 +176,6 @@ export default {
 		box-shadow: inset 0px 4px 5px rgba(0, 0, 0, 0.1);
 	}
 
-
 	&.inactive {
 		.off {
 			transform: translateX(0);
@@ -183,11 +185,5 @@ export default {
 			transform: translateX(100%);
 		}
 	}
-
-
-
-
-
 }
-
 </style>
