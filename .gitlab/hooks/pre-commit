@@ -3,7 +3,7 @@
 FILE="$(dirname "$0")/_/husky.sh"
 
 if [ ! -f "$FILE" ]; then
-    echo "yarn install must be ran before you can commit."
+    echo "npm install must be ran before you can commit."
     exit 1
 fi
 
