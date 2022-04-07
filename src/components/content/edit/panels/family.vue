@@ -466,16 +466,10 @@ export default {
         toggleSamePostal() {
             var self = this;
 
-            console.log("Toggle Same Postal!", self.model.samePostal);
-
             self.$set(self.model, "samePostal", !self.model.samePostal);
-
-            // if (!self.model.samePostal) {
-            // return self.$set(self.model, 'samePostal', true);
-            // } else {
-            // return self.$set(self.model, 'samePostal', false);
-            // }
+            self.$set(self.model, "postalAddress", {});
         },
+
         create() {
             var self = this;
             //self.$fluro.global.create
