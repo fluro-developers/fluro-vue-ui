@@ -1538,6 +1538,11 @@
   "resolved" "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz"
   "version" "1.0.5"
 
+"eslint-config-prettier@^8.5.0":
+  "integrity" "sha512-obmWKLUNCnhtQRKc+tmnYuQl0pFU1ibYJQ5BGhTVB08bHe9wC8qUeG7c08dj9XX+AuPj1YSGSQIHl1pnDHZR0Q=="
+  "resolved" "https://registry.npmjs.org/eslint-config-prettier/-/eslint-config-prettier-8.5.0.tgz"
+  "version" "8.5.0"
+
 "eslint-config-xo@^0.29.1":
   "integrity" "sha512-RDjeKh8CV0/EH4utW/6uOkwJJOOU+rX3uE5eUBOamcLNe4lNjyo8kSt3B6DzAm1L/1tWGikI7LFNVY9gG7PDQw=="
   "resolved" "https://registry.npmjs.org/eslint-config-xo/-/eslint-config-xo-0.29.1.tgz"
