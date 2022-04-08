@@ -168,8 +168,8 @@ export default {
 												var self = this;
 
 												if (self.inflightRequest) {
-													console.log('Cancel inflight request')
-													self.inflightRequest.cancel('Operation canceled by the user.');
+																console.log('Cancel inflight request')
+																self.inflightRequest.cancel('Operation canceled by the user.');
 												}
 
 												//////////////////////////////////////////

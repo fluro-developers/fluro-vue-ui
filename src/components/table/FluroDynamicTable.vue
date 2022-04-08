@@ -375,32 +375,15 @@ import { FilterService } from 'fluro';
 
 export default {
 				props: {
-								// queryString:{
-								//     type:Boolean,
-								//     default:true,
-								// },
-								// changeKey: {
-								//     type: [String, Number],
-								// },
+
 								fixedColumns: {
 												type: Boolean,
 												default: false,
 								},
-								// allDefinitions: {
-								//     type: Boolean,
-								//     default: false,
-								// },
-								// searchInheritable: {
-								//     type: Boolean,
-								//     default: false,
-								// },
+
 								grouping: {
 												type: Function,
 								},
-
-								// includeArchivedByDefault: {
-								//     type: Boolean,
-								// },
 								enableSelection: {
 												type: Boolean,
 												default: true,
@@ -472,51 +455,21 @@ export default {
 																return [];
 												}
 								},
-								// filterConfig: {
-								//     type: Object,
-								//     default () {
-								//         return {
-								//             operator: 'and',
-								//             filters: [],
-								//         }
-								//     }
-								// },
+
 								initPage: {
 												type: [Number, String],
 												default: 1,
 								},
-								// initSort: {
-								//     type: Object,
-								//     default () {
-								//         var defaultSort = {
-								//             key: this.defaultSort,
-								//             direction: this.defaultSortDirection,
-								//             type: this.defaultSortType,
-								//         }
-								//         return defaultSort;
-								//     },
-								// },
+
 								pageSize: {
 												type: Number,
 												default: 50,
 								},
-								// dataType: {
-								//     type: String,
-								// },
-								// search: {
-								//     type: String,
-								// },
-								// startDate: {
-								//     type: Date,
-								// },
-								// endDate: {
-								//     type: Date,
-								// }
+
 				},
 				data() {
 								return {
 												// groupingColumn: null,
-												cacheKey: null,
 												columnState: {},
 												structureColumns: _.compact(this.columns),
 												extraColumns: [],
@@ -770,9 +723,11 @@ export default {
 												// //console.log('RESULTS', results);
 												return results;
 								},
-
+								pageCacheKey() {
+									return `${this.changeKey}-${this.changeKey}`;
+								},
 								reloadRequired() {
-												return `${this.cacheKey}-${this.dataType}-${this.filterCheckString} ${this.dateWatchString} ${this.joins} ${this.sort.sortKey} ${this.sort.sortDirection} ${this.sort.sortType} ${this.groupingColumn ? this.groupingColumn.key : ''}  ${this.debouncedSearch}`;
+												return `${this.pageCacheKey}-${this.dataType}-${this.filterCheckString} ${this.dateWatchString} ${this.joins} ${this.sort.sortKey} ${this.sort.sortDirection} ${this.sort.sortType} ${this.groupingColumn ? this.groupingColumn.key : ''}  ${this.debouncedSearch}`;
 								},
 								selectionEnabled() {
 												return (!(this.enableSelection === false) && this.selectionController) ? true : false;
@@ -943,7 +898,7 @@ export default {
 
 
 																				//This is the key for our cached request
-																				var cacheKey = `${self.dataType}-columns`;
+																				var columnCacheKey = `${self.dataType}-columns`;
 
 																				////////////////////////////////////
 
@@ -954,7 +909,7 @@ export default {
 
 																				//Check to see if there is already a cached set of values
 																				//for this query
-																				var valueCache = valueStorageCache[cacheKey];
+																				var valueCache = valueStorageCache[columnCacheKey];
 
 																				////////////////////////////////////
 
@@ -973,7 +928,7 @@ export default {
 																								///////////////////////////////////////////////////////
 
 																								//Make the request and cache it
-																								valueCache = valueStorageCache[cacheKey] = self.$fluro.content.keys(subSetIDs, options);
+																								valueCache = valueStorageCache[columnCacheKey] = self.$fluro.content.keys(subSetIDs, options);
 																				}
 
 																				/////////////////////////////////////////////////////////////////
@@ -989,7 +944,7 @@ export default {
 																								self.loadingKeys = false;
 
 																								//Clear the cache request for next time
-																								valueStorageCache[cacheKey] = null;
+																								valueStorageCache[columnCacheKey] = null;
 																				});
 																})
 
@@ -1197,29 +1152,12 @@ export default {
 												self.groupingColumn = column;
 
 								},
-								// columnIsUnwinding(column) {
-								// 				var self = this;
-
-								// 				var lookup = _.reduce(self.unwindColumns, function(set, column) {
-								// 								set[column.key] = true;
-								// 								return set;
-								// 				}, {})
-
-								// 				return (lookup[column.key])
-								// 				// return self.unwindColumn && (self.unwindColumn.key == column.key);
-
-								// },
+								
 								columnIsGrouping(column) {
 												var self = this;
 												return self.groupingColumn && (self.groupingColumn.key == column.key);
 
 								},
-
-
-
-								// updateCacheKey() {
-								//     this.cacheKey = this.$fluro.global.CACHE_KEY;
-								// },
 								showOptionsForColumn(column) {
 
 								},
@@ -1237,23 +1175,7 @@ export default {
 																self.extraColumns.splice(index, 1);
 												}
 								},
-								// toggleColumn(column) {
-
-								//     var self = this;
-
-								//     var currentValue = self.columnState[column.key];
-
-								//     self.$set(self.columnState, column.key, !currentValue)
-								//     // var isDisabled = column.disabled;
-								//     // if (isDisabled) {
-								//     //     this.$set(column, 'disabled', true);
-								//     // } else {
-								//     //     this.$set(column, 'disabled', false);
-								//     // }
-
-
-
-								// },
+								
 								populatePage() {
 
 												var self = this;
@@ -1387,20 +1309,20 @@ export default {
 																				appendContactDetails,
 																				appendAssignments,
 																				appendFullFamily,
-																				globalCacheKey:self.$fluro.global.CACHE_KEY,
+																				globalCacheKey: self.$fluro.global.CACHE_KEY,
 																				// cancelToken: currentPageItemsRequest.token,
 																}
 
 																/////////////////////////////////////////////////
 
-																var cacheString = `${self.cacheKey}${JSON.stringify(pageRequest)}`;
+																var cacheString = `${self.pageCacheKey}${JSON.stringify(pageRequest)}`;
 
 																//Get the table cache
 																var tableCache = self.$fluro.cache.get('async-table-cache');
 																var cachedValue = tableCache.get(cacheString);
 
 																if (cachedValue) {
-																	console.log('Already cached', cachedValue);
+																				console.log('Already cached', cachedValue);
 																				return pageDataLoaded(cachedValue);
 																}
 
