@@ -105,10 +105,12 @@
 <script>
 import FluroTab from '../ui/tabset/FluroTab.vue';
 import FluroTabset from '../ui/tabset/FluroTabset.vue';
+import Moment from 'moment';
 
 const DEFAULT_DATE_FORMAT = 'YYYY-MM-DD';
 const DEFAULT_TIME_FORMAT = 'HH:mm';
 const DEFAULT_TIME = '00:00';
+const DEFAULT_DATE = new Moment().startOf('day');
 
 export default {
 	name: 'datetime-picker',
@@ -282,23 +284,23 @@ export default {
 		},
 		datePart: {
 			get() {
-				var self = this;
+				const self = this;
 
-				let val = self.selectedDatetime
+				const val = self.selectedDatetime
 					? self.$fluro.date.moment(self.selectedDatetime).format(DEFAULT_DATE_FORMAT)
 					: '';
 				return val;
 			},
 			set(val) {
-				var self = this;
+				const self = this;
 				self.dateSelected = true;
 				self.activeTab = 'time';
 
-				var moment = self.$fluro.date.moment;
-				let date = moment(val, DEFAULT_DATE_FORMAT);
-				let hour = self.selectedDatetime ? moment(self.selectedDatetime).hour() : 0;
-				let minute = self.selectedDatetime ? moment(self.selectedDatetime).minute() : 0;
-				let input = moment()
+				const moment = self.$fluro.date.moment;
+				const date = moment(val, DEFAULT_DATE_FORMAT);
+				const hour = self.selectedDatetime ? moment(self.selectedDatetime).hour() : 0;
+				const minute = self.selectedDatetime ? moment(self.selectedDatetime).minute() : 0;
+				const input = moment()
 					.year(date.year())
 					.month(date.month())
 					.date(date.date())
@@ -310,20 +312,20 @@ export default {
 		},
 		timePart: {
 			get() {
-				var self = this;
+				const self = this;
 
-				let val = self.selectedDatetime
+				const val = self.selectedDatetime
 					? self.$fluro.date.moment(self.selectedDatetime).format(DEFAULT_TIME_FORMAT)
 					: DEFAULT_TIME;
 				return val;
 			},
 			set(val) {
-				var self = this;
+				const self = this;
 				self.timeSelected = true;
 
-				let time = self.$fluro.date.moment(val, DEFAULT_TIME_FORMAT);
-				let input = self.$fluro.date
-					.moment(self.selectedDatetime)
+				const time = self.$fluro.date.moment(val, DEFAULT_TIME_FORMAT);
+				const input = self.$fluro.date
+					.moment(self.selectedDatetime || DEFAULT_DATE)
 					.hour(time.hour())
 					.minute(time.minute())
 					.second(0);
