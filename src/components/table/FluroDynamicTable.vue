@@ -469,540 +469,1081 @@ import { FilterService } from 'fluro';
 /////////////////////////////////
 
 export default {
-	props: {
-		// queryString:{
-		//     type:Boolean,
-		//     default:true,
-		// },
-		// changeKey: {
-		//     type: [String, Number],
-		// },
-		fixedColumns: {
-			type: Boolean,
-			default: false,
-		},
-		// allDefinitions: {
-		//     type: Boolean,
-		//     default: false,
-		// },
-		// searchInheritable: {
-		//     type: Boolean,
-		//     default: false,
-		// },
-		grouping: {
-			type: Function,
-		},
+				props: {
 
-		// includeArchivedByDefault: {
-		//     type: Boolean,
-		// },
-		enableSelection: {
-			type: Boolean,
-			default: true,
-		},
-		enableActions: {
-			type: Boolean,
-			default: true,
-		},
-		defaultSort: {
-			type: String,
-			default() {
-				return 'updated';
-			},
-		},
-		defaultSortType: {
-			type: String,
-			default() {
-				return 'date';
-			},
-		},
-		defaultSortDirection: {
-			type: String,
-			default() {
-				return 'desc';
-			},
-		},
-		selectionController: {
-			type: Object,
-			default() {
-				return this.$selection;
-			},
-		},
-		clickable: {
-			type: Boolean,
-			default() {
-				return true;
-			},
-		},
-		clicked: {
-			type: Function,
-			default() {
-				// //console.log('default')
-				return function (item, column) {
-					// //console.log('clicked', item, column);
-				};
-			},
-		},
-		columns: {
-			type: Array,
-			default() {
-				return [];
-			},
-		},
-		availableKeys: {
-			type: Array,
-			default() {
-				return [];
-			},
-		},
-		additionalColumns: {
-			type: Array,
-			default() {
-				return [];
-			},
-		},
-		additionalKeys: {
-			type: Array,
-			default() {
-				return [];
-			},
-		},
-		// filterConfig: {
-		//     type: Object,
-		//     default () {
-		//         return {
-		//             operator: 'and',
-		//             filters: [],
-		//         }
-		//     }
-		// },
-		initPage: {
-			type: [Number, String],
-			default: 1,
-		},
-		// initSort: {
-		//     type: Object,
-		//     default () {
-		//         var defaultSort = {
-		//             key: this.defaultSort,
-		//             direction: this.defaultSortDirection,
-		//             type: this.defaultSortType,
-		//         }
-		//         return defaultSort;
-		//     },
-		// },
-		pageSize: {
-			type: Number,
-			default: 50,
-		},
-		// dataType: {
-		//     type: String,
-		// },
-		// search: {
-		//     type: String,
-		// },
-		// startDate: {
-		//     type: Date,
-		// },
-		// endDate: {
-		//     type: Date,
-		// }
-	},
-	data() {
-		return {
-			// groupingColumn: null,
-			cacheKey: null,
-			columnState: {},
-			structureColumns: _.compact(this.columns),
-			extraColumns: [],
-			// all: [],
-			// rows: [],
-			page: [],
-			// debouncedSearch: this.search,
-			perPage: this.pageSize,
-			loading: false,
-			// loadingItems: true,
+								fixedColumns: {
+												type: Boolean,
+												default: false,
+								},
 
-			currentPage: parseInt(this.initPage),
-			previousSelectionIndex: -1,
-			// sort: JSON.parse(JSON.stringify(this.initSort)),
-		};
-	},
+								grouping: {
+												type: Function,
+								},
+								enableSelection: {
+												type: Boolean,
+												default: true,
+								},
+								enableActions: {
+												type: Boolean,
+												default: true,
+								},
+								defaultSort: {
+												type: String,
+												default () {
+																return 'updated';
+												},
+								},
+								defaultSortType: {
+												type: String,
+												default () {
+																return 'date'
+												},
+								},
+								defaultSortDirection: {
+												type: String,
+												default () {
+																return 'desc';
+												},
+								},
+								selectionController: {
+												type: Object,
+												default () {
+																return this.$selection;
+												}
+								},
+								clickable: {
+												type: Boolean,
+												default () {
+																return true;
+												}
+								},
+								clicked: {
+												type: Function,
+												default () {
+																// //console.log('default')
+																return function(item, column) {
+																				// //console.log('clicked', item, column);
+																}
+												}
+								},
+								columns: {
+												type: Array,
+												default () {
+																return [];
+												}
+								},
+								availableKeys: {
+												type: Array,
+												default () {
+																return [];
+												}
+								},
+								additionalColumns: {
+												type: Array,
+												default () {
+																return [];
+												}
+								},
+								additionalKeys: {
+												type: Array,
+												default () {
+																return [];
+												}
+								},
 
-	computed: {
-		joins() {
-			return [].concat(this.additionalKeys, _.map(this.extraColumns, 'key'));
-		},
-		// 								unwindableKeys
-		// unwindableColumns
+								initPage: {
+												type: [Number, String],
+												default: 1,
+								},
 
-		unwindableColumns() {
-			var array = _.filter(this.availableKeys.slice(), function (column) {
-				return column.maximum != 1;
-			});
+								pageSize: {
+												type: Number,
+												default: 50,
+								},
 
-			array.unshift({
-				title: 'None',
-				key: null,
-			});
+				},
+				data() {
+								return {
+												// groupingColumn: null,
+												columnState: {},
+												structureColumns: _.compact(this.columns),
+												extraColumns: [],
+												// all: [],
+												// rows: [],
+												page: [],
+												// debouncedSearch: this.search,
+												perPage: this.pageSize,
+												loading: false,
+												// loadingItems: true,
 
-			// var currentFilterColumns = _.chain(this.activeFilterRows)
-			// 				.map(function(row) {
-			// 								if (!row) {
-			// 												return;
-			// 								}
+												currentPage: parseInt(this.initPage),
+												previousSelectionIndex: -1,
+												// sort: JSON.parse(JSON.stringify(this.initSort)),
+								}
+				},
 
-			// 								return {
-			// 												title: `Current Filter > ${row.title || row.key}`,
-			// 												key: row.key,
-			// 								}
-			// 				})
-			// 				.compact()
-			// 				.value();
+				computed: {
+								joins() {
+												return [].concat(this.additionalKeys, _.map(this.extraColumns, 'key'));
+								},
+								// 								unwindableKeys
+								// unwindableColumns
 
-			// var array = currentFilterColumns.concat(this.availableKeys.slice());
+								unwindableColumns() {
 
-			// array.unshift({
-			// 				title: 'None',
-			// 				key: null,
-			// })
-			return array;
-		},
-		availableGroupingKeys() {
-			var currentFilterColumns = _.chain(this.activeFilterRows)
-				.map(function (row) {
-					if (!row) {
-						return;
-					}
+												var array = _.filter(this.availableKeys.slice(), function(column) {
+																return column.maximum != 1;
+												})
 
-					return {
-						title: `Current Filter > ${row.title || row.key}`,
-						key: row.key,
-					};
-				})
-				.compact()
-				.value();
 
-			var array = currentFilterColumns.concat(this.availableKeys.slice());
+												array.unshift({
+																title: 'None',
+																key: null,
+												})
 
-			array.unshift({
-				title: 'None',
-				key: null,
-			});
-			return array;
-		},
-		totalGroups() {
-			var self = this;
+												// var currentFilterColumns = _.chain(this.activeFilterRows)
+												// 				.map(function(row) {
+												// 								if (!row) {
+												// 												return;
+												// 								}
 
-			if (!self.groupingColumn) {
-				return;
-			}
+												// 								return {
+												// 												title: `Current Filter > ${row.title || row.key}`,
+												// 												key: row.key,
+												// 								}
+												// 				})
+												// 				.compact()
+												// 				.value();
 
-			var num = _.chain(self.rows)
-				.groupBy(function (row) {
-					return row._groupingKey;
-				})
-				.values()
-				.value().length;
+												// var array = currentFilterColumns.concat(this.availableKeys.slice());
 
-			return num;
-		},
-		plural() {
-			return this.$fluro.types.readable(this.dataType, true);
-		},
-		pagePopulationString() {
-			return [
-				this.currentPage,
-				this.reloadChangeKey,
-				_.map(this.rawPage, '_id'),
-				_.map(this.renderColumns, 'key'),
-			].join('-');
-			//this.structureColumns, this.groupingColumn ? this.groupingColumn.key : '', this.extraColumns];
-		},
-		renderColumns() {
-			var self = this;
-			var array = self.structureColumns ? self.structureColumns.slice() : [];
+												// array.unshift({
+												// 				title: 'None',
+												// 				key: null,
+												// })
+												return array;
+								},
+								availableGroupingKeys() {
 
-			var iteratorCounts = {};
+												var currentFilterColumns = _.chain(this.activeFilterRows)
+																.map(function(row) {
+																				if (!row) {
+																								return;
+																				}
 
-			//Columns selected by the user
-			if (self.extraColumns) {
-				array = array.concat(self.extraColumns);
-			}
+																				return {
+																								title: `Current Filter > ${row.title || row.key}`,
+																								key: row.key,
+																				}
+																})
+																.compact()
+																.value();
 
-			// array = _.filter(array, function(column) {
-			//     return !self.columnState[column.key];
-			// })
+												var array = currentFilterColumns.concat(this.availableKeys.slice());
 
-			/////////////////////////////////////
+												array.unshift({
+																title: 'None',
+																key: null,
+												})
+												return array;
+								},
+								totalGroups() {
 
-			//Columns to show because we are filtering on them
-			if (!self.fixedColumns) {
-				///////////////////////////////////////////////
-				var filterFields = _.chain(self.activeFilters || [])
-					.map(function (filter) {
-						var filterKey = filter.key;
-						var columnDataType = filter.dataType;
-						var allowDuplicates;
+												var self = this;
 
-						if (filter.criteria && filter.criteria.length) {
-							if (!iteratorCounts[filter.key]) {
-								iteratorCounts[filter.key] = 0;
-							}
+												if (!self.groupingColumn) {
+																return;
+												}
 
-							filterKey = `_matchedFilters['${filterKey}'][${iteratorCounts[filterKey]}]`;
-							columnDataType = 'reference';
-							allowDuplicates = true;
 
-							iteratorCounts[filter.key]++;
-						}
+												var num = _.chain(self.rows)
+																.groupBy(function(row) {
+																				return row._groupingKey;
+																})
+																.values()
+																.value()
+																.length;
 
-						// //console.log('FILTER', filter);
-						if (filter.comparator) {
-							var column = {
-								title: filter.title || _.startCase(filter.key),
-								key: filterKey,
-								allowDuplicates,
-							};
+												return num;
+								},
+								plural() {
+												return this.$fluro.types.readable(this.dataType, true);
+								},
+								pagePopulationString() {
+												return [this.currentPage, this.reloadChangeKey, _.map(this.rawPage, '_id'), _.map(this.renderColumns, 'key')].join('-');
+												//this.structureColumns, this.groupingColumn ? this.groupingColumn.key : '', this.extraColumns];
+								},
+								renderColumns() {
 
-							//Treat as a date value
-							if (_.startsWith(filter.comparator, 'date') || filter.dataType == 'date') {
-								column.sortType = column.type = 'date';
-							}
+												var self = this;
+												var array = self.structureColumns ? self.structureColumns.slice() : [];
 
-							switch (filter.dataType) {
-								case 'number':
-								case 'integer':
-								case 'decimal':
-								case 'float':
-									column.sortType = column.type = columnDataType;
-									break;
-							}
-							// //console.log('FILTER COMPARATOR', filter);
-							// switch(filter.comparator) {
-							//     case 'datesameday':
-							//     case 'datenotyear':
-							//     case 'datemonthnotyear':
-							//     case 'datesameweek':
-							//     case 'datesamemonth':
-							//     case 'datesameyear':
-							//     case 'datesameweekday':
-							//     case 'datebefore':
-							//     case 'dateafter':
-							//     case 'datebetween':
-							//     case 'datenotbetween':
-							//         column.sortType =
-							//         column.type = 'date';
-							//     break;
-							// }
+												var iteratorCounts = {};
 
-							return column;
-						}
-					})
-					.compact()
-					.value();
+												//Columns selected by the user
+												if (self.extraColumns) {
+																array = array.concat(self.extraColumns);
+												}
 
-				/////////////////////////////////////
+												// array = _.filter(array, function(column) {
+												//     return !self.columnState[column.key];
+												// })
 
-				_.each(filterFields, function (column) {
-					if (column.allowDuplicates) {
-						array.push(column);
-					} else {
-						// //console.log('COLUMN', column)
-						if (!_.some(array, { key: column.key })) {
-							// //console.log('COLUMNS', column);
-							array.push(column);
-						}
-					}
-				});
-			}
+												/////////////////////////////////////
 
-			/////////////////////////////////////
+												//Columns to show because we are filtering on them
+												if (!self.fixedColumns) {
 
-			return array;
-		},
 
-		// dateWatchString() {
 
-		//     if (!this.startDate) {
-		//         return
-		//     }
 
-		//     if (!this.endDate) {
-		//         return
-		//     }
 
-		//     return String(Date(this.startDate).setHours(0, 0, 0, 0).getTime()) + String(Date(this.endDate).setHours(0, 0, 0, 0).getTime());
-		// },
-		grouped() {
-			var self = this;
+																///////////////////////////////////////////////
+																var filterFields = _.chain(self.activeFilters || [])
+																				.map(function(filter) {
 
-			var results;
+																								var filterKey = filter.key;
+																								var columnDataType = filter.dataType;
+																								var allowDuplicates;
 
-			if (self.grouping) {
-				results = self.grouping(self.page);
-			} else if (self.groupingColumn && self.groupingColumn.key) {
-				results = self.groupByColumn(self.page.slice(), self.groupingColumn);
-			}
+																								if (filter.criteria && filter.criteria.length) {
 
-			// //console.log('RESULTS', results);
-			return results;
-		},
+																												if (!iteratorCounts[filter.key]) {
+																																iteratorCounts[filter.key] = 0;
+																												}
 
-		reloadRequired() {
-			return `${this.cacheKey}-${this.dataType}-${this.filterCheckString} ${this.dateWatchString} ${this.joins} ${
-				this.sort.sortKey
-			} ${this.sort.sortDirection} ${this.sort.sortType} ${this.groupingColumn ? this.groupingColumn.key : ''}  ${
-				this.debouncedSearch
-			}`;
-		},
-		selectionEnabled() {
-			return !(this.enableSelection === false) && this.selectionController ? true : false;
-		},
-		actionsEnabled() {
-			return !(this.enableActions === false);
-		},
-		rowsTotal() {
-			return this.rowsLoaded || this.rows.length || MAX_CHUNK_SIZE || MAX_ROWS;
-		},
-		showLoading() {
-			return this.loading || this.loadingItems;
-		},
-		// activeFilters() {
-		//     return FilterService.activeFilters(this.filterConfig);
-		// },
-		// activeFilterRows() {
-		//     return _.filter(this.activeFilters, function(row) {
-		//         return row.comparator && row.comparator.length;
-		//     })
-		// },
-		// activeFilterKeys() {
-		//     return FilterService.activeFilterKeys(this.filterConfig);
-		// },
-		// activeFilterValues() {
-		//     return FilterService.activeFilterValues(this.filterConfig);
-		// },
-		// activeFilterComparators() {
-		//     return FilterService.activeFilterComparators(this.filterConfig);
-		// },
-		// activeFilterOperators() {
-		//     return FilterService.activeFilterComparators(this.filterConfig);
-		// },
-		rowCheckString() {
-			// //console.log('RECOMPUTE ROWS')
-			var rows = this.rows || [];
-			var ids = _.map(rows, '_id').join('');
-			var keys = _.keys(rows[0]);
+																												filterKey = `_matchedFilters['${filterKey}'][${iteratorCounts[filterKey]}]`;
+																												columnDataType = 'reference';
+																												allowDuplicates = true;
 
-			return `${ids}${keys}`;
-			// return _.chain(this.rows).map('_id').orderBy(function(id) {
-			//     return id;
-			// }).join('');
-		},
-		// dateWatchString() {
+																												iteratorCounts[filter.key]++;
 
-		//     if (!this.startDate) {
-		//         return
-		//     }
+																								}
 
-		//     if (!this.endDate) {
-		//         return
-		//     }
+																								// //console.log('FILTER', filter);
+																								if (filter.comparator) {
+																												var column = {
+																																title: filter.title || _.startCase(filter.key),
+																																key: filterKey,
+																																allowDuplicates,
+																												}
 
-		//     return String(this.startDate) + String(this.endDate);
-		// },
-		// filterCheckString() {
+																												//Treat as a date value
+																												if (_.startsWith(filter.comparator, 'date') || filter.dataType == 'date') {
+																																column.sortType =
+																																				column.type = 'date';
+																												}
 
-		//     var filterString = FilterService.getFilterChangeString(this.filterConfig);
-		//     return filterString;
-		// },
-		isAsync() {
-			return this.dataType && this.dataType.length;
-		},
-		previousPageDisabled() {
-			return this.currentPage <= 1;
-		},
-		nextPageDisabled() {
-			return this.currentPage == this.totalPages;
-		},
-		filteredTotal() {
-			return this.rows.length;
-		},
-		availablePages() {
-			var chunk = _.chunk(this.rows, this.perPage);
-			return chunk;
-		},
-		startOffset() {
-			return Math.floor((this.currentPage - 1) * this.perPage);
-		},
-		endOffset() {
-			return Math.min(this.startOffset + this.perPage, this.filteredTotal);
-		},
-		rawPage() {
-			if (this.currentPage > this.totalPages) {
-				var set = _.first(this.availablePages);
-			} else {
-				var set = this.availablePages[this.currentPage - 1];
-			}
+																												switch (filter.dataType) {
+																																case 'number':
+																																case 'integer':
+																																case 'decimal':
+																																case 'float':
+																																				column.sortType =
+																																								column.type = columnDataType
+																																				break;
+																												}
+																												// //console.log('FILTER COMPARATOR', filter);
+																												// switch(filter.comparator) {
+																												//     case 'datesameday':
+																												//     case 'datenotyear':
+																												//     case 'datemonthnotyear':
+																												//     case 'datesameweek':
+																												//     case 'datesamemonth':
+																												//     case 'datesameyear':
+																												//     case 'datesameweekday':
+																												//     case 'datebefore':
+																												//     case 'dateafter':
+																												//     case 'datebetween':
+																												//     case 'datenotbetween':
+																												//         column.sortType = 
+																												//         column.type = 'date';
+																												//     break;
+																												// }
 
-			//console.log('RAW', set, this.availablePages)
+																												return column;
+																								}
+																				})
+																				.compact()
+																				.value();
 
-			return set || [];
-		},
-		totalPages() {
-			return this.availablePages ? this.availablePages.length : 0;
-		},
-		allSelected() {
-			var self = this;
+																/////////////////////////////////////
 
-			if (!self.page || !self.page.length) {
-				return;
-			}
+																_.each(filterFields, function(column) {
 
-			//Check if any of the rows are not selected
-			var anyNotSelected = _.some(self.page, function (item) {
-				var notSelected = !self.selectionController.isSelected(item);
-				return notSelected;
-			});
+																				if (column.allowDuplicates) {
+																								array.push(column)
+																				} else {
+																								// //console.log('COLUMN', column)
+																								if (!_.some(array, { key: column.key })) {
+																												// //console.log('COLUMNS', column);
+																												array.push(column);
+																								}
+																				}
+																})
+												}
 
-			return !anyNotSelected;
-		},
-		someSelected() {
-			var self = this;
 
-			if (self.allSelected) {
-				return true;
-			}
+												/////////////////////////////////////
 
-			return _.some(self.page, function (item) {
-				return self.selectionController.isSelected(item);
-			});
-		},
-		selectAllIcon() {
-			if (this.allSelected) {
-				return 'check-square';
-			}
+												return array;
 
-			if (this.someSelected) {
-				return 'minus-square';
-			}
 
-			return 'square';
-		},
-	},
-	asyncComputed: {
-		availableColumns: {
-			default: [],
-			get() {
-				var self = this;
+								},
 
-				////////////////////////////////////
+								// dateWatchString() {
 
-				//There are no rows
-				if (!self.rows || !self.rows.length) {
-					self.loadingKeys = false;
-					return Promise.resolve([]);
-				}
+								//     if (!this.startDate) {
+								//         return
+								//     }
+
+								//     if (!this.endDate) {
+								//         return
+								//     }
+
+								//     return String(Date(this.startDate).setHours(0, 0, 0, 0).getTime()) + String(Date(this.endDate).setHours(0, 0, 0, 0).getTime());
+								// },
+								grouped() {
+
+												var self = this;
+
+												var results;
+
+												if (self.grouping) {
+																results = self.grouping(self.page);
+												} else if (self.groupingColumn && self.groupingColumn.key) {
+																results = self.groupByColumn(self.page.slice(), self.groupingColumn);
+												}
+
+												// //console.log('RESULTS', results);
+												return results;
+								},
+								pageCacheKey() {
+									return `${this.changeKey}-${this.changeKey}`;
+								},
+								reloadRequired() {
+												return `${this.pageCacheKey}-${this.dataType}-${this.filterCheckString} ${this.dateWatchString} ${this.joins} ${this.sort.sortKey} ${this.sort.sortDirection} ${this.sort.sortType} ${this.groupingColumn ? this.groupingColumn.key : ''}  ${this.debouncedSearch}`;
+								},
+								selectionEnabled() {
+												return (!(this.enableSelection === false) && this.selectionController) ? true : false;
+								},
+								actionsEnabled() {
+												return !(this.enableActions === false);
+								},
+								rowsTotal() {
+												return this.rowsLoaded || this.rows.length || MAX_CHUNK_SIZE || MAX_ROWS;
+								},
+								showLoading() {
+												return this.loading || this.loadingItems;
+								},
+								// activeFilters() {
+								//     return FilterService.activeFilters(this.filterConfig);
+								// },
+								// activeFilterRows() {
+								//     return _.filter(this.activeFilters, function(row) {
+								//         return row.comparator && row.comparator.length;
+								//     })
+								// },
+								// activeFilterKeys() {
+								//     return FilterService.activeFilterKeys(this.filterConfig);
+								// },
+								// activeFilterValues() {
+								//     return FilterService.activeFilterValues(this.filterConfig);
+								// },
+								// activeFilterComparators() {
+								//     return FilterService.activeFilterComparators(this.filterConfig);
+								// },
+								// activeFilterOperators() {
+								//     return FilterService.activeFilterComparators(this.filterConfig);
+								// },
+								rowCheckString() {
+												// //console.log('RECOMPUTE ROWS')
+												var rows = this.rows || [];
+												var ids = _.map(rows, '_id').join('');
+												var keys = _.keys(rows[0]);
+
+												return `${ids}${keys}`;
+												// return _.chain(this.rows).map('_id').orderBy(function(id) {
+												//     return id;
+												// }).join('');
+								},
+								// dateWatchString() {
+
+								//     if (!this.startDate) {
+								//         return
+								//     }
+
+								//     if (!this.endDate) {
+								//         return
+								//     }
+
+
+								//     return String(this.startDate) + String(this.endDate);
+								// },
+								// filterCheckString() {
+
+								//     var filterString = FilterService.getFilterChangeString(this.filterConfig);
+								//     return filterString;
+								// },
+								isAsync() {
+												return this.dataType && this.dataType.length;
+								},
+								previousPageDisabled() {
+												return this.currentPage <= 1;
+
+								},
+								nextPageDisabled() {
+												return this.currentPage == this.totalPages;
+								},
+								filteredTotal() {
+												return this.rows.length;
+								},
+								availablePages() {
+												var chunk = _.chunk(this.rows, this.perPage);
+												return chunk;
+								},
+								startOffset() {
+												return Math.floor((this.currentPage - 1) * this.perPage);
+								},
+								endOffset() {
+												return Math.min(this.startOffset + this.perPage, this.filteredTotal);
+								},
+								rawPage() {
+
+												if (this.currentPage > this.totalPages) {
+																var set = _.first(this.availablePages);
+												} else {
+																var set = this.availablePages[this.currentPage - 1];
+												}
+
+												//console.log('RAW', set, this.availablePages)
+
+												return set || [];
+								},
+								totalPages() {
+												return this.availablePages ? this.availablePages.length : 0;
+								},
+								allSelected() {
+
+												var self = this;
+
+												if (!self.page || !self.page.length) {
+																return;
+												}
+
+												//Check if any of the rows are not selected
+												var anyNotSelected = _.some(self.page, function(item) {
+																var notSelected = !self.selectionController.isSelected(item);
+																return notSelected;
+												})
+
+												return !anyNotSelected;
+								},
+								someSelected() {
+
+												var self = this;
+
+												if (self.allSelected) {
+																return true;
+												}
+
+												return _.some(self.page, function(item) {
+																return self.selectionController.isSelected(item);
+												})
+								},
+								selectAllIcon() {
+												if (this.allSelected) {
+																return 'check-square';
+												}
+
+												if (this.someSelected) {
+																return 'minus-square';
+												}
+
+												return 'square';
+
+
+								},
+
+
+				},
+				asyncComputed: {
+
+								availableColumns: {
+												default: [],
+												get() {
+																var self = this;
+
+
+																////////////////////////////////////
+
+																//There are no rows
+																if (!self.rows || !self.rows.length) {
+																				self.loadingKeys = false;
+																				return Promise.resolve([]);
+																}
+
+																////////////////////////////////////
+
+																//Show feedback to the user that we are loading
+																//the values for them
+																self.loadingKeys = true;
+
+																return new Promise(function(resolve, reject) {
+
+
+																				//This is the key for our cached request
+																				var columnCacheKey = `${self.dataType}-columns`;
+
+																				////////////////////////////////////
+
+																				//Get the storage cache
+																				var valueStorageCache = self.$fluro.cache.get('filter-distinct-keys');
+
+																				////////////////////////////////////
+
+																				//Check to see if there is already a cached set of values
+																				//for this query
+																				var valueCache = valueStorageCache[columnCacheKey];
+
+																				////////////////////////////////////
+
+																				//If we haven't already got the values for this request
+																				if (!valueCache) {
+
+																								//Get all the ids
+																								var subSetIDs = self.$fluro.utils.arrayIDs(self.rows);
+
+																								//We need to make an asynchronous request to the server
+																								//to find out what values we can filter by
+																								var options = {
+																												type: self.dataType
+																								}
+
+																								///////////////////////////////////////////////////////
+
+																								//Make the request and cache it
+																								valueCache = valueStorageCache[columnCacheKey] = self.$fluro.content.keys(subSetIDs, options);
+																				}
+
+																				/////////////////////////////////////////////////////////////////
+
+																				//When the request is complete
+																				valueCache.then(function(res) {
+																								resolve(res);
+
+																								self.loadingKeys = false;
+																				}, function(err) {
+																								//console.log('Error', err);
+																								resolve([]);
+																								self.loadingKeys = false;
+
+																								//Clear the cache request for next time
+																								valueStorageCache[columnCacheKey] = null;
+																				});
+																})
+
+
+												}
+								},
+				},
+				// created() {
+				// 	//console.log('DynamicTable - Created', this.$fluro)
+				// //     this.$fluro.addEventListener('cache.reset', this.updateCacheKey);
+				// },
+				// mounted() {
+				// 	//console.log('DynamicTable - Mounted', this.$fluro)
+				// },
+				// beforeDestroy() {
+				//     this.$fluro.removeEventListener('cache.reset', this.updateCacheKey);
+				// },
+
+
+				filters: {
+								numberWithCommas(x) {
+												return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+								},
+				},
+				watch: {
+								columns(columns) {
+												console.log('COLUMNS', columns);
+												this.structureColumns = _.compact(columns)
+								},
+								extraColumns() {
+												this.$emit('additionalColumns', this.extraColumns);
+								},
+								pagePopulationString(str) {
+												// //console.log('POPULATION STRING CHANGED')
+												this.loading = true;
+												this.populatePage()
+								},
+								// changeKey() {
+								//     this.reload();
+								// },
+								// reloadRequired: {
+								//     immediate: true,
+								//     handler: _.debounce(function(string) {
+								//         this.reload();
+								//     }, 500)
+								// },
+								//COMMENTED DUE TO MOVE TO MIXIN
+								// search: _.debounce(function(newValue) {
+								//     // //console.log('Search changed!')
+								//     this.debouncedSearch = newValue;
+								//     // this.refine();
+								// }, 500),
+				},
+				methods: {
+								allInGroupSelected(items) {
+
+												var self = this;
+
+												if (!items || !items.length) {
+																return;
+												}
+
+												//Check if any of the rows are not selected
+												var anyNotSelected = _.some(items, function(item) {
+																var notSelected = !self.selectionController.isSelected(item);
+																return notSelected;
+												})
+
+												return !anyNotSelected;
+								},
+								someInGroupSelected(items) {
+
+												var self = this;
+
+												if (self.allInGroupSelected(items)) {
+																return true;
+												}
+
+												return _.some(items, function(item) {
+																return self.selectionController.isSelected(item);
+												})
+								},
+								groupByColumn(rows, column, local) {
+
+												var self = this;
+
+												if (!column || !column.key) {
+																return rows;
+												}
+
+												////////////////////////////////////////////////////
+
+												var grouped;
+
+												if (!local) {
+
+																//We need to contact the server get the rows and then 
+																grouped = _.chain(rows)
+																				.reduce(function(set, row) {
+																								// addGroupingEntry(rawValue)
+
+																								var groupingTitle = row._groupingTitle || row._groupingKey;
+																								var existing = set[row._groupingKey];
+
+																								if (!existing) {
+																												existing = set[row._groupingKey] = {
+																																title: groupingTitle,
+																																items: [],
+																																sortKey: groupingTitle,
+																												}
+																								}
+
+																								//////////////////
+
+																								existing.items.push(row);
+
+																								//////////////////
+
+																								return set;
+																				}, {})
+																				.values()
+																				.orderBy('sortKey')
+																				.value();
+
+												} else {
+
+																////////////////////////////////////////////////////
+
+																var key = column.key;
+																var split = key.split('|');
+																var dataPath = split[0];
+																var discriminator = split[1];
+
+																//////////////////////////////////////////////
+
+																grouped = _.chain(rows)
+																				.reduce(function(set, row) {
+
+																								var rawValue = _.get(row, dataPath);
+																								if (!rawValue) {
+																												// rawValue = '';
+																												//don't include the row if it can't be grouped
+																												return set;
+																								}
+
+																								///////////////////////////////////////
+
+																								if (_.isArray(rawValue)) {
+																												_.chain(rawValue)
+																																.filter(function(rawEntry) {
+																																				if (!discriminator) {
+																																								return true;
+																																				}
+
+
+																																				var match = rawEntry._discriminator == discriminator;
+																																				return match;
+																																})
+																																.each(addGroupingEntry)
+																																.value();
+																								} else {
+																												addGroupingEntry(rawValue)
+																								}
+
+																								////////////////////////////////////////////////////
+
+																								function addGroupingEntry(groupingObjectValue) {
+																												var groupingKey = _.get(groupingObjectValue, '_id') || _.get(groupingObjectValue, 'title') || _.get(groupingObjectValue, 'name') || _.get(groupingObjectValue, 'value') || groupingObjectValue;
+																												var groupingTitle = _.get(groupingObjectValue, 'title') || _.get(groupingObjectValue, 'name') || groupingKey || '';
+																												var sortKey = String(groupingTitle || '').toLowerCase();
+
+																												// //console.log('Group by column', column.key, row, groupingObjectValue, groupingTitle, groupingKey)
+																												var existing = set[groupingKey];
+																												if (!existing) {
+																																existing = set[groupingKey] = {
+																																				title: groupingTitle,
+																																				items: [],
+																																				sortKey,
+																																}
+																												}
+
+																												existing.items.push(row);
+																								}
+
+																								return set;
+																				}, {})
+																				.values()
+																				.orderBy('sortKey')
+																				.value();
+												}
+
+												return grouped;
+
+
+								},
+								toggleUnwindColumns(columns) {
+												var self = this;
+
+												self.unwindColumns = columns;
+												// console.log('toggle unwind columns', columns)
+								},
+								toggleColumnGrouping(column) {
+												var self = this;
+
+												self.groupingColumn = column;
+
+								},
+								
+								columnIsGrouping(column) {
+												var self = this;
+												return self.groupingColumn && (self.groupingColumn.key == column.key);
+
+								},
+								showOptionsForColumn(column) {
+
+								},
+								columnIsSelected(column) {
+												var self = this;
+												return _.some(self.extraColumns, { key: column.key })
+								},
+								toggleColumn(column) {
+												var self = this;
+
+												var index = _.findIndex(self.extraColumns, { key: column.key });
+												if (index == -1) {
+																self.$set(self.extraColumns, self.extraColumns.length, column);
+												} else {
+																self.extraColumns.splice(index, 1);
+												}
+								},
+								
+								populatePage() {
+
+												var self = this;
+
+												//////////////////////////////////////
+
+												if (self.dataType == 'node') {
+																//console.log('Node > Show raw page')
+																self.page = self.rawPage.slice();
+																self.loading = false;
+																return;
+												}
+
+												//Add a bit of a delay so they can't spam the server
+												//by clicking 'nextPage()' over and over
+												self.populatePageDebounced();
+
+								},
+								populatePageItems(rawPage, dataType, renderColumns) {
+
+												var self = this;
+
+												// var rawPageLookup = _.reduce(rawPage, function(set, item) {
+												//     set[item._id] = JSON.parse(JSON.stringify(item));
+												//     return set;
+												// }, {});
+
+
+												// console.log('POPULATE PAGE ITEMS', rawPage)
+
+												renderColumns = renderColumns.slice();
+												if (self.groupingColumn) {
+																renderColumns.push(self.groupingColumn);
+												}
+
+
+												//////////////////////////////////////
+
+												return new Promise(function(resolve, reject) {
+
+																// var ids = _.map(rawPage, '_id');//_.keys(rawPageLookup);
+
+																if (!rawPage || !rawPage.length) {
+																				self.loading = false;
+																				// //console.log('no raw page')
+																				return resolve([]);
+																}
+
+																var fields = ['title', '_type', 'definition', 'subject', 'date']
+
+																if (self.searchInheritable) {
+																				fields.push('account');
+																}
+
+																//////////////////////////////////////
+
+																var appendContactDetails = [];
+																var appendFullFamily;
+																var appendAssignments = true;
+
+																//////////////////////////////////////
+
+																//Include the extra fields that make sense
+																fields = fields.concat(_.chain(renderColumns)
+																				.compact()
+																				.map(function(column) {
+
+																								if (column.actualField) {
+																												return column.actualField;
+																								}
+
+																								switch (column.key) {
+																												case 'width':
+																												case 'height':
+																																return ['width', 'height']
+																																break;
+																												case 'firstName':
+																																return ['firstName', 'preferredName', 'ethnicName']
+																																break;
+																												case 'lastName':
+																																return ['lastName', 'maidenName']
+																																break;
+																								}
+
+																								//////////////////////////////////////
+
+																								if (column.additionalFields && column.additionalFields.length) {
+																												return [column.additionalFields, column.key]
+																								}
+
+																								//////////////////////////////////////
+
+																								return column.key;
+																				})
+																				.flattenDeep()
+																				.compact()
+																				.map(function(key) {
+																								// //console.log('KEY SPLIT', key);
+																								return key.split('|')[0];
+																				})
+																				.map(function(key) {
+																								if (_.startsWith(key, 'details.')) {
+																												var definitionName = key.split('.')[1];
+																												appendContactDetails.push(definitionName);
+																								}
+
+																								if (_.startsWith(key, 'family.')) {
+																												appendFullFamily = true;
+																												return 'family';
+																												// appendContactDetails.push(definitionName);
+																								}
+
+																								return key.split('[')[0];
+
+																								// return key;
+																				})
+																				.value()
+																);
+
+																/////////////////////////////////////////////////
+
+																var ids = self.$fluro.utils.arrayIDs(rawPage);
+
+																/////////////////////////////////////////////////
+
+																var pageRequest = {
+																				ids,
+																				select: _.uniq(fields),
+																				populateAll: true,
+																				limit: ids.length,
+																				appendContactDetails,
+																				appendAssignments,
+																				appendFullFamily,
+																				globalCacheKey: self.$fluro.global.CACHE_KEY,
+																				// cancelToken: currentPageItemsRequest.token,
+																}
+
+																/////////////////////////////////////////////////
+
+																var cacheString = `${self.pageCacheKey}${JSON.stringify(pageRequest)}`;
+
+																//Get the table cache
+																var tableCache = self.$fluro.cache.get('async-table-cache');
+																var cachedValue = tableCache.get(cacheString);
+
+																if (cachedValue) {
+																				console.log('Already cached', cachedValue);
+																				return pageDataLoaded(cachedValue);
+																}
+
+																/////////////////////////////////////////////////
+
+																function pageDataLoaded(results) {
+
+
+
+																				//Create a hash of all our populated results
+																				var lookup;
+
+																				/////////////////////////////////////////
+
+																				lookup = _.reduce(results, function(set, entry, i) {
+																								set[entry._id] = entry;
+																								return set;
+																				}, {})
+
+																				/////////////////////////////////////////
+
+																				// //console.log('Look for ids', ids);
+																				var pageItems = _.chain(rawPage)
+																								.map(function(rawRow, i) {
+
+
+																												var matchedLookupEntry = lookup[rawRow._id]
+
+																												if (!matchedLookupEntry) {
+																																return;
+																												}
+
+																												var entry = JSON.parse(JSON.stringify(matchedLookupEntry));
+
+
+																												entry._pageIndex = i;
+
+																												//Add all the keys of the original object
+
+																												//Merge the information we already know about the family
+																												if (rawRow.family && entry.family) {
+																																if (rawRow.family.items) {
+																																				delete entry.family.items;
+																																}
+																																entry.family = Object.assign({}, rawRow.family, entry.family);
+																												}
+
+
+																												//////////////////////////////////////////
+
+																												var output = Object.assign({}, rawRow, entry);
+
+																												return output
+
+
+
+
+
+																								})
+																								// .flatten()
+																								.compact()
+																								.value();
+
+																				/////////////////////////////////////
+
+																				resolve(pageItems.slice());
+																}
+
+																/////////////////////////////////////////////////
+
+																// console.log('make multiple request');
+																self.$fluro.api.post(`/content/${dataType}/multiple`, pageRequest)
+																				.then(function(res) {
+																								//Cache the data
+																								tableCache.set(cacheString, res.data);
+																								return pageDataLoaded(res.data);
+																				})
+																				.catch(function(err) {
+																								if (self.$fluro.api.axios.isCancel(err)) {
+																												// return reject(err)
+																												// //Not sure if this is correct
+																												resolve([]);
+																								} else {
+																												return reject(err);
+																								}
+																				});
+
+												})
+
+								},
+								populatePageDebounced: _.debounce(function() {
+												var self = this;
+
+												self.loading = true;
+
+
+												console.log('populate page items')
+												self.populatePageItems(self.rawPage, self.dataType, self.renderColumns)
+																.then(function(res) {
+
+																				var page = res;
+
+																				//////////////////////////////////////////////////////////
+
+																				var unwindKeys = _.map(self.unwindColumns, 'key');
+
+																				// ['adult', 'child'];
+
+																				if (unwindKeys && unwindKeys.length) {
+
+
+																								page = _.chain(page)
+																												.map(function(row) {
+
+
+																																return _.map(unwindKeys, function(columnKey) {
+																																				var array = _.get(row, columnKey);
+
+																																				//If it's not an array return the original row
+																																				if (!array || !_.isArray(array) || !array.length) {
+																																								return row;
+																																				}
+
+																																				//Return an entry for each unwound value
+																																				return _.chain(array)
+																																								.map(function(indValue) {
 
 				////////////////////////////////////
 
