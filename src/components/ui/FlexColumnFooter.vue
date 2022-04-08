@@ -1,15 +1,14 @@
 <template>
-    <div class="flex-column-footer">
-        <slot></slot>
-    </div>
+	<div class="flex-column-footer">
+		<slot></slot>
+	</div>
 </template>
 <script>
-export default {}
+export default {};
 </script>
-
 
 <style lang="scss">
 .flex-column-footer {
-    flex: none;
+	flex: none;
 }
 </style>

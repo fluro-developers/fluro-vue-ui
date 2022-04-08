@@ -1,243 +1,284 @@
 <template>
-    <flex-column class="content-view">
-        <fluro-page-preloader v-if="loading" contain />
-        <template v-else-if="model">
-            <flex-column-header class="border-bottom" v-if="!hideTitle">
-                <page-header :type="type">
-                    <template v-slot:left>
-                        <div>
-                            <h3>
-                                {{title}}
-                                <span class="small text-muted">{{definitionTitle}}</span>
-                            </h3>
-                            <v-label v-if="summary">{{summary}}</v-label>
-                        </div>
-                    </template>
-                    <template v-slot:right>
-                        <template v-if="embedded">
-                            <v-btn v-tippy content="More actions" v-if="model._id" icon class="mr-0" small @click="$actions.open([model])">
-                                <fluro-icon icon="ellipsis-h" />
-                            </v-btn>
-                            <v-btn v-tippy content="Edit" v-if="canEdit" icon small @click="edit">
-                                <fluro-icon icon="pencil" />
-                            </v-btn>
-                            <v-btn v-tippy content="Download" v-if="canDownload" icon small :href="$fluro.asset.downloadUrl(model)" target="_blank">
-                                <fluro-icon icon="cloud-download" />
-                            </v-btn>
-                        </template>
-                        <template v-else>
-                            <!--  <v-btn icon v-if="showFiltersEnabled" class="mr-0"  @click="toggleFilters()">
+	<flex-column class="content-view">
+		<fluro-page-preloader v-if="loading" contain />
+		<template v-else-if="model">
+			<flex-column-header class="border-bottom" v-if="!hideTitle">
+				<page-header :type="type">
+					<template v-slot:left>
+						<div>
+							<h3>
+								{{ title }}
+								<span class="small text-muted">{{ definitionTitle }}</span>
+							</h3>
+							<v-label v-if="summary">{{ summary }}</v-label>
+						</div>
+					</template>
+					<template v-slot:right>
+						<template v-if="embedded">
+							<v-btn
+								v-tippy
+								content="More actions"
+								v-if="model._id"
+								icon
+								class="mr-0"
+								small
+								@click="$actions.open([model])"
+							>
+								<fluro-icon icon="ellipsis-h" />
+							</v-btn>
+							<v-btn v-tippy content="Edit" v-if="canEdit" icon small @click="edit">
+								<fluro-icon icon="pencil" />
+							</v-btn>
+							<v-btn
+								v-tippy
+								content="Download"
+								v-if="canDownload"
+								icon
+								small
+								:href="$fluro.asset.downloadUrl(model)"
+								target="_blank"
+							>
+								<fluro-icon icon="cloud-download" />
+							</v-btn>
+						</template>
+						<template v-else>
+							<!--  <v-btn icon v-if="showFiltersEnabled" class="mr-0"  @click="toggleFilters()">
                                 <fluro-icon icon="filter" :library="filtersEnabled ? 'fas' : 'far'" />
                             </v-btn> -->
-                            <v-btn icon v-if="refreshable" class="mr-0" @click="refresh()">
-                                <fluro-icon icon="sync" />
-                            </v-btn>
-                            <v-btn v-if="model._id" icon class="mr-0" @click="$actions.open([model])">
-                                <fluro-icon icon="ellipsis-h" />
-                            </v-btn>
-                            <v-btn v-tippy :content="showFilters ? 'Hide Filters' : 'Show Filters'" v-if="filterable" class="mr-0" @click="toggleFilters()">
-                                Filters
-                                <fluro-icon icon="filter" :library="showFilters ? 'fas' : 'far'" right />
-                            </v-btn>
-                            <v-btn @click="cancel" class="mr-0">Close</v-btn>
-                            <v-btn v-if="canEdit" @click="edit" class="mr-0">
-                                Edit
-                                <fluro-icon right icon="pencil" />
-                            </v-btn>
-                            <v-btn v-tippy content="Download" v-if="canDownload" icon small :href="$fluro.asset.downloadUrl(model)" target="_blank">
-                                <fluro-icon icon="cloud-download" />
-                            </v-btn>
-                        </template>
-                    </template>
-                    <template v-slot:rightmobile>
-                        <v-btn icon v-if="refreshable" class="mr-0" small @click="refresh()">
-                            <fluro-icon icon="sync" />
-                        </v-btn>
-                        <v-btn v-tippy content="More actions" v-if="model._id" icon class="mr-0" small @click="$actions.open([model])">
-                            <fluro-icon icon="ellipsis-h" />
-                        </v-btn>
-                        <v-btn icon v-if="filterable" class="mr-0" @click="toggleFilters()">
-                            <fluro-icon icon="filter" />
-                        </v-btn>
-                        <v-btn v-tippy content="Edit" v-if="canEdit" icon small @click="edit">
-                            <fluro-icon icon="pencil" />
-                        </v-btn>
-                        <v-btn v-tippy content="Download" v-if="canDownload" icon small :href="$fluro.asset.downloadUrl(model)" target="_blank">
-                            <fluro-icon icon="cloud-download" />
-                        </v-btn>
-                    </template>
-                </page-header>
-            </flex-column-header>
-            <component :item="model" v-bind:is="component" ref="view" :cacheKey="cacheKey" :config="config" v-if="component" />
-        </template>
-    </flex-column>
+							<v-btn icon v-if="refreshable" class="mr-0" @click="refresh()">
+								<fluro-icon icon="sync" />
+							</v-btn>
+							<v-btn v-if="model._id" icon class="mr-0" @click="$actions.open([model])">
+								<fluro-icon icon="ellipsis-h" />
+							</v-btn>
+							<v-btn
+								v-tippy
+								:content="showFilters ? 'Hide Filters' : 'Show Filters'"
+								v-if="filterable"
+								class="mr-0"
+								@click="toggleFilters()"
+							>
+								Filters
+								<fluro-icon icon="filter" :library="showFilters ? 'fas' : 'far'" right />
+							</v-btn>
+							<v-btn @click="cancel" class="mr-0">Close</v-btn>
+							<v-btn v-if="canEdit" @click="edit" class="mr-0">
+								Edit
+								<fluro-icon right icon="pencil" />
+							</v-btn>
+							<v-btn
+								v-tippy
+								content="Download"
+								v-if="canDownload"
+								icon
+								small
+								:href="$fluro.asset.downloadUrl(model)"
+								target="_blank"
+							>
+								<fluro-icon icon="cloud-download" />
+							</v-btn>
+						</template>
+					</template>
+					<template v-slot:rightmobile>
+						<v-btn icon v-if="refreshable" class="mr-0" small @click="refresh()">
+							<fluro-icon icon="sync" />
+						</v-btn>
+						<v-btn
+							v-tippy
+							content="More actions"
+							v-if="model._id"
+							icon
+							class="mr-0"
+							small
+							@click="$actions.open([model])"
+						>
+							<fluro-icon icon="ellipsis-h" />
+						</v-btn>
+						<v-btn icon v-if="filterable" class="mr-0" @click="toggleFilters()">
+							<fluro-icon icon="filter" />
+						</v-btn>
+						<v-btn v-tippy content="Edit" v-if="canEdit" icon small @click="edit">
+							<fluro-icon icon="pencil" />
+						</v-btn>
+						<v-btn
+							v-tippy
+							content="Download"
+							v-if="canDownload"
+							icon
+							small
+							:href="$fluro.asset.downloadUrl(model)"
+							target="_blank"
+						>
+							<fluro-icon icon="cloud-download" />
+						</v-btn>
+					</template>
+				</page-header>
+			</flex-column-header>
+			<component
+				:item="model"
+				v-bind:is="component"
+				ref="view"
+				:cacheKey="cacheKey"
+				:config="config"
+				v-if="component"
+			/>
+		</template>
+	</flex-column>
 </template>
 <script>
-import Vue from "vue";
+import Vue from 'vue';
 // import DynamicImportService from "../../../DynamicImportService.js";
-import _ from "lodash";
+import _ from 'lodash';
 
 export default {
-    props: {
-        hideTitle: {
-            type: Boolean,
-            default: false,
-        },
-        embedded: {
-            type: Boolean
-        },
-        id: {
-            type: [String, Object],
-            required: true
-        },
-        type: {
-            type: String,
-            required: true
-        },
-        definition: {
-            type: String
-        },
-        options: {
-            default: function() {
-                return {};
-            },
-            type: Object
-        }
-    },
-    data() {
-        return {
-            loadingConfig: true,
-            loadingModel: true,
-            cacheKey: 0,
-        };
-    },
-    methods: {
-        toggleFilters() {
-            if (this.$refs && this.$refs.view && this.$refs.view.toggleFilters) {
-                this.$refs.view.toggleFilters();
-            }
-        },
-        refresh() {
-            this.cacheKey++;
-        },
-        cancel() {
-            this.$emit("cancel");
-        },
-        edit() {
+	props: {
+		hideTitle: {
+			type: Boolean,
+			default: false,
+		},
+		embedded: {
+			type: Boolean,
+		},
+		id: {
+			type: [String, Object],
+			required: true,
+		},
+		type: {
+			type: String,
+			required: true,
+		},
+		definition: {
+			type: String,
+		},
+		options: {
+			default: function () {
+				return {};
+			},
+			type: Object,
+		},
+	},
+	data() {
+		return {
+			loadingConfig: true,
+			loadingModel: true,
+			cacheKey: 0,
+		};
+	},
+	methods: {
+		toggleFilters() {
+			if (this.$refs && this.$refs.view && this.$refs.view.toggleFilters) {
+				this.$refs.view.toggleFilters();
+			}
+		},
+		refresh() {
+			this.cacheKey++;
+		},
+		cancel() {
+			this.$emit('cancel');
+		},
+		edit() {
+			var self = this;
 
-            var self = this;
+			self.$fluro.global.edit(self.model).then(function (response) {
+				console.log('Edited');
+				self.refresh();
+			});
+		},
+	},
 
-            self.$fluro.global.edit(self.model)
-                .then(function(response) {
+	created() {
+		// this.reset(true);
+		if (this.model && !this.model.data) {
+			this.$set(this.model, 'data', {});
+		}
+	},
+	computed: {
+		showFilters() {
+			return this.filterable && this.$refs.view && this.$refs.view.showFilters;
+		},
+		refreshable() {
+			return this.type == 'query';
+		},
+		filterable() {
+			return this.type == 'query';
+		},
+		component() {
+			var self = this;
+			if (!self.type) {
+				return;
+			}
+			return () => import(`./panels/${this.type}.vue`);
+		},
+		summary() {
+			var self = this;
+			switch (self.type) {
+				case 'event':
+					return self.$fluro.date.readableEventDate(self.model);
+					break;
+				case 'plan':
+					var hasEvent = _.get(self.model, 'event.title');
+					var planStartDate = _.get(self.model, 'startDate');
 
-                    console.log('Edited')
-                    self.refresh();
-                });
-        }
-    },
+					///////////////////////////////////////
 
-    created() {
-        // this.reset(true);
-        if (this.model && !this.model.data) {
-            this.$set(this.model, "data", {});
-        }
-    },
-    computed: {
-        showFilters() {
-            return this.filterable && this.$refs.view && this.$refs.view.showFilters;
-        },
-        refreshable() {
-            return this.type == 'query';
-        },
-        filterable() {
-            return this.type == 'query';
-        },
-        component() {
-            var self = this;
-            if (!self.type) {
-                return;
-            }
-            return () => import(`./panels/${this.type}.vue`)
-        },
-        summary() {
-            var self = this;
-            switch (self.type) {
-                case "event":
-                    return self.$fluro.date.readableEventDate(self.model);
-                    break;
-                case "plan":
-                    var hasEvent = _.get(self.model, "event.title");
-                    var planStartDate = _.get(self.model, "startDate");
+					var readableStartDate;
 
-                    ///////////////////////////////////////
+					if (hasEvent) {
+						readableStartDate = self.$fluro.date.readableEventDate(self.model.event);
+						return readableStartDate ? `${readableStartDate} - ${self.model.event.title}` : undefined;
+					} else if (planStartDate) {
+						readableStartDate = self.$fluro.date.formatDate(planStartDate, 'h:mm ddd D MMM');
+						return readableStartDate ? readableStartDate : undefined;
+					}
 
-                    var readableStartDate;
+					break;
+			}
+		},
+		typeName() {
+			var self = this;
+			return self.definition || self.type;
+		},
+		title() {
+			return this.model.title;
+		},
+		definitionTitle() {
+			return this.config.definition ? this.config.definition.title : this.config.type.title;
+		},
+		// definition() {
+		//     return this.config.definition;
+		// },
+		canDownload() {
+			switch (this.type) {
+				case 'asset':
+				case 'audio':
+				case 'video':
+				case 'image':
+					return true;
+					break;
+			}
+		},
+		canEdit() {
+			switch (this.type) {
+				case 'mailout':
+					if (this.model.state == 'sent') {
+						return;
+					}
+					break;
+			}
 
-                    if (hasEvent) {
-                        readableStartDate = self.$fluro.date.readableEventDate(
-                            self.model.event
-                        );
-                        return readableStartDate ?
-                            `${readableStartDate} - ${self.model.event.title}` :
-                            undefined;
-                    } else if (planStartDate) {
-                        readableStartDate = self.$fluro.date.formatDate(
-                            planStartDate,
-                            "h:mm ddd D MMM"
-                        );
-                        return readableStartDate ? readableStartDate : undefined;
-                    }
+			///////////////////////////////////////
 
-                    break;
-            }
-        },
-        typeName() {
-            var self = this;
-            return self.definition || self.type;
-        },
-        title() {
-            return this.model.title;
-        },
-        definitionTitle() {
-            return this.config.definition ?
-                this.config.definition.title :
-                this.config.type.title;
-        },
-        // definition() {
-        //     return this.config.definition;
-        // },
-        canDownload() {
-            switch (this.type) {
-                case 'asset':
-                case 'audio':
-                case 'video':
-                case 'image':
-                    return true;
-                    break;
-            }
-        },
-        canEdit() {
-            switch (this.type) {
-                case "mailout":
-                    if (this.model.state == "sent") {
-                        return;
-                    }
-                    break;
-            }
-
-            ///////////////////////////////////////
-
-            return this.$fluro.access.canEditItem(this.model);
-        },
-        itemID() {
-            return this.$fluro.utils.getStringID(this.id);
-        },
-        loading() {
-            return this.loadingModel || this.loadingConfig;
-        }
-    },
-    asyncComputed: {
-        /**
+			return this.$fluro.access.canEditItem(this.model);
+		},
+		itemID() {
+			return this.$fluro.utils.getStringID(this.id);
+		},
+		loading() {
+			return this.loadingModel || this.loadingConfig;
+		},
+	},
+	asyncComputed: {
+		/**
            component: {
                default: null,
                get() {
@@ -444,64 +485,60 @@ export default {
                }
            },
            /**/
-        config: {
-            default: null,
-            get() {
-                var self = this;
+		config: {
+			default: null,
+			get() {
+				var self = this;
 
-                //////////////////////////////////////////////
+				//////////////////////////////////////////////
 
-                self.loadingConfig = true;
+				self.loadingConfig = true;
 
-                //////////////////////////////////////////////
+				//////////////////////////////////////////////
 
-                return new Promise(function(resolve, reject) {
-                    return self.$fluro.api
-                        .get(`/defined/type/${self.typeName}`)
-                        .then(function(res) {
-                            resolve(res.data);
-                            self.loadingConfig = false;
-                        }, reject);
-                });
-            }
-        },
-        model: {
-            default: null,
-            get() {
-                var self = this;
-                self.loadingModel = true;
+				return new Promise(function (resolve, reject) {
+					return self.$fluro.api.get(`/defined/type/${self.typeName}`).then(function (res) {
+						resolve(res.data);
+						self.loadingConfig = false;
+					}, reject);
+				});
+			},
+		},
+		model: {
+			default: null,
+			get() {
+				var self = this;
+				self.loadingModel = true;
 
-                // var cache = false;
+				// var cache = false;
 
-                return new Promise(function(resolve, reject) {
-                    self.$fluro.content.get(self.itemID, {
-                            appendContactDetail: "all",
-                            appendAssignments: "all",
-                            type: self.type,
-                            cacheKey: self.cacheKey,
-                        })
-                        .then(function(res) {
-                            if (!res.data) {
-                                res.data = {};
-                            }
+				return new Promise(function (resolve, reject) {
+					self.$fluro.content
+						.get(self.itemID, {
+							appendContactDetail: 'all',
+							appendAssignments: 'all',
+							type: self.type,
+							cacheKey: self.cacheKey,
+						})
+						.then(function (res) {
+							if (!res.data) {
+								res.data = {};
+							}
 
-                            resolve(res);
-                            self.loadingModel = false;
-                        })
-                        .catch(function(err) {
-                            console.log("Error", err);
+							resolve(res);
+							self.loadingModel = false;
+						})
+						.catch(function (err) {
+							console.log('Error', err);
 
-                            resolve(null);
-                            self.loadingModel = false;
-                        });
-                });
-            }
-        }
-    }
+							resolve(null);
+							self.loadingModel = false;
+						});
+				});
+			},
+		},
+	},
 };
-
 </script>
-<style lang="scss">
-</style>
-<style scoped lang="scss">
-</style>
+<style lang="scss"></style>
+<style scoped lang="scss"></style>

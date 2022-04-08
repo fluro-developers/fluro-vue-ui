@@ -7,7 +7,7 @@
 //   }
 
 //   console.log('AutoLink Mark!');
-  
+
 //   get schema () {
 //     return {
 //       attrs: {

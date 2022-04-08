@@ -1,10 +1,9 @@
 <template>
-	<div class="accordion-panel" :class="{expanded:active}">
+	<div class="accordion-panel" :class="{ expanded: active }">
 		<div class="accordion-panel-title" @click="reactive.selectPanel(index)">
 			<v-layout align-center>
 				<v-flex>
-					<slot name="heading">{{heading}}</slot>
-					
+					<slot name="heading">{{ heading }}</slot>
 				</v-flex>
 				<v-flex shrink>
 					<fluro-icon :icon="active ? `angle-up` : `angle-down`" />
@@ -12,9 +11,7 @@
 			</v-layout>
 		</div>
 		<div class="accordion-panel-body">
-			
-				<slot></slot>
-			
+			<slot></slot>
 		</div>
 	</div>
 </template>
@@ -22,7 +19,7 @@
 export default {
 	props: {
 		heading: {
-			type: String
+			type: String,
 		},
 	},
 	// inject: ['panels', 'activePanelIndex', 'selectPanel'],
@@ -43,13 +40,13 @@ export default {
 		active() {
 			// console.log('CHECK', this.index, this.reactive.activePanelIndex);
 			return parseInt(this.index) == parseInt(this.reactive.activePanelIndex);
-		}
+		},
 	},
 	data() {
 		return {
 			index: 0,
 			// active: false,
-		}
+		};
 	},
 	// methods: {
 	//     act() {
@@ -65,12 +62,10 @@ export default {
 	//         //Close the modal with the promise
 	//         return self.close(promise)
 
-
 	//     },
 
 	// }
-}
-
+};
 </script>
 <style lang="scss">
 .accordion-panel {
@@ -96,5 +91,4 @@ export default {
 		}
 	}
 }
-
 </style>

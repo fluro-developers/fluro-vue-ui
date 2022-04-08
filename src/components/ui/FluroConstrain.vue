@@ -1,51 +1,45 @@
 <template>
-    <div class="constrain">
-        <slot></slot>
-    </div>
+	<div class="constrain">
+		<slot></slot>
+	</div>
 </template>
 
 <script>
-
-export default {
-    
-}
-
+export default {};
 </script>
 <style scoped lang="scss">
-
 .constrain {
-    margin:auto;
-    max-width: 1200px;
+	margin: auto;
+	max-width: 1200px;
 
-    &[gutterless] {
-        padding:0;
-    }
+	&[gutterless] {
+		padding: 0;
+	}
 
-    &[xs] {
-    	max-width: 320px;
-    }
+	&[xs] {
+		max-width: 320px;
+	}
 
-    &[sm] {
-        max-width: 740px;
-    }
+	&[sm] {
+		max-width: 740px;
+	}
 
-    &[md] {
-        max-width: 1200px;
-    }
+	&[md] {
+		max-width: 1200px;
+	}
 
-    &[lg] {
-        max-width: 1600px;
-    }
+	&[lg] {
+		max-width: 1600px;
+	}
 
-    &[left] {
-        margin:0;
-    }
+	&[left] {
+		margin: 0;
+	}
 
-    &[centered] {
-        text-align:center;
-    }
+	&[centered] {
+		text-align: center;
+	}
 }
-
 
 // .block + .block {
 // 	padding-top:0;
@@ -55,7 +49,5 @@ export default {
 // 	.block {
 // 		padding: 0;
 // 	}
-// } 
-
-
+// }
 </style>
