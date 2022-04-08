@@ -124,7 +124,7 @@ export default {
 			page: dataSource.page,
 			totalPages: dataSource.totalPages,
 			pageIndex: dataSource.pageIndex,
-			dataSource: dataSource, //Vue.observable(dataSource),
+			dataSource, //Vue.observable(dataSource),
 			loadingFilter: dataSource.loadingFilter,
 			loadingPage: dataSource.loadingPage,
 		};

@@ -141,8 +141,6 @@ export default {
 			if (self.$fluro.app && self.$fluro.app.native) {
 				return 'none';
 			}
-
-			return;
 		},
 		provider() {
 			if (this.item) {
@@ -190,6 +188,8 @@ export default {
 						var key = `fluro-video-${this.item.assetType}`;
 						output[key] = true;
 						break;
+					default:
+					// pass
 				}
 			}
 			return output;
@@ -232,7 +232,7 @@ export default {
 			var url = `https://player.vimeo.com/video/${self.mediaID}?&title=0&byline=0&portrait=0&badge=0`;
 			var hash = _.last(parts);
 			if (hash != self.mediaID) {
-				url = url + `&h=${hash}`;
+				url += `&h=${hash}`;
 			}
 			return url;
 		},
@@ -263,8 +263,6 @@ export default {
 		backgroundImage() {
 			if (this.posterUrl) {
 				return `url(${this.posterUrl})`;
-			} else {
-				return;
 			}
 		},
 	},

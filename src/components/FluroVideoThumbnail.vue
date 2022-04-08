@@ -45,8 +45,6 @@ export default {
 		backgroundImage() {
 			if (this.posterUrl) {
 				return `url(${this.posterUrl})`;
-			} else {
-				return;
 			}
 		},
 	},

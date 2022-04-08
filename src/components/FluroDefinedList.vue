@@ -1,6 +1,6 @@
 <template>
 	<div class="fluro-defined-list" v-if="grouped && grouped.length">
-		<v-input v-for="group in grouped" class="no-flex">
+		<v-input v-for="(group, i) in grouped" class="no-flex" :key="i">
 			<v-label>{{ group.plural }}</v-label>
 			<!-- <pre>{{group}}</pre> -->
 			<div class="inline-tags">
@@ -8,7 +8,8 @@
 					class="inline-tag"
 					:style="{ backgroundColor: entry.bgColor, color: entry.color }"
 					@click="clicked(entry)"
-					v-for="entry in group.entries"
+					v-for="(entry, j) in group.entries"
+					:key="j"
 				>
 					<fluro-icon :type="type" v-if="type" /> {{ entry.title }}
 				</a>

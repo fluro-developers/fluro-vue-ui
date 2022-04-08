@@ -14,9 +14,6 @@ import FluroAvatar from './FluroAvatar.vue';
 import _ from 'lodash';
 
 export default {
-	components: {
-		FluroAvatar,
-	},
 	data() {
 		return {
 			processing: false,
@@ -75,7 +72,7 @@ export default {
 					'Content-Type': 'multipart/form-data',
 				},
 				onUploadProgress: (progressEvent) => {
-					let percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
+					const percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
 					// do whatever you like with the percentage complete
 					// maybe dispatch an action that will update a progress bar or something
 					self.progress = percentCompleted;

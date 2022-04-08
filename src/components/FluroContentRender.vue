@@ -1,6 +1,6 @@
 <template>
 	<div class="fluro-content-render">
-		<template v-for="field in fields">
+		<template v-for="(field, index) in fields">
 			<!-- <pre>{{model}}</pre> -->
 			<!-- <v-layout> -->
 			<fluro-content-render-field
@@ -10,6 +10,7 @@
 				:field="field"
 				:webMode="webMode"
 				v-model="model"
+				:key="index"
 			></fluro-content-render-field>
 			<!-- </v-layout> -->
 		</template>

@@ -111,7 +111,7 @@ export default {
 				return this.actualVolume;
 			},
 			set(v) {
-				v = parseInt(v);
+				v = parseInt(v, 10);
 				v = Math.max(v, 0);
 				v = Math.min(v, 100);
 				if (isNaN(v)) {

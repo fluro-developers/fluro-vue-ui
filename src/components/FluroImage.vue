@@ -203,8 +203,6 @@ export default {
 
 				// console.log('OUTPUT URL', outputURL);
 				return outputURL;
-			} else {
-				return;
 			}
 		},
 		placeholderImage() {
@@ -237,8 +235,6 @@ export default {
 					params
 				);
 				return `url(${placeholderUrl})`;
-			} else {
-				return;
 			}
 		},
 		backgroundImage() {
