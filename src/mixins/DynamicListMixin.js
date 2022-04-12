@@ -287,6 +287,7 @@ export default {
 
 
 												//Load just the IDS from the server and required fields
+												self.loadingItems = true;
 												return self.$fluro.api.post(`/content/${self.dataType}/filter`, filterCriteria, {
 																				cancelToken: cancelSource.token
 																})
@@ -324,9 +325,15 @@ export default {
 
 																				if (axios.isCancel(err)) {
 																								console.log('Filter Request canceled', err.message);
+
+																								if (self.inflightRequest == cancelSource) {
+																									self.loadingItems = false;
+																								} else {
+																												console.log('DIFFERENT CANCELLED')
+																								}
 																				}
 
-																				self.loadingItems = false;
+																				
 																				self.rows = [];
 																				self.$emit('filtered', self.rows);
 
