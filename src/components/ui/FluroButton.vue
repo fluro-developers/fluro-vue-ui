@@ -1,5 +1,17 @@
 <template>
-	<component :is="tagType" :disabled="disabled" :loading="loading" :type="type" :to="to" :href="href" :target="target" @click="click" class="btn" :style="style" :class="classes">
+	<component
+		:is="tagType"
+		:disabled="disabled"
+		:loading="loading"
+		:type="type"
+		:to="to"
+		:href="href"
+		:target="target"
+		@click="click"
+		class="btn"
+		:style="style"
+		:class="classes"
+	>
 		<div class="spinner" v-if="loading">
 			<fluro-icon icon="spinner-third" spin />
 		</div>
@@ -13,7 +25,7 @@ import _ from 'lodash';
 
 export default {
 	props: {
-		'to': {
+		to: {
 			type: [String, Object],
 		},
 		href: {
@@ -49,9 +61,9 @@ export default {
 		},
 		options: {
 			type: Object,
-			default () {
-				return {}
-			}
+			default() {
+				return {};
+			},
 		},
 		tag: {
 			type: String,
@@ -78,10 +90,9 @@ export default {
 			return this.round || _.get(this.$fluro, 'app.site.scss.buttons.radius') || 0;
 		},
 		style() {
-
 			var style = {
 				borderRadius: `${this.radius}em`,
-			}
+			};
 
 			if (this.specificColor) {
 				switch (this.actualType) {
@@ -92,11 +103,9 @@ export default {
 						style.borderColor = this.specificColor;
 						break;
 				}
-
 			}
 
 			return style;
-
 		},
 		actualSize() {
 			return this.size || this.options.size || 'md';
@@ -134,8 +143,6 @@ export default {
 			}
 
 			return;
-
-
 		},
 		classes() {
 			var array = [];
@@ -150,13 +157,13 @@ export default {
 			}
 
 			if (this.themeColor) {
-				array.push(`btn-${this.themeColor}`)
+				array.push(`btn-${this.themeColor}`);
 			}
 
 			array.push(`btn-${this.actualSize}`);
 
 			if (this.block) {
-				array.push(`btn-block`)
+				array.push(`btn-block`);
 			}
 
 			if (this.loading) {
@@ -172,10 +179,9 @@ export default {
 	methods: {
 		click(event) {
 			this.$emit('click', event);
-		}
+		},
 	},
-}
-
+};
 </script>
 <style lang="scss" scoped>
 .disabled {
@@ -204,5 +210,4 @@ export default {
 		opacity: 1 !important;
 	}
 }
-
 </style>

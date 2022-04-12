@@ -33,14 +33,10 @@
 			</template>
 			<template v-else-if="renderer == 'dynamicdate'">
 				<v-input :label="displayLabel" :persistent-hint="true" :hint="dynamicDateHint" class="no-flex">
-					<div style="margin: 10px 0 ;">
+					<div style="margin: 10px 0">
 						<v-btn-toggle v-model="fieldModel">
-							<v-btn flat :value="null">
-								None
-							</v-btn>
-							<v-btn flat value="DATE_NOW">
-								Dynamic Date
-							</v-btn>
+							<v-btn flat :value="null"> None </v-btn>
+							<v-btn flat value="DATE_NOW"> Dynamic Date </v-btn>
 							<v-menu
 								:fixed="true"
 								v-model="modal"
@@ -51,9 +47,7 @@
 								offset-y
 							>
 								<template v-slot:activator="{ on }">
-									<v-btn flat :value="currentDateOrToday" v-on="on">
-										Specific Date
-									</v-btn>
+									<v-btn flat :value="currentDateOrToday" v-on="on"> Specific Date </v-btn>
 								</template>
 								<v-card>
 									<v-date-picker
@@ -745,7 +739,7 @@
 					>
 						<template v-slot:item="{ item }">
 							<v-layout align-center>
-								<v-flex shrink style="padding-right:8px;">
+								<v-flex shrink style="padding-right: 8px">
 									<fluro-icon
 										:icon="optionIsSelected(item) ? 'check-square' : 'square'"
 										:library="optionIsSelected(item) ? 'fas' : 'far'"
@@ -786,7 +780,7 @@
 					>
 						<template v-slot:item="{ item }">
 							<v-layout align-center>
-								<v-flex shrink style="padding-right:8px;">
+								<v-flex shrink style="padding-right: 8px">
 									<fluro-icon
 										:icon="optionIsSelected(item) ? 'check-square' : 'square'"
 										:library="optionIsSelected(item) ? 'fas' : 'far'"
@@ -951,7 +945,7 @@
 					/>
 				</template>
 			</template>
-			<client-only v-else-if="renderer == 'code'" style="display:block">
+			<client-only v-else-if="renderer == 'code'" style="display: block">
 				<v-input class="no-flex" :hint="field.description" :persistent-hint="true">
 					<template v-if="multipleInput">
 						<template v-if="fieldModel && fieldModel.length">
@@ -1372,7 +1366,7 @@
 									<span class="handle">
 										<fluro-icon icon="arrows" left />
 									</span>
-									<v-flex style="padding:0 !important;">{{ entry }}</v-flex>
+									<v-flex style="padding: 0 !important">{{ entry }}</v-flex>
 									<!-- v-if="type == 'email'"  -->
 									<span v-tippy content="Click to copy" @click="copyToClipboard(entry)">
 										<fluro-icon icon="copy" />
@@ -1503,7 +1497,7 @@ function createDynamicComponent(globalComponent, extraComponents) {
 		compiled.mixins.push({
 			beforeCreate() {
 				var self = this;
-				_.each(extraComponents, function(comp) {
+				_.each(extraComponents, function (comp) {
 					self.$options.components[comp.key] = createDynamicComponent(comp, extraComponents);
 				});
 			},
@@ -1554,7 +1548,7 @@ function mapDefaultDateValue(value) {
 
 const RANGE = (x, y) =>
 	Array.from(
-		(function*() {
+		(function* () {
 			while (x <= y) yield x++;
 		})()
 	);
@@ -1655,7 +1649,7 @@ export default {
 			var self = this;
 			self.textDate = dateString;
 		},
-		keywords: _.debounce(function() {
+		keywords: _.debounce(function () {
 			var self = this;
 			var field = this.field;
 			var keywords = self.keywords;
@@ -1693,7 +1687,7 @@ export default {
 			//////////////////////////////
 
 			// self.$fluro.api.get(`/content/contact/search/${search}`, {
-			self.$fluro.content.search(keywords, options).then(function(results) {
+			self.$fluro.content.search(keywords, options).then(function (results) {
 				self.results = results; //_.map(results, 'title');
 				self.loading = false;
 			});
@@ -1850,7 +1844,7 @@ export default {
 
 			var fieldModel = self.fieldModel;
 			if (fieldModel && fieldModel.grades && fieldModel.grades.length) {
-				return _.map(fieldModel.grades, function(grade) {
+				return _.map(fieldModel.grades, function (grade) {
 					return {
 						title: grade.title,
 						text: grade.title,
@@ -1935,7 +1929,7 @@ export default {
 			},
 		},
 		dateDayOptions() {
-			return RANGE(1, 31).map(function(v) {
+			return RANGE(1, 31).map(function (v) {
 				return {
 					title: v,
 					value: v,
@@ -2011,7 +2005,7 @@ export default {
 			var year = new Date().getFullYear();
 			return RANGE(year - 110, year)
 				.reverse()
-				.map(function(v) {
+				.map(function (v) {
 					return {
 						title: v,
 						value: String(v),
@@ -2175,8 +2169,7 @@ export default {
 				if (!this.fieldModel) {
 					return null;
 				}
-
-				return this.$fluro.date.formatDate(this.fieldModel, 'YYYY-MM-DD');
+				return this.$fluro.date.moment(this.fieldModel).utc().format('YYYY-MM-DD');
 			},
 			set(dateString) {
 				if (!dateString) {
@@ -2187,8 +2180,6 @@ export default {
 				var date = new Date(dateString);
 
 				this.fieldModel = date;
-
-				// new Date(dateString);
 			},
 		},
 
@@ -2393,11 +2384,11 @@ export default {
 		},
 		allowedReferences() {
 			return _.chain(this.field.allowedReferences)
-				.map(function(reference) {
+				.map(function (reference) {
 					reference.value = reference._id;
 					return reference;
 				})
-				.orderBy(function(reference) {
+				.orderBy(function (reference) {
 					return reference.title || reference.name;
 				})
 				.value();
@@ -2410,7 +2401,7 @@ export default {
 
 			return _.filter(
 				this.field.type == 'reference' ? this.defaultReferences : this.field.defaultValues,
-				function(value) {
+				function (value) {
 					switch (value) {
 						case 'null':
 						case 'undefined':
@@ -2589,7 +2580,7 @@ export default {
 			}
 		},
 		className() {
-			String.prototype.replaceAll = function(search, replacement) {
+			String.prototype.replaceAll = function (search, replacement) {
 				var target = this;
 				return target.split(search).join(replacement);
 			};
@@ -2663,7 +2654,7 @@ export default {
 		},
 		countryCodeOptions() {
 			var options = _.chain(this.asyncOptions)
-				.map(function(country) {
+				.map(function (country) {
 					var countryName = country.name;
 					var countryAlpha2 = country.alpha2;
 					var countryCallingCodes = country.countryCallingCodes;
@@ -2675,7 +2666,7 @@ export default {
 						value: country.alpha2,
 					};
 				})
-				.orderBy(function(entry) {
+				.orderBy(function (entry) {
 					return entry.title;
 				})
 				.value();
@@ -2698,7 +2689,7 @@ export default {
 			return options;
 		},
 		countryOptions() {
-			return _.map(this.asyncOptions, function(country) {
+			return _.map(this.asyncOptions, function (country) {
 				return {
 					title: country.name,
 					value: country.name,
@@ -2707,7 +2698,7 @@ export default {
 		},
 		timezoneOptions() {
 			var self = this;
-			var timezones = _.map(self.$fluro.date.timezones(), function(title) {
+			var timezones = _.map(self.$fluro.date.timezones(), function (title) {
 				return { title, value: title };
 			});
 
@@ -2737,7 +2728,7 @@ export default {
 
 			if (self.field.options && self.field.options.length) {
 				actualOptions = _.chain(self.field.options)
-					.map(function(option) {
+					.map(function (option) {
 						if (!option) {
 							return;
 						}
@@ -2761,7 +2752,7 @@ export default {
 				if (self.allowedValues && self.allowedValues.length) {
 					actualOptions = _.chain(self.allowedValues)
 						.compact()
-						.map(function(option) {
+						.map(function (option) {
 							return {
 								name: option,
 								value: option,
@@ -2791,7 +2782,7 @@ export default {
 
 				switch (self.field.type) {
 					case 'boolean':
-						match = _.find(actualOptions, function(option) {
+						match = _.find(actualOptions, function (option) {
 							return option.value == '' || getBooleanValue(option.value) == false;
 						});
 
@@ -2872,13 +2863,13 @@ export default {
 			//If the value requires a certain amount of answers
 			if (!this.$v.model.validateInput) {
 				if (this.proposedValue) {
-					_.each(checkValidInput(self, this.proposedValue), function(err) {
+					_.each(checkValidInput(self, this.proposedValue), function (err) {
 						errors.push(err);
 					});
 				}
 
 				//Include any errors for invalid or bad input
-				_.each(checkValidInput(this, self.fieldModel), function(err) {
+				_.each(checkValidInput(this, self.fieldModel), function (err) {
 					errors.push(err);
 				});
 
@@ -3198,7 +3189,7 @@ export default {
 				self.fieldModel = d;
 			}
 		},
-		checkTextDate: _.debounce(function() {
+		checkTextDate: _.debounce(function () {
 			this.checkTextDateImmediate();
 		}, 2000),
 		// checkboxInput(bool) {
@@ -3410,7 +3401,7 @@ export default {
 							///////////////////////////////////////////////////////
 
 							if (self.selectOptions && self.selectOptions.length) {
-								var firstMatch = self.selectOptions.find(function(v) {
+								var firstMatch = self.selectOptions.find(function (v) {
 									var stringValue = String(v.value || v.key || v).toLowerCase();
 
 									switch (stringValue) {
@@ -3765,10 +3756,7 @@ export default {
 							case 'url':
 							case 'email':
 							default:
-								output = _.chain(input)
-									.compact()
-									.first()
-									.value();
+								output = _.chain(input).compact().first().value();
 								break;
 						}
 					}
@@ -3864,7 +3852,7 @@ export default {
 			/////////////////////////////////////////
 
 			//Update our files list
-			var newFiles = _.map(list, function(file) {
+			var newFiles = _.map(list, function (file) {
 				return {
 					file,
 					data: {},
@@ -3876,7 +3864,7 @@ export default {
 			//Update the files
 			self.files = _.chain(self.files.concat(newFiles))
 				.compact()
-				.uniqBy(function(file) {
+				.uniqBy(function (file) {
 					return file.name;
 				})
 				.value();
@@ -3944,7 +3932,7 @@ export default {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 				},
-				onUploadProgress: progressEvent => {
+				onUploadProgress: (progressEvent) => {
 					let percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
 					// do whatever you like with the percentage complete
 					// maybe dispatch an action that will update a progress bar or something
@@ -3957,7 +3945,7 @@ export default {
 					//Update the bytes loaded from all the files in the array
 					self.bytesLoaded = _.reduce(
 						self.files,
-						function(set, file) {
+						function (set, file) {
 							if (file.state == 'complete') {
 								set += file.size || file.bytesTotal || 0;
 							} else {
@@ -4023,14 +4011,14 @@ export default {
 
 			return this.$fluro.api
 				.post(`/file/attach/${self.$fluro.utils.getStringID(uploadRealmID)}`, body, config)
-				.then(function(res) {
+				.then(function (res) {
 					file.state = 'complete';
 					file.result = res.data;
 					file.attachmentID = res.data._id;
 					file.cancelToken = null;
 					self.uploadNextFile();
 				})
-				.catch(function(err) {
+				.catch(function (err) {
 					file.state = 'error';
 					file.cancelToken = null;
 					self.uploadNextFile();
@@ -4043,7 +4031,7 @@ export default {
 			///////////////////////////////////////////
 
 			//Find the next file that can be uploaded
-			var nextFile = _.find(self.files, function(file) {
+			var nextFile = _.find(self.files, function (file) {
 				switch (file.state) {
 					case 'complete':
 					case 'error':
@@ -4077,10 +4065,7 @@ export default {
 			if (self.multipleInput) {
 				self.fieldModel = _.map(self.files, mapField);
 			} else {
-				self.fieldModel = _.chain(self.files)
-					.first()
-					.get(mapField)
-					.value();
+				self.fieldModel = _.chain(self.files).first().get(mapField).value();
 			}
 
 			self.$forceUpdate();
@@ -4228,7 +4213,7 @@ export default {
 			var stringValue = self.getActualValue(value);
 
 			if (self.multipleInput) {
-				return self.fieldModel.some(function(val) {
+				return self.fieldModel.some(function (val) {
 					return self.getActualValue(val) == stringValue;
 				});
 			} else {
@@ -4277,7 +4262,7 @@ export default {
 			if (self.disableDefaults) {
 				//If it's a group with sub fields
 				if (self.type == 'group' || self.renderer == 'embedded') {
-					_.each(self.field.fields, function(field) {
+					_.each(self.field.fields, function (field) {
 						createDefaultValueForField(field, value);
 					});
 				}
@@ -4289,14 +4274,14 @@ export default {
 							//If it's purely a visual group
 							if (!field.asObject) {
 								//Loop through each field and add the defaults to the original source
-								_.each(field.fields, function(subfield) {
+								_.each(field.fields, function (subfield) {
 									createDefaultValueForField(subfield, source);
 								});
 							} else {
 								//If it's a sub object group
 								if (field.maximum == 1) {
 									var defaultValue = {};
-									_.each(field.fields, function(subfield) {
+									_.each(field.fields, function (subfield) {
 										createDefaultValueForField(subfield, defaultValue);
 									});
 
@@ -4307,9 +4292,9 @@ export default {
 
 									var multipleValues = [];
 
-									_.times(numberOfValues, function(i) {
+									_.times(numberOfValues, function (i) {
 										var defaultValue = {};
-										_.each(field.fields, function(subfield) {
+										_.each(field.fields, function (subfield) {
 											createDefaultValueForField(subfield, defaultValue);
 										});
 										multipleValues.push(defaultValue);
@@ -4464,8 +4449,8 @@ export default {
 
 		self.mounted = true;
 		if (self.debugMode && self.field.isNew) {
-			self.$nextTick(function() {
-				self.$nextTick(function() {
+			self.$nextTick(function () {
+				self.$nextTick(function () {
 					if (self.$el && self.$el.scrollIntoView) {
 						self.$el.scrollIntoView({
 							behavior: 'smooth',
@@ -4602,7 +4587,7 @@ export default {
 			required: true,
 		},
 		options: {
-			default: function() {
+			default: function () {
 				return {};
 			},
 			type: Object,
@@ -4625,14 +4610,14 @@ export default {
 
 				self.asyncOptionsLoading = true;
 
-				return new Promise(function(resolve, reject) {
+				return new Promise(function (resolve, reject) {
 					self.$fluro.api
 						.get(self.asyncOptionsURL)
-						.then(function(res) {
+						.then(function (res) {
 							resolve(res.data);
 							self.asyncOptionsLoading = false;
 						})
-						.catch(function(err) {
+						.catch(function (err) {
 							reject(err);
 							self.asyncOptionsLoading = false;
 						});
@@ -4822,7 +4807,7 @@ export default {
 			self.$fluro.app.site.components.length
 		) {
 			var additionalComponents = self.$fluro.app.site.components;
-			additionalComponents.forEach(function(globalComponent) {
+			additionalComponents.forEach(function (globalComponent) {
 				var created = createDynamicComponent(globalComponent, additionalComponents);
 				if (created) {
 					self.$options.components[globalComponent.key] = Vue.extend(created);
@@ -4835,7 +4820,7 @@ export default {
 	validations: {
 		model: {
 			validateInput,
-			uploading: function(source, vm) {
+			uploading: function (source, vm) {
 				if (vm.uploadState == 'uploading') {
 					return false;
 				}
@@ -4946,7 +4931,7 @@ function validateInput(source, vm) {
 		return false;
 	}
 
-	var badData = _.some(value, function(input) {
+	var badData = _.some(value, function (input) {
 		return checkValidInput(vm, input).length;
 	});
 
@@ -4982,13 +4967,9 @@ function checkValidInput(self, input) {
 		case 'email':
 			if (self.multipleInput) {
 				if (_.isArray(input)) {
-					var someInvalidEmails = _.some(input, function(str) {
+					var someInvalidEmails = _.some(input, function (str) {
 						//Trim the string
-						str = str
-							? String(str)
-									.toLowerCase()
-									.trim()
-							: '';
+						str = str ? String(str).toLowerCase().trim() : '';
 						return !email(str) && str.length;
 					});
 
@@ -4997,22 +4978,14 @@ function checkValidInput(self, input) {
 					}
 				} else {
 					//Ensure that we lowercase and trim the string before we test it
-					input = input
-						? String(input)
-								.toLowerCase()
-								.trim()
-						: '';
+					input = input ? String(input).toLowerCase().trim() : '';
 					if (!email(input) && input.length) {
 						errors.push('Must be a valid email', input);
 					}
 				}
 			} else {
 				//Ensure that we lowercase and trim the string before we test it
-				input = input
-					? String(input)
-							.toLowerCase()
-							.trim()
-					: '';
+				input = input ? String(input).toLowerCase().trim() : '';
 				if (!email(input) && input.length) {
 					errors.push(`'${input}' is not a valid email address`, input);
 				}
@@ -5027,11 +5000,7 @@ function checkValidInput(self, input) {
 					return;
 				}
 
-				string = string
-					? String(string)
-							.toLowerCase()
-							.trim()
-					: '';
+				string = string ? String(string).toLowerCase().trim() : '';
 
 				// var relativeURL = _.startsWith(input, '#') || _.startsWith(input, '/');
 				var specialURL =
@@ -5055,7 +5024,7 @@ function checkValidInput(self, input) {
 				//If an array was provided
 				if (_.isArray(input)) {
 					//Check to see if any of the urls are invalid
-					var someInvalidURLs = _.some(input, function(str) {
+					var someInvalidURLs = _.some(input, function (str) {
 						return !checkIsURL(str) && str.length;
 					});
 

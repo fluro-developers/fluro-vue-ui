@@ -1,16 +1,11 @@
 <template>
 	<flex-column>
-		<template
-			v-if="
-				!$asyncComputed.defOptions.success &&
-					!$asyncComputed.locations.success
-			"
-		>
+		<template v-if="!$asyncComputed.defOptions.success && !$asyncComputed.locations.success">
 			<fluro-page-preloader contain />
 		</template>
 		<tabset v-else :justified="true" :vertical="true">
 			<tab heading="Event Track Info">
-				<flex-column-body style="background: #fafafa;">
+				<flex-column-body style="background: #fafafa">
 					<v-container class="grid-list-xl">
 						<constrain sm>
 							<h3 margin>Event Track Details</h3>
@@ -39,11 +34,9 @@
 			</tab>
 			<tab
 				:heading="`${definition.title} details`"
-				v-if="
-					definition && definition.fields && definition.fields.length
-				"
+				v-if="definition && definition.fields && definition.fields.length"
 			>
-				<flex-column-body style="background: #fafafa;">
+				<flex-column-body style="background: #fafafa">
 					<v-container>
 						<constrain sm>
 							<h3 margin>{{ definition.title }}</h3>
@@ -58,14 +51,11 @@
 				</flex-column-body>
 			</tab>
 			<tab heading="Event Defaults">
-				<flex-column-body style="background: #fafafa;">
+				<flex-column-body style="background: #fafafa">
 					<v-container class="grid-list-xl">
 						<constrain sm>
 							<h3 margin>Default Information</h3>
-							<p class="muted">
-								Add default information for events created on
-								this track.
-							</p>
+							<p class="muted">Add default information for events created on this track.</p>
 							<fluro-content-form-field
 								:form-fields="formFields"
 								:outline="showOutline"
@@ -113,9 +103,7 @@
 												:outline="showOutline"
 												@input="update"
 												:options="options"
-												:field="
-													fieldHash.defaultStartTime
-												"
+												:field="fieldHash.defaultStartTime"
 												v-model="model"
 											/>
 										</v-flex>
@@ -125,9 +113,7 @@
 												:outline="showOutline"
 												@input="update"
 												:options="options"
-												:field="
-													fieldHash.defaultDuration
-												"
+												:field="fieldHash.defaultDuration"
 												v-model="model"
 											/>
 										</v-flex>
@@ -137,9 +123,7 @@
 												:outline="showOutline"
 												@input="update"
 												:options="options"
-												:field="
-													fieldHash.defaultTimezone
-												"
+												:field="fieldHash.defaultTimezone"
 												v-model="model"
 											/>
 										</v-flex>
@@ -158,9 +142,7 @@
 												:outline="showOutline"
 												@input="update"
 												:options="options"
-												:field="
-													fieldHash.defaultCheckinStartOffset
-												"
+												:field="fieldHash.defaultCheckinStartOffset"
 												v-model="model"
 											/>
 										</v-flex>
@@ -170,9 +152,7 @@
 												:outline="showOutline"
 												@input="update"
 												:options="options"
-												:field="
-													fieldHash.defaultCheckinEndOffset
-												"
+												:field="fieldHash.defaultCheckinEndOffset"
 												v-model="model"
 											/>
 										</v-flex>
@@ -199,9 +179,7 @@
 													:outline="showOutline"
 													@input="update"
 													:options="options"
-													:field="
-														fieldHash.defaultStreamStartOffset
-													"
+													:field="fieldHash.defaultStreamStartOffset"
 													v-model="model"
 												/>
 											</v-flex>
@@ -211,9 +189,7 @@
 													:outline="showOutline"
 													@input="update"
 													:options="options"
-													:field="
-														fieldHash.defaultStreamEndOffset
-													"
+													:field="fieldHash.defaultStreamEndOffset"
 													v-model="model"
 												/>
 											</v-flex>
@@ -223,9 +199,7 @@
 											:outline="showOutline"
 											@input="update"
 											:options="options"
-											:field="
-												fieldHash.defaultStreamIntegrations
-											"
+											:field="fieldHash.defaultStreamIntegrations"
 											v-model="model"
 										/>
 										<fluro-content-form-field
@@ -233,9 +207,7 @@
 											:outline="showOutline"
 											@input="update"
 											:options="options"
-											:field="
-												fieldHash.defaultStreamContent
-											"
+											:field="fieldHash.defaultStreamContent"
 											v-model="model"
 										/>
 									</template>
@@ -286,14 +258,11 @@
 				</flex-column-body>
 			</tab>
 			<tab heading="Roster Settings">
-				<flex-column-body style="background: #fafafa;">
+				<flex-column-body style="background: #fafafa">
 					<v-container>
 						<constrain md>
 							<h4 margin>Roster Reminders</h4>
-							<p>
-								Setup reminders for team members rostered to
-								events on this track
-							</p>
+							<p>Setup reminders for team members rostered to events on this track</p>
 							<event-reminder-manager
 								type="track"
 								:slots="rosterSlots"
@@ -306,16 +275,14 @@
 				</flex-column-body>
 			</tab>
 			<tab heading="Ticket Defaults">
-				<flex-column-body style="background: #fafafa;">
+				<flex-column-body style="background: #fafafa">
 					<v-container>
 						<constrain md>
 							<!-- <constrain sm> -->
 							<h3 margin>Ticketing Defaults</h3>
 							<!-- <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.forms" v-model="model"></fluro-content-form-field> -->
 							<!-- </constrain> -->
-							<ticket-type-manager
-								v-model="model"
-							></ticket-type-manager>
+							<ticket-type-manager v-model="model"></ticket-type-manager>
 							<fluro-content-form-field
 								:form-fields="formFields"
 								:outline="showOutline"
@@ -329,9 +296,7 @@
 								:outline="showOutline"
 								@input="update"
 								:options="options"
-								:field="
-									fieldHash.publicTicketingConfirmationMessage
-								"
+								:field="fieldHash.publicTicketingConfirmationMessage"
 								v-model="model"
 							></fluro-content-form-field>
 							<!-- <pre>{{model.ticketTypes}}</pre> -->
@@ -344,14 +309,11 @@
 				</flex-column-body>
 			</tab>
 			<tab heading="Messaging">
-				<flex-column-body style="background: #fafafa;">
+				<flex-column-body style="background: #fafafa">
 					<v-container>
 						<constrain lg>
 							<h3 margin>Automated Messages</h3>
-							<event-message-manager
-								type="track"
-								v-model="model.defaultMessages"
-							/>
+							<event-message-manager type="track" v-model="model.defaultMessages" />
 							<!-- <pre>{{model.messages}}</pre> -->
 							<!-- <messaging-event-manager :config="config" v-model="model.messages" :startDate="model.startDate" :endDate="model.endDate" /> -->
 						</constrain>
@@ -359,20 +321,15 @@
 				</flex-column-body>
 			</tab>
 			<tab heading="Auto create">
-				<flex-column-body style="background: #fafafa;">
+				<flex-column-body style="background: #fafafa">
 					<v-container class="grid-list-xl">
 						<constrain sm>
 							<!-- <h3 margin>Reccuring Automation</h3> -->
 							<fluro-panel>
 								<fluro-panel-title>
-									<div
-										class="no-border-no-background"
-										@click="toggleAutoRecur()"
-									>
-										<fluro-toggle-item
-											:inactive="!model.autoRecur"
-											>Auto-Create Future
-											Events</fluro-toggle-item
+									<div class="no-border-no-background" @click="toggleAutoRecur()">
+										<fluro-toggle-item :inactive="!model.autoRecur"
+											>Auto-Create Future Events</fluro-toggle-item
 										>
 									</div>
 								</fluro-panel-title>
@@ -438,9 +395,7 @@
 											/>
 										</v-flex>
 									</v-layout>
-									<v-layout
-										v-if="model.recurMeasure == 'weeks'"
-									>
+									<v-layout v-if="model.recurMeasure == 'weeks'">
 										<v-flex xs12 sm4>
 											<fluro-content-form-field
 												:form-fields="formFields"
@@ -452,9 +407,7 @@
 											/>
 										</v-flex>
 									</v-layout>
-									<v-layout
-										v-if="model.recurMeasure == 'months'"
-									>
+									<v-layout v-if="model.recurMeasure == 'months'">
 										<v-flex>
 											<fluro-content-form-field
 												:form-fields="formFields"
@@ -499,9 +452,7 @@
 												:outline="showOutline"
 												@input="update"
 												:options="options"
-												:field="
-													fieldHash.defaultStartTime
-												"
+												:field="fieldHash.defaultStartTime"
 												v-model="model"
 											/>
 										</v-flex>
@@ -511,9 +462,7 @@
 												:outline="showOutline"
 												@input="update"
 												:options="options"
-												:field="
-													fieldHash.defaultDuration
-												"
+												:field="fieldHash.defaultDuration"
 												v-model="model"
 											/>
 										</v-flex>
@@ -523,9 +472,7 @@
 												:outline="showOutline"
 												@input="update"
 												:options="options"
-												:field="
-													fieldHash.defaultTimezone
-												"
+												:field="fieldHash.defaultTimezone"
 												v-model="model"
 											/>
 										</v-flex>
@@ -552,10 +499,7 @@
 					<v-container fluid>
 						<!-- <constrain sm> -->
 
-						<eventtrack-metrics-dashboard
-							:id="model._id"
-							type="eventtrack"
-						/>
+						<eventtrack-metrics-dashboard :id="model._id" type="eventtrack" />
 						<!-- </constrain> -->
 					</v-container>
 				</flex-column-body>
@@ -566,17 +510,17 @@
 <script>
 /////////////////////////////////
 
-import Vue from "vue";
-import _ from "lodash";
+import Vue from 'vue';
+import _ from 'lodash';
 
 /////////////////////////////////
-import LocationSelector from "../components/LocationSelector.vue";
-import MessagingEventManager from "../components/MessagingEventManager.vue";
-import ReminderEventManager from "../components/ReminderEventManager.vue";
-import DefaultRosterManager from "../components/DefaultRosterManager.vue";
-import FluroContentEditMixin from "../FluroContentEditMixin.js";
-import EventtrackMetricsDashboard from "../../../charts/metrics/EventtrackMetricsDashboard.vue";
-import TicketTypeManager from "../../event/TicketTypeManager.vue";
+import LocationSelector from '../components/LocationSelector.vue';
+import MessagingEventManager from '../components/MessagingEventManager.vue';
+import ReminderEventManager from '../components/ReminderEventManager.vue';
+import DefaultRosterManager from '../components/DefaultRosterManager.vue';
+import FluroContentEditMixin from '../FluroContentEditMixin.js';
+import EventtrackMetricsDashboard from '../../../charts/metrics/EventtrackMetricsDashboard.vue';
+import TicketTypeManager from '../../event/TicketTypeManager.vue';
 
 /////////////////////////////////
 
@@ -587,38 +531,38 @@ export default {
 		ReminderEventManager,
 		MessagingEventManager,
 		LocationSelector,
-		EventtrackMetricsDashboard
+		EventtrackMetricsDashboard,
 	},
 	mixins: [FluroContentEditMixin],
 	data() {
 		return {
-			eventList: null
+			eventList: null,
 		};
 	},
 	created() {
 		var self = this;
 
 		if (!self.model.messages) {
-			self.$set(self.model, "messages", []);
+			self.$set(self.model, 'messages', []);
 		}
 
 		if (!self.model._id) {
-			self.$set(self.model, "autoRecur", false);
+			self.$set(self.model, 'autoRecur', false);
 		}
 
 		if (!self.model.defaultLocations) {
-			self.$set(self.model, "defaultLocations", []);
+			self.$set(self.model, 'defaultLocations', []);
 		}
 
 		if (!self.model.defaultRooms) {
-			self.$set(self.model, "defaultRooms", []);
+			self.$set(self.model, 'defaultRooms', []);
 		}
 
 		if (!self.model.defaultRosters) {
-			self.$set(self.model, "defaultRosters", []);
+			self.$set(self.model, 'defaultRosters', []);
 		}
 		if (!self.model.defaultStreamEnabled) {
-			self.$set(self.model, "defaultStreamEnabled", false);
+			self.$set(self.model, 'defaultStreamEnabled', false);
 		}
 	},
 	/**
@@ -761,12 +705,12 @@ export default {
 			var self = this;
 			if (!self.model.autoRecur) {
 				//console.log('COLLECTED IS FALSY', self.model.autoRecur);
-				return self.$set(self.model, "autoRecur", true);
+				return self.$set(self.model, 'autoRecur', true);
 			} else {
 				//console.log('COLLECTED IS TRUTHY', self.model.autoRecur);
-				return self.$set(self.model, "autoRecur", false);
+				return self.$set(self.model, 'autoRecur', false);
 			}
-		}
+		},
 	},
 	computed: {
 		rosterSlots() {
@@ -775,20 +719,20 @@ export default {
 			// console.log(self.rosterTypes);
 
 			return _.chain(self.rosterTypes)
-				.map(function(rosterType) {
+				.map(function (rosterType) {
 					return rosterType.data.slots;
 				})
 				.compact()
 				.flatten()
-				.map("title")
+				.map('title')
 				.compact()
-				.uniqBy(function(title) {
+				.uniqBy(function (title) {
 					return String(title).toLowerCase();
 				})
-				.map(function(title) {
+				.map(function (title) {
 					return {
 						title,
-						key: String(title).toLowerCase()
+						key: String(title).toLowerCase(),
 					};
 				})
 				.value();
@@ -801,150 +745,147 @@ export default {
 			if (self.model.recurCount != 1) {
 				periodOptions = [
 					{
-						name: "Days",
-						value: "days"
+						name: 'Days',
+						value: 'days',
 					},
 					{
-						name: "Weeks",
-						value: "weeks"
+						name: 'Weeks',
+						value: 'weeks',
 					},
 					{
-						name: "Months",
-						value: "months"
+						name: 'Months',
+						value: 'months',
 					},
 					{
-						name: "Years",
-						value: "years"
-					}
+						name: 'Years',
+						value: 'years',
+					},
 				];
 			} else {
 				periodOptions = [
 					{
-						name: "Day",
-						value: "days"
+						name: 'Day',
+						value: 'days',
 					},
 					{
-						name: "Week",
-						value: "weeks"
+						name: 'Week',
+						value: 'weeks',
 					},
 					{
-						name: "Month",
-						value: "months"
+						name: 'Month',
+						value: 'months',
 					},
 					{
-						name: "Year",
-						value: "years"
-					}
+						name: 'Year',
+						value: 'years',
+					},
 				];
 			}
 
 			///////////////////////////////////
 
-			addField("publicTicketingEnabled", {
-				title: "Enable Public Ticketing",
-				description:
-					"Enable ticketing for the public to register for this event",
+			addField('publicTicketingEnabled', {
+				title: 'Enable Public Ticketing',
+				description: 'Enable ticketing for the public to register for this event',
 				minimum: 0,
 				maximum: 1,
-				type: "boolean"
+				type: 'boolean',
 			});
 
-			addField("publicTicketingConfirmationMessage", {
-				title: "Ticket Confirmation Message",
-				description:
-					"Customise the message to be sent at the top of the digital tickets email",
+			addField('publicTicketingConfirmationMessage', {
+				title: 'Ticket Confirmation Message',
+				description: 'Customise the message to be sent at the top of the digital tickets email',
 				minimum: 0,
 				maximum: 1,
-				type: "string",
-				directive: "wysiwyg",
+				type: 'string',
+				directive: 'wysiwyg',
 				expressions: {
 					show() {
 						return self.model.publicTicketingEnabled;
-					}
+					},
 				},
 				params: {
 					tokens: [
 						{
-							title: "Recipient Preferred First Name",
-							key: "tokens.firstName"
+							title: 'Recipient Preferred First Name',
+							key: 'tokens.firstName',
 						},
 
 						{
-							title: "Event Title",
-							key: "tokens.eventTitle"
+							title: 'Event Title',
+							key: 'tokens.eventTitle',
 						},
 
 						{
-							title: "Event Start Time",
-							key: "tokens.startTime"
+							title: 'Event Start Time',
+							key: 'tokens.startTime',
 						},
 
 						{
-							title: "Event Start Date",
-							key: "tokens.startDate"
+							title: 'Event Start Date',
+							key: 'tokens.startDate',
 						},
 
 						{
-							title: "Location names",
-							key: "tokens.locations"
-						}
-					]
-				}
+							title: 'Location names',
+							key: 'tokens.locations',
+						},
+					],
+				},
 			});
 
 			///////////////////////////////////
 
-			addField("title", {
-				title: "Track Title",
+			addField('title', {
+				title: 'Track Title',
 				minimum: 1,
 				maximum: 1,
-				type: "string",
-				placeholder: "Title",
+				type: 'string',
+				placeholder: 'Title',
 				params: {
-					autofocus: !self.model._id
-				}
+					autofocus: !self.model._id,
+				},
 			});
 
-			addField("firstLine", {
-				title: "Subtitle",
+			addField('firstLine', {
+				title: 'Subtitle',
 				minimum: 0,
 				maximum: 1,
-				type: "string",
-				placeholder: "Subtitle",
-				description: "A short one line description for this event track"
+				type: 'string',
+				placeholder: 'Subtitle',
+				description: 'A short one line description for this event track',
 			});
 
 			///////////////////////////////////
 			///////////////////////////////////
 			///////////////////////////////////
 
-			addField("mainImage", {
-				title: "Image",
-				description: "Default image for events in this track",
+			addField('mainImage', {
+				title: 'Image',
+				description: 'Default image for events in this track',
 				minimum: 0,
 				maximum: 1,
-				type: "reference",
-				directive: "reference-select",
+				type: 'reference',
+				directive: 'reference-select',
 				params: {
-					restrictType: "image"
-				}
+					restrictType: 'image',
+				},
 			});
 
 			///////////////////////////////////
 			///////////////////////////////////
 			///////////////////////////////////
 
-			addField("defaultPlans", {
-				title: "Default Plans",
-				description:
-					"This plan will be duplicated and attached as a 'draft' to new events in this event track",
+			addField('defaultPlans', {
+				title: 'Default Plans',
+				description: "This plan will be duplicated and attached as a 'draft' to new events in this event track",
 				minimum: 0,
 				maximum: 0,
-				type: "reference",
-				directive: "reference-select",
+				type: 'reference',
+				directive: 'reference-select',
 				params: {
-					restrictType: "plan"
-				}
+					restrictType: 'plan',
+				},
 			});
 
 			// addField('defaultOwners', {
@@ -963,292 +904,280 @@ export default {
 			///////////////////////////////////
 			///////////////////////////////////
 
-			addField("recurAmount", {
-				title: "Number of Future Events",
+			addField('recurAmount', {
+				title: 'Number of Future Events',
 				minimum: 1,
 				maximum: 1,
-				type: "integer",
+				type: 'integer',
 				description:
-					"Fluro will ensure that at any point in time there will be at least this many events into the future",
+					'Fluro will ensure that at any point in time there will be at least this many events into the future',
 				defaultValues: [5],
 				params: {
-					minValue: 1
-				}
+					minValue: 1,
+				},
 			});
 
 			var now = new Date();
-			addField("nextRecurDate", {
-				title: "Track Start Date",
+			addField('nextRecurDate', {
+				title: 'Track Start Date',
 				minimum: 1,
 				maximum: 1,
-				type: "date",
-				directive: "datepicker",
+				type: 'date',
+				directive: 'datepicker',
 				//description: moment(now).fromNow(),
-				defaultValues: [now]
+				defaultValues: [now],
 			});
 
-			addField("archiveDate", {
-				title: "End Track At",
+			addField('archiveDate', {
+				title: 'End Track At',
 				minimum: 0,
 				maximum: 1,
-				type: "date",
-				directive: "datepicker"
+				type: 'date',
+				directive: 'datepicker',
 
 				//description: moment(now).fromNow(),
 			});
 
 			///////////////////////////////////
 
-			addField("recurDefinition", {
-				title: "Event Type / Definition",
+			addField('recurDefinition', {
+				title: 'Event Type / Definition',
 				minimum: 0,
 				maximum: 1,
-				type: "string",
-				directive: "select",
-				defaultValues: [""],
-				description:
-					"What definition should be used for events within this track?",
-				options: self.defOptions
+				type: 'string',
+				directive: 'select',
+				defaultValues: [''],
+				description: 'What definition should be used for events within this track?',
+				options: self.defOptions,
 			});
 
-			addField("recurCount", {
-				title: "Every",
+			addField('recurCount', {
+				title: 'Every',
 				minimum: 0,
 				maximum: 1,
-				type: "integer",
+				type: 'integer',
 				defaultValues: [1],
 				params: {
-					minValue: 1
-				}
+					minValue: 1,
+				},
 			});
 
-			addField("recurMeasure", {
+			addField('recurMeasure', {
 				minimum: 0,
 				maximum: 1,
-				type: "string",
-				directive: "select",
-				defaultValues: ["weeks"],
-				options: periodOptions
+				type: 'string',
+				directive: 'select',
+				defaultValues: ['weeks'],
+				options: periodOptions,
 			});
 
-			addField("recurWeekday", {
-				title: "Weekday",
+			addField('recurWeekday', {
+				title: 'Weekday',
 				minimum: 0,
 				maximum: 1,
-				type: "string",
-				directive: "select",
-				defaultValues: ["Sunday"],
+				type: 'string',
+				directive: 'select',
+				defaultValues: ['Sunday'],
 				options: [
-					{ name: "Monday" },
-					{ name: "Tuesday" },
-					{ name: "Wednesday" },
-					{ name: "Thursday" },
-					{ name: "Friday" },
-					{ name: "Saturday" },
-					{ name: "Sunday" }
-				]
+					{ name: 'Monday' },
+					{ name: 'Tuesday' },
+					{ name: 'Wednesday' },
+					{ name: 'Thursday' },
+					{ name: 'Friday' },
+					{ name: 'Saturday' },
+					{ name: 'Sunday' },
+				],
 			});
 
-			addField("recurNth", {
-				title: "On The",
+			addField('recurNth', {
+				title: 'On The',
 				minimum: 0,
 				maximum: 1,
-				type: "string",
-				directive: "select",
-				defaultValues: ["date"],
+				type: 'string',
+				directive: 'select',
+				defaultValues: ['date'],
 				options: [
 					{
 						name: `Same Date (${self.$fluro.date.formatDate(
 							self.model.nextRecurDate,
-							"Do"
+							'Do'
 						)} of each month)`,
-						value: "date"
+						value: 'date',
 					},
 					{
-						name: "First",
-						value: "1"
+						name: 'First',
+						value: '1',
 					},
 					{
-						name: "Second",
-						value: "2"
+						name: 'Second',
+						value: '2',
 					},
 					{
-						name: "Third",
-						value: "3"
+						name: 'Third',
+						value: '3',
 					},
 					{
-						name: "Fourth",
-						value: "4"
+						name: 'Fourth',
+						value: '4',
 					},
 					{
-						name: "Fifth",
-						value: "5"
-					}
-				]
+						name: 'Fifth',
+						value: '5',
+					},
+				],
 			});
 
-			addField("defaultCheckinStartOffset", {
-				title: "Checkin Opens (minutes earlier)",
+			addField('defaultCheckinStartOffset', {
+				title: 'Checkin Opens (minutes earlier)',
 				minimum: 0,
 				maximum: 1,
-				type: "integer",
-				placeholder: "90"
+				type: 'integer',
+				placeholder: '90',
 				//directive: 'timepicker',
 				//description: moment(now).fromNow(),
 			});
 
-			addField("defaultCheckinEndOffset", {
-				title: "Checkin Closes ( minutes later)",
+			addField('defaultCheckinEndOffset', {
+				title: 'Checkin Closes ( minutes later)',
 				minimum: 0,
 				maximum: 1,
-				type: "integer",
-				placeholder: "90"
+				type: 'integer',
+				placeholder: '90',
 				//directive: 'timepicker',
 				//description: moment(now).fromNow(),
 			});
 
-			addField("defaultStartTime", {
-				title: `Start Time (${self.$fluro.date.timestampToAmPm(
-					self.model.defaultStartTime
-				)})`,
+			addField('defaultStartTime', {
+				title: `Start Time (${self.$fluro.date.timestampToAmPm(self.model.defaultStartTime)})`,
 				minimum: 0,
 				maximum: 1,
-				type: "string",
-				placeholder: "1300",
-				defaultValues: ["1000"],
-				directive: "timepicker"
+				type: 'string',
+				placeholder: '1300',
+				defaultValues: ['1000'],
+				directive: 'timepicker',
 				//description: moment(now).fromNow(),
 			});
 
-			addField("defaultDuration", {
-				title: "Duration (Mins)",
-				placeholder: "90",
+			addField('defaultDuration', {
+				title: 'Duration (Mins)',
+				placeholder: '90',
 				minimum: 0,
 				maximum: 1,
-				type: "integer",
+				type: 'integer',
 				params: {
-					minValue: 0
-				}
+					minValue: 0,
+				},
 			});
 
-			addField("defaultTimezone", {
-				title: "Event Timezone",
+			addField('defaultTimezone', {
+				title: 'Event Timezone',
 				minimum: 0,
 				maximum: 1,
-				type: "string",
-				directive: "timezone-select",
-				description: "Set a local timezone for this event"
+				type: 'string',
+				directive: 'timezone-select',
+				description: 'Set a local timezone for this event',
 			});
 
 			///////////////////////////////////
 			///////////////////////////////////
 			///////////////////////////////////
 
-			addField("defaultTitle", {
-				title: "Default Event Title",
+			addField('defaultTitle', {
+				title: 'Default Event Title',
 				minimum: 0,
 				maximum: 1,
-				type: "string",
-				placeholder:
-					"If left blank will be '" +
-					(self.model.title ? self.model.title : "") +
-					"'"
+				type: 'string',
+				placeholder: "If left blank will be '" + (self.model.title ? self.model.title : '') + "'",
 			});
 
-			addField("defaultFirstLine", {
-				title: "Default Event Subtitle",
+			addField('defaultFirstLine', {
+				title: 'Default Event Subtitle',
 				minimum: 0,
 				maximum: 1,
-				type: "string",
-				placeholder:
-					"If left blank will be '" +
-					(self.model.firstLine ? self.model.firstLine : "") +
-					"'"
+				type: 'string',
+				placeholder: "If left blank will be '" + (self.model.firstLine ? self.model.firstLine : '') + "'",
 			});
 
-			addField("defaultBody", {
-				title: "Default Event Body",
+			addField('defaultBody', {
+				title: 'Default Event Body',
 				minimum: 0,
 				maximum: 1,
-				type: "string",
-				directive: "wysiwyg"
+				type: 'string',
+				directive: 'wysiwyg',
 			});
 
-			addField("defaultExpectTeams", {
-				title: "Expected Groups/Teams",
-				description:
-					"Select groups whose members will be expected to attend events on this track",
+			addField('defaultExpectTeams', {
+				title: 'Expected Groups/Teams',
+				description: 'Select groups whose members will be expected to attend events on this track',
 				minimum: 0,
 				maximum: 0,
-				type: "reference",
-				directive: "reference-select",
+				type: 'reference',
+				directive: 'reference-select',
 				params: {
-					restrictType: "team"
-				}
+					restrictType: 'team',
+				},
 			});
 
-			addField("defaultForms", {
-				title: "Default Registration Forms",
-				description:
-					"These forms will be added to each created event on this track",
+			addField('defaultForms', {
+				title: 'Default Registration Forms',
+				description: 'These forms will be added to each created event on this track',
 				minimum: 0,
 				maximum: 0,
-				type: "reference",
-				directive: "reference-select",
+				type: 'reference',
+				directive: 'reference-select',
 				params: {
-					restrictType: "form"
-				}
+					restrictType: 'form',
+				},
 			});
 
-			addField("defaultStreamEnabled", {
-				title: "Stream Enabled",
-				description:
-					"Whether events on this track should have live streaming enabled by default",
+			addField('defaultStreamEnabled', {
+				title: 'Stream Enabled',
+				description: 'Whether events on this track should have live streaming enabled by default',
 				minimum: 0,
 				maximum: 1,
-				type: "boolean"
+				type: 'boolean',
 			});
 
-			addField("defaultStreamContent", {
-				title: "Prerecorded Stream Content",
-				description: "Select or create the video you want to stream",
+			addField('defaultStreamContent', {
+				title: 'Prerecorded Stream Content',
+				description: 'Select or create the video you want to stream',
 				minimum: 0,
 				maximum: 1,
-				type: "reference",
-				directive: "reference-select",
+				type: 'reference',
+				directive: 'reference-select',
 				params: {
-					restrictType: "video"
-				}
+					restrictType: 'video',
+				},
 			});
 
-			addField("defaultStreamIntegrations", {
-				title: "Default Stream Integrations",
-				description: "Select the integrations to restream to",
+			addField('defaultStreamIntegrations', {
+				title: 'Default Stream Integrations',
+				description: 'Select the integrations to restream to',
 				minimum: 0,
 				maximum: 0,
-				type: "reference",
-				directive: "reference-select",
+				type: 'reference',
+				directive: 'reference-select',
 				params: {
-					restrictType: "integration"
-				}
+					restrictType: 'integration',
+				},
 			});
 
-			addField("defaultStreamStartOffset", {
-				title: "Default LiveStream Open Offset (minutes)",
+			addField('defaultStreamStartOffset', {
+				title: 'Default LiveStream Open Offset (minutes)',
 				minimum: 0,
 				maximum: 1,
-				type: "integer",
-				placeholder: "30"
+				type: 'integer',
+				placeholder: '30',
 				//directive: 'timepicker',
 				//description: moment(now).fromNow(),
 			});
 
-			addField("defaultStreamEndOffset", {
-				title: "Default Live Stream Close Offset (minutes)",
+			addField('defaultStreamEndOffset', {
+				title: 'Default Live Stream Close Offset (minutes)',
 				minimum: 0,
 				maximum: 1,
-				type: "integer",
-				placeholder: "30"
+				type: 'integer',
+				placeholder: '30',
 				//directive: 'timepicker',
 				//description: moment(now).fromNow(),
 			});
@@ -1284,9 +1213,9 @@ export default {
 			//////////////////////////
 			//Add add each definition
 
-			_.each(self.rosterDefinitions.definitions, function(def) {
-				if (_.get(def, "data.slots")) {
-					return _.each(def.data.slots, function(slot) {
+			_.each(self.rosterDefinitions.definitions, function (def) {
+				if (_.get(def, 'data.slots')) {
+					return _.each(def.data.slots, function (slot) {
 						if (!options.includes(slot.title)) {
 							return options.push(slot.title);
 						}
@@ -1295,7 +1224,7 @@ export default {
 			});
 			//console.log(options);
 			return options;
-		}
+		},
 	},
 	asyncComputed: {
 		rosterTypes: {
@@ -1305,11 +1234,11 @@ export default {
 
 				///////////////////////////////////
 
-				return new Promise(function(resolve, reject) {
+				return new Promise(function (resolve, reject) {
 					return self.$fluro.types
-						.subTypes("roster")
-						.then(function(types) {
-							var filtered = _.filter(types, function(type) {
+						.subTypes('roster')
+						.then(function (types) {
+							var filtered = _.filter(types, function (type) {
 								// var alreadyCreated = !self.existingRosterTypes[
 								//     type.definitionName
 								// ];
@@ -1318,83 +1247,79 @@ export default {
 								// }
 
 								//Return if we have enough permissions to create this thing
-								return self.$fluro.access.can(
-									"create",
-									type.definitionName,
-									"roster"
-								);
+								return self.$fluro.access.can('create', type.definitionName, 'roster');
 							});
 							resolve(filtered);
 						})
 						.catch(reject);
 				});
-			}
+			},
 		},
 		defOptions: {
 			default: [],
 			get() {
 				var self = this;
-				return new Promise(function(resolve, reject) {
+				return new Promise(function (resolve, reject) {
 					self.$fluro.types
-						.get("event", true)
-						.then(function(res) {
+						.get('event', true)
+						.then(function (res) {
 							var options = [];
 							options.push({
-								name: "Basic Event",
-								value: ""
+								name: 'Basic Event',
+								value: '',
 							});
 							//////////////////////////
 							//Add add each definition
-							_.each(res.definitions, function(def) {
+							_.each(res.definitions, function (def) {
 								options.push({
 									name: def.title,
-									value: def.definitionName
+									value: def.definitionName,
 								});
 							});
 							//////////////////////////
 							//console.log(options);
 							resolve(options);
 						})
-						.catch(function(err) {
+						.catch(function (err) {
 							reject(err);
 						});
 				});
-			}
+			},
 		},
 		rosterDefinitions: {
 			default: [],
 			get() {
 				var self = this;
-				return new Promise(function(resolve, reject) {
+				return new Promise(function (resolve, reject) {
 					self.$fluro.types
-						.retrieve(["roster"])
-						.then(function(res) {
+						.retrieve(['roster'])
+						.then(function (res) {
 							return resolve(res[0]);
 						})
-						.catch(function(err) {
+						.catch(function (err) {
 							reject(err);
 						});
 				});
-			}
+			},
 		},
 		locations: {
 			default: [],
 			get() {
 				var self = this;
 
-				return new Promise(function(resolve, reject) {
+				return new Promise(function (resolve, reject) {
 					self.$fluro.api
-						.get("/content/location?allDefinitions=true")
-						.then(function(res) {
+						.get('/content/location?allDefinitions=true')
+						.then(function (res) {
 							resolve(res.data);
 						})
-						.catch(function(err) {
+						.catch(function (err) {
 							reject(err);
 						});
 				});
-			}
-		}
-	}
+			},
+		},
+	},
 };
 </script>
 <style>

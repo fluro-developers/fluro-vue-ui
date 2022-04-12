@@ -1,9 +1,8 @@
 export default {
-	methods:{
+	methods: {
 		getColor(index) {
 			var self = this;
-			return self.options.colors[index % self.options.colors.length]
+			return self.options.colors[index % self.options.colors.length];
 		},
-
-	}
-}
+	},
+};

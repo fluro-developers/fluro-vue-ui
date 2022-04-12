@@ -2,43 +2,39 @@ import { updateMark, markInputRule } from 'tiptap-commands';
 import { Mark } from 'tiptap';
 
 export default class Alignment extends Mark {
-    // eslint-disable-next-line class-methods-use-this
-    get name() {
-        return 'alignment';
-    }
+	// eslint-disable-next-line class-methods-use-this
+	get name() {
+		return 'alignment';
+	}
 
-    // eslint-disable-next-line class-methods-use-this
-    get schema() {
-        return {
-            attrs: {
-                textAlign: {
-                    default: 'left',
-                },
-            },
-            parseDOM: [{
-                style: 'text-align',
-                getAttrs: value => ({ textAlign: value }),
-            }, ],
-            toDOM: mark => ['span', { style: `text-align: ${mark.attrs.textAlign};display: block` }, 0],
-        };
-    }
+	// eslint-disable-next-line class-methods-use-this
+	get schema() {
+		return {
+			attrs: {
+				textAlign: {
+					default: 'left',
+				},
+			},
+			parseDOM: [
+				{
+					style: 'text-align',
+					getAttrs: (value) => ({ textAlign: value }),
+				},
+			],
+			toDOM: (mark) => ['span', { style: `text-align: ${mark.attrs.textAlign};display: block` }, 0],
+		};
+	}
 
-    // eslint-disable-next-line class-methods-use-this
-    commands({ type }) {
-        return attrs => updateMark(type, attrs);
-    }
+	// eslint-disable-next-line class-methods-use-this
+	commands({ type }) {
+		return (attrs) => updateMark(type, attrs);
+	}
 
-    // eslint-disable-next-line class-methods-use-this
-    inputRules({ type }) {
-        return [
-            markInputRule(/(?:\*\*|__)([^*_]+)(?:\*\*|__)$/, type),
-        ];
-    }
+	// eslint-disable-next-line class-methods-use-this
+	inputRules({ type }) {
+		return [markInputRule(/(?:\*\*|__)([^*_]+)(?:\*\*|__)$/, type)];
+	}
 }
-
-
-
-
 
 // // import { toggleBlockType } from 'tiptap-commands';
 // // import { Node } from 'tiptap';
@@ -75,8 +71,6 @@ export default class Alignment extends Mark {
 // //     }
 // // }
 
-
-
 // import { Mark } from 'tiptap'
 // import { updateMark, markInputRule } from 'tiptap-commands'
 
@@ -89,14 +83,14 @@ export default class Alignment extends Mark {
 //     return {
 //       attrs: {
 //         textAlign: 'left'
-//       }, 
+//       },
 //       parseDOM: [
 //         {
 //           style: 'text-align',
 //           getAttrs: value => value
 //         }
 //       ],
-//       toDOM: mark => ['span', { 
+//       toDOM: mark => ['span', {
 //         style: `text-align: ${mark.attrs.textAlign};display: block`
 //       }, 0],
 //     };
@@ -112,8 +106,6 @@ export default class Alignment extends Mark {
 //         ]
 //     }
 // }
-
-
 
 // import { Node, Plugin } from 'tiptap'
 
@@ -157,7 +149,6 @@ export default class Alignment extends Mark {
 //       dispatch(transaction)
 //     }
 //   }
-
 
 //   get plugins() {
 //     return [

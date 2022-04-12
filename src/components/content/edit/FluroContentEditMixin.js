@@ -1,6 +1,6 @@
 import FluroContentForm from '../../form/FluroContentForm.vue';
-import FluroContentFormField from "../../form/FluroContentFormField.vue";
-import FluroPrivacySelect from "../../form/FluroPrivacySelect.vue";
+import FluroContentFormField from '../../form/FluroContentFormField.vue';
+import FluroPrivacySelect from '../../form/FluroPrivacySelect.vue';
 import FluroHelp from '../../FluroHelp.vue';
 
 export default {
@@ -11,23 +11,23 @@ export default {
 		},
 		context: {
 			type: String,
-			default: 'new'
+			default: 'new',
 		},
-		save:{
-			type:Function,
+		save: {
+			type: Function,
 		},
 	},
 	data() {
 		return {
 			loading: false,
-		}
+		};
 	},
 	mounted() {
 		this.$set(this.model, '_type', this.config.type.definitionName);
 	},
 	extends: FluroContentForm,
 	components: {
-		'help': FluroHelp,
+		help: FluroHelp,
 		FluroContentForm,
 		FluroContentFormField,
 		FluroPrivacySelect,
@@ -54,7 +54,9 @@ export default {
 			return [];
 		},
 		readableContentType() {
-			return this.$fluro.types.readable(this.config.definition ? this.config.definition.definitionName : this.config.type.definitionName)
+			return this.$fluro.types.readable(
+				this.config.definition ? this.config.definition.definitionName : this.config.type.definitionName
+			);
 		},
 		fullBody() {
 			return this.definition && this.definition.data && this.definition.data.fullBody;
@@ -67,11 +69,11 @@ export default {
 		},
 		bodyLabel() {
 			return 'Body';
-		}
+		},
 	},
 	methods: {
 		update() {
 			this.$emit('input', this.model);
-		}
-	}
-}
+		},
+	},
+};

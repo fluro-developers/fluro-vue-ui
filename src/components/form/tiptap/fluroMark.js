@@ -1,95 +1,92 @@
-import { Mark } from 'tiptap'
-import { toggleMark } from 'tiptap-commands'
-
+import { Mark } from 'tiptap';
+import { toggleMark } from 'tiptap-commands';
 
 import tiptapUtils from 'tiptap-utils';
 
 export default class FluroMark extends Mark {
-    get name() {
-        return 'fluroMark'
-    }
+	get name() {
+		return 'fluroMark';
+	}
 
-    get defaultOptions() {
-        return {
-            classes: [
+	get defaultOptions() {
+		return {
+			classes: [
+				{
+					id: 'xs',
+					title: 'Extra Small',
+					tag: 'span',
+					class: 'text-xs',
+				},
+				{
+					id: 'sm',
+					title: 'Small',
+					tag: 'span',
+					class: 'text-sm',
+				},
 
-                {
-                    id: "xs",
-                    title: 'Extra Small',
-                    tag: 'span',
-                    class: 'text-xs'
-                },
-                {
-                    id: "sm",
-                    title: 'Small',
-                    tag: 'span',
-                    class: 'text-sm'
-                },
+				{
+					id: 'muted',
+					title: 'Muted',
+					tag: 'span',
+					class: 'text-muted',
+				},
 
-                {
-                    id: "muted",
-                    title: 'Muted',
-                    tag: 'span',
-                    class: 'text-muted'
-                },
+				{
+					id: 'lg',
+					title: 'Large',
+					tag: 'span',
+					class: 'text-lg',
+				},
 
-                {
-                    id: "lg",
-                    title: 'Large',
-                    tag: 'span',
-                    class: 'text-lg'
-                },
+				{
+					id: 'xl',
+					title: 'Extra Large',
+					tag: 'span',
+					class: 'text-xl',
+				},
+				// {
+				//     id: "small",
+				//     title: 'Small Text',
+				//     tag: 'span',
+				//     class: 'small'
+				// },
+				// {
+				//     id: "muted",
+				//     title: 'Muted Text',
+				//     tag: 'span',
+				//     class: 'text-muted'
+				// },
+			],
+		};
+	}
 
-                {
-                    id: "xl",
-                    title: 'Extra Large',
-                    tag: 'span',
-                    class: 'text-xl'
-                },
-                // {
-                //     id: "small",
-                //     title: 'Small Text',
-                //     tag: 'span',
-                //     class: 'small'
-                // },
-                // {
-                //     id: "muted",
-                //     title: 'Muted Text',
-                //     tag: 'span',
-                //     class: 'text-muted'
-                // },
+	get schema() {
+		return {
+			attrs: {
+				level: {
+					default: '',
+				},
+			},
+			parseDOM: [
+				{
+					tag: 'span.typography',
+					getAttrs(dom) {
+						// console.log(dom.classList[1]);
+						return { level: dom.classList[1] };
+					},
+				},
+			],
+			toDOM: (mark) => {
+				return ['span', { class: `typography ${mark.attrs.level}` }, 0];
+			},
+		};
+	}
 
-            ],
-        }
-    }
+	commands({ type }) {
+		return (attrs) => toggleMark(type, attrs);
+	}
 
-
-
-    get schema() {
-        return {
-            attrs: {
-                level: {
-                    default: ""
-                }
-            },
-            parseDOM: [{
-                tag: "span.typography",
-                getAttrs(dom) {
-                    // console.log(dom.classList[1]);
-                    return { level: dom.classList[1] };
-                }
-            }],
-            toDOM: mark => {
-                return ["span", { class: `typography ${mark.attrs.level}` }, 0];
-            }
-        };
-    }
-
-    commands({ type }) {
-        return attrs => toggleMark(type, attrs);
-    }
-
-    /**
+	/**
 
 
       get schema() {
@@ -122,5 +119,4 @@ export default class FluroMark extends Mark {
       return attrs => toggleMark(type)
     }
     /**/
-
 }

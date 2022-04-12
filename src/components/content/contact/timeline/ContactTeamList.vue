@@ -1,11 +1,11 @@
 <template>
-    <flex-column class="contact-team-list">
-        <flex-column-body>
-             <v-container fluid>
-        <contact-group-manager v-model="contact" />
-    </v-container>
-    </flex-column-body>
-        <!-- <template v-if="loading">
+	<flex-column class="contact-team-list">
+		<flex-column-body>
+			<v-container fluid>
+				<contact-group-manager v-model="contact" />
+			</v-container>
+		</flex-column-body>
+		<!-- <template v-if="loading">
             <fluro-page-preloader contain />
         </template>
         <template v-else>
@@ -40,22 +40,21 @@
                 </v-container>
             </flex-column-body>
         </template> -->
-    </flex-column>
+	</flex-column>
 </template>
 <script>
-
 import _ from 'lodash';
 import ContactGroupManager from '../../edit/components/ContactGroupManager.vue';
 export default {
-    props: {
-        contact: {
-            type: Object,
-        }
-    },
-    components: {
-        ContactGroupManager,
-    },
-    /**
+	props: {
+		contact: {
+			type: Object,
+		},
+	},
+	components: {
+		ContactGroupManager,
+	},
+	/**
     data() {
         return {
             loading: false,
@@ -186,12 +185,12 @@ export default {
         }
     }
     /**/
-}
+};
 </script>
 <style lang="scss">
 .sheet-panel {
-    &.archived {
-        opacity: 0.5;
-    }
+	&.archived {
+		opacity: 0.5;
+	}
 }
 </style>

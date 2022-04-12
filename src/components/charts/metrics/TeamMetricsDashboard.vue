@@ -10,7 +10,13 @@
 						<strong>Group Size</strong>
 					</fluro-panel-title>
 					<fluro-panel-body>
-						<fluro-chart chartType="line" :options="groupSize.options" v-model="groupSize.model" :series="groupSize.series" :axis="groupSize.axis" />
+						<fluro-chart
+							chartType="line"
+							:options="groupSize.options"
+							v-model="groupSize.model"
+							:series="groupSize.series"
+							:axis="groupSize.axis"
+						/>
 					</fluro-panel-body>
 				</fluro-panel>
 				<v-layout row wrap>
@@ -20,7 +26,12 @@
 								<strong>Gender</strong>
 							</fluro-panel-title>
 							<fluro-panel-body>
-								<fluro-chart chartType="donut" :options="genderBreakdown.options" v-model="genderBreakdown.model" :series="genderBreakdown.series" />
+								<fluro-chart
+									chartType="donut"
+									:options="genderBreakdown.options"
+									v-model="genderBreakdown.model"
+									:series="genderBreakdown.series"
+								/>
 							</fluro-panel-body>
 						</fluro-panel>
 					</v-flex>
@@ -30,7 +41,13 @@
 								<strong>Ages</strong>
 							</fluro-panel-title>
 							<fluro-panel-body>
-								<fluro-chart chartType="line" :options="ageSpread.options" v-model="ageSpread.model" :series="ageSpread.series" :axis="ageSpread.axis" />
+								<fluro-chart
+									chartType="line"
+									:options="ageSpread.options"
+									v-model="ageSpread.model"
+									:series="ageSpread.series"
+									:axis="ageSpread.axis"
+								/>
 							</fluro-panel-body>
 						</fluro-panel>
 					</v-flex>
@@ -54,7 +71,7 @@ export default {
 		},
 		type: {
 			type: String,
-		}
+		},
 	},
 	computed: {
 		groupSize() {
@@ -63,45 +80,49 @@ export default {
 				axis: [],
 				series: {
 					groupsize: [],
-				}
-			}
-			var stats = _.sortBy(self.model.statsheets, function(stat) {
-				return stat.date
-			})
-			_.each(stats, function(stat) {
+				},
+			};
+			var stats = _.sortBy(self.model.statsheets, function (stat) {
+				return stat.date;
+			});
+			_.each(stats, function (stat) {
 				//console.log("HERE", event)
-				model.axis.push(stat.date)
-				model.series.groupsize.push(_.get(stat, "data.memberCount.total"))
-			})
+				model.axis.push(stat.date);
+				model.series.groupsize.push(_.get(stat, 'data.memberCount.total'));
+			});
 			var returnData = {
 				axis: {
-					"title": "Date",
-					"key": "date"
+					title: 'Date',
+					key: 'date',
 				},
-				series: [{
-					"title": "Members",
-					"key": "groupsize",
-					AOT: true
-				}, ],
+				series: [
+					{
+						title: 'Members',
+						key: 'groupsize',
+						AOT: true,
+					},
+				],
 				model,
-				options: {}
-			}
+				options: {},
+			};
 
 			//console.log("GroupSize Graph Data", returnData)
-			return returnData
+			return returnData;
 		},
 		genderBreakdown() {
 			var self = this;
-			var stats = _.last(self.model.statsheets)
-			var labels = []
-			var data = []
+			var stats = _.last(self.model.statsheets);
+			var labels = [];
+			var data = [];
 
 			var returnData = {
 				model: {},
-				series: [{
-					title: "Gender Composition",
-					key: "gender"
-				}],
+				series: [
+					{
+						title: 'Gender Composition',
+						key: 'gender',
+					},
+				],
 				options: {
 					// chart: {
 					//  width: 200,
@@ -117,99 +138,101 @@ export default {
 					//   customScale: 0.7
 					//  },
 					// },
-				}
-			}
+				},
+			};
 			var genders = {
 				male: 0,
 				female: 0,
-			}
-			_.each(stats.data.genders, function(value, stat) {
-				genders[stat] = value
-			})
+			};
+			_.each(stats.data.genders, function (value, stat) {
+				genders[stat] = value;
+			});
 			//console.log("Genders", genders, stats)
-			_.each(genders, function(value, key) {
-				labels.push(key.replace(/\w\S*/g, function(txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }))
-				data.push(value)
-			})
-			_.set(returnData, 'model.series[gender]', { data, labels })
+			_.each(genders, function (value, key) {
+				labels.push(
+					key.replace(/\w\S*/g, function (txt) {
+						return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+					})
+				);
+				data.push(value);
+			});
+			_.set(returnData, 'model.series[gender]', { data, labels });
 			// console.log("Gender Graph Data", returnData)
 			if (genders) {
-				self.genders = true
+				self.genders = true;
 			}
-			return returnData
+			return returnData;
 		},
 		ageSpread() {
-			var self = this
-			var statbase = _.last(self.model.statsheets)
-			var ageSpread = _.get(statbase, "data.ages.spread")
-			var averageAge = _.get(statbase, "data.ages.average")
+			var self = this;
+			var statbase = _.last(self.model.statsheets);
+			var ageSpread = _.get(statbase, 'data.ages.spread');
+			var averageAge = _.get(statbase, 'data.ages.average');
 
 			if (ageSpread) {
-				self.age = true
+				self.age = true;
 			}
-			var groupedAges = new Array(8).fill(0)
-			_.each(ageSpread, function(value, key) {
+			var groupedAges = new Array(8).fill(0);
+			_.each(ageSpread, function (value, key) {
 				// console.log("key", key, "value", value)
 				switch (true) {
-					case (key < 16):
-						groupedAges[0] = groupedAges[0] + value
-						break
-					case (key < 26):
-						groupedAges[1] = groupedAges[1] + value
-						break
-					case (key < 36):
-						groupedAges[2] = groupedAges[2] + value
+					case key < 16:
+						groupedAges[0] = groupedAges[0] + value;
 						break;
-					case (key < 46):
-						groupedAges[3] = groupedAges[3] + value
+					case key < 26:
+						groupedAges[1] = groupedAges[1] + value;
 						break;
-					case (key < 56):
-						groupedAges[4] = groupedAges[4] + value
+					case key < 36:
+						groupedAges[2] = groupedAges[2] + value;
 						break;
-					case (key < 66):
-						groupedAges[5] = groupedAges[5] + value
+					case key < 46:
+						groupedAges[3] = groupedAges[3] + value;
 						break;
-					case (key < 76):
-						groupedAges[6] = groupedAges[6] + value
+					case key < 56:
+						groupedAges[4] = groupedAges[4] + value;
 						break;
-					case (key >= 76):
-						groupedAges[7] = groupedAges[7] + value
+					case key < 66:
+						groupedAges[5] = groupedAges[5] + value;
 						break;
-
+					case key < 76:
+						groupedAges[6] = groupedAges[6] + value;
+						break;
+					case key >= 76:
+						groupedAges[7] = groupedAges[7] + value;
+						break;
 				}
-			})
+			});
 			// console.log("groupedAges", groupedAges)
 
-			var labels = ["Under 15", "16 - 25", "26 - 35", "36 - 45", "46 - 55", "56 - 65", "66 - 75", "Over 76"]
+			var labels = ['Under 15', '16 - 25', '26 - 35', '36 - 45', '46 - 55', '56 - 65', '66 - 75', 'Over 76'];
 
-			var series = [{
-					title: "Age Spread",
+			var series = [
+				{
+					title: 'Age Spread',
 					type: 'column',
-					key: "agespread"
+					key: 'agespread',
 				},
 				{
-					title: "Average Age",
+					title: 'Average Age',
 					type: 'line',
-					key: "averageage"
-				}
-			]
-
-
+					key: 'averageage',
+				},
+			];
 
 			var model = {
 				axis: labels,
 				series: {
-					agespread: _.map(groupedAges, function(value) {
-						return value || 0
+					agespread: _.map(groupedAges, function (value) {
+						return value || 0;
 					}),
-					averageage: new Array(8).fill(averageAge)
-				}
-			}
+					averageage: new Array(8).fill(averageAge),
+				},
+			};
 
 			var returnData = {
 				axis: {
-					key: "ages",
-					title: "Ages"
+					key: 'ages',
+					title: 'Ages',
 				},
 				model,
 				series,
@@ -220,9 +243,10 @@ export default {
 					},
 					stroke: {
 						width: [0, 4],
-						dashArray: [0, 2]
+						dashArray: [0, 2],
 					},
-					yaxis: [{
+					yaxis: [
+						{
 							title: {
 								text: 'Age Spread',
 							},
@@ -237,23 +261,22 @@ export default {
 							max: 100,
 							opposite: true,
 							title: {
-								text: 'Average Age'
+								text: 'Average Age',
 							},
 							tooltip: {
 								enabled: true,
 								shared: true,
 							},
 							show: true,
-						}
+						},
 					],
 					labels,
-				}
-			}
+				},
+			};
 
 			//console.log("Age Spread data", returnData)
-			return returnData
-		}
-
+			return returnData;
+		},
 	},
 	asyncComputed: {
 		model: {
@@ -261,51 +284,53 @@ export default {
 			get() {
 				var self = this;
 				var id = self.$fluro.utils.getStringID(self.id);
-				return new Promise(function(resolve, reject) {
+				return new Promise(function (resolve, reject) {
 					//Load the chart data
 					switch (self.type) {
 						case 'team':
-							var endpoint = `chart/groups/${id}/simple`
-							self.$fluro.api.get(endpoint, {
-								params: {
-									startDate: moment().subtract(1, 'year').toDate(),
-									endDate: moment().toDate(),
-								}
-							}).then(function(res) {
-								resolve(res.data);
-								// console.log("Dataset", res.data)
-								self.loading = false;
-							}, function(err) {
-								reject(err);
-								self.loading = false;
-							});
+							var endpoint = `chart/groups/${id}/simple`;
+							self.$fluro.api
+								.get(endpoint, {
+									params: {
+										startDate: moment().subtract(1, 'year').toDate(),
+										endDate: moment().toDate(),
+									},
+								})
+								.then(
+									function (res) {
+										resolve(res.data);
+										// console.log("Dataset", res.data)
+										self.loading = false;
+									},
+									function (err) {
+										reject(err);
+										self.loading = false;
+									}
+								);
 							break;
 						case 'realm':
 							break;
 						case 'contact':
 							break;
 					}
-				})
-			}
-		}
+				});
+			},
+		},
 	},
 	data() {
 		return {
 			loading: true,
 			age: false,
-			gender: false
-		}
-	}
-}
-
+			gender: false,
+		};
+	},
+};
 </script>
 <style lang="scss" scoped>
 .gender {
-
 	// @media(min-width: 1000px) {
 	//  max-width: 300px !important;
 	//  border: 5px solid yellow !important;
 	// }
 }
-
 </style>

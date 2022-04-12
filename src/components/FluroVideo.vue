@@ -7,16 +7,28 @@
 		</div>
 		<div class="fluro-video-embed" v-if="provider == 'upload'">
 			<video
-				class="embed-responsive-item" :preload="preloadStyle" :poster="posterUrl" :autoplay="autoplay" :muted="muted" :playsinline="playsinline" :controls="controls"
+				class="embed-responsive-item"
+				:preload="preloadStyle"
+				:poster="posterUrl"
+				:autoplay="autoplay"
+				:muted="muted"
+				:playsinline="playsinline"
+				:controls="controls"
 			>
 				<source :src="assetUrl" />
 				<!-- :type="item.mimetype" -->
 			</video>
 		</div>
-		<div class="fluro-video-embed" v-if="provider == 'embed'" v-html="item.external.embed"
-		></div>
-		<div class="fluro-video-embed" v-if="provider == 'vimeo'" >
-			<iframe :src="vimeoURL" width="640" height="360" frameborder="0" allow="autoplay; fullscreen" allowfullscreen ></iframe>
+		<div class="fluro-video-embed" v-if="provider == 'embed'" v-html="item.external.embed"></div>
+		<div class="fluro-video-embed" v-if="provider == 'vimeo'">
+			<iframe
+				:src="vimeoURL"
+				width="640"
+				height="360"
+				frameborder="0"
+				allow="autoplay; fullscreen"
+				allowfullscreen
+			></iframe>
 			<!-- <vimeo-player ref="player" :video-id="vimeoID.id" :hash="vimeoID.hash" @ready="onReady" :player-height="height"></vimeo-player>  -->
 			<!-- <vimeo-player video-id="220721944"></vimeo-player> -->
 		</div>
@@ -30,12 +42,12 @@
 <script>
 // import { vueVimeoPlayer } from 'vue-vimeo-player'
 // import { Youtube } from 'vue-youtube'
-import Vue from "vue";
-import _ from "lodash";
+import Vue from 'vue';
+import _ from 'lodash';
 // import { Youtube } from 'vue-youtube';// Vue.use(Youtube);
-import { Youtube } from "vue-youtube"; // Vue.use(Youtube);
+import { Youtube } from 'vue-youtube'; // Vue.use(Youtube);
 
-import DynamicImportService from "../DynamicImportService.js";
+import DynamicImportService from '../DynamicImportService.js';
 
 export default {
 	components: {
@@ -97,18 +109,18 @@ export default {
 	mounted() {
 		var self = this;
 
-		if (self.provider == "vimeo") {
+		if (self.provider == 'vimeo') {
 			self.ready = false;
 
 			DynamicImportService.load(
-				"vue-vimeo-player",
+				'vue-vimeo-player',
 				function () {
-					return import("vue-vimeo-player");
+					return import('vue-vimeo-player');
 				},
 				true
 			).then(function (imported) {
 				self.$options.components.vimeoPlayer = imported.vueVimeoPlayer;
-				console.log("Loaded vimeo player");
+				console.log('Loaded vimeo player');
 				self.ready = true;
 			});
 		}
@@ -127,10 +139,8 @@ export default {
 			}
 
 			if (self.$fluro.app && self.$fluro.app.native) {
-				return "none";
+				return 'none';
 			}
-
-			return;
 		},
 		provider() {
 			if (this.item) {
@@ -140,7 +150,7 @@ export default {
 		mediaID() {
 			if (this.item) {
 				switch (this.provider) {
-					case "upload":
+					case 'upload':
 						break;
 					default:
 						return this.$fluro.video.getAssetMediaIDFromURL(
@@ -170,23 +180,25 @@ export default {
 
 			if (this.item) {
 				switch (this.item.assetType) {
-					case "youtube":
-					case "vimeo":
-					case "s3":
-					case "embed":
-					case "upload":
+					case 'youtube':
+					case 'vimeo':
+					case 's3':
+					case 'embed':
+					case 'upload':
 						var key = `fluro-video-${this.item.assetType}`;
 						output[key] = true;
 						break;
+					default:
+					// pass
 				}
 			}
 			return output;
 		},
 		computedWidth() {
-			return this.width || _.get(this.item, "width") || 1920;
+			return this.width || _.get(this.item, 'width') || 1920;
 		},
 		computedHeight() {
-			return this.height || _.get(this.item, "height") || 1080;
+			return this.height || _.get(this.item, 'height') || 1080;
 		},
 		aspectRatio() {
 			return (this.computedHeight / this.computedWidth) * 100;
@@ -195,8 +207,8 @@ export default {
 			var self = this;
 
 			var style = {
-				color: "#fff",
-				backgroundColor: "#eee",
+				color: '#fff',
+				backgroundColor: '#eee',
 				backgroundImage: self.backgroundImage,
 			};
 
@@ -212,21 +224,21 @@ export default {
 		},
 		vimeoURL() {
 			var self = this;
-			if(!self.mediaID){
-				return
+			if (!self.mediaID) {
+				return;
 			}
-			var parts = self.item.external.vimeo.split("/");
-			
-			var url = `https://player.vimeo.com/video/${self.mediaID}?&title=0&byline=0&portrait=0&badge=0`
-			var hash = _.last(parts)
-			if(hash != self.mediaID){
-				url = url + `&h=${hash}`
+			var parts = self.item.external.vimeo.split('/');
+
+			var url = `https://player.vimeo.com/video/${self.mediaID}?&title=0&byline=0&portrait=0&badge=0`;
+			var hash = _.last(parts);
+			if (hash != self.mediaID) {
+				url += `&h=${hash}`;
 			}
 			return url;
 		},
 		posterUrl() {
 			var self = this;
-			var params = { extension: "jpg" };
+			var params = { extension: 'jpg' };
 			if (self.cacheKey && String(self.cacheKey.length)) {
 				params.cacheKey = self.cacheKey;
 			}
@@ -251,8 +263,6 @@ export default {
 		backgroundImage() {
 			if (this.posterUrl) {
 				return `url(${this.posterUrl})`;
-			} else {
-				return;
 			}
 		},
 	},
