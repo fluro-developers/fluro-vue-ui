@@ -2169,8 +2169,7 @@ export default {
 				if (!this.fieldModel) {
 					return null;
 				}
-
-				return this.$fluro.date.formatDate(this.fieldModel, 'YYYY-MM-DD');
+				return this.$fluro.date.moment(this.fieldModel).utc().format('YYYY-MM-DD');
 			},
 			set(dateString) {
 				if (!dateString) {
@@ -2181,8 +2180,6 @@ export default {
 				var date = new Date(dateString);
 
 				this.fieldModel = date;
-
-				// new Date(dateString);
 			},
 		},
 
