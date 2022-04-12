@@ -176,7 +176,7 @@ export default {
 				}
 
 				if (contact.age) {
-					return 120 - parseInt(contact.age);
+					return 120 - parseInt(contact.age, 10);
 				}
 
 				return 0;
@@ -462,9 +462,8 @@ export default {
 			var self = this;
 			if (_.get(self.model, 'items')) {
 				return self.model.items.length;
-			} else {
-				return 0;
 			}
+			return 0;
 		},
 		contactDefinitionOptions() {
 			var self = this;
@@ -507,15 +506,9 @@ export default {
 		toggleSamePostal() {
 			var self = this;
 
-			console.log('Toggle Same Postal!', self.model.samePostal);
-
 			self.$set(self.model, 'samePostal', !self.model.samePostal);
 
-			// if (!self.model.samePostal) {
-			// return self.$set(self.model, 'samePostal', true);
-			// } else {
-			// return self.$set(self.model, 'samePostal', false);
-			// }
+			self.$set(self.model, 'postalAddress', {});
 		},
 		create() {
 			var self = this;
@@ -606,6 +599,8 @@ export default {
 								self.model.items.push(res);
 							});
 						break;
+					default:
+						break;
 				}
 
 				// return self.runBatch({
@@ -634,7 +629,7 @@ export default {
 					self.$fluro.types
 						.subTypes('contact')
 						.then(function (definitions) {
-							var definitions = _.chain(definitions)
+							definitions = _.chain(definitions)
 								.filter(function (definition) {
 									// console.log('Contact Definition!', definition)
 									return definition.status == 'active';
