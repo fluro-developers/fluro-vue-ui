@@ -156,7 +156,7 @@ export default {
 		updateCacheKey() {
 			this.cacheKey = this.$fluro.global.CACHE_KEY;
 		},
-		debouncedReload: _.debounce(function (string) {
+		debouncedReload: _.debounce(function () {
 			this.reload();
 		}, 500),
 		reload() {
@@ -272,6 +272,7 @@ export default {
 			self.inflightRequest = cancelSource;
 
 			//Load just the IDS from the server and required fields
+			self.loadingItems = true;
 			return self.$fluro.api
 				.post(`/content/${self.dataType}/filter`, filterCriteria, {
 					cancelToken: cancelSource.token,
@@ -307,9 +308,14 @@ export default {
 				.catch(function (err) {
 					if (axios.isCancel(err)) {
 						console.log('Filter Request canceled', err.message);
+
+						if (self.inflightRequest == cancelSource) {
+							self.loadingItems = false;
+						} else {
+							console.log('DIFFERENT CANCELLED');
+						}
 					}
 
-					self.loadingItems = false;
 					self.rows = [];
 					self.$emit('filtered', self.rows);
 
