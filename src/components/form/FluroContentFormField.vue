@@ -1371,7 +1371,7 @@
 									<span v-tippy content="Click to copy" @click="copyToClipboard(entry)">
 										<fluro-icon icon="copy" />
 									</span>
-									<span @click="removeValue(index, true)">
+									<span v-if="type !== 'email' || index !== 0" @click="removeValue(index, true)">
 										<fluro-icon icon="trash-alt" right />
 									</span>
 								</div>
