@@ -25,7 +25,6 @@ function mapDate(entry) {
 	if (isValid) {
 		return date;
 	} else {
-		// console.log('ENTRY', entry);
 		return `Invalid date ${entry}`;
 	}
 }
@@ -38,9 +37,7 @@ export default {
 		column: {
 			type: Object,
 		},
-		data: {
-			// type: Object,
-		},
+		data: {},
 	},
 	methods: {
 		dateTooltip(date) {
@@ -48,11 +45,13 @@ export default {
 		},
 		formatted(date) {
 			var self = this;
+			const adjustedDate =
+				self.column.key === 'dob' ? self.$fluro.date.moment(date).utc() : self.$fluro.date.moment(date);
 
 			if (self.showTimezone) {
-				return self.$fluro.date.formatDate(date, self.format, self.timezone);
+				return adjustedDate.format(self.format, self.timezone);
 			} else {
-				return self.$fluro.date.formatDate(date, self.format);
+				return adjustedDate.format(self.format);
 			}
 		},
 	},
@@ -84,9 +83,6 @@ export default {
 			if (!self.data) {
 				return;
 			}
-
-			// ////////////////////////
-			// ////////////////////////
 
 			if (_.isArray(self.data)) {
 				var array = _.chain(self.data).compact().map(mapDate).value();
