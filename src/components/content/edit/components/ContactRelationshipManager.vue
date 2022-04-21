@@ -212,9 +212,10 @@ export default {
 		},
 		anniversaryDate(row) {
 			if (row.anniversary) {
-				return `${this.$fluro.date.formatDate(row.anniversary, 'D MMM')} (${this.$fluro.date.timeago(
-					row.anniversary
-				)})`;
+				return `${this.$fluro.date.moment(row.anniversary).utc().format('D MMM')} (${this.$fluro.date
+					.moment(row.anniversary)
+					.endOf('day')
+					.fromNow()})`;
 			}
 		},
 		add() {
