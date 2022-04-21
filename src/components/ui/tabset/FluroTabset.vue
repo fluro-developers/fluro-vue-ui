@@ -90,7 +90,6 @@ export default {
 	computed: {
 		enabledTabs() {
 			var self = this;
-			// return self.tabs; //_.filter(self.tabs, {enabled:true});
 			return _.filter(self.tabs, { enabled: true });
 		},
 	},
@@ -110,7 +109,6 @@ export default {
 		addTab(tab) {
 			var self = this;
 			//Add another tab to the tabcount
-			// this.tabCount++;
 			if (_.includes(self.tabs, tab)) {
 				return;
 			}
@@ -124,29 +122,18 @@ export default {
 			if (!existingTabs && !self.activeTabIndex) {
 				self.activeTabIndex = tab.key;
 				tab.active = true;
-				// console.log('activate first tab', tab);
-				// self.selectTab(tab.key);
 			}
 		},
 		selectTab(index) {
-			// console.log('Select', index)
 			var self = this;
 
-			// index = Math.max(index, 0);
-			// index = Math.min(index, self.tabs.length - 1);
 			self.activeTabIndex = index;
-
-			////////////////////////////////////////////////
 
 			var menuElement = self.$refs.outer;
 			var containerElement = self.$refs.inner;
 
 			if (containerElement) {
 				var childElement = containerElement.children[self.activeTabIndex];
-
-				////////////////////////////////////////////////
-				////////////////////////////////////////////////
-				////////////////////////////////////////////////
 
 				if (childElement) {
 					var parentPos = containerElement.getBoundingClientRect();
@@ -162,14 +149,7 @@ export default {
 
 					var menuWidth = menuElement.offsetWidth;
 					var childWidth = childElement.offsetWidth;
-					var scrollWidth = menuElement.scrollWidth;
 					var target = relativePos.left - (menuWidth / 2 - childWidth / 2); //relativePos.left;
-					// var target = relativePos.left; //relativePos.left;
-					////////////////////////////////////////////////
-					////////////////////////////////////////////////
-
-					// var target = relativePos.left; //(menuElement.offsetWidth/2) - relativePos.left;
-					// console.log('TEST', menuWidth, scrollWidth, target);
 
 					menuElement.scrollTo({
 						// top: 100,
@@ -178,42 +158,6 @@ export default {
 					});
 				}
 			}
-
-			// menuElement.scrollLeft = target;
-			// console.log(relativePos);
-			// something like: {top: 50, right: -100, bottom: -50, left: 100}
-			//
-			//
-			//
-
-			// console.log(menuElement);​
-
-			// var menuWidth = menuElement.offsetWidth;
-			// var childPosition = childElement.clientLeft;
-			// var half = menuWidth /2;
-
-			// var target = childPosition - half;
-
-			// if(target < half) {
-			//     target = 0;
-			// }
-
-			// console.log('TARGEt', self.$refs, target);
-			// menuElement.scrollLeft =target
-			// var contentWidth = menuElement.scrollWidth;
-			// var childPosition = childElement.offsetLeft;
-
-			// var halfWidth = menuWidth/2;
-
-			// console.log('MENU', '____', menuWidth, contentWidth, childPosition)
-
-			// menuElement.scrollLeft = childPosition - halfWidth;// childPosition;
-
-			// var maxLimit = menuElement.scrollWidth - menuElement.offsetWidth;
-			// var scrollTarget = maxLimit - childElement.offsetLeft;
-			// console.log(self.$refs, scrollTarget, menuElement.scrollWidth - menuElement.offsetWidth);
-
-			// menuElement.scrollLeft = scrollTarget;
 
 			//Disable all the other tabs
 			_.each(self.tabs, function (tab) {
