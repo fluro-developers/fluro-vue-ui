@@ -41,7 +41,10 @@ export default {
 	},
 	methods: {
 		dateTooltip(date) {
-			return `${this.$fluro.date.formatDate(date, 'h:mma')} - ${this.$fluro.date.timeago(date)}`;
+			var self = this;
+			if (self.column.key === 'dob') return this.$fluro.date.moment(date).utc().endOf('day').fromNow();
+
+			return `${self.$fluro.date.formatDate(date, 'h:mma')} - ${self.$fluro.date.timeago(date)}`;
 		},
 		formatted(date) {
 			var self = this;
