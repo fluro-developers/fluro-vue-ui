@@ -1362,16 +1362,20 @@
 								@end="drag = false"
 							>
 								<!-- <transition-group type="transition" :name="!drag ? 'flip-list' : null"> -->
-								<div class="multi-input-row" :key="entry" v-for="(entry, index) in fieldModel">
-									<span class="handle">
+								<div
+									class="multi-input-row"
+									:key="entry.content"
+									v-for="(entry, index) in fieldModelWithFlags"
+								>
+									<span v-if="!entry.disabled" class="handle">
 										<fluro-icon icon="arrows" left />
 									</span>
-									<v-flex style="padding: 0 !important">{{ entry }}</v-flex>
+									<v-flex style="padding: 0 !important">{{ entry.content }}</v-flex>
 									<!-- v-if="type == 'email'"  -->
-									<span v-tippy content="Click to copy" @click="copyToClipboard(entry)">
+									<span v-tippy content="Click to copy" @click="copyToClipboard(entry.content)">
 										<fluro-icon icon="copy" />
 									</span>
-									<span v-if="type !== 'email' || index !== 0" @click="removeValue(index, true)">
+									<span v-if="!entry.disabled" @click="removeValue(index, true)">
 										<fluro-icon icon="trash-alt" right />
 									</span>
 								</div>
@@ -1838,6 +1842,12 @@ export default {
 					this.$set(this.model, 'academicCalendar', s);
 				}
 			},
+		},
+		fieldModelWithFlags() {
+			return this.fieldModel.map((thisFieldModel, i) => ({
+				content: thisFieldModel,
+				disabled: this.type === 'email' && i === 0 && this.isFromSubsplash,
+			}));
 		},
 		gradeOptions() {
 			var self = this;
@@ -2595,7 +2605,6 @@ export default {
 		key() {
 			return this.field.key;
 		},
-
 		asObject() {
 			return this.field.asObject;
 		},
@@ -4591,6 +4600,10 @@ export default {
 				return {};
 			},
 			type: Object,
+		},
+		isFromSubsplash: {
+			type: Boolean,
+			default: false,
 		},
 	},
 
