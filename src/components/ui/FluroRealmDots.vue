@@ -6,7 +6,8 @@
 			:content="realm.title"
 			v-tippy
 			small
-			v-for="realm in filtered"
+			v-for="(realm, i) in filtered"
+			:key="i"
 		/>
 	</div>
 </template>
@@ -79,12 +80,6 @@ export default {
 				return filtered.length ? filtered.slice(0, 1) : null;
 			}
 		},
-		// colouredRealms() {
-		//     var coloured = _.filter(this.filtered, 'bgColor');
-		//     if(!coloured.length) {
-		//         return this.filtered.slice(0,1);
-		//     }
-		// }
 	},
 };
 </script>

@@ -9,8 +9,8 @@
 		<flex-column-body>
 			<!-- <pre>{{actions}}</pre> -->
 			<v-container style="background: #fafafa">
-				<template v-for="action in actions">
-					<div class="detail-button" @click="select(action)" v-if="action.description">
+				<template v-for="(action, i) in actions">
+					<div class="detail-button" @click="select(action)" v-if="action.description" :key="i">
 						<v-layout align-center>
 							<v-flex v-if="action.icon" shrink style="padding-right: 10px">
 								<fluro-icon :icon="action.icon" />
@@ -33,12 +33,12 @@
 					</div>
 					<template v-else>
 						<template v-if="webMode">
-							<fluro-button block @click="select(action)">
+							<fluro-button block @click="select(action)" :key="i">
 								{{ action.title }}
 							</fluro-button>
 						</template>
 						<template v-else>
-							<v-btn block color="primary" @click="select(action)">
+							<v-btn block color="primary" @click="select(action)" :key="i">
 								{{ action.title }}
 							</v-btn>
 						</template>

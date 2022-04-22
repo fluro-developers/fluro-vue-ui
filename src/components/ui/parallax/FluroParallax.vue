@@ -115,7 +115,6 @@ export default {
 					var scrollParent = self.getScrollParent(element);
 
 					const doc = self.$el.ownerDocument || document;
-					var win = doc.defaultView;
 
 					if (scrollParent) {
 						switch (String(scrollParent.tagName).toLowerCase()) {
@@ -141,7 +140,6 @@ export default {
 		},
 		removeListeners() {
 			var self = this;
-			var element = self.$el;
 
 			if (self.scrollparent) {
 				self.scrollparent.removeEventListener('scroll', self.scrollUpdate);

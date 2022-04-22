@@ -34,7 +34,7 @@
 						<template v-else>
 							<v-alert :value="true" type="error" outline v-if="hasErrors">
 								Please check the following issues before submitting
-								<div v-for="error in errorMessages">
+								<div v-for="(error, i) in errorMessages" :key="i">
 									<strong>{{ error.title }}</strong
 									>: {{ error.messages[0] }}
 								</div>

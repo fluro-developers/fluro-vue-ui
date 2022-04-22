@@ -5,7 +5,8 @@
 		<span
 			class="inline-tag"
 			:style="{ backgroundColor: realm.bgColor || 'rgba(0,0,0,0.5);', color: realm.color || 'rgba(0,0,0,0.8)' }"
-			v-for="realm in filtered"
+			v-for="(realm, i) in filtered"
+			:key="i"
 		>
 			{{ realm.title }}
 		</span>
@@ -38,12 +39,6 @@ export default {
 				})
 				.value();
 		},
-		// colouredRealms() {
-		//     var coloured = _.filter(this.filtered, 'bgColor');
-		//     if(!coloured.length) {
-		//         return this.filtered.slice(0,1);
-		//     }
-		// }
 	},
 };
 </script>
