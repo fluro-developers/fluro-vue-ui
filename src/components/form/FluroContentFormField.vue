@@ -3165,7 +3165,6 @@ export default {
 			}
 		},
 		checkTextDateImmediate() {
-			console.log('checking datetext immediate');
 			var self = this;
 			var dateString = this.textDate;
 
@@ -3178,8 +3177,6 @@ export default {
 				return;
 			}
 
-			//////////////////////////////////////
-
 			//See if we can make sense of the date
 			var d = new Date(dateString);
 			var isValid = d instanceof Date && !isNaN(d);
@@ -3188,7 +3185,6 @@ export default {
 			}
 		},
 		checkTextDate: _.debounce(function () {
-			console.log('checking datetext');
 			this.checkTextDateImmediate();
 		}, 250),
 		toggleCollapsed(object) {
