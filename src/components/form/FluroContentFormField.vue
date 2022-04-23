@@ -489,7 +489,6 @@
 							prepend-inner-icon="event"
 							v-on="on"
 						/>
-						<!-- <pre>{{formattedDate}} -- {{textDate}}</pre> -->
 					</template>
 					<v-card>
 						<v-date-picker
@@ -2149,15 +2148,14 @@ export default {
 					case '_dob':
 						var years = this.$fluro.date.moment().diff(this.fieldModel, 'years');
 
-						// parseInt(self.$fluro.date.moment().format('YYYY')) - parseInt(self.$fluro.date.moment(this.fieldModel).format('YYYY'))
-
 						if (this.model.dobVerified) {
 							return `${years} Years old`;
-						} else {
-							return `${years} Years old`;
 						}
+						return `${years} Years old`;
 
 						break;
+					default:
+					// pass
 				}
 			}
 
@@ -2191,9 +2189,6 @@ export default {
 			}
 			return self.fieldModel ? self.$fluro.date.moment(self.fieldModel).utc().format(self.dateFormat) : '';
 		},
-		// formattedDate() {
-		//     return this.$fluro.date.formatDate(this.fieldModel, 'dddd D MMM YYYY');
-		// },
 		asyncOptionsURL() {
 			var self = this;
 
@@ -2202,6 +2197,8 @@ export default {
 				case 'countrycodeselect':
 					return '/system/countries';
 					break;
+				default:
+				// pass
 			}
 		},
 		dragOptions() {
@@ -3168,6 +3165,7 @@ export default {
 			}
 		},
 		checkTextDateImmediate() {
+			console.log('checking datetext immediate');
 			var self = this;
 			var dateString = this.textDate;
 
@@ -3190,30 +3188,12 @@ export default {
 			}
 		},
 		checkTextDate: _.debounce(function () {
+			console.log('checking datetext');
 			this.checkTextDateImmediate();
-		}, 2000),
-		// checkboxInput(bool) {
-
-		//     var self = this;
-
-		//     // if (setTouched) {
-		//     self.touch()
-		//     self.fieldModel = bool;
-
-		//     // }
-		// },
+		}, 250),
 		toggleCollapsed(object) {
-			if (!object._collapsed) {
-				this.$set(object, '_collapsed', true);
-			} else {
-				this.$set(object, '_collapsed', false);
-			}
+			this.$set(object, '_collapsed', !object._collapsed);
 		},
-
-		// fieldManualUpdate(data) {
-
-		// 	this.$emit('input', this.model);
-		// },
 
 		copyToClipboard(value) {
 			if (this.$fluro.global.copyToClipBoard) {
@@ -3253,12 +3233,8 @@ export default {
 
 			///////////////////////////////////////////////
 			///////////////////////////////////////////////
-			///////////////////////////////////////////////
-			///////////////////////////////////////////////
 
 			//There are no defaults set for this field
-
-			////////////////////////////////////////////
 
 			////////////////////////////////////////////
 
@@ -4365,10 +4341,6 @@ export default {
 				this.valueChange();
 			}
 		},
-		// touchDate() {
-		// 	this.checkTextDate();
-		// 	this.touch();
-		// },
 		touch() {
 			var self = this;
 
@@ -4376,18 +4348,15 @@ export default {
 		},
 		clicked($event) {
 			this.debugSelect($event);
-			// this.touch();
 		},
 		focussed() {
 			this.debugSelect();
-			// this.touch();
 		},
 		modalFocussed() {
 			this.focussed();
 			this.modal = true;
 			this.touch();
 		},
-		//CADESEARCHBACKHERE
 
 		elementValueChanged(event, setTouched, emitEvent) {
 			var self = this;
@@ -4396,10 +4365,7 @@ export default {
 				self.touch();
 			}
 
-			// if(emitEvent == 'emit') {
-
 			self.$emit('input', self.model);
-			// }
 		},
 
 		subFieldChanged(event, setTouched) {
@@ -4412,7 +4378,6 @@ export default {
 			self.$forceUpdate();
 
 			self.elementValueChanged(event);
-			// self.$emit('input', self.model);
 		},
 
 		valueChange(event, setTouched) {
@@ -4421,26 +4386,6 @@ export default {
 			if (setTouched) {
 				self.touch();
 			}
-
-			return;
-
-			// // self.model= Object.assign({}, self.model);
-
-			// //If it's a group and not an object then end here so we don't have a recurring loop
-			// // if(self.field.type == 'group' && !self.field.asObject) {
-
-			// // 	return;
-			// // }
-
-			// ////////////////////////////////////////////
-
-			// // if (self.field.type == 'reference') {
-
-			// // 	//return;
-			// // }
-
-			// self.$emit('input', self.model, self.fieldModel);
-			// self.$forceUpdate();
 		},
 	},
 
@@ -4457,7 +4402,7 @@ export default {
 							block: 'center',
 						});
 
-						//Remove the new tag
+						// Remove the new tag
 
 						self.field.isNew = undefined;
 					}
@@ -4499,35 +4444,7 @@ export default {
 
 		////////////////////////////////////////////
 
-		// 		//If there is form fields
-		// 		if (self.formFields) {
-		// 			//Add to the form fields
-		// 			self.$set(self.formFields, self.formFields.length, self);
-		// 		}
-		// 		break;
-		// }
-
-		// if (self.type == 'group' && !self.asObject) {
-		//     //Do nothing
-		// } else {
-
-		//     //If there is no model
-		//     if (!self.fieldModel) {
-
-		//         self.fieldModel = {};
-		//     }
-
-		//     if (self.formFields) {
-		//         self.$set(self.formFields, self.formFields.length, self);
-		//     }
-		// }
-		/**/
-
-		//////////////////////////////////////////////
-
-		// self.ready = true;
-		////////////////////////////////////////////
-		//Emit itself being created
+		// Emit itself being created
 
 		self.$emit('created', self);
 	},
