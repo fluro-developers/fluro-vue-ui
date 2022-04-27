@@ -36,7 +36,7 @@
 </template>
 <script>
 import FluroItemImage from './FluroItemImage.vue';
-import FluroRealmBar from './FluroRealmBar.vue';
+import _ from 'lodash';
 
 export default {
 	components: {
@@ -99,7 +99,7 @@ export default {
 						self.actualItem = res;
 						self.loading = false;
 					})
-					.catch(function (err) {
+					.catch(function () {
 						//We couldn't load so just leave it
 						self.actualItem = self.item;
 						self.loading = false;
@@ -161,16 +161,12 @@ export default {
 			switch (self.actualItem.paymentStatus) {
 				case 'refund':
 					return 'Refunded';
-					break;
 				case 'failed':
 					return 'Failed';
-					break;
 				case 'success':
 					return 'Paid';
-					break;
 				case 'partial_refund':
 					return 'Partially Refunded';
-					break;
 			}
 		},
 		renderFirstLine() {
@@ -184,8 +180,6 @@ export default {
 				return;
 			}
 
-			////////////////////////
-
 			var pieces = [];
 
 			switch (self.actualItem._type) {
@@ -197,7 +191,6 @@ export default {
 					}
 
 					return _.compact(pieces).join(', ');
-					break;
 				case 'transaction':
 					pieces.push(
 						`${self.$fluro.utils.formatCurrency(self.actualItem.amount, self.actualItem.currency)} ${String(
@@ -213,7 +206,6 @@ export default {
 					pieces.push(self.actualItem.module);
 
 					return _.compact(pieces).join(' • ');
-					break;
 				case 'family':
 					pieces.push(self.actualItem.firstLine);
 					if (self.actualItem.address) {
@@ -227,17 +219,14 @@ export default {
 					}
 
 					return _.compact(pieces).join(' ');
-					break;
 				case 'event':
 					if (self.actualItem.firstLine && self.actualItem.firstLine.length) {
 						return `${self.$fluro.date.readableEventDate(self.actualItem)} - ${self.actualItem.firstLine}`;
 					} else {
 						return self.$fluro.date.readableEventDate(self.actualItem);
 					}
-					break;
 				case 'persona':
 					return self.actualItem.collectionEmail || self.actualItem.email;
-					break;
 				default:
 					if (self.actualItem.firstLine && self.actualItem.firstLine.length) {
 						return self.actualItem.firstLine;

@@ -1,6 +1,6 @@
 <template>
 	<div class="infinite-scroll-container" ref="container">
-		<div :index="key" v-for="(page, key) in availablePages" v-if="key <= limit">
+		<div :index="key" v-for="(page, key) in availablePages" v-if="key <= limit" :key="key">
 			<slot v-bind:page="page" />
 		</div>
 	</div>
@@ -8,12 +8,7 @@
 <script>
 import _ from 'lodash';
 
-import FluroInfinitePage from './FluroInfiniteScrollPage.vue';
-
 export default {
-	components: {
-		FluroInfinitePage,
-	},
 	props: {
 		items: {
 			type: Array,
@@ -47,12 +42,10 @@ export default {
 	},
 	mounted() {
 		var self = this;
-		var parentElement = (self.parentElement = this.$el.closest('[scroll-parent]') || this.$el.closest('body'));
 		self.parentElement.addEventListener('scroll', self.updateScroll);
 	},
 	computed: {
 		availablePages() {
-			var self = this;
 			return _.chunk(this.items, this.perPage);
 		},
 		total() {
@@ -69,7 +62,6 @@ export default {
 				integer = Math.max(integer, 0);
 				integer = Math.min(integer, this.total - 1);
 				this.currentIndex = integer;
-				// console.log('PAGE', integer)
 			},
 		},
 	},
@@ -86,8 +78,6 @@ export default {
 			var parentHeight = self.parentElement.clientHeight;
 			var limit = maxScrollHeight - parentHeight;
 
-			// var bottom = self.parentElement.scrollTop + self.parentElement.scrollHeight;
-
 			if (self.hitBuffer(currentScroll, limit, parentHeight / 2)) {
 				return self.hitBottom();
 			}
@@ -95,10 +85,7 @@ export default {
 			if (self.hitBuffer(currentScroll, 0, parentHeight / 2)) {
 				return self.hitTop();
 			}
-			// console.log('LIMITS', currentScroll, , maxScrollHeight, parentHeight);
-			// self.parentElement.scrollTop,  self.parentElement.scrollHeight, self.parentElement.offsetHeight, self.parentElement.clientHeight)
 		},
-		// let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
 		hitTop() {
 			this.currentPage--;
 		},

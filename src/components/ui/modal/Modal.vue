@@ -10,18 +10,12 @@
 				@dismiss="dismiss"
 				:is="modal.component"
 			/>
-			<!-- <component @close="close" @dismiss="dismiss" :is="component" /> -->
 		</div>
 	</div>
 </template>
 <script>
-import Vue from 'vue';
-
-// import ActionCart from '@/components/layout/ActionCart.vue';
 export default {
-	components: {
-		// ActionCart,
-	},
+	components: {},
 	props: {
 		inapp: {
 			type: Boolean,
@@ -37,9 +31,7 @@ export default {
 		}
 	},
 	data() {
-		return {
-			// active:true,
-		};
+		return {};
 	},
 	computed: {
 		componentProps() {

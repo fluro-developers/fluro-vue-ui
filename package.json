@@ -11,7 +11,7 @@
     "test:watch": "mocha  --colors -w ./test/*.spec.js",
     "lint": "eslint src/**/*.{js,vue}",
     "prepare": "husky install .gitlab/hooks",
-    "prettier": "prettier --write '**/*.{js,json,vue,css,md}'"
+    "prettier": "prettier --write '**/*.{js,json,vue,css,md,html}'"
   },
   "author": "Cade Embery",
   "bugs": {

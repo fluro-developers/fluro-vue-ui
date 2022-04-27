@@ -1,7 +1,13 @@
 <template>
 	<div class="infinite-scroll-container" ref="container">
 		<div id="top" class="top-spacer" ref="top"></div>
-		<fluro-infinite-page :page="page" :index="key" v-for="(page, key) in availablePages" v-if="key <= currentPage">
+		<fluro-infinite-page
+			:page="page"
+			:index="key"
+			v-for="(page, key) in availablePages"
+			v-if="key <= currentPage"
+			:key="key"
+		>
 			<slot v-bind:page="page" />
 		</fluro-infinite-page>
 		<div id="bottom" class="bottom-spacer" ref="bottom"></div>
@@ -59,7 +65,6 @@ export default {
 	},
 	mounted() {
 		var self = this;
-		var parentElement = (self.parentElement = this.$el.closest('[scroll-parent]') || this.$el.closest('body'));
 		var topElement = (self.topElement = this.$refs.top);
 		var bottomElement = (self.bottomElement = this.$refs.bottom);
 
@@ -80,7 +85,6 @@ export default {
 
 	computed: {
 		availablePages() {
-			var self = this;
 			return _.chunk(this.items, this.perPage);
 		},
 		total() {

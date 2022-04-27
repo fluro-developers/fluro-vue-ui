@@ -9,9 +9,9 @@
 					<template slot-scope="props">
 						<div class="year year-massive">
 							<!-- <div class="year-label">{{year.title}}</div> -->
-							<div class="month" v-for="month in props.page">
+							<div class="month" v-for="(month, i) in props.page" :key="i">
 								<div class="month-label">{{ month.title }} {{ month.year }}</div>
-								<div class="day" v-for="day in month.days">
+								<div class="day" v-for="(day, j) in month.days" :key="j">
 									<div class="day-label">{{ day.title }}</div>
 									<div class="entries">
 										<slot name="card" v-for="entry in day.entries" :entry="entry"></slot>
@@ -25,11 +25,11 @@
 			<template v-else>
 				<fluro-infinite-scroll :perPage="1" :startPage="1" :buffer="2" :items="years">
 					<template slot-scope="props">
-						<div class="year" v-for="year in props.page">
+						<div class="year" v-for="(year, i) in props.page" :key="i">
 							<div class="year-label">{{ year.title }}</div>
-							<div class="month" v-for="month in year.months">
+							<div class="month" v-for="(month, j) in year.months" :key="j">
 								<div class="month-label">{{ month.title }}</div>
-								<div class="day" v-for="day in month.days">
+								<div class="day" v-for="(day, k) in month.days" :key="k">
 									<div class="day-label">{{ day.title }}</div>
 									<div class="entries">
 										<slot name="card" v-for="entry in day.entries" :entry="entry"></slot>

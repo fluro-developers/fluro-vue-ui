@@ -1,9 +1,5 @@
 <template>
 	<div class="process-dots" v-if="linear">
-		<!-- <pre>{{states}}</pre> -->
-		<!-- <pre>{{mapped}}</pre> -->
-		<!-- <v-layout> -->
-		<!-- <v-flex > -->
 		<span
 			class="pill"
 			v-tippy
@@ -14,11 +10,10 @@
 		>
 			<fluro-icon :icon="state.icon" :library="state.library" />
 		</span>
-		<!-- </v-flex> -->
-		<!-- </v-layout> -->
 	</div>
 </template>
 <script>
+import _ from 'lodash';
 export default {
 	props: {
 		card: {
@@ -31,17 +26,10 @@ export default {
 	data() {
 		return {
 			model: this.card,
-			//JSON.parse(JSON.stringify(this.value)),
 		};
 	},
-	// watch:{
-	//     value(v) {
-	//         this.model = JSON.parse(JSON.stringify(v));
-	//     },
-	// },
 	computed: {
 		linear() {
-			// console.log('IS LINEAR?', this.definition.data);
 			return _.get(this.definition, 'data.mode') != 'lanes';
 		},
 		mapped() {

@@ -11,8 +11,6 @@
 	</transition>
 </template>
 <script>
-import _ from 'lodash';
-
 export default {
 	props: {
 		muted: {
@@ -74,7 +72,7 @@ export default {
 		// .splice(this.index, 1);
 	},
 	methods: {
-		emitActive(val) {
+		emitActive() {
 			if (this.active) {
 				this.$emit('activeTab');
 			}
