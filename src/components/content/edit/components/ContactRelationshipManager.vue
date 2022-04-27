@@ -214,6 +214,7 @@ export default {
 			if (row.anniversary) {
 				return `${this.$fluro.date.moment(row.anniversary).utc().format('D MMM')} (${this.$fluro.date
 					.moment(row.anniversary)
+					.utc()
 					.endOf('day')
 					.fromNow()})`;
 			}
