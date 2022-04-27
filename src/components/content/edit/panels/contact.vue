@@ -232,6 +232,7 @@ Basic Details
 											@input="update"
 											:options="formOptions"
 											:field="fieldHash.emails"
+											:is-from-subsplash="isFromSubsplash"
 											v-model="model"
 										></fluro-content-form-field>
 									</v-flex>
@@ -1703,6 +1704,9 @@ export default {
 		},
 		emails() {
 			return this.model.emails;
+		},
+		isFromSubsplash() {
+			return Boolean(this.model._ss);
 		},
 		unsubscribedMailout() {
 			return this.mailoutUnsubscribes.length ? true : false;
