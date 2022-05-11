@@ -77,18 +77,22 @@
 				</tab>
 				<!--  -->
 				<tab heading="Rooms">
-					<v-container fluid grid-list-lg>
-						<constrain sm>
-							<room-manager v-model="model.rooms" />
-						</constrain>
-					</v-container>
+					<flex-column-body>
+						<v-container fluid grid-list-lg>
+							<constrain sm>
+								<room-manager v-model="model.rooms" />
+							</constrain>
+						</v-container>
+					</flex-column-body>
 				</tab>
 				<tab heading="Key Contacts" v-if="isProMode">
-					<v-container fluid grid-list-lg>
-						<constrain sm>
-							<key-contact-location-manager v-model="model.keycontacts" />
-						</constrain>
-					</v-container>
+					<flex-column-body>
+						<v-container fluid grid-list-lg>
+							<constrain sm>
+								<key-contact-location-manager v-model="model.keycontacts" />
+							</constrain>
+						</v-container>
+					</flex-column-body>
 				</tab>
 				<tab heading="Location/Map" @activeTab="getLatLong">
 					<v-layout column>
