@@ -48,7 +48,6 @@
 							<v-layout row>
 								<v-flex d-flex align-center>
 									<template v-if="mini">
-										<!-- v-if="group.filters.length > 1" -->
 										<div class="description">
 											Matches
 											<select class="select-operator" v-model="group.operator">
@@ -58,9 +57,6 @@
 											</select>
 											of these conditions
 										</div>
-										<!-- <div class="description" v-else>
-                                            Matches these conditions
-                    </div>-->
 									</template>
 									<template v-else>
 										<div>
@@ -181,7 +177,6 @@
 				Add {{ model.filters.length ? 'Another' : '' }} Rule
 				<fluro-icon right icon="plus" />
 			</v-btn>
-			<!-- <pre>{{model}}</pre> -->
 		</v-container>
 	</div>
 </template>

@@ -143,7 +143,6 @@
 							small
 							v-model="model.values"
 						/>
-						<!-- <pre>{{discriminator}} - {{discriminatorType}} - {{discriminatorDefinition}}</pre> -->
 					</template>
 					<template v-else-if="useBasicReferenceSelect">
 						<fluro-content-select-button
@@ -180,8 +179,6 @@
 								</v-select>
 							</template>
 							<template v-else>
-								<!-- REFERENCE -->
-								<!-- rEFERENCE {{loadingValues}} - {{cleanedValueSelection.length}} -->
 								<v-autocomplete
 									class="small-input"
 									multiple
@@ -205,15 +202,6 @@
 							</template>
 						</template>
 						<template v-else>
-							<!-- <template v-if="requiresManualInput">
-																																<template v-if="$vuetify.breakpoint.xsOnly">
-																																				<v-select class="small-input" multiple dense v-model="model.values" :loading="loadingValues" :items="cleanedValueSelection"></v-select>
-																																</template>
-																																<template v-else>
-																																				<v-autocomplete class="small-input" multiple dense v-model="model.values" :loading="loadingValues" :items="cleanedValueSelection"></v-autocomplete>
-																																</template>
-																												</template>
-																												<template v-else> -->
 							<template v-if="$vuetify.breakpoint.xsOnly">
 								<v-select
 									class="small-input"
@@ -234,11 +222,11 @@
 									:items="cleanedValueSelection"
 								></v-autocomplete>
 							</template>
-							<!-- </template> -->
 						</template>
 					</template>
 				</v-flex>
 				<v-flex xs12 sm5 v-else>
+					<!-- DATE TYPE:{{dataType}} -->
 					<template v-if="dataType == 'date'">
 						<template
 							v-if="model.comparator == 'datesameweekday' || model.comparator == 'datedifferentweekday'"
@@ -318,7 +306,6 @@
 						v-model="model.value"
 					/>
 					<template v-else-if="useBasicReferenceSelect">
-						<!-- <pre>{{referenceID}}</pre> -->
 						<fluro-content-select-button
 							:createDisabled="true"
 							small
@@ -375,6 +362,7 @@
 						</template>
 					</template>
 					<template v-else>
+						<!-- MANUAL INPUT AREA -->
 						<template v-if="requiresManualInput">
 							<v-text-field class="small-input" single-line v-model="model.value" />
 						</template>
@@ -402,17 +390,12 @@
 				</v-flex>
 			</template>
 		</v-layout>
-		<!-- <pre>CLEANED {{cleanedValueSelection}}</pre> -->
-		<!-- <pre>{{model}}</pre> -->
 		<template v-if="hasSubFields">
 			<div class="subfields" v-if="model.criteria && model.criteria.length">
 				<v-input class="no-flex">
 					<v-label>{{ selector.subfieldTitle }}</v-label>
-					<!-- CLARIFICATION -->
-					<!-- :rows="rows" -->
 					<v-layout :key="criteriaRow.guid" v-for="(criteriaRow, index) in model.criteria">
 						<v-flex>
-							<!-- <pre>{{forceLocalValues}}</pre> -->
 							<filter-condition-row
 								:forceLocalValues="forceLocalValues"
 								:type="type"
@@ -436,8 +419,6 @@
 				<fluro-icon right icon="plus" />
 			</v-btn>
 		</template>
-		<!-- <pre>SELECT AUTO {{cleanedValueSelection}}</pre> -->
-		<!-- 	<pre>{{model}}</pre> -->
 	</v-container>
 </template>
 <script>
@@ -1547,95 +1528,95 @@ export default {
 		},
 	},
 	/**
-				asyncComputed: {
-				values: {
-				default: [],
-				get() {
+							asyncComputed: {
+							values: {
+							default: [],
+							get() {
 
-				var self = this;
-				var key = this.model.key;
+							var self = this;
+							var key = this.model.key;
 
-				if (!key || !key.length) {
-				return Promise.resolve([]);
-				}
+							if (!key || !key.length) {
+							return Promise.resolve([]);
+							}
 
-				////console.log('Lets go get options for', key);
-
-
-				var dataType = self.dataType;
-				switch (dataType) {
-				case 'number':
-				case 'float':
-				case 'integer':
-				case 'decimal':
-				return Promise.resolve([]);
-				break;
-				case 'boolean':
-				return Promise.resolve([true, false]);
-				break;
-				}
+							////console.log('Lets go get options for', key);
 
 
-
-				this.loadingValues = true;
-				////////////////////////////////////
-
-				return new Promise(function(resolve, reject) {
+							var dataType = self.dataType;
+							switch (dataType) {
+							case 'number':
+							case 'float':
+							case 'integer':
+							case 'decimal':
+							return Promise.resolve([]);
+							break;
+							case 'boolean':
+							return Promise.resolve([true, false]);
+							break;
+							}
 
 
 
-				if (self.rows && self.rows.length) {
+							this.loadingValues = true;
+							////////////////////////////////////
 
-				//Check to see if the rows we know about already have the data
-				//we are wanting to search on, because if so we can just use that
-				// var rawRowsAlreadyHaveKey = _.every(self.rows, function(row) {
-				//     return row.hasOwnProperty(key);
-				// })
-
-				// //If we already know the options then send them back and resolve
-				// if (rawRowsAlreadyHaveKey) {
-				//     var allOptions = _.chain(self.rows)
-				//         .map(key)
-				//         .uniq()
-				//         .value();
-
-				//     return resolve(allOptions)
-				// }
-
-				//Get all the ids
-				var subSetIDs = _.map(self.rows, '_id');
-
-				//We need to make an asynchronous request to the server
-				//to find out what values we can filter by
-				// ////console.log('DATA TYPE', self.dataType)
-				var options = {
-
-				}
-
-				if (self.dataType == 'reference') {
-				options.params = {
-				populate: true
-				};
-				}
-
-				return self.$fluro.content.values(subSetIDs, key, options).then(function(res) {
-				resolve(res);
-				self.loadingValues = false;
-				}, function(err) {
-				reject(err);
-				self.loadingValues = false;
-				});
-				}
-
-				// return resolve([]);
+							return new Promise(function(resolve, reject) {
 
 
-				});
-				},
-				}
-				}
 
-				/**/
+							if (self.rows && self.rows.length) {
+
+							//Check to see if the rows we know about already have the data
+							//we are wanting to search on, because if so we can just use that
+							// var rawRowsAlreadyHaveKey = _.every(self.rows, function(row) {
+							//     return row.hasOwnProperty(key);
+							// })
+
+							// //If we already know the options then send them back and resolve
+							// if (rawRowsAlreadyHaveKey) {
+							//     var allOptions = _.chain(self.rows)
+							//         .map(key)
+							//         .uniq()
+							//         .value();
+
+							//     return resolve(allOptions)
+							// }
+
+							//Get all the ids
+							var subSetIDs = _.map(self.rows, '_id');
+
+							//We need to make an asynchronous request to the server
+							//to find out what values we can filter by
+							// ////console.log('DATA TYPE', self.dataType)
+							var options = {
+
+							}
+
+							if (self.dataType == 'reference') {
+							options.params = {
+							populate: true
+							};
+							}
+
+							return self.$fluro.content.values(subSetIDs, key, options).then(function(res) {
+							resolve(res);
+							self.loadingValues = false;
+							}, function(err) {
+							reject(err);
+							self.loadingValues = false;
+							});
+							}
+
+							// return resolve([]);
+
+
+							});
+							},
+							}
+							}
+
+							/**/
 };
 </script>
 <style scoped lang="scss">
