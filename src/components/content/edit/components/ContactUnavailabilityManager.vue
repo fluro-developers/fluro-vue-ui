@@ -159,8 +159,8 @@ export default {
 
 			var proposed = JSON.parse(JSON.stringify(self.proposed));
 
-			proposed.startDate = self.$fluro.date.moment(proposed.startDate).startOf('day').utc().format();
-			proposed.endDate = self.$fluro.date.moment(proposed.endDate).endOf('day').utc().format();
+			proposed.startDate = self.$fluro.date.moment(proposed.startDate).startOf('day').utc().toDate();
+			proposed.endDate = self.$fluro.date.moment(proposed.endDate).endOf('day').utc().toDate();
 
 			return self.$fluro.api
 				.post(`/contact/${self.contactID}/unavailability`, proposed)
