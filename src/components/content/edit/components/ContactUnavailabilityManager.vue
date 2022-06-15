@@ -112,14 +112,11 @@
 	</div>
 </template>
 <script>
+import _ from 'lodash';
+import FluroConfirmButton from '../../../ui/FluroConfirmButton.vue';
+import FluroContentFormField from '../../../form/FluroContentFormField.vue';
 import ListGroup from '../../../ui/ListGroup.vue';
 import ListGroupItem from '../../../ui/ListGroupItem.vue';
-import FluroConfirmButton from '../../../ui/FluroConfirmButton.vue';
-import FluroContentSelectButton from '../../../form/contentselect/FluroContentSelectButton.vue';
-import FluroContentFormField from '../../../form/FluroContentFormField.vue';
-import FluroSelector from '../../../form/contentselect/FluroSelector.vue';
-import Vue from 'vue';
-import _ from 'lodash';
 
 export default {
 	props: {
@@ -160,17 +157,10 @@ export default {
 		add() {
 			var self = this;
 
-			// console.log('RELATIONSHIP', self.proposed);
 			var proposed = JSON.parse(JSON.stringify(self.proposed));
-			proposed.startDate = new Date(proposed.startDate);
-			proposed.startDate.setHours(0);
-			proposed.startDate.setMinutes(0);
-			proposed.startDate.setSeconds(0);
 
-			proposed.endDate = new Date(proposed.endDate);
-			proposed.endDate.setHours(23);
-			proposed.endDate.setMinutes(59);
-			proposed.endDate.setSeconds(59);
+			proposed.startDate = self.$fluro.date.moment(proposed.startDate).startOf('day').utc().toDate();
+			proposed.endDate = self.$fluro.date.moment(proposed.endDate).endOf('day').utc().toDate();
 
 			return self.$fluro.api
 				.post(`/contact/${self.contactID}/unavailability`, proposed)
@@ -227,13 +217,9 @@ export default {
 	},
 	components: {
 		FluroContentFormField,
-		FluroContentSelectButton,
-		// FluroAvatarStack,
 		ListGroup,
 		ListGroupItem,
 		FluroConfirmButton,
-		// FluroContentSelectButton,
-		// FluroContentSelectModal,
 	},
 	watch: {
 		'proposed.startDate': function () {
@@ -266,7 +252,6 @@ export default {
 			return _.get(this.model, 'title') || '';
 		},
 		startDateMin() {
-			var self = this;
 			var today = new Date();
 
 			function pad(val) {
@@ -300,18 +285,6 @@ export default {
 		capitalize(str) {
 			return _.startCase(str);
 		},
-		// readableDate(obj) {
-		//     var self = this;
-
-		//     var start = self.$fluro.date.moment(obj.startDate).format('dddd, MMMM Do YYYY');
-		//     var end = self.$fluro.date.moment(obj.endDate).format('dddd, MMMM Do YYYY');
-		//     //console.log(start, end, obj.startDate, obj.endDate);
-		//     if (start == end) {
-		//         return self.$fluro.date.moment(obj.startDate).format('dddd, MMMM Do YYYY');
-		//     } else {
-		//         return self.$fluro.date.moment(obj.startDate).format('dddd, MMMM Do YYYY') + ' - ' + self.$fluro.date.moment(obj.endDate).format('dddd, MMMM Do YYYY')
-		//     }
-		// }
 	},
 };
 </script>
