@@ -3,7 +3,7 @@
 		<flex-column-header class="border-bottom">
 			<v-container>
 				<constrain class="confirm-shim-modal__constrain">
-					<h3>Replace Fluro data with SAP People data?</h3>
+					<h3>Replace Fluro Contact data with SAP People data?</h3>
 					<!-- prettier-ignore -->
 					<div class="confirm-shim-modal__description">
 						<p>When you replace Fluro Contact data with Subsplash People data, People profiles will be unified in both systems going forward.</p>
@@ -14,7 +14,7 @@
 							<li>Adding or editing Contact data in Fluro will also add or edit the corresponding People data in Subsplash People.</li>
 							<li>Editing the profile from the end-user's account will update the profile in both systems.</li>
 						</ul>
-            <strong>Are you sure you want to permanently replace this client's Fluro Contacts data with their Subsplash People data and unify the data sets going forward?</strong>
+            <strong>Are you sure you want to permanently replace this client's Fluro Contact data with their Subsplash People data and unify the data sets going forward?</strong>
 					</div>
 				</constrain>
 			</v-container>

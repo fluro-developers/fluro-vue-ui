@@ -17,7 +17,7 @@
 									</v-layout>
 								</fluro-panel-title>
 								<fluro-panel-body>
-									<h5 class="mb-1">Replace Fluro data with SAP People data</h5>
+									<h5 class="mb-1">Replace Fluro Contact data with SAP People data</h5>
 									<div v-if="!peopleShim">
 										<p class="mb-2">
 											Use this setting to replace Fluro Contact data with Subsplash App Platform
@@ -32,8 +32,8 @@
 									<div v-else class="shim-enabled">
 										<fluro-icon class="shim-enabled__icon" icon="check" />
 										<p class="my-0 ml-3">
-											Fluro Contacts data has been successfully replaced and unified with
-											Subsplash People data.
+											Fluro Contact data has been successfully replaced and unified with Subsplash
+											People data.
 										</p>
 									</div>
 								</fluro-panel-body>
