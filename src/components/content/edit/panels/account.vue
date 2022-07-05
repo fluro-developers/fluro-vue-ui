@@ -32,7 +32,8 @@
 									<div v-else class="shim-enabled">
 										<fluro-icon class="shim-enabled__icon" icon="check" />
 										<p class="my-0 ml-3">
-											Fluro and SAP People data is merged and synced for this account
+											Fluro Contacts data has been successfully replaced and unified with
+											Subsplash People data.
 										</p>
 									</div>
 								</fluro-panel-body>
