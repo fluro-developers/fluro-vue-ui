@@ -25,7 +25,7 @@
 											change, and can’t be undone.
 										</p>
 										<v-btn class="m-0" @click="enablePeopleShim()">
-											<fluro-icon class="mr-2" icon="sync-alt" />
+											<fluro-icon class="mr-2" icon="code-merge" />
 											Replace data
 										</v-btn>
 									</div>
