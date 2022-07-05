@@ -5,17 +5,17 @@
 				<constrain class="confirm-shim-modal__constrain">
 					<h3>Replace Fluro data with SAP People data?</h3>
 					<!-- prettier-ignore -->
-					<p class="confirm-shim-modal__description">This is a destructive, potentially dangerous (one-way) change, and can't be undone.
-
-            When you replace Fluro Contact data with Subpslash App Platform (SAP) People data, People data will begin
-						syncing between Fluro and SAP.
-
-            - All contacts in Fluro will begin to appear in Subsplash People
-						- All people in Subsplash People will begin to appear in Fluro
-            - Changing People data in Subsplash People will update Contact data in Fluro
-            - Changing Contact data in Fluro will update People data in Subsplash People
-
-            Are you sure you want to replace this data, and begin syncing data from SAP People?</p>
+					<div class="confirm-shim-modal__description">
+						<p>When you replace Fluro Contact data with Subsplash People data, People profiles will be unified in both systems going forward.</p>
+						<strong>After Fluro data is replaced:</strong>
+						<ul class="mb-3">
+							<li>All people profiles in Subsplash People will also appear in Fluro.</li>
+							<li>Adding or editing People data in Subsplash People will also add or edit the corresponding Contact data in Fluro.</li>
+							<li>Adding or editing Contact data in Fluro will also add or edit the corresponding People data in Subsplash People.</li>
+							<li>Editing the profile from the end-user's account will update the profile in both systems.</li>
+						</ul>
+            <strong>Are you sure you want to permanently replace this client's Fluro Contacts data with their Subsplash People data and unify the data sets going forward?</strong>
+					</div>
 				</constrain>
 			</v-container>
 		</flex-column-header>
@@ -31,7 +31,7 @@
 						<v-spacer />
 						<v-flex>
 							<template>
-								<v-btn :color="'error'" @click="close()"> Yes, replace and sync data </v-btn>
+								<v-btn :color="'error'" @click="close()"> Yes, replace and unify data </v-btn>
 							</template>
 						</v-flex>
 					</v-layout>
@@ -55,6 +55,7 @@ export default {
 
 <style lang="scss" scoped>
 .confirm-shim-modal {
+	max-width: 620px;
 	text-align: left;
 
 	&__description {
