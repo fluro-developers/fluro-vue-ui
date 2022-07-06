@@ -4,25 +4,40 @@
 			<fluro-page-preloader contain />
 		</template>
 		<template v-else>
-			<!-- :vertical="true" -->
 			<tabset :justified="true" :vertical="true">
-				<!--  <template v-slot:menuprefix>
-                    <template v-if="context == 'edit' && $vuetify.breakpoint.mdAndUp">
-                        <flex-column-header style="text-align:center">
-                            <div style="padding: 10px; max-width:200px; margin: auto;">
-                                <fluro-image  :height="200" :image-height="450" contain :item="model" :cacheKey="imageCacheKey" :spinner="true"></fluro-image>
-                            </div>
-                            <div>
-                                {{model.width}}x{{model.height}}
-                            </div>
-                        </flex-column-header>
-                    </template>
-                </template> -->
-				<!-- <tab heading="Account Information"> -->
 				<flex-column-body style="background: #fafafa">
 					<v-container fluid>
 						<constrain sm>
-							<!-- <pre>{{model}}</pre> -->
+							<fluro-panel v-if="isSubsplashAccount" class="mb-5">
+								<fluro-panel-title>
+									<v-layout align-center>
+										<v-flex>
+											<h4 title>Subsplash Support Settings</h4>
+										</v-flex>
+									</v-layout>
+								</fluro-panel-title>
+								<fluro-panel-body>
+									<h5 class="mb-1">Replace Fluro Contact data with SAP People data</h5>
+									<div v-if="!peopleShim">
+										<p class="mb-2">
+											Use this setting to replace Fluro Contact data with Subsplash App Platform
+											(SAP) People data. This is a destructive, potentially dangerous (one-way)
+											change, and can’t be undone.
+										</p>
+										<v-btn class="m-0" @click="enablePeopleShim()">
+											<fluro-icon class="mr-2" icon="code-merge" />
+											Replace data
+										</v-btn>
+									</div>
+									<div v-else class="shim-enabled">
+										<fluro-icon class="shim-enabled__icon" icon="check" />
+										<p class="my-0 ml-3">
+											Fluro Contact data has been successfully replaced and unified with Subsplash
+											People data.
+										</p>
+									</div>
+								</fluro-panel-body>
+							</fluro-panel>
 							<fluro-content-form-field
 								:form-fields="formFields"
 								:outline="showOutline"
@@ -218,7 +233,6 @@
 														:field="fieldHash.productExpiry"
 														v-model="model.data.products[product._id]"
 													/>
-													<!-- <input block @focus="focus($event)" placeholder="Enter a title for this content" v-model="model.title" @keyup.enter="blur" @blur="blur" /> -->
 												</template>
 											</fluro-inline-edit>
 										</v-flex>
@@ -237,36 +251,6 @@
 											</v-flex>
 										</v-layout>
 									</div>
-									<!-- <pre>{{product}}</pre> -->
-									<!-- <v-container grid-list-xl pa-0 fluid>
-                                        <v-layout>
-                                            <v-flex xs6>
-                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.howDidTheyHear" v-model="model.internal" />
-                                            </v-flex>
-                                            <v-spacer />
-                                            <v-flex xs6>
-                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.goals" v-model="model.internal" />
-                                            </v-flex>
-                                        </v-layout>
-                                        <v-layout>
-                                            <v-flex xs6>
-                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.previousSoftware" v-model="model.internal" />
-                                            </v-flex>
-                                            <v-spacer />
-                                            <v-flex xs6>
-                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.appProvider" v-model="model.internal" />
-                                            </v-flex>
-                                        </v-layout>
-                                        <v-layout>
-                                            <v-flex xs6>
-                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.givingProvider" v-model="model.internal" />
-                                            </v-flex>
-                                            <v-spacer />
-                                            <v-flex xs6>
-                                                <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.websiteProvider" v-model="model.internal" />
-                                            </v-flex>
-                                        </v-layout>
-                                    </v-container> -->
 								</fluro-panel-body>
 							</fluro-panel>
 							<fluro-panel>
@@ -388,36 +372,28 @@
 						</constrain>
 					</v-container>
 				</flex-column-body>
-				<!-- </tab> -->
-				<!-- <tab :heading="`${definition.title} Information`" v-if="definition && definition.fields && definition.fields.length">
-                    <fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
-                </tab> -->
 			</tabset>
 		</template>
 	</flex-column>
 </template>
-<script>
-/////////////////////////////////
 
-import FluroEditor from '../../../form/FluroEditor.vue';
+<script>
 import FluroContentEditMixin from '../FluroContentEditMixin.js';
 import FluroInlineEdit from '../../../form/FluroInlineEdit.vue';
-
-/////////////////////////////////
-
-import Vue from 'vue';
-
-/////////////////////////////////
+import ConfirmShimModal from '../components/ConfirmShimModal.vue';
 
 export default {
 	components: {
-		FluroEditor,
 		FluroInlineEdit,
 	},
 	created() {
 		if (!this.model.internal) {
 			this.model.internal = {};
 		}
+
+		const peopleShim = _.get(this.model, 'data.featureFlags.subsplashDB.people');
+
+		this.peopleShim = peopleShim !== 'false' && !!peopleShim;
 	},
 	mixins: [FluroContentEditMixin],
 	computed: {
@@ -937,7 +913,6 @@ export default {
 					},
 				],
 			});
-
 			///////////////////////////////////
 
 			function addField(key, details) {
@@ -947,8 +922,44 @@ export default {
 
 			return array;
 		},
+		isSubsplashAccount() {
+			return !!this.model._ss;
+		},
 	},
 	methods: {
+		async enablePeopleShim() {
+			const self = this;
+
+			if (!self.isSubsplashAccount || this.peopleShim) return;
+
+			try {
+				await self.$fluro.modal({ component: ConfirmShimModal });
+
+				const featureFlags = {
+					subsplashDB: {
+						people: true,
+					},
+				};
+
+				const { data, _id, ...model } = self.model;
+
+				await self.$fluro.api.put(`/content/account/${_id}`, {
+					...model,
+					data: {
+						...data,
+						featureFlags,
+					},
+				});
+
+				self.peopleShim = true;
+
+				self.$fluro.notify('Success');
+			} catch (err) {
+				if (err) {
+					self.$fluro.error(err);
+				}
+			}
+		},
 		isDiscounted(product) {
 			return this.getNormalPriceForProduct(product) != this.getDiscountedPriceForProduct(product);
 		},
@@ -1047,9 +1058,24 @@ export default {
 	},
 	data() {
 		return {
+			peopleShim: null,
 			processing: false,
 		};
 	},
 };
 </script>
-<style lang="scss"></style>
+
+<style lang="scss" scoped>
+.shim-enabled {
+	align-items: center;
+	background-color: #f5f6f7;
+	border-radius: 8px;
+	display: flex;
+	padding: 18px;
+	margin-top: 14px;
+
+	&__icon {
+		color: #4f63ff;
+	}
+}
+</style>
