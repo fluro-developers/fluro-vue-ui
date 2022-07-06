@@ -8,7 +8,7 @@
 				<flex-column-body style="background: #fafafa">
 					<v-container fluid>
 						<constrain sm>
-							<fluro-panel class="mb-5">
+							<fluro-panel v-if="isSubsplashAccount" class="mb-5">
 								<fluro-panel-title>
 									<v-layout align-center>
 										<v-flex>
@@ -922,10 +922,15 @@ export default {
 
 			return array;
 		},
+		isSubsplashAccount() {
+			return !!this.model._ss;
+		},
 	},
 	methods: {
 		async enablePeopleShim() {
 			const self = this;
+
+			if (!self.isSubsplashAccount || this.peopleShim) return;
 
 			try {
 				await self.$fluro.modal({ component: ConfirmShimModal });
@@ -950,7 +955,7 @@ export default {
 
 				self.$fluro.notify('Success');
 			} catch (e) {
-				// no op
+				self.$fluro.error(e);
 			}
 		},
 		isDiscounted(product) {
