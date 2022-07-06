@@ -954,8 +954,10 @@ export default {
 				self.peopleShim = true;
 
 				self.$fluro.notify('Success');
-			} catch (e) {
-				self.$fluro.error(e);
+			} catch (err) {
+				if (err) {
+					self.$fluro.error(err);
+				}
 			}
 		},
 		isDiscounted(product) {
@@ -1069,7 +1071,6 @@ export default {
 	background-color: #f5f6f7;
 	border-radius: 8px;
 	display: flex;
-	height: 56px;
 	padding: 18px;
 	margin-top: 14px;
 
