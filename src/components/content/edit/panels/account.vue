@@ -937,13 +937,14 @@ export default {
 
 				const featureFlags = {
 					subsplashDB: {
-						people: true,
+						people: 'true',
 					},
 				};
 
 				const { data, _id, ...model } = self.model;
 
-				await self.$fluro.api.put(`/content/account/${_id}`, {
+				await self.$fluro.api.put(`/content/account/${_id}?replaceData=true`, {
+					_id,
 					...model,
 					data: {
 						...data,
