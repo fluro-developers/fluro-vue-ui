@@ -2174,30 +2174,15 @@ export default {
 
 		dateStringModel: {
 			get() {
-				if (!this.fieldModel) {
-					return null;
-				}
-				return this.$fluro.date.moment(this.fieldModel).utc().format('YYYY-MM-DD');
+				return this.fieldModel && this.$fluro.date.moment(this.fieldModel).format('YYYY-MM-DD');
 			},
 			set(dateString) {
-				if (!dateString) {
-					this.fieldModel = null;
-					return;
-				}
-
-				var date = new Date(dateString);
-
-				this.fieldModel = date;
+				this.fieldModel = dateString && this.$fluro.date.moment(dateString).startOf('day').utc().toDate();
 			},
 		},
 
 		formattedDate() {
-			var self = this;
-
-			if (self.fieldModel === undefined || self.fieldModel === null || self.fieldModel === '') {
-				return;
-			}
-			return self.fieldModel ? self.$fluro.date.moment(self.fieldModel).utc().format(self.dateFormat) : '';
+			return this.fieldModel && this.$fluro.date.moment(this.fieldModel).format(this.dateFormat);
 		},
 		asyncOptionsURL() {
 			var self = this;
