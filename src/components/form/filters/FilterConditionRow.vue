@@ -891,34 +891,29 @@ export default {
 			];
 		},
 		readableStartDate() {
-			var self = this;
-			return self.$fluro.date.formatDate(self.model.value, 'D MMM YYYY');
+			const date = this.model.value || new Date();
+
+			return this.$fluro.date.moment(date).utc().format('D MMM YYYY');
 		},
 		readableEndDate() {
-			var self = this;
-			return self.$fluro.date.formatDate(self.model.value2, 'D MMM YYYY');
+			const date = this.model.value2 || new Date();
+
+			return this.$fluro.date.moment(date).utc().format('D MMM YYYY');
 		},
 		startDateString: {
 			get() {
-				if (!this.model.value) {
-					return '';
-				}
-				return new Date(this.model.value).toISOString().substr(0, 10);
+				return this.model.value ? this.$fluro.date.moment(this.model.value).utc().format('YYYY-MM-DD') : '';
 			},
 			set(value) {
-				console.log('Set the value');
-				this.$set(this.model, 'value', new Date(value));
+				this.$set(this.model, 'value', this.$fluro.date.moment(value).utc().toDate());
 			},
 		},
 		endDateString: {
 			get() {
-				if (!this.model.value2) {
-					return '';
-				}
-				return new Date(this.model.value2).toISOString().substr(0, 10);
+				return this.model.value2 ? this.$fluro.date.moment(this.model.value2).utc().format('YYYY-MM-DD') : '';
 			},
 			set(value) {
-				this.$set(this.model, 'value2', new Date(value));
+				this.$set(this.model, 'value2', this.$fluro.date.moment(value).utc().toDate());
 			},
 		},
 		requiresManualInput() {
