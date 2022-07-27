@@ -2020,6 +2020,8 @@ export default {
 		}
 
 		&.clickable tbody tr {
+			cursor: pointer;
+
 			&:hover {
 				th,
 				td {
