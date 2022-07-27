@@ -1984,6 +1984,8 @@ export default {
 		}
 
 		&.clickable tbody tr {
+			cursor: pointer;
+
 			&:hover {
 				td,
 				th {

@@ -39,10 +39,9 @@ export default {
 	},
 };
 </script>
-<style lang="scss">
+<style scoped lang="scss">
 .clickable {
 	cursor: pointer;
-	// font-size: 0.9em;
 
 	&:hover {
 		opacity: 0.8;
