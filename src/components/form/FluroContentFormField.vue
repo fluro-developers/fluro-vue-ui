@@ -1648,6 +1648,9 @@ export default {
 		};
 	},
 	watch: {
+		timezone() {
+			this.dateStringModel = this.dateStringModel;
+		},
 		formattedDate(dateString) {
 			var self = this;
 			self.textDate = dateString;
