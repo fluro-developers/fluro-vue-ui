@@ -4992,7 +4992,7 @@ function checkValidInput(self, input) {
 	return errors;
 }
 </script>
-<style lang="scss">
+<style scoped lang="scss">
 .vc-chrome {
 	width: auto !important;
 }
