@@ -257,6 +257,7 @@ Basic Details
 													:options="formOptions"
 													:field="fieldHash.dob"
 													v-model="model"
+													:timezone="model.timezone"
 												></fluro-content-form-field>
 											</v-flex>
 											<v-flex xs6>

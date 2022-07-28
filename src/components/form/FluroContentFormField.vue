@@ -1648,6 +1648,9 @@ export default {
 		};
 	},
 	watch: {
+		timezone() {
+			this.dateStringModel = this.dateStringModel;
+		},
 		formattedDate(dateString) {
 			var self = this;
 			self.textDate = dateString;
@@ -2174,9 +2177,16 @@ export default {
 
 		dateStringModel: {
 			get() {
+				if (this.timezone) {
+					return this.fieldModel && this.$fluro.date.moment.tz(this.fieldModel, this.timezone).format('YYYY-MM-DD');
+				}
 				return this.fieldModel && this.$fluro.date.moment(this.fieldModel).format('YYYY-MM-DD');
 			},
 			set(dateString) {
+				if (this.timezone) {
+					this.fieldModel = dateString && this.$fluro.date.moment.tz(dateString, this.timezone).startOf('day').utc().toDate();
+					return;
+				}
 				this.fieldModel = dateString && this.$fluro.date.moment(dateString).startOf('day').utc().toDate();
 			},
 		},
@@ -4463,6 +4473,9 @@ export default {
 				//By default
 				return this.$fluro.global.defaultFormContext;
 			},
+		},
+		timezone: {
+			type: String,
 		},
 		dynamic: {
 			type: Boolean,
