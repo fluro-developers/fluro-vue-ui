@@ -1648,9 +1648,6 @@ export default {
 		};
 	},
 	watch: {
-		timezone() {
-			this.dateStringModel = this.dateStringModel;
-		},
 		formattedDate(dateString) {
 			var self = this;
 			self.textDate = dateString;
@@ -2178,20 +2175,65 @@ export default {
 		dateStringModel: {
 			get() {
 				if (this.timezone) {
-					return this.fieldModel && this.$fluro.date.moment.tz(this.fieldModel, this.timezone).format('YYYY-MM-DD');
+					// console.log("watch timezone field model", this.fieldModel)
+
+					const now = this.$fluro.date.moment(this.fieldModel);
+					const localOffset = now.utcOffset();
+					now.tz(this.timezone);
+					const centralOffset = now.utcOffset();
+					const diffInMinutes = (localOffset - centralOffset) / 60;
+
+					if (diffInMinutes) {
+						return (
+							this.fieldModel &&
+							this.$fluro.date.moment
+								.tz(this.fieldModel)
+								.add(-diffInMinutes, 'hours')
+								.format('YYYY-MM-DD')
+						);
+					}
+
+					// console.log("watch timezone diff", diffInMinutes);
+					return (
+						this.fieldModel &&
+						this.$fluro.date.moment.tz(this.fieldModel, this.timezone).format('YYYY-MM-DD')
+					);
 				}
 				return this.fieldModel && this.$fluro.date.moment(this.fieldModel).format('YYYY-MM-DD');
 			},
 			set(dateString) {
 				if (this.timezone) {
-					this.fieldModel = dateString && this.$fluro.date.moment.tz(dateString, this.timezone).startOf('day').utc().toDate();
-					return;
+					this.fieldModel =
+						dateString && this.$fluro.date.moment.tz(dateString, this.timezone).startOf('day').toDate();
+				} else {
+					this.fieldModel = dateString && this.$fluro.date.moment(dateString).startOf('day').utc().toDate();
 				}
-				this.fieldModel = dateString && this.$fluro.date.moment(dateString).startOf('day').utc().toDate();
 			},
 		},
 
 		formattedDate() {
+			if (this.field.type == 'dob' && this.timezone) {
+				const now = this.$fluro.date.moment(this.fieldModel);
+				const localOffset = now.utcOffset();
+				now.tz(this.timezone);
+				const centralOffset = now.utcOffset();
+				const diffInMinutes = (localOffset - centralOffset) / 60;
+
+				if (diffInMinutes) {
+					return (
+						this.fieldModel &&
+						this.$fluro.date.moment
+							.tz(this.fieldModel, this.timezone)
+							.add(-diffInMinutes, 'hours')
+							.format(this.dateFormat)
+					);
+				}
+
+				return (
+					this.fieldModel &&
+					this.$fluro.date.moment.tz(this.fieldModel, this.timezone).format(this.dateFormat)
+				);
+			}
 			return this.fieldModel && this.$fluro.date.moment(this.fieldModel).format(this.dateFormat);
 		},
 		asyncOptionsURL() {
