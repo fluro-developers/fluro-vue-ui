@@ -63,38 +63,43 @@ export default {
 	},
 
 	data() {
+		var triggers = [
+			{
+				name: 'A new contact joins this group',
+				value: 'team.join',
+			},
+			{
+				name: 'A contact leaves this group',
+				value: 'team.leave',
+			},
+			{
+				name: "This group's information is updated",
+				value: 'content.edit',
+			},
+			{
+				name: 'A group member updates their availability',
+				value: 'contact.unavailability',
+			},
+			{
+				name: 'A group member confirms an assignment',
+				value: 'confirmation.confirmed',
+			},
+			{
+				name: 'A group member declines an assignments',
+				value: 'confirmation.unavailable',
+			},
+		];
+
+		if (this.uiMode !== 'subsplash') {
+			triggers.push({
+				name: "Group member's birthday",
+				value: 'contact.birthday',
+			});
+		}
+
 		return {
 			model: this.value,
-			triggers: [
-				{
-					name: 'A new contact joins this group',
-					value: 'team.join',
-				},
-				{
-					name: 'A contact leaves this group',
-					value: 'team.leave',
-				},
-				{
-					name: "This group's information is updated",
-					value: 'content.edit',
-				},
-				{
-					name: 'A group member updates their availability',
-					value: 'contact.unavailability',
-				},
-				{
-					name: 'A group member confirms an assignment',
-					value: 'confirmation.confirmed',
-				},
-				{
-					name: 'A group member declines an assignments',
-					value: 'confirmation.unavailable',
-				},
-				{
-					name: "Group member's birthday",
-					value: 'contact.birthday',
-				},
-			],
+			triggers,
 		};
 	},
 	created() {},
