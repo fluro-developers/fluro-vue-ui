@@ -2174,26 +2174,22 @@ export default {
 
 		dateStringModel: {
 			get() {
-				if (this.timezone) {
+				if (this.timezone && this.$fluro.date.moment.tz.zone(this.timezone) !== null) {
 					// console.log("watch timezone field model", this.fieldModel)
 
 					const now = this.$fluro.date.moment(this.fieldModel);
 					const localOffset = now.utcOffset();
 					now.tz(this.timezone);
 					const centralOffset = now.utcOffset();
-					const diffInMinutes = (localOffset - centralOffset) / 60;
+					const diffInHours = (localOffset - centralOffset) / 60;
 
-					if (diffInMinutes) {
+					if (diffInHours) {
 						return (
 							this.fieldModel &&
-							this.$fluro.date.moment
-								.tz(this.fieldModel)
-								.add(-diffInMinutes, 'hours')
-								.format('YYYY-MM-DD')
+							this.$fluro.date.moment.tz(this.fieldModel).add(-diffInHours, 'hours').format('YYYY-MM-DD')
 						);
 					}
 
-					// console.log("watch timezone diff", diffInMinutes);
 					return (
 						this.fieldModel &&
 						this.$fluro.date.moment.tz(this.fieldModel, this.timezone).format('YYYY-MM-DD')
@@ -2202,7 +2198,7 @@ export default {
 				return this.fieldModel && this.$fluro.date.moment(this.fieldModel).format('YYYY-MM-DD');
 			},
 			set(dateString) {
-				if (this.timezone) {
+				if (this.timezone && this.$fluro.date.moment.tz.zone(this.timezone) !== null) {
 					this.fieldModel =
 						dateString && this.$fluro.date.moment.tz(dateString, this.timezone).startOf('day').toDate();
 				} else {
@@ -2217,14 +2213,14 @@ export default {
 				const localOffset = now.utcOffset();
 				now.tz(this.timezone);
 				const centralOffset = now.utcOffset();
-				const diffInMinutes = (localOffset - centralOffset) / 60;
+				const diffInHours = (localOffset - centralOffset) / 60;
 
-				if (diffInMinutes) {
+				if (diffInHours) {
 					return (
 						this.fieldModel &&
 						this.$fluro.date.moment
 							.tz(this.fieldModel, this.timezone)
-							.add(-diffInMinutes, 'hours')
+							.add(-diffInHours, 'hours')
 							.format(this.dateFormat)
 					);
 				}
