@@ -83,6 +83,8 @@ export default {
 			debouncedSearch: this.search,
 			loadingItems: true,
 			sort: JSON.parse(JSON.stringify(this.initSort)),
+			isFirstLoad: true,
+			loadedIterationCount: 0,
 		};
 	},
 	watch: {
@@ -161,6 +163,7 @@ export default {
 		}, 500),
 		reload() {
 			var self = this;
+			const isFirstLoad = this.isFirstLoad;
 
 			if (self.inflightRequest) {
 				console.log('Cancel inflight request');
@@ -219,6 +222,13 @@ export default {
 				unwindColumns: unwindKeys && unwindKeys.length ? unwindKeys : undefined, // && self.unwindColumns.length ? self.unwindColumn.key : undefined,
 			};
 
+			if (isFirstLoad) {
+				this.isFirstLoad = false;
+				filterCriteria.limit = this.pageSize;
+				// Firing second load
+				//setTimeout(this.reload, 1000);
+			}
+
 			/////////////////////////////////////////////////////////////
 
 			if (self.select) {
@@ -273,6 +283,8 @@ export default {
 
 			//Load just the IDS from the server and required fields
 			self.loadingItems = true;
+
+			console.trace('>>>>>>>>>> getting items');
 			return self.$fluro.api
 				.post(`/content/${self.dataType}/filter`, filterCriteria, {
 					cancelToken: cancelSource.token,
@@ -326,6 +338,13 @@ export default {
 					if (self.$fluro.api.axios.isCancel(err)) {
 						// return reject(err);
 						//console.log('Nothing man!')
+					}
+				})
+				.finally(() => {
+					self.loadedIterationCount += 1;
+					if (isFirstLoad) {
+						// Firing second load
+						setTimeout(self.reload, 1000);
 					}
 				});
 		},

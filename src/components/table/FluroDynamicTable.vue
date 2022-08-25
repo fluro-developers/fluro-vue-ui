@@ -343,7 +343,8 @@
 			</div>
 			<div class="footer-stats">
 				<v-layout row wrap>
-					<template v-if="!totalPages">
+					<template v-if="awaitingFirstFullLoad">Loading</template>
+					<template v-else-if="!totalPages">
 						<v-flex class="text-muted"> No {{ plural }} </v-flex>
 					</template>
 					<template v-else>
@@ -584,6 +585,12 @@ export default {
 		joins() {
 			return [].concat(this.additionalKeys, _.map(this.extraColumns, 'key'));
 		},
+		awaitingFirstFullLoad() {
+			return this.loadedIterationCount <= 1;
+		},
+		loadedButWaitingForFullLoad() {
+			return this.loadedIterationCount === 1;
+		},
 		// 								unwindableKeys
 		// unwindableColumns
 
@@ -819,7 +826,7 @@ export default {
 			return this.rowsLoaded || this.rows.length || MAX_CHUNK_SIZE || MAX_ROWS;
 		},
 		showLoading() {
-			return this.loading || this.loadingItems;
+			return (this.loading || this.loadingItems) && !this.loadedButWaitingForFullLoad;
 		},
 		// activeFilters() {
 		//     return FilterService.activeFilters(this.filterConfig);
@@ -1255,6 +1262,7 @@ export default {
 		},
 		populatePageItems(rawPage, dataType, renderColumns) {
 			var self = this;
+			console.trace('>>>>>>>>>>>>>>>>>> populating page items', rawPage);
 
 			// var rawPageLookup = _.reduce(rawPage, function(set, item) {
 			//     set[item._id] = JSON.parse(JSON.stringify(item));
