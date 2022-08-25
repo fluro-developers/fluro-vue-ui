@@ -42,6 +42,8 @@ export default {
 	},
 	mounted() {
 		var self = this;
+		self.parentElement = self.$el.closest('[scroll-parent]') || self.$el.closest('body');
+
 		self.parentElement.addEventListener('scroll', self.updateScroll);
 	},
 	computed: {
