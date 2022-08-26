@@ -1262,7 +1262,6 @@ export default {
 		},
 		populatePageItems(rawPage, dataType, renderColumns) {
 			var self = this;
-			console.trace('>>>>>>>>>>>>>>>>>> populating page items', rawPage);
 
 			// var rawPageLookup = _.reduce(rawPage, function(set, item) {
 			//     set[item._id] = JSON.parse(JSON.stringify(item));
