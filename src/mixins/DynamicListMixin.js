@@ -284,7 +284,6 @@ export default {
 			//Load just the IDS from the server and required fields
 			self.loadingItems = true;
 
-			console.trace('>>>>>>>>>> getting items');
 			return self.$fluro.api
 				.post(`/content/${self.dataType}/filter`, filterCriteria, {
 					cancelToken: cancelSource.token,

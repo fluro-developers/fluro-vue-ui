@@ -11,7 +11,7 @@
 		<!-- {{startDate}} -->
 		<fluro-page-preloader v-if="showLoading" contain />
 		<!-- <pre>PAGE LENGTH {{rawPage.length}}</pre> -->
-		<v-container class="flex-center" v-if="!showLoading && !page.length">
+		<v-container class="flex-center" v-if="!showLoading && !awaitingFirstFullLoad && !page.length">
 			<slot name="emptytext"> No {{ dataType | definitionTitle(true) }} were found matching your criteria </slot>
 		</v-container>
 		<template v-else>
@@ -47,7 +47,14 @@
 													<v-list-tile-title> Deselect this page </v-list-tile-title>
 												</v-list-tile-content>
 											</v-list-tile>
-											<v-list-tile v-if="filteredTotal" @click="selectAll()">
+											<v-list-tile v-if="awaitingFirstFullLoad">
+												<v-list-tile-content>
+													<v-list-tile-title>
+														<loading-with-spinner />
+													</v-list-tile-title>
+												</v-list-tile-content>
+											</v-list-tile>
+											<v-list-tile v-else-if="filteredTotal" @click="selectAll()">
 												<v-list-tile-content>
 													<v-list-tile-title>
 														Select all {{ filteredTotal }} items
@@ -343,7 +350,11 @@
 			</div>
 			<div class="footer-stats">
 				<v-layout row wrap>
-					<template v-if="awaitingFirstFullLoad">Loading</template>
+					<template v-if="awaitingFirstFullLoad">
+						<v-flex xs6 align-center d-flex>
+							<loading-with-spinner />
+						</v-flex>
+					</template>
 					<template v-else-if="!totalPages">
 						<v-flex class="text-muted"> No {{ plural }} </v-flex>
 					</template>
@@ -462,6 +473,7 @@ import TableRowCheckbox from './TableRowCheckbox.vue';
 import TableCell from './TableCell.vue';
 import DynamicListMixin from '../../mixins/DynamicListMixin.js';
 import FluroHelp from '../FluroHelp.vue';
+import LoadingWithSpinner from '../ui/LoadingWithSpinner.vue';
 
 /////////////////////////////////
 
@@ -1471,7 +1483,6 @@ export default {
 
 			self.loading = true;
 
-			console.log('populate page items');
 			self.populatePageItems(self.rawPage, self.dataType, self.renderColumns)
 				.then(function (res) {
 					var page = res;
@@ -1775,6 +1786,7 @@ export default {
 		TableHeaderCheckbox,
 		TableRowCheckbox,
 		TableCell,
+		LoadingWithSpinner,
 	},
 };
 </script>
