@@ -225,8 +225,6 @@ export default {
 			if (isFirstLoad) {
 				this.isFirstLoad = false;
 				filterCriteria.limit = this.pageSize;
-				// Firing second load
-				//setTimeout(this.reload, 1000);
 			}
 
 			/////////////////////////////////////////////////////////////
