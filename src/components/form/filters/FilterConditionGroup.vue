@@ -1291,7 +1291,13 @@ export default {
 			//////////////////////////////////////////////////
 
 			if (self.isContactType) {
-				////////////////////////////////////////////////////////
+				injectFields.push({
+					title: 'Date Of Birth - Month',
+					key: 'dobMonthTitle',
+					maximum: 1,
+					minimum: 0,
+					type: 'string',
+				});
 
 				injectFields.push({
 					title: 'Email Address (Primary)',

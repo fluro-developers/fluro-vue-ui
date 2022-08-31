@@ -128,27 +128,27 @@
 										<!-- <v-checkbox v-model="customColumns[column.key]" :label="column.title"></v-checkbox> -->
 										<!-- </div> -->
 										<!-- <pre>{{availableKeys}}</pre> -->
-										<div v-if="$pro && $pro.enabled">
-											<v-container v-if="availableKeys.length">
-												<v-autocomplete
-													label="Group rows by"
-													:items="availableGroupingKeys"
-													@change="toggleColumnGrouping"
-													:return-object="true"
-													item-text="title"
-												></v-autocomplete>
-											</v-container>
-											<v-container v-if="unwindableColumns.length">
-												<v-autocomplete
-													label="Unwind rows by"
-													:items="unwindableColumns"
-													multiple
-													@change="toggleUnwindColumns"
-													:return-object="true"
-													item-text="title"
-												></v-autocomplete>
-											</v-container>
-										</div>
+										<!-- <div v-if="$pro && $pro.enabled"> -->
+										<v-container v-if="availableKeys.length">
+											<v-autocomplete
+												label="Group rows by"
+												:items="availableGroupingKeys"
+												@change="toggleColumnGrouping"
+												:return-object="true"
+												item-text="title"
+											></v-autocomplete>
+										</v-container>
+										<v-container v-if="unwindableColumns.length">
+											<v-autocomplete
+												label="Unwind rows by"
+												:items="unwindableColumns"
+												multiple
+												@change="toggleUnwindColumns"
+												:return-object="true"
+												item-text="title"
+											></v-autocomplete>
+										</v-container>
+										<!-- </div> -->
 										<!-- <v-list style="max-height: 50vh;" class="scroll-y" dense>
                                             <v-list-tile :class="{columnselected:columnIsGrouping(field)}" @click="toggleColumnGrouping(field)" v-for="field in availableKeys">
                                                 <v-list-tile-action>
