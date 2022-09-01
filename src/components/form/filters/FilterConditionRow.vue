@@ -1355,6 +1355,23 @@ export default {
 						case 'gender':
 							return (self.possibleValues = ['male', 'female', 'unknown']);
 							break;
+						case 'dobMonthTitle':
+							//console.log('Values > Gender Default')
+							return (self.possibleValues = [
+								'January',
+								'February',
+								'March',
+								'April',
+								'May',
+								'June',
+								'July',
+								'August',
+								'September',
+								'October',
+								'November',
+								'December',
+							]);
+							break;
 					}
 					break;
 			}
