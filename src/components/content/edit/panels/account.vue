@@ -943,7 +943,7 @@ export default {
 
 				const { data, _id, ...model } = self.model;
 
-				await self.$fluro.api.put(`/content/account/${_id}?replaceData=true`, {
+				const response = await self.$fluro.api.put(`/content/account/${_id}?replaceData=true`, {
 					_id,
 					...model,
 					data: {
@@ -953,6 +953,7 @@ export default {
 				});
 
 				self.peopleShim = true;
+				self.model = response.data;
 
 				self.$fluro.notify('Success');
 			} catch (err) {
