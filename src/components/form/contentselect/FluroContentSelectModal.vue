@@ -117,7 +117,7 @@
 							:enable-actions="false"
 							:allDefinitions="retrieveAllDefinitions"
 							:searchInheritable="options.searchInheritable"
-							:filter-config="filterConfig"
+							:filter-config="filterConfigCopy"
 							:lock-filter="options.lockFilter"
 							:selection-controller="selector"
 							:clicked="rowClicked"
@@ -220,6 +220,26 @@
 								/>
 							</v-container>
 						</flex-column-body>
+						<flex-column-footer class="border-top">
+							<v-container py-1 px-2>
+								<v-layout>
+									<v-flex>
+										<v-btn block small @click="resetFilters()">
+											<fluro-icon class="mr-2" icon="redo-alt" />
+											Reset
+										</v-btn>
+									</v-flex>
+									<v-spacer />
+									<v-flex class="mr-2" />
+									<v-flex>
+										<v-btn block small color="primary" @click="applyFilters()">
+											<fluro-icon class="mr-2" icon="search" />
+											Apply filters
+										</v-btn>
+									</v-flex>
+								</v-layout>
+							</v-container>
+						</flex-column-footer>
 					</flex-column>
 				</v-layout>
 				<!-- <fluro-tabset>
@@ -455,7 +475,9 @@ export default {
 			search: '',
 			searchFocussed: false,
 			showFilters: this.$vuetify.breakpoint.smAndUp && this.options.filter ? true : false,
+			defaultFilter,
 			filterConfig: defaultFilter,
+			filterConfigCopy: defaultFilter,
 			selector: this.options.selector,
 			dateFilterEnabled,
 			datePeriodOptions,
@@ -465,6 +487,13 @@ export default {
 		};
 	},
 	methods: {
+		applyFilters() {
+			this.filterConfigCopy = JSON.parse(JSON.stringify(this.filterConfig));
+		},
+		resetFilters() {
+			this.filterConfig = JSON.parse(JSON.stringify(this.defaultFilter));
+			this.applyFilters();
+		},
 		stringDate(date) {
 			return this.$fluro.date.formatDate(date, 'YYYY-MM-DD');
 		},
