@@ -232,7 +232,7 @@ export default {
 				//background: #fff;
 				border-left: 1px solid rgba(#000, 0.05);
 				border-right: 1px solid rgba(#000, 0.05);
-				border-top: 3px solid $primary;
+				border-top: 2px solid #222222;
 				border-bottom: 1px solid transparent;
 			}
 		}
@@ -259,6 +259,7 @@ export default {
 		@media (min-width: 768px) {
 			display: flex;
 			flex-direction: row;
+			background-color: #f7f8fa;
 
 			& > .tabset-header {
 				min-width: 200px;
@@ -266,7 +267,7 @@ export default {
 				width: 25%;
 				display: flex;
 				flex-direction: column;
-				background: rgba(#000, 0.05);
+				background-color: #f7f8fa;
 
 				.tabset-menu {
 					background: none;
@@ -318,9 +319,10 @@ export default {
 							}
 
 							&.active {
+								background: transparent;
+								border-left: 2px solid #222222;
+								font-weight: 600;
 								opacity: 1;
-								background: #fafafa;
-								border-left: 3px solid $primary;
 							}
 						}
 					}

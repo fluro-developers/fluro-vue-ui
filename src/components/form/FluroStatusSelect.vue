@@ -114,67 +114,31 @@ export default {
 		font-weight: bold;
 		letter-spacing: 0.03em;
 
-		&.draft,
-		&.trial,
-		&.sent,
-		&.sandbox,
-		&.scheduled,
-		&.yellow,
-		&.partial_refund,
-		&.warning {
-			background: #fff3b9 !important;
-			color: #f0974e !important;
+		&:hover {
+			background-color: #fafbfc;
 		}
 
-		&.delivered,
-		&.click,
-		&.open,
-		&.live,
-		&.ready,
-		&.active,
-		&.green,
-		&.success {
-			background: rgba(#51d432, 0.2) !important;
-			color: #51d432 !important;
-		}
-
-		&.error,
-		&.failed,
-		&.red,
-		&.danger {
-			background: rgba(#bb0010, 0.2) !important;
-			color: #bb0010 !important;
-		}
-
-		&.refund,
-		&.archived,
-		&.unsubscribe,
-		&.sent {
-			background: rgba(#000, 0.05) !important;
-			color: rgba(#000, 0.3) !important;
-			// background: #e9ebee;
-			// color: #b4b7bd;
+		&:active {
+			background-color: #f5f6f7;
 		}
 	}
 }
 
 .fluro-status-select {
+	cursor: pointer;
 	display: inline-block;
-	width: 100px;
 	height: 25px;
 	line-height: 25px;
-	// margin: 0 10px;
 	vertical-align: middle;
+	width: 100px;
 
 	.status-label {
-		margin: 0;
-		border-radius: 3px;
+		border-radius: 24px;
 		display: block;
-		text-align: center;
-		padding: 0;
-
-		// line-height: 22px;
 		font-size: 11px;
+		margin: 0;
+		padding: 0;
+		text-align: center;
 	}
 }
 </style>

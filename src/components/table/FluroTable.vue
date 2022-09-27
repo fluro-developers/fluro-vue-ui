@@ -1871,16 +1871,18 @@ export default {
 </script>
 <style lang="scss">
 .fluro-table-wrapper {
-	position: relative;
-
 	$padding-h: 5px;
 
-	// border: 10px solid;
-	flex: 1;
+	background: #fff;
+	border-radius: 6px;
+	box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.06), 0 1px 2px 0 rgba(0, 0, 0, 0.04);
 	display: flex;
 	flex-direction: column;
-	overflow: hidden;
+	flex: 1;
 	height: 100%;
+	margin: 12px;
+	overflow: hidden;
+	position: relative;
 
 	.v-progress-linear {
 		position: absolute;
@@ -1933,8 +1935,14 @@ export default {
 
 		th,
 		td {
-			padding: 8px $padding-h;
-			border-bottom: 1px solid #e8edf1;
+			// padding: 8px $padding-h;
+			// border-bottom: 1px solid #e8edf1;
+			// vertical-align: middle;
+			// white-space: nowrap;
+			// position: relative;
+
+			padding: 12px $padding-h;
+			border-bottom: 1px solid #edeef0;
 			vertical-align: middle;
 			white-space: nowrap;
 			position: relative;
@@ -1946,7 +1954,7 @@ export default {
 
 		th {
 			&.sorting {
-				background: #f6f6f6 !important;
+				border-bottom: 2px solid;
 			}
 		}
 
@@ -1979,7 +1987,7 @@ export default {
 					&.last,
 					&.sticky-first,
 					&.sticky-last {
-						background: #fcfcfc;
+						background: #fff;
 					}
 				}
 			}
@@ -2030,8 +2038,8 @@ export default {
 					&.last,
 					&.sticky-first,
 					&.sticky-last {
-						background-color: #f4fafa;
-						color: #055d52;
+						background-color: #fafbfc;
+						color: inherit;
 					}
 				}
 
