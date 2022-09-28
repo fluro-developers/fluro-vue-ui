@@ -90,7 +90,7 @@
 				<fluro-field-editor v-model="model.fields" :item="model" />
 			</tab>
 			<tab :heading="`${readableContentType} Details`">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container fluid>
 						<constrain sm>
 							<h3 margin>{{ readableContentType }} Details</h3>

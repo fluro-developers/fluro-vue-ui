@@ -1,7 +1,7 @@
 <template>
 	<flex-column>
 		<fluro-page-preloader contain v-if="preflightProcessing" />
-		<flex-column-body style="background: #fafafa" v-else>
+		<flex-column-body style="background: #fff" v-else>
 			<v-container>
 				<constrain sm>
 					<wrapper xs>

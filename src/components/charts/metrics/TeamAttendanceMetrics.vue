@@ -77,7 +77,7 @@
 						</div>
 					</tab>
 					<tab heading="Reported Stats">
-						<!-- <pre>{{postStats}}</pre>  
+						<!-- <pre>{{postStats}}</pre>
        <pre>{{postData}}</pre>   -->
 						<fluro-chart
 							chartType="bar"
@@ -93,7 +93,7 @@
 			<!-- <v-flex v-if="$vuetify.breakpoint.mdAndUp" xs4>
      <div v-for="event in model">
       <a @click="selectedEvent = event">
-       
+
        <strong>{{event.startDate | formatDate('ddd D MMM YYYY')}}</strong>
        <div class="font-xs muted">{{event.title}}</div>
       </a>
@@ -191,11 +191,11 @@
        </fluro-panel-title> -->
 							<tabset :justified="true">
 								<!-- <tab :heading="`${checkedIn.length} / ${absent.length}`"> -->
-								<!-- <div style="background: #fff" class="border-top"> -->
+								<!-- <div style="background: #fff;" class="border-top"> -->
 								<!-- <fluro-table :disablePageScroll="true" :pageSize="10" :items="people" :columns="columns"></fluro-table> -->
 								<!-- </tab> -->
 								<tab :heading="`${checkedIn.length} Checked In`">
-									<!-- <div style="background: #fff" class="border-top"> -->
+									<!-- <div style="background: #fff;" class="border-top"> -->
 									<fluro-table
 										:disablePageScroll="true"
 										:pageSize="10"
@@ -204,7 +204,7 @@
 									></fluro-table>
 								</tab>
 								<tab :heading="`${absent.length} Absent`">
-									<!-- <div style="background: #fff" class="border-top"> -->
+									<!-- <div style="background: #fff;" class="border-top"> -->
 									<fluro-table
 										:disablePageScroll="true"
 										:pageSize="10"
@@ -218,7 +218,7 @@
 					</fluro-panel>
 					<!-- </tab>
        <tab index="posts" heading="Posts" v-if="hasPosts">
-        <div style="background: #fff">
+        <div style="background: #fff;">
          <fluro-content-view :id="post._id" v-for="post in selectedEvent.posts" :embedded="true" :definition="post.definition" :type="post._type" />
         </div>
        </tab> -->

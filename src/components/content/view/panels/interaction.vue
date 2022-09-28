@@ -87,7 +87,7 @@
 				</flex-column-body>
 			</tab>
 			<tab :heading="`${tickets.length} Tickets`" v-if="tickets.length">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container fluid style="background: #fff" class="border-bottom">
 						<img class="qrcode" :src="qrCodeURL" />
 					</v-container>

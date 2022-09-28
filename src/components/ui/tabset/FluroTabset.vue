@@ -186,7 +186,7 @@ export default {
 <style lang="scss">
 .tabset {
 	flex: 1;
-	// border: 1px solid rgba(#000, 0.05);
+	padding: 0 24px;
 
 	.tabset-menu {
 		flex: none;
@@ -232,17 +232,21 @@ export default {
 				//background: #fff;
 				border-left: 1px solid rgba(#000, 0.05);
 				border-right: 1px solid rgba(#000, 0.05);
-				border-top: 2px solid #222222;
-				border-bottom: 1px solid transparent;
+				border-bottom: 2px solid #222222;
+				border-top: 1px solid transparent;
 			}
 		}
 	}
 
 	.tabset-content {
 		flex: 1;
-		// background: #fff;
+		background: #fff !important;
 		position: relative;
 		// border: 1px solid rgba(#000, 0.05);
+	}
+
+	.tabset-header {
+		background: #fff !important;
 	}
 
 	&.justified {

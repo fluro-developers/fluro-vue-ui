@@ -136,11 +136,11 @@
 									<tabset :justified="true" v-model="selectedPaymentMethod">
 										<tab heading="Pay Now" key="card" index="card">
 											<!-- <tab :heading="gateway.title" :key="gateway._id" :index="gateway._id" v-for="gateway in additionalGateways">
-                                            <v-container style="background: #fafafa" class="border-top">
+                                            <v-container style="background: #fff;" class="border-top">
                                                 <h4>{{gateway.title}}</h4>
                                                 <fluro-content-form @errorMessages="validate" @input="modelChanged" ref="payment" :options="options" v-model="dataModel" :fields="paymentFields" />
                                             </v-container>
-                                            <v-container v-if="definition.data.enableReceipt" style="background: #fafafa" class="border-top">
+                                            <v-container v-if="definition.data.enableReceipt" style="background: #fff;" class="border-top">
                                                 <fluro-content-form-field @input="modelChanged" :options="options" :field="receiptInput" v-model="dataModel" />
                                             </v-container>
                                         </tab> -->
@@ -151,12 +151,12 @@
 												</p>
 											</template>
 											<template v-else-if="requiresExternalPayment">
-												<v-container style="background: #fafafa" class="border-top">
+												<v-container style="background: #fff" class="border-top">
 													Press Continue to complete your payment
 												</v-container>
 											</template>
 											<template v-else>
-												<v-container style="background: #fafafa" class="border-top">
+												<v-container style="background: #fff" class="border-top">
 													<h4>Card Details</h4>
 													<div
 														class="muted font-sm"
@@ -180,7 +180,7 @@
 												</v-container>
 												<v-container
 													v-if="definition.data.enableReceipt"
-													style="background: #fafafa"
+													style="background: #fff"
 													class="border-top"
 												>
 													<!-- <h5>Would you like an email receipt?</h5> -->
@@ -199,13 +199,13 @@
 											:index="paymentMethod.key"
 											:key="paymentMethod.key"
 										>
-											<v-container style="background: #fafafa" class="border-top">
+											<v-container style="background: #fff" class="border-top">
 												<h4>{{ paymentMethod.title }}</h4>
 												<!-- <pre>{{paymentMethod}}</pre> -->
 												<div v-html="paymentMethod.description"></div>
 												<!-- <fluro-content-form @errorMessages="validate" @input="modelChanged" ref="payment" :options="options" v-model="dataModel" :fields="paymentFields" /> -->
 												<!-- </v-container> -->
-												<!-- <v-container v-if="definition.data.enableReceipt" style="background: #fafafa" class="border-top"> -->
+												<!-- <v-container v-if="definition.data.enableReceipt" style="background: #fff;" class="border-top"> -->
 												<!-- <h5>Would you like an email receipt?</h5> -->
 												<!-- <fluro-content-form-field @input="modelChanged" :options="options" :field="receiptInput" v-model="dataModel" /> -->
 											</v-container>

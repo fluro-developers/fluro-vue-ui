@@ -58,7 +58,7 @@
 			</tab>
 			<tab :heading="`${definition.title} details`" v-if="definition">
 				<slot>
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container>
 							<constrain sm>
 								<h3 margin>{{ definition.title }}</h3>

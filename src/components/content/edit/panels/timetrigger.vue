@@ -7,7 +7,7 @@
 		<template v-else>
 			<tabset :justified="true" :vertical="true">
 				<tab heading="Information">
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container fluid>
 							<constrain sm>
 								<fluro-content-form-field

@@ -126,7 +126,12 @@ export default {
 		}
 
 		.fluro-table-wrapper {
+			padding: 0;
 			margin: 0;
+		}
+
+		.filter-sidebar {
+			padding-left: 18px;
 		}
 
 		.page-header {
@@ -134,10 +139,10 @@ export default {
 		}
 
 		.tabset.vertical {
-			background-color: #f7f8fa;
+			background-color: #fff;
 
 			.tabset-header {
-				background-color: #f7f8fa;
+				background-color: #fff;
 			}
 		}
 	}

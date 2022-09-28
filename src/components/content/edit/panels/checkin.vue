@@ -6,7 +6,7 @@
 		<tabset v-else :justified="true" :vertical="true">
 			<tab heading="Checkin Details">
 				<slot>
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container>
 							<constrain sm>
 								<!-- <pre>{{model}}</pre> -->

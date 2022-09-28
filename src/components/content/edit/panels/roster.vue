@@ -4,7 +4,7 @@
 			<fluro-page-preloader contain />
 		</template>
 		<template v-else>
-			<flex-column-body style="background: #fafafa" v-if="!event">
+			<flex-column-body style="background: #fff" v-if="!event">
 				<v-container>
 					<constrain md>
 						<fluro-content-form-field v-model="model" :field="eventField" />
@@ -14,7 +14,7 @@
 			<tabset v-else :justified="true" :vertical="true">
 				<tab heading="Team Members">
 					<flex-row>
-						<flex-column-body style="background: #fafafa">
+						<flex-column-body style="background: #fff">
 							<v-container>
 								<constrain>
 									<fluro-panel
@@ -80,7 +80,7 @@
 					</flex-row>
 				</tab>
 				<tab :heading="`${reminderCount} Scheduled Reminders`">
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container>
 							<constrain md>
 								<event-reminder-manager
@@ -101,7 +101,7 @@
 					:heading="`${definition.title} Information`"
 					v-if="definition && definition.fields && definition.fields.length"
 				>
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container>
 							<constrain sm>
 								<fluro-content-form

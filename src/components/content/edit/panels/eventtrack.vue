@@ -5,7 +5,7 @@
 		</template>
 		<tabset v-else :justified="true" :vertical="true">
 			<tab heading="Event Track Info">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container class="grid-list-xl">
 						<constrain sm>
 							<h3 margin>Event Track Details</h3>
@@ -36,7 +36,7 @@
 				:heading="`${definition.title} details`"
 				v-if="definition && definition.fields && definition.fields.length"
 			>
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container>
 						<constrain sm>
 							<h3 margin>{{ definition.title }}</h3>
@@ -51,7 +51,7 @@
 				</flex-column-body>
 			</tab>
 			<tab heading="Event Defaults">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container class="grid-list-xl">
 						<constrain sm>
 							<h3 margin>Default Information</h3>
@@ -258,7 +258,7 @@
 				</flex-column-body>
 			</tab>
 			<tab heading="Roster Settings">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container>
 						<constrain md>
 							<h4 margin>Roster Reminders</h4>
@@ -275,7 +275,7 @@
 				</flex-column-body>
 			</tab>
 			<tab heading="Ticket Defaults">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container>
 						<constrain md>
 							<!-- <constrain sm> -->
@@ -309,7 +309,7 @@
 				</flex-column-body>
 			</tab>
 			<tab heading="Messaging">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container>
 						<constrain lg>
 							<h3 margin>Automated Messages</h3>
@@ -321,7 +321,7 @@
 				</flex-column-body>
 			</tab>
 			<tab heading="Auto create">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container class="grid-list-xl">
 						<constrain sm>
 							<!-- <h3 margin>Reccuring Automation</h3> -->
@@ -586,7 +586,7 @@ export default {
             var ListView = import('@/router/routes/List.vue');
             var ListViewInstanceConstructor = Vue.extend(ListView);
 
-            
+
             //Setup the list settings
             var includeArchivedByDefault = true;
             var dateFilterEnabled = true;

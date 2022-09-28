@@ -1,6 +1,6 @@
 <template>
 	<flex-column>
-		<flex-column-body style="background: #fafafa">
+		<flex-column-body style="background: #fff">
 			<v-container>
 				<constrain sm>
 					<wrapper xs>
@@ -89,7 +89,7 @@
 									</div>
 								</v-layout>
 							</fluro-panel-body>
-							<div style="background: #fafafa">
+							<div style="background: #fff">
 								<tabset>
 									<tab
 										:heading="`${segment.emails.length} ${segment.title}`"

@@ -2,7 +2,7 @@
 	<flex-column>
 		<tabset :justified="true" :vertical="true">
 			<tab :heading="`${readableTypeName} Details`" v-if="fields.length">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container fluid>
 						<constrain sm>
 							<h3>{{ item.title }}</h3>

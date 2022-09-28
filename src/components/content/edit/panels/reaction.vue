@@ -38,7 +38,7 @@
 							>
 						</div>
 					</div>
-					<!-- <flex-column-body style="background: #fafafa;">
+					<!-- <flex-column-body style="background: #fff;">
                         <v-container>
                         </v-container>
                     </flex-column-body> -->

@@ -6,7 +6,7 @@
 		<tabset v-else :justified="true" :vertical="true">
 			<tab>
 				<flex-row>
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container>
 							<constrain sm>
 								<v-layout column grid-list-xl>

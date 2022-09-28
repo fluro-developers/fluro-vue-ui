@@ -5,7 +5,7 @@
 		</template>
 		<tabset v-else :justified="true" :vertical="true">
 			<tab :heading="`${readableTypeName} Info`">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container class="grid-list-xl">
 						<constrain sm>
 							<h3 margin>Event Details</h3>
@@ -117,7 +117,7 @@
 				</flex-column-body>
 			</tab>
 			<tab :heading="`Team Members`" v-if="model._id">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container>
 						<constrain sm>
 							<v-layout align-center>
@@ -220,7 +220,7 @@
 				</flex-column-body>
 			</tab>
 			<tab :heading="`Livestream Settings`" v-if="isAdvanced">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container>
 						<constrain sm>
 							<h3 margin>Livestream Settings</h3>
@@ -341,7 +341,7 @@
 				</flex-column-body>
 			</tab>
 			<tab :heading="`${plans.length} Plan${plans.length == 1 ? '' : 's'}`" v-if="model._id">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container fluid>
 						<v-layout align-center>
 							<v-flex>
@@ -368,7 +368,7 @@
 				</flex-column-body>
 			</tab>
 			<tab :heading="`Location & Rooms`">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container fluid pa-0>
 						<location-view-map-component
 							style="width: 100%; min-height: 300px; height: 50vh"
@@ -387,7 +387,7 @@
 				</flex-column-body>
 			</tab>
 			<tab :heading="`Media & Resources`">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container>
 						<constrain sm>
 							<h3 margin>Media &amp; Resources</h3>
@@ -459,7 +459,7 @@
 				</flex-column-body>
 			</tab>
 			<tab :heading="`Guest List`">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container>
 						<!-- <constrain sm> -->
 						<fluro-content-form-field
@@ -476,7 +476,7 @@
 				</flex-column-body>
 			</tab>
 			<tab :heading="`Tickets & Registrations`">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container>
 						<!-- <constrain sm> -->
 						<h3 margin>Tickets and Registration Forms</h3>
@@ -580,7 +580,7 @@
 			</tab>
 			<tab :heading="`Messaging`">
 				<slot>
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container>
 							<constrain lg>
 								<h3 margin>Automated Messages</h3>
@@ -595,7 +595,7 @@
 				</slot>
 			</tab>
 			<tab :heading="`Checkin Settings`">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container>
 						<constrain sm>
 							<h3 margin>Checkin Settings</h3>

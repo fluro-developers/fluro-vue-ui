@@ -27,7 +27,7 @@
                 </template> -->
 					<tab heading="Details">
 						<!-- <slot> -->
-						<flex-column-body style="background: #fafafa">
+						<flex-column-body style="background: #fff">
 							<v-container fluid>
 								<constrain sm>
 									<fluro-content-form-field
@@ -129,7 +129,7 @@
 						<!-- </slot> -->
 					</tab>
 					<tab heading="Advanced / Metadata" v-if="hasMeta">
-						<flex-column-body style="background: #fafafa">
+						<flex-column-body style="background: #fff">
 							<v-container fluid>
 								<constrain sm>
 									<!-- <div > -->
@@ -166,7 +166,7 @@
 			<!-- <tabset v-else :justified="true" :vertical="true">
             <tab heading="Basic Details">
                 <slot>
-                    <flex-column-body style="background: #fafafa;">
+                    <flex-column-body style="background: #fff;">
                     </flex-column-body>
                 </slot>
             </tab>

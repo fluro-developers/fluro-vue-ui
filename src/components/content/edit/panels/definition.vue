@@ -781,7 +781,7 @@
 				</template>
 				<template v-else>
 					<tab heading="Configuration" index="config">
-						<flex-column-body style="background: #fafafa">
+						<flex-column-body style="background: #fff">
 							<v-container grid-list-xl>
 								<constrain sm>
 									<fluro-panel>
@@ -1229,7 +1229,7 @@
 						</flex-row>
 					</tab>
 					<!-- <tab heading="Process Options" v-if="model.parentType == 'process'">
-<flex-column-body style="background: #fafafa;">
+<flex-column-body style="background: #fff;">
 <v-container>
 <constrain sm>
 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="fieldHash.firstLine" v-model="model" />
@@ -1242,7 +1242,7 @@
 						:heading="`${definition.title} Information`"
 						v-if="definition && definition.definitionName != 'form'"
 					>
-						<flex-column-body style="background: #fafafa">
+						<flex-column-body style="background: #fff">
 							<v-container>
 								<constrain sm>
 									<fluro-content-form
@@ -1255,7 +1255,7 @@
 						</flex-column-body>
 					</tab>
 					<tab heading="Advanced">
-						<flex-column-body style="background: #fafafa">
+						<flex-column-body style="background: #fff">
 							<v-container>
 								<constrain sm>
 									<fluro-panel v-if="model.parentType != 'realm'">

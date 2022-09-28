@@ -6,10 +6,10 @@
 		<template v-else>
 			<!-- <flex-column-header>
                 <v-container class="border-bottom text-xs-center" style="background: #fff;">
-                   
+
                 </v-container>
       </flex-column-header>-->
-			<flex-column-body style="background: #fafafa">
+			<flex-column-body style="background: #fff">
 				<v-container fluid>
 					<fluro-panel
 						class="sheet-panel"

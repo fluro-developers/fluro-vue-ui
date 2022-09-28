@@ -90,7 +90,7 @@
 					</flex-row>
 				</tab>
 				<tab heading="Feeds">
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container fluid>
 							<constrain sm>
 								<h3 margin>Feed URLs</h3>
@@ -119,7 +119,7 @@
 					</flex-column-body>
 				</tab>
 				<tab :heading="`${definition.title} Details`" v-if="definedFields.length">
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container fluid>
 							<constrain sm>
 								<h3 margin>{{ definition.title }} Details</h3>
@@ -129,7 +129,7 @@
 					</flex-column-body>
 				</tab>
 				<tab :heading="`History`" v-if="dataSets.length">
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<div v-for="dataset in dataSets" :key="dataset._id">
 							<v-container fluid class="history">
 								<constrain sm>

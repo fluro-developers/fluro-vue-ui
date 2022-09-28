@@ -6,7 +6,7 @@
 		<template v-else>
 			<tabset :justified="true" :vertical="true">
 				<tab heading="Pass Settings">
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container>
 							<constrain sm>
 								<fluro-content-form-field
@@ -87,7 +87,7 @@
 					</flex-column-body>
 				</tab>
 				<tab :heading="`${definition.title} Fields`" v-if="definition">
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container>
 							<constrain sm>
 								<h3 margin>{{ definition.title }} Fields</h3>

@@ -1874,13 +1874,13 @@ export default {
 	$padding-h: 5px;
 
 	background: #fff;
-	border-radius: 6px;
+	border-radius: 8px;
 	box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.06), 0 1px 2px 0 rgba(0, 0, 0, 0.04);
 	display: flex;
 	flex-direction: column;
 	flex: 1;
 	height: 100%;
-	margin: 12px;
+	margin: 0 24px 24px 24px;
 	overflow: hidden;
 	position: relative;
 

@@ -4,7 +4,7 @@
 			<fluro-page-preloader contain />
 		</template>
 		<template v-else>
-			<flex-column-body style="background: #fafafa">
+			<flex-column-body style="background: #fff">
 				<v-container fluid>
 					<constrain sm>
 						<fluro-content-form-field

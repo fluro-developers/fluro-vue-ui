@@ -5,7 +5,7 @@
 		</template>
 		<tabset v-else :justified="true" :vertical="true">
 			<tab :heading="`${definition.title} Information`">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container>
 						<constrain sm>
 							<template v-if="!model._id">

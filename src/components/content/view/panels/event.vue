@@ -132,7 +132,7 @@
 				</flex-column-body>
 			</tab>
 			<tab :heading="`Team Members`" v-if="item.rostered">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container>
 						<constrain sm>
 							<v-layout align-center>

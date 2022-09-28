@@ -17,7 +17,7 @@
 			<tab heading="Card Details">
 				<flex-row class="card-columns">
 					<flex-column class="main">
-						<flex-column-body style="background: #fafafa">
+						<flex-column-body style="background: #fff">
 							<!-- <pre>{{definition.fields}}</pre> -->
 							<v-container>
 								<!-- <pre>{{model}}</pre> -->
@@ -36,7 +36,7 @@
                                                             <v-btn small v-tippy content="Edit" class="ma-0" icon v-if="$fluro.access.canEditItem(reference)" @click="$fluro.global.edit(reference, true)">
                                                                 <fluro-icon icon="pencil" />
                                                             </v-btn>
-                                                            
+
                                                         </v-flex>
                                                     </v-layout>
                       </fluro-panel-title>-->
@@ -280,7 +280,7 @@
 			</tab>
 			<!-- <tab heading="Forms" v-if="model.forms && model.forms.length">
                 <slot>
-                    <flex-column-body style="background: #fafafa;">
+                    <flex-column-body style="background: #fff;">
                         <v-container>
                             <constrain sm>
                                 <h3 margin>Forms</h3>
@@ -325,7 +325,7 @@
             </tab>
             <tab heading="Metadata" v-if="context == 'edit'">
                 <slot>
-                    <flex-column-body style="background: #fafafa;">
+                    <flex-column-body style="background: #fff;">
                         <v-container>
                             <constrain sm>
                                 <h3 margin>Metadata</h3>
@@ -337,7 +337,7 @@
                                         </v-card-text>
                                     </v-card>
                                 </div>
-                               
+
                             </constrain>
                         </v-container>
                     </flex-column-body>
@@ -345,7 +345,7 @@
       </tab>-->
 			<!-- <tab :heading="sheet.title" v-for="sheet in sheetDefinitions">
                 <slot>
-                    <flex-column-body style="background: #fafafa;">
+                    <flex-column-body style="background: #fff;">
                         <v-container>
                             <wrapper xs>
                                 <fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="options" :field="sheet.field" v-model="details"></fluro-content-form-field>
@@ -356,7 +356,7 @@
       </tab>-->
 			<!-- <tab heading="Classification">
                 <slot>
-                    <flex-column-body style="background: #fafafa;">
+                    <flex-column-body style="background: #fff;">
                         <v-container>
                             <wrapper xs>
                                 <template v-if="contactDefinitions.length">

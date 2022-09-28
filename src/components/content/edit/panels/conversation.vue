@@ -20,7 +20,7 @@
                 </template> -->
 				<tab heading="Conversation Info">
 					<!-- <slot> -->
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container fluid>
 							<constrain sm>
 								<fluro-content-form-field
