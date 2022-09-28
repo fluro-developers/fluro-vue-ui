@@ -19,7 +19,7 @@
                     </template>
                 </template> -->
 				<tab heading="Details">
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container fluid>
 							<constrain sm>
 								<!--  -->
@@ -80,7 +80,7 @@
 					<fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
 				</tab>
 				<tab heading="Student Graduation" v-if="model.autoGraduate">
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container fluid>
 							<constrain sm>
 								<h4 margin>Graduation Details</h4>
@@ -116,10 +116,10 @@
 					</flex-column-body>
 				</tab>
 				<!-- <tab heading="Advanced / Metadata" v-if="hasMeta">
-                    <flex-column-body style="background: #fafafa;">
+                    <flex-column-body style="background: #fff;">
                         <v-container fluid>
                             <constrain sm>
-                               
+
                                 <fluro-panel v-if="model.data.iptc">
                                     <fluro-panel-title>
                                         <h5>IPTC Data</h5>
@@ -128,8 +128,8 @@
                                         <json-view :deep="3" :data="model.data.iptc" />
                                     </fluro-panel-body>
                                 </fluro-panel>
-                                
-                               
+
+
                                 <fluro-panel v-if="model.data.exif">
                                     <fluro-panel-title>
                                         <h5>EXIF Data</h5>
@@ -138,7 +138,7 @@
                                         <json-view :deep="3" :data="model.data.exif" />
                                     </fluro-panel-body>
                                 </fluro-panel>
-                                
+
                             </constrain>
                         </v-container>
                     </flex-column-body>

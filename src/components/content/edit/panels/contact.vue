@@ -74,7 +74,7 @@
 			</template>
 			<tab heading="Basic Details">
 				<slot>
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<!-- <v-flex xs12 md3 style="background: #eee;">
 <ul>
 <li>
@@ -375,7 +375,7 @@ Basic Details
 			</tab>
 			<tab heading="Household & Relationships">
 				<slot>
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container grid-list-xl>
 							<constrain sm>
 								<template v-if="context == 'edit'">
@@ -491,7 +491,7 @@ Basic Details
 			</tab>
 			<tab heading="Groups & Teams" v-if="model._id">
 				<slot>
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container>
 							<constrain sm>
 								<h3 margin>{{ contextName }} Groups &amp; Teams</h3>
@@ -503,7 +503,7 @@ Basic Details
 			</tab>
 			<tab heading="Processes" v-if="model._id && isNotSubsplash">
 				<slot>
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container>
 							<constrain sm>
 								<h3 margin>{{ contextName }} Progress</h3>
@@ -515,7 +515,7 @@ Basic Details
 			</tab>
 			<tab heading="Login Access" v-if="model._id">
 				<slot>
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container>
 							<constrain sm>
 								<h3 margin>{{ contextName }} Access</h3>
@@ -611,7 +611,7 @@ Basic Details
 			-->
 			<tab heading="Capabilities">
 				<slot>
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container grid-list-xl>
 							<constrain sm>
 								<h3 margin>{{ contextName }} Capabilities</h3>
@@ -623,7 +623,7 @@ Basic Details
 			</tab>
 			<tab heading="Volunteer Availability" v-if="context == 'edit'">
 				<slot>
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container grid-list-xl>
 							<constrain sm>
 								<div v-if="model._id">
@@ -637,7 +637,7 @@ Basic Details
 			</tab>
 			<tab heading="Notifications" v-if="context == 'edit'">
 				<slot>
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container grid-list-xl>
 							<constrain sm>
 								<h3 margin>Notifications</h3>
@@ -716,7 +716,7 @@ Basic Details
 			<!-- v-if="context == 'edit'" -->
 			<tab :heading="sheet.title" :key="sheet._id" v-for="sheet in sheetDefinitions">
 				<slot>
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container>
 							<constrain sm>
 								<h3 margin>{{ sheet.title }}</h3>
@@ -747,7 +747,7 @@ Basic Details
 			</tab>
 			<tab heading="Metadata" v-if="context == 'edit'">
 				<slot>
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container>
 							<constrain sm>
 								<h3 margin>Metadata</h3>
@@ -797,7 +797,7 @@ Basic Details
 			</tab>
 			<!-- <tab :heading="sheet.title" v-for="sheet in sheetDefinitions">
 				<slot>
-				<flex-column-body style="background: #fafafa;">
+				<flex-column-body style="background: #fff;">
 				<v-container>
 				<wrapper xs>
 				<fluro-content-form-field :form-fields="formFields" :outline="showOutline" @input="update" :options="formOptions" :field="sheet.field" v-model="details"></fluro-content-form-field>
@@ -808,7 +808,7 @@ Basic Details
 				</tab> -->
 			<!-- <tab heading="Classification">
 				<slot>
-				<flex-column-body style="background: #fafafa;">
+				<flex-column-body style="background: #fff;">
 				<v-container>
 				<wrapper xs>
 				<template v-if="contactDefinitions.length">
@@ -819,7 +819,7 @@ Basic Details
 				</v-container>
 				</flex-column-body>
 				</slot>
-				</tab> 
+				</tab>
 			-->
 		</tabset>
 		<!-- <flex-column-body> -->

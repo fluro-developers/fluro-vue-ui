@@ -1,6 +1,6 @@
 <template>
 	<flex-column>
-		<flex-column-body style="background: #fafafa">
+		<flex-column-body style="background: #fff">
 			<v-container>
 				<constrain sm>
 					<wrapper xs>

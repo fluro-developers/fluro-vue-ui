@@ -5,7 +5,7 @@
 		</template>
 		<template v-else>
 			<tabset :justified="true" :vertical="true">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container fluid>
 						<constrain sm>
 							<fluro-panel v-if="isSubsplashAccount" class="mb-5">

@@ -5,7 +5,7 @@
 		</template>
 		<tabset v-else :justified="true" :vertical="true">
 			<tab :heading="infoHeading">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container class="grid-list-xl">
 						<constrain sm>
 							<h3 margin>{{ definition ? definition.title : 'Group' }} Info</h3>
@@ -45,7 +45,7 @@
 				</flex-column-body>
 			</tab>
 			<tab :heading="`${model.assignments.length} Position${model.assignments.length == 1 ? '' : 's'}`">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container class="grid-list-xl">
 						<constrain md>
 							<h3>Assigned Positions</h3>
@@ -70,7 +70,7 @@
 			<tab
 				:heading="`${model.provisionalMembers.length} Member${model.provisionalMembers.length == 1 ? '' : 's'}`"
 			>
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container class="grid-list-xl">
 						<constrain sm>
 							<h3>Provisional Members</h3>
@@ -121,7 +121,7 @@
 				</flex-column-body>
 			</tab>
 			<tab :heading="`${model.awaitingApproval.length} Interested`">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container class="grid-list-xl">
 						<constrain sm>
 							<h3>Awaiting Approval</h3>
@@ -146,7 +146,7 @@
 				<flex-column v-if="loadingTracks">
 					<fluro-page-preloader contain />
 				</flex-column>
-				<flex-column-body v-else style="background: #fafafa">
+				<flex-column-body v-else style="background: #fff">
 					<v-container fluid>
 						<v-layout align-center>
 							<v-flex>
@@ -171,7 +171,7 @@
 			</tab>
 			<!--
                         <tab heading="Upcoming Events" v-if="model._id">
-                                <flex-column-body style="background: #fafafa;">
+                                <flex-column-body style="background: #fff;">
                                         <v-container fluid>
                                                 <v-layout align-center>
                                                         <v-flex>
@@ -195,7 +195,7 @@
                                 </flex-column-body>
                         </tab>
                         <tab heading="Past Events" v-if="model._id">
-                                <flex-column-body style="background: #fafafa;">
+                                <flex-column-body style="background: #fff;">
                                         <v-container fluid>
                                                 <v-layout align-center>
                                                         <v-flex>
@@ -220,7 +220,7 @@
                         </tab>
       -->
 			<!--  <tab heading="Posts and Notes">
-                <flex-column-body style="background: #fafafa;">
+                <flex-column-body style="background: #fff;">
                     <v-container class="grid-list-xl">
                         <constrain md>
                             <fluro-post-feed v-model="model" />
@@ -229,7 +229,7 @@
                 </flex-column-body>
             </tab> -->
 			<tab heading="Position Notifications" v-if="showNotifications">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container class="grid-list-xl">
 						<constrain md>
 							<notification-team-manager
@@ -242,7 +242,7 @@
 				</flex-column-body>
 			</tab>
 			<tab heading="Metrics">
-				<flex-column style="background: #fafafa">
+				<flex-column style="background: #fff">
 					<tabset :justified="true">
 						<tab heading="Group Size">
 							<flex-column-body>

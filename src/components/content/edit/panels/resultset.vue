@@ -5,7 +5,7 @@
 		</template>
 		<tabset v-else :justified="true" :vertical="true">
 			<tab heading="Details">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container>
 						<constrain sm>
 							<!-- <pre>{{model}}</pre> -->
@@ -64,7 +64,7 @@
 				</flex-column-body>
 			</tab>
 			<tab heading="Export Times">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container grid-list-xl>
 						<constrain sm>
 							<v-layout row>
@@ -136,7 +136,7 @@
 			</tab>
 			<tab heading="Permissions">
 				<slot>
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container grid-list-xl>
 							<constrain sm>
 								<h3 margin>Permissions</h3>
@@ -148,7 +148,7 @@
 				</slot>
 			</tab>
 			<tab heading="Notifications">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container>
 						<constrain sm>
 							<!-- <pre>{{model}}</pre> -->

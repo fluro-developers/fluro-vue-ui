@@ -7,7 +7,7 @@
 			<!-- :vertical="true" -->
 			<tabset :justified="true" v-model="tabIndex">
 				<tab :heading="`${readableContentType} Details`" index="config">
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container fluid>
 							<constrain sm>
 								<fluro-content-form-field
@@ -41,7 +41,7 @@
 							</constrain>
 						</v-container>
 					</flex-column-body>
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container fluid>
 							<constrain sm>
 								<fluro-privacy-select v-model="model.privacy" />
@@ -62,7 +62,7 @@
 		<!-- <tabset v-else :justified="true" :vertical="true">
             <tab heading="Basic Details">
                 <slot>
-                    <flex-column-body style="background: #fafafa;">
+                    <flex-column-body style="background: #fff;">
                     </flex-column-body>
                 </slot>
             </tab>

@@ -13,7 +13,7 @@
 			<template v-else>
 				<tabset :justified="true" :vertical="true">
 					<tab heading="Details">
-						<flex-column-body style="background: #fafafa">
+						<flex-column-body style="background: #fff">
 							<v-container fluid>
 								<constrain sm>
 									<fluro-content-form-field
@@ -91,7 +91,7 @@
 						</flex-column-body>
 					</tab>
 					<tab heading="Advanced / Metadata" v-if="hasMeta">
-						<flex-column-body style="background: #fafafa">
+						<flex-column-body style="background: #fff">
 							<v-container fluid>
 								<constrain sm>
 									<fluro-panel v-if="model.data.iptc">

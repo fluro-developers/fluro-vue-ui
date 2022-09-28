@@ -5,7 +5,7 @@
 		</template>
 		<tabset v-else :justified="true" :vertical="true">
 			<tab heading="Basic Info">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container grid-list-xl>
 						<fluro-content-form-field
 							:form-fields="formFields"
@@ -107,7 +107,7 @@
 				</flex-column-body>
 			</tab>
 			<tab heading="Application Permissions" :enabled="model.authenticationStyle == 'application'">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container>
 						<constrain sm>
 							<h5 margin>Application Permissions</h5>
@@ -121,7 +121,7 @@
 				</flex-column-body>
 			</tab>
 			<tab heading="Advanced">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container>
 						<constrain sm>
 							<h5 margin>Advanced</h5>

@@ -12,7 +12,7 @@
 					</v-btn>
 				</v-container>
 			</flex-column-header>
-			<flex-column-body style="background: #fafafa">
+			<flex-column-body style="background: #fff">
 				<v-container>
 					<div class="card" v-for="post in items">
 						<post-card :item="post" />

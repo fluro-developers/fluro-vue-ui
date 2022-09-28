@@ -1797,23 +1797,25 @@ export default {
 }
 
 .fluro-table-wrapper {
+	$padding-h: 7px;
+
+	background: #fff;
+	border-radius: 8px;
+	box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.06), 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	height: 100%;
+	margin: 0 24px 24px 24px;
+	overflow: hidden;
+	position: relative;
+
 	.select-options {
 		font-size: normal;
 		font-weight: normal;
 		letter-spacing: 0;
 		text-transform: none;
 	}
-
-	position: relative;
-
-	$padding-h: 7px;
-
-	// border: 10px solid;
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	overflow: hidden;
-	height: 100%;
 
 	.v-progress-linear {
 		position: absolute;
@@ -1862,8 +1864,14 @@ export default {
 
 		th,
 		td {
-			padding: 8px $padding-h;
-			border-bottom: 1px solid #e8edf1;
+			// padding: 8px $padding-h;
+			// border-bottom: 1px solid #e8edf1;
+			// vertical-align: middle;
+			// white-space: nowrap;
+			// position: relative;
+
+			padding: 12px $padding-h;
+			border-bottom: 1px solid #edeef0;
 			vertical-align: middle;
 			white-space: nowrap;
 			position: relative;
@@ -1875,7 +1883,7 @@ export default {
 
 		th {
 			&.sorting {
-				background: #f6f6f6 !important;
+				border-bottom: 2px solid;
 			}
 		}
 

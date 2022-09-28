@@ -14,7 +14,7 @@
 					></fluro-editor>
 				</tab>
 				<tab :heading="`${definition.title} Details`" v-if="definition">
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container fluid>
 							<constrain sm>
 								<!-- <pre>{{definition}}</pre> -->

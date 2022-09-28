@@ -50,10 +50,9 @@ export default {
 	text-transform: uppercase;
 	font-weight: 600;
 	letter-spacing: 0.05em;
-	font-size: 0.6em;
-	padding: 2px 5px;
-	line-height: inherit;
-	border-radius: 150px;
+	font-size: 0.7em;
+	padding: 3px 8px 2px 8px;
+	border-radius: 24px;
 	margin: 0 2px 2px 2px;
 
 	background: rgba(#000, 0.01);
@@ -80,8 +79,8 @@ export default {
 	&.yellow,
 	&.partial_refund,
 	&.warning {
-		background: #fff3b9 !important;
-		color: #f0974e !important;
+		background: #f7bf34 !important;
+		color: #fff !important;
 	}
 
 	&.delivered,
@@ -93,8 +92,8 @@ export default {
 	&.green,
 	&.confirmed,
 	&.success {
-		background: rgba(#51d432, 0.2) !important;
-		color: #51d432 !important;
+		background: #54d68e !important;
+		color: #fff !important;
 	}
 
 	&.denied,
@@ -103,18 +102,15 @@ export default {
 	&.failed,
 	&.red,
 	&.danger {
-		background: rgba(#bb0010, 0.2) !important;
-		color: #bb0010 !important;
+		color: #fff !important;
 	}
 
 	&.refund,
 	&.archived,
 	&.unsubscribe,
 	&.sent {
-		background: rgba(#000, 0.05) !important;
-		color: rgba(#000, 0.3) !important;
-		// background: #e9ebee;
-		// color: #b4b7bd;
+		background: rgba(#edeef0, 0.9) !important;
+		color: rgba(#222222, 0.5) !important;
 	}
 
 	&[right] {

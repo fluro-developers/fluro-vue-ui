@@ -5,7 +5,7 @@
 		</template>
 		<tabset v-else :justified="true" :vertical="true">
 			<tab heading="Basic Info">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container>
 						<!-- <pre>{{definition}}</pre> -->
 						<constrain sm>
@@ -98,7 +98,7 @@
 				</flex-column-body>
 			</tab>
 			<tab :heading="`${definition.title} Options`" v-if="definition">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container>
 						<constrain sm>
 							<h3 margin>{{ definition.title }} Options</h3>
@@ -112,7 +112,7 @@
 				</flex-column-body>
 			</tab>
 			<tab :heading="`${devices ? devices.length : 0} Devices`" :enabled="!!devicesEnabled">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container fluid>
 						<constrain sm>
 							<v-layout align-center margin>
@@ -145,7 +145,7 @@
 				</flex-column-body>
 			</tab>
 			<tab heading="Authentication">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container>
 						<constrain sm>
 							<div class="grid-list-xl">
@@ -280,7 +280,7 @@
 				</flex-column-body>
 			</tab>
 			<tab heading="Application Permissions" :enabled="model.authenticationStyle == 'application'">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container>
 						<constrain sm>
 							<h5 margin>Application Permissions</h5>
@@ -294,7 +294,7 @@
 				</flex-column-body>
 			</tab>
 			<tab heading="User Permissions" :enabled="model.authenticationStyle == 'application'">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container>
 						<constrain sm>
 							<h5 margin>User Permissions</h5>
@@ -309,7 +309,7 @@
 				</flex-column-body>
 			</tab>
 			<tab :heading="`${readableContentType} Details`" :enabled="definition">
-				<flex-column-body style="background: #fafafa" v-if="definition">
+				<flex-column-body style="background: #fff" v-if="definition">
 					<v-container fluid>
 						<constrain sm>
 							<fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
@@ -318,7 +318,7 @@
 				</flex-column-body>
 			</tab>
 			<tab heading="Advanced">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container>
 						<constrain sm>
 							<h5 margin>Advanced</h5>
@@ -391,7 +391,7 @@
 				</flex-column-body>
 			</tab>
 			<tab heading="Redirects">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container>
 						<constrain sm>
 							<h5 margin>Redirects</h5>

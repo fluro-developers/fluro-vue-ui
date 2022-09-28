@@ -15,7 +15,7 @@
 			</flex-column-header>
 			<tabset :justified="true">
 				<tab heading="New Contact">
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container>
 							<p>Input a new contact's details below to create them and send them this mailout</p>
 							<fluro-content-form v-model="model.contact" :fields="newContactFields" />

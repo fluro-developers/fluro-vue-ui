@@ -14,7 +14,7 @@
 					</v-container>
 				</flex-column-header>
 			</template>
-			<flex-column-body style="background: #fafafa">
+			<flex-column-body style="background: #fff">
 				<v-container v-if="items && items.length">
 					<div class="card" v-for="post in items" :key="post._id">
 						<!-- <pre>{{post}}</pre> -->

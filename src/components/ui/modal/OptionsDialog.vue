@@ -8,7 +8,7 @@
 		</flex-column-header>
 		<flex-column-body>
 			<!-- <pre>{{actions}}</pre> -->
-			<v-container style="background: #fafafa">
+			<v-container style="background: #fff">
 				<template v-for="(action, i) in actions">
 					<div class="detail-button" @click="select(action)" v-if="action.description" :key="i">
 						<v-layout align-center>
@@ -47,7 +47,7 @@
 			</v-container>
 			<!-- <v-list>
                 <v-list-tile v-for="action in actions" @click="select(action)">
-                    
+
                     <v-list-tile-content>
                         <v-list-tile-title>{{action.title}}</v-list-tile-title>
                         <v-list-tile-sub-title v-if="action.description">{{action.description}}</v-list-tile-sub-title>
@@ -60,11 +60,11 @@
                 </v-list-tile>
             </v-list> -->
 			<!-- <v-container class="py-1 px-2">
-                
+
                 <v-btn block v-for="action in actions" @click="select(action)">
                     {{action.title}}
                 </v-btn>
-                
+
             </v-container> -->
 		</flex-column-body>
 		<flex-column-footer class="border-top">

@@ -15,7 +15,7 @@
 			</template>
 			<tab heading="Login Details">
 				<slot>
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container class="grid-list-xl">
 							<constrain sm>
 								<!--  -->
@@ -200,7 +200,7 @@
 			</tab>
 			<tab :heading="`Access Passes`">
 				<slot>
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container grid-list-xl>
 							<constrain sm>
 								<h3 margin>{{ contextName }} Access Passes</h3>
@@ -216,7 +216,7 @@
 			</tab>
 			<tab :heading="`Individual Permissions`" v-if="uiMode != 'subsplash'">
 				<slot>
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container grid-list-xl>
 							<constrain sm>
 								<h3 margin>{{ contextName }} Individual Permissions</h3>

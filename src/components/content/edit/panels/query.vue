@@ -5,7 +5,7 @@
 		</template>
 		<tabset v-else :justified="true" :vertical="true">
 			<tab heading="Query Details">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container>
 						<constrain>
 							<!-- <h3 margin>Query Details</h3> -->
@@ -119,7 +119,7 @@
 												v-model="model"
 											/>
 											<!-- <fluro-panel-title>
-                                                
+
                                             </fluro-panel-title> -->
 											<!-- :useSample="true"  -->
 											<!-- :useSample="model.query && model.query.length" -->
@@ -171,7 +171,7 @@
 					<!-- <h3 margin>Columns</h3> -->
 					<!-- <column-customiser v-model="model.columns" :sampleData="sample" :config="config" :loadingSample="loadingSample" /> -->
 					<!--<template v-if="!sample.length">
-                                   
+
                                 </template>
                                 <template v-else>
                                     <h4 margin>Sample Output</h4>
@@ -195,7 +195,7 @@
 			</tab>
 			<tab heading="Automation" v-if="resultSets.length">
 				<!-- <result-set-edit v-model="resultSets" /> -->
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container>
 						<constrain sm>
 							<fluro-panel v-for="resultset in resultSets" :key="resultset._id">
@@ -222,7 +222,7 @@
 			</tab>
 			<!-- <tab heading="Columns and Rendering">
                 <slot>
-                    <flex-column-body style="background: #fafafa;">
+                    <flex-column-body style="background: #fff;">
                         <v-container>
                             <constrain sm>
                                 <h3 margin>Columns and Rendering</h3>
@@ -234,7 +234,7 @@
       -->
 			<!-- <tab :heading="`Access Passes`">
                 <slot>
-                    <flex-column-body style="background: #fafafa;">
+                    <flex-column-body style="background: #fff;">
                         <v-container grid-list-xl>
                             <constrain sm>
                                 <h3 margin>{{contextName}} Access Passes</h3>
@@ -246,7 +246,7 @@
             </tab>
             <tab :heading="`Individual Permissions`">
                 <slot>
-                    <flex-column-body style="background: #fafafa;">
+                    <flex-column-body style="background: #fff;">
                         <v-container grid-list-xl>
                             <constrain sm>
                                 <h3 margin>{{contextName}} Individual Permissions</h3>

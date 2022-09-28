@@ -10,7 +10,7 @@
 			<!-- </template> -->
 			<tab heading="Plan">
 				<!-- <slot> -->
-				<!-- <flex-column-body style="background: #fafafa;"> -->
+				<!-- <flex-column-body style="background: #fff;"> -->
 				<!-- <v-container class="grid-list-xl"> -->
 				<!-- <flex-row> -->
 				<!-- <flex-column-header>
@@ -156,13 +156,13 @@
 				<!-- <v-container class="border-top pa-2 text-xs-center" fluid> -->
 				<!-- <v-menu attach offset-y top v-model="actionsOpen" transition="slide-y-transition">
                             <template v-slot:activator="{ on }">
-                              
+
                                     <v-btn color="primary" v-on="on">Add
                                         <fluro-icon right icon="plus" />
                                     </v-btn>
-                                
+
                             </template>
-                           
+
                                 <div style="background: #fff; width:250px; text-align: left;">
                                     <v-list dense>
                                         <v-list-tile disabled>
@@ -182,7 +182,7 @@
                                         </v-list-tile>
                                     </v-list>
                                 </div>
-                           
+
                         </v-menu> -->
 				<!-- <v-layout>
                             <v-spacer />
@@ -218,7 +218,7 @@
 			<tab :heading="tabTitle">
 				<!-- <tab heading="Info"> -->
 				<!-- <fluro-content-form-field :field="eventField" v-model="model" /> -->
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container>
 						<constrain sm>
 							<h3 margin>{{ tabTitle }}</h3>

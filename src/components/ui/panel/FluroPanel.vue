@@ -21,5 +21,9 @@
 	&[margin] {
 		margin-bottom: 30px;
 	}
+
+	.fluro-table-wrapper {
+		margin: 0;
+	}
 }
 </style>

@@ -7,7 +7,7 @@
 			<!-- :vertical="true" -->
 			<tabset :justified="true" :vertical="true">
 				<tab heading="Details">
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container fluid>
 							<constrain sm v-if="model._id && model.transactionType != 'log'">
 								<!--  -->
@@ -361,17 +361,17 @@
 					:heading="`${definition.title} Information`"
 					v-if="definition && definition.fields && definition.fields.length"
 				>
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container fluid>
 							<fluro-content-form :options="options" v-model="model.data" :fields="definition.fields" />
 						</v-container>
 					</flex-column-body>
 				</tab>
 				<!-- <tab heading="Advanced / Metadata" v-if="hasMeta">
-                    <flex-column-body style="background: #fafafa;">
+                    <flex-column-body style="background: #fff;">
                         <v-container fluid>
                             <constrain sm>
-                               
+
                                 <fluro-panel v-if="model.data.iptc">
                                     <fluro-panel-title>
                                         <h5>IPTC Data</h5>
@@ -380,8 +380,8 @@
                                         <json-view :deep="3" :data="model.data.iptc" />
                                     </fluro-panel-body>
                                 </fluro-panel>
-                                
-                               
+
+
                                 <fluro-panel v-if="model.data.exif">
                                     <fluro-panel-title>
                                         <h5>EXIF Data</h5>
@@ -390,7 +390,7 @@
                                         <json-view :deep="3" :data="model.data.exif" />
                                     </fluro-panel-body>
                                 </fluro-panel>
-                                
+
                             </constrain>
                         </v-container>
                     </flex-column-body>

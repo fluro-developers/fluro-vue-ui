@@ -22,7 +22,7 @@
                 </template> -->
 
 				<tab :heading="informationPanelTitle" index="config">
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container fluid>
 							<constrain sm>
 								<fluro-content-form-field
@@ -120,7 +120,7 @@
 				</tab>
 
 				<!-- <tab heading="Developer">
-                    <flex-column-body style="background: #fafafa;">
+                    <flex-column-body style="background: #fff;">
                         <v-container fluid>
                         </v-container>
                     </flex-column-body>

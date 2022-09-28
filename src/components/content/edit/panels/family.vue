@@ -7,7 +7,7 @@
 			<!-- :vertical="true" -->
 			<tabset :justified="true" :vertical="true">
 				<tab heading="Details">
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container fluid grid-list-lg>
 							<constrain sm>
 								<v-layout row wrap>
@@ -96,7 +96,7 @@
 				<!-- -->
 				<!--  -->
 				<tab :heading="`${membersLength} Members`" v-if="model._id">
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container fluid grid-list-lg>
 							<!-- <constrain sm> -->
 							<v-layout row wrap fill-height style="overflow-x: scroll">

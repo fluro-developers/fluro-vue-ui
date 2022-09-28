@@ -19,7 +19,7 @@
                     </template>
                 </template> -->
 				<tab heading="Details">
-					<flex-column-body style="background: #fafafa">
+					<flex-column-body style="background: #fff">
 						<v-container fluid grid-list-lg>
 							<constrain sm>
 								<v-layout row wrap>

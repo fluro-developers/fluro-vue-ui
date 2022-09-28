@@ -7,7 +7,7 @@
 			<tabset v-model="tabIndex" :justified="true" :vertical="true">
 				<template v-if="model.state != 'sent'">
 					<tab heading="Basic Details" index="basic">
-						<flex-column-body style="background: #fafafa">
+						<flex-column-body style="background: #fff">
 							<v-container>
 								<constrain sm>
 									<h3 margin>Mailout Basics</h3>
@@ -94,7 +94,7 @@
 						</flex-column-body>
 					</tab>
 					<tab :heading="`${definition.title} Fields`" v-if="definition">
-						<flex-column-body style="background: #fafafa">
+						<flex-column-body style="background: #fff">
 							<v-container>
 								<constrain sm>
 									<h3 margin>{{ definition.title }} Fields</h3>
@@ -108,7 +108,7 @@
 						</flex-column-body>
 					</tab>
 					<tab heading="Recipients">
-						<flex-column-body style="background: #fafafa">
+						<flex-column-body style="background: #fff">
 							<v-container class="mailout-recipients">
 								<constrain sm>
 									<h3 margin>Send this mailout to</h3>
@@ -550,7 +550,7 @@
 		<!-- <tabset v-else :justified="true" :vertical="true">
             <tab heading="Basic Details">
                 <slot>
-                    <flex-column-body style="background: #fafafa;">
+                    <flex-column-body style="background: #fff;">
                     </flex-column-body>
                 </slot>
             </tab>

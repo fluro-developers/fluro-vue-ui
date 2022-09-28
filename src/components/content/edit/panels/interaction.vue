@@ -5,7 +5,7 @@
 		</template>
 		<tabset v-else :justified="true" :vertical="true">
 			<tab heading="Submission">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container grid-list-xl>
 						<constrain sm>
 							<fluro-content-form :options="options" v-model="model" :fields="fieldsOutput">
@@ -144,7 +144,7 @@
 				</flex-column-body>
 			</tab>
 			<tab heading="Transactions & Payments" v-if="paymentsEnabled">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container grid-list-xl>
 						<fluro-content-form-field
 							:form-fields="formFields"
@@ -157,7 +157,7 @@
 				</flex-column-body>
 			</tab>
 			<tab :heading="`${tickets.length} Tickets`" v-if="tickets.length">
-				<flex-column-body style="background: #fafafa">
+				<flex-column-body style="background: #fff">
 					<v-container fluid style="background: #fff" class="border-bottom">
 						<img class="qrcode" :src="qrCodeURL" />
 					</v-container>

@@ -186,7 +186,7 @@ export default {
 <style lang="scss">
 .tabset {
 	flex: 1;
-	// border: 1px solid rgba(#000, 0.05);
+	padding: 0 24px;
 
 	.tabset-menu {
 		flex: none;
@@ -232,17 +232,21 @@ export default {
 				//background: #fff;
 				border-left: 1px solid rgba(#000, 0.05);
 				border-right: 1px solid rgba(#000, 0.05);
-				border-top: 3px solid $primary;
-				border-bottom: 1px solid transparent;
+				border-bottom: 2px solid #222222;
+				border-top: 1px solid transparent;
 			}
 		}
 	}
 
 	.tabset-content {
 		flex: 1;
-		// background: #fff;
+		background: #fff !important;
 		position: relative;
 		// border: 1px solid rgba(#000, 0.05);
+	}
+
+	.tabset-header {
+		background: #fff !important;
 	}
 
 	&.justified {
@@ -259,6 +263,7 @@ export default {
 		@media (min-width: 768px) {
 			display: flex;
 			flex-direction: row;
+			background-color: #f7f8fa;
 
 			& > .tabset-header {
 				min-width: 200px;
@@ -266,7 +271,7 @@ export default {
 				width: 25%;
 				display: flex;
 				flex-direction: column;
-				background: rgba(#000, 0.05);
+				background-color: #f7f8fa;
 
 				.tabset-menu {
 					background: none;
@@ -318,9 +323,10 @@ export default {
 							}
 
 							&.active {
+								background: transparent;
+								border-left: 2px solid #222222;
+								font-weight: 600;
 								opacity: 1;
-								background: #fafafa;
-								border-left: 3px solid $primary;
 							}
 						}
 					}
