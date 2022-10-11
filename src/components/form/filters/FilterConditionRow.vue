@@ -939,11 +939,10 @@ export default {
 				case '!=':
 				case 'in':
 				case 'notin':
-					if (!this.rows || !this.rows.length) {
+					if ((!this.rows || !this.rows.length) && (!this.possibleValues || !this.possibleValues.length)) {
 						switch (this.dataType) {
 							case 'string':
 								return true;
-								break;
 						}
 					}
 					break;
