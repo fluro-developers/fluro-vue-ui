@@ -1084,8 +1084,6 @@ export default {
 			deep: true,
 		},
 		rowChangeString(d) {
-			// console.log('Got the row!');
-			// this.possibleValues = [];
 			this.retrieveValues();
 		},
 	},
@@ -1135,7 +1133,7 @@ export default {
 			//If we have no key then there are no possible values
 			if (!key || !key.length) {
 				console.log('Values > No key so clear values', key, self.model);
-				self.possibleValues = [];
+				// self.possibleValues = [];
 				self.loadingValues = false;
 				// console.log('CADE > No key so no values', self.model)
 				return;
@@ -1540,95 +1538,95 @@ export default {
 		},
 	},
 	/**
-							asyncComputed: {
-							values: {
-							default: [],
-							get() {
+              asyncComputed: {
+              values: {
+              default: [],
+              get() {
 
-							var self = this;
-							var key = this.model.key;
+              var self = this;
+              var key = this.model.key;
 
-							if (!key || !key.length) {
-							return Promise.resolve([]);
-							}
+              if (!key || !key.length) {
+              return Promise.resolve([]);
+              }
 
-							////console.log('Lets go get options for', key);
-
-
-							var dataType = self.dataType;
-							switch (dataType) {
-							case 'number':
-							case 'float':
-							case 'integer':
-							case 'decimal':
-							return Promise.resolve([]);
-							break;
-							case 'boolean':
-							return Promise.resolve([true, false]);
-							break;
-							}
+              ////console.log('Lets go get options for', key);
 
 
-
-							this.loadingValues = true;
-							////////////////////////////////////
-
-							return new Promise(function(resolve, reject) {
+              var dataType = self.dataType;
+              switch (dataType) {
+              case 'number':
+              case 'float':
+              case 'integer':
+              case 'decimal':
+              return Promise.resolve([]);
+              break;
+              case 'boolean':
+              return Promise.resolve([true, false]);
+              break;
+              }
 
 
 
-							if (self.rows && self.rows.length) {
+              this.loadingValues = true;
+              ////////////////////////////////////
 
-							//Check to see if the rows we know about already have the data
-							//we are wanting to search on, because if so we can just use that
-							// var rawRowsAlreadyHaveKey = _.every(self.rows, function(row) {
-							//     return row.hasOwnProperty(key);
-							// })
-
-							// //If we already know the options then send them back and resolve
-							// if (rawRowsAlreadyHaveKey) {
-							//     var allOptions = _.chain(self.rows)
-							//         .map(key)
-							//         .uniq()
-							//         .value();
-
-							//     return resolve(allOptions)
-							// }
-
-							//Get all the ids
-							var subSetIDs = _.map(self.rows, '_id');
-
-							//We need to make an asynchronous request to the server
-							//to find out what values we can filter by
-							// ////console.log('DATA TYPE', self.dataType)
-							var options = {
-
-							}
-
-							if (self.dataType == 'reference') {
-							options.params = {
-							populate: true
-							};
-							}
-
-							return self.$fluro.content.values(subSetIDs, key, options).then(function(res) {
-							resolve(res);
-							self.loadingValues = false;
-							}, function(err) {
-							reject(err);
-							self.loadingValues = false;
-							});
-							}
-
-							// return resolve([]);
+              return new Promise(function(resolve, reject) {
 
 
-							});
-							},
-							}
-							}
 
-							/**/
+              if (self.rows && self.rows.length) {
+
+              //Check to see if the rows we know about already have the data
+              //we are wanting to search on, because if so we can just use that
+              // var rawRowsAlreadyHaveKey = _.every(self.rows, function(row) {
+              //     return row.hasOwnProperty(key);
+              // })
+
+              // //If we already know the options then send them back and resolve
+              // if (rawRowsAlreadyHaveKey) {
+              //     var allOptions = _.chain(self.rows)
+              //         .map(key)
+              //         .uniq()
+              //         .value();
+
+              //     return resolve(allOptions)
+              // }
+
+              //Get all the ids
+              var subSetIDs = _.map(self.rows, '_id');
+
+              //We need to make an asynchronous request to the server
+              //to find out what values we can filter by
+              // ////console.log('DATA TYPE', self.dataType)
+              var options = {
+
+              }
+
+              if (self.dataType == 'reference') {
+              options.params = {
+              populate: true
+              };
+              }
+
+              return self.$fluro.content.values(subSetIDs, key, options).then(function(res) {
+              resolve(res);
+              self.loadingValues = false;
+              }, function(err) {
+              reject(err);
+              self.loadingValues = false;
+              });
+              }
+
+              // return resolve([]);
+
+
+              });
+              },
+              }
+              }
+
+              /**/
 };
 </script>
 <style scoped lang="scss">
