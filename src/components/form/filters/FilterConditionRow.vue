@@ -1132,8 +1132,7 @@ export default {
 
 			//If we have no key then there are no possible values
 			if (!key || !key.length) {
-				console.log('Values > No key so clear values', key, self.model);
-				// self.possibleValues = [];
+				console.log('Values > No key so do nothing', key, self.model);
 				self.loadingValues = false;
 				// console.log('CADE > No key so no values', self.model)
 				return;
