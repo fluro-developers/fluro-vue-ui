@@ -919,18 +919,13 @@ export default {
 		requiresManualInput() {
 			if (!this.rows || !this.rows.length) {
 				if (this.dataType == 'reference') {
-					console.log('>>>>>>>>> requiresManualInput -> returning true');
 					return true;
 				}
 			}
 
 			//////////////////////////////////
 
-			console.log(
-				'>>>>>>>>>> this.requiresManualInput -> comparator, dataType',
-				this.model.comparator,
-				this.dataType
-			);
+			console.log(this.model.comparator, this.dataType);
 			switch (this.model.comparator) {
 				case 'startswith':
 				case 'endswith':
@@ -1120,7 +1115,6 @@ export default {
 			this.model.value2 = option.date2;
 		},
 		retrieveValues() {
-			console.log('>>>>>>>>>>>>>> here', this.possibleValues);
 			var self = this;
 			var key = self.model.key;
 			// console.log('RETRIEVE VALUES', key);
@@ -1129,7 +1123,6 @@ export default {
 
 			if (self.useBasicReferenceSelect) {
 				//Just show a normal reference selector
-				console.log('>>>>>>1');
 				self.possibleValues = [];
 				self.loadingValues = false;
 				console.log('Values > use basic reference select');
@@ -1142,7 +1135,6 @@ export default {
 			//If we have no key then there are no possible values
 			if (!key || !key.length) {
 				console.log('Values > No key so clear values', key, self.model);
-				console.log('>>>>>>2');
 				self.possibleValues = [];
 				self.loadingValues = false;
 				// console.log('CADE > No key so no values', self.model)
@@ -1172,7 +1164,6 @@ export default {
 				}
 
 				if (selectableOptions.length) {
-					console.log('>>>>>>3, selectable Options is', selectableOptions);
 					self.possibleValues = selectableOptions;
 					self.loadingValues = false;
 					// console.log('Return selectable options', selectableOptions, self.selector)
@@ -1254,7 +1245,6 @@ export default {
 
 				///////////////////////////////////////
 
-				console.log('>>>>>>4');
 				self.possibleValues = _.chain(extractedValues)
 					.values()
 					// .map(function(row) {
@@ -1299,19 +1289,16 @@ export default {
 				case 'integer':
 				case 'decimal':
 					//console.log('Values > No values, numeric input')
-					console.log('>>>>>>5');
 					return (self.possibleValues = []);
 					break;
 				case 'boolean':
 					//console.log('Values > Boolean Default')
-					console.log('>>>>>>6');
 					return (self.possibleValues = [true, false]);
 					break;
 				default:
 					switch (key) {
 						case 'definition':
 							if (self.definition && self.definition.definitions) {
-								console.log('>>>>>>1.1');
 								return (self.possibleValues = _.map(self.definition.definitions, function (def) {
 									return { text: def.title, value: def.definitionName };
 								}));
@@ -1320,7 +1307,6 @@ export default {
 						case 'status':
 							switch (_.get(self, 'definition.type.definitionName')) {
 								case 'contact':
-									console.log('>>>>>>8');
 									return (self.possibleValues = [
 										'active',
 										'draft',
@@ -1330,7 +1316,6 @@ export default {
 									]);
 									break;
 								case 'account':
-									console.log('>>>>>>1.2');
 									return (self.possibleValues = [
 										'active',
 										'cancelled',
@@ -1346,7 +1331,6 @@ export default {
 									]);
 									break;
 								case 'purchase':
-									console.log('>>>>>>1.3');
 									return (self.possibleValues = [
 										'active',
 										'cancelled',
@@ -1357,7 +1341,6 @@ export default {
 									]);
 									break;
 								default:
-									console.log('>>>>>>1.4');
 									return (self.possibleValues = [
 										'active',
 										'draft',
@@ -1370,12 +1353,10 @@ export default {
 
 							break;
 						case 'gender':
-							console.log('>>>>>>8');
 							return (self.possibleValues = ['male', 'female', 'unknown']);
 							break;
 						case 'dobMonthTitle':
 							//console.log('Values > Gender Default')
-							console.log('>>>>>>1.5');
 							return (self.possibleValues = [
 								'January',
 								'February',
@@ -1401,7 +1382,6 @@ export default {
 				//There are no rows
 				if (!self.rows || !self.rows.length) {
 					//console.log('Values > No rows')
-					console.log('>>>>>>9');
 					self.possibleValues = [];
 					self.loadingValues = false;
 					console.log('No sample and no rows');
@@ -1454,7 +1434,6 @@ export default {
 				//If we already know the options then send them back and resolve
 				if (rawRowsAlreadyHaveKey) {
 					//At this point we have a list of the nodes they are allowed to view
-					console.log('>>>>>>10');
 					self.possibleValues = _.chain(self.rows)
 						.map(key)
 						.flatten()
@@ -1548,12 +1527,10 @@ export default {
 			valueCache.then(
 				function (res) {
 					// console.log('GOT THE VALUES', res);
-					console.log('>>>>>>11');
 					self.possibleValues = res && res.length ? res : self.possibleValues || [];
 					self.loadingValues = false;
 				},
 				function (err) {
-					console.log('>>>>>>12');
 					self.possibleValues = [];
 					self.loadingValues = false;
 
