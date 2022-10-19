@@ -105,8 +105,8 @@ templates.push({
 				title: 'Date of Birth',
 				minimum: 1,
 				maximum: 1,
-				key: 'dob',
-				type: 'date',
+				key: 'dateOfBirth',
+				type: 'string',
 				directive: 'dob-select',
 			},
 			{

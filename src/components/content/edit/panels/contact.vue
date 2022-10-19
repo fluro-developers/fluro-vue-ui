@@ -258,7 +258,7 @@ Basic Details
 													:outline="showOutline"
 													@input="update"
 													:options="formOptions"
-													:field="fieldHash.dob"
+													:field="fieldHash.dateOfBirth"
 													v-model="model"
 												>
 												</fluro-content-form-field>
@@ -1435,11 +1435,11 @@ export default {
 				placeholder: 'Eg. Michaels',
 			});
 
-			addField('dob', {
+			addField('dateOfBirth', {
 				title: 'Date of Birth',
 				minimum: 0,
 				maximum: 1,
-				type: 'date',
+				type: 'string',
 				directive: 'date-select',
 			});
 			addField('dobVerified', {

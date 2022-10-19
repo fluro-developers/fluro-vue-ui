@@ -233,11 +233,10 @@
 													<fluro-content-form-field
 														:field="extraFields.inheritable"
 														v-model="model"
-													></fluro-content-form-field>
-													<fluro-content-form-field
-														:field="extraFields.slug"
-														v-model="model"
-													></fluro-content-form-field>
+													>
+													</fluro-content-form-field>
+													<fluro-content-form-field :field="extraFields.slug" v-model="model">
+													</fluro-content-form-field>
 												</v-container>
 												<v-container pa-2 class="white-background">
 													<template v-if="model._id">
@@ -307,7 +306,8 @@
 																<fluro-content-form-field
 																	:field="extraFields.publishDate"
 																	v-model="model"
-																></fluro-content-form-field>
+																>
+																</fluro-content-form-field>
 															</v-input>
 														</v-flex>
 														<v-flex>
@@ -320,14 +320,16 @@
 																<fluro-content-form-field
 																	:field="extraFields.archiveDate"
 																	v-model="model"
-																></fluro-content-form-field>
+																>
+																</fluro-content-form-field>
 															</v-input>
 														</v-flex>
 														<v-flex>
 															<fluro-content-form-field
 																:field="extraFields.createdDate"
 																v-model="model"
-															></fluro-content-form-field>
+															>
+															</fluro-content-form-field>
 														</v-flex>
 													</v-layout>
 												</v-container>
@@ -400,9 +402,7 @@ import FluroStatusSelect from '../../form/FluroStatusSelect.vue';
 import FluroInlineEdit from '../../form/FluroInlineEdit.vue';
 import FluroContentFormField from '../../form/FluroContentFormField.vue';
 import Changelog from './components/Changelog.vue';
-// import EventTrackUpdateModal from "./panels/eventtrack/EventTrackUpdateModal.vue";
-
-// import DynamicImportService from "../../../DynamicImportService.js";
+import moment from 'moment';
 
 export default {
 	props: {
@@ -736,6 +736,7 @@ export default {
 						//Object.assign(self.model, res.data);
 
 						var result = Object.assign({}, res.data);
+						console.log('>>>>>>>>>>>>>>>> result', result);
 
 						switch (self.typeName) {
 							// case 'definition':
@@ -810,6 +811,9 @@ export default {
 
 			var requestData = Object.assign({}, self.model);
 			delete requestData.__v;
+			if (requestData.dateOfBirth) {
+				requestData.dateOfBirth = moment(requestData.dateOfBirth).format('YYYY-MM-DD');
+			}
 
 			/////////////////////////////////
 

@@ -238,8 +238,8 @@
 											:block="mobile"
 											:large="mobile"
 											@click.prevent.native="state = 'ready'"
-											>Try Again</fluro-button
-										>
+											>Try Again
+										</fluro-button>
 									</template>
 									<template v-else>
 										<v-btn
@@ -1771,7 +1771,7 @@ export default {
 			setDefaultContactField('lastName');
 			setDefaultContactField('email');
 			setDefaultContactField('phoneNumber');
-			setDefaultContactField('dob');
+			setDefaultContactField('dateOfBirth');
 			setDefaultContactField('gender');
 
 			//Set the default contact fields

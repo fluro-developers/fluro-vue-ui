@@ -361,7 +361,7 @@
 					<fluro-realm-select block type="collection" v-model="fieldModel" />
 				</v-input>
 			</template>
-			<template v-else-if="renderer == 'dob'">
+			<template v-else-if="renderer == 'dateOfBirth'">
 				<v-input
 					class="no-flex"
 					:label="displayLabel"
@@ -482,7 +482,7 @@
 							@input="checkTextDate"
 							:outline="showOutline"
 							:success="success"
-							v-model="textDate"
+							v-model="dateStringModel"
 							:persistent-hint="true"
 							:hint="dateHint"
 							:label="displayLabel"
@@ -531,7 +531,8 @@
 							v-on="on"
 							@blur="touch()"
 							@focus="modalFocussed()"
-						></v-text-field>
+						>
+						</v-text-field>
 					</template>
 					<flex-column v-if="modal">
 						<v-card>
@@ -1444,6 +1445,7 @@ import _ from 'lodash';
 import Vue from 'vue';
 
 import { Chrome } from 'vue-color';
+import moment from 'moment';
 
 //Allow custom html to be injected at runtime
 
@@ -1653,6 +1655,7 @@ export default {
 		},
 		formattedDate(dateString) {
 			var self = this;
+			console.log('>>>>>>>>>>>>>>>>>>>> formattedDate datestring', dateString);
 			self.textDate = dateString;
 		},
 		keywords: _.debounce(function () {
@@ -1789,48 +1792,6 @@ export default {
 		/**/
 	},
 	computed: {
-		// textDate: {
-		//     get() {
-
-		//         var self = this;
-		//         if (self.field.type != 'date') {
-
-		//             return;
-		//         }
-
-		//         if (self.multipleInput) {
-
-		//             return;
-		//         }
-
-		//         return self.textualDate;
-		//         // self.textualDate;
-		//         // var dateString = self.fieldModel;
-		//         // var d = new Date(dateString);
-		//         // var isValid = d instanceof Date && !isNaN(d);
-		//         // return d;
-		//     },
-		//     set(dateString) {
-		//         var self = this;
-		//         if (self.field.type != 'date') {
-		//             self.textualDate = null;
-		//             return;
-		//         }
-
-		//         //////////////////////////////////////
-
-		//         self.textualDate = dateString;
-
-		//         //////////////////////////////////////
-
-		//         //See if we can make sense of the date
-		//         var d = new Date(dateString);
-		//         var isValid = d instanceof Date && !isNaN(d);
-		//         if (isValid) {
-		//             self.fieldModel = d;
-		//         }
-		//     }
-		// },
 		academicModel: {
 			get() {
 				return this.fieldModel;
@@ -2157,7 +2118,7 @@ export default {
 
 			if (this.fieldModel) {
 				switch (this.field.key) {
-					case 'dob':
+					case 'dateOfBirth':
 					case '_dob':
 						var years = this.$fluro.date.moment().diff(this.fieldModel, 'years');
 
@@ -2177,14 +2138,26 @@ export default {
 
 		dateStringModel: {
 			get() {
+				console.log('>>>>>>>>>>>>>>>>>>>> get: fieldModel', this.fieldModel);
 				if (this.timezone) {
-					return this.fieldModel && this.$fluro.date.moment.tz(this.fieldModel, this.timezone).format('YYYY-MM-DD');
+					console.log('>>>>>>>>>>>>>>>>> using timezone');
+					return (
+						this.fieldModel &&
+						this.$fluro.date.moment.tz(this.fieldModel, this.timezone).format('YYYY-MM-DD')
+					);
 				}
-				return this.fieldModel && this.$fluro.date.moment(this.fieldModel).format('YYYY-MM-DD');
+				console.log(
+					'>>>>>>>>>>>>>>>>> not using timezone',
+					this.$fluro.date.moment.parseZone(this.fieldModel).format('YYYY-MM-DD')
+				);
+				return this.fieldModel && this.$fluro.date.moment.parseZone(this.fieldModel).format('YYYY-MM-DD');
 			},
 			set(dateString) {
+				console.log('>>>>>>>>>>>>>>>>>>>> set: dateString', dateString);
 				if (this.timezone) {
-					this.fieldModel = dateString && this.$fluro.date.moment.tz(dateString, this.timezone).startOf('day').utc().toDate();
+					this.fieldModel =
+						dateString &&
+						this.$fluro.date.moment.tz(dateString, this.timezone).startOf('day').utc().toDate();
 					return;
 				}
 				this.fieldModel = dateString && this.$fluro.date.moment(dateString).startOf('day').utc().toDate();
@@ -2192,7 +2165,8 @@ export default {
 		},
 
 		formattedDate() {
-			return this.fieldModel && this.$fluro.date.moment(this.fieldModel).format(this.dateFormat);
+			console.log('>>>>>>>>>>>>>>>>> formattedDate  fieldModel', this.fieldModel);
+			return this.fieldModel && this.$fluro.date.moment.parseDate(this.fieldModel).format(this.dateFormat);
 		},
 		asyncOptionsURL() {
 			var self = this;
@@ -2510,6 +2484,7 @@ export default {
 					return;
 				}
 
+				console.log('>>>>>>>>>>>> self model', self.model);
 				//Get the value for this field
 				var value = self.model[self.field.key];
 
@@ -2525,53 +2500,16 @@ export default {
 					return;
 				}
 
-				//Clean the input
+				// Clean the input
 
 				value = self.cleanInput(value);
 
-				//////////////////////////////////
-				//If there is a change
+				// If there is a change
 				if (self.model[self.field.key] != value) {
-					//
-
 					self.$set(self.model, self.field.key, value);
 
 					self.$emit('input', self.model);
-
-					// var cacheKey = self.model._ck;
-					// if(!cacheKey) {
-					// 	cacheKey = 0;
-					// }
-
-					// self.$set(self.model, '_ck', cacheKey++);
-
-					//
-					// } else {
-
-					// if(self.field.type == 'boolean') {
-					// 	self.$set(self.model, self.field.key, value);
-					//     self.$emit('input', self.model);
-
-					// }
-
-					// self.$forceUpdate();
 				}
-
-				//  else {
-
-				// 	self.$emit('input', self.model);
-				// }
-				//////////////////////////////////
-
-				// self.$forceUpdate();
-				//////////////////////////////////
-
-				// //////////////////////////////////
-
-				// // self.model[self.field.key] = value;
-				// self.$set(self.model, self.field.key, value);
-
-				// self.valueChange();
 			},
 		},
 		addLabel() {
@@ -3050,7 +2988,7 @@ export default {
 					break;
 				case 'dobselect':
 				case 'dob-select':
-					directive = 'dob';
+					directive = 'dateOfBirth';
 					break;
 				case 'date-select':
 				case 'datepicker':
@@ -3256,7 +3194,7 @@ export default {
 		},
 		cleanOutput(value) {
 			var self = this;
-
+			console.log('>>>>>>>>>>> cleanoutput value', value);
 			/////////////////////////////////////
 
 			//If there are transform expressions
@@ -3308,7 +3246,7 @@ export default {
 						if (String(value).toLowerCase() == 'now') {
 							return new Date().toISOString();
 						} else {
-							return new Date(value).toISOString();
+							return moment(value).format('YYYY-MM-DDTHH:mm:ss');
 						}
 					}
 					break;
@@ -4438,6 +4376,7 @@ export default {
 
 		///////////////////////////////////////////////
 
+		console.log('>>>>>>>>>>>>>>>>> created formattedDate', self.formattedDate);
 		self.textDate = self.formattedDate;
 		self.createDefaults();
 		self.checkInitialValue();

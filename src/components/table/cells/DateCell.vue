@@ -42,14 +42,14 @@ export default {
 	methods: {
 		dateTooltip(date) {
 			var self = this;
-			if (self.column.key === 'dob') return this.$fluro.date.moment(date).utc().endOf('day').fromNow();
+			if (self.column.key === 'dateOfBirth') return this.$fluro.date.moment(date).utc().endOf('day').fromNow();
 
 			return `${self.$fluro.date.formatDate(date, 'h:mma')} - ${self.$fluro.date.timeago(date)}`;
 		},
 		formatted(date) {
 			var self = this;
 			const adjustedDate =
-				self.column.key === 'dob' ? self.$fluro.date.moment(date).utc() : self.$fluro.date.moment(date);
+				self.column.key === 'dateOfBirth' ? self.$fluro.date.moment(date).utc() : self.$fluro.date.moment(date);
 
 			if (self.showTimezone) {
 				return adjustedDate.format(self.format, self.timezone);
