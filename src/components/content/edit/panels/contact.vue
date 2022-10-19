@@ -157,7 +157,8 @@ Basic Details
 											:options="formOptions"
 											:field="fieldHash.lastName"
 											v-model="model"
-										></fluro-content-form-field>
+										>
+										</fluro-content-form-field>
 										<fluro-content-form-field
 											class="right-messages"
 											:form-fields="formFields"
@@ -214,7 +215,8 @@ Basic Details
 											:options="formOptions"
 											:field="fieldHash.maritalStatus"
 											v-model="model"
-										></fluro-content-form-field>
+										>
+										</fluro-content-form-field>
 									</v-flex>
 								</v-layout>
 								<fluro-content-form-field
@@ -234,7 +236,8 @@ Basic Details
 											:field="fieldHash.emails"
 											:is-from-subsplash="isFromSubsplash"
 											v-model="model"
-										></fluro-content-form-field>
+										>
+										</fluro-content-form-field>
 									</v-flex>
 									<v-flex xs12 sm6>
 										<fluro-content-form-field
@@ -257,8 +260,8 @@ Basic Details
 													:options="formOptions"
 													:field="fieldHash.dob"
 													v-model="model"
-													:timezone="model.timezone"
-												></fluro-content-form-field>
+												>
+												</fluro-content-form-field>
 											</v-flex>
 											<v-flex xs6>
 												<fluro-content-form-field
@@ -268,7 +271,8 @@ Basic Details
 													:options="formOptions"
 													:field="fieldHash.dobVerified"
 													v-model="model"
-												></fluro-content-form-field>
+												>
+												</fluro-content-form-field>
 											</v-flex>
 										</v-layout>
 									</v-flex>
@@ -309,7 +313,8 @@ Basic Details
 											:options="formOptions"
 											:field="fieldHash.nametagNotes"
 											v-model="model"
-										></fluro-content-form-field>
+										>
+										</fluro-content-form-field>
 									</v-input>
 								</wrapper>
 							</constrain>
@@ -405,7 +410,8 @@ Basic Details
 											:options="formOptions"
 											:field="fieldHash.family"
 											v-model="model"
-										></fluro-content-form-field>
+										>
+										</fluro-content-form-field>
 									</v-input>
 									<!-- </v-flex> -->
 									<!-- <v-flex> -->
@@ -476,7 +482,8 @@ Basic Details
 												:options="formOptions"
 												:field="fieldHash.family"
 												v-model="model"
-											></fluro-content-form-field>
+											>
+											</fluro-content-form-field>
 										</v-input>
 									</template>
 									<!-- @errorMessages="validate" -->
